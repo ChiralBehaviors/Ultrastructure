@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.coordinate_kind_definition
+            (
+              id bigserial NOT NULL, -- Otherwise meaningless identifier for a definition rule
+              kind bigint NOT NULL, -- The kind of coordinate this definition rule pertains to
+              sequence_number ruleform.sequence_number NOT NULL, -- The sequential order of this definition rule among all rules applying to this kind of coordinate
+              attribute bigint, -- An Attribute defined as part of the internal structure of this kind of coordinate
+              subordinate_coordinate_kind bigint, -- Another kind of coordinate defined as part of the internal structure of this kind of coordinate
+              notes character varying, -- Usage notes for this definition rule
+              research bigint, -- A research flag that has been set on an individual rule
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
+              CONSTRAINT coordinate_kind_definition_pkey PRIMARY KEY (id ),
+              CONSTRAINT coordinate_kind_definition_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_kind_definition_kind_fkey FOREIGN KEY (kind)
+                  REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_kind_definition_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_kind_definition_subordinate_coordinate_kind_fkey FOREIGN KEY (subordinate_coordinate_kind)
+                  REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_kind_definition_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_kind_definition_kind_key UNIQUE (kind , sequence_number ),
+              CONSTRAINT valid_definition CHECK ((ruleform.null_zero(attribute) + ruleform.null_zero(subordinate_coordinate_kind)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.coordinate_kind_definition
+              IS 'Describes the internal structure of a kind of coordinate';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.id IS 'Otherwise meaningless identifier for a definition rule';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.kind IS 'The kind of coordinate this definition rule pertains to';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.sequence_number IS 'The sequential order of this definition rule among all rules applying to this kind of coordinate';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.attribute IS 'An Attribute defined as part of the internal structure of this kind of coordinate';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.subordinate_coordinate_kind IS 'Another kind of coordinate defined as part of the internal structure of this kind of coordinate';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.notes IS 'Usage notes for this definition rule';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.research IS 'A research flag that has been set on an individual rule';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.update_date IS 'The time at which this rule was last updated';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.coordinate_kind_definition"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

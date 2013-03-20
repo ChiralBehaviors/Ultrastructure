@@ -1,0 +1,199 @@
+/**
+ * Copyright (C) 2012 Hal Hildebrand. All rights reserved.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as 
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.hellblazer.CoRE.location;
+
+import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_CONTEXTS;
+import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_RELATIONSHIPS;
+import static com.hellblazer.CoRE.location.LocationRelationship.RULES;
+import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.entity.Entity;
+import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.resource.Resource;
+
+/**
+ * The persistent class for the location_relationship database table.
+ * 
+ */
+@javax.persistence.Entity
+@Table(name = "location_relationship", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "location_relationship_id_seq", sequenceName = "location_relationship_id_seq")
+@NamedQueries({
+               @NamedQuery(name = AVAILABLE_CONTEXTS, query = "SELECT distinct lr.context FROM LocationRelationship AS lr"),
+               @NamedQuery(name = TARGET_CONTEXTS, query = "SELECT distinct lr.targetContext FROM LocationRelationship AS lr WHERE lr.context = :context"),
+               @NamedQuery(name = AVAILABLE_RELATIONSHIPS, query = "SELECT distinct lr.relationship FROM LocationRelationship AS lr WHERE lr.context = :context AND lr.targetContext = :target"),
+               @NamedQuery(name = RULES, query = "select lr FROM LocationRelationship AS lr "
+                                                 + "WHERE lr.context = :context "
+                                                 + "AND lr.relationship = :relationship "
+                                                 + "AND lr.targetContext = :targetContext "
+                                                 + "AND lr.entityMappedValue = :mappedEntityValue "
+                                                 + "ORDER BY lr.sequenceNumber") })
+public class LocationRelationship extends Ruleform {
+    private static final long  serialVersionUID        = 1L;
+    public static final String AVAILABLE_CONTEXTS      = "locationRelationship.availableContexts";
+    public static final String AVAILABLE_RELATIONSHIPS = "locationRelationship.availableRelationships";
+    public static final String RULES                   = "locationRelationship.rules";
+    public static final String TARGET_CONTEXTS         = "locationRelationship.availableTargetContexts";
+    public static final String FIND_BY_ID              = "locationRelationship.findById";
+    public static final String FIND_BY_NAME            = "locationRelationship.findByName";
+
+    //bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "attribute_relationship")
+    private Relationship       attributeRelationship;
+
+    //bi-directional many-to-one association to LocationContext
+    @ManyToOne
+    @JoinColumn(name = "context")
+    private LocationContext    context;
+
+    //bi-directional many-to-one association to Entity
+    @ManyToOne
+    @JoinColumn(name = "entity_mapped_value")
+    private Entity             entityMappedValue;
+
+    @Id
+    @GeneratedValue(generator = "location_relationship_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
+
+    //bi-directional many-to-one association to Attribute
+    @ManyToOne
+    @JoinColumn(name = "location_1_attribute")
+    private Attribute          location1Attribute;
+
+    //bi-directional many-to-one association to Attribute
+    @ManyToOne
+    @JoinColumn(name = "location_2_attribute")
+    private Attribute          location2Attribute;
+
+    //bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "relationship")
+    private Relationship       relationship;
+
+    @Column(name = "sequence_number")
+    private Integer            sequenceNumber;
+
+    //bi-directional many-to-one association to LocationContext
+    @ManyToOne
+    @JoinColumn(name = "target_context")
+    private LocationContext    targetContext;
+
+    public LocationRelationship() {
+    }
+
+    /**
+     * @param id
+     */
+    public LocationRelationship(Long id) {
+        super(id);
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public LocationRelationship(Resource updatedBy) {
+        super(updatedBy);
+    }
+
+    public Relationship getAttributeRelationship() {
+        return attributeRelationship;
+    }
+
+    public LocationContext getContext() {
+        return context;
+    }
+
+    public Entity getEntityMappedValue() {
+        return entityMappedValue;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public Attribute getLocation1Attribute() {
+        return location1Attribute;
+    }
+
+    public Attribute getLocation2Attribute() {
+        return location2Attribute;
+    }
+
+    public LocationContext getLocationContext() {
+        return targetContext;
+    }
+
+    public Relationship getRelationship() {
+        return relationship;
+    }
+
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setAttributeRelationship(Relationship relationship1) {
+        attributeRelationship = relationship1;
+    }
+
+    public void setContext(LocationContext locationContext1) {
+        context = locationContext1;
+    }
+
+    public void setEntityMappedValue(Entity entity) {
+        entityMappedValue = entity;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setLocation1Attribute(Attribute attribute1) {
+        location1Attribute = attribute1;
+    }
+
+    public void setLocation2Attribute(Attribute attribute2) {
+        location2Attribute = attribute2;
+    }
+
+    public void setRelationship(Relationship relationship2) {
+        relationship = relationship2;
+    }
+
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    public void setTargetContext(LocationContext locationContext2) {
+        targetContext = locationContext2;
+    }
+}

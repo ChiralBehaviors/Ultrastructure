@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.get_terminal_states(p_event_id bigint)
+              RETURNS SETOF ruleform.status_code AS
+            $BODY$
+            DECLARE
+                _status_code ruleform.status_code%ROWTYPE;
+            BEGIN
+                FOR _status_code IN
+                    SELECT distinct(sc.*)
+                    FROM ruleform.status_code_sequencing AS seq
+                        JOIN ruleform.status_code AS sc ON seq.child_code = sc.id
+                    WHERE
+                      NOT EXISTS (
+                        SELECT parent_code FROM ruleform.status_code_sequencing
+                        WHERE event = seq.event
+                          AND parent_code = seq.child_code
+                      )
+                      AND event = $1
+                    ORDER BY sc.name ASC
+                LOOP
+                    RETURN NEXT _status_code;
+                END LOOP;
+                IF NOT FOUND THEN
+                    IF NOT EXISTS ( SELECT event FROM ruleform.status_code_sequencing WHERE event = p_event_id LIMIT 1) THEN
+                        RAISE EXCEPTION 'Event "%" does not have any status_code_sequencing rules!', ruleform.event_name(p_event_id);
+                    END IF;
+                    RAISE EXCEPTION 'Event "%" does not have any terminal states!', event_name($1);
+                END IF;
+            END;
+            $BODY$
+              LANGUAGE plpgsql STABLE
+              COST 100
+              ROWS 1000;
+            ALTER FUNCTION ruleform.get_terminal_states(bigint)
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.get_terminal_states(bigint) IS 'Retrieves a list of valid terminal states for a given event, as determined by consulting the status_code_sequencing ruleform.  Throws an error if no terminal states can be found.';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.get_terminal_states(bigint); </rollback>
+    </changeSet>
+</databaseChangeLog>

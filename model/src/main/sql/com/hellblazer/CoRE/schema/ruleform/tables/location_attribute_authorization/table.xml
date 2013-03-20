@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.location_attribute_authorization
+            (
+              id bigserial NOT NULL, -- Unique identifier
+              resource bigint NOT NULL, -- The Resource that declares a particular classification
+              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the resource that determines the classification criteria for selecting attributes a certain Location must have
+              classifier bigint NOT NULL, -- In conjunction with the 'classification_attribute' column, determines the classification criteria for selecting attributes a certain Location must have
+              authorized_attribute bigint NOT NULL, -- An Attribute a Location is expected to have
+              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when an Attribute can have multiple acceptable values
+              grouping_resource bigint, -- If present, along with 'location_attribute' and 'location_value', used to select an entire grouping of Locations that can be acceptable values
+              text_value character varying, -- Contains a single acceptable text-value if 'attribute' has a data type of 'text'
+              integer_value integer, -- Contains a single acceptable integer-value if 'attribute' has a data type of 'integer'
+              numeric_value numeric, -- Contains a single acceptable numeric-value if 'attribute' has a data type of 'numeric'
+              timestamp_value timestamp with time zone,
+              notes character varying, -- Additional notes regarding this rule
+              research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+              CONSTRAINT location_attribute_authorization_pkey PRIMARY KEY (id ),
+              CONSTRAINT location_attribute_authorization_authorized_attribute_fkey FOREIGN KEY (authorized_attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT location_attribute_authorization_classification_fkey FOREIGN KEY (classification)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT location_attribute_authorization_classifier_fkey FOREIGN KEY (classifier)
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT location_attribute_authorization_grouping_resource_fkey FOREIGN KEY (grouping_resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT location_attribute_authorization_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT location_attribute_authorization_resource_fkey FOREIGN KEY (resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT location_attribute_authorization_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT location_attribute_authorizatio_resource_classification_attri_key UNIQUE (resource , classification , classifier , authorized_attribute , sequence_number )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.location_attribute_authorization
+              IS 'Defines rules stating what attributes (and values thereof) are authorized for particular Locations';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.id IS 'Unique identifier';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.resource IS 'The Resource that declares a particular classification';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.classification IS 'In conjunction with the ''classifier'' column, determines the classification criteria for selecting attributes a certain Location must have';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.classifier IS 'In conjunction with the ''classification'' column, determines the classification criteria for selecting attributes a certain Location must have';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.authorized_attribute IS 'An Attribute a Location is expected to have';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.sequence_number IS 'Ordering and uniqueness, for when an Attribute can have multiple acceptable values';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.grouping_resource IS 'If present, along with ''location_attribute'' and ''location_value'', used to select an entire grouping of Locations that can be acceptable values';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.text_value IS 'Contains a single acceptable text-value if ''attribute'' has a data type of ''text''';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.integer_value IS 'Contains a single acceptable integer-value if ''attribute'' has a data type of ''integer''';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.numeric_value IS 'Contains a single acceptable numeric-value if ''attribute'' has a data type of ''numeric''';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.notes IS 'Additional notes regarding this rule';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.location_attribute_authorization.update_date IS 'The date this rule was last changed';
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.location_attribute_authorization" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

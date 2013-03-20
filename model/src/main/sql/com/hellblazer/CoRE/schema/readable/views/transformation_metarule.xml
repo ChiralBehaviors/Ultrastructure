@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.transformation_metarule AS 
+			 SELECT tm.id, s.name AS service, tm.sequence_number, 
+			        rm.name AS resource_map, bm.name AS entity_map, 
+			        bnr.name AS entity_network_resource, tm.stop_on_match
+			   FROM ruleform.transformation_metarule tm
+			   JOIN ruleform.entity s ON tm.service = s.id
+			   JOIN ruleform.relationship rm ON tm.resource_map = rm.id
+			   JOIN ruleform.relationship bm ON tm.entity_map = bm.id
+			   LEFT JOIN ruleform.resource bnr ON tm.entity_network_resource = bnr.id;
+			
+			ALTER TABLE readable.transformation_metarule
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.transformation_metarule" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

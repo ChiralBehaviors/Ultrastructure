@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.attribute_usage()
+              RETURNS void AS
+            $BODY$
+            DECLARE
+                _query VARCHAR;
+                _loop_query VARCHAR;
+                _cursor CURSOR(ruleform VARCHAR) FOR SELECT
+                '(SELECT count(*) FROM ' || t.relname || ' WHERE ' || a.attname || ' =  table.id) AS ' || t.relname || '_' || a.attname
+                FROM information_schema.referential_constraints AS c
+                JOIN holding.find_fkeys(ruleform,'ruleform') as f ON c.constraint_name = f.conname
+                join pg_class as t on f.conrelid = t.oid
+                join pg_class as t2 on f.confrelid = t2.oid
+                join pg_attribute as a on a.attnum = f.conkey[1] and a.attrelid = t.oid
+                join pg_attribute as a2 on a2.attnum = f.confkey[1] and a2.attrelid = t.oid
+                ;
+            BEGIN
+                _query = 'CREATE VIEW attribute_usage_v AS ' ||
+                'SELECT name AS "attribute", ';
+                OPEN _cursor('attribute');
+                LOOP FETCH _cursor INTO _loop_query;
+                    EXIT WHEN NOT FOUND;
+                    _query = _query || _loop_query || ', ';
+                END LOOP;
+                CLOSE _cursor;
+                
+                
+                _query = trim(trailing ', ' from _query) || ' FROM ruleform.attribute AS table';
+                RAISE NOTICE 'QUERY: %', _query;
+                EXECUTE _query;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.attribute_usage()
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.attribute_usage(); </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.job
+            (
+              id bigserial NOT NULL, -- Unique identifier
+              service bigint NOT NULL, -- the service this job is performing
+              product bigint NOT NULL, -- the product of this service
+              material bigint NOT NULL, -- the material this job operates on
+              assign_to bigint NOT NULL, -- The Resource doing this Job
+              requester bigint NOT NULL, -- The Resource requesting the service of this job
+              deliver_to bigint NOT NULL, -- The location to deliver the product of this job
+              deliver_from bigint NOT NULL, -- The location where the product of this job is delivered from
+              status bigint NOT NULL, -- The current status of this Job
+              parent bigint, -- The parent of this job, in a hierarchical sense
+              sequence_number integer NOT NULL DEFAULT 0, -- The sibling sequence of this job
+              notes character varying, -- Additional notes regarding usage of this particular rule
+              research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+              CONSTRAINT job_pkey PRIMARY KEY (id ),
+              CONSTRAINT job_assign_to_fkey FOREIGN KEY (assign_to)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_requester_fkey FOREIGN KEY (requester)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_deliver_to_fkey FOREIGN KEY (deliver_to)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_deliver_from_fkey FOREIGN KEY (deliver_from)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_service_fkey FOREIGN KEY (service)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_product_fkey FOREIGN KEY (product)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_materials_fkey FOREIGN KEY (material)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_parent_fkey FOREIGN KEY (parent)
+                  REFERENCES ruleform.job (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_status_fkey FOREIGN KEY (status)
+                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
+              -- CONSTRAINT job_unique UNIQUE (parent, sequence_number )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.job
+               IS 'An instantiation of an service; something actually done';
+            COMMENT ON COLUMN ruleform.job.id 
+                IS 'Unique identifier';
+            COMMENT ON COLUMN ruleform.job.service 
+                IS 'The service performed by this Job';
+            COMMENT ON COLUMN ruleform.job.product
+                IS 'The product produced this Job';
+            COMMENT ON COLUMN ruleform.job.assign_to 
+                IS 'The Resource doing this Job';
+            COMMENT ON COLUMN ruleform.job.status 
+                IS 'The current status of this Job';
+            COMMENT ON COLUMN ruleform.job.parent
+                IS 'The parent of this job, in a hierarchical sense';
+            COMMENT ON COLUMN ruleform.job.notes 
+                IS 'Additional notes regarding usage of this particular rule';
+            COMMENT ON COLUMN ruleform.job.research 
+                IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
+            COMMENT ON COLUMN ruleform.job.updated_by 
+                IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.job.update_date 
+                IS 'The date this rule was last changed';
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.job" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

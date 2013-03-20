@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.resource_location
+            (
+              id bigserial NOT NULL,
+              resource bigint NOT NULL,
+              relationship bigint NOT NULL,
+              location bigint NOT NULL,
+              notes character varying,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('NOW'::text)::timestamp(6) with time zone,
+              CONSTRAINT resource_location_pkey PRIMARY KEY (id ),
+              CONSTRAINT resource_location_location_fkey FOREIGN KEY (location)
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT resource_location_relationship_fkey FOREIGN KEY (relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT resource_location_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT resource_location_resource_fkey FOREIGN KEY (resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT resource_location_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT resource_location_resource_key UNIQUE (resource , relationship , location )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.resource_location"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

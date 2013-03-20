@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.protocol AS 
+			 SELECT base_table.id,
+			   r.name AS requester, m.name AS material, rs.name AS requested_service, 
+               po.name AS product_ordered, s.name AS service, p.name AS product, 
+			   dt.name AS deliver_to, df.name AS deliver_from, sub.name AS sub_service, 
+			   base_table.sequence_number, assign.name AS assign_to, base_table.notes, 
+			   res.name AS research, up.name AS updated_by, base_table.update_date
+			   FROM ruleform.protocol base_table
+			   JOIN ruleform.entity m ON base_table.material = m.id
+               JOIN ruleform.entity rs ON base_table.requested_service = rs.id
+			   JOIN ruleform.entity po ON base_table.product_ordered = po.id
+               JOIN ruleform.entity s ON base_table.service = s.id
+               JOIN ruleform.entity p ON base_table.product = p.id
+               JOIN ruleform.location dt ON base_table.deliver_to = dt.id
+               JOIN ruleform.location df ON base_table.deliver_from = df.id
+			   JOIN ruleform.entity sub ON base_table.sub_service = sub.id
+			   JOIN ruleform.resource assign ON base_table.assign_to = assign.id
+               JOIN ruleform.resource r ON base_table.requester = r.id
+			   LEFT JOIN ruleform.research res ON base_table.research = res.id
+			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			
+			ALTER TABLE readable.protocol
+			  OWNER TO core;
+			GRANT ALL ON TABLE readable.protocol TO core;
+			GRANT SELECT ON TABLE readable.protocol TO core_read_write;
+			GRANT SELECT ON TABLE readable.protocol TO core_read_only;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.protocol" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

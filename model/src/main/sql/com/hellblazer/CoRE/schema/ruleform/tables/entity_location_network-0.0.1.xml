@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <include relativeToChangelogFile="true" file="entity_location_network/table.xml"/>
+    <include relativeToChangelogFile="true" file="entity_location_network/grants.xml"/>
+    <include relativeToChangelogFile="true" file="entity_location_network/index-entity_location_network_contextual_entity.xml"/>
+    <include relativeToChangelogFile="true" file="entity_location_network/index-entity_location_network_coordinate.xml"/>
+    <include relativeToChangelogFile="true" file="entity_location_network/index-entity_location_network_research.xml"/>
+    <include relativeToChangelogFile="true" file="entity_location_network/index-entity_location_network_updated_by.xml"/>
+    <include relativeToChangelogFile="true" file="entity_location_network/owner.xml"/>
+
+</databaseChangeLog>

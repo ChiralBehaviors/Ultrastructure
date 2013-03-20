@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute/trigger-attribute_meta_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/context_attribute/trigger-context_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_attribute/trigger-coordinate_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_kind_definition/trigger-coordinate_kind_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_kind/trigger-coordinate_kind_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_kind/trigger-coordinate_kind_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_nesting/trigger-coordinate_nesting_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_relationship/trigger-coordinate_relationship_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_relationship/trigger-coordinate_relationship_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate/trigger-coordinate_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate/trigger-coordinate_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_attribute_authorization/trigger-entity_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_location_attribute_authorization/trigger-entity_location_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_network_authorization/trigger-entity_network_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_attribute/trigger-entity_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_location_attribute/trigger-entity_location_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_location_network/trigger-entity_location_network_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_location/trigger-entity_location_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_network_attribute/trigger-entity_network_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_network_deduction/trigger-entity_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity_network/trigger-entity_network_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity/trigger-entity_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/entity/trigger-entity_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/service_sequencing_authorization/trigger-service_sequencing_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/service_sequencing_authorization/trigger-valid_child_service_and_status_to_set.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job_chronology/trigger-job_chronology_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job_attribute/trigger-job_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-a_see_if_user_can_insert.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-check_next_state_is_valid.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-create_implicit_jobs.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-job_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-log_inserts_in_job_chronology.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_1_children.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_2_siblings.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_3_parent.xml"/>
+    <include relativeToChangelogFile="true" file="tables/job/trigger-set_inserted_status_code.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_attribute/trigger-location_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_context/trigger-location_context_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_context/trigger-location_context_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_meta_rule/trigger-location_meta_rule_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_network/trigger-location_network_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_relationship/trigger-location_relationship_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location/trigger-location_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location/trigger-location_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/meta_protocol/trigger-meta_protocol_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/protocol/trigger-protocol_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/protocol_action/trigger-protocol_action_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship_chain/trigger-relationship_chain_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource_attribute_authorization/trigger-resource_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource_network_authorization/trigger-resource_network_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource_attribute/trigger-resource_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource_location/trigger-resource_location_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource_network/trigger-resource_network_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_restrict_pinnned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-ensure_valid_state_graph_.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-log_modified_service.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-status_code_sequencing_updated_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_restrict_pinned_.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_updated_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/transformation_metarule/trigger-transformation_metarule_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/transformation/trigger-transformation_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/unit_values/trigger-unit_values_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_attribute_authorization/trigger-coordinate_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/context_attribute_authorization/trigger-context_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_attribute_authorization/trigger-location_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/action/trigger-action_restrict_pinned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/action/trigger-action_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/capability/trigger-capability_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute_authorization/trigger-attr_meta_attr_auth_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/sourcing_authorization/trigger-sourcing_authorization_update_date.xml"/>
+    
+</databaseChangeLog>

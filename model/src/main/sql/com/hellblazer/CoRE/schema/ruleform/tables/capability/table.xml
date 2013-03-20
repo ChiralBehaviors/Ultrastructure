@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.capability
+            (
+              id bigserial NOT NULL,
+              subject bigint NOT NULL,
+              verb bigint NOT NULL,
+              target_type int NOT NULL,
+              target_entity bigint,
+              target_resource bigint,
+              target_location bigint,
+              target_attribute bigint, 
+              notes character varying,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              CONSTRAINT capability_pkey PRIMARY KEY (id ),
+              CONSTRAINT capability_subject_fkey FOREIGN KEY (subject)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_verb_fkey FOREIGN KEY (verb)
+                  REFERENCES ruleform.action (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_entity_fkey FOREIGN KEY (target_entity)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_resource_fkey FOREIGN KEY (target_resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_location_fkey FOREIGN KEY (target_location)
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_attribute_fkey FOREIGN KEY (target_attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT capability_valid_value CHECK ((ruleform.null_zero(target_entity) + ruleform.null_zero(target_resource) + ruleform.null_zero(target_location) + ruleform.null_zero(target_attribute)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.capability" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

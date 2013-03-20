@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.coordinate_kind AS 
+			 SELECT k.id, k.name, k.description, k.notes, k.pinned, k.nestable, r.name AS research, up.name AS updated_by, k.update_date
+			   FROM ruleform.coordinate_kind k
+			   LEFT JOIN ruleform.research r ON r.id = k.research
+			   JOIN ruleform.resource up ON up.id = k.updated_by;
+			
+			ALTER TABLE readable.coordinate_kind
+			  OWNER TO core;
+			GRANT ALL ON TABLE readable.coordinate_kind TO core;
+			GRANT SELECT ON TABLE readable.coordinate_kind TO public;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.coordinate_kind" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.attribute
+                (
+                  id bigserial NOT NULL,
+                  name character varying NOT NULL,
+                  description character varying,
+                  notes character varying,
+                  research bigint,
+                  updated_by bigint NOT NULL,
+                  update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+                  pinned boolean NOT NULL DEFAULT false,
+                  inheritable boolean NOT NULL DEFAULT false,
+                  value_type smallint NOT NULL,
+                  CONSTRAINT attribute_pkey PRIMARY KEY (id ),
+                  CONSTRAINT attribute_research_fkey FOREIGN KEY (research)
+                      REFERENCES ruleform.research (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT attribute_updated_by_fkey FOREIGN KEY (updated_by)
+                      REFERENCES ruleform.resource (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT attribute_name_key UNIQUE (name ),
+                  CONSTRAINT valid_type CHECK (value_type < 5)
+                )
+                WITH (
+                  OIDS=FALSE
+                );
+                COMMENT ON TABLE ruleform.attribute
+                      IS 'Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes.';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.attribute"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

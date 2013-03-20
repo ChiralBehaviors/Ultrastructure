@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<ruleform.resource id="1" name="CoRE" updated_by="1"
+		update_date="2008-05-20 13:55:38.98048" pinned="true" />
+
+	<ruleform.relationship id="163" name="mass-list"
+		description="A is a member of the mass list B" preferred="true"
+		inverse="164" updated_by="1" update_date="2008-06-02 15:29:48.150076"
+		pinned="true" />
+	<ruleform.relationship id="164" name="mass-list-of"
+		description="A is a mass list that has B as a member" preferred="false"
+		inverse="163" updated_by="1" update_date="2008-06-02 15:29:48.150076"
+		pinned="false" />
+
+</dataset>

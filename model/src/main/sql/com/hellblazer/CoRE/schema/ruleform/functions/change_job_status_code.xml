@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.change_job_status_code(p_job bigint, p_status bigint, p_note text)
+              RETURNS ruleform.job AS
+            $BODY$
+            DECLARE
+                _job ruleform.job%ROWTYPE;
+            
+                -- take the stamp now to ensure that any child jobs that get automatically propagated
+                -- as a result of updating the job have chronology timestamps after this job's, since
+                -- they conceptually occur after this update
+                _stamp TIMESTAMP := clock_timestamp();
+            
+                _old_status ruleform.status_code.id%TYPE;
+            BEGIN
+            
+                -- If the existing status is different from the one to be set, proceed
+                -- If they're the same, then do nothing
+            
+                SELECT status INTO _old_status FROM ruleform.job WHERE id = $1;
+                IF (_old_status != p_status) THEN
+                    UPDATE ruleform.job
+                    SET status = $2
+                    WHERE id = $1
+                    RETURNING * INTO STRICT _job;
+            
+                    PERFORM ruleform._add_job_chronology_rule(p_job, _stamp, p_status, p_note);
+            --
+            --    INSERT INTO ruleform.job_chronology( job, time_stamp, status, notes, updated_by ) VALUES
+            --    ($1, _stamp, $2, $3, ruleform.resource_id('CoRE'));
+                END IF;
+            
+                RETURN _job;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+              COST 100;
+            COMMENT ON FUNCTION ruleform.change_job_status_code(bigint, bigint, text) IS 'Encapsulates the creation of job chronology rules with job status changes';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.change_job_status_code(p_job bigint, p_status bigint,
+            p_note text); </rollback>
+    </changeSet>
+</databaseChangeLog>

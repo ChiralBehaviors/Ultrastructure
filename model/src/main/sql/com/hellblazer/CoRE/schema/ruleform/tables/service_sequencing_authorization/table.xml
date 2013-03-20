@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.service_sequencing_authorization
+            (
+              id bigserial NOT NULL, -- Unique identifier
+              parent bigint NOT NULL, -- The last Event of a given protocol that was completed
+              status_code bigint NOT NULL, -- The status of the last Event completed
+              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when a Event / Status Code combination can trigger multiple child Events
+              next_child bigint, -- A child job with an event equal to this can have its status changed
+              next_child_status bigint, -- The status to set for the child job referred to by "next_child"
+              notes character varying, -- Additional notes regarding usage of this particular rule
+              research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+              next_sibling bigint, -- A sibling job with an event equal to this can have its status changed
+              next_sibling_status bigint, -- The status to set for the sibling job referred to by "next_sibling"
+              my_parent bigint, -- If this is the current job's parent's event, then we should set the parent job's status.  If this is NULL, then it can apply to any parent job that has an event equal to the current job's
+              parent_status_to_set bigint, -- The status to set for the parent job, provided it has an event equal to "my_parent"
+              set_if_active_siblings boolean, -- Determines if we set the parent job to the status denoted by "parent_status_to_set" if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say those sibling jobs might have.
+              CONSTRAINT service_sequencing_authorization_pkey PRIMARY KEY (id ),
+              CONSTRAINT service_sequencing_authorization_my_parent_fkey FOREIGN KEY (my_parent)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_next_child_fkey FOREIGN KEY (next_child)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_next_child_status_fkey FOREIGN KEY (next_child_status)
+                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_next_sibling_fkey FOREIGN KEY (next_sibling)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_next_sibling_status_fkey FOREIGN KEY (next_sibling_status)
+                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_parent_fkey FOREIGN KEY (parent)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_parent_status_to_set_fkey FOREIGN KEY (parent_status_to_set)
+                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_status_code_fkey FOREIGN KEY (status_code)
+                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorization_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT service_sequencing_authorizatio_parent_status_code_sequ_key UNIQUE (parent , status_code , sequence_number )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.service_sequencing_authorization
+              IS 'Determines what the next available Events should be, based on the status code returned for the previous Event';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.id IS 'Unique identifier';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.parent IS 'The last Event of a given protocol that was completed';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.status_code IS 'The status of the last Event completed';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.sequence_number IS 'Ordering and uniqueness, for when a Event / Status Code combination can trigger multiple child Events';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.next_child IS 'A child job with an event equal to this can have its status changed';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.next_child_status IS 'The status to set for the child job referred to by "next_child"';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.notes IS 'Additional notes regarding usage of this particular rule';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.update_date IS 'The date this rule was last changed';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.next_sibling IS 'A sibling job with an event equal to this can have its status changed';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.next_sibling_status IS 'The status to set for the sibling job referred to by "next_sibling"';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.my_parent IS 'If this is the current job''s parent''s event, then we should set the parent job''s status.  If this is NULL, then it can apply to any parent job that has an event equal to the current job''s';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.parent_status_to_set IS 'The status to set for the parent job, provided it has an event equal to "my_parent"';
+            COMMENT ON COLUMN ruleform.service_sequencing_authorization.set_if_active_siblings IS 'Determines if we set the parent job to the status denoted by "parent_status_to_set" if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say those sibling jobs might have.';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.service_sequencing_authorization"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

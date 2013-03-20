@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.hellblazer.CoRE</groupId>
+		<artifactId>CoRE.app</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	<artifactId>drop-database</artifactId>
+	<name>Drop Database</name>
+	<description>Drop the database and attendant users and roles.</description>
+	<dependencies>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.driver.version}</version>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<activation>
+				<property>
+					<name>drop</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>sql-maven-plugin</artifactId>
+						<version>1.5</version>
+						<dependencies>
+							<dependency>
+								<groupId>postgresql</groupId>
+								<artifactId>postgresql</artifactId>
+								<version>${postgresql.driver.version}</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>drop</id>
+								<phase>test</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<driver>org.postgresql.Driver</driver>
+									<url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/postgres</url>
+									<username>${testing.db.login}</username>
+									<password>${testing.db.password}</password>
+									<autocommit>true</autocommit>
+									<onError>continue</onError>
+									<srcFiles>
+										<srcFile>${project.build.outputDirectory}/drop-database.sql</srcFile>
+										<srcFile>${project.build.outputDirectory}/drop-roles.sql</srcFile>
+										<srcFile>${project.build.outputDirectory}/drop-liquibase.sql</srcFile>
+									</srcFiles>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

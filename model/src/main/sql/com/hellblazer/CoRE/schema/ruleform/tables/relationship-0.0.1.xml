@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <include relativeToChangelogFile="true" file="relationship/table.xml"/>
+    <include relativeToChangelogFile="true" file="relationship/grants.xml"/>
+    <include relativeToChangelogFile="true" file="relationship/index-relationship_inverse.xml"/>
+    <include relativeToChangelogFile="true" file="relationship/index-relationship_research.xml"/>
+    <include relativeToChangelogFile="true" file="relationship/index-relationship_updated_by.xml"/>
+    <include relativeToChangelogFile="true" file="relationship/owner.xml"/>
+
+</databaseChangeLog>

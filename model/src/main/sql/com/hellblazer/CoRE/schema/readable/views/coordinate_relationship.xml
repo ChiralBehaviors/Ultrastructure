@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.coordinate_relationship AS 
+			 SELECT cr.id, k.name AS kind, rel.name AS relationship, cr.sequence_number, sck.name AS subordinate_coordinate_kind, a.name AS attribute, arel.name AS attribute_relationship, cr.notes, res.name AS research, up.name AS updated_by, cr.update_date
+			   FROM ruleform.coordinate_relationship cr
+			   JOIN ruleform.coordinate_kind k ON k.id = cr.kind
+			   JOIN ruleform.relationship rel ON rel.id = cr.relationship
+			   JOIN ruleform.coordinate_kind sck ON sck.id = cr.subordinate_coordinate_kind
+			   JOIN ruleform.attribute a ON a.id = cr.attribute
+			   JOIN ruleform.relationship arel ON arel.id = cr.attribute_relationship
+			   LEFT JOIN ruleform.research res ON res.id = cr.research
+			   JOIN ruleform.resource up ON up.id = cr.updated_by;
+			
+			ALTER TABLE readable.coordinate_relationship
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.coordinate" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

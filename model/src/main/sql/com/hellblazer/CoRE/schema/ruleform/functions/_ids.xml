@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform._ids(key text)
+              RETURNS SETOF bigint AS
+            $BODY$
+            DECLARE
+                _temp_table_name CONSTANT TEXT NOT NULL := '__shared_temp_' || key;
+                _query CONSTANT TEXT NOT NULL := 'SELECT id FROM ' || _temp_table_name;
+                _id BIGINT;
+                _exists BOOLEAN := FALSE;
+            BEGIN
+                SELECT EXISTS(
+                    SELECT * FROM pg_class WHERE relname = _temp_table_name AND relnamespace = pg_my_temp_schema()
+                ) INTO _exists;
+            
+                IF NOT _exists THEN
+                    RETURN;
+                ELSE
+                    FOR _id IN EXECUTE _query LOOP
+                        RETURN NEXT _id;
+                    END LOOP;
+                END IF;
+            END;
+            $BODY$
+              LANGUAGE plpgsql STABLE SECURITY DEFINER
+              COST 100
+              ROWS 1000;
+            COMMENT ON FUNCTION ruleform._ids(text) IS 'Returns a set of all ids in the temporary table for the "key" parameter';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform._ids(text); </rollback>
+    </changeSet>
+</databaseChangeLog>

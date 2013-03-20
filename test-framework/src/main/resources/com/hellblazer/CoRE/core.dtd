@@ -1,0 +1,898 @@
+<!ELEMENT dataset (
+   (ruleform.action|
+    ruleform.attr_meta_attr_auth|
+    ruleform.attribute|
+    ruleform.attribute_meta_attribute|
+    ruleform.attribute_network|
+    ruleform.capability|
+    ruleform.context_attribute|
+    ruleform.context_attribute_authorization|
+    ruleform.coordinate|
+    ruleform.coordinate_attribute|
+    ruleform.coordinate_attribute_authorization|
+    ruleform.coordinate_kind|
+    ruleform.coordinate_kind_definition|
+    ruleform.coordinate_nesting|
+    ruleform.coordinate_relationship|
+    ruleform.entity|
+    ruleform.entity_attribute|
+    ruleform.entity_attribute_authorization|
+    ruleform.entity_location|
+    ruleform.entity_location_attribute|
+    ruleform.entity_location_attribute_authorization|
+    ruleform.entity_location_network|
+    ruleform.entity_network|
+    ruleform.entity_network_attribute|
+    ruleform.entity_network_authorization|
+    ruleform.entity_network_deduction|
+    ruleform.event_sequencing_authorization|
+    ruleform.job|
+    ruleform.job_attribute|
+    ruleform.job_chronology|
+    ruleform.location|
+    ruleform.location_attribute|
+    ruleform.location_attribute_authorization|
+    ruleform.location_context|
+    ruleform.location_meta_rule|
+    ruleform.location_network|
+    ruleform.location_network_authorization|
+    ruleform.location_relationship|
+    ruleform.meta_protocol|
+    ruleform.protocol|
+    ruleform.relationship|
+    ruleform.relationship_chain|
+    ruleform.research|
+    ruleform.resource|
+    ruleform.resource_attribute|
+    ruleform.resource_attribute_authorization|
+    ruleform.resource_location|
+    ruleform.resource_network|
+    ruleform.resource_network_authorization|
+    ruleform.status_code|
+    ruleform.status_code_sequencing|
+    ruleform.transformation|
+    ruleform.transformation_metarule|
+    ruleform.unit|
+    ruleform.unit_values)*)>
+
+<!ELEMENT ruleform.action EMPTY>
+<!ATTLIST ruleform.action
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    pinned CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.attr_meta_attr_auth EMPTY>
+<!ATTLIST ruleform.attr_meta_attr_auth
+    id CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.attribute EMPTY>
+<!ATTLIST ruleform.attribute
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    pinned CDATA #REQUIRED
+    inheritable CDATA #REQUIRED
+    value_type CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.attribute_meta_attribute EMPTY>
+<!ATTLIST ruleform.attribute_meta_attribute
+    id CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    meta_attribute CDATA #REQUIRED
+    numeric_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    attribute_value CDATA #IMPLIED
+    unit_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    integer_value CDATA #IMPLIED
+    sequence_number CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.attribute_network EMPTY>
+<!ATTLIST ruleform.attribute_network
+    id CDATA #REQUIRED
+    parent CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    child CDATA #REQUIRED
+    distance CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    ordering CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.capability EMPTY>
+<!ATTLIST ruleform.capability
+    id CDATA #REQUIRED
+    subject CDATA #REQUIRED
+    verb CDATA #REQUIRED
+    target_type CDATA #REQUIRED
+    target_entity CDATA #IMPLIED
+    target_resource CDATA #IMPLIED
+    target_location CDATA #IMPLIED
+    target_attribute CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.context_attribute EMPTY>
+<!ATTLIST ruleform.context_attribute
+    id CDATA #REQUIRED
+    context CDATA #REQUIRED
+    numeric_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    sequence_number CDATA #REQUIRED
+    unit CDATA #IMPLIED
+    attribute CDATA #REQUIRED
+    required CDATA #REQUIRED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.context_attribute_authorization EMPTY>
+<!ATTLIST ruleform.context_attribute_authorization
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classification_context CDATA #REQUIRED
+    authorized_attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.coordinate EMPTY>
+<!ATTLIST ruleform.coordinate
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    kind CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    pinned CDATA #REQUIRED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.coordinate_attribute EMPTY>
+<!ATTLIST ruleform.coordinate_attribute
+    id CDATA #REQUIRED
+    coordinate CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    entity_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    sequence_number CDATA #REQUIRED
+    unit CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.coordinate_attribute_authorization EMPTY>
+<!ATTLIST ruleform.coordinate_attribute_authorization
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classification_coordinate CDATA #REQUIRED
+    authorized_attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.coordinate_kind EMPTY>
+<!ATTLIST ruleform.coordinate_kind
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    pinned CDATA #REQUIRED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    nestable CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.coordinate_kind_definition EMPTY>
+<!ATTLIST ruleform.coordinate_kind_definition
+    id CDATA #REQUIRED
+    kind CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    attribute CDATA #IMPLIED
+    subordinate_coordinate_kind CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.coordinate_nesting EMPTY>
+<!ATTLIST ruleform.coordinate_nesting
+    id CDATA #REQUIRED
+    kind CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    inner_attribute CDATA #REQUIRED
+    operation CDATA #REQUIRED
+    outer_attribute CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.coordinate_relationship EMPTY>
+<!ATTLIST ruleform.coordinate_relationship
+    id CDATA #REQUIRED
+    kind CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    subordinate_coordinate_kind CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    attribute_relationship CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity EMPTY>
+<!ATTLIST ruleform.entity
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    pinned CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_attribute EMPTY>
+<!ATTLIST ruleform.entity_attribute
+    id CDATA #REQUIRED
+    entity CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    numeric_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    sequence_number CDATA #REQUIRED
+    unit CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_attribute_authorization EMPTY>
+<!ATTLIST ruleform.entity_attribute_authorization
+    id CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_location EMPTY>
+<!ATTLIST ruleform.entity_location
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    entity CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    location CDATA #REQUIRED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.entity_location_attribute EMPTY>
+<!ATTLIST ruleform.entity_location_attribute
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    entity_location CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    entity_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    sequence_number CDATA #REQUIRED
+    unit CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_location_attribute_authorization EMPTY>
+<!ATTLIST ruleform.entity_location_attribute_authorization
+    id CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_location_network EMPTY>
+<!ATTLIST ruleform.entity_location_network
+    id CDATA #REQUIRED
+    entity CDATA #REQUIRED
+    contextual_entity CDATA #REQUIRED
+    coordinate CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    resource CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_network EMPTY>
+<!ATTLIST ruleform.entity_network
+    id CDATA #REQUIRED
+    parent CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    child CDATA #REQUIRED
+    distance CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    ordering CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.entity_network_attribute EMPTY>
+<!ATTLIST ruleform.entity_network_attribute
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    network_rule CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    text_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    entity_value CDATA #IMPLIED
+    unit CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_network_authorization EMPTY>
+<!ATTLIST ruleform.entity_network_authorization
+    id CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_parent CDATA #REQUIRED
+    authorized_relationship CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.entity_network_deduction EMPTY>
+<!ATTLIST ruleform.entity_network_deduction
+    id CDATA #REQUIRED
+    deduction CDATA #REQUIRED
+    premise1 CDATA #REQUIRED
+    premise2 CDATA #REQUIRED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.event_sequencing_authorization EMPTY>
+<!ATTLIST ruleform.event_sequencing_authorization
+    id CDATA #REQUIRED
+    parent CDATA #REQUIRED
+    status_code CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    next_child CDATA #IMPLIED
+    next_child_status CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    next_sibling CDATA #IMPLIED
+    next_sibling_status CDATA #IMPLIED
+    my_parent CDATA #IMPLIED
+    parent_status_to_set CDATA #IMPLIED
+    set_if_active_siblings CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.job EMPTY>
+<!ATTLIST ruleform.job
+    id CDATA #REQUIRED
+    service CDATA #REQUIRED
+    entity CDATA #REQUIRED
+    assign_to CDATA #REQUIRED
+    status CDATA #REQUIRED
+    parent_job CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.job_attribute EMPTY>
+<!ATTLIST ruleform.job_attribute
+    id CDATA #REQUIRED
+    job CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    entity_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    unit CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.job_chronology EMPTY>
+<!ATTLIST ruleform.job_chronology
+    id CDATA #REQUIRED
+    job CDATA #REQUIRED
+    time_stamp CDATA #REQUIRED
+    status CDATA #REQUIRED
+    notes CDATA #REQUIRED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.location EMPTY>
+<!ATTLIST ruleform.location
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    context CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    pinned CDATA #REQUIRED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.location_attribute EMPTY>
+<!ATTLIST ruleform.location_attribute
+    id CDATA #REQUIRED
+    location CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    entity_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    sequence_number CDATA #REQUIRED
+    unit CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    resource_value CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.location_attribute_authorization EMPTY>
+<!ATTLIST ruleform.location_attribute_authorization
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.location_context EMPTY>
+<!ATTLIST ruleform.location_context
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    pinned CDATA #REQUIRED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.location_meta_rule EMPTY>
+<!ATTLIST ruleform.location_meta_rule
+    id CDATA #REQUIRED
+    location_context CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    attribute_mask CDATA #REQUIRED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.location_network EMPTY>
+<!ATTLIST ruleform.location_network
+    id CDATA #REQUIRED
+    parent CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    child CDATA #REQUIRED
+    distance CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    ordering CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.location_network_authorization EMPTY>
+<!ATTLIST ruleform.location_network_authorization
+    id CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_parent CDATA #REQUIRED
+    authorized_relationship CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.location_relationship EMPTY>
+<!ATTLIST ruleform.location_relationship
+    id CDATA #REQUIRED
+    context CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    target_context CDATA #REQUIRED
+    entity_mapped_value CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    location_1_attribute CDATA #REQUIRED
+    attribute_relationship CDATA #REQUIRED
+    location_2_attribute CDATA #REQUIRED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.meta_protocol EMPTY>
+<!ATTLIST ruleform.meta_protocol
+    id CDATA #REQUIRED
+    service CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    entity_1_mapping CDATA #IMPLIED
+    entity_2_mappinge CDATA #IMPLIED
+    job_mapping CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.protocol EMPTY>
+<!ATTLIST ruleform.protocol
+    id CDATA #REQUIRED
+    service CDATA #REQUIRED
+    entity_1 CDATA #REQUIRED
+    entity_2 CDATA #REQUIRED
+    sub_service CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    assign_to CDATA #REQUIRED
+    task CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.relationship EMPTY>
+<!ATTLIST ruleform.relationship
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    preferred CDATA #REQUIRED
+    inverse CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    pinned CDATA #REQUIRED
+    operator CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.relationship_chain EMPTY>
+<!ATTLIST ruleform.relationship_chain
+    id CDATA #REQUIRED
+    input1 CDATA #REQUIRED
+    input2 CDATA #REQUIRED
+    result CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.research EMPTY>
+<!ATTLIST ruleform.research
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.resource EMPTY>
+<!ATTLIST ruleform.resource
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    pinned CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.resource_attribute EMPTY>
+<!ATTLIST ruleform.resource_attribute
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    numeric_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    timestamp_value CDATA #IMPLIED
+    binary_value CDATA #IMPLIED
+    unit CDATA #IMPLIED
+    sequence_number CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    attribute_value CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.resource_attribute_authorization EMPTY>
+<!ATTLIST ruleform.resource_attribute_authorization
+    id CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_attribute CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    text_value CDATA #IMPLIED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    grouping_resource CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.resource_location EMPTY>
+<!ATTLIST ruleform.resource_location
+    id CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    location CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.resource_network EMPTY>
+<!ATTLIST ruleform.resource_network
+    id CDATA #REQUIRED
+    parent CDATA #REQUIRED
+    relationship CDATA #REQUIRED
+    child CDATA #REQUIRED
+    distance CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    ordering CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.resource_network_authorization EMPTY>
+<!ATTLIST ruleform.resource_network_authorization
+    id CDATA #REQUIRED
+    classification CDATA #REQUIRED
+    classifier CDATA #REQUIRED
+    authorized_parent CDATA #REQUIRED
+    authorized_relationship CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    grouping_resource CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.status_code EMPTY>
+<!ATTLIST ruleform.status_code
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    pinned CDATA #REQUIRED
+    fail_parent CDATA #REQUIRED
+    propagate_children CDATA #REQUIRED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.status_code_sequencing EMPTY>
+<!ATTLIST ruleform.status_code_sequencing
+    id CDATA #REQUIRED
+    service CDATA #REQUIRED
+    parent_code CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    child_code CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.transformation EMPTY>
+<!ATTLIST ruleform.transformation
+    id CDATA #REQUIRED
+    service CDATA #REQUIRED
+    resource CDATA #REQUIRED
+    entity CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    assign_to CDATA #REQUIRED
+    resource_key CDATA #REQUIRED
+    entity_key CDATA #REQUIRED
+    relationship_key CDATA #REQUIRED
+    attribute CDATA #REQUIRED
+    entity_attribute_resource CDATA #REQUIRED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.transformation_metarule EMPTY>
+<!ATTLIST ruleform.transformation_metarule
+    id CDATA #REQUIRED
+    service CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    resource_map CDATA #REQUIRED
+    entity_map CDATA #REQUIRED
+    entity_network_resource CDATA #IMPLIED
+    stop_on_match CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+
+<!ELEMENT ruleform.unit EMPTY>
+<!ATTLIST ruleform.unit
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    abbreviation CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+    pinned CDATA #REQUIRED
+    datatype CDATA #IMPLIED
+    min CDATA #IMPLIED
+    max CDATA #IMPLIED
+    enumerated CDATA #IMPLIED
+>
+
+<!ELEMENT ruleform.unit_values EMPTY>
+<!ATTLIST ruleform.unit_values
+    id CDATA #REQUIRED
+    unit CDATA #REQUIRED
+    sequence_number CDATA #REQUIRED
+    integer_value CDATA #IMPLIED
+    numeric_value CDATA #IMPLIED
+    text_value CDATA #IMPLIED
+    boolean_value CDATA #IMPLIED
+    entity_value CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    research CDATA #IMPLIED
+    updated_by CDATA #REQUIRED
+    update_date CDATA #REQUIRED
+>
+

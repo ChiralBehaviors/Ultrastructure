@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.job AS 
+			 SELECT base_table.id, s.name AS service, 
+			        m.name AS material, p.name AS product, 
+			        at.name AS assign_to, r.name AS requester, 
+			        dt.name AS deliver_to, df.name AS deliver_from, 
+			        sc.name AS status, base_table.parent, base_table.sequence_number,
+			        base_table.notes, res.name AS research, 
+			        up.name AS updated_by, base_table.update_date
+			   FROM ruleform.job base_table
+			   JOIN ruleform.entity s ON base_table.service = s.id
+               JOIN ruleform.entity m ON base_table.material = m.id
+               JOIN ruleform.entity p ON base_table.product = p.id
+			   JOIN ruleform.resource at ON base_table.assign_to = at.id
+               JOIN ruleform.resource r ON base_table.requester = r.id
+               JOIN ruleform.location dt ON base_table.deliver_to = dt.id
+               JOIN ruleform.location df ON base_table.deliver_from = df.id
+			   JOIN ruleform.status_code sc ON base_table.status = sc.id
+			   LEFT JOIN ruleform.research res ON base_table.research = res.id
+			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			
+			ALTER TABLE readable.job
+			  OWNER TO core;
+			GRANT ALL ON TABLE readable.job TO core;
+			GRANT SELECT ON TABLE readable.job TO core_read_write;
+			GRANT SELECT ON TABLE readable.job TO core_read_only;
+            ]]>
+		</sql>
+		<rollback>
+			<dropView viewName="readable.job" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.status_code_name(bigint)
+              RETURNS character varying AS
+            $BODY$
+                SELECT name FROM ruleform.status_code WHERE id = $1;
+            $BODY$
+              LANGUAGE sql STABLE
+              COST 100;
+            ALTER FUNCTION ruleform.status_code_name(bigint)
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.status_code_name(bigint) IS 'Retrieves the name of the Status Code with the given ID, or NULL if there is nothing with that ID.';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.status_code_name(bigint); </rollback>
+    </changeSet>
+</databaseChangeLog>

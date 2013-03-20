@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<include relativeToChangelogFile="true" file="functions/resource_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/_add_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/_clear_ids.xml" />
+	<include relativeToChangelogFile="true" file="functions/_contains_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/_ids.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/_add_job_chronology_rule.xml" />
+	<include relativeToChangelogFile="true" file="functions/attribute_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/attribute_name.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/attribute_usage.xml" />
+	<include relativeToChangelogFile="true" file="functions/coordinate_id.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/coordinate_kind_id.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/coordinate_kind_name.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/coordinate_name.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/create_entity_usage_view.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/create_individual_entity_usage_view.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/entity_by_attribute_value.xml" />
+	<include relativeToChangelogFile="true" file="functions/entity_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/entity_name.xml" />
+	<include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
+	<include relativeToChangelogFile="true" file="functions/status_code_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/get_attribute.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/get_attribute_type.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/get_location_context.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/get_related_locations.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/get_terminal_states.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/is_valid_as_next_status_code.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/location_context_name.xml" />
+	<include relativeToChangelogFile="true" file="functions/location_id.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/nest_coordinates.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/np_clear_deduced_rules.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/np_generate_inverse_rules.xml" />
+	<include relativeToChangelogFile="true" file="functions/np_propagate.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/np_propagate_all.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/np_propagate_network.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/np_propagate_network_with_deduction.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/relationship_id.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/relationship_name.xml" />
+	<include relativeToChangelogFile="true" file="functions/research_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/research_name.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/resource_get_allowed_text_values.xml" />
+	<include relativeToChangelogFile="true" file="functions/resource_name.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/status_code_name.xml" />
+	<include relativeToChangelogFile="true" file="functions/transform.xml" />
+	<include relativeToChangelogFile="true" file="functions/translation.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/unique_entity_lookup_by_attribute.xml" />
+	<include relativeToChangelogFile="true" file="functions/unit_id.xml" />
+	<include relativeToChangelogFile="true" file="functions/unit_name.xml" />
+</databaseChangeLog>

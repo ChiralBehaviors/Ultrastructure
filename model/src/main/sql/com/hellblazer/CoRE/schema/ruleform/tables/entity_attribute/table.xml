@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.entity_attribute
+            (
+              id bigserial NOT NULL,
+              entity bigint NOT NULL,
+              attribute bigint NOT NULL,
+              numeric_value numeric,
+              integer_value integer,
+              boolean_value boolean,
+              text_value character varying,
+              timestamp_value timestamp,
+              binary_value bytea,
+              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
+              unit bigint,
+              notes character varying,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              CONSTRAINT entity_attribute_pkey PRIMARY KEY (id ),
+              CONSTRAINT entity_attribute_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_attribute_entity_fkey FOREIGN KEY (entity)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_attribute_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_attribute_unit_fkey FOREIGN KEY (unit)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_attribute_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_attribute_key UNIQUE (entity , attribute, sequence_number),
+              CONSTRAINT entity_attribute_sequence_number_check CHECK (sequence_number > 0),
+              CONSTRAINT entity_attribute_valid_value CHECK ((ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.entity_attribute"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.nest_coordinates(p_inner_coordinate bigint, p_outer_coordinate bigint)
+              RETURNS ruleform.coordinate AS
+            $BODY$
+            DECLARE
+                -- The name of the temporary table we're going to put computed Coordinate 
+                -- Attributes in.  This initial value will be the prefix of the table name,
+                -- and will ultimately hold the schema-qualified name of the table.  We could
+                -- just as easily have this be NULL and nothing would change....
+                _coordinate_temp_table VARCHAR := 'new_coordinates';
+                
+                -- As we step through the nesting rules for these coordinates (if any), this
+                -- variable will hold each rule in succession.
+                _nesting_rule ruleform.coordinate_nesting%ROWTYPE;
+                
+                -- Currently not properly used, but this will help us deal with nesting
+                -- rules that require more than one step to compute.
+                _last_attribute ruleform.attribute.id%TYPE;
+            
+                -- These VARCHARs will hold bits of dynamically-generated SQL.  _query is
+                -- the main work-horse, but _sub_query and _fragment are used for one particular
+                -- piece of dynamic SQL black magic.
+                _query VARCHAR;
+                _sub_query VARCHAR;
+                _fragment VARCHAR;
+                
+                -- This is a tricky way to hold any kind of data type.  Depending on the 
+                -- Attributes involved, we might compute an INTEGER, a NUMERIC, etc.  By
+                -- using a RECORD, we can call _value.new_value (because we extract the 
+                -- computed value using the column alias "new_value").  Sneaky, sneaky.
+                _value RECORD;
+                
+                -- Holds the coordinate that is ultimately returned, either one that exists
+                -- in the database already, or one that is generated in this invocation of
+                -- this function
+                _coordinate ruleform.coordinate%ROWTYPE;
+                
+                -- Used to test that there is a maximum of one existing coordinate with the
+                -- same values as the computed attributes
+                _row_count INTEGER;
+                
+                -- Flag used for basic error-checking
+                _valid BOOLEAN := FALSE;
+                
+                -- Reference to the Resource that represents this function
+                _this_function CONSTANT ruleform.resource.id%TYPE NOT NULL := resource_id('Coordinate Nesting Function');
+            
+            BEGIN
+            
+                -- Perform some basic sanity checking on the input parameters.  Ensures that
+                -- both parameters are coordinates that have the same kind, that this kind
+                -- is in fact nestable, and that these parameters are not the same
+                SELECT TRUE INTO _valid
+                FROM ruleform.coordinate AS i,
+                    ruleform.coordinate AS o,
+                    ruleform.coordinate_kind AS k
+                WHERE i.kind = k.id
+                  AND o.kind = k.id
+                  AND i.id = p_inner_coordinate
+                  AND o.id = p_outer_coordinate
+                  AND k.nestable IS TRUE
+                  AND i.id != o.id
+                ;
+            
+                IF _valid IS NOT TRUE THEN
+                    RAISE EXCEPTION 'The given coordinates (%, %) are either the same, of different kinds, or are not nestable.', p_inner_coordinate, p_outer_coordinate;
+                END IF;
+            
+                -- Create a temporary table (duplicating ruleform.coordinate_attribute)
+                -- to store computed attributes.  The complete, schema-qualified name
+                -- is stored in the _coordinate_temp_table variable
+                SELECT public.create_temporary_table_without_nulls ( _coordinate_temp_table, 'coordinate_attribute', 'ruleform')
+                    INTO STRICT _coordinate_temp_table;
+                RAISE NOTICE 'Temporary table is %', _coordinate_temp_table;
+                
+                -- Loop through all the nesting rules for this kind of coordinate, ordered
+                -- by the definition of the kind, and then by the sequence numbers of the
+                -- nesting rules
+                FOR _nesting_rule IN SELECT nest.*
+                    FROM
+                        ruleform.coordinate_kind_definition AS def,
+                        ruleform.coordinate_nesting AS nest,
+                        ruleform.coordinate AS c
+                    WHERE def.kind = nest.kind
+                      AND def.attribute = nest.attribute
+                      AND def.kind = c.kind
+                      AND c.id = p_inner_coordinate -- we've already ensured that the coordinates are both of the same kind, so we use the inner coordinate here arbitrarily
+                    ORDER BY def.sequence_number ASC, nest.sequence_number ASC
+                LOOP
+                    -- Becuase I'm not handling this just yet...
+                    IF _last_attribute = _nesting_rule.attribute THEN
+                        RAISE EXCEPTION 'Can''t handle multiple nesting rules for one attribute just yet...';
+                    END IF;
+                
+                    IF _last_attribute != _nesting_rule.attribute THEN
+                        -- We're on a new attribute
+                    END IF;
+                
+                    -- We need to do some dynamic query generation to put the coordinates together properly
+                    -- Here, we rely on the value_type of the attributes referred to in the nesting rules
+                    SELECT 
+                    'SELECT ica.' || ia.value_type || '_value ' || _nesting_rule.operation || ' oca.' || oa.value_type || '_value AS new_value
+                    FROM ruleform.coordinate AS i, 
+                        ruleform.coordinate AS o,
+                        ruleform.coordinate_attribute AS ica,
+                        ruleform.coordinate_attribute AS oca
+                    WHERE i.id = ' || p_inner_coordinate || ' 
+                      AND o.id = ' || p_outer_coordinate || '
+                      AND ica.coordinate = i.id
+                      AND oca.coordinate = o.id
+                      AND ica.attribute = ' || _nesting_rule.inner_attribute || '
+                      AND oca.attribute = ' || _nesting_rule.outer_attribute
+                    INTO STRICT _query
+                      FROM ruleform.attribute AS ia, 
+                          ruleform.attribute AS oa
+                      WHERE ia.id = _nesting_rule.inner_attribute
+                        AND oa.id = _nesting_rule.outer_attribute
+                    ;
+                
+                    -- We only expect one value, hence the use of STRICT
+                    EXECUTE _query INTO STRICT _value;
+                    
+                    -- That gets us our value, but we need to save it into our temporary table
+                    -- We call _value.new_value to get the computed value regardless of its
+                    -- actual type
+                    SELECT 'INSERT INTO ' || _coordinate_temp_table || '(attribute, ' || a.value_type || '_value, updated_by) VALUES (' || a.id || ', ' || _value.new_value || ', ' || _this_function || ')' INTO STRICT _query
+                    FROM ruleform.attribute AS a
+                    WHERE a.id = _nesting_rule.attribute
+                    ;
+                    
+                    EXECUTE _query;
+                
+                    
+                    _last_attribute := _nesting_rule.attribute;
+                END LOOP;
+                
+                -- Need to bail if we don't compute any new coordinates
+                _valid := FALSE;
+                _query := 'SELECT TRUE FROM ' || _coordinate_temp_table || ' LIMIT 1';
+                EXECUTE _query INTO _valid;
+                IF _valid IS NOT TRUE THEN
+                    RAISE EXCEPTION 'Could not compute any new coordinates!';
+                END IF;
+                
+                -- Now we need to see if any existing Coordinate has these attributes
+                
+                -- This is some dynamic SQL black magic, truly; generating a dynamic 
+                -- query by using another dynamic query!
+            
+                -- This is the first part of the query.  We'll add to it in a second.
+                _query := 'SELECT distinct(c.*)
+                FROM ruleform.coordinate AS c
+                JOIN ruleform.coordinate_attribute AS ca ON c.id = ca.coordinate
+                JOIN ruleform.coordinate AS c2 ON c.kind = c2.kind AND c2.id = ' || p_inner_coordinate;
+                
+                -- This is the black magic; dynamically-generating the query that will 
+                -- dynamically-generate additional clauses that we will append to _query.
+                -- In the end, _query will itself be executed to return the results.
+                --
+                -- There may be a better way to do this, but I'm not sure how.  Note the 
+                -- extra level of quoting in _sub_query!!
+                _sub_query := '
+                SELECT '' JOIN ' || _coordinate_temp_table || ' AS t'' || n || '' ON ca.attribute = t'' || n || ''.attribute AND ca.'' || a.value_type || ''_value = t'' || n || ''.'' || a.value_type || ''_value '' AS query_fragment
+                FROM ruleform.attribute AS a
+                JOIN ' || _coordinate_temp_table || '
+                AS t ON a.id = t.attribute
+                CROSS JOIN generate_series(1, ( SELECT count(*) FROM ' || _coordinate_temp_table || ' )) AS n
+                GROUP BY n, query_fragment
+                ORDER BY n';
+                
+                -- This assembles the final query
+                FOR _fragment IN EXECUTE _sub_query LOOP
+                    _query := _query || _fragment;
+                END LOOP;
+            
+                RAISE NOTICE 'Complete query: %', _query;
+                
+                -- And now we execute it!
+                EXECUTE _query INTO _coordinate;
+                GET DIAGNOSTICS _row_count := ROW_COUNT;
+                RAISE NOTICE 'ROW_COUNT: %', _row_count;
+                IF _row_count > 1 THEN -- We should only find 1, if any at all
+                    RAISE EXCEPTION 'Found more than one coordinate with the computed values for coordinates % and %!', p_inner_coordinate, p_outer_coordinate;
+                END IF;
+                
+                RAISE NOTICE 'Coordinate is %', _coordinate;
+                
+                IF _coordinate.id IS NOT NULL THEN
+                    -- A coordinate exists with the computed coordinates, so we'll just return it
+                    RAISE NOTICE 'Found existing coordinate';
+                    RETURN _coordinate;
+                END IF;
+                
+                -- If we've made it this far, then we need to create a new coordinate rule,
+                -- and set its attributes to the ones we've just calculated
+                RAISE NOTICE 'Creating new coordinate';
+                
+                INSERT INTO ruleform.coordinate( id, name, kind, updated_by )
+                SELECT nextval('ruleform.coordinate_id_seq'), 
+                    k.name || ' ' || currval('ruleform.coordinate_id_seq'), -- This will give a name like "Linear Range 123"
+                    k.id,
+                     _this_function
+                FROM ruleform.coordinate c JOIN ruleform.coordinate_kind AS k ON c.kind = k.id
+                WHERE c.id = p_inner_coordinate
+                RETURNING * INTO STRICT _coordinate;
+            
+                _query := 'INSERT INTO ruleform.coordinate_attribute(coordinate, attribute, entity_value, integer_value, numeric_value, boolean_value, text_value, updated_by)
+                SELECT ' || _coordinate.id || ', attribute, entity_value, integer_value, numeric_value, boolean_value, text_value, updated_by FROM ' || _coordinate_temp_table;
+                EXECUTE _query;
+                
+                RETURN _coordinate;
+                
+                END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.nest_coordinates(bigint, bigint)
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.nest_coordinates(bigint, bigint); </rollback>
+    </changeSet>
+</databaseChangeLog>

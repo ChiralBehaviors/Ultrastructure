@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.coordinate_nesting
+            (
+              id bigserial NOT NULL, -- Otherwise meaningless identifier for a rule
+              kind bigint NOT NULL, -- The kind of coordinate being nested
+              attribute bigint NOT NULL, -- The attribute to be calculated
+              sequence_number ruleform.sequence_number NOT NULL, -- The ordering of these nesting rules for a given CoordinateKind and Attribute
+              inner_attribute bigint NOT NULL, -- The attribute of the "inner" Coordinate to manipulate
+              operation character varying NOT NULL, -- The operation to perform on both attribute values
+              outer_attribute bigint NOT NULL, -- The attribute of the "outer" Coordinate to manipulate
+              notes character varying, -- Usage notes for this rule
+              research bigint, -- A research flag that has been set on an individual rule
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
+              CONSTRAINT coordinate_nesting_pkey PRIMARY KEY (id ),
+              CONSTRAINT coordinate_nesting_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_nesting_inner_attribute_fkey FOREIGN KEY (inner_attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_nesting_kind_fkey FOREIGN KEY (kind)
+                  REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_nesting_outer_attribute_fkey FOREIGN KEY (outer_attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_nesting_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_nesting_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_nesting_kind_key UNIQUE (kind , attribute , sequence_number ),
+              CONSTRAINT valid_operation CHECK (operation::text = ANY (ARRAY['+'::character varying::text, '-'::character varying::text]))
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.coordinate_nesting
+              IS 'Defines rules for navigating nested coordinates';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.id IS 'Otherwise meaningless identifier for a rule';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.kind IS 'The kind of coordinate being nested';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.attribute IS 'The attribute to be calculated';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.sequence_number IS 'The ordering of these nesting rules for a given CoordinateKind and Attribute';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.inner_attribute IS 'The attribute of the "inner" Coordinate to manipulate';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.operation IS 'The operation to perform on both attribute values';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.outer_attribute IS 'The attribute of the "outer" Coordinate to manipulate';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.notes IS 'Usage notes for this rule';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.research IS 'A research flag that has been set on an individual rule';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate_nesting.update_date IS 'The time at which this rule was last updated';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.coordinate_nesting"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

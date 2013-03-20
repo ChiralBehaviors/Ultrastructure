@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.service_sequencing_authorization AS 
+			 SELECT base_table.id, p.name AS parent, sc.name AS status_code, 
+			        base_table.sequence_number, nc.name AS next_child, 
+			        ncs.name AS next_child_status, nss.name AS next_sibling, 
+			        nss.name AS next_sibling_status, mp.name AS my_parent, 
+			        mps.name AS parent_status_to_set, base_table.set_if_active_siblings, 
+			        base_table.notes, res.name AS research, up.name AS updated_by, 
+			        base_table.update_date
+			   FROM ruleform.service_sequencing_authorization base_table
+			   JOIN ruleform.entity p ON base_table.parent = p.id
+			   JOIN ruleform.status_code sc ON base_table.status_code = sc.id
+			   LEFT JOIN ruleform.entity nc ON base_table.next_child = nc.id
+			   LEFT JOIN ruleform.status_code ncs ON base_table.next_child_status = ncs.id
+			   LEFT JOIN ruleform.entity ns ON base_table.next_sibling = ns.id
+			   LEFT JOIN ruleform.status_code nss ON base_table.next_sibling_status = nss.id
+			   LEFT JOIN ruleform.entity mp ON base_table.my_parent = mp.id
+			   LEFT JOIN ruleform.status_code mps ON base_table.parent_status_to_set = mps.id
+			   LEFT JOIN ruleform.research res ON base_table.research = res.id
+			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			
+			ALTER TABLE readable.service_sequencing_authorization
+			  OWNER TO core;
+			GRANT ALL ON TABLE readable.service_sequencing_authorization TO core;
+			GRANT SELECT ON TABLE readable.service_sequencing_authorization TO core_read_write;
+			GRANT SELECT ON TABLE readable.service_sequencing_authorization TO core_read_only;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.service_sequencing_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

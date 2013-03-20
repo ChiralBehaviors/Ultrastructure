@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.transformation
+            (
+              id bigserial NOT NULL,
+              service bigint NOT NULL,
+              resource bigint NOT NULL,
+              entity bigint NOT NULL,
+              sequence_number ruleform.sequence_number NOT NULL,
+              assign_to bigint NOT NULL,
+              resource_key bigint NOT NULL,
+              entity_key bigint NOT NULL,
+              relationship_key bigint NOT NULL,
+              attribute bigint NOT NULL,
+              entity_attribute_resource bigint NOT NULL,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              CONSTRAINT transformation_pkey PRIMARY KEY (id ),
+              CONSTRAINT transformation_assign_to_fkey FOREIGN KEY (assign_to)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_entity_attribute_resource_fkey FOREIGN KEY (entity_attribute_resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_entity_fkey FOREIGN KEY (entity)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_entity_key_fkey FOREIGN KEY (entity_key)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_service_fkey FOREIGN KEY (service)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_relationship_key_fkey FOREIGN KEY (relationship_key)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_resource_fkey FOREIGN KEY (resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_resource_key_fkey FOREIGN KEY (resource_key)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_service_key UNIQUE (service , resource , entity , sequence_number )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.transformation"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <ruleform.action/>
+	<ruleform.attribute />
+	<ruleform.attribute_meta_attribute />
+	<ruleform.attr_meta_attr_auth/>
+	<ruleform.attribute_network />
+	<ruleform.capability />
+	<ruleform.context_attribute />
+	<ruleform.context_attribute_authorization />
+	<ruleform.coordinate />
+	<ruleform.coordinate_attribute />
+	<ruleform.coordinate_attribute_authorization />
+	<ruleform.coordinate_kind />
+	<ruleform.coordinate_kind_definition />
+	<ruleform.coordinate_nesting />
+	<ruleform.coordinate_relationship />
+	<ruleform.entity />
+	<ruleform.entity_attribute />
+	<ruleform.entity_attribute_authorization />
+	<ruleform.entity_location />
+	<ruleform.entity_location_attribute />
+	<ruleform.entity_location_network />
+	<ruleform.entity_network />
+	<ruleform.entity_network_attribute />
+	<ruleform.entity_network_authorization />
+	<ruleform.entity_network_deduction />
+	<ruleform.service_sequencing_authorization />
+	<ruleform.job />
+	<ruleform.job_attribute />
+	<ruleform.job_chronology />
+	<ruleform.location />
+	<ruleform.location_attribute />
+	<ruleform.location_attribute_authorization />
+	<ruleform.location_context />
+	<ruleform.location_meta_rule />
+	<ruleform.location_network />
+    <ruleform.location_network_authorization />
+	<ruleform.location_relationship />
+	<ruleform.meta_protocol />
+	<ruleform.protocol />
+	<ruleform.relationship />
+	<ruleform.relationship_chain />
+	<ruleform.research />
+	<ruleform.resource />
+	<ruleform.resource_attribute />
+	<ruleform.resource_attribute_authorization />
+	<ruleform.resource_location />
+	<ruleform.resource_network />
+	<ruleform.resource_network_authorization />
+	<ruleform.status_code />
+	<ruleform.status_code_sequencing />
+	<ruleform.transformation />
+	<ruleform.transformation_metarule />
+	<ruleform.unit />
+	<ruleform.unit_values />
+</dataset>

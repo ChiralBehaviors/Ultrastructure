@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="2" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform._clear_ids(key text)
+              RETURNS void AS
+            $BODY$
+            DECLARE
+                _temp_table_name CONSTANT TEXT NOT NULL := '__shared_temp_' || key;
+                _query CONSTANT TEXT NOT NULL := 'DELETE FROM ' || _temp_table_name;
+                _exists BOOLEAN := FALSE;
+            BEGIN
+                SELECT EXISTS(
+                    SELECT * FROM pg_class WHERE relname = _temp_table_name AND relnamespace = pg_my_temp_schema()
+                ) INTO _exists;
+            
+                IF _exists THEN
+                    EXECUTE _query;
+                END IF;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+              COST 100;
+            COMMENT ON FUNCTION ruleform._clear_ids(text) IS 'Empties all entries in the temporary table denoted by the "key" parameter';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform._clear_ids(text); </rollback>
+    </changeSet>
+</databaseChangeLog>

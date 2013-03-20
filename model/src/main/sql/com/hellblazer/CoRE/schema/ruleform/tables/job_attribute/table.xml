@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.job_attribute
+            (
+              id bigserial NOT NULL, -- Unique identifier
+              job bigint NOT NULL, -- The Job whose attributes are being specified
+              attribute bigint NOT NULL, -- The Attribute or facet of the given Job being declared
+              sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when a Job can have multiple values for a given Attribute
+              text_value character varying, -- If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL
+              numeric_value numeric, -- If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL
+              boolean_value boolean,
+              integer_value integer, -- If the Attribute is integer-valued, the value goes in this column; all other value columns should be NULL
+              timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
+              binary_value bytea, -- If the Attribute has a binary value, it is stored in this column
+              unit bigint, -- The unit of measure (if any) associated with the given value
+              notes character varying, -- Additional notes regarding this rule
+              research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+              CONSTRAINT job_attribute_pkey PRIMARY KEY (id ),
+              CONSTRAINT job_attribute_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_attribute_job_fkey FOREIGN KEY (job)
+                  REFERENCES ruleform.job (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_attribute_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_attribute_units_fkey FOREIGN KEY (unit)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_attribute_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT job_attribute_sequence_number_key UNIQUE (job , attribute , sequence_number ),
+              CONSTRAINT job_attribute_sequence_number_check CHECK (sequence_number > 0),
+              CONSTRAINT job_attribute_valid_value CHECK ((ruleform.null_zero(text_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.job_attribute
+              IS 'Attributes attached to a specific invocation of an Event';
+            COMMENT ON COLUMN ruleform.job_attribute.id IS 'Unique identifier';
+            COMMENT ON COLUMN ruleform.job_attribute.job IS 'The Job whose attributes are being specified';
+            COMMENT ON COLUMN ruleform.job_attribute.attribute IS 'The Attribute or facet of the given Job being declared';
+            COMMENT ON COLUMN ruleform.job_attribute.sequence_number IS 'Ordering and uniqueness, for when a Job can have multiple values for a given Attribute';
+            COMMENT ON COLUMN ruleform.job_attribute.text_value IS 'If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL';
+            COMMENT ON COLUMN ruleform.job_attribute.numeric_value IS 'If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL';
+            COMMENT ON COLUMN ruleform.job_attribute.integer_value IS 'If the Attribute is integer-valued, the value goes in this column; all other value columns should be NULL';
+            COMMENT ON COLUMN ruleform.job_attribute.unit IS 'The unit of measure (if any) associated with the given value';
+            COMMENT ON COLUMN ruleform.job_attribute.notes IS 'Additional notes regarding this rule';
+            COMMENT ON COLUMN ruleform.job_attribute.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
+            COMMENT ON COLUMN ruleform.job_attribute.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.job_attribute.update_date IS 'The date this rule was last changed';
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.job_attribute" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

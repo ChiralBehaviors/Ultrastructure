@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.unit_values
+            (
+              id bigserial NOT NULL, -- Otherwise meaningless identifier for a rule
+              unit bigint NOT NULL, -- The unit whose values are being enumerated
+              sequence_number ruleform.sequence_number NOT NULL, -- The ordering of this value in the set of values for the given unit
+              integer_value integer, -- A permitted integer value for this unit
+              numeric_value numeric, -- A permitted numeric value for this unit
+              text_value text, -- A permitted text value for this unit
+              boolean_value boolean, -- A permitted boolean value for this unit
+              entity_value bigint, -- A permitted Entity value for this unit
+              notes character varying, -- Usage notes for this rule
+              research bigint, -- A research flag that has been set on an individual rule
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
+              CONSTRAINT unit_values_pkey PRIMARY KEY (id ),
+              CONSTRAINT unit_values_entity_value_fkey FOREIGN KEY (entity_value)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_values_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_values_unit_fkey FOREIGN KEY (unit)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_values_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_values_unit_key UNIQUE (unit , sequence_number ),
+              CONSTRAINT valid_value CHECK ((ruleform.null_zero(integer_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(text_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(entity_value)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON COLUMN ruleform.unit_values.id IS 'Otherwise meaningless identifier for a rule';
+            COMMENT ON COLUMN ruleform.unit_values.unit IS 'The unit whose values are being enumerated';
+            COMMENT ON COLUMN ruleform.unit_values.sequence_number IS 'The ordering of this value in the set of values for the given unit';
+            COMMENT ON COLUMN ruleform.unit_values.integer_value IS 'A permitted integer value for this unit';
+            COMMENT ON COLUMN ruleform.unit_values.numeric_value IS 'A permitted numeric value for this unit';
+            COMMENT ON COLUMN ruleform.unit_values.text_value IS 'A permitted text value for this unit';
+            COMMENT ON COLUMN ruleform.unit_values.boolean_value IS 'A permitted boolean value for this unit';
+            COMMENT ON COLUMN ruleform.unit_values.entity_value IS 'A permitted Entity value for this unit';
+            COMMENT ON COLUMN ruleform.unit_values.notes IS 'Usage notes for this rule';
+            COMMENT ON COLUMN ruleform.unit_values.research IS 'A research flag that has been set on an individual rule';
+            COMMENT ON COLUMN ruleform.unit_values.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.unit_values.update_date IS 'The time at which this rule was last updated';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.unit_values"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

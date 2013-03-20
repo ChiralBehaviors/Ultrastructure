@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.job_chronology AS 
+			 SELECT base.id, base.job, base.time_stamp, s.name AS status, base.notes, res.name AS research, up.name AS updated_by, base.update_date
+			   FROM ruleform.job_chronology base
+			   JOIN ruleform.status_code s ON base.status = s.id
+			   LEFT JOIN ruleform.research res ON base.research = res.id
+			   JOIN ruleform.resource up ON base.updated_by = up.id;
+			
+			ALTER TABLE readable.job_chronology
+			  OWNER TO core;
+			GRANT ALL ON TABLE readable.job_chronology TO core;
+			GRANT SELECT ON TABLE readable.job_chronology TO core_read_write;
+			GRANT SELECT ON TABLE readable.job_chronology TO core_read_only;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.job_chronology" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

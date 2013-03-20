@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.protocol
+            (
+              id bigserial NOT NULL, -- Unique identifier
+              requested_service bigint NOT NULL,
+              product_ordered bigint NOT NULL,
+              material bigint NOT NULL,
+              service bigint NOT NULL,
+              product bigint NOT NULL,
+              deliver_to bigint NOT NULL,
+              deliver_from bigint NOT NULL,
+              sub_service bigint NOT NULL,
+              sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an service / key combination can have multiple protocol rules
+              assign_to bigint NOT NULL, -- The Resource that should perform the service
+              requester bigint NOT NULL, -- The Resource that requested the service
+              notes character varying, -- Additional notes regarding usage of the attribute
+              research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+              CONSTRAINT protocol_pkey PRIMARY KEY (id ),
+              CONSTRAINT protocol_assign_to_fkey FOREIGN KEY (assign_to)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_requester_fkey FOREIGN KEY (requester)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_material_fkey FOREIGN KEY (material)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_requested_service_fkey FOREIGN KEY (requested_service)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_product_ordered_fkey FOREIGN KEY (product_ordered)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_service_fkey FOREIGN KEY (service)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_product_fkey FOREIGN KEY (product)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_deliver_to_fkey FOREIGN KEY (deliver_to)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_deliver_from_fkey FOREIGN KEY (deliver_from)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_sub_service_fkey FOREIGN KEY (sub_service)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_key UNIQUE (requester, service, 
+                                              product, deliver_to, deliver_from , 
+                                              sequence_number )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.protocol
+              IS 'Defines protocol rules for carrying out tasks';
+            COMMENT ON COLUMN ruleform.protocol.id IS 'Unique identifier';
+            COMMENT ON COLUMN ruleform.protocol.service IS 'The Event whose steps are being specified';
+            COMMENT ON COLUMN ruleform.protocol.sequence_number IS 'Ordering and uniqueness, for when an Event / key combination can have multiple protocol rules';
+            COMMENT ON COLUMN ruleform.protocol.assign_to IS 'The Resource that should perform the task';
+            COMMENT ON COLUMN ruleform.protocol.notes IS 'Additional notes regarding usage of the attribute';
+            COMMENT ON COLUMN ruleform.protocol.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
+            COMMENT ON COLUMN ruleform.protocol.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.protocol.update_date IS 'The date this rule was last changed';
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.protocol" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

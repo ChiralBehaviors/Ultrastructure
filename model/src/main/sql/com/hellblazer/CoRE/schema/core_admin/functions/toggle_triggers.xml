@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE FUNCTION core_admin.toggle_triggers(enable boolean) RETURNS void
+                AS $$
+            DECLARE
+                tables CURSOR FOR SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema') AND table_type = 'BASE TABLE' ORDER BY table_schema, table_name;
+                table_name VARCHAR;
+                table_schema VARCHAR;
+            BEGIN
+                OPEN tables;
+                LOOP FETCH tables INTO table_schema, table_name;
+                    EXIT WHEN NOT FOUND;
+                    
+                    IF enable IS NULL OR enable IS FALSE THEN
+                        RAISE NOTICE 'Disabling triggers for %.%', table_schema, table_name;
+                        EXECUTE 'ALTER TABLE ' || table_schema || '.' || table_name || ' DISABLE TRIGGER USER';
+                    ELSE
+                        RAISE NOTICE 'Enabling triggers for %.%', table_schema, table_name;
+                        EXECUTE 'ALTER TABLE ' || table_schema || '.' || table_name || ' ENABLE TRIGGER USER';
+                    END IF;
+                    
+                END LOOP;
+                CLOSE tables;
+            END;
+            $$
+                LANGUAGE plpgsql;
+            
+            
+            ALTER FUNCTION core_admin.toggle_triggers(enable boolean) OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION core_admin.toggle_triggers(enable boolean); </rollback>
+    </changeSet>
+</databaseChangeLog>

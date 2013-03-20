@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.location_relationship
+            (
+              id bigserial NOT NULL,
+              context bigint NOT NULL,
+              relationship bigint NOT NULL,
+              target_context bigint NOT NULL,
+              entity_mapped_value bigint NOT NULL,
+              sequence_number integer NOT NULL,
+              location_1_attribute bigint NOT NULL,
+              attribute_relationship bigint NOT NULL,
+              location_2_attribute bigint NOT NULL,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              notes character varying,
+              research bigint,
+              CONSTRAINT location_relationship_pkey PRIMARY KEY (id ),
+              CONSTRAINT location_relationship_attribute_relationship_fkey FOREIGN KEY (attribute_relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_context_fkey FOREIGN KEY (context)
+                  REFERENCES ruleform.location_context (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_entity_mapped_value_fkey FOREIGN KEY (entity_mapped_value)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_location_1_attribute_fkey FOREIGN KEY (location_1_attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_location_2_attribute_fkey FOREIGN KEY (location_2_attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_relationship_fkey FOREIGN KEY (relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_target_context_fkey FOREIGN KEY (target_context)
+                  REFERENCES ruleform.location_context (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT location_relationship_context_key UNIQUE (context , relationship , target_context , entity_mapped_value , sequence_number ),
+              CONSTRAINT location_relationship_sequence_number_check CHECK (sequence_number > 0)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.location_relationship"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

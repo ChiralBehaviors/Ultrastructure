@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.np_propagate(network_table character varying)
+              RETURNS integer AS
+            $BODY$
+            DECLARE
+                rows_modified INTEGER;
+                query VARCHAR;
+            BEGIN
+                IF network_table IN ('attribute_network','resource_network', 'event_network', 'location_network') THEN
+                    RAISE NOTICE '% is a simple network',network_table;
+                    SELECT np_propagate_network(network_table) INTO rows_modified;
+                ELSEIF network_table IN ('entity_network') THEN
+                    RAISE NOTICE '% is a complex network',network_table;
+                    SELECT np_propagate_network_with_deduction(network_table) INTO rows_modified;
+                ELSE
+                    RAISE EXCEPTION 'Could not determine how to propagate %',network_table;
+                END IF;
+                query := 'ANALYZE ' || quote_ident(network_table);
+                RAISE NOTICE 'Query = %', query;
+                EXECUTE query;
+                RETURN rows_modified;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.np_propagate(character varying)
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.np_propagate(character varying) IS 'Front-end interface to all network propagation. Dispatches to appropriate propagation algorithms based on the name of the table passed in.';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.np_propagate(character varying); </rollback>
+    </changeSet>
+</databaseChangeLog>

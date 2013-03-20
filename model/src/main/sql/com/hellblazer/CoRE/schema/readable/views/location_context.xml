@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.location_context AS 
+			 SELECT lc.id, lc.name, lc.description, lc.notes, res.name AS research, lc.pinned, r.name AS updated_by, lc.update_date
+			   FROM ruleform.location_context lc
+			   LEFT JOIN ruleform.research res ON lc.research = res.id
+			   JOIN ruleform.resource r ON lc.updated_by = r.id;
+			
+			ALTER TABLE readable.location_context
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.location_context" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

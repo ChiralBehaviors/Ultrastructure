@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<include relativeToChangelogFile="true"
+		file="/views/entity_attribute_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/attribute_meta_attribute_authorization.xml" />
+	<include relativeToChangelogFile="true" file="/views/attribute.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/attribute_meta_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/attribute_network.xml" />
+	<include relativeToChangelogFile="true" file="/views/context_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/coordinate.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/coordinate_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/coordinate_kind.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/coordinate_kind_definition.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/coordinate_nesting.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/coordinate_relationship.xml" />
+	<include relativeToChangelogFile="true" file="/views/entity.xml" />
+	<include relativeToChangelogFile="true" file="/views/entity_attribute.xml" />
+	
+	<include relativeToChangelogFile="true" file="/views/entity_location.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/entity_location_network.xml" />
+	<include relativeToChangelogFile="true" file="/views/entity_network.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/service_sequencing_authorization.xml" />
+	<include relativeToChangelogFile="true" file="/views/job.xml" />
+	<include relativeToChangelogFile="true" file="/views/job_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/job_chronology.xml" />
+	<include relativeToChangelogFile="true" file="/views/location.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/location_attribute_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/location_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/location_context.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/location_relationship.xml" />
+	<include relativeToChangelogFile="true" file="/views/meta_protocol.xml" />
+	<include relativeToChangelogFile="true" file="/views/protocol.xml" />
+    <include relativeToChangelogFile="true" file="/views/protocol_action.xml" />
+	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/relationship_chain.xml" />
+	<include relativeToChangelogFile="true" file="/views/resource.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/resource_attribute.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/resource_attribute_authorization.xml" />
+	<include relativeToChangelogFile="true" file="/views/resource_location.xml" />
+	<include relativeToChangelogFile="true" file="/views/resource_network.xml" />
+	<include relativeToChangelogFile="true" file="/views/status_code.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/status_code_sequencing.xml" />
+    <include relativeToChangelogFile="true"
+        file="/views/sourcing_authorization.xml" />
+	<include relativeToChangelogFile="true" file="/views/transformation.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/transformation_metarule.xml" />
+	<include relativeToChangelogFile="true" file="/views/unit_values.xml" />
+
+</databaseChangeLog>

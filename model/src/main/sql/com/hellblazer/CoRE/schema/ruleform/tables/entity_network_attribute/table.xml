@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.entity_network_attribute
+            (
+              id bigserial NOT NULL, -- Unique identifier for a Entity Network Attribute rule
+              resource bigint NOT NULL, -- The Resource that the information in this rule comes from
+              network_rule bigint NOT NULL, -- The Entity Network rule whose attribute is being defined
+              attribute bigint NOT NULL, -- The Attribute of the Entity Network rule being defined
+              text_value character varying, -- If the Attribute has a text value, it is stored in this column
+              numeric_value numeric, -- If the Attribute has a numeric (real) value, it is stored in this column
+              integer_value integer, -- If the Attribute has an integer value, it is stored in this column
+              boolean_value boolean, -- If the Attribute has a boolean value, it is stored in this column
+              timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
+              binary_value bytea, -- If the Attribute has a binary value, it is stored in this column
+              entity_value bigint, -- If the Attribute has a Entity value, it is stored in this column
+              unit bigint, -- The unit of measurement the Attribute value is measured in, if any
+              notes character varying, -- Miscellaneous notes about this rule
+              research bigint, -- A research flag
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time of the last update to this rule
+              sequence_number integer NOT NULL DEFAULT 1,
+              CONSTRAINT entity_network_attribute_pkey PRIMARY KEY (id ),
+              CONSTRAINT entity_network_attribute_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_network_attribute_entity_value_fkey FOREIGN KEY (entity_value)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_network_attribute_network_rule_fkey FOREIGN KEY (network_rule)
+                  REFERENCES ruleform.entity_network (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_network_attribute_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_network_attribute_resource_fkey FOREIGN KEY (resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_network_attribute_unit_fkey FOREIGN KEY (unit)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_network_attribute_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_network_attribute_key UNIQUE (resource , network_rule , attribute , sequence_number ),
+              CONSTRAINT valid_sequence_number CHECK (sequence_number > 0),
+              CONSTRAINT valid_value CHECK ((ruleform.null_zero(text_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value) + ruleform.null_zero(entity_value)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.entity_network_attribute
+              IS 'Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.id IS 'Unique identifier for a Entity Network Attribute rule';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.resource IS 'The Resource that the information in this rule comes from';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.network_rule IS 'The Entity Network rule whose attribute is being defined';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.attribute IS 'The Attribute of the Entity Network rule being defined';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.text_value IS 'If the Attribute has a text value, it is stored in this column';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.numeric_value IS 'If the Attribute has a numeric (real) value, it is stored in this column';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.integer_value IS 'If the Attribute has an integer value, it is stored in this column';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.boolean_value IS 'If the Attribute has a boolean value, it is stored in this column';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.entity_value IS 'If the Attribute has a Entity value, it is stored in this column';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.unit IS 'The unit of measurement the Attribute value is measured in, if any';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.notes IS 'Miscellaneous notes about this rule';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.research IS 'A research flag';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.entity_network_attribute.update_date IS 'The time of the last update to this rule';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.entity_network_attribute"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

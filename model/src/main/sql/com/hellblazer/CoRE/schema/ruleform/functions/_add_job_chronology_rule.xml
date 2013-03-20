@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform._add_job_chronology_rule(p_job bigint, p_stamp timestamp with time zone, p_status bigint, p_note text)
+              RETURNS void AS
+            $BODY$
+                INSERT INTO ruleform.job_chronology( job, time_stamp, status, notes, updated_by ) VALUES
+                ($1, $2, $3, $4, ruleform.resource_id('CoRE'));
+            $BODY$
+              LANGUAGE sql VOLATILE
+              COST 100;
+            GRANT EXECUTE ON FUNCTION ruleform._add_job_chronology_rule(bigint, timestamp with time zone, bigint, text) TO postgres;
+            COMMENT ON FUNCTION ruleform._add_job_chronology_rule(bigint, timestamp with time zone, bigint, text) IS 'Convenience function for adding a job chronology rule.  We need to do this in a few places, so we pull out the functionality into this function for modularity';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform._add_job_chronology_rule(bigint, timestamp with time zone, bigint, text); </rollback>
+    </changeSet>
+</databaseChangeLog>

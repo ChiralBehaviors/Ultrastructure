@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.restrict_pinned()
+              RETURNS trigger AS
+            $BODY$
+            BEGIN
+                IF (TG_OP = 'UPDATE') THEN
+                    IF (OLD.pinned IS FALSE) OR (NEW.pinned IS FALSE) THEN
+                        RETURN NEW;
+                    ELSE 
+                        IF (OLD.pinned IS TRUE) THEN 
+                            RAISE EXCEPTION 'Cannot update pinned % %', TG_RELNAME, OLD.name;
+                        END IF;
+                    END IF;
+                ELSE
+                    IF (TG_OP = 'DELETE') THEN
+                        IF OLD.pinned IS TRUE THEN
+                            RAISE EXCEPTION 'Cannot delete pinned % ''%''', TG_RELNAME, OLD.name;
+                        ELSE
+                            RETURN OLD;
+                        END IF;
+                    END IF;
+                END IF;
+            
+                RETURN NULL;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.restrict_pinned()
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.restrict_pinned() IS 'Trigger function used to ensure that pinned rules are not erroneously modified or deleted';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.restrict_pinned(); </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.np_propagate_all()
+              RETURNS void AS
+            $BODY$
+            DECLARE
+                t VARCHAR;
+                tables VARCHAR[] := ARRAY['ruleform.attribute_network','ruleform.resource_network', 'ruleform.event_network', 'ruleformlocation_network', 'ruleform.entity_network'];
+            BEGIN
+                FOR i IN 1..array_upper(tables,1) LOOP
+                    t := tables[i];
+                    RAISE NOTICE 'Propagating %',t;
+                    PERFORM np_propagate(t);
+                END LOOP;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.np_propagate_all()
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.np_propagate_all() IS 'Propagates all networks in a single command';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.np_propagate_all(); </rollback>
+    </changeSet>
+</databaseChangeLog>

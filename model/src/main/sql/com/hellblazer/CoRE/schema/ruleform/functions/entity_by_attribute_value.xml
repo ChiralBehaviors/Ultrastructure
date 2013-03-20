@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.entity_by_attribute_value(p_attribute bigint, p_value character varying)
+              RETURNS SETOF ruleform.entity AS
+            $BODY$
+            DECLARE
+                _attribute ruleform.attribute%ROWTYPE;
+                _cursor REFCURSOR;
+                _entity ruleform.entity%ROWTYPE;
+            BEGIN
+                SELECT * INTO STRICT _attribute FROM ruleform.attribute WHERE id = p_attribute;
+                
+                IF _attribute.type != 'text' THEN
+                    RAISE EXCEPTION 'Needs to be an attribute that is text-valued!  "%" is %-valued', _attribute.name, _attribute.type;    
+                END IF;
+                
+                OPEN _cursor FOR 
+                SELECT b.* 
+                    FROM ruleform.entity AS b 
+                    JOIN entity_attribute AS ba 
+                        ON ba.entity = b.id 
+                    WHERE ba.attribute = p_attribute 
+                      AND text_value = p_value
+                ;
+                
+                LOOP FETCH _cursor INTO _entity;
+                    EXIT WHEN NOT FOUND;
+                    RETURN NEXT _entity;
+                END LOOP;
+                
+                CLOSE _cursor;
+            END;
+            $BODY$
+              LANGUAGE plpgsql STABLE
+              COST 100
+              ROWS 1000;
+            ALTER FUNCTION ruleform.entity_by_attribute_value(bigint, character varying)
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.entity_by_attribute_value(bigint, character varying);
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.translation(event character varying, resource character varying, seq character varying)
+              RETURNS character varying AS
+            $BODY$
+            DECLARE
+                size CONSTANT INTEGER NOT NULL := 3;
+                result VARCHAR := '';
+                chunk VARCHAR;
+                entity VARCHAR;
+            BEGIN
+                
+                FOR i IN 1..length(seq) BY size LOOP
+                    entity := substring(seq, i, size);
+                    RAISE NOTICE 'Entity = %', entity;
+                    chunk := ruleform.transform(event, resource, entity);
+                    RAISE NOTICE 'Chunk is ''%''', chunk;
+                    IF chunk IS NULL THEN
+                        RAISE EXCEPTION 'Given sequence contains Entity ''%'' which returned null!', entity;
+                    END IF;
+                    result := result || chunk;
+                END LOOP;
+                
+                RETURN result;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.translation(character varying, character varying, character varying)
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.translation(character varying, character varying, character varying); </rollback>
+    </changeSet>
+</databaseChangeLog>

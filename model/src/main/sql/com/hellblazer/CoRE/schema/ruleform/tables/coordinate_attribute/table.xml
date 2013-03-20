@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.coordinate_attribute
+            (
+              id bigserial NOT NULL, -- Otherwise meaningless identifier for a definition rule
+              coordinate bigint NOT NULL, -- The specific coordinate this rule pertains to
+              attribute bigint NOT NULL, -- The attribute of the given coordinate this rule defines
+              entity_value bigint, -- If the Attribute is Entity-valued, the value is stored in this column
+              integer_value integer, -- If the Attribute is integer-valued, the value is stored in this column
+              numeric_value numeric, -- If the Attribute is numerically-valued (i.e. non-integer), the value is stored in this column
+              boolean_value boolean, -- If the Attribute is boolean-valued, the value is stored in this column
+              text_value character varying, -- If the Attribute is text-valued, the value is stored in this column
+              timestamp_value timestamp,
+              binary_value bytea,
+              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
+              unit bigint,
+              notes character varying, -- Usage notes for this rule
+              research bigint, -- A research flag that has been set on an individual rule
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
+              CONSTRAINT coordinate_attribute_pkey PRIMARY KEY (id ),
+              CONSTRAINT coordinate_attribute_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_coordinate_fkey FOREIGN KEY (coordinate)
+                  REFERENCES ruleform.coordinate (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_entity_value_fkey FOREIGN KEY (entity_value)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT entity_attribute_unit_fkey FOREIGN KEY (unit)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_coordinate_key UNIQUE (coordinate , attribute ),
+              CONSTRAINT valid_attribute CHECK ((ruleform.null_zero(entity_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.coordinate_attribute
+              IS 'Describes the details of a specific coordinate';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.id IS 'Otherwise meaningless identifier for a definition rule';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.coordinate IS 'The specific coordinate this rule pertains to';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.attribute IS 'The attribute of the given coordinate this rule defines';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.entity_value IS 'If the Attribute is Entity-valued, the value is stored in this column';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.integer_value IS 'If the Attribute is integer-valued, the value is stored in this column';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.numeric_value IS 'If the Attribute is numerically-valued (i.e. non-integer), the value is stored in this column';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.boolean_value IS 'If the Attribute is boolean-valued, the value is stored in this column';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.text_value IS 'If the Attribute is text-valued, the value is stored in this column';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.notes IS 'Usage notes for this rule';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.research IS 'A research flag that has been set on an individual rule';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.update_date IS 'The time at which this rule was last updated';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.coordinate_attribute"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <include relativeToChangelogFile="true" file="attribute_network/table.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/grants.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_child.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_distance.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_parent.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_relationship.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_research.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_updated_by.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/owner.xml"/>
+    <include relativeToChangelogFile="true" file="attribute_network/statistics.xml"/>
+
+</databaseChangeLog>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1"
+        author="hhildebrand">
+        <sql> CREATE INDEX attr_meta_attr_auth_research_fkey_idx ON ruleform.attr_meta_attr_auth USING btree
+            (research ); </sql>
+        <rollback>
+            <dropIndex tableName="ruleform.attr_meta_attr_auth" indexName="attr_meta_attr_auth_research_fkey_idx"
+            />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

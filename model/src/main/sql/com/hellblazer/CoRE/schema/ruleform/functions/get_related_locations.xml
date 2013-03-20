@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.get_related_locations(p_location bigint, p_relationship bigint, p_target_context bigint)
+              RETURNS SETOF ruleform.location AS
+            $BODY$
+            DECLARE
+                _location_context ruleform.location_context%ROWTYPE;
+                _location ruleform.location%ROWTYPE;
+                _lr_cursor CURSOR(context BIGINT, relationship BIGINT, target BIGINT, mapped_entity BIGINT) FOR 
+                    SELECT * 
+                    FROM ruleform.location_relationship AS lr
+                    WHERE lr.context = context
+                    AND lr.relationship = relationship
+                    AND lr.target_context = target
+                    AND lr.entity_mapped_value = mapped_entity
+                    ORDER BY lr.sequence_number ;
+                _l_cursor REFCURSOR;
+                _location_relationship ruleform.location_relationship%ROWTYPE;
+                query VARCHAR;
+                temp VARCHAR;
+                last INTEGER := 0;
+                counter INTEGER := 0;
+                _location_attribute ruleform.location_attribute%ROWTYPE;
+                attribute_type VARCHAR;
+                value_column VARCHAR;
+                operator ruleform.relational_operator;
+                
+                _entity_mapped_value ruleform.entity.id%TYPE;
+                _meta_rule_cursor CURSOR(context BIGINT) FOR 
+                    SELECT *
+                    FROM ruleform.location_meta_rule
+                    WHERE location_context = context
+                    ORDER BY sequence_number;
+                _location_meta_rule ruleform.location_meta_rule%ROWTYPE;
+            BEGIN
+                -- Figure out what the context of the given location is
+                _location_context = get_location_context(p_location);
+                
+                OPEN _meta_rule_cursor(_location_context.id);
+                LOOP FETCH _meta_rule_cursor INTO _location_meta_rule;
+                    EXIT WHEN NOT FOUND;
+            
+                RAISE NOTICE 'Location is %', location_name(p_location);    
+                RAISE NOTICE 'Attribute Mask is %', attribute_name(_location_meta_rule.attribute_mask);
+                    
+                    SELECT la.entity_value INTO _entity_mapped_value
+                    FROM location_attribute AS la
+                    WHERE la.location = p_location
+                    AND la.attribute = _location_meta_rule.attribute_mask;
+            
+            RAISE NOTICE 'In Loop: Mapped Entity Is %', entity_name(_entity_mapped_value);
+                
+                    
+                    IF _entity_mapped_value IS NOT NULL THEN EXIT;
+                    END IF;
+                END LOOP;
+                CLOSE _meta_rule_cursor;
+                
+                RAISE NOTICE 'Mapped Entity Is %', entity_name(_entity_mapped_value);
+                
+                
+                query = 'SELECT location.* FROM location ';
+                
+                -- See if there are any instructions regarding relating Locations of _location_context with those of target_context via the given relationship
+                OPEN _lr_cursor(_location_context.id, p_relationship, p_target_context, _entity_mapped_value);
+                LOOP 
+                    FETCH _lr_cursor INTO _location_relationship;
+                    EXIT WHEN NOT FOUND;
+                    
+                    last = last + 1;
+                    temp = 'la_' || _location_relationship.sequence_number;
+                    query = query || ' JOIN location_attribute AS ' || temp || ' ON location.id = ' || temp || '.location AND ' || temp || '.attribute = ' || _location_relationship.location_2_attribute;
+                END LOOP;
+                CLOSE _lr_cursor;
+            
+                query = query || ' WHERE ';
+                
+                -- Go back and do the same query again to finish building the query
+                -- TODO 8.3 see if we can use scrollable cursors for this instead
+                OPEN _lr_cursor(_location_context.id, p_relationship, p_target_context, _entity_mapped_value);
+                LOOP 
+                    FETCH _lr_cursor INTO _location_relationship;
+                    EXIT WHEN NOT FOUND;
+            
+                    counter = counter + 1;
+            
+                    SELECT * INTO STRICT _location_attribute 
+                    FROM location_attribute 
+                    WHERE location = p_location 
+                    AND attribute = _location_relationship.location_1_attribute;
+            
+                    temp = 'la_' || _location_relationship.sequence_number;
+                    attribute_type = get_attribute_type(_location_relationship.location_1_attribute);
+            
+                    -- Use this if/else nastiness because we can't dynamically get at a variable field
+                    IF attribute_type = 'entity' THEN
+                        query = query || _location_attribute.entity_value;
+                    ELSEIF attribute_type = 'integer' THEN
+                        query = query || _location_attribute.integer_value;
+                    ELSEIF attribute_type = 'text' THEN
+                        query = query || quote_literal(_location_attribute.text_value);
+                    ELSE
+                        RAISE EXCEPTION 'Unrecognized attribute type %', attribute_type;
+                    END IF;
+            
+            
+                    value_column = get_attribute_type(_location_relationship.location_2_attribute) || '_value';
+            
+            
+                    SELECT relationship.operator INTO operator FROM relationship WHERE id = _location_relationship.attribute_relationship;
+                    IF operator IS NULL THEN
+                        RAISE EXCEPTION 'Could not construct a valid query using data from Location Relationship rule #% because its ''Attribute Relationship'' consideration (''%'') does not have an operator consideration set!', _location_relationship.id, relationship_name(_location_relationship.attribute_relationship);
+                    END IF;
+                    
+                    query = query || ' ' || operator || ' ' || temp || '.' || value_column || ' -- ' || quote_literal(attribute_name(_location_relationship.location_2_attribute)) || '
+                        ';
+            
+                    IF last > counter THEN
+                        query = query || ' AND ';
+                    END IF;
+                END LOOP;
+                CLOSE _lr_cursor;
+            
+                query = query || ' AND location.context = ' || p_target_context || '
+                   AND location.id != ' || p_location;
+            
+            
+                RAISE NOTICE 'QUERY = %', query;
+                
+                -- TODO 8.3 Return Query instead of looping with a cursor
+                OPEN _l_cursor FOR EXECUTE query;
+                LOOP 
+                    FETCH _l_cursor INTO _location;
+                    EXIT WHEN NOT FOUND;
+                    RETURN NEXT _location;
+                END LOOP;
+                CLOSE _l_cursor;
+                
+            END;
+            $BODY$
+              LANGUAGE plpgsql STABLE
+              COST 100
+              ROWS 1000;
+            ALTER FUNCTION ruleform.get_related_locations(bigint, bigint, bigint)
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.get_related_locations(bigint, bigint, bigint) IS 'This function works in conjunction with the location_relationship table to dynamically generate a list of all Locations in the given context that have the given relationship with the given Location';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.get_related_locations(bigint, bigint, bigint); </rollback>
+    </changeSet>
+</databaseChangeLog>

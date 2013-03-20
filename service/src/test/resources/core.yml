@@ -1,0 +1,9 @@
+jpa:
+  debug: true
+  persistenceUnit: CoRE
+  properties: 
+      openjpa.ConnectionUserName: ${testing.db.login}
+      openjpa.ConnectionPassword: ${testing.db.password}
+      openjpa.ConnectionURL: jdbc:postgresql://${testing.db.server}:${testing.db.port}/${testing.db.database}
+      openjpa.ConnectionDriverName: org.postgresql.Driver
+      openjpa.ConnectionFactoryProperties: PrettyPrint=true, PrettyPrintLineLength=80, PrintParameters=true

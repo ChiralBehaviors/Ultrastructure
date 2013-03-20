@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.coordinate_relationship
+            (
+              id bigserial NOT NULL, -- Otherwise meaningless identifier for a rule
+              kind bigint NOT NULL, -- The kind of coordinate being related
+              relationship bigint NOT NULL, -- The relationship between a query coordinate and those satisfying the query
+              sequence_number ruleform.sequence_number NOT NULL, -- The ordering of these relationship rules for a given CoordinateKind and Relationship
+              subordinate_coordinate_kind bigint NOT NULL, -- The subordinate coordinate kind this rule deals with
+              attribute bigint NOT NULL, -- The attribute of the subordinate coordinate kind this rule deals with
+              attribute_relationship bigint NOT NULL, -- The relationship between this attribute of the query coordinate and those satisfying the query
+              notes character varying, -- Usage notes for this rule
+              research bigint, -- A research flag that has been set on an individual rule
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
+              CONSTRAINT coordinate_relationship_pkey PRIMARY KEY (id ),
+              CONSTRAINT coordinate_relationship_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_relationship_attribute_relationship_fkey FOREIGN KEY (attribute_relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_relationship_kind_fkey FOREIGN KEY (kind)
+                  REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_relationship_relationship_fkey FOREIGN KEY (relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_relationship_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_relationship_subordinate_coordinate_kind_fkey FOREIGN KEY (subordinate_coordinate_kind)
+                  REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_relationship_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_relationship_kind_key UNIQUE (kind , relationship , sequence_number )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.coordinate_relationship
+              IS 'Defines rules for relating coordinates';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.id IS 'Otherwise meaningless identifier for a rule';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.kind IS 'The kind of coordinate being related';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.relationship IS 'The relationship between a query coordinate and those satisfying the query';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.sequence_number IS 'The ordering of these relationship rules for a given CoordinateKind and Relationship';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.subordinate_coordinate_kind IS 'The subordinate coordinate kind this rule deals with';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.attribute IS 'The attribute of the subordinate coordinate kind this rule deals with';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.attribute_relationship IS 'The relationship between this attribute of the query coordinate and those satisfying the query';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.notes IS 'Usage notes for this rule';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.research IS 'A research flag that has been set on an individual rule';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate_relationship.update_date IS 'The time at which this rule was last updated';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.coordinate_relationship"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

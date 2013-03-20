@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE FUNCTION core_admin.reset_special_sequences() RETURNS void
+                AS $$
+            DECLARE
+                _cursor CURSOR FOR SELECT sequence_schema, sequence_name FROM information_schema.sequences WHERE sequence_schema = 'sequences';
+                _record RECORD;
+                _count BIGINT;
+                _query VARCHAR;
+            BEGIN
+                OPEN _cursor;
+                LOOP FETCH _cursor INTO _record;
+                    EXIT WHEN NOT FOUND;
+            
+                    _query := 'ALTER SEQUENCE ' || _record.sequence_schema || '.' || _record.sequence_name || ' RESTART WITH 1';
+                    RAISE NOTICE 'Query: %', _query;
+                    EXECUTE _query;
+            
+                END LOOP;
+                CLOSE _cursor;
+            END;
+            $$
+                LANGUAGE plpgsql;
+            
+            
+            ALTER FUNCTION core_admin.reset_special_sequences() OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION core_admin.reset_special_sequences(); </rollback>
+    </changeSet>
+</databaseChangeLog>

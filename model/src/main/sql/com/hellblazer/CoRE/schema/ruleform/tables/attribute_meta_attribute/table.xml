@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.attribute_meta_attribute
+            (
+              id bigserial NOT NULL,
+              attribute bigint NOT NULL,
+              meta_attribute bigint NOT NULL,
+              numeric_value numeric,
+              boolean_value boolean,
+              text_value character varying,
+              binary_value bytea,
+              attribute_value bigint,
+              unit_value bigint,
+              notes character varying,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              integer_value integer,
+              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
+              CONSTRAINT attribute_attribute_pkey PRIMARY KEY (id ),
+              CONSTRAINT attribute_attribute_attribute_fkey FOREIGN KEY (meta_attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT attribute_attribute_attribute_value_fkey FOREIGN KEY (attribute_value)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT attribute_attribute_base_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT attribute_attribute_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT attribute_attribute_unit_fkey FOREIGN KEY (unit_value)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT attribute_attribute_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT attribute_attribute_base_attribute_key UNIQUE (attribute , meta_attribute , sequence_number ),
+              CONSTRAINT valid_value CHECK ((ruleform.null_zero(binary_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(attribute_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(unit_value)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.attribute_meta_attribute_kind"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

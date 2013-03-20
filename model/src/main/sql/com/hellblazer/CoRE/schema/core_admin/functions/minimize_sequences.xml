@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE FUNCTION core_admin.minimize_sequences() RETURNS void
+                AS $$
+            DECLARE
+                _cursor CURSOR FOR SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema = 'ruleform' AND table_type = 'BASE TABLE';
+                _record RECORD;
+                _count BIGINT;
+                _query VARCHAR;
+            BEGIN
+                OPEN _cursor;
+                LOOP FETCH _cursor INTO _record;
+                    EXIT WHEN NOT FOUND;
+            
+                    _query := 'SELECT max(id) + 1 FROM ' || _record.table_schema || '.' || _record.table_name;
+                    RAISE NOTICE 'Query: %', _query;
+                    EXECUTE _query INTO _count;
+                    
+                    IF _count IS NULL THEN
+                        _count := 1;
+                    END IF;
+            
+                    _query := 'ALTER SEQUENCE ' || _record.table_name || '_id_seq RESTART WITH ' || _count;
+                    RAISE NOTICE 'Query: %', _query;
+                    EXECUTE _query;
+            
+                END LOOP;
+                CLOSE _cursor;
+            END;
+            $$
+                LANGUAGE plpgsql;
+            
+            
+            ALTER FUNCTION core_admin.minimize_sequences() OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION core_admin.minimize_sequences(); </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.relationship_chain AS 
+			 SELECT c.id, r1.name AS input1, r2.name AS input2, r3.name AS result, c.notes, res.name AS research, up.name AS updated_by, c.update_date
+			   FROM ruleform.relationship_chain c
+			   JOIN ruleform.relationship r1 ON c.input1 = r1.id
+			   JOIN ruleform.relationship r2 ON c.input2 = r2.id
+			   JOIN ruleform.relationship r3 ON c.result = r3.id
+			   LEFT JOIN ruleform.research res ON c.research = res.id
+			   JOIN ruleform.resource up ON c.updated_by = up.id;
+			
+			ALTER TABLE readable.relationship_chain
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.relationship_chain" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

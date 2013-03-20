@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.status_code_sequencing
+                (
+                  id bigserial NOT NULL, -- Unique identifier
+                  service bigint NOT NULL, -- The Event whose states are being described
+                  parent_code bigint NOT NULL, -- The "from" state to which one may transition to any state listed in the "child_code" column
+                  sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when a Event can transition into one of a number of states
+                  child_code bigint NOT NULL, -- The "to" state to which one may transition from the state listed in the "parent_code" column
+                  notes character varying, -- Additional notes regarding usage of this particular rule
+                  research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
+                  updated_by bigint NOT NULL, -- The Resource that last updated this rule
+                  update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+                  CONSTRAINT status_code_sequencing_pkey PRIMARY KEY (id ),
+                  CONSTRAINT status_code_sequencing_child_code_fkey FOREIGN KEY (child_code)
+                      REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT status_code_sequencing_service_fkey FOREIGN KEY (service)
+                      REFERENCES ruleform.entity (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT status_code_sequencing_parent_code_fkey FOREIGN KEY (parent_code)
+                      REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT status_code_sequencing_research_fkey FOREIGN KEY (research)
+                      REFERENCES ruleform.research (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT status_code_sequencing_updated_by_fkey FOREIGN KEY (updated_by)
+                      REFERENCES ruleform.resource (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT status_code_sequencing_service_parent_code_sequence_number_key UNIQUE (service , parent_code, child_code, sequence_number ),
+                  CONSTRAINT parent_code_and_child_code_must_be_different CHECK (parent_code <> child_code)
+                )
+                WITH (
+                  OIDS=FALSE
+                );
+                COMMENT ON TABLE ruleform.status_code_sequencing
+                  IS 'Defines the possible states that an Event can be in, as well as the path through those states';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.id IS 'Unique identifier';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.service IS 'The service whose states are being described';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.parent_code IS 'The "from" state to which one may transition to any state listed in the "child_code" column';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.sequence_number IS 'Ordering and uniqueness, for when a Event can transition into one of a number of states';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.child_code IS 'The "to" state to which one may transition from the state listed in the "parent_code" column';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.notes IS 'Additional notes regarding usage of this particular rule';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.updated_by IS 'The Resource that last updated this rule';
+                COMMENT ON COLUMN ruleform.status_code_sequencing.update_date IS 'The date this rule was last changed';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.status_code_sequencing"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

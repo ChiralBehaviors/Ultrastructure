@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.sourcing_authorization AS 
+             SELECT sa.id, owner.name as owner, product.name as product, location.name as location,
+                    sa.notes, res.name AS research, 
+                    up.name AS updated_by, sa.update_date
+               FROM ruleform.sourcing_authorization sa
+               JOIN ruleform.resource owner ON sa.owner = owner.id
+               JOIN ruleform.entity product ON sa.product = product.id
+               JOIN ruleform.location location ON sa.location = location.id
+               LEFT JOIN ruleform.research res ON sa.research = res.id
+               JOIN ruleform.resource up ON sa.updated_by = up.id;
+            
+            ALTER TABLE readable.sourcing_authorization
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.sourcing_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

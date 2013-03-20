@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.protocol_action
+            (
+              id bigserial NOT NULL,
+              name character varying,
+              protocol bigint NOT NULL,
+              jar_entry bigint,
+              static_method character varying,
+              action integer NOT NULL,
+              attribute bigint NOT NULL,
+              numeric_value numeric,
+              integer_value integer,
+              boolean_value boolean,
+              text_value character varying,
+              timestamp_value timestamp, 
+              binary_value bytea,
+              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              notes character varying,
+              research bigint,
+              CONSTRAINT protocol_action_pkey PRIMARY KEY (id ),
+              CONSTRAINT protocol_action_jar_entry_fkey FOREIGN KEY (jar_entry)
+                  REFERENCES sqlj.jar_entry (entryid) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_action_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_action_protocol_fkey FOREIGN KEY (protocol)
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_action_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_action_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT protocol_action_sequence_number_check CHECK (sequence_number > 0)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.protocol_action" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

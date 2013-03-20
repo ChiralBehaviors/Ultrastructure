@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.unique_entity_lookup_by_attribute(p_attribute bigint, p_text_value character varying)
+              RETURNS ruleform.entity AS
+            $BODY$
+            --
+            -- Currently, this function is probably not exactly what we need; it doesn't take into account 
+            -- Resources, for one thing.  It should probably take a grouping Entity and possibly a Relationship
+            -- as well, since (for example), the 1-Letter Codes for Alanine and Adenine are both "A" and both defined
+            -- by the CoRE System.  Also, it just takes text values right now, but we can probably take advantage of
+            -- the fact that each Attribute has an associated type and cast a string to whatever we need.
+            -- But it'll do for now, as I just need it for peptide sequence lookups at the moment.
+            --      CWM December 2007
+            DECLARE
+                my_entity ruleform.entity%ROWTYPE;
+                return_value ruleform.entity%ROWTYPE;
+                counter integer := 0;
+                curs REFCURSOR;
+            BEGIN
+                -- -- As written, this will select the first row of the result set and discard the rest
+                -- SELECT b.* 
+                --     INTO my_entity
+                -- FROM
+                --     entity_attribute AS ba
+                --     JOIN entity AS b ON ba.entity = b.id
+                -- WHERE ba.attribute = p_attribute 
+                --   AND ba.text_value = p_text_value;
+                
+                -- If more than one entity is returned, this is an error.
+                
+                OPEN curs FOR SELECT b.* 
+                   FROM
+                       entity_attribute AS ba
+                       JOIN entity AS b ON ba.entity = b.id
+                   WHERE ba.attribute = p_attribute 
+                     AND ba.text_value = p_text_value
+                     ;
+                LOOP
+                    FETCH curs INTO my_entity;
+                    EXIT WHEN NOT FOUND;
+                    -- Need to copy the value to some other variable so it doesn't get clobbered by an essentially 
+                    --NULL Entity record on the final loop through (when the next row of the cursor is not found)
+                    return_value := my_entity;
+                    --RAISE NOTICE '%', return_value;
+                    counter := counter + 1;
+                    IF counter > 1 THEN
+                        -- I could have just done the query first to get a count of how many rows are returned, but this will work
+                        -- too, and we don't have to execute it twice.
+                        RAISE EXCEPTION 'More than 1 Entity found with Attribute "%" and value "%"!', attribute_name(p_attribute), p_text_value;
+                        EXIT;
+                    END IF;
+                END LOOP;
+                CLOSE curs;
+                -- If we got this far, this is the only Entity with the desired Attribute value
+                RETURN return_value;
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.unique_entity_lookup_by_attribute(bigint, character varying)
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.unique_entity_lookup_by_attribute(bigint, character varying) IS 'Returns the Entity that has the specified attribute value.  If multiple entities are returned, this is considered an error.';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.unique_entity_lookup_by_attribute(bigint, character varying); </rollback>
+    </changeSet>
+</databaseChangeLog>

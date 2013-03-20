@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.transformation_metarule
+            (
+              id bigserial NOT NULL,
+              service bigint NOT NULL,
+              sequence_number ruleform.sequence_number NOT NULL,
+              resource_map bigint NOT NULL,
+              entity_map bigint NOT NULL,
+              entity_network_resource bigint,
+              stop_on_match boolean DEFAULT false,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              CONSTRAINT transformation_metarule_pkey PRIMARY KEY (id ),
+              CONSTRAINT transformation_metarule_entity_map_fkey FOREIGN KEY (entity_map)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_metarule_entity_network_resource_fkey FOREIGN KEY (entity_network_resource)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_metarule_service_fkey FOREIGN KEY (service)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_metarule_resource_map_fkey FOREIGN KEY (resource_map)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT transformation_metarule_service_key UNIQUE (service , sequence_number )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.transformation_metarule"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,61 @@
+To run this software you will need a bit of infrastructure in place:
+
+The PostgreSQL database server (available at http://www.postgresql.org)
+    Preferably installed locally, but not necessarily
+    You need to have database superuser privileges
+    
+Apache Maven build tool (available at http://maven.apache.org) version 3.x
+
+Depending on where and how you have installed your database, you may need to change
+some connection parameters in the main/pom.xml file.  These are in the <properties>
+section, and should be self-explanatory.  If you have performed a standard Postgres install
+then you shouldn't have to change these.  However, you will have to set up a properties section
+in your Maven settings.xml to declare your postgres superuser password.
+
+To edit your maven global settings.xml, you'll have to open the file ~/.m2/settings.xml.  If
+you have not modified this, then simply cut and paste the following:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <profiles>
+        <profile>
+            <id>test-db</id>
+            <properties>
+                <testing.db.server>192.168.56.101</testing.db.server>
+                <testing.db.password>postgres</testing.db.password>
+                <db.server>192.168.56.101</db.server>
+            </properties>
+        </profile>
+    </profiles>
+    
+    <activeProfiles>
+        <activeProfile>test-db</activeProfile>
+    </activeProfiles>
+</settings>
+
+Replace the password with the Postgres super user password you've set and save the file.  Once
+these are in place, you can build the project:
+
+$ cd <project root>
+$ mvn clean install
+
+Now you can work directly with the database:
+
+$ cd schema
+$ mvn clean process-test-resources
+
+A dataset (ultrastructure-dataset.pgdump) is included.  This is a PostgreSQL dump file
+and can be loaded using the pg_restore command line utility (comes with PostgreSQL) like so:
+
+$ cd <root>
+$ pg_restore -U postgres -d core --disable-triggers --verbose ultrastructure_dataset.pgdump
+
+Now you can use pgadmin3 to view the sample data.  Use the "readable" schema views to browse the data.
+
+Note that the build will create the CoRE database.  The schemas are maintained via liquibase (www.liquibase.org)
+and will directly manipulate the database, upgrading and downgrading as necessary.  All tests
+which load and manipulate data in the database are required to clean up after themselves.
+
+So, word.

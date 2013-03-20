@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.sourcing_authorization
+            ( 
+              owner bigserial NOT NULL, -- the resource that owns or is responsible for the product
+              product bigserial NOT NULL, -- the product
+              location bigserial NOT NULL, -- the location of the product
+              quantity_on_hand numeric,
+              quantity_committed numeric,
+              reorder_threshold numeric,
+              id bigserial NOT NULL, -- Unique identifier
+              notes character varying, -- Additional notes regarding this rule
+              research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
+              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+               
+              CONSTRAINT sourcing_authorization_consumer_fkey FOREIGN KEY (owner)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT sourcing_authorization_product_fkey FOREIGN KEY (product)
+                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT sourcing_authorization_location_fkey FOREIGN KEY (location)
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT sourcing_authorization_pkey PRIMARY KEY (id ),
+              CONSTRAINT sourcing_authorization_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT sourcing_authorization_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE RESTRICT,
+              CONSTRAINT sourcing_athorization_classification_attri_key UNIQUE (owner , product, location)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            COMMENT ON TABLE ruleform.sourcing_authorization
+              IS 'Defines rules stating what network relationships are authorized for particular Resources';
+            COMMENT ON COLUMN ruleform.sourcing_authorization.id IS 'Unique identifier';
+            COMMENT ON COLUMN ruleform.sourcing_authorization.notes IS 'Additional notes regarding this rule';
+            COMMENT ON COLUMN ruleform.sourcing_authorization.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
+            COMMENT ON COLUMN ruleform.sourcing_authorization.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.sourcing_authorization.update_date IS 'The date this rule was last changed';
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.sourcing_authorization" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

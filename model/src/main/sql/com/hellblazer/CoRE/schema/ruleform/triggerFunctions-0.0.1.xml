@@ -6,19 +6,6 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
     
-    <include relativeToChangelogFile="true" file="triggerFunctions/allowed_to_insert_job.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/automatically_generate_implicit_jobs_for_explicit_jobs.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/ensure_next_state_is_valid.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/ensure_valid_service_and_status.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/ensure_valid_initial_state.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/hash_file.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/log_inserts_in_job_chronology.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/log_modified_service_status_code_sequencing.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/process_child_changes.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/process_parent_changes.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/process_sibling_changes.xml"/>
     <include relativeToChangelogFile="true" file="triggerFunctions/restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="triggerFunctions/set_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/valid_resource_attribute.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/validate_state_graph.xml"/>
 </databaseChangeLog>

@@ -6,8 +6,6 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
     
-    <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute/trigger-attribute_meta_attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/context_attribute/trigger-context_attribute_update_date.xml"/>
@@ -32,19 +30,9 @@
     <include relativeToChangelogFile="true" file="tables/entity_network/trigger-entity_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/entity/trigger-entity_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/entity/trigger-entity_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/service_sequencing_authorization/trigger-service_sequencing_authorization_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/service_sequencing_authorization/trigger-valid_child_service_and_status_to_set.xml"/>
     <include relativeToChangelogFile="true" file="tables/job_chronology/trigger-job_chronology_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/job_attribute/trigger-job_attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-a_see_if_user_can_insert.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-check_next_state_is_valid.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-create_implicit_jobs.xml"/>
     <include relativeToChangelogFile="true" file="tables/job/trigger-job_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-log_inserts_in_job_chronology.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_1_children.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_2_siblings.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_3_parent.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-set_inserted_status_code.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_attribute/trigger-location_attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_context/trigger-location_context_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_context/trigger-location_context_update_date.xml"/>
@@ -66,8 +54,6 @@
     <include relativeToChangelogFile="true" file="tables/resource_network/trigger-resource_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_restrict_pinnned.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-ensure_valid_state_graph_.xml"/>
-    <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-log_modified_service.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-status_code_sequencing_updated_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_restrict_pinned_.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_updated_date.xml"/>

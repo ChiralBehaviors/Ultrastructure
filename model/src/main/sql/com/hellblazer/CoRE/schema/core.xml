@@ -22,9 +22,9 @@
 		</sql>
 	</changeSet>
 
-	<include relativeToChangelogFile="true" file="ruleform/ruleform-0.0.1.xml" />
+	<include relativeToChangelogFile="true" file="ruleform/ruleform.xml" />
 	<include relativeToChangelogFile="true"
-		file="core_admin/core_admin-0.0.1.xml" />
-	<include relativeToChangelogFile="true" file="readable/readable-0.0.1.xml" />
+		file="core_admin/core_admin.xml" />
+	<include relativeToChangelogFile="true" file="readable/readable.xml" />
 
 </databaseChangeLog>

@@ -8,6 +8,6 @@
     <preConditions>
         <dbms type="postgresql"/>
     </preConditions>
-    <include relativeToChangelogFile="true" file="functions-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="functions.xml"/>
 
 </databaseChangeLog>

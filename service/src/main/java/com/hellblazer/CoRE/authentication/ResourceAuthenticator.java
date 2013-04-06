@@ -25,10 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.hellblazer.CoRE.Util;
-import com.hellblazer.CoRE.meta.Aspect;
-import com.hellblazer.CoRE.meta.Facet;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.security.AuthenticatedPrincipal;
+import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.resource.ResourceAttribute;
 import com.yammer.dropwizard.auth.AuthenticationException;

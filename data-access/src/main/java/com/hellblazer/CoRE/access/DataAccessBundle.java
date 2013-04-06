@@ -31,6 +31,7 @@ import com.hellblazer.CoRE.access.resource.TraversalResource;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;
 import com.yammer.dropwizard.ConfiguredBundle;
+import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 
 /**
@@ -44,8 +45,8 @@ public class DataAccessBundle implements
      * @see com.yammer.dropwizard.ConfiguredBundle#initialize(java.lang.Object, com.yammer.dropwizard.config.Environment)
      */
     @Override
-    public void initialize(CoREServiceConfiguration configuration,
-                           Environment environment) {
+    public void run(CoREServiceConfiguration configuration,
+                    Environment environment) {
 
         JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();
 
@@ -61,6 +62,12 @@ public class DataAccessBundle implements
                                                    (OpenJPAEntityManagerFactory) emf));
         environment.addResource(new TraversalResource(emf));
         environment.addHealthCheck(new JpaHealthCheck(emf));
-        
+
+    }
+
+    @Override
+    public void initialize(Bootstrap<?> bootstrap) {
+        // TODO Auto-generated method stub
+
     }
 }

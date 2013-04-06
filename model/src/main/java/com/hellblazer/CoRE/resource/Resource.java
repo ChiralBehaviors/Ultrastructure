@@ -16,11 +16,7 @@
  */
 package com.hellblazer.CoRE.resource;
 
-import static com.hellblazer.CoRE.meta.Model.FIND_BY_NAME_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.UNLINKED_SUFFIX;
+import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.hellblazer.CoRE.resource.Resource.FIND_BY_NAME;
 import static com.hellblazer.CoRE.resource.Resource.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.resource.Resource.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
@@ -50,7 +46,6 @@ import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.entity.EntityNetwork;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 
@@ -104,8 +99,7 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                 + ") AS linked ON unlinked.id = linked.id "
                                                                 + "WHERE unlinked.id != resource_id('Resource');", resultClass = Resource.class),
                      // ?1 = :queryString, ?2 = :numberOfMatches                                                                       
-                     @NamedNativeQuery(name = "resource"
-                                              + Model.NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('resource', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
+                     @NamedNativeQuery(name = "resource" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('resource', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @javax.persistence.Entity
 @Table(name = "resource", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "resource_id_seq", sequenceName = "resource_id_seq")

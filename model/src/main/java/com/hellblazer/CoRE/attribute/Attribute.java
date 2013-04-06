@@ -44,8 +44,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.meta.Model;
-import com.hellblazer.CoRE.meta.NetworkedModel;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
@@ -98,14 +96,14 @@ public class Attribute extends ExistentialRuleform implements
     private static final long           serialVersionUID                         = 1L;
     public static final String          FIND_BY_NAME                             = "attribute.findByName";
     public static final String          NAME_SEARCH                              = "attribute"
-                                                                                   + Model.NAME_SEARCH_SUFFIX;
+                                                                                   + NAME_SEARCH_SUFFIX;
     public static final String          UNLINKED                                 = "attribute.unlinked";
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "attribute"
-                                                                                   + NetworkedModel.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+                                                                                   + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "attribute"
-                                                                                   + NetworkedModel.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                                   + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
 
-    //bi-directional many-to-one association to AttributeMetaAttribute
+    // bi-directional many-to-one association to AttributeMetaAttribute
     @OneToMany(mappedBy = "attribute")
     @JsonIgnore
     private Set<AttributeMetaAttribute> attributes;
@@ -116,12 +114,12 @@ public class Attribute extends ExistentialRuleform implements
 
     private Boolean                     inheritable                              = false;
 
-    //bi-directional many-to-one association to AttributeNetwork
+    // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
     @OneToMany(mappedBy = "child")
     private Set<AttributeNetwork>       networkByChild;
 
-    //bi-directional many-to-one association to AttributeNetwork
+    // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
     @OneToMany(mappedBy = "parent")
     private Set<AttributeNetwork>       networkByParent;
@@ -196,8 +194,12 @@ public class Attribute extends ExistentialRuleform implements
         attributes.add(attribute);
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Networked#addChildRelationship(com.hellblazer.CoRE.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.Networked#addChildRelationship(com.hellblazer.CoRE
+     * .NetworkRuleform)
      */
     @Override
     public void addChildRelationship(AttributeNetwork relationship) {
@@ -205,8 +207,12 @@ public class Attribute extends ExistentialRuleform implements
         networkByChild.add(relationship);
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Networked#addParentRelationship(com.hellblazer.CoRE.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.Networked#addParentRelationship(com.hellblazer.CoRE
+     * .NetworkRuleform)
      */
     @Override
     public void addParentRelationship(AttributeNetwork relationship) {
@@ -228,7 +234,9 @@ public class Attribute extends ExistentialRuleform implements
         return attributes;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -241,7 +249,9 @@ public class Attribute extends ExistentialRuleform implements
         return id;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
      */
     @Override
@@ -270,8 +280,13 @@ public class Attribute extends ExistentialRuleform implements
         return valueType;
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.resource.Resource, javax.persistence.EntityManager)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network
+     * .Relationship, com.hellblazer.CoRE.network.Networked,
+     * com.hellblazer.CoRE.resource.Resource, javax.persistence.EntityManager)
      */
     @Override
     public void link(Relationship r, Attribute child, Resource updatedBy,

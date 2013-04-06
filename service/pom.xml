@@ -16,11 +16,10 @@
 		<dependency>
 			<groupId>com.yammer.dropwizard</groupId>
 			<artifactId>dropwizard-core</artifactId>
-			<version>0.5.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
-			<artifactId>model</artifactId>
+			<artifactId>animations</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -36,7 +35,7 @@
 		<dependency>
 			<groupId>com.yammer.dropwizard</groupId>
 			<artifactId>dropwizard-auth</artifactId>
-			<version>0.5.1</version>
+			<version>0.6.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

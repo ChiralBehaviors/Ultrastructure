@@ -21,7 +21,6 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.google.common.cache.CacheBuilderSpec;
 import com.hellblazer.CoRE.access.DataAccessBundle;
 import com.hellblazer.CoRE.authentication.ResourceAuthenticator;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
@@ -29,8 +28,9 @@ import com.hellblazer.CoRE.configuration.JpaConfiguration;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.meta.security.AuthenticatedPrincipal;
 import com.yammer.dropwizard.Service;
+import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.auth.basic.BasicAuthProvider;
-import com.yammer.dropwizard.bundles.AssetsBundle;
+import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 
 /**
@@ -44,17 +44,6 @@ public class CoREService extends Service<CoREServiceConfiguration> {
     }
 
     protected CoREService() {
-        super("CoRE");
-        addBundle(new DataAccessBundle());
-
-        // By default a restart will be required to pick up any changes to
-        // assets.
-        // Use the following spec to disable that behavior. Useful for
-        // developing
-        CacheBuilderSpec spec = CacheBuilderSpec.disableCaching();
-
-        //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
-        addBundle(new AssetsBundle("/ui/", spec, "/ui/"));
 
     }
 
@@ -62,8 +51,8 @@ public class CoREService extends Service<CoREServiceConfiguration> {
      * @see com.yammer.dropwizard.AbstractService#initialize(com.yammer.dropwizard.config.Configuration, com.yammer.dropwizard.config.Environment)
      */
     @Override
-    protected void initialize(CoREServiceConfiguration configuration,
-                              Environment environment) throws Exception {
+    public void run(CoREServiceConfiguration configuration,
+                    Environment environment) throws Exception {
         JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();
 
         String unit = jpaConfig.getPersistenceUnit();
@@ -71,8 +60,18 @@ public class CoREService extends Service<CoREServiceConfiguration> {
         properties.put("openjpa.EntityManagerFactoryPool", "true");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
                                                                           properties);
-        environment.addProvider(new BasicAuthProvider<AuthenticatedPrincipal>(new ResourceAuthenticator(
-                                                          new ModelImpl(
-                                                                        emf.createEntityManager())), "CORE650"));
+        environment.addProvider(new BasicAuthProvider<AuthenticatedPrincipal>(
+                                                                              new ResourceAuthenticator(
+                                                                                                        new ModelImpl(
+                                                                                                                      emf.createEntityManager())),
+                                                                              "CORE650"));
+    }
+
+    @Override
+    public void initialize(Bootstrap<CoREServiceConfiguration> bootstrap) {
+        bootstrap.addBundle(new DataAccessBundle());
+
+        //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
+        bootstrap.addBundle(new AssetsBundle("/ui/", "/ui/"));
     }
 }

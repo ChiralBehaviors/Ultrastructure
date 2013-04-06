@@ -16,9 +16,9 @@
  */
 package com.hellblazer.CoRE.event;
 
+import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.hellblazer.CoRE.event.StatusCode.FIND_BY_NAME;
 import static com.hellblazer.CoRE.event.StatusCode.IS_TERMINAL_STATE;
-import static com.hellblazer.CoRE.meta.Model.FIND_BY_NAME_SUFFIX;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -33,7 +33,6 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -47,8 +46,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @NamedQueries({ @NamedQuery(name = FIND_BY_NAME, query = "select sc from StatusCode sc where sc.name = :name"), })
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQueries({
-                     @NamedNativeQuery(name = "statusCode"
-                                              + Model.NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('status_code', ?1, ?2)", resultClass = NameSearchResult.class),
+                     @NamedNativeQuery(name = "statusCode" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('status_code', ?1, ?2)", resultClass = NameSearchResult.class),
                      @NamedNativeQuery(name = IS_TERMINAL_STATE, query = "SELECT EXISTS( "
                                                                          + "SELECT sc.id "
                                                                          + "FROM ruleform.status_code_sequencing AS seq "

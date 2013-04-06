@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.hellblazer.CoRE.network;
+import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
+import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 
 import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
@@ -31,7 +33,6 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -42,10 +43,10 @@ import com.hellblazer.CoRE.resource.Resource;
 @javax.persistence.Entity
 @Table(name = "relationship", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "relationship_id_seq", sequenceName = "relationship_id_seq", allocationSize = 1)
-@NamedQueries({ @NamedQuery(name = "relationship" + Model.FIND_BY_NAME_SUFFIX, query = "select e from Relationship e where e.name = :name") })
+@NamedQueries({ @NamedQuery(name = "relationship" +  FIND_BY_NAME_SUFFIX, query = "select e from Relationship e where e.name = :name") })
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQueries({ @NamedNativeQuery(name = "relationship"
-                                               + Model.NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
+                                               +  NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Relationship extends ExistentialRuleform {
     private static final long serialVersionUID = 1L;
 

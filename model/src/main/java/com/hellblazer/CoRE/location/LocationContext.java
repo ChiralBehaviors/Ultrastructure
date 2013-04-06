@@ -16,6 +16,8 @@
  */
 package com.hellblazer.CoRE.location;
 
+import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
+import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_CONTEXTS;
 import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_RELATIONSHIPS;
 
@@ -38,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.attribute.Attributable;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 
@@ -52,10 +53,10 @@ import com.hellblazer.CoRE.resource.Resource;
 @Table(name = "location_context", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_context_id_seq", sequenceName = "location_context_id_seq")
 @NamedQueries({ @NamedQuery(name = "locationContext"
-                                   + Model.FIND_BY_NAME_SUFFIX, query = "select e from LocationContext e where e.name = :name"), })
+                                   +  FIND_BY_NAME_SUFFIX, query = "select e from LocationContext e where e.name = :name"), })
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQueries({ @NamedNativeQuery(name = "locationContext"
-                                               + Model.NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location_context', ?1, ?2)", resultClass = NameSearchResult.class) })
+                                               +  NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location_context', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class LocationContext extends ExistentialRuleform implements
         Attributable<ContextAttribute> {
     private static final long  serialVersionUID = 1L;

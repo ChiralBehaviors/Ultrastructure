@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
+import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.hellblazer.CoRE.coordinate.Coordinate.NESTING_QUERY;
 import static com.hellblazer.CoRE.coordinate.Coordinate.ORDERED_ATTRIBUTES;
 
@@ -41,7 +42,6 @@ import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.attribute.Attributable;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -56,8 +56,7 @@ import com.hellblazer.CoRE.resource.Resource;
 // ?1 = #inner, ?2 = #outer
                      @NamedNativeQuery(name = NESTING_QUERY, query = "SELECT * FROM ruleform.nest_coordinates(?1, ?2)", resultClass = Coordinate.class),
                      // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = "coordinate"
-                                              + Model.NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate', ?1, ?2)", resultClass = NameSearchResult.class) })
+                     @NamedNativeQuery(name = "coordinate" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Coordinate extends ExistentialRuleform implements
         Attributable<CoordinateAttribute> {
     private static final long        serialVersionUID   = 1L;

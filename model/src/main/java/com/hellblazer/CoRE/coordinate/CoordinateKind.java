@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
+import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.hellblazer.CoRE.coordinate.CoordinateKind.LOWER_LEVEL_KIND;
 import static com.hellblazer.CoRE.coordinate.CoordinateKind.TOP_LEVEL_KIND;
 
@@ -40,7 +41,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.Research;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -63,7 +63,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                             + "order by ck.name") })
 // ?1 = :queryString, ? 2 = :numberOfMatches                                                            
 @NamedNativeQueries({ @NamedNativeQuery(name = "coordinateKind"
-                                               + Model.NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate_kind', ?1, ?2)", resultClass = NameSearchResult.class) })
+                                               + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate_kind', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class CoordinateKind extends ExistentialRuleform {
     private static final long  serialVersionUID = 1L;
     public static final String TOP_LEVEL_KIND   = "coordinateKind.allTopLevelKinds";

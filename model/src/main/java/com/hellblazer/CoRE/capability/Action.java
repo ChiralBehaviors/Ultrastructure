@@ -29,7 +29,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -47,7 +46,7 @@ public class Action extends ExistentialRuleform {
 
     private static final long  serialVersionUID = 1L;
     public static final String FIND_BY_NAME     = "action"
-                                                  + Model.FIND_BY_NAME_SUFFIX;
+                                                  + FIND_BY_NAME_SUFFIX;
 
     @Id
     @GeneratedValue(generator = "action_id_seq", strategy = GenerationType.SEQUENCE)

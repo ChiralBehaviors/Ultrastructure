@@ -8,17 +8,6 @@
 	<name>Ultra-structure Core/650 Prototype</name>
 	<description>Exploration Project For Ultra-Structure</description>
 
-	<modules>
-		<module>drop-database</module>
-		<module>create-database</module>
-		<module>test-framework</module>
-		<module>model</module>
-		<module>core</module>
-		<module>data-access</module>
-		<module>service</module>
-		<module>order-processing-example</module>
-	</modules>
-
 	<properties>
 		<postgresql.driver.version>9.1-901.jdbc4</postgresql.driver.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,6 +28,56 @@
 		<testing.logging.dbunit>WARN</testing.logging.dbunit>
 		<testing.logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</testing.logging.consoleLayoutPattern>
 	</properties>
+
+	<modules>
+		<module>drop-database</module>
+		<module>create-database</module>
+		<module>test-framework</module>
+		<module>model</module>
+		<module>animations</module>
+		<module>configuration</module>
+		<module>data-access</module>
+		<module>service</module>
+		<module>order-processing-example</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.yammer.dropwizard</groupId>
+				<artifactId>dropwizard-core</artifactId>
+				<version>0.6.2</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>Maven central</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>eclipselink</id>
+			<url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo/</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>hellblazer-snapshots</id>
+			<url>https://repository-hal900000.forge.cloudbees.com/snapshot/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>reflections-repo</id>
+			<name>Reflections Maven2 Repository</name>
+			<url>http://reflections.googlecode.com/svn/repo</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>maven-repository.dev.java.net</id>
+			<name>Java.net Maven 2 Repository</name>
+			<url>http://download.java.net/maven/2</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<resources>
@@ -140,33 +179,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>Maven central</id>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>eclipselink</id>
-			<url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo/</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-        <pluginRepository>
-            <id>hellblazer-snapshots</id>
-            <url>https://repository-hal900000.forge.cloudbees.com/snapshot/</url>
-        </pluginRepository>
-		<pluginRepository>
-			<id>reflections-repo</id>
-			<name>Reflections Maven2 Repository</name>
-			<url>http://reflections.googlecode.com/svn/repo</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>maven-repository.dev.java.net</id>
-			<name>Java.net Maven 2 Repository</name>
-			<url>http://download.java.net/maven/2</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 </project>

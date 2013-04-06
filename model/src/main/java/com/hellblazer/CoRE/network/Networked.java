@@ -28,24 +28,33 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 public interface Networked<E extends Networked<E, N>, N extends NetworkRuleform<E>> {
+	String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX = ".findClassifiedAttributeAuthorizations";
+	String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findClassifiedAttributeAuthorizationsForAttribute";
+	String FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX = ".findClassifiedAttributes";
+	String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX = ".findGroupedAttributeAuthorizations";
+	String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findGroupedAttributeAuthorizationsForAttribute";
+	String FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX = ".findGroupedAttributes";
+	String UNLINKED_SUFFIX = ".unlinked";
+	String USED_RELATIONSHIPS_SUFFIX = ".getUsedRelationships";
+	String GET_CHILD_SUFFIX = ".getChild";
 
-    void addChildRelationship(N relationship);
+	void addChildRelationship(N relationship);
 
-    void addParentRelationship(N relationship);
+	void addParentRelationship(N relationship);
 
-    List<N> getImmediateChildren(EntityManager em);
+	List<N> getImmediateChildren(EntityManager em);
 
-    String getName();
+	String getName();
 
-    Set<N> getNetworkByChild();
+	Set<N> getNetworkByChild();
 
-    Set<N> getNetworkByParent();
+	Set<N> getNetworkByParent();
 
-    void link(Relationship r, E child, Resource updatedBy,
-              Resource inverseSoftware, EntityManager em);
+	void link(Relationship r, E child, Resource updatedBy,
+			Resource inverseSoftware, EntityManager em);
 
-    void setNetworkByChild(Set<N> theNetworkByChild);
+	void setNetworkByChild(Set<N> theNetworkByChild);
 
-    void setNetworkByParent(Set<N> theNetworkByParent);
+	void setNetworkByParent(Set<N> theNetworkByParent);
 
 }

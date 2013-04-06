@@ -19,7 +19,7 @@ package com.hellblazer.CoRE.entity;
 import static com.hellblazer.CoRE.entity.Entity.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.entity.EntityNetwork.GET_CHILD;
 import static com.hellblazer.CoRE.entity.EntityNetwork.GET_USED_RELATIONSHIPS;
-import static com.hellblazer.CoRE.meta.NetworkedModel.USED_RELATIONSHIPS_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
 
 import java.util.List;
 import java.util.Set;

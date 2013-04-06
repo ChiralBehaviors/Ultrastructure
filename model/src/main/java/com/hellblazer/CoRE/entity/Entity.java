@@ -32,13 +32,6 @@ import static com.hellblazer.CoRE.entity.Entity.SUBSUMING_ENTITIES;
 import static com.hellblazer.CoRE.entity.Entity.UPDATED_BY;
 import static com.hellblazer.CoRE.entity.Entity.UPDATED_BY_NAME;
 import static com.hellblazer.CoRE.entity.EntityLocationNetwork.LOCATION_RULES;
-import static com.hellblazer.CoRE.meta.Model.GET_UPDATED_BY_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
-import static com.hellblazer.CoRE.meta.NetworkedModel.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 
 import java.util.List;
 import java.util.Set;
@@ -63,7 +56,6 @@ import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.coordinate.CoordinateBundle;
 import com.hellblazer.CoRE.coordinate.CoordinateKind;
 import com.hellblazer.CoRE.location.LocationCalculator;
-import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
@@ -131,7 +123,7 @@ public class Entity extends ExistentialRuleform implements
     public static final String   FIND_ATTRIBUTE_AUTHORIZATIONS                          = "entity.findAttributeAuthorizations";
     public static final String   FIND_BY_ID                                             = "entity.findById";
     public static final String   FIND_BY_NAME                                           = "entity"
-                                                                                          + Model.FIND_BY_NAME_SUFFIX;
+                                                                                          + FIND_BY_NAME_SUFFIX;
     public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "entity"
                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
     public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "entity"
@@ -145,7 +137,7 @@ public class Entity extends ExistentialRuleform implements
                                                                                           + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
     public static final String   IMMEDIATE_CHILDREN_NETWORK_RULES                       = "entity.immediateChildrenNetworkRules";
     public static final String   NAME_SEARCH                                            = "entity"
-                                                                                          + Model.NAME_SEARCH_SUFFIX;
+                                                                                          + NAME_SEARCH_SUFFIX;
     public static final String   SUBSUMING_ENTITIES                                     = "entity.subsumingEntities";
     public static final String   UNIQUE_ENTITY_BY_ATTRIBUTE_VALUE                       = "entity.uniqueEntityByAttributeValue";
     public static final String   UPDATED_BY                                             = "entity"

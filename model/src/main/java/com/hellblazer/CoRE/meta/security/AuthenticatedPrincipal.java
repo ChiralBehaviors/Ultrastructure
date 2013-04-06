@@ -20,7 +20,7 @@ package com.hellblazer.CoRE.meta.security;
 import java.util.Collections;
 import java.util.List;
 
-import com.hellblazer.CoRE.meta.Aspect;
+import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**

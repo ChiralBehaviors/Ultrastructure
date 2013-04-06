@@ -43,21 +43,26 @@ import com.hellblazer.CoRE.resource.Resource;
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 abstract public class Ruleform implements Serializable, Cloneable {
+    public static final String FIND_BY_NAME_SUFFIX   = ".findByName";
+    public static final String NAME_SEARCH_SUFFIX    = ".namesearch";
+    public static final String GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+    public static final String FIND_BY_ID_SUFFIX     = ".findById";
+    public static final String FIND_FLAGGED_SUFFIX   = ".findFlagged";
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID      = 1L;
 
-    private String            notes;
+    private String             notes;
 
     @ManyToOne
     @JoinColumn(name = "research")
-    private Research          research;
+    private Research           research;
 
     @Column(name = "update_date")
-    private Timestamp         updateDate;
+    private Timestamp          updateDate;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private Resource          updatedBy;
+    private Resource           updatedBy;
 
     public Ruleform() {
     }
@@ -98,7 +103,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return clone;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -154,7 +161,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return updatedBy;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override

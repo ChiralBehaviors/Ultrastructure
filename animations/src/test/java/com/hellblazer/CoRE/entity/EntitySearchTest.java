@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE.entity.dao;
+package com.hellblazer.CoRE.entity;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -36,9 +36,9 @@ import com.hellblazer.CoRE.test.DatabaseTestContext;
  * @author hhildebrand
  * 
  */
-public class EntityDAOTest extends DatabaseTestContext {
+public class EntitySearchTest extends DatabaseTestContext {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EntityDAOTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EntitySearchTest.class);
 
     @Test()
     public void findByIdTest() {

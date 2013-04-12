@@ -82,7 +82,7 @@ public class EntitySearchTest extends DatabaseTestContext {
 
     @Override
     protected void prepareSettings() {
-        dataSetLocation = "EntityDAOTestSeedData.xml";
+        dataSetLocation = "EntityTestSeedData.xml";
         beforeTestOperations.add(DatabaseOperation.CLEAN_INSERT);
     }
 

@@ -64,7 +64,7 @@ public class CoREService extends Service<CoREServiceConfiguration> {
                                                                               new ResourceAuthenticator(
                                                                                                         new ModelImpl(
                                                                                                                       emf.createEntityManager())),
-                                                                              "CORE650"));
+                                                                              "CoRE"));
     }
 
     @Override

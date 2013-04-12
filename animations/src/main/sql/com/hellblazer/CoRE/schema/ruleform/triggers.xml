@@ -10,7 +10,6 @@
     <include relativeToChangelogFile="true" file="tables/job/trigger-a_see_if_user_can_insert.xml"/>
     <include relativeToChangelogFile="true" file="tables/job/trigger-check_next_state_is_valid.xml"/>
     <include relativeToChangelogFile="true" file="tables/job/trigger-create_implicit_jobs.xml"/>
-    <include relativeToChangelogFile="true" file="tables/job/trigger-job_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/job/trigger-log_inserts_in_job_chronology.xml"/>
     <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_1_children.xml"/>
     <include relativeToChangelogFile="true" file="tables/job/trigger-process_state_change_2_siblings.xml"/>

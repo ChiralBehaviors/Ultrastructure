@@ -8,6 +8,7 @@
     
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/context_attribute/trigger-context_attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute/trigger-coordinate_attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_kind_definition/trigger-coordinate_kind_update_date.xml"/>
@@ -54,6 +55,7 @@
     <include relativeToChangelogFile="true" file="tables/resource_network/trigger-resource_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_restrict_pinnned.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/service_sequencing_authorization/trigger-service_sequencing_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-status_code_sequencing_updated_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_restrict_pinned_.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_updated_date.xml"/>

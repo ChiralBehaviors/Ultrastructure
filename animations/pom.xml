@@ -9,6 +9,11 @@
 	<artifactId>animations</artifactId>
 	<name>CoRE Animations</name>
 	<description>Animations for the CoRE model</description>
+	<properties>
+		<animation.jar.name>model</animation.jar.name>
+		<animation.jar.file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</animation.jar.file>
+		<main.sql>${project.basedir}/src/main/sql</main.sql>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
@@ -69,6 +74,14 @@
 	</dependencies>
 	<build>
 		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
@@ -131,6 +144,36 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sql-maven-plugin</artifactId>
+				<version>1.5</version>
+				<dependencies>
+					<dependency>
+						<groupId>postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>${postgresql.driver.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>set-classpath</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<driver>org.postgresql.Driver</driver>
+							<url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</url>
+							<username>${testing.db.login}</username>
+							<password>${testing.db.password}</password>
+							<autocommit>true</autocommit>
+							<sqlCommand>SELECT sqlj.set_classpath('ruleform',
+								'${pljavaClassPath}');</sqlCommand>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -173,6 +216,25 @@
 										</versionRange>
 										<goals>
 											<goal>update</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											sql-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.5,)
+										</versionRange>
+										<goals>
+											<goal>execute</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

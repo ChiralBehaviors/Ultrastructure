@@ -17,8 +17,6 @@
     <include relativeToChangelogFile="true" file="triggerFunctions/process_child_changes.xml"/>
     <include relativeToChangelogFile="true" file="triggerFunctions/process_parent_changes.xml"/>
     <include relativeToChangelogFile="true" file="triggerFunctions/process_sibling_changes.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/restrict_pinned.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions/set_update_date.xml"/>
     <include relativeToChangelogFile="true" file="triggerFunctions/valid_resource_attribute.xml"/>
     <include relativeToChangelogFile="true" file="triggerFunctions/validate_state_graph.xml"/>
 </databaseChangeLog>

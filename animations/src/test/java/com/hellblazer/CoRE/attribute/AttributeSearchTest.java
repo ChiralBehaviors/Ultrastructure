@@ -60,7 +60,7 @@ public class AttributeSearchTest extends DatabaseTestContext {
 
     @Override
     protected void prepareSettings() {
-        dataSetLocation = "AttributeDAOTestData.xml";
+        dataSetLocation = "AttributeTestData.xml";
         beforeTestOperations.add(DatabaseOperation.CLEAN_INSERT);
     }
 

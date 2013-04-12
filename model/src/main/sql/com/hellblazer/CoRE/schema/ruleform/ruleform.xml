@@ -9,6 +9,7 @@
         <dbms type="postgresql"/>
     </preConditions>
     <include relativeToChangelogFile="true" file="schemas.xml"/>
+    <include relativeToChangelogFile="true" file="functions.xml"/>
     <include relativeToChangelogFile="true" file="roles.xml"/>
     <include relativeToChangelogFile="true" file="domains.xml"/>
     <include relativeToChangelogFile="true" file="tables.xml"/>

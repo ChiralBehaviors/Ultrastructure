@@ -30,6 +30,7 @@ import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
 import com.hellblazer.CoRE.meta.Model;
+import static org.junit.Assert.*;
 
 /**
  * Common superclass for tests that need the initialized Kernel and model.
@@ -46,6 +47,7 @@ public class AbstractModelTest {
     @BeforeClass
     public static void initializeModel() throws Exception {
         InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
+        assertNotNull("jpa properties missing", is);
         Properties properties = new Properties();
         properties.load(is);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,

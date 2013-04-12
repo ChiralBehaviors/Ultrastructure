@@ -49,10 +49,8 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * 
      * @return the new instance
      */
-    public RuleForm create(String name,
-                           String description,
-                           Aspect<RuleForm> aspect,
-                           @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
+    public RuleForm create(String name, String description,
+                           Aspect<RuleForm> aspect, Aspect<RuleForm>... aspects);
 
     /**
      * Answer the list of unlinked

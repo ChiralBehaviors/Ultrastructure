@@ -86,7 +86,6 @@ public class EntityModelImpl
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta.Aspect<RuleForm>[])
      */
-    @SafeVarargs
     @Override
     final public Entity create(String name, String description,
                                Aspect<Entity> aspect, Aspect<Entity>... aspects) {

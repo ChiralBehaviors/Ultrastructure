@@ -86,7 +86,6 @@ public class ResourceModelImpl
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta.Aspect<RuleForm>[])
      */
-    @SafeVarargs
     @Override
     public final Resource create(String name, String description,
                                  Aspect<Resource> aspect,

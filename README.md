@@ -63,4 +63,11 @@ To drop the database and start from scratch, simply add "-Ddrop=true" to the ful
 
     $ cd drop-database
     $ mvn install -Ddrop=true
+    
+Eclipse setup
 
+Use a yoxos profile: https://yoxos.eclipsesource.com/userdata/profile/dd6f00ea546ff9b48d9e3e38c5a8b421
+
+In theory, if you install Yoxos (http://dzcriijehao7a.cloudfront.net/5.5.1/Yoxos_Launcher-5.5.1-macosx.cocoa.x86_64.zip), you should be able to use the link above to get an exact clone of the IDE environment, down to the plugins, code formatting preferences and code clean up prefs.
+
+Once you've installed and gotten Eclipse fired up (just double click the yoxos profile you downloaded), File -> Import... -> Maven -> Existing Maven Projects. Navigate to the Ultrastructure directory and hit next. It should find the top level maven project plus all of the sub projects.

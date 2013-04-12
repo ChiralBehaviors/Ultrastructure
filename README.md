@@ -7,7 +7,11 @@ To run this software you will need a bit of infrastructure in place:
 
 First, you'll need the PL/SQL virtual appliance that runs a preconfigured PostgreSQL database.
 You can download this appliance here: https://www.dropbox.com/s/2645ji8nd1peol6/CoRE-650-appliance.zip
-I will add instructions as to how to configure the VirtualBox machine you import.
+Mac users: you'll need Stuffit Expander to unzip this file. Go to http://www.stuffit.com/ and grab it (it's free). The default OSX extractor won't work.
+
+To configure the VM, you have to create a host-only network. Fire up VirtualBox, open up Preferences -> Network and create a new host-only network from there. It shouldn't need any configuration. After that, you should be able to start the VM successfully. 
+
+The ubuntu user password is 'ubuntu' and the postgres password is 'postgress!'
     
 You will need the Apache Maven build tool (available at http://maven.apache.org) version 3.x
 

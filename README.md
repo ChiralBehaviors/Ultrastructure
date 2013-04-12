@@ -44,6 +44,8 @@ You can build the project:
     $ cd <project root>
     $ mvn clean install
 
+If you get an error that user 'core' already exists, you need to drop the database and start from scratch. Scroll down to the bottom to see how.
+
 Now you can work directly with the database:
 
     $ cd schema

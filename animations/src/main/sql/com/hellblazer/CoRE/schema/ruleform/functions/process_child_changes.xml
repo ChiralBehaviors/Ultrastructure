@@ -8,37 +8,10 @@
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.process_child_changes()
-              RETURNS trigger AS
-            $BODY$
-            DECLARE
-                _seq ruleform.service_sequencing_authorization%ROWTYPE;
-                _kid ruleform.job%ROWTYPE;
-            BEGIN
-                RAISE NOTICE 'Processing children of Job %', NEW.id;
-                -- select child actions ordered by sequence number
-                FOR _seq IN SELECT seq.* FROM ruleform.service_sequencing_authorization AS seq
-                WHERE (seq.parent_event, seq.status_code) = (NEW.event, NEW.status)
-                  AND next_child_event IS NOT NULL AND next_child_status IS NOT NULL
-                ORDER BY seq.sequence_number LOOP
-                    -- This can be merged into the same outer query... just doing quick and dirty now
-            
-                    -- for each child job that is active (not UNSET or terminal) update their status to this one
-                    -- Should probably have a constraint that the given status should be terminal for the event,
-                    --    and that it can be transitioned to from any non-terminal state for that event
-                    FOR _kid IN SELECT j.* FROM ruleform.job AS j
-                    WHERE j.event = _seq.next_child_event
-                      AND ruleform.is_job_active( j.id )
-                      AND j.parent = (NEW.id)
-                    LOOP
-                        PERFORM ruleform.change_job_status_code(_kid.id, _seq.next_child_status, 'Automatically switching to ' || ruleform.status_code_name(_seq.next_child_status) || ' via direct communication from parent job ' || NEW.id);
-                    END LOOP;
-                END LOOP;
-            
-                RETURN NEW;
-            END;
-            $BODY$
-              LANGUAGE plpgsql VOLATILE
-              COST 100;
+                RETURNS trigger
+                AS 'com.hellblazer.CoRE.event.animation.JobAnimations.processChildChanges'
+                LANGUAGE javaU VOLATILE
+              COST 100; 
             ALTER FUNCTION ruleform.process_child_changes()
               OWNER TO core;
             ]]>

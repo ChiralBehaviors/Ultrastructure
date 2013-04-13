@@ -128,6 +128,21 @@ public class JobAnimations extends Animations {
         InDatabase.get().logModifiedService(triggerData.getNew().getLong("service"));
     }
 
+    public static void processChildChanges(TriggerData triggerData)
+                                                                   throws SQLException {
+        InDatabase.get().processChildChanges(triggerData.getNew().getLong("id"));
+    }
+
+    public static void processParentChanges(TriggerData triggerData)
+                                                                    throws SQLException {
+        InDatabase.get().processParentChanges(triggerData.getNew().getLong("id"));
+    }
+
+    public static void processSiblingChanges(TriggerData triggerData)
+                                                                     throws SQLException {
+        InDatabase.get().processSiblingChanges(triggerData.getNew().getLong("id"));
+    }
+
     public static void validate_state_graph(TriggerData triggerData)
                                                                     throws SQLException {
         establishContext();
@@ -137,13 +152,6 @@ public class JobAnimations extends Animations {
     private final List<Entity> modifiedEvents = new ArrayList<Entity>();
 
     /**
-     * @param context
-     */
-    public JobAnimations(AnimationContext context) {
-        super(context);
-    }
-
-    /**
      * Only valid within the DB
      */
     protected JobAnimations() {
@@ -151,26 +159,10 @@ public class JobAnimations extends Animations {
     }
 
     /**
-     * @param job
+     * @param context
      */
-    public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job) {
-        context.getJobModel().automaticallyGenerateImplicitJobsForExplicitJobs(job);
-    }
-
-    public List<Job> getActiveJobs(Resource resource) {
-        return null;
-    }
-
-    public void logModifiedService(Long scs) {
-        modifiedEvents.add(context.getEm().find(Entity.class, scs));
-    }
-
-    public void validateStateGraph() throws SQLException {
-        try {
-            context.getJobModel().validateStateGraph(modifiedEvents);
-        } finally {
-            modifiedEvents.clear();
-        }
+    public JobAnimations(AnimationContext context) {
+        super(context);
     }
 
     private void addJobChronologyRule(Long jobId, Timestamp timestamp,
@@ -181,6 +173,13 @@ public class JobAnimations extends Animations {
                                                context.getEm().find(StatusCode.class,
                                                                     status),
                                                notes);
+    }
+
+    /**
+     * @param job
+     */
+    public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job) {
+        context.getJobModel().automaticallyGenerateImplicitJobsForExplicitJobs(job);
     }
 
     /**
@@ -221,6 +220,10 @@ public class JobAnimations extends Animations {
         context.getJobModel().generateImplicitJobs((Job) null);
     }
 
+    public List<Job> getActiveJobs(Resource resource) {
+        return null;
+    }
+
     /**
      * @param service
      * @return
@@ -258,5 +261,41 @@ public class JobAnimations extends Animations {
                                                                           statusCode),
                                                      context.getEm().find(Entity.class,
                                                                           service));
+    }
+
+    public void logModifiedService(Long scs) {
+        modifiedEvents.add(context.getEm().find(Entity.class, scs));
+    }
+
+    public void processChildChanges(Job job) {
+        context.getJobModel().processChildChanges(job);
+    }
+
+    public void processParentChanges(Job job) {
+        context.getJobModel().processParentChanges(job);
+    }
+
+    public void processSiblingChanges(Job job) {
+        context.getJobModel().processSiblingChanges(job);
+    }
+
+    private void processSiblingChanges(long jobId) {
+        processSiblingChanges(context.getEm().find(Job.class, jobId));
+    }
+
+    private void processChildChanges(long jobId) {
+        processChildChanges(context.getEm().find(Job.class, jobId));
+    }
+
+    private void processParentChanges(long jobId) {
+        processParentChanges(context.getEm().find(Job.class, jobId));
+    }
+
+    public void validateStateGraph() throws SQLException {
+        try {
+            context.getJobModel().validateStateGraph(modifiedEvents);
+        } finally {
+            modifiedEvents.clear();
+        }
     }
 }

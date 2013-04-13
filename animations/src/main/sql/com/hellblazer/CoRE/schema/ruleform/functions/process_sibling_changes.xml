@@ -8,34 +8,10 @@
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.process_sibling_changes()
-              RETURNS trigger AS
-            $BODY$
-            DECLARE
-                _seq ruleform.service_sequencing_authorization%ROWTYPE;
-                _sib ruleform.job%ROWTYPE;
-            BEGIN
-                RAISE NOTICE 'Processing siblings of Job %', NEW.id;
-                -- select sibling actions ordered by sequence number
-                FOR _seq IN SELECT seq.* FROM ruleform.service_sequencing_authorization AS seq
-                WHERE (seq.parent, seq.status_code) = (NEW.event, NEW.status)
-                  AND next_sibling IS NOT NULL AND next_sibling_status IS NOT NULL
-                ORDER BY seq.sequence_number LOOP
-                    -- Do something
-                    FOR _sib IN SELECT j.* FROM ruleform.job AS j
-                        JOIN ruleform.job AS parent ON parent.id = j.parent
-                    WHERE j.event = _seq.next_sibling
-                      AND j.status = ruleform.status_code_id('(UNSET)')
-                      AND j.parent = NEW.parent
-                    LOOP
-                        PERFORM ruleform.change_job_status_code(_sib.id, _seq.next_sibling_status, 'Automatically switching to ' || ruleform.status_code_name(_seq.next_sibling_status) || ' via direct communication from sibling job ' || NEW.id);
-                    END LOOP;
-                END LOOP;
-            
-                RETURN NEW;
-            END;
-            $BODY$
-              LANGUAGE plpgsql VOLATILE
-              COST 100;
+                RETURNS trigger
+                AS 'com.hellblazer.CoRE.event.animation.JobAnimations.processSiblingChanges'
+                LANGUAGE javaU VOLATILE
+              COST 100; 
             ALTER FUNCTION ruleform.process_sibling_changes()
               OWNER TO core;
             ]]>

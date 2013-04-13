@@ -5,34 +5,21 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-	<include relativeToChangelogFile="true" file="functions/resource_id.xml" />
 	<include relativeToChangelogFile="true" file="functions/_add_id.xml" />
 	<include relativeToChangelogFile="true" file="functions/_clear_ids.xml" />
 	<include relativeToChangelogFile="true" file="functions/_contains_id.xml" />
 	<include relativeToChangelogFile="true" file="functions/_ids.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/_add_job_chronology_rule.xml" />
-	<include relativeToChangelogFile="true" file="functions/attribute_id.xml" />
-	<include relativeToChangelogFile="true" file="functions/attribute_name.xml" />
+		file="functions/_add_job_chronology_rule.xml" /> 
 	<include relativeToChangelogFile="true"
-		file="functions/attribute_usage.xml" />
-	<include relativeToChangelogFile="true" file="functions/coordinate_id.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/coordinate_kind_id.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/coordinate_kind_name.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/coordinate_name.xml" />
+		file="functions/attribute_usage.xml" />   
 	<include relativeToChangelogFile="true"
 		file="functions/create_entity_usage_view.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/create_individual_entity_usage_view.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/entity_by_attribute_value.xml" />
-	<include relativeToChangelogFile="true" file="functions/entity_id.xml" />
-	<include relativeToChangelogFile="true" file="functions/entity_name.xml" />
+		file="functions/entity_by_attribute_value.xml" /> 
 	<include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
-	<include relativeToChangelogFile="true" file="functions/status_code_id.xml" />
 	<include relativeToChangelogFile="true" file="functions/get_attribute.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/get_attribute_type.xml" />
@@ -43,10 +30,7 @@
 	<include relativeToChangelogFile="true"
 		file="functions/get_terminal_states.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/is_valid_as_next_status_code.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/location_context_name.xml" />
-	<include relativeToChangelogFile="true" file="functions/location_id.xml" />
+		file="functions/is_valid_as_next_status_code.xml" />  
 	<include relativeToChangelogFile="true"
 		file="functions/nest_coordinates.xml" />
 	<include relativeToChangelogFile="true"
@@ -61,20 +45,35 @@
 	<include relativeToChangelogFile="true"
 		file="functions/np_propagate_network_with_deduction.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/relationship_id.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/relationship_name.xml" />
-	<include relativeToChangelogFile="true" file="functions/research_id.xml" />
-	<include relativeToChangelogFile="true" file="functions/research_name.xml" />
-	<include relativeToChangelogFile="true"
 		file="functions/resource_get_allowed_text_values.xml" />
-	<include relativeToChangelogFile="true" file="functions/resource_name.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/status_code_name.xml" />
 	<include relativeToChangelogFile="true" file="functions/transform.xml" />
 	<include relativeToChangelogFile="true" file="functions/translation.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/unique_entity_lookup_by_attribute.xml" />
-	<include relativeToChangelogFile="true" file="functions/unit_id.xml" />
-	<include relativeToChangelogFile="true" file="functions/unit_name.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/allowed_to_insert_job.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/automatically_generate_implicit_jobs_for_explicit_jobs.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/ensure_next_state_is_valid.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/ensure_valid_service_and_status.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/ensure_valid_initial_state.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/hash_file.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/log_inserts_in_job_chronology.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/log_modified_service_status_code_sequencing.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/process_child_changes.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/process_parent_changes.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/process_sibling_changes.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/valid_resource_attribute.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/validate_state_graph.xml" />
 </databaseChangeLog>

@@ -9,7 +9,6 @@
         <dbms type="postgresql"/>
     </preConditions>
     <include relativeToChangelogFile="true" file="functions.xml"/>
-    <include relativeToChangelogFile="true" file="triggerFunctions.xml"/>
     <include relativeToChangelogFile="true" file="triggers.xml"/>
 
 </databaseChangeLog>

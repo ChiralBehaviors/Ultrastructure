@@ -59,15 +59,27 @@ public class JobAnimations extends Animations {
 
     private static final Logger log = Logger.getLogger(JobAnimations.class.getCanonicalName());
 
-    public static void add_job_chronology_rule(Long jobId, Timestamp timestamp,
-                                               Long status, String notes)
-                                                                         throws SQLException {
-        InDatabase.get().addJobChronologyRule(jobId, timestamp, status, notes);
-    }
-
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(TriggerData triggerData)
                                                                                                       throws SQLException {
+        establishContext();
         InDatabase.get().automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
+    }
+
+    public static void logInsertsInJobChronology(TriggerData triggerData)
+                                                                         throws SQLException {
+        establishContext();
+        InDatabase.get().logInsertsInJobChronology(triggerData.getNew().getLong("id"),
+                                                   triggerData.getNew().getLong("status"));
+    }
+
+    private void logInsertsInJobChronology(long jobId, long statusId) {
+        context.getJobModel().addJobChronology(context.getEm().find(Job.class,
+                                                                    jobId),
+                                               new Timestamp(
+                                                             System.currentTimeMillis()),
+                                               context.getEm().find(StatusCode.class,
+                                                                    statusId),
+                                               "Initial insertion of job");
     }
 
     public static void ensure_next_state_is_valid(TriggerData triggerData)
@@ -80,6 +92,7 @@ public class JobAnimations extends Animations {
 
     public static void ensure_valid_initial_state(TriggerData triggerData)
                                                                           throws SQLException {
+        establishContext();
         if (!WellKnownStatusCode.UNSET.id().equals(triggerData.getNew().getLong("status"))) {
             if (log.isLoggable(Level.INFO)) {
                 log.info(String.format("Setting status of job to unset (%s)",
@@ -91,10 +104,12 @@ public class JobAnimations extends Animations {
     }
 
     public static void generate_implicit_jobs(Long service) {
+        establishContext();
         InDatabase.get().generateImplicitJobs(service);
     }
 
     public static Long get_initial_state(Long service) {
+        establishContext();
         return InDatabase.get().getInitialState(service);
     }
 
@@ -163,16 +178,6 @@ public class JobAnimations extends Animations {
      */
     public JobAnimations(AnimationContext context) {
         super(context);
-    }
-
-    private void addJobChronologyRule(Long jobId, Timestamp timestamp,
-                                      Long status, String notes) {
-        context.getJobModel().addJobChronology(context.getEm().find(Job.class,
-                                                                    jobId),
-                                               timestamp,
-                                               context.getEm().find(StatusCode.class,
-                                                                    status),
-                                               notes);
     }
 
     /**

@@ -10,15 +10,15 @@
 	<include relativeToChangelogFile="true" file="functions/_contains_id.xml" />
 	<include relativeToChangelogFile="true" file="functions/_ids.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/_add_job_chronology_rule.xml" /> 
-	<include relativeToChangelogFile="true"
-		file="functions/attribute_usage.xml" />   
+		file="functions/attribute_usage.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/create_entity_usage_view.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/create_individual_entity_usage_view.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/entity_by_attribute_value.xml" /> 
+		file="functions/entity_by_attribute_value.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/log_inserts_in_job_chronology.xml" />
 	<include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
 	<include relativeToChangelogFile="true" file="functions/get_attribute.xml" />
 	<include relativeToChangelogFile="true"
@@ -30,7 +30,7 @@
 	<include relativeToChangelogFile="true"
 		file="functions/get_terminal_states.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/is_valid_as_next_status_code.xml" />  
+		file="functions/is_valid_as_next_status_code.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/nest_coordinates.xml" />
 	<include relativeToChangelogFile="true"
@@ -60,10 +60,7 @@
 		file="functions/ensure_valid_service_and_status.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/ensure_valid_initial_state.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/hash_file.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/log_inserts_in_job_chronology.xml" />
+	<include relativeToChangelogFile="true" file="functions/hash_file.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/log_modified_service_status_code_sequencing.xml" />
 	<include relativeToChangelogFile="true"

@@ -430,6 +430,12 @@ public class JobModelImpl implements JobModel {
         }
         return jobs;
     }
+    
+    public List<StatusCode> getTerminalStates(Job job) {
+        TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES, StatusCode.class);
+        
+        return query.getResultList();
+    }
 
     /**
      * @param parentJob

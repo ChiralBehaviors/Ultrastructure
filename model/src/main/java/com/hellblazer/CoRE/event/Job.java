@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.event.Job.GET_ATTRIBUTE_VALUE;
 import static com.hellblazer.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_NEXT_STATUS_CODES;
 import static com.hellblazer.CoRE.event.Job.GET_SUB_JOBS_ASSIGNED_TO;
+import static com.hellblazer.CoRE.event.Job.GET_TERMINAL_STATES;
 import static com.hellblazer.CoRE.event.Job.GET_UNSET_SIBLINGS;
 import static com.hellblazer.CoRE.event.Job.HAS_SCS;
 import static com.hellblazer.CoRE.event.Job.INITIAL_STATES;
@@ -85,6 +86,17 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                     + "WHERE j.parent = :job "
                                                                     + "  AND j.assignTo = :resource") })
 @NamedNativeQueries({
+                     @NamedNativeQuery(name = GET_TERMINAL_STATES, query = "SELECT DISTINCT(sc.*) "
+                                                                           + "FROM ruleform.status_code_sequencing AS seq "
+                                                                           + "    JOIN ruleform.status_code AS sc ON seq.child_code = sc.id "
+                                                                           + "WHERE "
+                                                                           + "  NOT EXISTS ( "
+                                                                           + "    SELECT parent_code FROM ruleform.status_code_sequencing "
+                                                                           + "    WHERE event = seq.event "
+                                                                           + "      AND parent_code = seq.child_code "
+                                                                           + "  ) "
+                                                                           + "  AND event = :event "
+                                                                           + "ORDER BY sc.name ASC"),
                      @NamedNativeQuery(name = GET_UNSET_SIBLINGS, query = "SELECT j FROM Job AS j "
                                                                           + "    JOIN Job AS parent ON parentId = j.parentJob "
                                                                           + "WHERE j.service = :service "
@@ -165,6 +177,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String GET_NEXT_STATUS_CODES             = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS               = "job.getStatusCodeIds";
     public static final String GET_SUB_JOBS_ASSIGNED_TO          = "job.getChildJobsAssignedTo";
+    public static final String GET_TERMINAL_STATES               = "job.getTerminalStates";
     public static final String GET_UNSET_SIBLINGS                = "job.getUnsetSiblings";
     public static final String HAS_SCS                           = "job.hasScs";
     public static final String INITIAL_STATES                    = "job.initialState";

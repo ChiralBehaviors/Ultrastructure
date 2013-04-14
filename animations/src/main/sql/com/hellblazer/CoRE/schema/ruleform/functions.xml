@@ -19,7 +19,6 @@
 		file="functions/entity_by_attribute_value.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/log_inserts_in_job_chronology.xml" />
-	<include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
 	<include relativeToChangelogFile="true" file="functions/get_attribute.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/get_attribute_type.xml" />
@@ -27,10 +26,6 @@
 		file="functions/get_location_context.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/get_related_locations.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/get_terminal_states.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/is_valid_as_next_status_code.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/nest_coordinates.xml" />
 	<include relativeToChangelogFile="true"
@@ -49,8 +44,6 @@
 	<include relativeToChangelogFile="true" file="functions/transform.xml" />
 	<include relativeToChangelogFile="true" file="functions/translation.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/unique_entity_lookup_by_attribute.xml" />
-	<include relativeToChangelogFile="true"
 		file="functions/allowed_to_insert_job.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/automatically_generate_implicit_jobs_for_explicit_jobs.xml" />
@@ -60,7 +53,6 @@
 		file="functions/ensure_valid_service_and_status.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/ensure_valid_initial_state.xml" />
-	<include relativeToChangelogFile="true" file="functions/hash_file.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/log_modified_service_status_code_sequencing.xml" />
 	<include relativeToChangelogFile="true"

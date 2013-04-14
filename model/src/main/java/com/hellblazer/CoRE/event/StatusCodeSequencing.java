@@ -28,8 +28,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -46,14 +44,14 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the status_code_sequencing database table.
  * 
  */
-@NamedNativeQueries({ @NamedNativeQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT EXISTS( "
-                                                                             + "SELECT id "
-                                                                             + "FROM ruleform.status_code_sequencing "
-                                                                             + "WHERE service = ? "
-                                                                             + "  AND parent_code = ? "
-                                                                             + "  AND child_code = ?"
-                                                                             + ")") })
 @NamedQueries({
+               @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT EXISTS( "
+                                                                + "SELECT id "
+                                                                + "FROM ruleform.status_code_sequencing "
+                                                                + "WHERE service = ? "
+                                                                + "  AND parent_code = ? "
+                                                                + "  AND child_code = ?"
+                                                                + ")"),
                @NamedQuery(name = GET_PARENT_STATUS_CODES, query = "SELECT DISTINCT(scs.parentCode) "
                                                                    + " FROM StatusCodeSequencing scs "
                                                                    + " WHERE scs.service = :service"),

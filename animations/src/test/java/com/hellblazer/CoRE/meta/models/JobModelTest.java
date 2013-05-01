@@ -52,6 +52,7 @@ public class JobModelTest extends AbstractModelTest {
         @SuppressWarnings("unused")
         JobModel jobModel = model.getJobModel();
         loadJobTestData();
+        
     }
 
     @Test

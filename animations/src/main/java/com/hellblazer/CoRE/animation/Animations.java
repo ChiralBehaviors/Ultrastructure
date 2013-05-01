@@ -20,10 +20,10 @@ package com.hellblazer.CoRE.animation;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hellblazer.CoRE.meta.security.AuthenticatedPrincipal;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * Abstract superclass of animations. Provides a mechanism to set up the

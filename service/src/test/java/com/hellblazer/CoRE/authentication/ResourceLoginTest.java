@@ -36,11 +36,11 @@ import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.meta.security.AuthenticatedPrincipal;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.resource.ResourceAttribute;
+import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 import com.yammer.dropwizard.auth.basic.BasicCredentials;
 
 /**

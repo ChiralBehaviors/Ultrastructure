@@ -35,7 +35,7 @@ import com.hellblazer.CoRE.meta.EntityModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.meta.security.AuthenticatedPrincipal;
+import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * The context in which to run CoRE animations.

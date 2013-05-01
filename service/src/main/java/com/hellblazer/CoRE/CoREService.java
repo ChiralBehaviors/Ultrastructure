@@ -26,7 +26,7 @@ import com.hellblazer.CoRE.authentication.ResourceAuthenticator;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.meta.security.AuthenticatedPrincipal;
+import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.auth.basic.BasicAuthProvider;

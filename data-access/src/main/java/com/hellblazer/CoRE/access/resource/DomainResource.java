@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.CoRE.access.formatting.PropertiesFormatter;
 import com.hellblazer.CoRE.access.formatting.XMLFormatter;
-import com.hellblazer.CoRE.meta.security.AuthenticatedPrincipal;
+import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 import com.yammer.dropwizard.auth.Auth;
 import com.yammer.metrics.annotation.Timed;
 

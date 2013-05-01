@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hellblazer.CoRE.meta.security;
+package com.hellblazer.CoRE.security;
 
 import java.util.Collections;
 import java.util.List;

@@ -9,7 +9,7 @@
 		<sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.validate_state_graph()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.event.animation.JobAnimations.validate_state_graph'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.validate_state_graph'
                 LANGUAGE javaU VOLATILE
                   COST 100;
             ]]>

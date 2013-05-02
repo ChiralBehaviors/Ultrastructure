@@ -9,7 +9,7 @@
 		<sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.log_modified_service_status_code_sequencing()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.event.animation.JobAnimations.log_modified_service_status_code_sequencing'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.log_modified_service_status_code_sequencing'
                 LANGUAGE javaU VOLATILE
                   COST 100;
             ALTER FUNCTION ruleform.log_modified_service_status_code_sequencing()

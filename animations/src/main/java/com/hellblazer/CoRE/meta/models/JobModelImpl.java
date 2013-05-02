@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,10 +36,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.Kernel;
+import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
+import com.hellblazer.CoRE.animation.RuleformIdIterator;
 import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
@@ -47,6 +51,7 @@ import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ServiceSequencingAuthorization;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
+import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.EntityModel;
 import com.hellblazer.CoRE.meta.JobModel;
@@ -62,7 +67,69 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 public class JobModelImpl implements JobModel {
+    private static class InDatabase {
+        private static final JobModelImpl SINGLETON;
+
+        static {
+            SINGLETON = new JobModelImpl(
+                                         new ModelImpl(
+                                                       InDatabaseEntityManager.getEm()));
+        }
+
+        public static JobModelImpl get() {
+            InDatabaseEntityManager.establishContext();
+            return SINGLETON;
+        }
+    }
+
     private static final Logger log = LoggerFactory.getLogger(JobModelImpl.class);
+
+    public static void automatically_generate_implicit_jobs_for_explicit_jobs(TriggerData triggerData)
+                                                                                                      throws SQLException {
+        InDatabase.get().automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
+    }
+
+    public static void ensure_next_state_is_valid(TriggerData triggerData)
+                                                                          throws SQLException {
+        InDatabase.get().ensureNextStateIsValid(triggerData.getNew().getLong("id"),
+                                                triggerData.getNew().getLong("service"),
+                                                triggerData.getOld().getLong("status"),
+                                                triggerData.getNew().getLong("status"));
+    }
+
+    public static void ensure_valid_initial_state(TriggerData triggerData)
+                                                                          throws SQLException {
+        InDatabaseEntityManager.establishContext();
+        if (!WellKnownStatusCode.UNSET.id().equals(triggerData.getNew().getLong("status"))) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Setting status of job to unset (%s)",
+                                       triggerData.getNew().getLong("status")));
+            }
+            triggerData.getNew().updateLong("status",
+                                            WellKnownStatusCode.UNSET.id());
+        }
+    }
+
+    public static void generate_implicit_jobs(Long service) {
+        InDatabase.get().generateImplicitJobs(service);
+    }
+
+    public static Long get_initial_state(Long service) {
+        return InDatabase.get().getInitialState(service);
+    }
+
+    /**
+     * In database function entry point
+     * 
+     * @param serviceId
+     * @return
+     * @throws SQLException
+     */
+    public static Iterator<Long> get_status_code_ids_for_service(Long serviceId)
+                                                                                throws SQLException {
+        return new RuleformIdIterator(
+                                      InDatabase.get().getStatusCodeIdsForEvent(serviceId).iterator());
+    }
 
     /**
      * Iterate through all SCCs in the graph, testing each one to see if there
@@ -98,6 +165,46 @@ public class JobModelImpl implements JobModel {
         return false;
     }
 
+    public static boolean is_job_active(Long job) {
+        return InDatabase.get().isJobActive(job);
+    }
+
+    public static boolean is_terminal_state(Long service, Long statusCode) {
+        return InDatabase.get().isTerminalState(service, statusCode);
+    }
+
+    public static void log_modified_service_status_code_sequencing(TriggerData triggerData)
+                                                                                           throws SQLException {
+        InDatabase.get().logModifiedService(triggerData.getNew().getLong("service"));
+    }
+
+    public static void logInsertsInJobChronology(TriggerData triggerData)
+                                                                         throws SQLException {
+        InDatabase.get().logInsertsInJobChronology(triggerData.getNew().getLong("id"),
+                                                   triggerData.getNew().getLong("status"));
+    }
+
+    public static void processChildChanges(TriggerData triggerData)
+                                                                   throws SQLException {
+        InDatabase.get().processChildChanges(triggerData.getNew().getLong("id"));
+    }
+
+    public static void processParentChanges(TriggerData triggerData)
+                                                                    throws SQLException {
+        InDatabase.get().processParentChanges(triggerData.getNew().getLong("id"));
+    }
+
+    public static void processSiblingChanges(TriggerData triggerData)
+                                                                     throws SQLException {
+        InDatabase.get().processSiblingChanges(triggerData.getNew().getLong("id"));
+    }
+
+    public static void validate_state_graph(TriggerData triggerData)
+                                                                    throws SQLException {
+        InDatabase.get().validateStateGraph();
+    }
+
+    private final List<Entity>  modifiedEvents = new ArrayList<Entity>();
     private final EntityManager em;
     private final Kernel        kernel;
     private final EntityModel   entityModel;
@@ -134,6 +241,17 @@ public class JobModelImpl implements JobModel {
                 changeStatus(subJob, getInitialState(subJob.getService()),
                              "Initially available job (automatically set)");
             }
+        }
+    }
+
+    public void changeJobStatus_persist(Job job, StatusCode newStatus,
+                                        String note, Resource updatedBy) {
+        if (!job.getStatus().equals(newStatus)) {
+            job.setStatus(newStatus);
+            JobChronology jc = addJobChronologyRule(job, note, updatedBy);
+            em.persist(job);
+            em.persist(jc);
+
         }
     }
 
@@ -414,6 +532,13 @@ public class JobModelImpl implements JobModel {
         return result;
     }
 
+    public List<StatusCode> getTerminalStates(Job job) {
+        TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES,
+                                                           StatusCode.class);
+
+        return query.getResultList();
+    }
+
     public List<Job> getTopLevelJobsWithSubJobsAssignedToResource(Resource resource) {
         List<Job> jobs = new ArrayList<Job>();
         for (Job job : getActiveExplicitJobs()) {
@@ -429,12 +554,6 @@ public class JobModelImpl implements JobModel {
             }
         }
         return jobs;
-    }
-    
-    public List<StatusCode> getTerminalStates(Job job) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES, StatusCode.class);
-        
-        return query.getResultList();
     }
 
     /**
@@ -475,6 +594,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public boolean hasScs(Entity service) {
+        log.info("***** About to fuck up *****");
         Query query = em.createNamedQuery(Job.HAS_SCS);
         query.setParameter("service", service);
         query.setMaxResults(1);
@@ -546,6 +666,10 @@ public class JobModelImpl implements JobModel {
         query.setParameter(2, parent.getId());
         query.setParameter(3, next.getId());
         return query.getSingleResult();
+    }
+
+    public void logModifiedService(Long scs) {
+        modifiedEvents.add(em.find(Entity.class, scs));
     }
 
     @Override
@@ -629,6 +753,109 @@ public class JobModelImpl implements JobModel {
                                        String.format("Event '%s' has at least one terminal SCC defined in its status code graph",
                                                      modifiedService.getName()));
             }
+        }
+    }
+
+    private JobChronology addJobChronologyRule(Job job, String notes,
+                                               Resource updatedBy) {
+        JobChronology jc = new JobChronology();
+        jc.setJob(job);
+        jc.setNotes(notes);
+        jc.setUpdatedBy(updatedBy);
+        return jc;
+    }
+
+    /**
+     * @param job
+     */
+    private void automaticallyGenerateImplicitJobsForExplicitJobs(long job) {
+        automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
+    }
+
+    /**
+     * @param job
+     * @param service
+     * @param currentStatus
+     * @param nextStatus
+     * @throws SQLException
+     */
+    private void ensureNextStateIsValid(long job, long service,
+                                        long currentStatus, long nextStatus)
+                                                                            throws SQLException {
+        if (currentStatus == nextStatus) {
+            return; // nothing to do
+        }
+        ensureNextStateIsValid(em.find(Job.class, job),
+                               em.find(Entity.class, service),
+                               em.find(StatusCode.class, currentStatus),
+                               em.find(StatusCode.class, nextStatus));
+    }
+
+    /**
+     * @param service
+     */
+    private void generateImplicitJobs(Long service) {
+        generateImplicitJobs((Job) null);
+    }
+
+    /**
+     * @param service
+     * @return
+     */
+    private Long getInitialState(Long service) {
+        return getInitialState(em.find(Entity.class, service)).getId();
+    }
+
+    /**
+     * @param serviceId
+     * @return
+     */
+    private Collection<StatusCode> getStatusCodeIdsForEvent(Long serviceId) {
+        return getStatusCodesFor(em.find(Entity.class, serviceId));
+    }
+
+    /**
+     * @param job
+     * @return
+     */
+    private boolean isJobActive(Long job) {
+        return isActive(em.find(Job.class, job));
+    }
+
+    /**
+     * @param service
+     * @param statusCode
+     * @return
+     */
+    private boolean isTerminalState(Long service, Long statusCode) {
+        return isTerminalState(em.find(StatusCode.class, statusCode),
+                               em.find(Entity.class, service));
+    }
+
+    private void logInsertsInJobChronology(long jobId, long statusId) {
+        addJobChronology(em.find(Job.class, jobId),
+                         new Timestamp(System.currentTimeMillis()),
+                         em.find(StatusCode.class, statusId),
+                         "Initial insertion of job");
+    }
+
+    private void processChildChanges(long jobId) {
+        processChildChanges(em.find(Job.class, jobId));
+    }
+
+    private void processParentChanges(long jobId) {
+        processParentChanges(em.find(Job.class, jobId));
+    }
+
+    private void processSiblingChanges(long jobId) {
+        processSiblingChanges(em.find(Job.class, jobId));
+    }
+
+    private void validateStateGraph() throws SQLException {
+        try {
+            validateStateGraph(modifiedEvents);
+        } finally {
+            modifiedEvents.clear();
         }
     }
 

@@ -9,7 +9,7 @@
         <sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.ensure_valid_initial_state()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.event.animation.JobAnimations.ensure_valid_initial_state'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.ensure_valid_initial_state'
                 LANGUAGE javaU VOLATILE
               COST 100;
             ALTER FUNCTION ruleform.ensure_valid_initial_state()

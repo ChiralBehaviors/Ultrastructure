@@ -9,7 +9,7 @@
         <sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.ensure_next_state_is_valid()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.event.animation.JobAnimations.ensure_next_state_is_valid'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.ensure_next_state_is_valid'
                 LANGUAGE javaU VOLATILE
               COST 100;
             ALTER FUNCTION ruleform.ensure_next_state_is_valid()

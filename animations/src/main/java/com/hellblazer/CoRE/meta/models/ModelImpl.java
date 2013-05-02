@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.meta.models;
 import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -34,6 +35,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.AttributeValue_;
 import com.hellblazer.CoRE.meta.AttributeModel;
@@ -42,13 +44,21 @@ import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ResourceModel;
+import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * @author hhildebrand
  * 
  */
 public class ModelImpl implements Model {
+    private static AuthenticatedPrincipal principal;
+
+    public static AuthenticatedPrincipal getPrincipal() {
+        return principal;
+    }
 
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
@@ -56,6 +66,49 @@ public class ModelImpl implements Model {
         builder.append(Character.toLowerCase(simpleName.charAt(0)));
         builder.append(simpleName.substring(1));
         return builder.toString();
+    }
+
+    /**
+     * Sets up the authenticated principal to use in the animation's in database
+     * context. Will throw all sorts of errors if used outside of the context of
+     * a Java stored proceedure.
+     * 
+     * @param resource
+     *            - the id of the resource corresponding to the principal
+     * @param activeRoleRelationships
+     *            - the ids of the relationships of the active role aspects. If
+     *            null, then no active role aspects are set.
+     * @param activeRoleResources
+     *            - the ids of the resources of the active role aspects. If
+     *            null, then no active role aspects are set.
+     * 
+     * @throws IllegalArgumentException
+     *             if the activeRoleRelationships.length !=
+     *             activeRoleResources.length
+     */
+    public static void setPrincipal(Long resource,
+                                    Long[] activeRoleRelationships,
+                                    Long[] activeRoleResources) {
+        EntityManager em = InDatabaseEntityManager.getEm();
+        if (activeRoleRelationships == null || activeRoleResources == null) {
+            principal = new AuthenticatedPrincipal(em.find(Resource.class,
+                                                           resource));
+        } else {
+            if (activeRoleRelationships.length != activeRoleResources.length) {
+                throw new IllegalArgumentException(
+                                                   "active role relationships and resources must be of the same length");
+            }
+            List<Aspect<Resource>> aspects = new ArrayList<Aspect<Resource>>();
+            for (int i = 0; i < activeRoleRelationships.length; i++) {
+                aspects.add(new Aspect<Resource>(
+                                                 em.find(Relationship.class,
+                                                         activeRoleRelationships[i]),
+                                                 em.find(Resource.class,
+                                                         activeRoleResources[i])));
+            }
+            principal = new AuthenticatedPrincipal(em.find(Resource.class,
+                                                           resource), aspects);
+        }
     }
 
     private final AttributeModel attributeModel;

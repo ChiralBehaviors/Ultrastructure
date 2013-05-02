@@ -9,7 +9,7 @@
         <sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.automatically_generate_implicit_jobs_for_explicit_jobs()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.event.animation.JobAnimations.automatically_generate_implicit_jobs_for_explicit_jobs'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.automatically_generate_implicit_jobs_for_explicit_jobs'
                 LANGUAGE javaU VOLATILE
                   COST 100;
             ALTER FUNCTION ruleform.automatically_generate_implicit_jobs_for_explicit_jobs()

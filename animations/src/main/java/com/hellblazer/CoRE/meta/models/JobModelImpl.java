@@ -594,7 +594,6 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public boolean hasScs(Entity service) {
-        log.info("***** About to fuck up *****");
         Query query = em.createNamedQuery(Job.HAS_SCS);
         query.setParameter("service", service);
         query.setMaxResults(1);

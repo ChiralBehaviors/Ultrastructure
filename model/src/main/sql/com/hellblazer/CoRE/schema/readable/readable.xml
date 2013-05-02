@@ -46,7 +46,6 @@
 		file="/views/location_relationship.xml" />
 	<include relativeToChangelogFile="true" file="/views/meta_protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/protocol.xml" />
-    <include relativeToChangelogFile="true" file="/views/protocol_action.xml" />
 	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/relationship_chain.xml" />

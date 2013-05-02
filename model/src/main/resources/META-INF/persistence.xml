@@ -39,13 +39,11 @@
 		<class>com.hellblazer.CoRE.entity.EntityNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.entity.EntityNetworkDeduction</class>
 		<class>com.hellblazer.CoRE.event.ServiceSequencingAuthorization</class>
-		<class>com.hellblazer.CoRE.event.JarEntry</class>
 		<class>com.hellblazer.CoRE.event.Job</class>
 		<class>com.hellblazer.CoRE.event.JobAttribute</class>
 		<class>com.hellblazer.CoRE.event.JobChronology</class>
 		<class>com.hellblazer.CoRE.event.MetaProtocol</class>
 		<class>com.hellblazer.CoRE.event.Protocol</class>
-        <class>com.hellblazer.CoRE.event.ProtocolAction</class>
 		<class>com.hellblazer.CoRE.event.StatusCode</class>
 		<class>com.hellblazer.CoRE.event.StatusCodeSequencing</class>
 		<class>com.hellblazer.CoRE.location.Location</class>

@@ -44,7 +44,6 @@
     <include relativeToChangelogFile="true" file="tables/location/trigger-location_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/meta_protocol/trigger-meta_protocol_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol/trigger-protocol_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/protocol_action/trigger-protocol_action_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship_chain/trigger-relationship_chain_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_update_date.xml"/>

@@ -19,13 +19,13 @@ package com.hellblazer.CoRE.meta.models;
 
 import javax.persistence.EntityManager;
 
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.entity.EntityAttribute;
 import com.hellblazer.CoRE.entity.EntityAttributeAuthorization;
 import com.hellblazer.CoRE.entity.EntityNetwork;
 import com.hellblazer.CoRE.meta.EntityModel;
+import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Aspect;
 
 /**

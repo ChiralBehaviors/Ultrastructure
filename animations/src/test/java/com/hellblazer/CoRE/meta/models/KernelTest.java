@@ -29,10 +29,10 @@ import javax.persistence.Persistence;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
+import com.hellblazer.CoRE.meta.Kernel;
 
 /**
  * @author hhildebrand

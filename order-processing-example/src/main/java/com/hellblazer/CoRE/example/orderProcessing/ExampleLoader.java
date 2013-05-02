@@ -18,11 +18,11 @@ package com.hellblazer.CoRE.example.orderProcessing;
 
 import javax.persistence.EntityManager;
 
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationContext;
+import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.network.Relationship;

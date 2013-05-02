@@ -33,7 +33,6 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.AttributeValue;
@@ -41,6 +40,7 @@ import com.hellblazer.CoRE.attribute.AttributeValue_;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.EntityModel;
 import com.hellblazer.CoRE.meta.JobModel;
+import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ResourceModel;

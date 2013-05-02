@@ -26,9 +26,9 @@ import javax.persistence.Persistence;
 
 import org.junit.BeforeClass;
 
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
+import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
 import static org.junit.Assert.*;
 

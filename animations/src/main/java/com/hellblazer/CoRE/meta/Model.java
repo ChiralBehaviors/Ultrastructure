@@ -22,7 +22,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.resource.Resource;

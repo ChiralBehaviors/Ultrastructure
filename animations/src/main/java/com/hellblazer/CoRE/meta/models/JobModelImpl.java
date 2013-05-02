@@ -40,7 +40,6 @@ import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.animation.RuleformIdIterator;
 import com.hellblazer.CoRE.entity.Entity;
@@ -55,6 +54,7 @@ import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.EntityModel;
 import com.hellblazer.CoRE.meta.JobModel;
+import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ResourceModel;

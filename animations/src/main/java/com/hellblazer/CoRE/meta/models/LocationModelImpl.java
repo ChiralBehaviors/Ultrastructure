@@ -33,7 +33,6 @@ import javax.persistence.criteria.Selection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.entity.EntityLocation;
@@ -46,6 +45,7 @@ import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.location.LocationMetaRule;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.location.LocationRelationship;
+import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;

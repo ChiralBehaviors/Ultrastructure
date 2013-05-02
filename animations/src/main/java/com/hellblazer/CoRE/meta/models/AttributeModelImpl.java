@@ -22,7 +22,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import com.hellblazer.CoRE.Kernel;
 import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
@@ -34,6 +33,7 @@ import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.entity.EntityAttribute;
 import com.hellblazer.CoRE.entity.EntityNetwork;
 import com.hellblazer.CoRE.meta.AttributeModel;
+import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.resource.ResourceNetwork;

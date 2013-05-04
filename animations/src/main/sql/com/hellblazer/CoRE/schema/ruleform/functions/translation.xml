@@ -14,16 +14,16 @@
                 size CONSTANT INTEGER NOT NULL := 3;
                 result VARCHAR := '';
                 chunk VARCHAR;
-                entity VARCHAR;
+                product VARCHAR;
             BEGIN
                 
                 FOR i IN 1..length(seq) BY size LOOP
-                    entity := substring(seq, i, size);
-                    RAISE NOTICE 'Entity = %', entity;
-                    chunk := ruleform.transform(event, resource, entity);
+                    product := substring(seq, i, size);
+                    RAISE NOTICE 'Product = %', product;
+                    chunk := ruleform.transform(event, resource, product);
                     RAISE NOTICE 'Chunk is ''%''', chunk;
                     IF chunk IS NULL THEN
-                        RAISE EXCEPTION 'Given sequence contains Entity ''%'' which returned null!', entity;
+                        RAISE EXCEPTION 'Given sequence contains Product ''%'' which returned null!', product;
                     END IF;
                     result := result || chunk;
                 END LOOP;

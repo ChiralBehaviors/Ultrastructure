@@ -19,11 +19,11 @@ package com.hellblazer.CoRE.meta;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.capability.Action;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -36,7 +36,7 @@ public interface Kernel {
 
     Attribute getAnyAttribute();
 
-    Entity getAnyEntity();
+    Product getAnyProduct();
 
     Location getAnyLocation();
 
@@ -64,7 +64,7 @@ public interface Kernel {
 
     Relationship getDevelopedBy();
 
-    Entity getEntity();
+    Product getProduct();
 
     Relationship getEquals();
 
@@ -116,7 +116,7 @@ public interface Kernel {
 
     Attribute getNotApplicableAttribute();
 
-    Entity getNotApplicableEntity();
+    Product getNotApplicableProduct();
 
     Location getNotApplicableLocation();
 
@@ -130,7 +130,7 @@ public interface Kernel {
 
     Attribute getOriginalAttribute();
 
-    Entity getOriginalEntity();
+    Product getOriginalProduct();
 
     Location getOriginalLocation();
 
@@ -150,7 +150,7 @@ public interface Kernel {
 
     Resource getResource();
 
-    Entity getSameEntity();
+    Product getSameProduct();
 
     Relationship getSameRelationship();
 

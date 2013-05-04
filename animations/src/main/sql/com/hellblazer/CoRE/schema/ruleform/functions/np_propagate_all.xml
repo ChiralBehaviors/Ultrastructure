@@ -12,7 +12,7 @@
             $BODY$
             DECLARE
                 t VARCHAR;
-                tables VARCHAR[] := ARRAY['ruleform.attribute_network','ruleform.resource_network', 'ruleform.event_network', 'ruleformlocation_network', 'ruleform.entity_network'];
+                tables VARCHAR[] := ARRAY['ruleform.attribute_network','ruleform.resource_network', 'ruleform.event_network', 'ruleformlocation_network', 'ruleform.product_network'];
             BEGIN
                 FOR i IN 1..array_upper(tables,1) LOOP
                     t := tables[i];

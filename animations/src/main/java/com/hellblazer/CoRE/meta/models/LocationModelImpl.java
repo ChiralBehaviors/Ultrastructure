@@ -34,8 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.entity.Entity;
-import com.hellblazer.CoRE.entity.EntityLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.location.ContextAttribute;
 import com.hellblazer.CoRE.location.Location;
@@ -49,6 +47,8 @@ import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductLocation;
 
 /**
  * @author hhildebrand
@@ -166,13 +166,13 @@ public class LocationModelImpl
      * @param targetContext
      *            the kind of Locations to be found
      * @return a List of Object[]; the first element of each array will be a
-     *         Entity located at one of the Locations found, the second will be
+     *         Product located at one of the Locations found, the second will be
      *         the actual Location, and the rest of the elements are the
      *         coordinates of that Location. This will vary depending on the
      *         targetContext.
      */
     @SuppressWarnings("unchecked")
-    public List<Object[]> findEntitiesAtRelatedLocations(Location target,
+    public List<Object[]> findProductsAtRelatedLocations(Location target,
                                                          EntityManager em,
                                                          final Relationship relationship,
                                                          final LocationContext targetContext) {
@@ -180,7 +180,7 @@ public class LocationModelImpl
         CriteriaQuery<Object[]> criteriaQuery = builder.createQuery(Object[].class);
 
         criteriaQuery.from(Location.class);
-        criteriaQuery.from(EntityLocation.class);
+        criteriaQuery.from(ProductLocation.class);
 
         new ArrayList<Selection<?>>();
         new ArrayList<Predicate>();
@@ -192,7 +192,7 @@ public class LocationModelImpl
          * are added.
          */
         List<String> selectColumns = new ArrayList<String>();
-        selectColumns.add("bl.entity"); // want the related Entity
+        selectColumns.add("bl.product"); // want the related Product
         selectColumns.add("bl.location"); // toss in the Location object as well
 
         /*
@@ -204,7 +204,7 @@ public class LocationModelImpl
          * the "whereClauses" data structure... if we didn't, we'd get a
          * Cartesian join, which is definitely not what we want!
          */
-        String fromClause = "from Location as l, EntityLocation as bl";
+        String fromClause = "from Location as l, ProductLocation as bl";
 
         /*
          * This list is used to store conditions that will be used to JOIN other
@@ -225,7 +225,7 @@ public class LocationModelImpl
         List<String> whereClauses = new ArrayList<String>();
 
         /*
-         * This is the condition to link the Location and EntityLocation
+         * This is the condition to link the Location and ProductLocation
          * tables from fromClause above.
          */
         whereClauses.add("bl.location.id = l.id");
@@ -254,8 +254,8 @@ public class LocationModelImpl
             String property = null;
 
             //TODO: Factor this out into a method... it's used below as well, and will pop up again as the application is developed
-            if (a.getValueType().equals("entity")) {
-                property = alias + "." + "entityValue";
+            if (a.getValueType().equals("product")) {
+                property = alias + "." + "productValue";
             } else if (a.getValueType().equals("integer")) {
                 property = alias + "." + "integerValue";
             } else if (a.getValueType().equals("text")) {
@@ -279,7 +279,7 @@ public class LocationModelImpl
          * processing.
          * 
          * First, we need to examine the relevant Location MetaRules in order to
-         * determine what mapped Entity value to use to retrieve the
+         * determine what mapped Product value to use to retrieve the
          * appropriate Location Relationship rules.
          */
         //TODO: We need to pull this query out into a DAO at some point.
@@ -299,10 +299,10 @@ public class LocationModelImpl
 
         /*
          * According to the Location MetaRules we find, this will store the
-         * reference to the mapped Entity we will use to look up our Location
+         * reference to the mapped Product we will use to look up our Location
          * Relationship rules.
          */
-        Entity mappedEntity = null;
+        Product mappedProduct = null;
 
         /*
          * The fact that the check condition for this "for" loop is "i <= size"
@@ -325,7 +325,7 @@ public class LocationModelImpl
                 /*
                  * Once we have the mask, we then look through the attributes of
                  * our query Location to find the same attribute. If we find it,
-                 * then we set mappedEntity to be the same as the value of
+                 * then we set mappedProduct to be the same as the value of
                  * that attribute.
                  * 
                  * We iterate through the list of attributes rather than
@@ -346,7 +346,7 @@ public class LocationModelImpl
 
                     if (mask.equals(la.getAttribute())) {
                         LOG.debug("Found a match!");
-                        mappedEntity = la.getEntityValue();
+                        mappedProduct = la.getProductValue();
 
                         /*
                          * If we find something, then we don't need to look for
@@ -366,21 +366,21 @@ public class LocationModelImpl
                  * If our index variable is equal to the size of the list, then
                  * we have gone through all the potential metarules without
                  * finding any applicable ones. If this is the case, then we
-                 * will fall back on the special "(ANY)" Entity to match the
+                 * will fall back on the special "(ANY)" Product to match the
                  * general case.
                  */
                 LOG.debug(String.format("using the %s", WellKnownObject.ANY));
-                mappedEntity = new ModelImpl(em).find(WellKnownObject.ANY,
-                                                      Entity.class);
+                mappedProduct = new ModelImpl(em).find(WellKnownObject.ANY,
+                                                      Product.class);
             }
 
             //------------------------------------------------------------------
             /*
-             * At this point we should have a valid mapped Entity. We now
+             * At this point we should have a valid mapped Product. We now
              * have all the information we need to start looking for Location
              * Relationship rules.
              */
-            LOG.debug(String.format("Mapped Entity is: %s", mappedEntity));
+            LOG.debug(String.format("Mapped Product is: %s", mappedProduct));
             LOG.debug("Retrieving Location Relationship rules");
 
             // TODO: We need to pull this query out into a DAO at some point.
@@ -389,7 +389,7 @@ public class LocationModelImpl
                                                                                                                                 target.getContext()).setParameter("relationship",
                                                                                                                                                                   relationship).setParameter("targetContext",
                                                                                                                                                                                              targetContext).setParameter("mappedEntityValue",
-                                                                                                                                                                                                                         mappedEntity).getResultList();
+                                                                                                                                                                                                                         mappedProduct).getResultList();
 
             /*
              * If we found Location Relationship rules then those will be used
@@ -407,7 +407,7 @@ public class LocationModelImpl
                                                 target.getContext().getName(),
                                                 relationship.getName(),
                                                 targetContext.getName(),
-                                                mappedEntity.getName() }));
+                                                mappedProduct.getName() }));
                 foundRules = true;
             } else {
                 LOG.debug(String.format("Didn't find any Location Relationship rules for %s / %s / %s / %s",
@@ -415,7 +415,7 @@ public class LocationModelImpl
                                                 target.getContext().getName(),
                                                 relationship.getName(),
                                                 targetContext.getName(),
-                                                mappedEntity.getName() }));
+                                                mappedProduct.getName() }));
                 continue;
             }
 
@@ -467,9 +467,9 @@ public class LocationModelImpl
                          */
                         // TODO: break these types into an Enumeration?
                         // TODO: throw an exception if getOperator() returns null
-                        if (a.getValueType().equals("entity")) {
-                            property = newAlias + "." + "entityValue";
-                            clause = la.getEntityValue().getId()
+                        if (a.getValueType().equals("product")) {
+                            property = newAlias + "." + "productValue";
+                            clause = la.getProductValue().getId()
                                      + " "
                                      + rule.getAttributeRelationship().getOperator()
                                      + " " + property + ".id";

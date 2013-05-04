@@ -13,7 +13,7 @@
               subject bigint NOT NULL,
               verb bigint NOT NULL,
               target_type int NOT NULL,
-              target_entity bigint,
+              target_product bigint,
               target_resource bigint,
               target_location bigint,
               target_attribute bigint, 
@@ -28,8 +28,8 @@
               CONSTRAINT capability_verb_fkey FOREIGN KEY (verb)
                   REFERENCES ruleform.action (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT capability_entity_fkey FOREIGN KEY (target_entity)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+              CONSTRAINT capability_product_fkey FOREIGN KEY (target_product)
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT capability_resource_fkey FOREIGN KEY (target_resource)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
@@ -46,7 +46,7 @@
               CONSTRAINT capability_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT capability_valid_value CHECK ((ruleform.null_zero(target_entity) + ruleform.null_zero(target_resource) + ruleform.null_zero(target_location) + ruleform.null_zero(target_attribute)) = 1)
+              CONSTRAINT capability_valid_value CHECK ((ruleform.null_zero(target_product) + ruleform.null_zero(target_resource) + ruleform.null_zero(target_location) + ruleform.null_zero(target_attribute)) = 1)
             )
             WITH (
               OIDS=FALSE

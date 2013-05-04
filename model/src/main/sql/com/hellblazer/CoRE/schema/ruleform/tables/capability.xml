@@ -11,7 +11,7 @@
     <include relativeToChangelogFile="true" file="capability/index-capability_research.xml"/>
     <include relativeToChangelogFile="true" file="capability/index-capability_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="capability/index-capability_attribute.xml"/>
-    <include relativeToChangelogFile="true" file="capability/index-capability_entity.xml"/>
+    <include relativeToChangelogFile="true" file="capability/index-capability_product.xml"/>
     <include relativeToChangelogFile="true" file="capability/index-capability_location.xml"/>
     <include relativeToChangelogFile="true" file="capability/index-capability_resource.xml"/>
     <include relativeToChangelogFile="true" file="capability/index-capability_subject.xml"/>

@@ -9,13 +9,13 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.transformation_metarule AS 
 			 SELECT tm.id, s.name AS service, tm.sequence_number, 
-			        rm.name AS resource_map, bm.name AS entity_map, 
-			        bnr.name AS entity_network_resource, tm.stop_on_match
+			        rm.name AS resource_map, bm.name AS product_map, 
+			        bnr.name AS product_network_resource, tm.stop_on_match
 			   FROM ruleform.transformation_metarule tm
-			   JOIN ruleform.entity s ON tm.service = s.id
+			   JOIN ruleform.product s ON tm.service = s.id
 			   JOIN ruleform.relationship rm ON tm.resource_map = rm.id
-			   JOIN ruleform.relationship bm ON tm.entity_map = bm.id
-			   LEFT JOIN ruleform.resource bnr ON tm.entity_network_resource = bnr.id;
+			   JOIN ruleform.relationship bm ON tm.product_map = bm.id
+			   LEFT JOIN ruleform.resource bnr ON tm.product_network_resource = bnr.id;
 			
 			ALTER TABLE readable.transformation_metarule
 			  OWNER TO core;

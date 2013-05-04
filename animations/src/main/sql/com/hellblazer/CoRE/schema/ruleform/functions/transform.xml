@@ -7,33 +7,33 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.transform(p_event_name character varying, p_resource_name character varying, p_entity_name character varying)
+            CREATE OR REPLACE FUNCTION ruleform.transform(p_event_name character varying, p_resource_name character varying, p_product_name character varying)
               RETURNS character varying AS
             $BODY$
             DECLARE
-                _event_id ruleform.entity.id%TYPE;
+                _event_id ruleform.product.id%TYPE;
              
                 _resource_id ruleform.resource.id%TYPE;
-                _entity_id ruleform.entity.id%TYPE;
+                _product_id ruleform.product.id%TYPE;
                 
-                _metarules_cursor CURSOR (e ruleform.entity.id%TYPE) FOR SELECT * FROM transformation_metarule WHERE service = e ORDER BY sequence_number;
+                _metarules_cursor CURSOR (e ruleform.product.id%TYPE) FOR SELECT * FROM transformation_metarule WHERE service = e ORDER BY sequence_number;
                 _metarule ruleform.transformation_metarule%ROWTYPE;
                 
-                _protocol_cursor CURSOR (e ruleform.entity.id%TYPE, b ruleform.entity.id%TYPE, r ruleform.resource.id%TYPE) FOR SELECT * FROM transformation WHERE service = e AND entity = b AND resource = r ORDER BY sequence_number;
+                _protocol_cursor CURSOR (e ruleform.product.id%TYPE, b ruleform.product.id%TYPE, r ruleform.resource.id%TYPE) FOR SELECT * FROM transformation WHERE service = e AND product = b AND resource = r ORDER BY sequence_number;
                 _protocol ruleform.transformation%ROWTYPE;
                 
                 _SAME_ CONSTANT ruleform.relationship.id%TYPE NOT NULL := relationship_id('(SAME)');
                 _ORIGINAL_RESOURCE_ CONSTANT ruleform.resource.id%TYPE NOT NULL := resource_id('(ORIGINAL)');
-                _ORIGINAL_ENTITY_ CONSTANT ruleform.entity.id%TYPE NOT NULL := entity_id('(ORIGINAL)');
+                _ORIGINAL_ENTITY_ CONSTANT ruleform.product.id%TYPE NOT NULL := product_id('(ORIGINAL)');
                  
                 _mapped_resource_id ruleform.resource.id%TYPE;
-                _mapped_entity_id ruleform.entity.id%TYPE;
+                _mapped_product_id ruleform.product.id%TYPE;
                 
                 _protocol_resource_id ruleform.resource.id%TYPE;
-                _protocol_entity_id ruleform.entity.id%TYPE;
+                _protocol_product_id ruleform.product.id%TYPE;
                 
-                _found_entity ruleform.entity.id%TYPE;
-                _entity_attribute_rule ruleform.entity_attribute%ROWTYPE;
+                _found_product ruleform.product.id%TYPE;
+                _product_attribute_rule ruleform.product_attribute%ROWTYPE;
                 
                 _value_type ruleform.attribute.value_type%TYPE;
                 _value_as_text VARCHAR := NULL;
@@ -44,7 +44,7 @@
                 SELECT event_id(p_event_name) INTO STRICT _event_id;
                 --SELECT event_id(p_event_2_name) INTO STRICT _event_2_id;
                 SELECT resource_id(p_resource_name) INTO STRICT _resource_id;
-                SELECT entity_id(p_entity_name) INTO STRICT _entity_id;
+                SELECT product_id(p_product_name) INTO STRICT _product_id;
                 
                 OPEN _metarules_cursor(_event_id);
                 <<metarule_loop>>
@@ -75,29 +75,29 @@
                     RAISE NOTICE 'Mapped Resource is %', resource_name(_mapped_resource_id);
                     
                     BEGIN
-                        IF _metarule.entity_map = _SAME_ THEN
-                            _mapped_entity_id := _entity_id; -- No mapping; use original
+                        IF _metarule.product_map = _SAME_ THEN
+                            _mapped_product_id := _product_id; -- No mapping; use original
                         ELSE
-                            IF _metarule.entity_network_resource IS NULL THEN
-                                RAISE EXCEPTION 'Transformation Metarule Rule #% is incorrect, in that it has a NULL value for entity_network_resource when its entity_map is set to ''(SAME)''', _metarule.id;
+                            IF _metarule.product_network_resource IS NULL THEN
+                                RAISE EXCEPTION 'Transformation Metarule Rule #% is incorrect, in that it has a NULL value for product_network_resource when its product_map is set to ''(SAME)''', _metarule.id;
                             END IF;
                         
-                            SELECT child INTO STRICT _mapped_entity_id
-                            FROM entity_network 
-                            WHERE parent = _entity_id 
-                              AND relationship = _metarule.entity_map
-                              AND resource = _metarule.entity_network_resource;
+                            SELECT child INTO STRICT _mapped_product_id
+                            FROM product_network 
+                            WHERE parent = _product_id 
+                              AND relationship = _metarule.product_map
+                              AND resource = _metarule.product_network_resource;
                         END IF;
                         EXCEPTION
                             WHEN NO_DATA_FOUND THEN
-                                RAISE EXCEPTION 'No mapped entity found for mapping ''%'' using relationship ''%'' and resource ''%'' in metarule #%', p_entity_name, relationship_name(_metarule.entity_map), resource_name(_metarule.entity_network_resource), _metarule.id;
+                                RAISE EXCEPTION 'No mapped product found for mapping ''%'' using relationship ''%'' and resource ''%'' in metarule #%', p_product_name, relationship_name(_metarule.product_map), resource_name(_metarule.product_network_resource), _metarule.id;
                             WHEN TOO_MANY_ROWS THEN
-                                RAISE EXCEPTION 'Mapping entity ''%'' using relationship ''%'' and resource ''%'' returns more than one event in metarule #%', p_entity_name, relationship_name(_metarule.entity_map), resource_name(_metarule.entity_network_resource), _metarule.id;
+                                RAISE EXCEPTION 'Mapping product ''%'' using relationship ''%'' and resource ''%'' returns more than one event in metarule #%', p_product_name, relationship_name(_metarule.product_map), resource_name(_metarule.product_network_resource), _metarule.id;
                     END;
-                    RAISE NOTICE 'Mapped Entity is %', entity_name(_mapped_entity_id);
+                    RAISE NOTICE 'Mapped Product is %', product_name(_mapped_product_id);
                     
                     RAISE NOTICE 'Examining Protocol rules now...';
-                    OPEN _protocol_cursor(_event_id, _mapped_entity_id, _mapped_resource_id);
+                    OPEN _protocol_cursor(_event_id, _mapped_product_id, _mapped_resource_id);
                     
                     <<protocol_loop>>
                     LOOP FETCH _protocol_cursor INTO _protocol;
@@ -115,20 +115,20 @@
                         END IF;
                         RAISE NOTICE 'Resource: ''%''', resource_name(_protocol_resource_id);
             
-                        IF _protocol.entity_key = _ORIGINAL_ENTITY_ THEN
-                            _protocol_entity_id := _entity_id;
+                        IF _protocol.product_key = _ORIGINAL_ENTITY_ THEN
+                            _protocol_product_id := _product_id;
                         ELSE
-                            _protocol_entity_id := _protocol.entity_key;
+                            _protocol_product_id := _protocol.product_key;
                         END IF;
-                        RAISE NOTICE 'Entity: ''%''', entity_name(_protocol_entity_id);
+                        RAISE NOTICE 'Product: ''%''', product_name(_protocol_product_id);
             
                         RAISE NOTICE 'Relationship: ''%''', relationship_name(_protocol.relationship_key);
                         RAISE NOTICE 'Attribute: ''%''', attribute_name(_protocol.attribute);
-                        RAISE NOTICE 'Entity Attribute Resource: ''%''', resource_name(_protocol.entity_attribute_resource);
+                        RAISE NOTICE 'Product Attribute Resource: ''%''', resource_name(_protocol.product_attribute_resource);
             
-                        SELECT child INTO _found_entity
-                        FROM entity_network
-                        WHERE parent = _protocol_entity_id
+                        SELECT child INTO _found_product
+                        FROM product_network
+                        WHERE parent = _protocol_product_id
                           AND relationship = _protocol.relationship_key
                           AND resource = _protocol_resource_id;
             
@@ -138,27 +138,27 @@
                             CONTINUE;
                         END IF;
                         
-                        RAISE NOTICE 'Found the Entity ''%''', entity_name(_found_entity);
+                        RAISE NOTICE 'Found the Product ''%''', product_name(_found_product);
             
-                        SELECT * INTO _entity_attribute_rule
-                        FROM entity_attribute
-                        WHERE resource = _protocol.entity_attribute_resource
-                          AND entity = _found_entity
+                        SELECT * INTO _product_attribute_rule
+                        FROM product_attribute
+                        WHERE resource = _protocol.product_attribute_resource
+                          AND product = _found_product
                           AND attribute = _protocol.attribute;
                         
                         _value_type := get_attribute_type(_protocol.attribute);
                         IF _value_type = 'boolean' THEN
-                            _value_as_text := _entity_attribute_rule.boolean_value::VARCHAR;
+                            _value_as_text := _product_attribute_rule.boolean_value::VARCHAR;
                         ELSEIF _value_type = 'text' THEN
-                            _value_as_text := _entity_attribute_rule.text_value::VARCHAR;
+                            _value_as_text := _product_attribute_rule.text_value::VARCHAR;
                         ELSEIF _value_type = 'integer' THEN
-                            _value_as_text :=  _entity_attribute_rule.integer_value::VARCHAR;
-                        ELSEIF _value_type = 'entity' THEN
-                            _value_as_text := entity_name(_entity_attribute_rule.entity_value);
+                            _value_as_text :=  _product_attribute_rule.integer_value::VARCHAR;
+                        ELSEIF _value_type = 'product' THEN
+                            _value_as_text := product_name(_product_attribute_rule.product_value);
                         ELSEIF _value_type = 'numeric' THEN
-                            _value_as_text := _entity_attribute_rule.numeric_value::VARCHAR;
+                            _value_as_text := _product_attribute_rule.numeric_value::VARCHAR;
                         ELSE
-                            RAISE EXCEPTION 'Don''t know how to find a % type of value in a entity attribute rule', _value_type;
+                            RAISE EXCEPTION 'Don''t know how to find a % type of value in a product attribute rule', _value_type;
                         END IF;
                         
                         RAISE NOTICE '-------> Found ''%'' for attribute ''%''', _value_as_text, attribute_name(_protocol.attribute);

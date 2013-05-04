@@ -13,13 +13,13 @@
             DECLARE
                 _location_context ruleform.location_context%ROWTYPE;
                 _location ruleform.location%ROWTYPE;
-                _lr_cursor CURSOR(context BIGINT, relationship BIGINT, target BIGINT, mapped_entity BIGINT) FOR 
+                _lr_cursor CURSOR(context BIGINT, relationship BIGINT, target BIGINT, mapped_product BIGINT) FOR 
                     SELECT * 
                     FROM ruleform.location_relationship AS lr
                     WHERE lr.context = context
                     AND lr.relationship = relationship
                     AND lr.target_context = target
-                    AND lr.entity_mapped_value = mapped_entity
+                    AND lr.product_mapped_value = mapped_product
                     ORDER BY lr.sequence_number ;
                 _l_cursor REFCURSOR;
                 _location_relationship ruleform.location_relationship%ROWTYPE;
@@ -32,7 +32,7 @@
                 value_column VARCHAR;
                 operator ruleform.relational_operator;
                 
-                _entity_mapped_value ruleform.entity.id%TYPE;
+                _product_mapped_value ruleform.product.id%TYPE;
                 _meta_rule_cursor CURSOR(context BIGINT) FOR 
                     SELECT *
                     FROM ruleform.location_meta_rule
@@ -50,26 +50,26 @@
                 RAISE NOTICE 'Location is %', location_name(p_location);    
                 RAISE NOTICE 'Attribute Mask is %', attribute_name(_location_meta_rule.attribute_mask);
                     
-                    SELECT la.entity_value INTO _entity_mapped_value
+                    SELECT la.product_value INTO _product_mapped_value
                     FROM location_attribute AS la
                     WHERE la.location = p_location
                     AND la.attribute = _location_meta_rule.attribute_mask;
             
-            RAISE NOTICE 'In Loop: Mapped Entity Is %', entity_name(_entity_mapped_value);
+            RAISE NOTICE 'In Loop: Mapped Product Is %', product_name(_product_mapped_value);
                 
                     
-                    IF _entity_mapped_value IS NOT NULL THEN EXIT;
+                    IF _product_mapped_value IS NOT NULL THEN EXIT;
                     END IF;
                 END LOOP;
                 CLOSE _meta_rule_cursor;
                 
-                RAISE NOTICE 'Mapped Entity Is %', entity_name(_entity_mapped_value);
+                RAISE NOTICE 'Mapped Product Is %', product_name(_product_mapped_value);
                 
                 
                 query = 'SELECT location.* FROM location ';
                 
                 -- See if there are any instructions regarding relating Locations of _location_context with those of target_context via the given relationship
-                OPEN _lr_cursor(_location_context.id, p_relationship, p_target_context, _entity_mapped_value);
+                OPEN _lr_cursor(_location_context.id, p_relationship, p_target_context, _product_mapped_value);
                 LOOP 
                     FETCH _lr_cursor INTO _location_relationship;
                     EXIT WHEN NOT FOUND;
@@ -84,7 +84,7 @@
                 
                 -- Go back and do the same query again to finish building the query
                 -- TODO 8.3 see if we can use scrollable cursors for this instead
-                OPEN _lr_cursor(_location_context.id, p_relationship, p_target_context, _entity_mapped_value);
+                OPEN _lr_cursor(_location_context.id, p_relationship, p_target_context, _product_mapped_value);
                 LOOP 
                     FETCH _lr_cursor INTO _location_relationship;
                     EXIT WHEN NOT FOUND;
@@ -100,8 +100,8 @@
                     attribute_type = get_attribute_type(_location_relationship.location_1_attribute);
             
                     -- Use this if/else nastiness because we can't dynamically get at a variable field
-                    IF attribute_type = 'entity' THEN
-                        query = query || _location_attribute.entity_value;
+                    IF attribute_type = 'product' THEN
+                        query = query || _location_attribute.product_value;
                     ELSEIF attribute_type = 'integer' THEN
                         query = query || _location_attribute.integer_value;
                     ELSEIF attribute_type = 'text' THEN

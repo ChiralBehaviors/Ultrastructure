@@ -12,11 +12,11 @@
 	<include relativeToChangelogFile="true"
 		file="functions/attribute_usage.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/create_entity_usage_view.xml" />
+		file="functions/create_product_usage_view.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/create_individual_entity_usage_view.xml" />
+		file="functions/create_individual_product_usage_view.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/entity_by_attribute_value.xml" />
+		file="functions/product_by_attribute_value.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/log_inserts_in_job_chronology.xml" />
 	<include relativeToChangelogFile="true" file="functions/get_attribute.xml" />

@@ -38,9 +38,9 @@
                     IF NEW.resource_value IS NULL THEN
                         RAISE EXCEPTION 'Must supply a Resource value for a Resource-valued Attribute!';
                     END IF;
-                ELSEIF (_type = 'entity') THEN
-                    IF NEW.entity_value IS NULL THEN
-                        RAISE EXCEPTION 'Must supply a Entity value for a Entity-valued Attribute!';
+                ELSEIF (_type = 'product') THEN
+                    IF NEW.product_value IS NULL THEN
+                        RAISE EXCEPTION 'Must supply a Product value for a Product-valued Attribute!';
                     END IF;
                 ELSEIF (_type = 'event') THEN
                     IF NEW.event_value IS NULL THEN

@@ -32,8 +32,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -52,13 +52,13 @@ public class TransformationMetarule extends Ruleform implements Serializable {
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
-    @JoinColumn(name = "entity_map")
-    private Relationship       entityMap;
+    @JoinColumn(name = "product_map")
+    private Relationship       productMap;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
-    @JoinColumn(name = "entity_network_resource")
-    private Resource           entityNetworkResource;
+    @JoinColumn(name = "product_network_resource")
+    private Resource           productNetworkResource;
 
     @Id
     @GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
@@ -77,7 +77,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Entity             service;
+    private Product             service;
 
     @Column(name = "stop_on_match")
     private Boolean            stopOnMatch;
@@ -85,12 +85,12 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     public TransformationMetarule() {
     }
 
-    public Relationship getEntityMap() {
-        return entityMap;
+    public Relationship getProductMap() {
+        return productMap;
     }
 
     public Resource getEntityNetworkResource() {
-        return entityNetworkResource;
+        return productNetworkResource;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     /**
      * @return the service
      */
-    public Entity getService() {
+    public Product getService() {
         return service;
     }
 
@@ -118,11 +118,11 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     }
 
     public void setEntityMap(Relationship relationship2) {
-        entityMap = relationship2;
+        productMap = relationship2;
     }
 
     public void setEntityNetworkResource(Resource resource) {
-        entityNetworkResource = resource;
+        productNetworkResource = resource;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
      * @param service
      *            the service to set
      */
-    public void setService(Entity service) {
+    public void setService(Product service) {
         this.service = service;
     }
 

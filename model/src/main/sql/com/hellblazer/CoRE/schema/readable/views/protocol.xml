@@ -15,14 +15,14 @@
 			   base_table.sequence_number, assign.name AS assign_to, base_table.notes, 
 			   res.name AS research, up.name AS updated_by, base_table.update_date
 			   FROM ruleform.protocol base_table
-			   JOIN ruleform.entity m ON base_table.material = m.id
-               JOIN ruleform.entity rs ON base_table.requested_service = rs.id
-			   JOIN ruleform.entity po ON base_table.product_ordered = po.id
-               JOIN ruleform.entity s ON base_table.service = s.id
-               JOIN ruleform.entity p ON base_table.product = p.id
+			   JOIN ruleform.product m ON base_table.material = m.id
+               JOIN ruleform.product rs ON base_table.requested_service = rs.id
+			   JOIN ruleform.product po ON base_table.product_ordered = po.id
+               JOIN ruleform.product s ON base_table.service = s.id
+               JOIN ruleform.product p ON base_table.product = p.id
                JOIN ruleform.location dt ON base_table.deliver_to = dt.id
                JOIN ruleform.location df ON base_table.deliver_from = df.id
-			   JOIN ruleform.entity sub ON base_table.sub_service = sub.id
+			   JOIN ruleform.product sub ON base_table.sub_service = sub.id
 			   JOIN ruleform.resource assign ON base_table.assign_to = assign.id
                JOIN ruleform.resource r ON base_table.requester = r.id
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id

@@ -769,7 +769,7 @@ function renderInstancesFromXMLAsDojo(/* XML DOM*/data) {
 function renderDomainFromXMLAsDojo(/*XML DOM*/data) {
 	var target = document.createElement('div');
     var panels = new Array();
-    dojo.query("entity, embeddable, mapped-superclass", data)
+    dojo.query("product, embeddable, mapped-superclass", data)
         .forEach(function(item, index) {
     	  var panel = createEntityTypeDojoWidget(item);
     	  panels[index] = panel;
@@ -791,7 +791,7 @@ function renderDomainFromXMLAsDojo(/*XML DOM*/data) {
  * Renders given XML DOM for instances to HTML tables.
  * *** NOT IMPLEMENTED
  * 
- * @param data XML DOM for list of instances. All instanes may not belong to same entity.
+ * @param data XML DOM for list of instances. All instanes may not belong to same product.
  * @returns a div with zero or more tables.
  */
 function renderInstancesFromXMLAsHTML(/* XML DOM */data) {
@@ -957,7 +957,7 @@ function createInstanceDojoWidget(/*XML node*/instanceNode) {
  * @returns
  */
 function createEntityTypeDojoWidget(node) {
-	var entityTable = document.createElement("table");
+	var productTable = document.createElement("table");
 	dojo.query('id, basic, enum, version, one-to-one, many-to-one, one-to-many, many-to-many', node)
         .forEach(function(item) { 
 			var attr = document.createElement("tr");
@@ -972,11 +972,11 @@ function createEntityTypeDojoWidget(node) {
 			value.innerHTML = dojox.xml.parser.textContent(item);
 			attr.appendChild(name);
 			attr.appendChild(value);
-			entityTable.appendChild(attr);
+			productTable.appendChild(attr);
 		}
 	);
     
-    var pane = new dijit.TitlePane({title:node.getAttribute("name"), content: entityTable});
+    var pane = new dijit.TitlePane({title:node.getAttribute("name"), content: productTable});
 	return pane;
 }
 

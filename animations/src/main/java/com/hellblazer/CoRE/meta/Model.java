@@ -89,16 +89,16 @@ public interface Model {
 	AttributeModel getAttributeModel();
 
 	/**
-	 * Answer the entity manager used for this model instance
+	 * Answer the product manager used for this model instance
 	 * 
 	 * @return
 	 */
 	EntityManager getEntityManager();
 
 	/**
-	 * @return the Entity model
+	 * @return the Product model
 	 */
-	EntityModel getEntityModel();
+	ProductModel getProductModel();
 
 	/**
 	 * @return the Job Model

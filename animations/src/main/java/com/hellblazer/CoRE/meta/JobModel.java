@@ -22,13 +22,13 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ServiceSequencingAuthorization;
 import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -78,7 +78,7 @@ public interface JobModel {
      * @param nextStatus
      * @throws SQLException
      */
-    void ensureNextStateIsValid(Job job, Entity service,
+    void ensureNextStateIsValid(Job job, Product service,
                                 StatusCode currentStatus, StatusCode nextStatus)
                                                                                 throws SQLException;
 
@@ -97,7 +97,7 @@ public interface JobModel {
      * Retrieve a list of all currently active "explicit" (top level) Jobs.
      * "Explicit" means a Job that has no parent Job. "Active" means Jobs whose
      * current state is neither "(UNSET)"/pending nor a terminal state for the
-     * Job's Entity.
+     * Job's Product.
      * 
      * @return the list of all active, top level jobs
      */
@@ -176,7 +176,7 @@ public interface JobModel {
      * @param service
      * @return the initial state of a service
      */
-    StatusCode getInitialState(Entity service);
+    StatusCode getInitialState(Product service);
 
     /**
      * Returns a list of initially available sub-jobs (i.e., ones that do not
@@ -215,7 +215,7 @@ public interface JobModel {
      * @return the list of child status codes for the service for the parent
      *         code
      */
-    List<StatusCode> getNextStatusCodes(Entity service, StatusCode parent);
+    List<StatusCode> getNextStatusCodes(Product service, StatusCode parent);
 
     /**
      * Answer the list of parent actions of the job
@@ -250,7 +250,7 @@ public interface JobModel {
      * @param service
      * @return the collection of status codes for a service
      */
-    Collection<StatusCode> getStatusCodesFor(Entity service);
+    Collection<StatusCode> getStatusCodesFor(Product service);
 
     /**
      * Answer the list of siblings of a service that have the unset status
@@ -261,7 +261,7 @@ public interface JobModel {
      *            - the service
      * @return the list of siblings of a service that have the unset status
      */
-    List<Job> getUnsetSiblings(Job parent, Entity service);
+    List<Job> getUnsetSiblings(Job parent, Product service);
 
     /**
      * Answer true if the job has active siblings, false otherwise
@@ -277,7 +277,7 @@ public interface JobModel {
      * @param service
      * @return true if the service has an initial state, false otherwise
      */
-    boolean hasInitialState(Entity service);
+    boolean hasInitialState(Product service);
 
     /**
      * Answer true if the service's status graph has strongly connected
@@ -287,7 +287,7 @@ public interface JobModel {
      * @return true if the service's status graph has strongly connected
      *         components
      */
-    boolean hasScs(Entity service);
+    boolean hasScs(Product service);
 
     /**
      * Answer true if the service's status graph has terminal strongly connected
@@ -298,7 +298,7 @@ public interface JobModel {
      *         connected components
      * @throws SQLException
      */
-    boolean hasTerminalSCCs(Entity service) throws SQLException;
+    boolean hasTerminalSCCs(Product service) throws SQLException;
 
     void insertJob(Job parent, Protocol protocol);
 
@@ -312,7 +312,7 @@ public interface JobModel {
      * @return true, if the status code is the terminal state for the event,
      *         false otherwise
      */
-    boolean isTerminalState(StatusCode sc, Entity service);
+    boolean isTerminalState(StatusCode sc, Product service);
 
     /**
      * Answer true if the next status code is a valid status transition of the
@@ -324,7 +324,7 @@ public interface JobModel {
      * @return true if the next status code is a valid status transition of the
      *         service given the
      */
-    boolean isValidNextStatus(Entity service, StatusCode parent, StatusCode next);
+    boolean isValidNextStatus(Product service, StatusCode parent, StatusCode next);
 
     /**
      * Process all the implicit status changes of the children of a job
@@ -351,9 +351,9 @@ public interface JobModel {
      * Validate that the status graph of the list of services have no loops that
      * can't be escaped into a terminal state
      * 
-     * @param modifiedEntitys
+     * @param modifiedProducts
      * @throws SQLException
      */
-    void validateStateGraph(List<Entity> modifiedEntitys) throws SQLException;
+    void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
 
 }

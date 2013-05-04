@@ -14,17 +14,17 @@
     ruleform.coordinate_kind_definition|
     ruleform.coordinate_nesting|
     ruleform.coordinate_relationship|
-    ruleform.entity|
-    ruleform.entity_attribute|
-    ruleform.entity_attribute_authorization|
-    ruleform.entity_location|
-    ruleform.entity_location_attribute|
-    ruleform.entity_location_attribute_authorization|
-    ruleform.entity_location_network|
-    ruleform.entity_network|
-    ruleform.entity_network_attribute|
-    ruleform.entity_network_authorization|
-    ruleform.entity_network_deduction|
+    ruleform.product|
+    ruleform.product_attribute|
+    ruleform.product_attribute_authorization|
+    ruleform.product_location|
+    ruleform.product_location_attribute|
+    ruleform.product_location_attribute_authorization|
+    ruleform.product_location_network|
+    ruleform.product_network|
+    ruleform.product_network_attribute|
+    ruleform.product_network_authorization|
+    ruleform.product_network_deduction|
     ruleform.event_sequencing_authorization|
     ruleform.job|
     ruleform.job_attribute|
@@ -136,7 +136,7 @@
     subject CDATA #REQUIRED
     verb CDATA #REQUIRED
     target_type CDATA #REQUIRED
-    target_entity CDATA #IMPLIED
+    target_product CDATA #IMPLIED
     target_resource CDATA #IMPLIED
     target_location CDATA #IMPLIED
     target_attribute CDATA #IMPLIED
@@ -202,7 +202,7 @@
     id CDATA #REQUIRED
     coordinate CDATA #REQUIRED
     attribute CDATA #REQUIRED
-    entity_value CDATA #IMPLIED
+    product_value CDATA #IMPLIED
     integer_value CDATA #IMPLIED
     numeric_value CDATA #IMPLIED
     boolean_value CDATA #IMPLIED
@@ -291,8 +291,8 @@
     update_date CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity EMPTY>
-<!ATTLIST ruleform.entity
+<!ELEMENT ruleform.product EMPTY>
+<!ATTLIST ruleform.product
     id CDATA #REQUIRED
     name CDATA #REQUIRED
     description CDATA #IMPLIED
@@ -303,10 +303,10 @@
     pinned CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_attribute EMPTY>
-<!ATTLIST ruleform.entity_attribute
+<!ELEMENT ruleform.product_attribute EMPTY>
+<!ATTLIST ruleform.product_attribute
     id CDATA #REQUIRED
-    entity CDATA #REQUIRED
+    product CDATA #REQUIRED
     attribute CDATA #REQUIRED
     numeric_value CDATA #IMPLIED
     integer_value CDATA #IMPLIED
@@ -322,8 +322,8 @@
     update_date CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_attribute_authorization EMPTY>
-<!ATTLIST ruleform.entity_attribute_authorization
+<!ELEMENT ruleform.product_attribute_authorization EMPTY>
+<!ATTLIST ruleform.product_attribute_authorization
     id CDATA #REQUIRED
     classification CDATA #REQUIRED
     classifier CDATA #REQUIRED
@@ -339,11 +339,11 @@
     update_date CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_location EMPTY>
-<!ATTLIST ruleform.entity_location
+<!ELEMENT ruleform.product_location EMPTY>
+<!ATTLIST ruleform.product_location
     id CDATA #REQUIRED
     resource CDATA #REQUIRED
-    entity CDATA #REQUIRED
+    product CDATA #REQUIRED
     relationship CDATA #REQUIRED
     location CDATA #REQUIRED
     updated_by CDATA #REQUIRED
@@ -352,13 +352,13 @@
     research CDATA #IMPLIED
 >
 
-<!ELEMENT ruleform.entity_location_attribute EMPTY>
-<!ATTLIST ruleform.entity_location_attribute
+<!ELEMENT ruleform.product_location_attribute EMPTY>
+<!ATTLIST ruleform.product_location_attribute
     id CDATA #REQUIRED
     resource CDATA #REQUIRED
-    entity_location CDATA #REQUIRED
+    product_location CDATA #REQUIRED
     attribute CDATA #REQUIRED
-    entity_value CDATA #IMPLIED
+    product_value CDATA #IMPLIED
     numeric_value CDATA #IMPLIED
     integer_value CDATA #IMPLIED
     boolean_value CDATA #IMPLIED
@@ -373,8 +373,8 @@
     update_date CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_location_attribute_authorization EMPTY>
-<!ATTLIST ruleform.entity_location_attribute_authorization
+<!ELEMENT ruleform.product_location_attribute_authorization EMPTY>
+<!ATTLIST ruleform.product_location_attribute_authorization
     id CDATA #REQUIRED
     classification CDATA #REQUIRED
     classifier CDATA #REQUIRED
@@ -390,11 +390,11 @@
     update_date CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_location_network EMPTY>
-<!ATTLIST ruleform.entity_location_network
+<!ELEMENT ruleform.product_location_network EMPTY>
+<!ATTLIST ruleform.product_location_network
     id CDATA #REQUIRED
-    entity CDATA #REQUIRED
-    contextual_entity CDATA #REQUIRED
+    product CDATA #REQUIRED
+    contextual_product CDATA #REQUIRED
     coordinate CDATA #REQUIRED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
@@ -403,8 +403,8 @@
     resource CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_network EMPTY>
-<!ATTLIST ruleform.entity_network
+<!ELEMENT ruleform.product_network EMPTY>
+<!ATTLIST ruleform.product_network
     id CDATA #REQUIRED
     parent CDATA #REQUIRED
     relationship CDATA #REQUIRED
@@ -417,8 +417,8 @@
     ordering CDATA #IMPLIED
 >
 
-<!ELEMENT ruleform.entity_network_attribute EMPTY>
-<!ATTLIST ruleform.entity_network_attribute
+<!ELEMENT ruleform.product_network_attribute EMPTY>
+<!ATTLIST ruleform.product_network_attribute
     id CDATA #REQUIRED
     resource CDATA #REQUIRED
     network_rule CDATA #REQUIRED
@@ -429,7 +429,7 @@
     boolean_value CDATA #IMPLIED
     timestamp_value CDATA #IMPLIED
     binary_value CDATA #IMPLIED
-    entity_value CDATA #IMPLIED
+    product_value CDATA #IMPLIED
     unit CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
@@ -438,8 +438,8 @@
     sequence_number CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_network_authorization EMPTY>
-<!ATTLIST ruleform.entity_network_authorization
+<!ELEMENT ruleform.product_network_authorization EMPTY>
+<!ATTLIST ruleform.product_network_authorization
     id CDATA #REQUIRED
     classification CDATA #REQUIRED
     classifier CDATA #REQUIRED
@@ -453,8 +453,8 @@
     update_date CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.entity_network_deduction EMPTY>
-<!ATTLIST ruleform.entity_network_deduction
+<!ELEMENT ruleform.product_network_deduction EMPTY>
+<!ATTLIST ruleform.product_network_deduction
     id CDATA #REQUIRED
     deduction CDATA #REQUIRED
     premise1 CDATA #REQUIRED
@@ -486,7 +486,7 @@
 <!ATTLIST ruleform.job
     id CDATA #REQUIRED
     service CDATA #REQUIRED
-    entity CDATA #REQUIRED
+    product CDATA #REQUIRED
     assign_to CDATA #REQUIRED
     status CDATA #REQUIRED
     parent_job CDATA #IMPLIED
@@ -502,7 +502,7 @@
     job CDATA #REQUIRED
     attribute CDATA #REQUIRED
     sequence_number CDATA #REQUIRED
-    entity_value CDATA #IMPLIED
+    product_value CDATA #IMPLIED
     text_value CDATA #IMPLIED
     numeric_value CDATA #IMPLIED
     boolean_value CDATA #IMPLIED
@@ -546,7 +546,7 @@
     id CDATA #REQUIRED
     location CDATA #REQUIRED
     attribute CDATA #REQUIRED
-    entity_value CDATA #IMPLIED
+    product_value CDATA #IMPLIED
     numeric_value CDATA #IMPLIED
     integer_value CDATA #IMPLIED
     boolean_value CDATA #IMPLIED
@@ -639,7 +639,7 @@
     context CDATA #REQUIRED
     relationship CDATA #REQUIRED
     target_context CDATA #REQUIRED
-    entity_mapped_value CDATA #REQUIRED
+    product_mapped_value CDATA #REQUIRED
     sequence_number CDATA #REQUIRED
     location_1_attribute CDATA #REQUIRED
     attribute_relationship CDATA #REQUIRED
@@ -655,8 +655,8 @@
     id CDATA #REQUIRED
     service CDATA #REQUIRED
     sequence_number CDATA #REQUIRED
-    entity_1_mapping CDATA #IMPLIED
-    entity_2_mappinge CDATA #IMPLIED
+    product_1_mapping CDATA #IMPLIED
+    product_2_mappinge CDATA #IMPLIED
     job_mapping CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
@@ -668,8 +668,8 @@
 <!ATTLIST ruleform.protocol
     id CDATA #REQUIRED
     service CDATA #REQUIRED
-    entity_1 CDATA #REQUIRED
-    entity_2 CDATA #REQUIRED
+    product_1 CDATA #REQUIRED
+    product_2 CDATA #REQUIRED
     sub_service CDATA #REQUIRED
     sequence_number CDATA #REQUIRED
     assign_to CDATA #REQUIRED
@@ -836,14 +836,14 @@
     id CDATA #REQUIRED
     service CDATA #REQUIRED
     resource CDATA #REQUIRED
-    entity CDATA #REQUIRED
+    product CDATA #REQUIRED
     sequence_number CDATA #REQUIRED
     assign_to CDATA #REQUIRED
     resource_key CDATA #REQUIRED
-    entity_key CDATA #REQUIRED
+    product_key CDATA #REQUIRED
     relationship_key CDATA #REQUIRED
     attribute CDATA #REQUIRED
-    entity_attribute_resource CDATA #REQUIRED
+    product_attribute_resource CDATA #REQUIRED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED
     update_date CDATA #REQUIRED
@@ -855,8 +855,8 @@
     service CDATA #REQUIRED
     sequence_number CDATA #REQUIRED
     resource_map CDATA #REQUIRED
-    entity_map CDATA #REQUIRED
-    entity_network_resource CDATA #IMPLIED
+    product_map CDATA #REQUIRED
+    product_network_resource CDATA #IMPLIED
     stop_on_match CDATA #IMPLIED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED
@@ -889,7 +889,7 @@
     numeric_value CDATA #IMPLIED
     text_value CDATA #IMPLIED
     boolean_value CDATA #IMPLIED
-    entity_value CDATA #IMPLIED
+    product_value CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED

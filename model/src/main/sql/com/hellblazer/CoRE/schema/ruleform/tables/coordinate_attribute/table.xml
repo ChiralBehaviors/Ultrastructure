@@ -12,7 +12,7 @@
               id bigserial NOT NULL, -- Otherwise meaningless identifier for a definition rule
               coordinate bigint NOT NULL, -- The specific coordinate this rule pertains to
               attribute bigint NOT NULL, -- The attribute of the given coordinate this rule defines
-              entity_value bigint, -- If the Attribute is Entity-valued, the value is stored in this column
+              product_value bigint, -- If the Attribute is Product-valued, the value is stored in this column
               integer_value integer, -- If the Attribute is integer-valued, the value is stored in this column
               numeric_value numeric, -- If the Attribute is numerically-valued (i.e. non-integer), the value is stored in this column
               boolean_value boolean, -- If the Attribute is boolean-valued, the value is stored in this column
@@ -32,20 +32,20 @@
               CONSTRAINT coordinate_attribute_coordinate_fkey FOREIGN KEY (coordinate)
                   REFERENCES ruleform.coordinate (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT coordinate_attribute_entity_value_fkey FOREIGN KEY (entity_value)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+              CONSTRAINT coordinate_attribute_product_value_fkey FOREIGN KEY (product_value)
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_attribute_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT entity_attribute_unit_fkey FOREIGN KEY (unit)
+              CONSTRAINT product_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_attribute_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_attribute_coordinate_key UNIQUE (coordinate , attribute ),
-              CONSTRAINT valid_attribute CHECK ((ruleform.null_zero(entity_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+              CONSTRAINT valid_attribute CHECK ((ruleform.null_zero(product_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
             )
             WITH (
               OIDS=FALSE
@@ -55,7 +55,7 @@
             COMMENT ON COLUMN ruleform.coordinate_attribute.id IS 'Otherwise meaningless identifier for a definition rule';
             COMMENT ON COLUMN ruleform.coordinate_attribute.coordinate IS 'The specific coordinate this rule pertains to';
             COMMENT ON COLUMN ruleform.coordinate_attribute.attribute IS 'The attribute of the given coordinate this rule defines';
-            COMMENT ON COLUMN ruleform.coordinate_attribute.entity_value IS 'If the Attribute is Entity-valued, the value is stored in this column';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.product_value IS 'If the Attribute is Product-valued, the value is stored in this column';
             COMMENT ON COLUMN ruleform.coordinate_attribute.integer_value IS 'If the Attribute is integer-valued, the value is stored in this column';
             COMMENT ON COLUMN ruleform.coordinate_attribute.numeric_value IS 'If the Attribute is numerically-valued (i.e. non-integer), the value is stored in this column';
             COMMENT ON COLUMN ruleform.coordinate_attribute.boolean_value IS 'If the Attribute is boolean-valued, the value is stored in this column';

@@ -47,13 +47,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.attribute.Attributable;
-import com.hellblazer.CoRE.entity.EntityLocation;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.ProductLocation;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * General idea of a location or address; where some resource, entity or event
+ * General idea of a location or address; where some resource, product or event
  * can be found in a variety of spaces
  * 
  */
@@ -111,10 +111,10 @@ public class Location extends ExistentialRuleform implements
     @JoinColumn(name = "context")
     private LocationContext        context;
 
-    //bi-directional many-to-one association to EntityLocation
+    //bi-directional many-to-one association to ProductLocation
     @OneToMany(mappedBy = "location")
     @JsonIgnore
-    private Set<EntityLocation>    entities;
+    private Set<ProductLocation>    entities;
 
     @Id
     @GeneratedValue(generator = "location_id_seq", strategy = GenerationType.SEQUENCE)
@@ -240,7 +240,7 @@ public class Location extends ExistentialRuleform implements
         return context;
     }
 
-    public Set<EntityLocation> getEntities() {
+    public Set<ProductLocation> getEntities() {
         return entities;
     }
 
@@ -296,8 +296,8 @@ public class Location extends ExistentialRuleform implements
         context = locationContext;
     }
 
-    public void setEntities(Set<EntityLocation> entityLocations) {
-        entities = entityLocations;
+    public void setEntities(Set<ProductLocation> productLocations) {
+        entities = productLocations;
     }
 
     @Override

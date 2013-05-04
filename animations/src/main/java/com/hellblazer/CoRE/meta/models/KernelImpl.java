@@ -21,11 +21,10 @@ import javax.persistence.EntityManager;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.capability.Action;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAction;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownEntity;
+import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocationContext;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
@@ -35,6 +34,7 @@ import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -57,11 +57,11 @@ public class KernelImpl implements Kernel {
     private final Attribute       originalAttribute;
     private final Attribute       passwordHashAttribute;
 
-    private final Entity          entity;
-    private final Entity          anyEntity;
-    private final Entity          notApplicableEntity;
-    private final Entity          originalEntity;
-    private final Entity          sameEntity;
+    private final Product          product;
+    private final Product          anyProduct;
+    private final Product          notApplicableProduct;
+    private final Product          originalProduct;
+    private final Product          sameProduct;
 
     private final Location        anyLocation;
     private final Location        location;
@@ -132,11 +132,11 @@ public class KernelImpl implements Kernel {
         loginAttribute = find(em, WellKnownAttribute.LOGIN);
         passwordHashAttribute = find(em, WellKnownAttribute.PASSWORD_HASH);
 
-        entity = find(em, WellKnownEntity.ENTITY);
-        anyEntity = find(em, WellKnownEntity.ANY);
-        originalEntity = find(em, WellKnownEntity.ORIGINAL);
-        sameEntity = find(em, WellKnownEntity.SAME);
-        notApplicableEntity = find(em, WellKnownEntity.NOT_APPLICABLE);
+        product = find(em, WellKnownProduct.ENTITY);
+        anyProduct = find(em, WellKnownProduct.ANY);
+        originalProduct = find(em, WellKnownProduct.ORIGINAL);
+        sameProduct = find(em, WellKnownProduct.SAME);
+        notApplicableProduct = find(em, WellKnownProduct.NOT_APPLICABLE);
 
         anyLocationContext = find(em, WellKnownLocationContext.ANY);
         originalLocationContext = find(em, WellKnownLocationContext.ORIGINAL);
@@ -216,11 +216,11 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyEntity()
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyProduct()
      */
     @Override
-    public Entity getAnyEntity() {
-        return anyEntity;
+    public Product getAnyProduct() {
+        return anyProduct;
     }
 
     /* (non-Javadoc)
@@ -325,11 +325,11 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getEntity()
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getProduct()
      */
     @Override
-    public Entity getEntity() {
-        return entity;
+    public Product getProduct() {
+        return product;
     }
 
     /* (non-Javadoc)
@@ -534,11 +534,11 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * @return the notApplicableEntity
+     * @return the notApplicableProduct
      */
     @Override
-    public Entity getNotApplicableEntity() {
-        return notApplicableEntity;
+    public Product getNotApplicableProduct() {
+        return notApplicableProduct;
     }
 
     /**
@@ -590,11 +590,11 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalEntity()
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalProduct()
      */
     @Override
-    public Entity getOriginalEntity() {
-        return originalEntity;
+    public Product getOriginalProduct() {
+        return originalProduct;
     }
 
     /* (non-Javadoc)
@@ -659,11 +659,11 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * @return the sameEntity
+     * @return the sameProduct
      */
     @Override
-    public Entity getSameEntity() {
-        return sameEntity;
+    public Product getSameProduct() {
+        return sameProduct;
     }
 
     /* (non-Javadoc)
@@ -743,10 +743,10 @@ public class KernelImpl implements Kernel {
     /**
      * 
      * @param wko
-     * @return the {@link Entity} corresponding to the well known object
+     * @return the {@link Product} corresponding to the well known object
      */
-    Entity find(EntityManager em, WellKnownEntity wko) {
-        return em.find(Entity.class, wko.id());
+    Product find(EntityManager em, WellKnownProduct wko) {
+        return em.find(Product.class, wko.id());
     }
 
     /**

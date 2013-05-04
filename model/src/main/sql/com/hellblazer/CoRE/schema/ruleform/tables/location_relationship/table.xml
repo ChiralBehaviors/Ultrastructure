@@ -13,7 +13,7 @@
               context bigint NOT NULL,
               relationship bigint NOT NULL,
               target_context bigint NOT NULL,
-              entity_mapped_value bigint NOT NULL,
+              product_mapped_value bigint NOT NULL,
               sequence_number integer NOT NULL,
               location_1_attribute bigint NOT NULL,
               attribute_relationship bigint NOT NULL,
@@ -29,8 +29,8 @@
               CONSTRAINT location_relationship_context_fkey FOREIGN KEY (context)
                   REFERENCES ruleform.location_context (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_entity_mapped_value_fkey FOREIGN KEY (entity_mapped_value)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+              CONSTRAINT location_relationship_product_mapped_value_fkey FOREIGN KEY (product_mapped_value)
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_relationship_location_1_attribute_fkey FOREIGN KEY (location_1_attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
@@ -50,7 +50,7 @@
               CONSTRAINT location_relationship_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_context_key UNIQUE (context , relationship , target_context , entity_mapped_value , sequence_number ),
+              CONSTRAINT location_relationship_context_key UNIQUE (context , relationship , target_context , product_mapped_value , sequence_number ),
               CONSTRAINT location_relationship_sequence_number_check CHECK (sequence_number > 0)
             )
             WITH (

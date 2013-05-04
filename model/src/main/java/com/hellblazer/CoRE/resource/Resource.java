@@ -45,12 +45,12 @@ import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.entity.EntityNetwork;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
- * An entity that can provide information, produce products, or perform work.
+ * An product that can provide information, produce products, or perform work.
  * 
  * Examples are people, lab groups, software, books, bank accounts, output files
  * of computational analyses, etc.
@@ -286,9 +286,9 @@ public class Resource extends ExistentialRuleform implements
         return networkByParent;
     }
 
-    public List<EntityNetwork> getQualifiedEntityNetworkRules(EntityManager em) {
+    public List<ProductNetwork> getQualifiedEntityNetworkRules(EntityManager em) {
         return em.createNamedQuery(QUALIFIED_ENTITY_NETWORK_RULES,
-                                   EntityNetwork.class).setParameter("resource",
+                                   ProductNetwork.class).setParameter("resource",
                                                                      this).getResultList();
     }
 

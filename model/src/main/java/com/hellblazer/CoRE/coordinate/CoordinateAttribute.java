@@ -30,7 +30,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.entity.Entity;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -48,10 +48,10 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     @JoinColumn(name = "coordinate")
     private Coordinate        coordinate;
 
-    //bi-directional many-to-one association to Entity
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "entity_value")
-    private Entity            entityValue;
+    @JoinColumn(name = "product_value")
+    private Product            productValue;
 
     @Id
     @GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -141,8 +141,8 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
         return coordinate;
     }
 
-    public Entity getEntityValue() {
-        return entityValue;
+    public Product getProductValue() {
+        return productValue;
     }
 
     @Override
@@ -170,8 +170,8 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
         this.coordinate = coordinate;
     }
 
-    public void setEntityValue(Entity entity) {
-        entityValue = entity;
+    public void setProductValue(Product product) {
+        productValue = product;
     }
 
     @Override

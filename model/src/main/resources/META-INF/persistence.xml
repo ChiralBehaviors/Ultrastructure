@@ -27,17 +27,17 @@
 		<class>com.hellblazer.CoRE.coordinate.CoordinateRelationship</class>
 		<class>com.hellblazer.CoRE.location.ContextAttribute</class>
 		<class>com.hellblazer.CoRE.location.ContextAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.entity.Entity</class>
-		<class>com.hellblazer.CoRE.entity.EntityAttribute</class>
-		<class>com.hellblazer.CoRE.entity.EntityAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.entity.EntityLocation</class>
-		<class>com.hellblazer.CoRE.entity.EntityLocationAttribute</class>
-		<class>com.hellblazer.CoRE.entity.EntityLocationAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.entity.EntityLocationNetwork</class>
-		<class>com.hellblazer.CoRE.entity.EntityNetwork</class>
-		<class>com.hellblazer.CoRE.entity.EntityNetworkAttribute</class>
-		<class>com.hellblazer.CoRE.entity.EntityNetworkAuthorization</class>
-		<class>com.hellblazer.CoRE.entity.EntityNetworkDeduction</class>
+		<class>com.hellblazer.CoRE.product.Product</class>
+		<class>com.hellblazer.CoRE.product.ProductAttribute</class>
+		<class>com.hellblazer.CoRE.product.ProductAttributeAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductLocation</class>
+		<class>com.hellblazer.CoRE.product.ProductLocationAttribute</class>
+		<class>com.hellblazer.CoRE.product.ProductLocationAttributeAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductLocationNetwork</class>
+		<class>com.hellblazer.CoRE.product.ProductNetwork</class>
+		<class>com.hellblazer.CoRE.product.ProductNetworkAttribute</class>
+		<class>com.hellblazer.CoRE.product.ProductNetworkAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductNetworkDeduction</class>
 		<class>com.hellblazer.CoRE.event.ServiceSequencingAuthorization</class>
 		<class>com.hellblazer.CoRE.event.Job</class>
 		<class>com.hellblazer.CoRE.event.JobAttribute</class>

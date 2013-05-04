@@ -30,14 +30,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The Protocol ruleform.
  * 
- * The factors of this ruleform are {consumer, service, entity1, entity2}
+ * The factors of this ruleform are {consumer, service, product1, product2}
  * 
  */
 @NamedQueries({ @NamedQuery(name = GET, query = "SELECT p FROM Protocol p "
@@ -82,28 +82,28 @@ public class Protocol extends Ruleform {
      */
     @ManyToOne
     @JoinColumn(name = "material")
-    private Entity             material;
+    private Product             material;
 
     /**
      * The product of the service
      */
     @ManyToOne
     @JoinColumn(name = "product")
-    private Entity             product;
+    private Product             product;
 
     /**
      * The ordered product
      */
     @ManyToOne
     @JoinColumn(name = "product_ordered")
-    private Entity             productOrdered;
+    private Product             productOrdered;
 
     /**
      * The requested service to be performed
      */
     @ManyToOne
     @JoinColumn(name = "requested_service")
-    private Entity             requestedService;
+    private Product             requestedService;
 
     /**
      * The resource that requested the product of this service
@@ -120,14 +120,14 @@ public class Protocol extends Ruleform {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Entity             service;
+    private Product             service;
 
     /**
      * The sub service
      */
     @ManyToOne
     @JoinColumn(name = "sub_service")
-    private Entity             subService;
+    private Product             subService;
 
     public Protocol() {
     }
@@ -172,28 +172,28 @@ public class Protocol extends Ruleform {
     /**
      * @return the material
      */
-    public Entity getMaterial() {
+    public Product getMaterial() {
         return material;
     }
 
     /**
      * @return the product
      */
-    public Entity getProduct() {
+    public Product getProduct() {
         return product;
     }
 
     /**
      * @return the productOrdered
      */
-    public Entity getProductOrdered() {
+    public Product getProductOrdered() {
         return productOrdered;
     }
 
     /**
      * @return the requestedService
      */
-    public Entity getRequestedService() {
+    public Product getRequestedService() {
         return requestedService;
     }
 
@@ -211,14 +211,14 @@ public class Protocol extends Ruleform {
     /**
      * @return the service
      */
-    public Entity getService() {
+    public Product getService() {
         return service;
     }
 
     /**
      * @return the subService
      */
-    public Entity getSubService() {
+    public Product getSubService() {
         return subService;
     }
 
@@ -251,7 +251,7 @@ public class Protocol extends Ruleform {
      * @param material
      *            the material to set
      */
-    public void setMaterial(Entity material) {
+    public void setMaterial(Product material) {
         this.material = material;
     }
 
@@ -259,7 +259,7 @@ public class Protocol extends Ruleform {
      * @param product
      *            the product to set
      */
-    public void setProduct(Entity product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 
@@ -267,7 +267,7 @@ public class Protocol extends Ruleform {
      * @param productOrdered
      *            the productOrdered to set
      */
-    public void setProductOrdered(Entity productOrdered) {
+    public void setProductOrdered(Product productOrdered) {
         this.productOrdered = productOrdered;
     }
 
@@ -275,7 +275,7 @@ public class Protocol extends Ruleform {
      * @param requestedService
      *            the requestedService to set
      */
-    public void setRequestedService(Entity requestedService) {
+    public void setRequestedService(Product requestedService) {
         this.requestedService = requestedService;
     }
 
@@ -295,7 +295,7 @@ public class Protocol extends Ruleform {
      * @param service
      *            the service to set
      */
-    public void setService(Entity service) {
+    public void setService(Product service) {
         this.service = service;
     }
 
@@ -303,7 +303,7 @@ public class Protocol extends Ruleform {
      * @param subService
      *            the subService to set
      */
-    public void setSubService(Entity subService) {
+    public void setSubService(Product subService) {
         this.subService = subService;
     }
 }

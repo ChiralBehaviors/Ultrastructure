@@ -62,7 +62,7 @@ public class InDatabaseEntityManager {
             EM = emf.createEntityManager();
             log.info(String.format("Entities: %s",
                                    EM.getMetamodel().getEntities()));
-            log.info("Entity manager created");
+            log.info("Product manager created");
         } catch (RuntimeException e) {
             log.error("Unable to initialize Animations", e);
             throw e;

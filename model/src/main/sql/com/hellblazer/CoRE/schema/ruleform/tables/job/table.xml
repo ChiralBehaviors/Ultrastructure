@@ -38,13 +38,13 @@
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_service_fkey FOREIGN KEY (service)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_product_fkey FOREIGN KEY (product)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_materials_fkey FOREIGN KEY (material)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_parent_fkey FOREIGN KEY (parent)
                   REFERENCES ruleform.job (id) MATCH SIMPLE

@@ -92,7 +92,7 @@ public class DtdGenerator {
      * @param c
      *            {@link Connection} to the testing database
      * @return list of schema-qualified ruleform table names (e.g.,
-     *         "ruleform.bioentity")
+     *         "ruleform.bioproduct")
      * @throws java.lang.Exception
      */
     private static List<String> getRuleformTableNames(Connection c)

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<ruleform.research id="1" name="Testing only"
+		description="This rule is for testing purposes only.  It is not 'real'." />
+	<ruleform.resource id="1" name="CoRE" description="The CoRE System"
+		updated_by="1" update_date="2007-02-13 09:36:46.101395" pinned="false" />
+	<ruleform.product id="1" name="Genomic Region" research="1"
+		updated_by="1" update_date="2007-02-13 09:36:46.101395" pinned="false" />
+	<ruleform.attribute id="1" name="Attribute"
+		description="The main entry point into the Attribute network. All Attributes are ultimately a child of this node."
+		updated_by="1" update_date="2007-02-13 09:36:46.101395" pinned="false" />
+	<ruleform.attribute id="2" name="Wooziness"
+		description="How inebriated a lab technician is." updated_by="1"
+		update_date="2007-02-13 09:36:46.101395" pinned="false" />
+	<ruleform.attribute id="3" name="CoRE Group Name Prefix"
+		updated_by="1" update_date="2007-02-13 09:36:46.101395" pinned="true" />
+	<ruleform.attribute id="4"
+		name="CoRE Group Name Sequence Object" updated_by="1"
+		update_date="2007-02-13 09:36:46.101395" pinned="true" />
+	<ruleform.product_attribute id="1" resource="1"
+		product="1" attribute="3" sequence_number="1" text_value="Genomic Region"
+		updated_by="1" update_date="2007-02-13 09:36:46.101395" />
+	<ruleform.product_attribute id="2" resource="1"
+		product="1" attribute="4" sequence_number="1" text_value="genomic_region_seq"
+		updated_by="1" update_date="2007-02-13 09:36:46.101395" />
+	<ruleform.relationship id="1" name="includes"
+		preferred="true" inverse="2" updated_by="1" update_date="2007-02-13 09:36:46.101395"
+		pinned="true" />
+	<ruleform.relationship id="2" name="is-a"
+		preferred="false" inverse="1" updated_by="1" update_date="2007-02-13 09:36:46.101395"
+		pinned="true" />
+</dataset>

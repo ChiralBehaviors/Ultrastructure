@@ -59,7 +59,7 @@ public class KernelTest {
         Kernel kernel = new ModelImpl(em).getKernel();
         assertNotNull(kernel.getAnyAction());
         assertNotNull(kernel.getAnyAttribute());
-        assertNotNull(kernel.getAnyEntity());
+        assertNotNull(kernel.getAnyProduct());
         assertNotNull(kernel.getAnyLocation());
         assertNotNull(kernel.getAnyLocationContext());
         assertNotNull(kernel.getAnyRelationship());
@@ -71,7 +71,7 @@ public class KernelTest {
         assertNotNull(kernel.getCoreAnimationSoftware());
         assertNotNull(kernel.getDeveloped());
         assertNotNull(kernel.getDevelopedBy());
-        assertNotNull(kernel.getEntity());
+        assertNotNull(kernel.getProduct());
         assertNotNull(kernel.getEquals());
         assertNotNull(kernel.getFormerMemberOf());
         assertNotNull(kernel.getGreaterThan());
@@ -95,7 +95,7 @@ public class KernelTest {
         assertNotNull(kernel.getMemberOf());
         assertNotNull(kernel.getOriginalAction());
         assertNotNull(kernel.getOriginalAttribute());
-        assertNotNull(kernel.getOriginalEntity());
+        assertNotNull(kernel.getOriginalProduct());
         assertNotNull(kernel.getOriginalLocation());
         assertNotNull(kernel.getOriginalLocationContext());
         assertNotNull(kernel.getOriginalResource());

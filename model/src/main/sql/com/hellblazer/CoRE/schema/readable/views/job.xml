@@ -16,9 +16,9 @@
 			        base_table.notes, res.name AS research, 
 			        up.name AS updated_by, base_table.update_date
 			   FROM ruleform.job base_table
-			   JOIN ruleform.entity s ON base_table.service = s.id
-               JOIN ruleform.entity m ON base_table.material = m.id
-               JOIN ruleform.entity p ON base_table.product = p.id
+			   JOIN ruleform.product s ON base_table.service = s.id
+               JOIN ruleform.product m ON base_table.material = m.id
+               JOIN ruleform.product p ON base_table.product = p.id
 			   JOIN ruleform.resource at ON base_table.assign_to = at.id
                JOIN ruleform.resource r ON base_table.requester = r.id
                JOIN ruleform.location dt ON base_table.deliver_to = dt.id

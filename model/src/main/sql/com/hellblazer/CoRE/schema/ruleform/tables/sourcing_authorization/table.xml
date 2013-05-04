@@ -25,7 +25,7 @@
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT sourcing_authorization_product_fkey FOREIGN KEY (product)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT sourcing_authorization_location_fkey FOREIGN KEY (location)
                   REFERENCES ruleform.location (id) MATCH SIMPLE

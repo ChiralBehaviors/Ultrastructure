@@ -30,7 +30,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.entity.Entity;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -43,10 +43,10 @@ import com.hellblazer.CoRE.resource.Resource;
 public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Entity
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "entity_value")
-    private Entity            entityValue;
+    @JoinColumn(name = "product_value")
+    private Product            productValue;
 
     @Id
     @GeneratedValue(generator = "location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -140,8 +140,8 @@ public class LocationAttribute extends AttributeValue<Location> {
         super(updatedBy);
     }
 
-    public Entity getEntityValue() {
-        return entityValue;
+    public Product getProductValue() {
+        return productValue;
     }
 
     @Override
@@ -173,8 +173,8 @@ public class LocationAttribute extends AttributeValue<Location> {
         return Location.class;
     }
 
-    public void setEntityValue(Entity entity) {
-        entityValue = entity;
+    public void setEntityValue(Product product) {
+        productValue = product;
     }
 
     @Override

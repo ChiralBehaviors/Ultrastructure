@@ -6,7 +6,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
 	<include relativeToChangelogFile="true"
-		file="/views/entity_attribute_authorization.xml" />
+		file="/views/product_attribute_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/attribute_meta_attribute_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/attribute.xml" />
@@ -24,13 +24,13 @@
 		file="/views/coordinate_nesting.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/coordinate_relationship.xml" />
-	<include relativeToChangelogFile="true" file="/views/entity.xml" />
-	<include relativeToChangelogFile="true" file="/views/entity_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/product.xml" />
+	<include relativeToChangelogFile="true" file="/views/product_attribute.xml" />
 	
-	<include relativeToChangelogFile="true" file="/views/entity_location.xml" />
+	<include relativeToChangelogFile="true" file="/views/product_location.xml" />
 	<include relativeToChangelogFile="true"
-		file="/views/entity_location_network.xml" />
-	<include relativeToChangelogFile="true" file="/views/entity_network.xml" />
+		file="/views/product_location_network.xml" />
+	<include relativeToChangelogFile="true" file="/views/product_network.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/service_sequencing_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/job.xml" />

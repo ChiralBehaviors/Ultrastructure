@@ -8,12 +8,12 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.location_relationship AS 
-			 SELECT lr.id, c.name AS context, rel.name AS relationship, tc.name AS target_context, b.name AS entity_mapped_value, lr.sequence_number, la1.name AS location_1_attribute, att_rel.name AS attribute_relationship, la2.name AS location_2_attribute, res.name AS updated_by, lr.update_date
+			 SELECT lr.id, c.name AS context, rel.name AS relationship, tc.name AS target_context, b.name AS product_mapped_value, lr.sequence_number, la1.name AS location_1_attribute, att_rel.name AS attribute_relationship, la2.name AS location_2_attribute, res.name AS updated_by, lr.update_date
 			   FROM ruleform.location_relationship lr
 			   JOIN ruleform.location_context c ON lr.context = c.id
 			   JOIN ruleform.relationship rel ON lr.relationship = rel.id
 			   JOIN ruleform.location_context tc ON lr.target_context = tc.id
-			   JOIN ruleform.entity b ON lr.entity_mapped_value = b.id
+			   JOIN ruleform.product b ON lr.product_mapped_value = b.id
 			   JOIN ruleform.attribute la1 ON lr.location_1_attribute = la1.id
 			   JOIN ruleform.relationship att_rel ON lr.attribute_relationship = att_rel.id
 			   JOIN ruleform.attribute la2 ON lr.location_2_attribute = la2.id

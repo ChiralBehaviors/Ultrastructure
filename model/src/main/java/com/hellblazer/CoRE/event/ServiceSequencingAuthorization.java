@@ -32,7 +32,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.entity.Entity;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -77,12 +77,12 @@ public class ServiceSequencingAuthorization extends Ruleform {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "my_parent")
-    private Entity             myParent;
+    private Product             myParent;
 
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "next_child")
-    private Entity             nextChild;
+    private Product             nextChild;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -92,7 +92,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "next_sibling")
-    private Entity             nextSibling;
+    private Product             nextSibling;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -102,7 +102,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Entity             parent;
+    private Product             parent;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -145,14 +145,14 @@ public class ServiceSequencingAuthorization extends Ruleform {
     /**
      * @return the myParent
      */
-    public Entity getMyParent() {
+    public Product getMyParent() {
         return myParent;
     }
 
     /**
      * @return the nextChild
      */
-    public Entity getNextChild() {
+    public Product getNextChild() {
         return nextChild;
     }
 
@@ -163,7 +163,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
     /**
      * @return the nextSibling
      */
-    public Entity getNextSibling() {
+    public Product getNextSibling() {
         return nextSibling;
     }
 
@@ -174,7 +174,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
     /**
      * @return the parent
      */
-    public Entity getParent() {
+    public Product getParent() {
         return parent;
     }
 
@@ -203,7 +203,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
      * @param myParent
      *            the myParent to set
      */
-    public void setMyParent(Entity myParent) {
+    public void setMyParent(Product myParent) {
         this.myParent = myParent;
     }
 
@@ -211,7 +211,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
      * @param nextChild
      *            the nextChild to set
      */
-    public void setNextChild(Entity nextChild) {
+    public void setNextChild(Product nextChild) {
         this.nextChild = nextChild;
     }
 
@@ -223,7 +223,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
      * @param nextSibling
      *            the nextSibling to set
      */
-    public void setNextSibling(Entity nextSibling) {
+    public void setNextSibling(Product nextSibling) {
         this.nextSibling = nextSibling;
     }
 
@@ -235,7 +235,7 @@ public class ServiceSequencingAuthorization extends Ruleform {
      * @param parent
      *            the parent to set
      */
-    public void setParent(Entity parent) {
+    public void setParent(Product parent) {
         this.parent = parent;
     }
 

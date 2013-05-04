@@ -6,7 +6,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="1" author="hhildebrand">
-        <insert tableName="ruleform.entity">
+        <insert tableName="ruleform.product">
             <column name=""></column>
         </insert>
         <rollback>

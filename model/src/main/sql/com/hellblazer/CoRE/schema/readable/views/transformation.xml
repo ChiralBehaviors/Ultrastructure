@@ -8,17 +8,17 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.transformation AS 
-			 SELECT t.id, s.name AS service, r.name AS resource, b.name AS entity, t.sequence_number, at.name AS assign_to, rk.name AS resource_key, bk.name AS entity_key, relk.name AS relationship_key, a.name AS attribute, bar.name AS entity_attribute_resource
+			 SELECT t.id, s.name AS service, r.name AS resource, b.name AS product, t.sequence_number, at.name AS assign_to, rk.name AS resource_key, bk.name AS product_key, relk.name AS relationship_key, a.name AS attribute, bar.name AS product_attribute_resource
 			   FROM ruleform.transformation t
-			   JOIN ruleform.entity s ON t.service = s.id
+			   JOIN ruleform.product s ON t.service = s.id
 			   JOIN ruleform.resource r ON t.resource = r.id
-			   JOIN ruleform.entity b ON t.entity = b.id
+			   JOIN ruleform.product b ON t.product = b.id
 			   JOIN ruleform.resource at ON t.assign_to = at.id
 			   JOIN ruleform.resource rk ON t.resource_key = rk.id
-			   JOIN ruleform.entity bk ON t.entity_key = bk.id
+			   JOIN ruleform.product bk ON t.product_key = bk.id
 			   JOIN ruleform.relationship relk ON t.relationship_key = relk.id
 			   JOIN ruleform.attribute a ON t.attribute = a.id
-			   JOIN ruleform.resource bar ON t.entity_attribute_resource = bar.id;
+			   JOIN ruleform.resource bar ON t.product_attribute_resource = bar.id;
 			
 			ALTER TABLE readable.transformation
 			  OWNER TO core;

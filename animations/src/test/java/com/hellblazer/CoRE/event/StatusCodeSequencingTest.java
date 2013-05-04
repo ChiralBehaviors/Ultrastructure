@@ -33,11 +33,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.JobModelImpl;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
@@ -110,7 +110,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
         StatusCode terminalState = new StatusCode("terminal state", core);
         em.persist(terminalState);
 
-        Entity service = new Entity("My Service", core);
+        Product service = new Product("My Service", core);
         em.persist(service);
 
         StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,

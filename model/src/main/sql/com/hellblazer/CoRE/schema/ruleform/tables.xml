@@ -8,7 +8,7 @@
     
     <include relativeToChangelogFile="true" file="tables/research-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml"/>
@@ -17,13 +17,13 @@
     <include relativeToChangelogFile="true" file="tables/location-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/unit-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_network-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_network-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_location-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_location-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_network-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/context_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/context_attribute_authorization-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_network_deduction-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_network_deduction-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_meta_rule-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/transformation_metarule-0.0.1.xml"/>
@@ -38,20 +38,20 @@
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_nesting-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_location_attribute-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_location_network-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_location_attribute-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_location_network-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_network_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_relationship-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_attribute-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_network_attribute-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_attribute-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_network_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_network_authorization-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_attribute_authorization-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_location_attribute_authorization-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/entity_network_authorization-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_attribute_authorization-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_location_attribute_authorization-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_network_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/job_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/meta_protocol-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml"/>

@@ -26,22 +26,22 @@
               set_if_active_siblings boolean, -- Determines if we set the parent job to the status denoted by "parent_status_to_set" if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say those sibling jobs might have.
               CONSTRAINT service_sequencing_authorization_pkey PRIMARY KEY (id ),
               CONSTRAINT service_sequencing_authorization_my_parent_fkey FOREIGN KEY (my_parent)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT service_sequencing_authorization_next_child_fkey FOREIGN KEY (next_child)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT service_sequencing_authorization_next_child_status_fkey FOREIGN KEY (next_child_status)
                   REFERENCES ruleform.status_code (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT service_sequencing_authorization_next_sibling_fkey FOREIGN KEY (next_sibling)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT service_sequencing_authorization_next_sibling_status_fkey FOREIGN KEY (next_sibling_status)
                   REFERENCES ruleform.status_code (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT service_sequencing_authorization_parent_fkey FOREIGN KEY (parent)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT service_sequencing_authorization_parent_status_to_set_fkey FOREIGN KEY (parent_status_to_set)
                   REFERENCES ruleform.status_code (id) MATCH SIMPLE

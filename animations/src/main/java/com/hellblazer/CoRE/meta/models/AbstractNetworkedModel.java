@@ -50,8 +50,6 @@ import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
-import com.hellblazer.CoRE.entity.Entity;
-import com.hellblazer.CoRE.entity.EntityNetwork;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.Kernel;
@@ -61,6 +59,8 @@ import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.resource.ResourceNetwork;
 
@@ -107,14 +107,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     /**
-     * @param entity
+     * @param product
      * @return
      */
-    private static String tableName(Class<?> entity) {
+    private static String tableName(Class<?> product) {
         StringBuilder builder = new StringBuilder();
         builder.append("ruleform.");
         boolean first = true;
-        for (char c : entity.getSimpleName().toCharArray()) {
+        for (char c : product.getSimpleName().toCharArray()) {
             if (Character.isUpperCase(c)) {
                 if (!first) {
                     builder.append('_');
@@ -134,25 +134,25 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     private final Class<AttributeType>          attribute;
     protected final Kernel                      kernel;
     protected final EntityManager               em;
-    private final Class<RuleForm>               entity;
+    private final Class<RuleForm>               product;
     private final Class<Networked<RuleForm, ?>> network;
     private final String                        prefix;
     private final String                        networkPrefix;
     @SuppressWarnings("unused")
-    private final String                        entityTable;
+    private final String                        productTable;
     private final String                        networkTable;
 
     @SuppressWarnings("unchecked")
     public AbstractNetworkedModel(EntityManager em, Kernel kernel) {
         this.em = em;
         this.kernel = kernel;
-        entity = extractedEntity();
+        product = extractedEntity();
         authorization = extractedAuthorization();
         attribute = extractedAttribute();
-        network = (Class<Networked<RuleForm, ?>>) getNetworkOf(entity);
-        prefix = ModelImpl.prefixFor(entity);
+        network = (Class<Networked<RuleForm, ?>>) getNetworkOf(product);
+        prefix = ModelImpl.prefixFor(product);
         networkPrefix = ModelImpl.prefixFor(network);
-        entityTable = tableName(entity);
+        productTable = tableName(product);
         networkTable = tableName(network);
     }
 
@@ -353,7 +353,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     public RuleForm getChild(RuleForm parent, Relationship r) {
         TypedQuery<RuleForm> query = em.createNamedQuery(prefix
                                                                  + GET_CHILD_SUFFIX,
-                                                         entity);
+                                                         product);
         query.setParameter("parent", parent);
         query.setParameter("relationship", r);
         return query.getSingleResult();
@@ -383,7 +383,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
          *              and n.child <> :parent
          */
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
+        CriteriaQuery<RuleForm> query = cb.createQuery(product);
         Root<Networked<RuleForm, ?>> networkForm = query.from(network);
         query.select((Selection<? extends RuleForm>) networkForm.fetch("child"));
         query.where(cb.equal(networkForm.get("relationship"), relationship),
@@ -395,8 +395,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         if (networked == Attribute.class) {
             return AttributeNetwork.class;
         }
-        if (networked == Entity.class) {
-            return EntityNetwork.class;
+        if (networked == Product.class) {
+            return ProductNetwork.class;
         }
         if (networked == Location.class) {
             return LocationNetwork.class;
@@ -416,16 +416,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         /*
          * SELECT e 
          *      FROM 
-         *        entityTable AS e, 
-         *        EntityNetwork AS n
+         *        productTable AS e, 
+         *        ProductNetwork AS n
          *      WHERE 
          *          n.parent = :parent 
          *          AND n.relationship = :relationship
          *          AND n.child <> e;
          */
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
-        Root<RuleForm> form = query.from(entity);
+        CriteriaQuery<RuleForm> query = cb.createQuery(product);
+        Root<RuleForm> form = query.from(product);
         Root<Networked<RuleForm, ?>> networkForm = query.from(network);
         query.where(cb.equal(networkForm.get("parent"), parent),
                     cb.equal(networkForm.get("relationship"), relationship),
@@ -439,7 +439,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
      */
     @Override
     public List<RuleForm> getUnlinked() {
-        return em.createNamedQuery(prefix + UNLINKED_SUFFIX, entity).getResultList();
+        return em.createNamedQuery(prefix + UNLINKED_SUFFIX, product).getResultList();
     }
 
     @Override

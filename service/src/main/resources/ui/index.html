@@ -6,7 +6,7 @@
     <body>
         <p><input id="searchId" type="text"><button id="find">Find</button></p>
         <div id="entities">
-        	<ul id="entity-list">
+        	<ul id="product-list">
         	</ul>
         </div>
     </body>
@@ -39,7 +39,7 @@
             
             r.fetch({success: function(model){
             	var view = new ResourceView({
-            		el: "entity-list",
+            		el: "product-list",
             		model: model
             	});
             	view.render();

@@ -90,7 +90,7 @@ public class BootstrapLoader extends Bootstrap {
     public void bootstrap() throws SQLException {
         super.bootstrap();
         kernel = new KernelImpl(em);
-        constructEntityNetworks();
+        constructProductNetworks();
         constructResourceNetworks();
         constructLocationNetworks();
         constructAttributeNetworks();
@@ -144,7 +144,7 @@ public class BootstrapLoader extends Bootstrap {
         Capability coreEntityCapability = new Capability(
                                                          kernel.getCore(),
                                                          kernel.getAnything(),
-                                                         kernel.getEntity(),
+                                                         kernel.getProduct(),
                                                          "The capability that gives CoRE the right to do anything to Entities",
                                                          kernel.getCore());
         em.persist(coreEntityCapability);
@@ -166,12 +166,12 @@ public class BootstrapLoader extends Bootstrap {
         em.persist(coreResourceCapability);
     }
 
-    public void constructEntityNetworks() {
-        kernel.getEntity().link(kernel.getIsA(), kernel.getEntity(),
+    public void constructProductNetworks() {
+        kernel.getProduct().link(kernel.getIsA(), kernel.getProduct(),
                                 kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyEntity().link(kernel.getIsA(), kernel.getEntity(),
+        kernel.getAnyProduct().link(kernel.getIsA(), kernel.getProduct(),
                                    kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalEntity().link(kernel.getIsA(), kernel.getEntity(),
+        kernel.getOriginalProduct().link(kernel.getIsA(), kernel.getProduct(),
                                         kernel.getCore(), kernel.getCore(), em);
     }
 

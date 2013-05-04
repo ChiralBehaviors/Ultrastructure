@@ -28,8 +28,8 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -44,7 +44,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @javax.persistence.Entity
 public class Capability extends Ruleform {
     public enum Target {
-        Attribute, Entity, Location, Resource;
+        Attribute, Product, Location, Resource;
     }
 
     private static final long serialVersionUID = 1L;
@@ -62,8 +62,8 @@ public class Capability extends Ruleform {
     private Attribute         targetAttribute;
 
     @ManyToOne
-    @JoinColumn(name = "target_entity")
-    private Entity            targetEntity;
+    @JoinColumn(name = "target_product")
+    private Product            targetProduct;
 
     @ManyToOne
     @JoinColumn(name = "target_location")
@@ -111,12 +111,12 @@ public class Capability extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public Capability(Resource subject, Action verb, Entity target,
+    public Capability(Resource subject, Action verb, Product target,
                       String notes, Resource updatedBy) {
         this(notes, updatedBy);
         this.subject = subject;
         this.verb = verb;
-        setTargetEntity(target);
+        setTargetProduct(target);
     }
 
     public Capability(Resource subject, Action verb, Location target,
@@ -178,8 +178,8 @@ public class Capability extends Ruleform {
         return targetAttribute;
     }
 
-    public Entity getTargetEntity() {
-        return targetEntity;
+    public Product getTargetProduct() {
+        return targetProduct;
     }
 
     public Location getTargetLocation() {
@@ -215,9 +215,9 @@ public class Capability extends Ruleform {
         targetType = Target.Attribute;
     }
 
-    public void setTargetEntity(Entity targetEntity) {
-        this.targetEntity = targetEntity;
-        targetType = Target.Entity;
+    public void setTargetProduct(Product targetProduct) {
+        this.targetProduct = targetProduct;
+        targetType = Target.Product;
     }
 
     public void setTargetLocation(Location targetLocation) {

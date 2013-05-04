@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.animation.RuleformIdIterator;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
@@ -52,13 +51,14 @@ import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.meta.EntityModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
+import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.ResourceModel;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -204,17 +204,17 @@ public class JobModelImpl implements JobModel {
         InDatabase.get().validateStateGraph();
     }
 
-    private final List<Entity>  modifiedEvents = new ArrayList<Entity>();
+    private final List<Product> modifiedEvents = new ArrayList<Product>();
     private final EntityManager em;
     private final Kernel        kernel;
-    private final EntityModel   entityModel;
+    private final ProductModel  productModel;
     private final LocationModel locationModel;
     private final ResourceModel resourceModel;
 
     public JobModelImpl(Model model) {
         em = model.getEntityManager();
         kernel = model.getKernel();
-        entityModel = model.getEntityModel();
+        productModel = model.getProductModel();
         locationModel = model.getLocationModel();
         resourceModel = model.getResourceModel();
     }
@@ -268,7 +268,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void ensureNextStateIsValid(Job job, Entity service,
+    public void ensureNextStateIsValid(Job job, Product service,
                                        StatusCode currentStatus,
                                        StatusCode nextStatus)
                                                              throws SQLException {
@@ -404,7 +404,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public StatusCode getInitialState(Entity service) {
+    public StatusCode getInitialState(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATES,
                                                            StatusCode.class);
         query.setParameter(1, service.getId());
@@ -451,7 +451,8 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<StatusCode> getNextStatusCodes(Entity service, StatusCode parent) {
+    public List<StatusCode> getNextStatusCodes(Product service,
+                                               StatusCode parent) {
         if (parent.equals(kernel.getUnset())) {
             return Arrays.asList(getInitialState(service));
         }
@@ -520,7 +521,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public Set<StatusCode> getStatusCodesFor(Entity service) {
+    public Set<StatusCode> getStatusCodesFor(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES,
                                                            StatusCode.class);
         query.setParameter("service", service);
@@ -562,7 +563,7 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<Job> getUnsetSiblings(Job parent, Entity service) {
+    public List<Job> getUnsetSiblings(Job parent, Product service) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_UNSET_SIBLINGS,
                                                     Job.class);
         query.setParameter("event", service);
@@ -584,7 +585,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public boolean hasInitialState(Entity service) {
+    public boolean hasInitialState(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATES,
                                                            StatusCode.class);
         query.setParameter(1, service.getId());
@@ -593,7 +594,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public boolean hasScs(Entity service) {
+    public boolean hasScs(Product service) {
         Query query = em.createNamedQuery(Job.HAS_SCS);
         query.setParameter("service", service);
         query.setMaxResults(1);
@@ -605,7 +606,7 @@ public class JobModelImpl implements JobModel {
      * @throws SQLException
      */
     @Override
-    public boolean hasTerminalSCCs(Entity service) throws SQLException {
+    public boolean hasTerminalSCCs(Product service) throws SQLException {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         for (StatusCode currentCode : getStatusCodesFor(service)) {
             List<StatusCode> codes = getNextStatusCodes(service, currentCode);
@@ -626,7 +627,7 @@ public class JobModelImpl implements JobModel {
         job.setParent(parent);
         job.setAssignTo(resolve(job.getAssignTo(), protocol.getAssignTo()));
         job.setRequester(resolve(job.getRequester(), protocol.getRequester()));
-        Entity service = resolve(job.getService(), protocol.getService());
+        Product service = resolve(job.getService(), protocol.getService());
         job.setService(service);
         job.setProduct(resolve(job.getProduct(), protocol.getProduct()));
         job.setMaterial(resolve(job.getMaterial(), protocol.getMaterial()));
@@ -647,7 +648,7 @@ public class JobModelImpl implements JobModel {
      * @see com.hellblazer.CoRE.meta.JobModel#isTerminalState(com.hellblazer.CoRE.animation.StatusCode, com.hellblazer.CoRE.animation.Event)
      */
     @Override
-    public boolean isTerminalState(StatusCode sc, Entity service) {
+    public boolean isTerminalState(StatusCode sc, Product service) {
         TypedQuery<Boolean> query = em.createNamedQuery(StatusCode.IS_TERMINAL_STATE,
                                                         Boolean.class);
         query.setParameter(1, service.getId());
@@ -657,7 +658,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public boolean isValidNextStatus(Entity service, StatusCode parent,
+    public boolean isValidNextStatus(Product service, StatusCode parent,
                                      StatusCode next) {
         TypedQuery<Boolean> query = em.createNamedQuery(StatusCodeSequencing.IS_VALID_NEXT_STATUS,
                                                         Boolean.class);
@@ -668,7 +669,7 @@ public class JobModelImpl implements JobModel {
     }
 
     public void logModifiedService(Long scs) {
-        modifiedEvents.add(em.find(Entity.class, scs));
+        modifiedEvents.add(em.find(Product.class, scs));
     }
 
     @Override
@@ -738,9 +739,9 @@ public class JobModelImpl implements JobModel {
      * @throws SQLException
      */
     @Override
-    public void validateStateGraph(List<Entity> modifiedEvents)
-                                                               throws SQLException {
-        for (Entity modifiedService : modifiedEvents) {
+    public void validateStateGraph(List<Product> modifiedEvents)
+                                                                throws SQLException {
+        for (Product modifiedService : modifiedEvents) {
             if (modifiedService == null) {
                 continue;
             }
@@ -785,7 +786,7 @@ public class JobModelImpl implements JobModel {
             return; // nothing to do
         }
         ensureNextStateIsValid(em.find(Job.class, job),
-                               em.find(Entity.class, service),
+                               em.find(Product.class, service),
                                em.find(StatusCode.class, currentStatus),
                                em.find(StatusCode.class, nextStatus));
     }
@@ -802,7 +803,7 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private Long getInitialState(Long service) {
-        return getInitialState(em.find(Entity.class, service)).getId();
+        return getInitialState(em.find(Product.class, service)).getId();
     }
 
     /**
@@ -810,7 +811,7 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private Collection<StatusCode> getStatusCodeIdsForEvent(Long serviceId) {
-        return getStatusCodesFor(em.find(Entity.class, serviceId));
+        return getStatusCodesFor(em.find(Product.class, serviceId));
     }
 
     /**
@@ -828,7 +829,7 @@ public class JobModelImpl implements JobModel {
      */
     private boolean isTerminalState(Long service, Long statusCode) {
         return isTerminalState(em.find(StatusCode.class, statusCode),
-                               em.find(Entity.class, service));
+                               em.find(Product.class, service));
     }
 
     private void logInsertsInJobChronology(long jobId, long statusId) {
@@ -904,14 +905,14 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * Resolve the value of an entity, using the original and supplied values
+     * Resolve the value of an product, using the original and supplied values
      */
-    protected Entity resolve(Entity original, Entity supplied) {
-        if (kernel.getSameEntity().equals(supplied)) {
+    protected Product resolve(Product original, Product supplied) {
+        if (kernel.getSameProduct().equals(supplied)) {
             return original;
-        } else if (kernel.getAnyEntity().equals(supplied)) {
+        } else if (kernel.getAnyProduct().equals(supplied)) {
             return original;
-        } else if (kernel.getOriginalEntity().equals(supplied)) {
+        } else if (kernel.getOriginalProduct().equals(supplied)) {
             return original;
         }
         return supplied;
@@ -946,34 +947,34 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * Transform the entity according to the relationship
+     * Transform the product according to the relationship
      * 
-     * @param entity
-     *            - the entity to transform
+     * @param product
+     *            - the product to transform
      * @param relationship
      *            - the relationship to use for transformation
      * @param type
-     *            - the type of entity in the job, used for logging
+     *            - the type of product in the job, used for logging
      * @param job
      *            - the Job, used for logging
-     * @return the transformed entity, or null
+     * @return the transformed product, or null
      */
-    protected Entity transform(Entity entity, Relationship relationship,
-                               String type, Job job) {
+    protected Product transform(Product product, Relationship relationship,
+                                String type, Job job) {
         if (kernel.getAnyRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (ANY) for %s for job %s", type,
                                         job));
             }
-            return kernel.getAnyEntity();
+            return kernel.getAnyProduct();
         } else if (kernel.getSameRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (SAME) for %s for job %s", type,
                                         job));
             }
-            return kernel.getSameEntity();
+            return kernel.getSameProduct();
         } else {
-            return entityModel.getChild(entity, relationship);
+            return productModel.getChild(product, relationship);
         }
     }
 

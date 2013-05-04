@@ -38,7 +38,7 @@ import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.AttributeValue_;
 import com.hellblazer.CoRE.meta.AttributeModel;
-import com.hellblazer.CoRE.meta.EntityModel;
+import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
@@ -113,7 +113,7 @@ public class ModelImpl implements Model {
 
     private final AttributeModel attributeModel;
     private final EntityManager  em;
-    private final EntityModel    entityModel;
+    private final ProductModel    productModel;
     private final Kernel         kernel;
     private final LocationModel  locationModel;
     private final ResourceModel  resourceModel;
@@ -127,7 +127,7 @@ public class ModelImpl implements Model {
         em = entityManager;
         kernel = k;
         attributeModel = new AttributeModelImpl(em, kernel);
-        entityModel = new EntityModelImpl(em, kernel);
+        productModel = new ProductModelImpl(em, kernel);
         locationModel = new LocationModelImpl(em, kernel);
         resourceModel = new ResourceModelImpl(em, kernel);
         jobModel = new JobModelImpl(this);
@@ -139,7 +139,7 @@ public class ModelImpl implements Model {
     @Override
     public <AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(AttributeType attributeValue) {
         /*
-         * SELECT e FROM Entity e, EntityAttribute ea, Attribute a WHERE ea.entity = e, ea.value = :value, a = :attribute;
+         * SELECT e FROM Product e, ProductAttribute ea, Attribute a WHERE ea.product = e, ea.value = :value, a = :attribute;
          */
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -264,11 +264,11 @@ public class ModelImpl implements Model {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#getEntityModel()
+     * @see com.hellblazer.CoRE.meta.Model#getProductModel()
      */
     @Override
-    public EntityModel getEntityModel() {
-        return entityModel;
+    public ProductModel getProductModel() {
+        return productModel;
     }
 
     /* (non-Javadoc)

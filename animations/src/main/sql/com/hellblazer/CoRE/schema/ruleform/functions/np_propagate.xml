@@ -17,7 +17,7 @@
                 IF network_table IN ('attribute_network','resource_network', 'event_network', 'location_network') THEN
                     RAISE NOTICE '% is a simple network',network_table;
                     SELECT np_propagate_network(network_table) INTO rows_modified;
-                ELSEIF network_table IN ('entity_network') THEN
+                ELSEIF network_table IN ('product_network') THEN
                     RAISE NOTICE '% is a complex network',network_table;
                     SELECT np_propagate_network_with_deduction(network_table) INTO rows_modified;
                 ELSE

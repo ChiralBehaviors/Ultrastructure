@@ -36,8 +36,8 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.entity.Entity;
-import com.hellblazer.CoRE.entity.EntityNetwork;
+import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -88,29 +88,29 @@ public class StatusCodeSequencing extends Ruleform {
     //bi-directional many-to-one association to Event
     @ManyToOne(optional = false)
     @JoinColumn(name = "service")
-    private Entity             service;
+    private Product             service;
 
     //bi-directional many-to-one association to StatusCode
     @OneToMany(mappedBy = "child")
     @JsonIgnore
-    private Set<EntityNetwork> statusCodeByChild;
+    private Set<ProductNetwork> statusCodeByChild;
 
     //bi-directional many-to-one association to StatusCode
     @OneToMany(mappedBy = "parent")
     @JsonIgnore
-    private Set<EntityNetwork> statusCodeByParent;
+    private Set<ProductNetwork> statusCodeByParent;
 
     public StatusCodeSequencing() {
     }
 
-    public StatusCodeSequencing(Entity service, StatusCode parent,
+    public StatusCodeSequencing(Product service, StatusCode parent,
                                 StatusCode child, int sequenceNumber,
                                 Resource updatedBy) {
         this(service, parent, child, updatedBy);
         this.sequenceNumber = sequenceNumber;
     }
 
-    public StatusCodeSequencing(Entity service, StatusCode parent,
+    public StatusCodeSequencing(Product service, StatusCode parent,
                                 StatusCode child, Resource updatedBy) {
         super(updatedBy);
         this.service = service;
@@ -175,21 +175,21 @@ public class StatusCodeSequencing extends Ruleform {
     /**
      * @return the service
      */
-    public Entity getService() {
+    public Product getService() {
         return service;
     }
 
     /**
      * @return the statusCodeByChild
      */
-    public Set<EntityNetwork> getStatusCodeByChild() {
+    public Set<ProductNetwork> getStatusCodeByChild() {
         return statusCodeByChild;
     }
 
     /**
      * @return the statusCodeByParent
      */
-    public Set<EntityNetwork> getStatusCodeByParent() {
+    public Set<ProductNetwork> getStatusCodeByParent() {
         return statusCodeByParent;
     }
 
@@ -214,7 +214,7 @@ public class StatusCodeSequencing extends Ruleform {
      * @param service
      *            the service to set
      */
-    public void setService(Entity service) {
+    public void setService(Product service) {
         this.service = service;
     }
 
@@ -222,7 +222,7 @@ public class StatusCodeSequencing extends Ruleform {
      * @param statusCodeByChild
      *            the statusCodeByChild to set
      */
-    public void setStatusCodeByChild(Set<EntityNetwork> statusCodeByChild) {
+    public void setStatusCodeByChild(Set<ProductNetwork> statusCodeByChild) {
         this.statusCodeByChild = statusCodeByChild;
     }
 
@@ -230,7 +230,7 @@ public class StatusCodeSequencing extends Ruleform {
      * @param statusCodeByParent
      *            the statusCodeByParent to set
      */
-    public void setStatusCodeByParent(Set<EntityNetwork> statusCodeByParent) {
+    public void setStatusCodeByParent(Set<ProductNetwork> statusCodeByParent) {
         this.statusCodeByParent = statusCodeByParent;
     }
 }

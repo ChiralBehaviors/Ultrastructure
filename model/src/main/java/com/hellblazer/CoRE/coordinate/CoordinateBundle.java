@@ -18,7 +18,7 @@ package com.hellblazer.CoRE.coordinate;
 
 import java.util.List;
 
-import com.hellblazer.CoRE.entity.Entity;
+import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand
@@ -34,10 +34,10 @@ public class CoordinateBundle {
      * The context in which the location denoted by <code>coordinates</code>
      * should be resolved.
      */
-    private final Entity                    finalContext;
+    private final Product                    finalContext;
 
     /**
-     * Bundles the List of coordinates with the given Entity as context. All
+     * Bundles the List of coordinates with the given Product as context. All
      * CoordinateAttributes should be interpreted relative to
      * <code>context</code>.
      * 
@@ -48,7 +48,7 @@ public class CoordinateBundle {
      *            <code>coordinates</code> should be resolved.
      */
     public CoordinateBundle(List<CoordinateAttribute> coordinates,
-                            Entity context) {
+                            Product context) {
         this.coordinates = coordinates;
         finalContext = context;
     }
@@ -57,7 +57,7 @@ public class CoordinateBundle {
         return coordinates;
     }
 
-    public Entity getFinalContext() {
+    public Product getFinalContext() {
         return finalContext;
     }
 }

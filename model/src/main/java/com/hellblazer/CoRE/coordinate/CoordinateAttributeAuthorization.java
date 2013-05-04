@@ -42,7 +42,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
 
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Entity
+    //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "classification_coordinate")
     private Coordinate        classificationCoordinate;

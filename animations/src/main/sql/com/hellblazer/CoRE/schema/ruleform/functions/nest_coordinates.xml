@@ -212,8 +212,8 @@
                 WHERE c.id = p_inner_coordinate
                 RETURNING * INTO STRICT _coordinate;
             
-                _query := 'INSERT INTO ruleform.coordinate_attribute(coordinate, attribute, entity_value, integer_value, numeric_value, boolean_value, text_value, updated_by)
-                SELECT ' || _coordinate.id || ', attribute, entity_value, integer_value, numeric_value, boolean_value, text_value, updated_by FROM ' || _coordinate_temp_table;
+                _query := 'INSERT INTO ruleform.coordinate_attribute(coordinate, attribute, product_value, integer_value, numeric_value, boolean_value, text_value, updated_by)
+                SELECT ' || _coordinate.id || ', attribute, product_value, integer_value, numeric_value, boolean_value, text_value, updated_by FROM ' || _coordinate_temp_table;
                 EXECUTE _query;
                 
                 RETURN _coordinate;

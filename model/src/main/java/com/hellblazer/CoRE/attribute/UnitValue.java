@@ -30,7 +30,7 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.entity.Entity;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -46,10 +46,10 @@ public class UnitValue extends Ruleform {
     @Column(name = "boolean_value")
     private Boolean           booleanValue;
 
-    //bi-directional many-to-one association to Entity
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "entity_value")
-    private Entity            entityValue;
+    @JoinColumn(name = "product_value")
+    private Product            productValue;
 
     @Id
     @GeneratedValue(generator = "unit_value_id_seq", strategy = GenerationType.SEQUENCE)
@@ -94,8 +94,8 @@ public class UnitValue extends Ruleform {
         return booleanValue;
     }
 
-    public Entity getEntityValue() {
-        return entityValue;
+    public Product getEntityValue() {
+        return productValue;
     }
 
     @Override
@@ -147,8 +147,8 @@ public class UnitValue extends Ruleform {
         this.booleanValue = booleanValue;
     }
 
-    public void setEntityValue(Entity entity) {
-        entityValue = entity;
+    public void setEntityValue(Product product) {
+        productValue = product;
     }
 
     @Override

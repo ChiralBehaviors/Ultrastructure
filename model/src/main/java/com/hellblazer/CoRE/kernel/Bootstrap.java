@@ -24,7 +24,7 @@ import java.sql.SQLException;
 
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAction;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownEntity;
+import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocationContext;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
@@ -58,7 +58,7 @@ public class Bootstrap {
         for (WellKnownAttribute wko : WellKnownAttribute.values()) {
             insert(wko);
         }
-        for (WellKnownObject wko : WellKnownEntity.values()) {
+        for (WellKnownObject wko : WellKnownProduct.values()) {
             insert(wko);
         }
         for (WellKnownObject wko : WellKnownLocationContext.values()) {
@@ -76,7 +76,7 @@ public class Bootstrap {
         adjustIdSeq(WellKnownResource.ANY);
         adjustIdSeq(WellKnownAction.ANY);
         adjustIdSeq(WellKnownAttribute.ANY);
-        adjustIdSeq(WellKnownEntity.ANY);
+        adjustIdSeq(WellKnownProduct.ANY);
         adjustIdSeq(WellKnownLocation.ANY);
         adjustIdSeq(WellKnownLocationContext.ANY);
         adjustIdSeq(WellKnownRelationship.ANY);
@@ -101,7 +101,7 @@ public class Bootstrap {
                                                                         wko.tableName()));
         try {
             s.setLong(1, wko.id());
-            s.setString(2, wko.entityName());
+            s.setString(2, wko.productName());
             s.setString(3, wko.description());
             s.setBoolean(4, true);
             s.setLong(5, WellKnownResource.CORE.id());
@@ -117,7 +117,7 @@ public class Bootstrap {
                                                                         wkl.tableName()));
         try {
             s.setLong(1, wkl.id());
-            s.setString(2, wkl.entityName());
+            s.setString(2, wkl.productName());
             s.setString(3, wkl.description());
             s.setBoolean(4, true);
             s.setLong(5, WellKnownResource.CORE.id());
@@ -134,7 +134,7 @@ public class Bootstrap {
                                                                         wko.tableName()));
         try {
             s.setLong(1, wko.id());
-            s.setString(2, wko.entityName());
+            s.setString(2, wko.productName());
             s.setString(3, wko.description());
             s.setBoolean(4, true);
             s.setLong(5, WellKnownResource.CORE.id());
@@ -149,7 +149,7 @@ public class Bootstrap {
                                                                         wko.tableName()));
         try {
             s.setLong(1, wko.id());
-            s.setString(2, wko.entityName());
+            s.setString(2, wko.productName());
             s.setString(3, wko.description());
             s.setBoolean(4, true);
             s.setLong(5, WellKnownResource.CORE.id());

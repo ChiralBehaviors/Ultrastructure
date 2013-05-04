@@ -25,7 +25,7 @@ public class DBUnitSupport {
      * The columns that DBUnit should use to sort a Entity Attribute table.
      */
     public static final String[]              ENTITY_ATTRIBUTE_SORT_COLUMNS         = {
-            "resource", "entity", "attribute"                                      };
+            "resource", "product", "attribute"                                      };
     public static final String[]              ENTITY_NETWORK_ATTRIBUTE_SORT_COLUMNS = {
             "resource", "network_rule", "attribute", "sequence_number"             };
     /**
@@ -71,17 +71,17 @@ public class DBUnitSupport {
     public static final String[]              RESOURCE_SORT_COLUMNS                 = { "name" };
     static {
         READABLE_VIEW_MAP = new HashMap<String, String[]>();
-        READABLE_VIEW_MAP.put("readable.entity", ENTITY_SORT_COLUMNS);
+        READABLE_VIEW_MAP.put("readable.product", ENTITY_SORT_COLUMNS);
         READABLE_VIEW_MAP.put("readable.resource", RESOURCE_SORT_COLUMNS);
         READABLE_VIEW_MAP.put("readable.attribute", ATTRIBUTE_SORT_COLUMNS);
-        READABLE_VIEW_MAP.put("readable.entity_attribute",
+        READABLE_VIEW_MAP.put("readable.product_attribute",
                               ENTITY_ATTRIBUTE_SORT_COLUMNS);
-        READABLE_VIEW_MAP.put("readable.entity_network",
+        READABLE_VIEW_MAP.put("readable.product_network",
                               ENTITY_NETWORK_SORT_COLUMNS);
         READABLE_VIEW_MAP.put("readable.relationship",
                               RELATIONSHIP_SORT_COLUMNS);
 
-        READABLE_VIEW_MAP.put("ruleform.entity_network_attribute",
+        READABLE_VIEW_MAP.put("ruleform.product_network_attribute",
                               ENTITY_NETWORK_ATTRIBUTE_SORT_COLUMNS);
     }
 

@@ -23,7 +23,7 @@
                       REFERENCES ruleform.status_code (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT status_code_sequencing_service_fkey FOREIGN KEY (service)
-                      REFERENCES ruleform.entity (id) MATCH SIMPLE
+                      REFERENCES ruleform.product (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT status_code_sequencing_parent_code_fkey FOREIGN KEY (parent_code)
                       REFERENCES ruleform.status_code (id) MATCH SIMPLE

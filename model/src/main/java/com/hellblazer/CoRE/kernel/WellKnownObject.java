@@ -37,10 +37,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANY;
             }
 
@@ -53,10 +53,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANYTHING;
             }
 
@@ -69,10 +69,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -85,10 +85,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -120,10 +120,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANY;
             }
 
@@ -136,10 +136,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ATTRIBUTE;
             }
 
@@ -152,10 +152,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.LOGIN;
             }
 
@@ -176,10 +176,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -192,10 +192,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -208,10 +208,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.PASSWORD_HASH;
             }
 
@@ -246,19 +246,19 @@ public interface WellKnownObject {
         }
     }
 
-    public static enum WellKnownEntity implements WellKnownObject {
+    public static enum WellKnownProduct implements WellKnownObject {
         ANY() {
 
             @Override
             public String description() {
-                return "A special Entity that stands for any entity";
+                return "A special Product that stands for any product";
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANY;
             }
 
@@ -267,14 +267,14 @@ public interface WellKnownObject {
 
             @Override
             public String description() {
-                return "A special Entity that stands for the originally supplied entity";
+                return "A special Product that stands for the originally supplied product";
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ENTITY;
             }
 
@@ -283,14 +283,14 @@ public interface WellKnownObject {
 
             @Override
             public String description() {
-                return "Special entity that stands for 'not applicable'";
+                return "Special product that stands for 'not applicable'";
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -299,14 +299,14 @@ public interface WellKnownObject {
 
             @Override
             public String description() {
-                return "A special Entity that stands for the originally supplied entity";
+                return "A special Product that stands for the originally supplied product";
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -315,14 +315,14 @@ public interface WellKnownObject {
 
             @Override
             public String description() {
-                return "Special entity that stands for the same entity supplied";
+                return "Special product that stands for the same product supplied";
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.SAME;
             }
 
@@ -341,7 +341,7 @@ public interface WellKnownObject {
          */
         @Override
         public String tableName() {
-            return "ruleform.entity";
+            return "ruleform.product";
         }
     }
 
@@ -354,10 +354,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANY;
             }
 
@@ -370,10 +370,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.LOCATION;
             }
 
@@ -386,10 +386,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -402,10 +402,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -418,10 +418,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.SAME;
             }
 
@@ -453,10 +453,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANY;
             }
 
@@ -469,10 +469,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.LOCATION_CONTEXT;
             }
 
@@ -485,10 +485,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -501,10 +501,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -536,10 +536,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANY;
             }
 
@@ -562,10 +562,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.CONTAINS;
             }
 
@@ -588,10 +588,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.DEVELOPED;
             }
 
@@ -614,10 +614,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.DEVELOPED_BY;
             }
 
@@ -640,10 +640,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.EQUALS;
             }
 
@@ -666,10 +666,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.FORMER_MEMBER_OF;
             }
 
@@ -692,10 +692,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.GREATER_THAN;
             }
 
@@ -718,10 +718,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.GREATER_THAN_OR_EQUALS;
             }
 
@@ -744,10 +744,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.HAD_MEMBER;
             }
 
@@ -770,10 +770,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.HAS_EXCEPTION;
             }
 
@@ -796,10 +796,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.HAS_HEAD;
             }
 
@@ -822,10 +822,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.HAS_MEMBER;
             }
 
@@ -848,10 +848,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.HAS_VERSION;
             }
 
@@ -874,10 +874,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.HEAD_OF;
             }
 
@@ -900,10 +900,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.INCLUDES;
             }
 
@@ -926,10 +926,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.IS_A;
             }
 
@@ -952,10 +952,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.IS_CONTAINED_IN;
             }
 
@@ -978,10 +978,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.IS_EXCEPTION_TO;
             }
 
@@ -1004,10 +1004,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.IS_LOCATION_OF;
             }
 
@@ -1030,10 +1030,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.LESS_THAN;
             }
 
@@ -1056,10 +1056,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.LESS_THAN_OR_EQUALS;
             }
 
@@ -1082,10 +1082,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.MAPS_TO_LOCATION;
             }
 
@@ -1108,10 +1108,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.MEMBER_OF;
             }
 
@@ -1134,10 +1134,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -1160,10 +1160,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.PROTOTYPE;
             }
 
@@ -1186,10 +1186,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.PROTOTYPE_OF;
             }
 
@@ -1212,10 +1212,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.SAME;
             }
 
@@ -1238,10 +1238,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.VERSION_OF;
             }
 
@@ -1287,10 +1287,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ANY;
             }
 
@@ -1303,10 +1303,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.CORE;
             }
 
@@ -1319,10 +1319,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.CORE_ANIMATION_SOFTWARE;
             }
 
@@ -1335,10 +1335,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.CORE_MODEL;
             }
 
@@ -1351,10 +1351,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.CORE_USER;
             }
 
@@ -1367,10 +1367,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.INVERSE_SOFTWARE;
             }
 
@@ -1383,10 +1383,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -1399,10 +1399,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -1415,10 +1415,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.PROPAGATION_SOFTWARE;
             }
 
@@ -1431,10 +1431,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.RESOURCE;
             }
 
@@ -1447,10 +1447,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.SAME;
             }
 
@@ -1463,10 +1463,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.SPECIAL_SYSTEM_RESOURCE;
             }
 
@@ -1479,10 +1479,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.SUPER_USER;
             }
 
@@ -1514,10 +1514,10 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#entityName()
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String entityName() {
+            public String productName() {
                 return WellKnownObject.UNSET;
             }
 
@@ -1547,7 +1547,7 @@ public interface WellKnownObject {
     String CORE_USER                 = "CoRE User";
     String DEVELOPED                 = "developed";
     String DEVELOPED_BY              = "developed-by";
-    String ENTITY                    = "Entity";
+    String ENTITY                    = "Product";
     String EQUALS                    = "=";
     String EVENT                     = "Event";
     String FORMER_MEMBER_OF          = "former-member-of";
@@ -1598,7 +1598,7 @@ public interface WellKnownObject {
      * 
      * @return the name of the wko
      */
-    String entityName();
+    String productName();
 
     /**
      * 

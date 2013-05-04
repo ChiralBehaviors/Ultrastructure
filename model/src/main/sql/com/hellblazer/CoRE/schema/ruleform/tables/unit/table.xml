@@ -30,7 +30,7 @@
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT unit_name_key UNIQUE (name ),
-              CONSTRAINT valid_datatype CHECK (datatype::text = ANY (ARRAY['integer'::character varying::text, 'numeric'::character varying::text, 'text'::character varying::text, 'boolean'::character varying::text, 'entity'::character varying::text]))
+              CONSTRAINT valid_datatype CHECK (datatype::text = ANY (ARRAY['integer'::character varying::text, 'numeric'::character varying::text, 'text'::character varying::text, 'boolean'::character varying::text, 'product'::character varying::text]))
             )
             WITH (
               OIDS=FALSE

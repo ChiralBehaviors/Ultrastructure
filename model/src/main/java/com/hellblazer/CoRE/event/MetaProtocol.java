@@ -30,8 +30,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -84,7 +84,7 @@ public class MetaProtocol extends Ruleform {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Entity             service;
+    private Product             service;
 
     /**
      * the relationship that transforms the service type
@@ -156,7 +156,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * @return the service
      */
-    public Entity getService() {
+    public Product getService() {
         return service;
     }
 
@@ -219,7 +219,7 @@ public class MetaProtocol extends Ruleform {
      * @param service
      *            the service to set
      */
-    public void setService(Entity service) {
+    public void setService(Product service) {
         this.service = service;
     }
 

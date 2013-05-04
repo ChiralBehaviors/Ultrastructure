@@ -19,8 +19,8 @@ import com.hellblazer.CoRE.coordinate.CoordinateBundle;
 import com.hellblazer.CoRE.coordinate.CoordinateKind;
 import com.hellblazer.CoRE.coordinate.CoordinateKindDefinition;
 import com.hellblazer.CoRE.coordinate.IncorrectCoordinateKindDefinition;
-import com.hellblazer.CoRE.entity.Entity;
-import com.hellblazer.CoRE.entity.EntityLocationNetwork;
+import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductLocationNetwork;
 
 /**
  * Convenience class used to facilitate the calculation of nested location
@@ -46,10 +46,10 @@ public class LocationCalculator {
         private final Coordinate                baseCoordinate;
 
         /**
-         * The contextual Entity to which <code>baseCoordinate</code> is
+         * The contextual Product to which <code>baseCoordinate</code> is
          * relative.
          */
-        private final Entity                    currentContext;
+        private final Product                    currentContext;
 
         /**
          * The index in <code>definitions</code> at which the current definition
@@ -61,17 +61,17 @@ public class LocationCalculator {
          * Constructor sets all pertinent information. This should be the one
          * used the first time through a recursion, since it does not take
          * accumulated coordinates as a parameter. For that, see
-         * {@link #LocationCalculator(Coordinate, Entity, int, List)}.
+         * {@link #LocationCalculator(Coordinate, Product, int, List)}.
          * 
          * @param baseCoordinate
          *            the Coordinate being nested
          * @param currentContext
-         *            the Entity that <code>base</code> is relative to
+         *            the Product that <code>base</code> is relative to
          * @param definitionIndex
          *            the index of the next definition rule to use
          */
         public LocationInformation(Coordinate baseCoordinate,
-                                   Entity currentContext, int definitionIndex) {
+                                   Product currentContext, int definitionIndex) {
             this.baseCoordinate = baseCoordinate;
             this.currentContext = currentContext;
             this.definitionIndex = definitionIndex;
@@ -85,7 +85,7 @@ public class LocationCalculator {
          * @param baseCoordinate
          *            the Coordinate being nested
          * @param currentContext
-         *            the Entity that <code>base</code> is relative to
+         *            the Product that <code>base</code> is relative to
          * @param definitionIndex
          *            the index of the next definition rule to use
          * @param accumulatedCoordinates
@@ -94,7 +94,7 @@ public class LocationCalculator {
          *            the same order.
          */
         public LocationInformation(Coordinate baseCoordinate,
-                                   Entity currentContext,
+                                   Product currentContext,
                                    int definitionIndex,
                                    List<CoordinateAttribute> accumulatedCoordinates) {
             this(baseCoordinate, currentContext, definitionIndex);
@@ -131,7 +131,7 @@ public class LocationCalculator {
             return baseCoordinate;
         }
 
-        public Entity getCurrentContext() {
+        public Product getCurrentContext() {
             return currentContext;
         }
 
@@ -174,13 +174,13 @@ public class LocationCalculator {
 
     /**
      * Retrieves the fully-specified coordinates of a given kind for a given
-     * Entity.
+     * Product.
      * 
-     * @param entity
-     *            the Entity you want the location of
+     * @param product
+     *            the Product you want the location of
      * @param kind
      *            the kind of locations you want
-     * @return a List of Lists of CoordinateAttributes, since a Entity may have
+     * @return a List of Lists of CoordinateAttributes, since a Product may have
      *         multiple locations of a specified kind (e.g. many gene copies in
      *         a genome). We return lists of CoordinateAttributes and not
      *         Coordinates, since we use Coordinates to represent very granular
@@ -201,13 +201,13 @@ public class LocationCalculator {
      *             subordinate CoordinateKinds
      */
     public List<CoordinateBundle> getFullCoordinates(EntityManager em,
-                                                     Entity entity,
+                                                     Product product,
                                                      CoordinateKind kind) {
 
         // We need to set up the "global" information for the calculation each time we run it
         initialize(kind);
 
-        List<EntityLocationNetwork> locationRules = new ArrayList<EntityLocationNetwork>();
+        List<ProductLocationNetwork> locationRules = new ArrayList<ProductLocationNetwork>();
 
         /*
          * This is handy because it lets us use the same CoordinateKind to
@@ -226,20 +226,20 @@ public class LocationCalculator {
 
             /*
              * Now we'll find all the location rules that pertain to this
-             * Entity and have coordinates of the desired type.
+             * Product and have coordinates of the desired type.
              */
-            locationRules = entity.getLocationRules(em, firstOne);
+            locationRules = product.getLocationRules(em, firstOne);
         }
 
         /*
          * If we get through all the definition rules and still don't find
          * anything, this for loop gets skipped anyway.
          */
-        for (EntityLocationNetwork rule : locationRules) {
+        for (ProductLocationNetwork rule : locationRules) {
             /*
              * We now set up the information needed to recursively compute all
              * the nested location information. We start with the current
-             * Coordinate, also noting what Entity it is relative to. The
+             * Coordinate, also noting what Product it is relative to. The
              * index of the next definition rule to examine is carried along to
              * determine when the recursion can stop.
              */
@@ -278,12 +278,12 @@ public class LocationCalculator {
         if (info.getBaseCoordinate().getKind().getNestable()) {
             LOG.debug(String.format("Nestable for %s", info));
 
-            List<EntityLocationNetwork> locationRules = info.getCurrentContext().getLocationRules(em,
+            List<ProductLocationNetwork> locationRules = info.getCurrentContext().getLocationRules(em,
                                                                                                   info.getBaseCoordinate().getKind());
 
             if (!locationRules.isEmpty()) {
                 // we can still do some nesting
-                for (EntityLocationNetwork rule : locationRules) {
+                for (ProductLocationNetwork rule : locationRules) {
 
                     /*
                      * Here's where the magic happens. We take the base
@@ -336,16 +336,16 @@ public class LocationCalculator {
 
         /*
          * Now we find the next set(s) of coordinates for current context
-         * Entity.
+         * Product.
          * 
          * We need to make sure we're not trying to access beyond the end of our
          * definition list.
          */
-        List<EntityLocationNetwork> newRules = new ArrayList<EntityLocationNetwork>();
+        List<ProductLocationNetwork> newRules = new ArrayList<ProductLocationNetwork>();
         if (info.getDefinitionIndex() != definitions.size()) {
             CoordinateKind kind = definitions.get(info.getDefinitionIndex()).getSubordinateCoordinateKind();
 
-            Entity currentContext = info.getCurrentContext();
+            Product currentContext = info.getCurrentContext();
             LOG.debug(String.format("Fetching rules for %s and %s",
                                     currentContext.getName(), kind.getName()));
             newRules = currentContext.getLocationRules(em, kind);
@@ -353,7 +353,7 @@ public class LocationCalculator {
 
         /*
          * If we've already processed all the kinds of coordinates in our
-         * definitions list, or there are no available EntityLocationNetwork
+         * definitions list, or there are no available ProductLocationNetwork
          * rules to process, we can quit. Otherwise, we've got more recurrences
          * to make.
          */
@@ -368,7 +368,7 @@ public class LocationCalculator {
         }
 
         // Continue accumulating coordinate information
-        for (EntityLocationNetwork rule : newRules) {
+        for (ProductLocationNetwork rule : newRules) {
 
             // Increment the definition index to move on to the next one
             LocationInformation newInfo = new LocationInformation(
@@ -407,7 +407,7 @@ public class LocationCalculator {
          * database, they are stored in a general-to-specific order; for example
          * Genome, Chromosome, Strand, Linear Range.
          *
-         * However, when calculating the location of a Entity such as a gene,
+         * However, when calculating the location of a Product such as a gene,
          * we need to work upwards from most specific to general. By reversing
          * the list, we allow users to represent rules in the way that makes
          * sense to them.

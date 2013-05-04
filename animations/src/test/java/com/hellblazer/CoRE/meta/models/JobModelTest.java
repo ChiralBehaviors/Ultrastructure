@@ -27,9 +27,6 @@ import org.junit.Test;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
-import com.hellblazer.CoRE.entity.Entity;
-import com.hellblazer.CoRE.entity.EntityAttribute;
-import com.hellblazer.CoRE.entity.EntityNetwork;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.Protocol;
@@ -38,6 +35,9 @@ import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductAttribute;
+import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -73,7 +73,7 @@ public class JobModelTest extends AbstractModelTest {
                                                   kernel.getCore());
         em.persist(terminalState);
 
-        Entity service = new Entity("My Service", kernel.getCore());
+        Product service = new Product("My Service", kernel.getCore());
         em.persist(service);
 
         StatusCodeSequencing sequence1 = new StatusCodeSequencing(
@@ -199,24 +199,24 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(runType);
         em.persist(runTypeOf);
 
-        Entity teBuffer = new Entity("TE Buffer", core);
+        Product teBuffer = new Product("TE Buffer", core);
         em.persist(teBuffer);
 
-        Entity htsfSample = new Entity("HTSF Sample", core);
+        Product htsfSample = new Product("HTSF Sample", core);
         em.persist(htsfSample);
 
-        Entity unpreparedSample = new Entity(
+        Product unpreparedSample = new Product(
                                              "Unprepared Sample for HTSF Sequencing",
                                              core);
         em.persist(unpreparedSample);
 
-        Entity sampleX = new Entity("Sample X", core);
+        Product sampleX = new Product("Sample X", core);
         em.persist(sampleX);
 
-        EntityNetwork en1 = new EntityNetwork(sampleX, sampleType, htsfSample,
+        ProductNetwork en1 = new ProductNetwork(sampleX, sampleType, htsfSample,
                                               core);
         em.persist(en1);
-        EntityNetwork en2 = new EntityNetwork(sampleX, dissolvedIn, teBuffer,
+        ProductNetwork en2 = new ProductNetwork(sampleX, dissolvedIn, teBuffer,
                                               core);
         em.persist(en2);
 
@@ -249,45 +249,45 @@ public class JobModelTest extends AbstractModelTest {
                                               core);
         em.persist(abandoned);
 
-        Entity resuspend = new Entity("Resuspend in Suitable Buffer",
+        Product resuspend = new Product("Resuspend in Suitable Buffer",
                                       "Gotta get it in H2O for sequencing",
                                       core);
         em.persist(resuspend);
 
-        Entity htsfIlluminaSequencing = new Entity(
+        Product htsfIlluminaSequencing = new Product(
                                                    "HTSF Illumina Sequencing",
                                                    "Illumina sequencing at UNC High-Throughput Sequencing Facility",
                                                    core);
         em.persist(htsfIlluminaSequencing);
 
-        Entity chipSeq = new Entity("Chip-Seq", core);
+        Product chipSeq = new Product("Chip-Seq", core);
         em.persist(chipSeq);
 
-        Entity doChipSeqPrep = new Entity("Do Chip-Seq Preparation", core);
+        Product doChipSeqPrep = new Product("Do Chip-Seq Preparation", core);
         em.persist(doChipSeqPrep);
 
-        Entity customPrimerAnalysis = new Entity("Custom Primer Analysis", core);
+        Product customPrimerAnalysis = new Product("Custom Primer Analysis", core);
         em.persist(customPrimerAnalysis);
 
-        Entity preparePrimers = new Entity("Prepare Primers", core);
+        Product preparePrimers = new Product("Prepare Primers", core);
         em.persist(preparePrimers);
 
-        Entity dge = new Entity("DGE", core);
+        Product dge = new Product("DGE", core);
         em.persist(dge);
 
-        Entity doDgePrep = new Entity("Do DGE Preparation", core);
+        Product doDgePrep = new Product("Do DGE Preparation", core);
         em.persist(doDgePrep);
 
-        Entity miRNA = new Entity("miRNA", core);
+        Product miRNA = new Product("miRNA", core);
         em.persist(miRNA);
 
-        Entity doMiRnaPrep = new Entity("Do miRNA Analysis Preparation", core);
+        Product doMiRnaPrep = new Product("Do miRNA Analysis Preparation", core);
         em.persist(doMiRnaPrep);
 
-        Entity pairedEndAnalysis = new Entity("Paired-End Analysis", core);
+        Product pairedEndAnalysis = new Product("Paired-End Analysis", core);
         em.persist(pairedEndAnalysis);
 
-        Entity doPairedEndAnalysisPrep = new Entity(
+        Product doPairedEndAnalysisPrep = new Product(
                                                     "Do Paired-End Analysis Preparation",
                                                     core);
         em.persist(doPairedEndAnalysisPrep);
@@ -306,30 +306,30 @@ public class JobModelTest extends AbstractModelTest {
         a2.setValueType(ValueType.INTEGER);
         em.persist(a2);
 
-        EntityAttribute ea1 = new EntityAttribute(a2, 3, core);
-        ea1.setEntity(htsfIlluminaSequencing);
+        ProductAttribute ea1 = new ProductAttribute(a2, 3, core);
+        ea1.setProduct(htsfIlluminaSequencing);
         em.persist(ea1);
 
-        EntityAttribute ea2 = new EntityAttribute(a1, 36, core);
-        ea2.setEntity(htsfIlluminaSequencing);
+        ProductAttribute ea2 = new ProductAttribute(a1, 36, core);
+        ea2.setProduct(htsfIlluminaSequencing);
         em.persist(ea2);
 
-        Entity libraryPrep = new Entity("Library Preparation", core);
+        Product libraryPrep = new Product("Library Preparation", core);
         em.persist(libraryPrep);
 
-        Entity clusterGen = new Entity("Cluster Generation", core);
+        Product clusterGen = new Product("Cluster Generation", core);
         em.persist(clusterGen);
 
-        Entity sequenceClusters = new Entity("Sequence Clusters", core);
+        Product sequenceClusters = new Product("Sequence Clusters", core);
         em.persist(sequenceClusters);
 
-        Entity dataAnalysis = new Entity("Data Analysis", core);
+        Product dataAnalysis = new Product("Data Analysis", core);
         em.persist(dataAnalysis);
 
-        Entity dnaSequencing = new Entity("DNA Sequencing", core);
+        Product dnaSequencing = new Product("DNA Sequencing", core);
         em.persist(dnaSequencing);
 
-        Entity figureOutWhyCLusterSeqFailed = new Entity(
+        Product figureOutWhyCLusterSeqFailed = new Product(
                                                          "Figure Out Why Cluster Sequencing Failed",
                                                          core);
         em.persist(figureOutWhyCLusterSeqFailed);
@@ -630,8 +630,8 @@ public class JobModelTest extends AbstractModelTest {
         p1.setMaterial(htsfSample);
         p1.setRequestedService(htsfIlluminaSequencing);
         p1.setProductOrdered(teBuffer);
-        p1.setSubService(kernel.getAnyEntity());
-        p1.setProduct(kernel.getAnyEntity());
+        p1.setSubService(kernel.getAnyProduct());
+        p1.setProduct(kernel.getAnyProduct());
         p1.setDeliverFrom(kernel.getAnyLocation());
         p1.setDeliverTo(kernel.getAnyLocation());
         p1.setAssignTo(htsfTech);
@@ -643,8 +643,8 @@ public class JobModelTest extends AbstractModelTest {
         p2.setMaterial(htsfSample);
         p2.setRequestedService(htsfIlluminaSequencing);
         p2.setProductOrdered(unpreparedSample);
-        p2.setSubService(kernel.getAnyEntity());
-        p2.setProduct(kernel.getAnyEntity());
+        p2.setSubService(kernel.getAnyProduct());
+        p2.setProduct(kernel.getAnyProduct());
         p2.setDeliverFrom(kernel.getAnyLocation());
         p2.setDeliverTo(kernel.getAnyLocation());
         p2.setAssignTo(htsfTech);
@@ -655,8 +655,8 @@ public class JobModelTest extends AbstractModelTest {
         p3.setService(doChipSeqPrep);
         p3.setMaterial(htsfSample);
         p3.setRequestedService(htsfIlluminaSequencing);
-        p3.setProductOrdered(kernel.getAnyEntity());
-        p3.setProduct(kernel.getAnyEntity());
+        p3.setProductOrdered(kernel.getAnyProduct());
+        p3.setProduct(kernel.getAnyProduct());
         p3.setDeliverFrom(kernel.getAnyLocation());
         p3.setDeliverTo(kernel.getAnyLocation());
         p3.setSubService(chipSeq);
@@ -668,8 +668,8 @@ public class JobModelTest extends AbstractModelTest {
         p4.setService(customPrimerAnalysis);
         p4.setMaterial(htsfSample);
         p4.setRequestedService(htsfIlluminaSequencing);
-        p4.setProductOrdered(kernel.getAnyEntity());
-        p4.setProduct(kernel.getAnyEntity());
+        p4.setProductOrdered(kernel.getAnyProduct());
+        p4.setProduct(kernel.getAnyProduct());
         p4.setDeliverFrom(kernel.getAnyLocation());
         p4.setDeliverTo(kernel.getAnyLocation());
         p4.setAssignTo(htsfTech);
@@ -681,8 +681,8 @@ public class JobModelTest extends AbstractModelTest {
         p5.setService(doDgePrep);
         p5.setMaterial(htsfSample);
         p5.setRequestedService(htsfIlluminaSequencing);
-        p5.setProductOrdered(kernel.getAnyEntity());
-        p5.setProduct(kernel.getAnyEntity());
+        p5.setProductOrdered(kernel.getAnyProduct());
+        p5.setProduct(kernel.getAnyProduct());
         p5.setDeliverFrom(kernel.getAnyLocation());
         p5.setDeliverTo(kernel.getAnyLocation());
         p5.setAssignTo(htsfTech);
@@ -694,8 +694,8 @@ public class JobModelTest extends AbstractModelTest {
         p6.setService(doMiRnaPrep);
         p6.setMaterial(htsfSample);
         p6.setRequestedService(htsfIlluminaSequencing);
-        p6.setProductOrdered(kernel.getAnyEntity());
-        p6.setProduct(kernel.getAnyEntity());
+        p6.setProductOrdered(kernel.getAnyProduct());
+        p6.setProduct(kernel.getAnyProduct());
         p6.setDeliverFrom(kernel.getAnyLocation());
         p6.setDeliverTo(kernel.getAnyLocation());
         p6.setAssignTo(htsfTech);
@@ -707,8 +707,8 @@ public class JobModelTest extends AbstractModelTest {
         p7.setService(doPairedEndAnalysisPrep);
         p7.setMaterial(htsfSample);
         p7.setRequestedService(htsfIlluminaSequencing);
-        p7.setProductOrdered(kernel.getAnyEntity());
-        p7.setProduct(kernel.getAnyEntity());
+        p7.setProductOrdered(kernel.getAnyProduct());
+        p7.setProduct(kernel.getAnyProduct());
         p7.setDeliverFrom(kernel.getAnyLocation());
         p7.setDeliverTo(kernel.getAnyLocation());
         p7.setAssignTo(htsfTech);
@@ -720,12 +720,12 @@ public class JobModelTest extends AbstractModelTest {
         p8.setService(clusterGen);
         p8.setMaterial(htsfSample);
         p8.setRequestedService(htsfIlluminaSequencing);
-        p8.setProductOrdered(kernel.getAnyEntity());
-        p8.setProduct(kernel.getAnyEntity());
+        p8.setProductOrdered(kernel.getAnyProduct());
+        p8.setProduct(kernel.getAnyProduct());
         p8.setDeliverFrom(kernel.getAnyLocation());
         p8.setDeliverTo(kernel.getAnyLocation());
         p8.setAssignTo(htsfTech);
-        p8.setSubService(kernel.getAnyEntity());
+        p8.setSubService(kernel.getAnyProduct());
         em.persist(p8);
 
         Protocol p9 = new Protocol(core);
@@ -734,12 +734,12 @@ public class JobModelTest extends AbstractModelTest {
         p9.setService(sequenceClusters);
         p9.setMaterial(htsfSample);
         p9.setRequestedService(htsfIlluminaSequencing);
-        p9.setProductOrdered(kernel.getAnyEntity());
-        p9.setProduct(kernel.getAnyEntity());
+        p9.setProductOrdered(kernel.getAnyProduct());
+        p9.setProduct(kernel.getAnyProduct());
         p9.setDeliverFrom(kernel.getAnyLocation());
         p9.setDeliverTo(kernel.getAnyLocation());
         p9.setAssignTo(htsfTech);
-        p9.setSubService(kernel.getAnyEntity());
+        p9.setSubService(kernel.getAnyProduct());
         em.persist(p9);
 
         Protocol p10 = new Protocol(core);
@@ -748,12 +748,12 @@ public class JobModelTest extends AbstractModelTest {
         p10.setService(dataAnalysis);
         p10.setMaterial(htsfSample);
         p10.setRequestedService(htsfIlluminaSequencing);
-        p10.setProductOrdered(kernel.getAnyEntity());
-        p10.setProduct(kernel.getAnyEntity());
+        p10.setProductOrdered(kernel.getAnyProduct());
+        p10.setProduct(kernel.getAnyProduct());
         p10.setDeliverFrom(kernel.getAnyLocation());
         p10.setDeliverTo(kernel.getAnyLocation());
         p10.setAssignTo(htsfTech);
-        p10.setSubService(kernel.getAnyEntity());
+        p10.setSubService(kernel.getAnyProduct());
         em.persist(p9);
 
         MetaProtocol mp1 = new MetaProtocol(core);
@@ -787,7 +787,7 @@ public class JobModelTest extends AbstractModelTest {
         Job j1 = new Job(core);
         j1.setRequester(kernel.getAnyResource());
         j1.setService(htsfIlluminaSequencing);
-        j1.setProduct(kernel.getAnyEntity());
+        j1.setProduct(kernel.getAnyProduct());
         j1.setDeliverFrom(kernel.getAnyLocation());
         j1.setDeliverTo(kernel.getAnyLocation());
         j1.setMaterial(sampleX);
@@ -797,7 +797,7 @@ public class JobModelTest extends AbstractModelTest {
 
         Job j2 = new Job(core);
         j2.setRequester(kernel.getAnyResource());
-        j2.setProduct(kernel.getAnyEntity());
+        j2.setProduct(kernel.getAnyProduct());
         j2.setParent(j1);
         j2.setDeliverFrom(kernel.getAnyLocation());
         j2.setDeliverTo(kernel.getAnyLocation());
@@ -809,7 +809,7 @@ public class JobModelTest extends AbstractModelTest {
 
         Job j3 = new Job(core);
         j3.setRequester(kernel.getAnyResource());
-        j3.setProduct(kernel.getAnyEntity());
+        j3.setProduct(kernel.getAnyProduct());
         j3.setDeliverFrom(kernel.getAnyLocation());
         j3.setDeliverTo(kernel.getAnyLocation());
         j3.setParent(j1);
@@ -821,7 +821,7 @@ public class JobModelTest extends AbstractModelTest {
 
         Job j4 = new Job(core);
         j4.setRequester(kernel.getAnyResource());
-        j4.setProduct(kernel.getAnyEntity());
+        j4.setProduct(kernel.getAnyProduct());
         j4.setDeliverFrom(kernel.getAnyLocation());
         j4.setDeliverTo(kernel.getAnyLocation());
         j4.setParent(j1);
@@ -833,7 +833,7 @@ public class JobModelTest extends AbstractModelTest {
 
         Job j5 = new Job(core);
         j5.setRequester(kernel.getAnyResource());
-        j5.setProduct(kernel.getAnyEntity());
+        j5.setProduct(kernel.getAnyProduct());
         j5.setDeliverFrom(kernel.getAnyLocation());
         j5.setDeliverTo(kernel.getAnyLocation());
         j5.setParent(j1);
@@ -845,7 +845,7 @@ public class JobModelTest extends AbstractModelTest {
 
         Job j6 = new Job(core);
         j6.setRequester(kernel.getAnyResource());
-        j6.setProduct(kernel.getAnyEntity());
+        j6.setProduct(kernel.getAnyProduct());
         j6.setDeliverFrom(kernel.getAnyLocation());
         j6.setDeliverTo(kernel.getAnyLocation());
         j6.setParent(j1);
@@ -857,7 +857,7 @@ public class JobModelTest extends AbstractModelTest {
 
         Job j7 = new Job(core);
         j7.setRequester(kernel.getAnyResource());
-        j7.setProduct(kernel.getAnyEntity());
+        j7.setProduct(kernel.getAnyProduct());
         j7.setDeliverFrom(kernel.getAnyLocation());
         j7.setDeliverTo(kernel.getAnyLocation());
         j7.setParent(j1);

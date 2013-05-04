@@ -35,7 +35,7 @@
               CONSTRAINT context_attribute_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT entity_attribute_unit_fkey FOREIGN KEY (unit)
+              CONSTRAINT product_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT context_attribute_updated_by_fkey FOREIGN KEY (updated_by)

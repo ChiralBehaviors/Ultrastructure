@@ -34,7 +34,7 @@
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT meta_protocol_service_fkey FOREIGN KEY (service)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT meta_protocol_job_mapping_fkey FOREIGN KEY (job_mapping)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
@@ -61,8 +61,8 @@
             COMMENT ON COLUMN ruleform.meta_protocol.id IS 'Unique identifier';
             COMMENT ON COLUMN ruleform.meta_protocol.service IS 'The Event we are creating a mask for';
             COMMENT ON COLUMN ruleform.meta_protocol.sequence_number IS 'Ordering and uniqueness, for when an Event can have multiple meta-protocol rules';
-            COMMENT ON COLUMN ruleform.meta_protocol.service_type IS 'Used to select a mapped value from a Entity';
-            COMMENT ON COLUMN ruleform.meta_protocol.product_ordered IS 'Used to select a mapped value from a Entity';
+            COMMENT ON COLUMN ruleform.meta_protocol.service_type IS 'Used to select a mapped value from a Product';
+            COMMENT ON COLUMN ruleform.meta_protocol.product_ordered IS 'Used to select a mapped value from a Product';
             COMMENT ON COLUMN ruleform.meta_protocol.job_mapping IS 'Used to select a mapped value from a Job';
             COMMENT ON COLUMN ruleform.meta_protocol.notes IS 'Additional notes regarding usage of the attribute';
             COMMENT ON COLUMN ruleform.meta_protocol.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';

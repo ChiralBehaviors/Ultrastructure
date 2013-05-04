@@ -7,20 +7,20 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.get_attribute(the_resource bigint, the_entity bigint, the_attribute bigint)
-              RETURNS SETOF ruleform.entity_attribute AS
+            CREATE OR REPLACE FUNCTION ruleform.get_attribute(the_resource bigint, the_product bigint, the_attribute bigint)
+              RETURNS SETOF ruleform.product_attribute AS
             $BODY$
             DECLARE
-                row ruleform.entity_attribute%rowtype;
+                row ruleform.product_attribute%rowtype;
                 is_inheritable BOOLEAN := FALSE;
                 the_distance INTEGER := NULL;
             BEGIN
             
                 -- see if the attribute exists already
                 SELECT * INTO row 
-                FROM entity_attribute AS ba 
+                FROM product_attribute AS ba 
                 WHERE ba.resource = the_resource 
-                  AND ba.entity = the_entity 
+                  AND ba.product = the_product 
                   AND ba.attribute = the_attribute;
                 
                 IF row.id IS NOT NULL THEN
@@ -28,8 +28,8 @@
                         I'm doing this return-next-return thing because I want this function
                         to return a single row if an attribute rule exists, or NO rows if 
                         the attribute rule does not exist.  If the function is declared
-                        to return 'entity_attribute' rather than 'SETOF entity_attribute',
-                        then if no attribute rule exists, a entity_attribute is returned
+                        to return 'product_attribute' rather than 'SETOF product_attribute',
+                        then if no attribute rule exists, a product_attribute is returned
                         where every column is NULL, which is not what I want!
                     */
                     RETURN NEXT row;
@@ -50,23 +50,23 @@
                 
                 -- figure out how deep into the network we are
                 SELECT max(distance) INTO the_distance
-                    FROM entity_network
-                    WHERE parent = the_entity;
+                    FROM product_network
+                    WHERE parent = the_product;
                 RAISE NOTICE 'Distance is %', the_distance;
                 
                 IF the_distance IS NULL THEN
                     -- bail out, nothing can be done here!
-                    RAISE EXCEPTION '% does not appear to be linked to anything in the entity_network!', entity_name(the_entity);
+                    RAISE EXCEPTION '% does not appear to be linked to anything in the product_network!', product_name(the_product);
                 END IF;
             
                 FOR index IN 1 .. the_distance LOOP
                 RAISE NOTICE 'Loop index is %', index;
                     SELECT ba.* INTO row 
                     FROM 
-                        entity_network AS n 
+                        product_network AS n 
                             JOIN relationship AS r ON n.relationship = r.id
-                            JOIN entity_attribute AS ba ON n.child = ba.entity
-                        WHERE n.parent = the_entity
+                            JOIN product_attribute AS ba ON n.child = ba.product
+                        WHERE n.parent = the_product
                           --AND r.preferred IS FALSE -- go up toward the top (is this really needed?)
                           AND ba.resource = the_resource -- the resource passed in ???
                           AND ba.attribute = the_attribute -- the attribute passed in (attribute_id('Direction') )
@@ -80,7 +80,7 @@
                    END IF;
                    -- if we got here, we didn't find anything, so we need to continue examining
                    -- the network further out
-                   RAISE NOTICE 'Didn''t find an attribute for resource=''%'', entity=''%'', and attribute=''%''', resource_name(the_resource), entity_name(the_entity), attribute_name(the_attribute);
+                   RAISE NOTICE 'Didn''t find an attribute for resource=''%'', product=''%'', and attribute=''%''', resource_name(the_resource), product_name(the_product), attribute_name(the_attribute);
                 END LOOP;
                 
                 -- if you can't find anything, return the null row

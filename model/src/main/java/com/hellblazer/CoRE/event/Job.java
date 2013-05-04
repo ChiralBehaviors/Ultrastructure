@@ -55,8 +55,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attributable;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -243,7 +243,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne
     @JoinColumn(name = "material")
-    private Entity             material;
+    private Product             material;
 
     /**
      * The parent of this job
@@ -257,7 +257,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne
     @JoinColumn(name = "product")
-    private Entity             product;
+    private Product             product;
 
     /**
      * The consumer of this job's product
@@ -274,7 +274,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Entity             service;
+    private Product             service;
 
     /**
      * This job's status
@@ -347,7 +347,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * @return the material
      */
-    public Entity getMaterial() {
+    public Product getMaterial() {
         return material;
     }
 
@@ -358,7 +358,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * @return the product
      */
-    public Entity getProduct() {
+    public Product getProduct() {
         return product;
     }
 
@@ -379,7 +379,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * @return the service
      */
-    public Entity getService() {
+    public Product getService() {
         return service;
     }
 
@@ -429,7 +429,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      * @param material
      *            the material to set
      */
-    public void setMaterial(Entity material) {
+    public void setMaterial(Product material) {
         this.material = material;
     }
 
@@ -441,7 +441,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      * @param product
      *            the product to set
      */
-    public void setProduct(Entity product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 
@@ -465,7 +465,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      * @param service
      *            the service to set
      */
-    public void setService(Entity service) {
+    public void setService(Product service) {
         this.service = service;
     }
 

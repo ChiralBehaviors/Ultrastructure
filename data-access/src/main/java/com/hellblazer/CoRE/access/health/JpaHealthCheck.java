@@ -38,7 +38,7 @@ public class JpaHealthCheck extends HealthCheck {
     @Override
     protected Result check() throws Exception {
         return emf.isOpen() ? Result.healthy()
-                           : Result.unhealthy("Entity Manager Factory offline");
+                           : Result.unhealthy("Product Manager Factory offline");
     }
 
 }

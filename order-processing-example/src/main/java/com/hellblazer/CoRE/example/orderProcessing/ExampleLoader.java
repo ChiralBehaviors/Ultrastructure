@@ -18,7 +18,6 @@ package com.hellblazer.CoRE.example.orderProcessing;
 
 import javax.persistence.EntityManager;
 
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationContext;
@@ -26,6 +25,7 @@ import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.resource.ResourceNetwork;
 
@@ -63,20 +63,20 @@ public class ExampleLoader {
     private Location            wash;
     private Location            euro;
 
-    private Entity              abc486;
-    private Entity              checkLetterOfCredit;
-    private Entity              checkCredit;
-    private Entity              deliver;
-    private Entity              discount;
-    private Entity              fee;
-    private Entity              frozen;
-    private Entity              nonExempt;
-    private Entity              pick;
-    private Entity              chemB;
-    private Entity              roomTemp;
-    private Entity              printCustomsDeclaration;
-    private Entity              ship;
-    private Entity              salesTax;
+    private Product             abc486;
+    private Product             checkLetterOfCredit;
+    private Product             checkCredit;
+    private Product             deliver;
+    private Product             discount;
+    private Product             fee;
+    private Product             frozen;
+    private Product             nonExempt;
+    private Product             pick;
+    private Product             chemB;
+    private Product             roomTemp;
+    private Product             printCustomsDeclaration;
+    private Product             ship;
+    private Product             salesTax;
 
     private Resource            billingComputer;
     private Resource            cpu;
@@ -101,52 +101,53 @@ public class ExampleLoader {
     }
 
     public void createEntities() {
-        abc486 = new Entity("ABC486", "Laptop Computer", kernel.getCore());
+        abc486 = new Product("ABC486", "Laptop Computer", kernel.getCore());
         em.persist(abc486);
-        checkCredit = new Entity("CheckCredit",
-                                 "Check customer inhouse credit",
-                                 kernel.getCore());
+        checkCredit = new Product("CheckCredit",
+                                  "Check customer inhouse credit",
+                                  kernel.getCore());
         em.persist(checkCredit);
-        checkLetterOfCredit = new Entity("CheckLetterOfCredit",
-                                         "Check customer letter of credit",
-                                         kernel.getCore());
+        checkLetterOfCredit = new Product("CheckLetterOfCredit",
+                                          "Check customer letter of credit",
+                                          kernel.getCore());
         em.persist(checkLetterOfCredit);
-        deliver = new Entity("Deliver", "Deliver product", kernel.getCore());
+        deliver = new Product("Deliver", "Deliver product", kernel.getCore());
         em.persist(deliver);
-        discount = new Entity("Discount", "Compute fee discount ",
-                              kernel.getCore());
-        em.persist(discount);
-        fee = new Entity("Fee", "Compute fee", kernel.getCore());
-        em.persist(fee);
-        frozen = new Entity("Frozen", "Frozen products", kernel.getCore());
-        em.persist(frozen);
-        nonExempt = new Entity("NonExempt", "Subject to sales tax",
+        discount = new Product("Discount", "Compute fee discount ",
                                kernel.getCore());
+        em.persist(discount);
+        fee = new Product("Fee", "Compute fee", kernel.getCore());
+        em.persist(fee);
+        frozen = new Product("Frozen", "Frozen products", kernel.getCore());
+        em.persist(frozen);
+        nonExempt = new Product("NonExempt", "Subject to sales tax",
+                                kernel.getCore());
         em.persist(nonExempt);
-        pick = new Entity("Pick", "Pick inventory", kernel.getCore());
+        pick = new Product("Pick", "Pick inventory", kernel.getCore());
         em.persist(pick);
-        chemB = new Entity("ChemB", "Chemical B", kernel.getCore());
+        chemB = new Product("ChemB", "Chemical B", kernel.getCore());
         em.persist(chemB);
-        printCustomsDeclaration = new Entity("PrintCustomsDeclaration",
-                                             "Print the customs declaration",
-                                             kernel.getCore());
+        printCustomsDeclaration = new Product("PrintCustomsDeclaration",
+                                              "Print the customs declaration",
+                                              kernel.getCore());
         em.persist(printCustomsDeclaration);
-        roomTemp = new Entity("RoomTemp", "Room temperature products",
-                              kernel.getCore());
+        roomTemp = new Product("RoomTemp", "Room temperature products",
+                               kernel.getCore());
         em.persist(roomTemp);
-        ship = new Entity("Ship", "Ship inventory", kernel.getCore());
+        ship = new Product("Ship", "Ship inventory", kernel.getCore());
         em.persist(ship);
-        salesTax = new Entity("SalesTax", "Compute sales tax", kernel.getCore());
+        salesTax = new Product("SalesTax", "Compute sales tax",
+                               kernel.getCore());
         em.persist(salesTax);
     }
 
-    public void createEntityNetworks() {
-        model.getEntityModel().link(abc486, storageType, roomTemp,
-                                    kernel.getCore());
-        model.getEntityModel().link(abc486, salesTaxStatus, nonExempt,
-                                    kernel.getCore());
-        model.getEntityModel().link(chemB, storageType, frozen,
-                                    kernel.getCore());
+    public void createProductNetworks() {
+        model.getProductModel().link(abc486, storageType, roomTemp,
+                                     kernel.getCore());
+        model.getProductModel().link(abc486, salesTaxStatus, nonExempt,
+                                     kernel.getCore());
+        model.getProductModel().link(chemB, storageType, frozen,
+                                     kernel.getCore());
     }
 
     public void createLocationContexts() {
@@ -156,7 +157,7 @@ public class ExampleLoader {
                                               kernel.getCore());
         em.persist(containmentCtxt);
         binCtxt = new LocationContext("Parts Bin",
-                                      "The bin location of an entity.",
+                                      "The bin location of an product.",
                                       kernel.getCore());
         em.persist(binCtxt);
     }
@@ -214,12 +215,12 @@ public class ExampleLoader {
     public void createProtocols() {
         Protocol p1 = new Protocol(core);
         p1.setService(checkCredit);
-        p1.setMaterial(kernel.getAnyEntity());
+        p1.setMaterial(kernel.getAnyProduct());
         p1.setRequester(externalCust);
         p1.setRequestedService(deliver);
         p1.setDeliverTo(us);
         p1.setDeliverFrom(us);
-        p1.setProduct(kernel.getAnyEntity());
+        p1.setProduct(kernel.getAnyProduct());
         em.persist(p1);
 
     }
@@ -366,7 +367,7 @@ public class ExampleLoader {
         createLocationContexts();
         createLocations();
         createRelationships();
-        createEntityNetworks();
+        createProductNetworks();
         createResourceNetworks();
         createLocationNetworks();
         /*

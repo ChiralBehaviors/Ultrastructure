@@ -12,7 +12,7 @@
               id bigserial NOT NULL,
               location bigint NOT NULL,
               attribute bigint NOT NULL,
-              entity_value bigint,
+              product_value bigint,
               numeric_value numeric,
               integer_value integer,
               boolean_value boolean,
@@ -30,8 +30,8 @@
               CONSTRAINT location_attribute_attribute_fkey FOREIGN KEY (attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_attribute_entity_value_fkey FOREIGN KEY (entity_value)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+              CONSTRAINT location_attribute_product_value_fkey FOREIGN KEY (product_value)
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_attribute_location_fkey FOREIGN KEY (location)
                   REFERENCES ruleform.location (id) MATCH SIMPLE
@@ -42,7 +42,7 @@
               CONSTRAINT location_attribute_resource_value_fkey FOREIGN KEY (resource_value)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT entity_attribute_unit_fkey FOREIGN KEY (unit)
+              CONSTRAINT product_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_attribute_updated_by_fkey FOREIGN KEY (updated_by)
@@ -50,7 +50,7 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_attribute_location_key UNIQUE (location , attribute, sequence_number ),
               CONSTRAINT location_attribute_sequence_number_check CHECK (sequence_number > 0),
-              CONSTRAINT location_attribute_valid_value CHECK ((ruleform.null_zero(entity_value) + ruleform.null_zero(text_value) + ruleform.null_zero(resource_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+              CONSTRAINT location_attribute_valid_value CHECK ((ruleform.null_zero(product_value) + ruleform.null_zero(text_value) + ruleform.null_zero(resource_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
             )
             WITH (
               OIDS=FALSE

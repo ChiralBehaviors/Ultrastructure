@@ -88,12 +88,12 @@ public class JobTest extends DatabaseTestContext {
         LOG.trace("Entering setSequences");
         //        this.getConnection().getConnection().createStatement().execute("SELECT setval('resource_id_seq', 1)");
         //        this.getConnection().getConnection().createStatement().execute("SELECT setval('attribute_id_seq', 1)");
-        //        this.getConnection().getConnection().createStatement().execute("SELECT setval('entity_id_seq', 2)");
+        //        this.getConnection().getConnection().createStatement().execute("SELECT setval('product_id_seq', 2)");
         //        this.getConnection().getConnection().createStatement().execute("SELECT setval('unit_id_seq', 1)");
-        //        this.getConnection().getConnection().createStatement().execute("SELECT setval('entity_attribute_id_seq', 1)");
+        //        this.getConnection().getConnection().createStatement().execute("SELECT setval('product_attribute_id_seq', 1)");
         //        this.getConnection().getConnection().createStatement().execute("SELECT setval('relationship_id_seq', 2)");
         //        this.getConnection().getConnection().createStatement().execute("SELECT setval('research_id_seq', 5)");
-        //        this.getConnection().getConnection().createStatement().execute("SELECT setval('entity_network_id_seq', 1, false)");
+        //        this.getConnection().getConnection().createStatement().execute("SELECT setval('product_network_id_seq', 1, false)");
         //        //getConnection().getConnection().createStatement().execute("SELECT setval('event_id_seq', 5)");
         LOG.trace("Exiting setSequences");
     }

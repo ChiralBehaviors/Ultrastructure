@@ -121,8 +121,8 @@ abstract public class AttributeAuthorization extends Ruleform {
         return timestampValue;
     }
 
-    public void setAuthorizedAttribute(Attribute entityAttributeType3) {
-        authorizedAttribute = entityAttributeType3;
+    public void setAuthorizedAttribute(Attribute productAttributeType3) {
+        authorizedAttribute = productAttributeType3;
     }
 
     public void setGroupingResource(Resource resource) {

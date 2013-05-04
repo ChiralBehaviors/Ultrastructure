@@ -33,31 +33,31 @@
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_material_fkey FOREIGN KEY (material)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_requested_service_fkey FOREIGN KEY (requested_service)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_product_ordered_fkey FOREIGN KEY (product_ordered)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_service_fkey FOREIGN KEY (service)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_product_fkey FOREIGN KEY (product)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_deliver_to_fkey FOREIGN KEY (deliver_to)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_deliver_from_fkey FOREIGN KEY (deliver_from)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_sub_service_fkey FOREIGN KEY (sub_service)
-                  REFERENCES ruleform.entity (id) MATCH SIMPLE
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE

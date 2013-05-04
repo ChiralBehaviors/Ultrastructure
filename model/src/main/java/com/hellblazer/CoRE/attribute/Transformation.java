@@ -32,8 +32,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -42,7 +42,7 @@ import com.hellblazer.CoRE.resource.Resource;
  */
 @NamedQueries({ @NamedQuery(name = GET, query = "SELECT t FROM Transformation t "
                                                 + "WHERE t.service = :service "
-                                                + "AND t.entity = :entity "
+                                                + "AND t.product = :product "
                                                 + "AND t.resource = :resource "
                                                 + "ORDER BY t.sequenceNumber") })
 @javax.persistence.Entity
@@ -62,20 +62,20 @@ public class Transformation extends Ruleform implements Serializable {
     @JoinColumn(name = "attribute")
     private Attribute          attribute;
 
-    //bi-directional many-to-one association to Entity
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "entity")
-    private Entity             entity;
+    @JoinColumn(name = "product")
+    private Product             product;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
-    @JoinColumn(name = "entity_attribute_resource")
-    private Resource           entityAttributeResource;
+    @JoinColumn(name = "product_attribute_resource")
+    private Resource           productAttributeResource;
 
-    //bi-directional many-to-one association to Entity
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "entity_key")
-    private Entity             entityKey;
+    @JoinColumn(name = "product_key")
+    private Product             productKey;
 
     @Id
     @GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
@@ -102,7 +102,7 @@ public class Transformation extends Ruleform implements Serializable {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "service")
-    private Entity             service;
+    private Product             service;
 
     public Transformation() {
     }
@@ -115,16 +115,16 @@ public class Transformation extends Ruleform implements Serializable {
         return attribute;
     }
 
-    public Entity getEntity() {
-        return entity;
+    public Product getEntity() {
+        return product;
     }
 
-    public Resource getEntityAttributeResource() {
-        return entityAttributeResource;
+    public Resource getProductAttributeResource() {
+        return productAttributeResource;
     }
 
-    public Entity getEntityKey() {
-        return entityKey;
+    public Product getProductKey() {
+        return productKey;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class Transformation extends Ruleform implements Serializable {
     /**
      * @return the service
      */
-    public Entity getService() {
+    public Product getService() {
         return service;
     }
 
@@ -163,16 +163,16 @@ public class Transformation extends Ruleform implements Serializable {
         this.attribute = attribute;
     }
 
-    public void setEntity(Entity entity) {
-        this.entity = entity;
+    public void setEntity(Product product) {
+        this.product = product;
     }
 
     public void setEntityAttributeResource(Resource resource3) {
-        entityAttributeResource = resource3;
+        productAttributeResource = resource3;
     }
 
-    public void setEntityKey(Entity entityKey) {
-        this.entityKey = entityKey;
+    public void setEntityKey(Product productKey) {
+        this.productKey = productKey;
     }
 
     @Override
@@ -200,7 +200,7 @@ public class Transformation extends Ruleform implements Serializable {
      * @param service
      *            the service to set
      */
-    public void setService(Entity service) {
+    public void setService(Product service) {
         this.service = service;
     }
 

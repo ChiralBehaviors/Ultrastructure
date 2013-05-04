@@ -29,12 +29,12 @@ import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.Transformation;
 import com.hellblazer.CoRE.attribute.TransformationMetarule;
-import com.hellblazer.CoRE.entity.Entity;
-import com.hellblazer.CoRE.entity.EntityAttribute;
-import com.hellblazer.CoRE.entity.EntityNetwork;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductAttribute;
+import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.resource.ResourceNetwork;
 
@@ -135,7 +135,7 @@ public class AttributeModelImpl
         return attribute;
     }
 
-    public Attribute transform(Entity service, Resource resource, Entity entity) {
+    public Attribute transform(Product service, Resource resource, Product product) {
 
         Attribute txfmd = null;
         for (TransformationMetarule transfromationMetarule : getTransformationMetarules(service)) {
@@ -146,15 +146,15 @@ public class AttributeModelImpl
                 mappedResource = getMappedResource(transfromationMetarule,
                                                    resource);
             }
-            Entity mappedEntity;
-            if (kernel.getSameEntity().equals(transfromationMetarule.getEntityMap())) {
-                mappedEntity = kernel.getSameEntity();
+            Product mappedProduct;
+            if (kernel.getSameProduct().equals(transfromationMetarule.getProductMap())) {
+                mappedProduct = kernel.getSameProduct();
             } else {
-                mappedEntity = getMappedEntity(transfromationMetarule, entity);
+                mappedProduct = getMappedProduct(transfromationMetarule, product);
             }
             for (Transformation transformation : getTransformations(service,
                                                                     mappedResource,
-                                                                    mappedEntity)) {
+                                                                    mappedProduct)) {
                 txfmd = null;
                 Resource txfmResource;
                 if (kernel.getOriginalResource().equals(transformation.getResourceKey())) {
@@ -162,16 +162,16 @@ public class AttributeModelImpl
                 } else {
                     txfmResource = transformation.getResourceKey();
                 }
-                Entity txfmEntity;
-                if (kernel.getOriginalEntity().equals(transformation.getEntityKey())) {
-                    txfmEntity = entity;
+                Product txfmProduct;
+                if (kernel.getOriginalProduct().equals(transformation.getProductKey())) {
+                    txfmProduct = product;
                 } else {
-                    txfmEntity = transformation.getEntityKey();
+                    txfmProduct = transformation.getProductKey();
                 }
-                Entity foundEntity = findEntity(transformation, txfmResource,
-                                                txfmEntity);
+                Product foundProduct = findProduct(transformation, txfmResource,
+                                                txfmProduct);
 
-                txfmd = findAttribute(transformation, foundEntity);
+                txfmd = findAttribute(transformation, foundProduct);
                 if (txfmd != null) {
                     break;
                 }
@@ -185,15 +185,15 @@ public class AttributeModelImpl
 
     /**
      * @param transformation
-     * @param entity
+     * @param product
      * @return
      */
-    private Attribute findAttribute(Transformation transformation, Entity entity) {
-        TypedQuery<Attribute> attrQuery = em.createNamedQuery(EntityAttribute.FIND_ATTRIBUTE_VALUE_FROM_RESOURCE,
+    private Attribute findAttribute(Transformation transformation, Product product) {
+        TypedQuery<Attribute> attrQuery = em.createNamedQuery(ProductAttribute.FIND_ATTRIBUTE_VALUE_FROM_RESOURCE,
                                                               Attribute.class);
         attrQuery.setParameter("resource",
-                               transformation.getEntityAttributeResource());
-        attrQuery.setParameter("entity", entity);
+                               transformation.getProductAttributeResource());
+        attrQuery.setParameter("product", product);
         attrQuery.setParameter("attribute", transformation.getAttribute());
         return attrQuery.getSingleResult();
     }
@@ -201,34 +201,34 @@ public class AttributeModelImpl
     /**
      * @param transformation
      * @param resource
-     * @param entity
+     * @param product
      * @return
      */
-    private Entity findEntity(Transformation transformation, Resource resource,
-                              Entity entity) {
-        TypedQuery<Entity> entityNetworkQuery = em.createQuery(EntityNetwork.GET_CHILD,
-                                                               Entity.class);
-        entityNetworkQuery.setParameter("parent", entity);
-        entityNetworkQuery.setParameter("relationship",
+    private Product findProduct(Transformation transformation, Resource resource,
+                              Product product) {
+        TypedQuery<Product> productNetworkQuery = em.createQuery(ProductNetwork.GET_CHILD,
+                                                               Product.class);
+        productNetworkQuery.setParameter("parent", product);
+        productNetworkQuery.setParameter("relationship",
                                         transformation.getRelationshipKey());
-        // entityNetworkQuery.setParameter("resource", resource);
-        return entityNetworkQuery.getSingleResult();
+        // productNetworkQuery.setParameter("resource", resource);
+        return productNetworkQuery.getSingleResult();
     }
 
     /**
      * @param transfromationMetarule
-     * @param entity
+     * @param product
      * @return
      */
-    private Entity getMappedEntity(TransformationMetarule transfromationMetarule,
-                                   Entity entity) {
-        TypedQuery<Entity> entityNetworkQuery = em.createQuery(EntityNetwork.GET_CHILD,
-                                                               Entity.class);
-        entityNetworkQuery.setParameter("parent", entity);
-        entityNetworkQuery.setParameter("relationship",
+    private Product getMappedProduct(TransformationMetarule transfromationMetarule,
+                                   Product product) {
+        TypedQuery<Product> productNetworkQuery = em.createQuery(ProductNetwork.GET_CHILD,
+                                                               Product.class);
+        productNetworkQuery.setParameter("parent", product);
+        productNetworkQuery.setParameter("relationship",
                                         transfromationMetarule.getRelationshipMap());
-        // entityNetworkQuery.setParameter("resource", transfromationMetarule.getEntityNetworkResource());
-        return entityNetworkQuery.getSingleResult();
+        // productNetworkQuery.setParameter("resource", transfromationMetarule.getProductNetworkResource());
+        return productNetworkQuery.getSingleResult();
     }
 
     /**
@@ -250,7 +250,7 @@ public class AttributeModelImpl
      * @param service
      * @return
      */
-    private List<TransformationMetarule> getTransformationMetarules(Entity service) {
+    private List<TransformationMetarule> getTransformationMetarules(Product service) {
         TypedQuery<TransformationMetarule> txfmMetaruleQuery = em.createQuery(TransformationMetarule.GET_BY_EVENT,
                                                                               TransformationMetarule.class);
         txfmMetaruleQuery.setParameter("event", service);
@@ -260,16 +260,16 @@ public class AttributeModelImpl
     /**
      * @param service
      * @param mappedResource
-     * @param mappedEntity
+     * @param mappedProduct
      * @return
      */
-    private List<Transformation> getTransformations(Entity service,
+    private List<Transformation> getTransformations(Product service,
                                                     Resource mappedResource,
-                                                    Entity mappedEntity) {
+                                                    Product mappedProduct) {
         TypedQuery<Transformation> txfmQuery = em.createQuery(Transformation.GET,
                                                               Transformation.class);
         txfmQuery.setParameter("event", service);
-        txfmQuery.setParameter("entity", mappedEntity);
+        txfmQuery.setParameter("product", mappedProduct);
         txfmQuery.setParameter("resource", mappedResource);
 
         return txfmQuery.getResultList();

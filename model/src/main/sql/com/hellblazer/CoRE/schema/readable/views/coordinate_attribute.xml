@@ -8,11 +8,11 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.coordinate_attribute AS 
-			 SELECT ca.id, c.name AS coordinate, a.name AS attribute, bv.name AS entity_value, ca.integer_value, ca.numeric_value, ca.boolean_value, ca.text_value, ca.notes, r.name AS research, up.name AS updated_by, ca.update_date
+			 SELECT ca.id, c.name AS coordinate, a.name AS attribute, bv.name AS product_value, ca.integer_value, ca.numeric_value, ca.boolean_value, ca.text_value, ca.notes, r.name AS research, up.name AS updated_by, ca.update_date
 			   FROM ruleform.coordinate_attribute ca
 			   JOIN ruleform.coordinate c ON c.id = ca.coordinate
 			   JOIN ruleform.attribute a ON a.id = ca.attribute
-			   LEFT JOIN ruleform.entity bv ON bv.id = ca.entity_value
+			   LEFT JOIN ruleform.product bv ON bv.id = ca.product_value
 			   LEFT JOIN ruleform.research r ON r.id = ca.research
 			   JOIN ruleform.resource up ON up.id = ca.updated_by;
 			

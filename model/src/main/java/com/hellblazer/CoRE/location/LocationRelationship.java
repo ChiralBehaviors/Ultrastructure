@@ -34,8 +34,8 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.entity.Entity;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -53,7 +53,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                  + "WHERE lr.context = :context "
                                                  + "AND lr.relationship = :relationship "
                                                  + "AND lr.targetContext = :targetContext "
-                                                 + "AND lr.entityMappedValue = :mappedEntityValue "
+                                                 + "AND lr.productMappedValue = :mappedEntityValue "
                                                  + "ORDER BY lr.sequenceNumber") })
 public class LocationRelationship extends Ruleform {
     private static final long  serialVersionUID        = 1L;
@@ -74,10 +74,10 @@ public class LocationRelationship extends Ruleform {
     @JoinColumn(name = "context")
     private LocationContext    context;
 
-    //bi-directional many-to-one association to Entity
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "entity_mapped_value")
-    private Entity             entityMappedValue;
+    @JoinColumn(name = "product_mapped_value")
+    private Product             productMappedValue;
 
     @Id
     @GeneratedValue(generator = "location_relationship_id_seq", strategy = GenerationType.SEQUENCE)
@@ -131,8 +131,8 @@ public class LocationRelationship extends Ruleform {
         return context;
     }
 
-    public Entity getEntityMappedValue() {
-        return entityMappedValue;
+    public Product getEntityMappedValue() {
+        return productMappedValue;
     }
 
     @Override
@@ -168,8 +168,8 @@ public class LocationRelationship extends Ruleform {
         context = locationContext1;
     }
 
-    public void setEntityMappedValue(Entity entity) {
-        entityMappedValue = entity;
+    public void setEntityMappedValue(Product product) {
+        productMappedValue = product;
     }
 
     @Override

@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
-
 import static com.hellblazer.CoRE.access.resource.Constants.QUALIFIER_PLAN;
 
 import java.io.IOException;
@@ -123,7 +122,7 @@ public class CrudResource {
                 em.remove(pc);
                 return Response.status(Status.NO_CONTENT).build();
             } else {
-                return Response.status(Status.NOT_FOUND).entity(loc.get("entity-not-found",
+                return Response.status(Status.NOT_FOUND).entity(loc.get("product-not-found",
                                                                         type,
                                                                         Arrays.toString(pks)).getMessage()).build();
             }
@@ -162,8 +161,18 @@ public class CrudResource {
                 ObjectMapper mapper;
                 if (meta.getDescribedType().equals(ResourceAttribute.class)) {
                     mapper = new ObjectMapper();
-                    SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, null, null, null)) ;
-                    testModule.addSerializer(new AttributeValueSerializer<ResourceAttribute>(ResourceAttribute.class, true)); // assuming serializer declares correct class to bind to
+                    SimpleModule testModule = new SimpleModule(
+                                                               "MyModule",
+                                                               new Version(
+                                                                           1,
+                                                                           0,
+                                                                           0,
+                                                                           null,
+                                                                           null,
+                                                                           null));
+                    testModule.addSerializer(new AttributeValueSerializer<ResourceAttribute>(
+                                                                                             ResourceAttribute.class,
+                                                                                             true)); // assuming serializer declares correct class to bind to
                     mapper.registerModule(testModule);
                 } else {
                     mapper = new ObjectMapper();
@@ -172,7 +181,7 @@ public class CrudResource {
                 return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(pc),
                                    "text/json").build();
             } else {
-                return Response.status(Status.NOT_FOUND).entity(loc.get("entity-not-found",
+                return Response.status(Status.NOT_FOUND).entity(loc.get("product-not-found",
                                                                         type,
                                                                         Arrays.toString(pks)).getMessage()).build();
             }

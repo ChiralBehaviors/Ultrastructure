@@ -9,6 +9,7 @@
 	<include relativeToChangelogFile="true" file="functions/_clear_ids.xml" />
 	<include relativeToChangelogFile="true" file="functions/_contains_id.xml" />
 	<include relativeToChangelogFile="true" file="functions/_ids.xml" />
+    <include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/attribute_usage.xml" />
 	<include relativeToChangelogFile="true"

@@ -19,7 +19,6 @@ package com.hellblazer.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -45,12 +44,17 @@ public class JobModelTest extends AbstractModelTest {
     @Test
     public void testGenerateImplicitJobs() throws Exception {
 
-        @SuppressWarnings("unused")
         JobModel jobModel = model.getJobModel();
+        @SuppressWarnings("unused")
         JobScenario scenario = new JobScenario(model);
-        assertNotNull(scenario.a1);
         List<Job> jobs = findAllJobs();
         assertEquals(7, jobs.size());
+
+        List<Job> active = jobModel.getActiveExplicitJobs();
+        assertEquals(0, active.size());
+        List<Job> topLevel = jobModel.getTopLevelJobs();
+        assertEquals(1, topLevel.size());
+        assertEquals(0, jobModel.getChildActions(topLevel.get(0)).size());
     }
 
     private List<Job> findAllJobs() {

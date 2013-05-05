@@ -45,8 +45,8 @@ import com.hellblazer.CoRE.animation.RuleformIdIterator;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
+import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
@@ -244,17 +244,6 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    public void changeJobStatus_persist(Job job, StatusCode newStatus,
-                                        String note, Resource updatedBy) {
-        if (!job.getStatus().equals(newStatus)) {
-            job.setStatus(newStatus);
-            JobChronology jc = addJobChronologyRule(job, note, updatedBy);
-            em.persist(job);
-            em.persist(jc);
-
-        }
-    }
-
     @Override
     public void changeStatus(Job job, StatusCode newStatus, String notes) {
         StatusCode oldStatus = job.getStatus();
@@ -304,6 +293,13 @@ public class JobModelImpl implements JobModel {
                 break;
             }
         }
+    }
+
+    @Override
+    public List<Job> getTopLevelJobs() {
+        TypedQuery<Job> query = em.createNamedQuery(Job.TOP_LEVEL_JOBS,
+                                                    Job.class);
+        return query.getResultList();
     }
 
     @Override
@@ -371,7 +367,7 @@ public class JobModelImpl implements JobModel {
     public List<ProductSequencingAuthorization> getChildActions(Job job) {
         TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_CHILD_ACTIONS,
                                                                                ProductSequencingAuthorization.class);
-        query.setParameter("service", job.getService());
+        query.setParameter("product", job.getService());
         query.setParameter("status", job.getStatus());
         List<ProductSequencingAuthorization> childActions = query.getResultList();
         return childActions;
@@ -754,15 +750,6 @@ public class JobModelImpl implements JobModel {
                                                      modifiedService.getName()));
             }
         }
-    }
-
-    private JobChronology addJobChronologyRule(Job job, String notes,
-                                               Resource updatedBy) {
-        JobChronology jc = new JobChronology();
-        jc.setJob(job);
-        jc.setNotes(notes);
-        jc.setUpdatedBy(updatedBy);
-        return jc;
     }
 
     /**

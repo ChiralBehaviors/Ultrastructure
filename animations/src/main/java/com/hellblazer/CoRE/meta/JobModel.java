@@ -324,7 +324,8 @@ public interface JobModel {
      * @return true if the next status code is a valid status transition of the
      *         service given the
      */
-    boolean isValidNextStatus(Product service, StatusCode parent, StatusCode next);
+    boolean isValidNextStatus(Product service, StatusCode parent,
+                              StatusCode next);
 
     /**
      * Process all the implicit status changes of the children of a job
@@ -355,5 +356,10 @@ public interface JobModel {
      * @throws SQLException
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
+
+    /**
+     * @return the list of jobs that have no parent
+     */
+    List<Job> getTopLevelJobs();
 
 }

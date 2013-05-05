@@ -9,9 +9,9 @@
         id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER valid_child_service_and_status_to_set AFTER INSERT OR UPDATE ON
-            ruleform.service_sequencing_authorization FOR EACH ROW EXECUTE PROCEDURE
+            ruleform.product_sequencing_authorization FOR EACH ROW EXECUTE PROCEDURE
             ruleform.ensure_valid_service_and_status(); </sql>
         <rollback> DROP TRIGGER valid_child_service_and_status_to_set ON
-            ruleform.service_sequencing_authorization; </rollback>
+            ruleform.product_sequencing_authorization; </rollback>
     </changeSet>
 </databaseChangeLog>

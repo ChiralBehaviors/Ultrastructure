@@ -25,7 +25,7 @@
 	<ruleform.product_network_attribute />
 	<ruleform.product_network_authorization />
 	<ruleform.product_network_deduction />
-	<ruleform.service_sequencing_authorization />
+	<ruleform.product_sequencing_authorization />
 	<ruleform.job />
 	<ruleform.job_attribute />
 	<ruleform.job_chronology />

@@ -7,7 +7,7 @@
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.service_sequencing_authorization AS 
+            CREATE OR REPLACE VIEW readable.product_sequencing_authorization AS 
 			 SELECT base_table.id, p.name AS parent, sc.name AS status_code, 
 			        base_table.sequence_number, nc.name AS next_child, 
 			        ncs.name AS next_child_status, nss.name AS next_sibling, 
@@ -15,7 +15,7 @@
 			        mps.name AS parent_status_to_set, base_table.set_if_active_siblings, 
 			        base_table.notes, res.name AS research, up.name AS updated_by, 
 			        base_table.update_date
-			   FROM ruleform.service_sequencing_authorization base_table
+			   FROM ruleform.product_sequencing_authorization base_table
 			   JOIN ruleform.product p ON base_table.parent = p.id
 			   JOIN ruleform.status_code sc ON base_table.status_code = sc.id
 			   LEFT JOIN ruleform.product nc ON base_table.next_child = nc.id
@@ -27,15 +27,15 @@
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id
 			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
 			
-			ALTER TABLE readable.service_sequencing_authorization
+			ALTER TABLE readable.product_sequencing_authorization
 			  OWNER TO core;
-			GRANT ALL ON TABLE readable.service_sequencing_authorization TO core;
-			GRANT SELECT ON TABLE readable.service_sequencing_authorization TO core_read_write;
-			GRANT SELECT ON TABLE readable.service_sequencing_authorization TO core_read_only;
+			GRANT ALL ON TABLE readable.product_sequencing_authorization TO core;
+			GRANT SELECT ON TABLE readable.product_sequencing_authorization TO core_read_write;
+			GRANT SELECT ON TABLE readable.product_sequencing_authorization TO core_read_only;
             ]]>
         </sql>
         <rollback>
-            <dropView viewName="readable.service_sequencing_authorization" />
+            <dropView viewName="readable.product_sequencing_authorization" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

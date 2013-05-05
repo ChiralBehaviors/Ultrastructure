@@ -17,11 +17,15 @@
 
 package com.hellblazer.CoRE.meta.models;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import javax.persistence.RollbackException;
+import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
@@ -30,7 +34,7 @@ import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.ServiceSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.meta.JobModel;
@@ -52,7 +56,14 @@ public class JobModelTest extends AbstractModelTest {
         @SuppressWarnings("unused")
         JobModel jobModel = model.getJobModel();
         loadJobTestData();
-        
+        List<Job> jobs = findAllJobs();
+        assertEquals(7, jobs.size());
+    }
+
+    private List<Job> findAllJobs() {
+        TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",
+                                                                     Job.class);
+        return query.getResultList();
     }
 
     @Test
@@ -206,18 +217,18 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(htsfSample);
 
         Product unpreparedSample = new Product(
-                                             "Unprepared Sample for HTSF Sequencing",
-                                             core);
+                                               "Unprepared Sample for HTSF Sequencing",
+                                               core);
         em.persist(unpreparedSample);
 
         Product sampleX = new Product("Sample X", core);
         em.persist(sampleX);
 
-        ProductNetwork en1 = new ProductNetwork(sampleX, sampleType, htsfSample,
-                                              core);
+        ProductNetwork en1 = new ProductNetwork(sampleX, sampleType,
+                                                htsfSample, core);
         em.persist(en1);
         ProductNetwork en2 = new ProductNetwork(sampleX, dissolvedIn, teBuffer,
-                                              core);
+                                                core);
         em.persist(en2);
 
         Resource htsfTech = new Resource("HTSF Technician", core);
@@ -250,14 +261,14 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(abandoned);
 
         Product resuspend = new Product("Resuspend in Suitable Buffer",
-                                      "Gotta get it in H2O for sequencing",
-                                      core);
+                                        "Gotta get it in H2O for sequencing",
+                                        core);
         em.persist(resuspend);
 
         Product htsfIlluminaSequencing = new Product(
-                                                   "HTSF Illumina Sequencing",
-                                                   "Illumina sequencing at UNC High-Throughput Sequencing Facility",
-                                                   core);
+                                                     "HTSF Illumina Sequencing",
+                                                     "Illumina sequencing at UNC High-Throughput Sequencing Facility",
+                                                     core);
         em.persist(htsfIlluminaSequencing);
 
         Product chipSeq = new Product("Chip-Seq", core);
@@ -266,7 +277,8 @@ public class JobModelTest extends AbstractModelTest {
         Product doChipSeqPrep = new Product("Do Chip-Seq Preparation", core);
         em.persist(doChipSeqPrep);
 
-        Product customPrimerAnalysis = new Product("Custom Primer Analysis", core);
+        Product customPrimerAnalysis = new Product("Custom Primer Analysis",
+                                                   core);
         em.persist(customPrimerAnalysis);
 
         Product preparePrimers = new Product("Prepare Primers", core);
@@ -288,8 +300,8 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(pairedEndAnalysis);
 
         Product doPairedEndAnalysisPrep = new Product(
-                                                    "Do Paired-End Analysis Preparation",
-                                                    core);
+                                                      "Do Paired-End Analysis Preparation",
+                                                      core);
         em.persist(doPairedEndAnalysisPrep);
 
         Attribute a1 = new Attribute(
@@ -306,13 +318,13 @@ public class JobModelTest extends AbstractModelTest {
         a2.setValueType(ValueType.INTEGER);
         em.persist(a2);
 
-        ProductAttribute ea1 = new ProductAttribute(a2, 3, core);
-        ea1.setProduct(htsfIlluminaSequencing);
-        em.persist(ea1);
+        ProductAttribute pa1 = new ProductAttribute(a2, 3, core);
+        pa1.setProduct(htsfIlluminaSequencing);
+        em.persist(pa1);
 
-        ProductAttribute ea2 = new ProductAttribute(a1, 36, core);
-        ea2.setProduct(htsfIlluminaSequencing);
-        em.persist(ea2);
+        ProductAttribute pa2 = new ProductAttribute(a1, 36, core);
+        pa2.setProduct(htsfIlluminaSequencing);
+        em.persist(pa2);
 
         Product libraryPrep = new Product("Library Preparation", core);
         em.persist(libraryPrep);
@@ -330,8 +342,8 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(dnaSequencing);
 
         Product figureOutWhyCLusterSeqFailed = new Product(
-                                                         "Figure Out Why Cluster Sequencing Failed",
-                                                         core);
+                                                           "Figure Out Why Cluster Sequencing Failed",
+                                                           core);
         em.persist(figureOutWhyCLusterSeqFailed);
 
         StatusCodeSequencing seq1 = new StatusCodeSequencing(
@@ -507,122 +519,122 @@ public class JobModelTest extends AbstractModelTest {
                                                               2, core);
         em.persist(seq34);
 
-        ServiceSequencingAuthorization esa1 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa1.setParent(resuspend);
-        esa1.setStatusCode(success);
-        esa1.setNextSibling(libraryPrep);
-        esa1.setNextSiblingStatus(active);
-        em.persist(esa1);
+        ProductSequencingAuthorization psa1 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa1.setParent(resuspend);
+        psa1.setStatusCode(success);
+        psa1.setNextSibling(libraryPrep);
+        psa1.setNextSiblingStatus(active);
+        em.persist(psa1);
 
-        ServiceSequencingAuthorization esa2 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa2.setParent(libraryPrep);
-        esa2.setStatusCode(success);
-        esa2.setSequenceNumber(1);
-        esa2.setNextSibling(doChipSeqPrep);
-        esa2.setNextSiblingStatus(active);
-        em.persist(esa2);
+        ProductSequencingAuthorization psa2 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa2.setParent(libraryPrep);
+        psa2.setStatusCode(success);
+        psa2.setSequenceNumber(1);
+        psa2.setNextSibling(doChipSeqPrep);
+        psa2.setNextSiblingStatus(active);
+        em.persist(psa2);
 
-        ServiceSequencingAuthorization esa3 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa3.setParent(libraryPrep);
-        esa3.setStatusCode(success);
-        esa3.setSequenceNumber(2);
-        esa3.setNextSibling(preparePrimers);
-        esa3.setNextSiblingStatus(active);
-        em.persist(esa3);
+        ProductSequencingAuthorization psa3 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa3.setParent(libraryPrep);
+        psa3.setStatusCode(success);
+        psa3.setSequenceNumber(2);
+        psa3.setNextSibling(preparePrimers);
+        psa3.setNextSiblingStatus(active);
+        em.persist(psa3);
 
-        ServiceSequencingAuthorization esa4 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa4.setParent(libraryPrep);
-        esa4.setStatusCode(success);
-        esa4.setSequenceNumber(3);
-        esa4.setNextSibling(doDgePrep);
-        esa4.setNextSiblingStatus(active);
-        em.persist(esa4);
+        ProductSequencingAuthorization psa4 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa4.setParent(libraryPrep);
+        psa4.setStatusCode(success);
+        psa4.setSequenceNumber(3);
+        psa4.setNextSibling(doDgePrep);
+        psa4.setNextSiblingStatus(active);
+        em.persist(psa4);
 
-        ServiceSequencingAuthorization esa5 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa5.setParent(libraryPrep);
-        esa5.setStatusCode(success);
-        esa5.setSequenceNumber(4);
-        esa5.setNextSibling(doMiRnaPrep);
-        esa5.setNextSiblingStatus(active);
-        em.persist(esa5);
+        ProductSequencingAuthorization psa5 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa5.setParent(libraryPrep);
+        psa5.setStatusCode(success);
+        psa5.setSequenceNumber(4);
+        psa5.setNextSibling(doMiRnaPrep);
+        psa5.setNextSiblingStatus(active);
+        em.persist(psa5);
 
-        ServiceSequencingAuthorization esa6 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa6.setParent(libraryPrep);
-        esa6.setStatusCode(success);
-        esa6.setSequenceNumber(5);
-        esa6.setNextSibling(doPairedEndAnalysisPrep);
-        esa6.setNextSiblingStatus(active);
-        em.persist(esa6);
+        ProductSequencingAuthorization psa6 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa6.setParent(libraryPrep);
+        psa6.setStatusCode(success);
+        psa6.setSequenceNumber(5);
+        psa6.setNextSibling(doPairedEndAnalysisPrep);
+        psa6.setNextSiblingStatus(active);
+        em.persist(psa6);
 
-        ServiceSequencingAuthorization esa7 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa7.setParent(doChipSeqPrep);
-        esa7.setStatusCode(success);
-        esa7.setNextSibling(clusterGen);
-        esa7.setNextSiblingStatus(active);
-        em.persist(esa7);
+        ProductSequencingAuthorization psa7 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa7.setParent(doChipSeqPrep);
+        psa7.setStatusCode(success);
+        psa7.setNextSibling(clusterGen);
+        psa7.setNextSiblingStatus(active);
+        em.persist(psa7);
 
-        ServiceSequencingAuthorization esa8 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa8.setParent(preparePrimers);
-        esa8.setStatusCode(success);
-        esa8.setNextSibling(clusterGen);
-        esa8.setNextSiblingStatus(active);
-        em.persist(esa8);
+        ProductSequencingAuthorization psa8 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa8.setParent(preparePrimers);
+        psa8.setStatusCode(success);
+        psa8.setNextSibling(clusterGen);
+        psa8.setNextSiblingStatus(active);
+        em.persist(psa8);
 
-        ServiceSequencingAuthorization esa9 = new ServiceSequencingAuthorization(
-                                                                             core);
-        esa9.setParent(doDgePrep);
-        esa9.setStatusCode(success);
-        esa9.setNextSibling(clusterGen);
-        esa9.setNextSiblingStatus(active);
-        em.persist(esa9);
+        ProductSequencingAuthorization psa9 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa9.setParent(doDgePrep);
+        psa9.setStatusCode(success);
+        psa9.setNextSibling(clusterGen);
+        psa9.setNextSiblingStatus(active);
+        em.persist(psa9);
 
-        ServiceSequencingAuthorization esa10 = new ServiceSequencingAuthorization(
-                                                                              core);
-        esa10.setParent(doMiRnaPrep);
-        esa10.setStatusCode(success);
-        esa10.setNextSibling(clusterGen);
-        esa10.setNextSiblingStatus(active);
-        em.persist(esa10);
+        ProductSequencingAuthorization psa10 = new ProductSequencingAuthorization(
+                                                                                  core);
+        psa10.setParent(doMiRnaPrep);
+        psa10.setStatusCode(success);
+        psa10.setNextSibling(clusterGen);
+        psa10.setNextSiblingStatus(active);
+        em.persist(psa10);
 
-        ServiceSequencingAuthorization esa11 = new ServiceSequencingAuthorization(
-                                                                              core);
-        esa11.setParent(doPairedEndAnalysisPrep);
-        esa11.setStatusCode(success);
-        esa11.setNextSibling(clusterGen);
-        esa11.setNextSiblingStatus(active);
-        em.persist(esa11);
+        ProductSequencingAuthorization psa11 = new ProductSequencingAuthorization(
+                                                                                  core);
+        psa11.setParent(doPairedEndAnalysisPrep);
+        psa11.setStatusCode(success);
+        psa11.setNextSibling(clusterGen);
+        psa11.setNextSiblingStatus(active);
+        em.persist(psa11);
 
-        ServiceSequencingAuthorization esa12 = new ServiceSequencingAuthorization(
-                                                                              core);
-        esa12.setParent(clusterGen);
-        esa12.setStatusCode(success);
-        esa12.setNextSibling(sequenceClusters);
-        esa12.setNextSiblingStatus(active);
-        em.persist(esa12);
+        ProductSequencingAuthorization psa12 = new ProductSequencingAuthorization(
+                                                                                  core);
+        psa12.setParent(clusterGen);
+        psa12.setStatusCode(success);
+        psa12.setNextSibling(sequenceClusters);
+        psa12.setNextSiblingStatus(active);
+        em.persist(psa12);
 
-        ServiceSequencingAuthorization esa13 = new ServiceSequencingAuthorization(
-                                                                              core);
-        esa13.setParent(sequenceClusters);
-        esa13.setStatusCode(success);
-        esa13.setNextSibling(dataAnalysis);
-        esa13.setNextSiblingStatus(active);
-        em.persist(esa13);
+        ProductSequencingAuthorization psa13 = new ProductSequencingAuthorization(
+                                                                                  core);
+        psa13.setParent(sequenceClusters);
+        psa13.setStatusCode(success);
+        psa13.setNextSibling(dataAnalysis);
+        psa13.setNextSiblingStatus(active);
+        em.persist(psa13);
 
-        ServiceSequencingAuthorization esa14 = new ServiceSequencingAuthorization(
-                                                                              core);
-        esa14.setParent(sequenceClusters);
-        esa14.setStatusCode(failure);
-        esa14.setNextSibling(figureOutWhyCLusterSeqFailed);
-        esa14.setNextSiblingStatus(active);
-        em.persist(esa14);
+        ProductSequencingAuthorization psa14 = new ProductSequencingAuthorization(
+                                                                                  core);
+        psa14.setParent(sequenceClusters);
+        psa14.setStatusCode(failure);
+        psa14.setNextSibling(figureOutWhyCLusterSeqFailed);
+        psa14.setNextSiblingStatus(active);
+        em.persist(psa14);
 
         Protocol p1 = new Protocol(core);
         p1.setRequester(kernel.getAnyResource());

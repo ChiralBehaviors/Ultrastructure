@@ -16,9 +16,9 @@
  */
 package com.hellblazer.CoRE.event;
 
-import static com.hellblazer.CoRE.event.ServiceSequencingAuthorization.GET_CHILD_ACTIONS;
-import static com.hellblazer.CoRE.event.ServiceSequencingAuthorization.GET_PARENT_ACTIONS;
-import static com.hellblazer.CoRE.event.ServiceSequencingAuthorization.GET_SIBLING_ACTIONS;
+import static com.hellblazer.CoRE.event.ProductSequencingAuthorization.GET_CHILD_ACTIONS;
+import static com.hellblazer.CoRE.event.ProductSequencingAuthorization.GET_PARENT_ACTIONS;
+import static com.hellblazer.CoRE.event.ProductSequencingAuthorization.GET_SIBLING_ACTIONS;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -36,24 +36,24 @@ import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the service_sequencing_authorization database table.
+ * The persistent class for the product_sequencing_authorization database table.
  * 
  */
 @NamedQueries({
-               @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ServiceSequencingAuthorization AS seq "
-                                                               + "WHERE seq.parent = :service"
+               @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSequencingAuthorization AS seq "
+                                                               + "WHERE seq.parent = :product"
                                                                + " AND seq.statusCode = :status "
                                                                + "  AND seq.nextSibling IS NOT NULL "
                                                                + "  AND seq.nextSiblingStatus IS NOT NULL "
                                                                + "ORDER BY seq.sequenceNumber"),
-               @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ServiceSequencingAuthorization AS seq "
-                                                             + "WHERE seq.parent = :service"
+               @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductSequencingAuthorization AS seq "
+                                                             + "WHERE seq.parent = :product"
                                                              + "  AND seq.statusCode = :status "
                                                              + "  AND seq.nextChild IS NOT NULL"
                                                              + "  AND seq.nextChildStatus IS NOT NULL "
                                                              + "ORDER BY seq.sequenceNumber"),
-               @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ServiceSequencingAuthorization AS seq "
-                                                              + " WHERE seq.parent = :service"
+               @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductSequencingAuthorization AS seq "
+                                                              + " WHERE seq.parent = :product"
                                                               + "   AND seq.statusCode = :status "
                                                               + "   AND ("
                                                               + "         (seq.parentStatusToSet NOT NULL) OR "
@@ -62,16 +62,16 @@ import com.hellblazer.CoRE.resource.Resource;
                                                               + "    ) "
                                                               + "ORDER BY seq.myParent") })
 @javax.persistence.Entity
-@Table(name = "service_sequencing_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "service_sequencing_authorization_id_seq", sequenceName = "service_sequencing_authorization_id_seq")
-public class ServiceSequencingAuthorization extends Ruleform {
-    public static final String GET_CHILD_ACTIONS   = "serviceSequencingAuthorization.getChildActions";
-    public static final String GET_PARENT_ACTIONS  = "serviceSequencingAuthorization.getParentActions";
-    public static final String GET_SIBLING_ACTIONS = "serviceSequencingAuthorization.getSiblingActions";
+@Table(name = "product_sequencing_authorization", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "product_sequencing_authorization_id_seq", sequenceName = "product_sequencing_authorization_id_seq")
+public class ProductSequencingAuthorization extends Ruleform {
+    public static final String GET_CHILD_ACTIONS   = "productSequencingAuthorization.getChildActions";
+    public static final String GET_PARENT_ACTIONS  = "productSequencingAuthorization.getParentActions";
+    public static final String GET_SIBLING_ACTIONS = "productSequencingAuthorization.getSiblingActions";
     private static final long  serialVersionUID    = 1L;
 
     @Id
-    @GeneratedValue(generator = "service_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "product_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
     //bi-directional many-to-one association to Event
@@ -120,20 +120,20 @@ public class ServiceSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
-    public ServiceSequencingAuthorization() {
+    public ProductSequencingAuthorization() {
     }
 
     /**
      * @param id
      */
-    public ServiceSequencingAuthorization(Long id) {
+    public ProductSequencingAuthorization(Long id) {
         super(id);
     }
 
     /**
      * @param updatedBy
      */
-    public ServiceSequencingAuthorization(Resource updatedBy) {
+    public ProductSequencingAuthorization(Resource updatedBy) {
         super(updatedBy);
     }
 

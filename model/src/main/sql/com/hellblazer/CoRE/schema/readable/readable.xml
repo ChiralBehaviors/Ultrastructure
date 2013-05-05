@@ -32,7 +32,7 @@
 		file="/views/product_location_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/product_network.xml" />
 	<include relativeToChangelogFile="true"
-		file="/views/service_sequencing_authorization.xml" />
+		file="/views/product_sequencing_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/job.xml" />
 	<include relativeToChangelogFile="true" file="/views/job_attribute.xml" />
 	<include relativeToChangelogFile="true" file="/views/job_chronology.xml" />

@@ -54,7 +54,7 @@
     <include relativeToChangelogFile="true" file="tables/resource_network/trigger-resource_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_restrict_pinnned.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/service_sequencing_authorization/trigger-service_sequencing_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/product_sequencing_authorization/trigger-product_sequencing_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-status_code_sequencing_updated_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_restrict_pinned_.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_updated_date.xml"/>

@@ -7,10 +7,10 @@
 
     <changeSet id="1"
         author="hhildebrand">
-        <sql> CREATE INDEX service_sequencing_authorization_research_fkey_idx ON ruleform.service_sequencing_authorization USING btree
+        <sql> CREATE INDEX product_sequencing_authorization_research_fkey_idx ON ruleform.product_sequencing_authorization USING btree
             (research ); </sql>
         <rollback>
-            <dropIndex tableName="ruleform.service_sequencing_authorization" indexName="service_sequencing_authorization_research_fkey_idx"
+            <dropIndex tableName="ruleform.product_sequencing_authorization" indexName="product_sequencing_authorization_research_fkey_idx"
             />
         </rollback>
     </changeSet>

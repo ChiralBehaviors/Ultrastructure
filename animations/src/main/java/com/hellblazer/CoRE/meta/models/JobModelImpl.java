@@ -46,7 +46,7 @@ import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.ServiceSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
@@ -173,7 +173,7 @@ public class JobModelImpl implements JobModel {
         return InDatabase.get().isTerminalState(service, statusCode);
     }
 
-    public static void log_modified_service_status_code_sequencing(TriggerData triggerData)
+    public static void log_modified_product_status_code_sequencing(TriggerData triggerData)
                                                                                            throws SQLException {
         InDatabase.get().logModifiedService(triggerData.getNew().getLong("service"));
     }
@@ -368,12 +368,12 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ServiceSequencingAuthorization> getChildActions(Job job) {
-        TypedQuery<ServiceSequencingAuthorization> query = em.createNamedQuery(ServiceSequencingAuthorization.GET_CHILD_ACTIONS,
-                                                                               ServiceSequencingAuthorization.class);
+    public List<ProductSequencingAuthorization> getChildActions(Job job) {
+        TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_CHILD_ACTIONS,
+                                                                               ProductSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
-        List<ServiceSequencingAuthorization> childActions = query.getResultList();
+        List<ProductSequencingAuthorization> childActions = query.getResultList();
         return childActions;
     }
 
@@ -468,9 +468,9 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ServiceSequencingAuthorization> getParentActions(Job job) {
-        TypedQuery<ServiceSequencingAuthorization> query = em.createNamedQuery(ServiceSequencingAuthorization.GET_PARENT_ACTIONS,
-                                                                               ServiceSequencingAuthorization.class);
+    public List<ProductSequencingAuthorization> getParentActions(Job job) {
+        TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_PARENT_ACTIONS,
+                                                                               ProductSequencingAuthorization.class);
         query.setParameter("event", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
@@ -512,9 +512,9 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ServiceSequencingAuthorization> getSiblingActions(Job job) {
-        TypedQuery<ServiceSequencingAuthorization> query = em.createNamedQuery(ServiceSequencingAuthorization.GET_SIBLING_ACTIONS,
-                                                                               ServiceSequencingAuthorization.class);
+    public List<ProductSequencingAuthorization> getSiblingActions(Job job) {
+        TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_SIBLING_ACTIONS,
+                                                                               ProductSequencingAuthorization.class);
         query.setParameter("event", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
@@ -677,8 +677,8 @@ public class JobModelImpl implements JobModel {
         if (log.isInfoEnabled()) {
             log.info(String.format("Processing children of Job %s", job));
         }
-        List<ServiceSequencingAuthorization> childActions = getChildActions(job);
-        for (ServiceSequencingAuthorization seq : childActions) {
+        List<ProductSequencingAuthorization> childActions = getChildActions(job);
+        for (ProductSequencingAuthorization seq : childActions) {
             // This can be merged into the same outer query... just doing quick and dirty now
 
             // for each child job that is active (not UNSET or terminal) update their status to this one
@@ -700,7 +700,7 @@ public class JobModelImpl implements JobModel {
             log.info(String.format("Processing parent of Job %s", job));
         }
 
-        for (ServiceSequencingAuthorization seq : getParentActions(job)) {
+        for (ProductSequencingAuthorization seq : getParentActions(job)) {
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
                 // If the parent job has the specified event then, make the change
                 // if the specified event is NULL then set it
@@ -722,7 +722,7 @@ public class JobModelImpl implements JobModel {
             log.info(String.format("Processing siblings of Job %s", job));
         }
 
-        for (ServiceSequencingAuthorization seq : getSiblingActions(job)) {
+        for (ProductSequencingAuthorization seq : getSiblingActions(job)) {
             for (Job sibling : getUnsetSiblings(job.getParent(),
                                                 seq.getNextSibling())) {
                 changeStatus(sibling,

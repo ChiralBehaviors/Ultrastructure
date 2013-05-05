@@ -26,7 +26,7 @@ import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.ServiceSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
@@ -147,7 +147,7 @@ public interface JobModel {
      * @return the list of sequencing authorizations that have the job's service
      *         as parent
      */
-    List<ServiceSequencingAuthorization> getChildActions(Job job);
+    List<ProductSequencingAuthorization> getChildActions(Job job);
 
     /**
      * Returns an ordered list of all JobChronology rules for the given job.
@@ -223,7 +223,7 @@ public interface JobModel {
      * @param job
      * @return the list of parent actions of the job
      */
-    List<ServiceSequencingAuthorization> getParentActions(Job job);
+    List<ProductSequencingAuthorization> getParentActions(Job job);
 
     /**
      * Answer the matched list of protocols for a job, given the meta protocol
@@ -242,7 +242,7 @@ public interface JobModel {
      * @param job
      * @return the list of sibling actions for the job
      */
-    List<ServiceSequencingAuthorization> getSiblingActions(Job job);
+    List<ProductSequencingAuthorization> getSiblingActions(Job job);
 
     /**
      * Answer the collection of status codes for a service

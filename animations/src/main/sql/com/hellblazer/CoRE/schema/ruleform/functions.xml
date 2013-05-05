@@ -54,7 +54,7 @@
 	<include relativeToChangelogFile="true"
 		file="functions/ensure_valid_initial_state.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/log_modified_service_status_code_sequencing.xml" />
+		file="functions/log_modified_product_status_code_sequencing.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/process_child_changes.xml" />
 	<include relativeToChangelogFile="true"

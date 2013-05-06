@@ -43,7 +43,7 @@ import com.hellblazer.CoRE.product.Product;
 public class JobModelTest extends AbstractModelTest {
 
     @Test
-    public void testGenerateImplicitJobs() throws Exception {
+    public void testJobScenario() throws Exception {
 
         JobModel jobModel = model.getJobModel();
         @SuppressWarnings("unused")
@@ -55,7 +55,7 @@ public class JobModelTest extends AbstractModelTest {
         List<Job> topLevelJobs = jobModel.getTopLevelJobs();
         assertEquals(1, topLevelJobs.size());
         Job topLevelJob = topLevelJobs.get(0);
-        
+
         assertNull(topLevelJob.getParent());
         assertTrue(jobModel.isActive(topLevelJob));
         assertFalse(topLevelJob.getStatus().equals(model.getKernel().getUnset()));
@@ -65,7 +65,8 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(1, activeExplicit.size());
         assertEquals(0, jobModel.getChildActions(topLevelJob).size());
         assertEquals(0, jobModel.getSiblingActions(topLevelJob).size());
-        assertEquals(0, jobModel.getActiveSubJobsOf(topLevelJob).size());
+        assertEquals(1, jobModel.getActiveSubJobsOf(topLevelJob).size());
+        assertEquals(0, jobModel.getActiveJobsFor(scenario.htsfTech).size());
     }
 
     private List<Job> findAllJobs() {

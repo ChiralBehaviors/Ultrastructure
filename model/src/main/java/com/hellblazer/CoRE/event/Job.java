@@ -22,7 +22,7 @@ import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_EXPLICIT_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_RESOURCE;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
-import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_EVENT;
+import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
 import static com.hellblazer.CoRE.event.Job.GET_ATTRIBUTE_VALUE;
 import static com.hellblazer.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_NEXT_STATUS_CODES;
@@ -104,11 +104,11 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                           + "  AND j.parentJob = :parent"),
                      @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS, query = "SELECT job.* FROM ruleform.job as job "
                                                                            + "WHERE parent = ? "
-                                                                           + "  AND ruleform.is_job_active( id )"),
-                     @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS_FOR_EVENT, query = "SELECT j.* FROM ruleform.job AS j "
-                                                                                     + "WHERE j.event = ? "
-                                                                                     + "  AND ruleform.is_job_active( j.id ) "
-                                                                                     + "  AND j.parent = ?"),
+                                                                           + "  AND ruleform.is_job_active( job.id )"),
+                     @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS_FOR_SERVICE, query = "SELECT j.* FROM ruleform.job AS j "
+                                                                                       + "WHERE j.service = ? "
+                                                                                       + "  AND ruleform.is_job_active( j.id ) "
+                                                                                       + "  AND j.parent = ?"),
                      @NamedNativeQuery(name = ACTIVE_JOBS, query = "SELECT j.* "
                                                                    + "FROM ruleform.job_chronology AS jc "
                                                                    + "JOIN ruleform.job AS j ON jc.job = j.id "
@@ -170,13 +170,13 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String GET_ACTIVE_EXPLICIT_JOBS          = "job.getActiveExplicitJobs";
     public static final String GET_ACTIVE_JOBS_FOR_RESOURCE      = "job.getActiveJobsForResource";
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS = "job.getActiveOrTerminatedSubJobs";
-    public static final String GET_ACTIVE_SUB_JOBS               = "job.getActiveChildJobs";
-    public static final String GET_ACTIVE_SUB_JOBS_FOR_EVENT     = "job.getActiveSubJobsForEvent";
+    public static final String GET_ACTIVE_SUB_JOBS               = "job.getActiveSubJobs";
+    public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE   = "job.getActiveSubJobsForService";
     public static final String GET_ATTRIBUTE_VALUE               = "job.getAttributeValue";
     public static final String GET_INITIAL_SUB_JOBS              = "job.getInitialSubJobs";
     public static final String GET_NEXT_STATUS_CODES             = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS               = "job.getStatusCodeIds";
-    public static final String GET_SUB_JOBS_ASSIGNED_TO          = "job.getChildJobsAssignedTo";
+    public static final String GET_SUB_JOBS_ASSIGNED_TO          = "job.getSubJobsAssignedTo";
     public static final String GET_TERMINAL_STATES               = "job.getTerminalStates";
     public static final String GET_UNSET_SIBLINGS                = "job.getUnsetSiblings";
     public static final String HAS_SCS                           = "job.hasScs";

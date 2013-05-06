@@ -322,7 +322,16 @@ public class JobModelImpl implements JobModel {
     public List<Job> getActiveSubJobsOf(Job job) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS,
                                                     Job.class);
+        query.setParameter(1, job.getId());
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Job> getActiveSubJobsForService(Job job, Product service) {
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE,
+                                                    Job.class);
         query.setParameter(1, job.getService().getId());
+        query.setParameter(2, job.getId());
         return query.getResultList();
     }
 

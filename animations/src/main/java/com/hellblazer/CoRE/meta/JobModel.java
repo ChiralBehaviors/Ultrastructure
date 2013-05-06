@@ -362,4 +362,6 @@ public interface JobModel {
      */
     List<Job> getTopLevelJobs();
 
+    List<Job> getActiveSubJobsForService(Job job, Product service);
+
 }

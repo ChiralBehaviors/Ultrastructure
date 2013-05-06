@@ -243,7 +243,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne
     @JoinColumn(name = "material")
-    private Product             material;
+    private Product            material;
 
     /**
      * The parent of this job
@@ -257,7 +257,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product             product;
+    private Product            product;
 
     /**
      * The consumer of this job's product
@@ -274,7 +274,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Product             service;
+    private Product            service;
 
     /**
      * This job's status
@@ -471,5 +471,15 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
 
     public void setStatus(StatusCode statusCode) {
         status = statusCode;
+    }
+
+    @Override
+    public String toString() {
+        return "Job [id=" + id + ", sequenceNumber=" + sequenceNumber
+               + ", status=" + status + ", parent="
+               + (parent == null ? null : parent.getId()) + ", assignTo="
+               + assignTo + ", service=" + service + ", product=" + product
+               + ", deliverFrom=" + deliverFrom + ", deliverTo=" + deliverTo
+               + "]";
     }
 }

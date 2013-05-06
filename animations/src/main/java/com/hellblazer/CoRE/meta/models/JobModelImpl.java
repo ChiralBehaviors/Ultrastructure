@@ -100,10 +100,11 @@ public class JobModelImpl implements JobModel {
     public static void ensure_valid_initial_state(TriggerData triggerData)
                                                                           throws SQLException {
         InDatabaseEntityManager.establishContext();
-        if (!WellKnownStatusCode.UNSET.id().equals(triggerData.getNew().getLong("status"))) {
+        long statusId = triggerData.getNew().getLong("status");
+        if (statusId == 0) {
             if (log.isInfoEnabled()) {
                 log.info(String.format("Setting status of job to unset (%s)",
-                                       triggerData.getNew().getLong("status")));
+                                       statusId));
             }
             triggerData.getNew().updateLong("status",
                                             WellKnownStatusCode.UNSET.id());
@@ -511,7 +512,7 @@ public class JobModelImpl implements JobModel {
     public List<ProductSequencingAuthorization> getSiblingActions(Job job) {
         TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_SIBLING_ACTIONS,
                                                                                ProductSequencingAuthorization.class);
-        query.setParameter("event", job.getService());
+        query.setParameter("product", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
     }

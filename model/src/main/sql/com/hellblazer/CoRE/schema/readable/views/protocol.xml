@@ -9,13 +9,12 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.protocol AS 
 			 SELECT base_table.id,
-			   r.name AS requester, m.name AS material, rs.name AS requested_service, 
+			   r.name AS requester, rs.name AS requested_service, 
                po.name AS product_ordered, s.name AS service, p.name AS product, 
 			   dt.name AS deliver_to, df.name AS deliver_from, sub.name AS sub_service, 
 			   base_table.sequence_number, assign.name AS assign_to, base_table.notes, 
 			   res.name AS research, up.name AS updated_by, base_table.update_date
 			   FROM ruleform.protocol base_table
-			   JOIN ruleform.product m ON base_table.material = m.id
                JOIN ruleform.product rs ON base_table.requested_service = rs.id
 			   JOIN ruleform.product po ON base_table.product_ordered = po.id
                JOIN ruleform.product s ON base_table.service = s.id

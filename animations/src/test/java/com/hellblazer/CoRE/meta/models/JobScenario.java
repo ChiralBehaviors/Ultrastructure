@@ -161,7 +161,6 @@ public class JobScenario {
         j1.setProduct(kernel.getAnyProduct());
         j1.setDeliverFrom(kernel.getAnyLocation());
         j1.setDeliverTo(kernel.getAnyLocation());
-        j1.setMaterial(sampleX);
         j1.setAssignTo(htsfTech);
         j1.setStatus(active);
         em.persist(j1);
@@ -173,7 +172,6 @@ public class JobScenario {
         j2.setParent(j1);
         j2.setDeliverFrom(kernel.getAnyLocation());
         j2.setDeliverTo(kernel.getAnyLocation());
-        j2.setMaterial(sampleX);
         j2.setAssignTo(htsfTech);
         j2.setStatus(active);
         em.persist(j2);
@@ -185,7 +183,6 @@ public class JobScenario {
         j3.setDeliverFrom(kernel.getAnyLocation());
         j3.setDeliverTo(kernel.getAnyLocation());
         j3.setParent(j1);
-        j3.setMaterial(sampleX);
         j3.setAssignTo(htsfTech);
         j3.setStatus(kernel.getUnset());
         em.persist(j3);
@@ -197,7 +194,6 @@ public class JobScenario {
         j4.setDeliverFrom(kernel.getAnyLocation());
         j4.setDeliverTo(kernel.getAnyLocation());
         j4.setParent(j1);
-        j4.setMaterial(sampleX);
         j4.setAssignTo(htsfTech);
         j4.setStatus(kernel.getUnset());
         em.persist(j4);
@@ -209,7 +205,6 @@ public class JobScenario {
         j5.setDeliverFrom(kernel.getAnyLocation());
         j5.setDeliverTo(kernel.getAnyLocation());
         j5.setParent(j1);
-        j5.setMaterial(sampleX);
         j5.setAssignTo(htsfTech);
         j5.setStatus(kernel.getUnset());
         em.persist(j5);
@@ -221,7 +216,6 @@ public class JobScenario {
         j6.setDeliverFrom(kernel.getAnyLocation());
         j6.setDeliverTo(kernel.getAnyLocation());
         j6.setParent(j1);
-        j6.setMaterial(sampleX);
         j6.setAssignTo(htsfTech);
         j6.setStatus(kernel.getUnset());
         em.persist(j6);
@@ -233,10 +227,13 @@ public class JobScenario {
         j7.setDeliverFrom(kernel.getAnyLocation());
         j7.setDeliverTo(kernel.getAnyLocation());
         j7.setParent(j1);
-        j7.setMaterial(sampleX);
         j7.setAssignTo(htsfTech);
         j7.setStatus(kernel.getUnset());
         em.persist(j7);
+    }
+
+    private void constructJobChronology() {
+
     }
 
     private void constructMetaProtocols() {
@@ -305,7 +302,6 @@ public class JobScenario {
         p01 = new Protocol(core);
         p01.setRequester(kernel.getAnyResource());
         p01.setService(resuspend);
-        p01.setMaterial(htsfSample);
         p01.setRequestedService(htsfIlluminaSequencing);
         p01.setProductOrdered(teBuffer);
         p01.setSubService(kernel.getAnyProduct());
@@ -318,7 +314,6 @@ public class JobScenario {
         p02 = new Protocol(core);
         p02.setRequester(kernel.getAnyResource());
         p02.setService(libraryPrep);
-        p02.setMaterial(htsfSample);
         p02.setRequestedService(htsfIlluminaSequencing);
         p02.setProductOrdered(unpreparedSample);
         p02.setSubService(kernel.getAnyProduct());
@@ -331,7 +326,6 @@ public class JobScenario {
         p03 = new Protocol(core);
         p03.setRequester(kernel.getAnyResource());
         p03.setService(doChipSeqPrep);
-        p03.setMaterial(htsfSample);
         p03.setRequestedService(htsfIlluminaSequencing);
         p03.setProductOrdered(kernel.getAnyProduct());
         p03.setProduct(kernel.getAnyProduct());
@@ -344,7 +338,6 @@ public class JobScenario {
         p04 = new Protocol(core);
         p04.setRequester(kernel.getAnyResource());
         p04.setService(customPrimerAnalysis);
-        p04.setMaterial(htsfSample);
         p04.setRequestedService(htsfIlluminaSequencing);
         p04.setProductOrdered(kernel.getAnyProduct());
         p04.setProduct(kernel.getAnyProduct());
@@ -357,7 +350,6 @@ public class JobScenario {
         p05 = new Protocol(core);
         p05.setRequester(kernel.getAnyResource());
         p05.setService(doDgePrep);
-        p05.setMaterial(htsfSample);
         p05.setRequestedService(htsfIlluminaSequencing);
         p05.setProductOrdered(kernel.getAnyProduct());
         p05.setProduct(kernel.getAnyProduct());
@@ -370,7 +362,6 @@ public class JobScenario {
         p06 = new Protocol(core);
         p06.setRequester(kernel.getAnyResource());
         p06.setService(doMiRnaPrep);
-        p06.setMaterial(htsfSample);
         p06.setRequestedService(htsfIlluminaSequencing);
         p06.setProductOrdered(kernel.getAnyProduct());
         p06.setProduct(kernel.getAnyProduct());
@@ -383,7 +374,6 @@ public class JobScenario {
         p07 = new Protocol(core);
         p07.setRequester(kernel.getAnyResource());
         p07.setService(doPairedEndAnalysisPrep);
-        p07.setMaterial(htsfSample);
         p07.setRequestedService(htsfIlluminaSequencing);
         p07.setProductOrdered(kernel.getAnyProduct());
         p07.setProduct(kernel.getAnyProduct());
@@ -396,7 +386,6 @@ public class JobScenario {
         p08 = new Protocol(core);
         p08.setRequester(kernel.getAnyResource());
         p08.setService(clusterGen);
-        p08.setMaterial(htsfSample);
         p08.setRequestedService(htsfIlluminaSequencing);
         p08.setProductOrdered(kernel.getAnyProduct());
         p08.setProduct(kernel.getAnyProduct());
@@ -410,7 +399,6 @@ public class JobScenario {
         p9.setRequester(kernel.getAnyResource());
         p9.setSequenceNumber(2);
         p9.setService(sequenceClusters);
-        p9.setMaterial(htsfSample);
         p9.setRequestedService(htsfIlluminaSequencing);
         p9.setProductOrdered(kernel.getAnyProduct());
         p9.setProduct(kernel.getAnyProduct());
@@ -424,7 +412,6 @@ public class JobScenario {
         p10.setRequester(kernel.getAnyResource());
         p10.setSequenceNumber(3);
         p10.setService(dataAnalysis);
-        p10.setMaterial(htsfSample);
         p10.setRequestedService(htsfIlluminaSequencing);
         p10.setProductOrdered(kernel.getAnyProduct());
         p10.setProduct(kernel.getAnyProduct());
@@ -812,6 +799,7 @@ public class JobScenario {
         constructProtocols();
         constructMetaProtocols();
         constructJobs();
+        constructJobChronology();
 
         em.getTransaction().commit();
 

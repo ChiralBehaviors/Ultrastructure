@@ -42,7 +42,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @Table(name = "meta_protocol", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "meta_protocol_id_seq", sequenceName = "meta_protocol_id_seq")
 @NamedQueries({ @NamedQuery(name = FOR_JOB, query = "SELECT mp from MetaProtocol mp "
-                                                    + "WHERE mp.serviceType = :serviceType "
+                                                    + "WHERE mp.service = :service "
                                                     + "ORDER BY mp.sequenceNumber") })
 public class MetaProtocol extends Ruleform {
 

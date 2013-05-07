@@ -12,7 +12,6 @@
               id bigserial NOT NULL, -- Unique identifier
               requested_service bigint NOT NULL,
               product_ordered bigint NOT NULL,
-              material bigint NOT NULL,
               service bigint NOT NULL,
               product bigint NOT NULL,
               deliver_to bigint NOT NULL,
@@ -31,9 +30,6 @@
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_requester_fkey FOREIGN KEY (requester)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_material_fkey FOREIGN KEY (material)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_requested_service_fkey FOREIGN KEY (requested_service)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
@@ -72,8 +68,8 @@
             COMMENT ON TABLE ruleform.protocol
               IS 'Defines protocol rules for carrying out tasks';
             COMMENT ON COLUMN ruleform.protocol.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.protocol.service IS 'The Event whose steps are being specified';
-            COMMENT ON COLUMN ruleform.protocol.sequence_number IS 'Ordering and uniqueness, for when an Event / key combination can have multiple protocol rules';
+            COMMENT ON COLUMN ruleform.protocol.service IS 'The service whose steps are being specified';
+            COMMENT ON COLUMN ruleform.protocol.sequence_number IS 'Ordering and uniqueness, for when an service / key combination can have multiple protocol rules';
             COMMENT ON COLUMN ruleform.protocol.assign_to IS 'The Resource that should perform the task';
             COMMENT ON COLUMN ruleform.protocol.notes IS 'Additional notes regarding usage of the attribute';
             COMMENT ON COLUMN ruleform.protocol.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';

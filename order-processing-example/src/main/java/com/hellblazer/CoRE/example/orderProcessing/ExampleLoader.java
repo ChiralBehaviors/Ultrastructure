@@ -215,7 +215,6 @@ public class ExampleLoader {
     public void createProtocols() {
         Protocol p1 = new Protocol(core);
         p1.setService(checkCredit);
-        p1.setMaterial(kernel.getAnyProduct());
         p1.setRequester(externalCust);
         p1.setRequestedService(deliver);
         p1.setDeliverTo(us);

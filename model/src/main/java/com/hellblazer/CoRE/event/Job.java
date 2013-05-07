@@ -239,13 +239,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     private Long               id;
 
     /**
-     * The materials operated on by this job
-     */
-    @ManyToOne
-    @JoinColumn(name = "material")
-    private Product            material;
-
-    /**
      * The parent of this job
      */
     @ManyToOne
@@ -344,13 +337,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         return id;
     }
 
-    /**
-     * @return the material
-     */
-    public Product getMaterial() {
-        return material;
-    }
-
     public Job getParent() {
         return parent;
     }
@@ -423,14 +409,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @param material
-     *            the material to set
-     */
-    public void setMaterial(Product material) {
-        this.material = material;
     }
 
     public void setParent(Job job) {

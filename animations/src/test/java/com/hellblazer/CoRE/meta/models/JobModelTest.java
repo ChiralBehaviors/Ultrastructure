@@ -46,7 +46,6 @@ public class JobModelTest extends AbstractModelTest {
     public void testJobScenario() throws Exception {
 
         JobModel jobModel = model.getJobModel();
-        @SuppressWarnings("unused")
         JobScenario scenario = new JobScenario(model);
         model.getEntityManager().clear();
         List<Job> jobs = findAllJobs();
@@ -57,12 +56,11 @@ public class JobModelTest extends AbstractModelTest {
         Job topLevelJob = topLevelJobs.get(0);
 
         assertNull(topLevelJob.getParent());
-        assertTrue(jobModel.isActive(topLevelJob));
-        assertFalse(topLevelJob.getStatus().equals(model.getKernel().getUnset()));
-        assertFalse(jobModel.isTerminalState(topLevelJob.getStatus(),
-                                             topLevelJob.getService()));
+        assertTrue(jobModel.isActive(topLevelJob)); 
         List<Job> activeExplicit = jobModel.getActiveExplicitJobs();
         assertEquals(1, activeExplicit.size());
+        assertEquals(topLevelJob, activeExplicit.get(0));
+        assertEquals(6, topLevelJob.getChildJobs().size());
         assertEquals(0, jobModel.getChildActions(topLevelJob).size());
         assertEquals(0, jobModel.getSiblingActions(topLevelJob).size());
         assertEquals(1, jobModel.getActiveSubJobsOf(topLevelJob).size());

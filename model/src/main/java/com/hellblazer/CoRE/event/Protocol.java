@@ -78,32 +78,25 @@ public class Protocol extends Ruleform {
     private Long               id;
 
     /**
-     * The material for this job
-     */
-    @ManyToOne
-    @JoinColumn(name = "material")
-    private Product             material;
-
-    /**
      * The product of the service
      */
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product             product;
+    private Product            product;
 
     /**
      * The ordered product
      */
     @ManyToOne
     @JoinColumn(name = "product_ordered")
-    private Product             productOrdered;
+    private Product            productOrdered;
 
     /**
      * The requested service to be performed
      */
     @ManyToOne
     @JoinColumn(name = "requested_service")
-    private Product             requestedService;
+    private Product            requestedService;
 
     /**
      * The resource that requested the product of this service
@@ -120,14 +113,14 @@ public class Protocol extends Ruleform {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Product             service;
+    private Product            service;
 
     /**
      * The sub service
      */
     @ManyToOne
     @JoinColumn(name = "sub_service")
-    private Product             subService;
+    private Product            subService;
 
     public Protocol() {
     }
@@ -167,13 +160,6 @@ public class Protocol extends Ruleform {
     @Override
     public Long getId() {
         return id;
-    }
-
-    /**
-     * @return the material
-     */
-    public Product getMaterial() {
-        return material;
     }
 
     /**
@@ -245,14 +231,6 @@ public class Protocol extends Ruleform {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @param material
-     *            the material to set
-     */
-    public void setMaterial(Product material) {
-        this.material = material;
     }
 
     /**

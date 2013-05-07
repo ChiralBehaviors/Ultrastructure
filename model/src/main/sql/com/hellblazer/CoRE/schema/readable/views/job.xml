@@ -9,7 +9,7 @@
 		<sql><![CDATA[
             CREATE OR REPLACE VIEW readable.job AS 
 			 SELECT base_table.id, s.name AS service, 
-			        m.name AS material, p.name AS product, 
+			        p.name AS product, 
 			        at.name AS assign_to, r.name AS requester, 
 			        dt.name AS deliver_to, df.name AS deliver_from, 
 			        sc.name AS status, base_table.parent, base_table.sequence_number,
@@ -17,7 +17,6 @@
 			        up.name AS updated_by, base_table.update_date
 			   FROM ruleform.job base_table
 			   JOIN ruleform.product s ON base_table.service = s.id
-               JOIN ruleform.product m ON base_table.material = m.id
                JOIN ruleform.product p ON base_table.product = p.id
 			   JOIN ruleform.resource at ON base_table.assign_to = at.id
                JOIN ruleform.resource r ON base_table.requester = r.id

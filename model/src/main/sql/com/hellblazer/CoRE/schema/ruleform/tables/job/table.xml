@@ -12,7 +12,6 @@
               id bigserial NOT NULL, -- Unique identifier
               service bigint NOT NULL, -- the service this job is performing
               product bigint NOT NULL, -- the product of this service
-              material bigint NOT NULL, -- the material this job operates on
               assign_to bigint NOT NULL, -- The Resource doing this Job
               requester bigint NOT NULL, -- The Resource requesting the service of this job
               deliver_to bigint NOT NULL, -- The location to deliver the product of this job
@@ -41,9 +40,6 @@
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_product_fkey FOREIGN KEY (product)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_materials_fkey FOREIGN KEY (material)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_parent_fkey FOREIGN KEY (parent)

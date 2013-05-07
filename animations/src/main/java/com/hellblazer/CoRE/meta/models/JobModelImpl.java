@@ -111,10 +111,6 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    public static void generate_implicit_jobs(Long service) {
-        InDatabase.get().generateImplicitJobs(service);
-    }
-
     public static Long get_initial_state(Long service) {
         return InDatabase.get().getInitialState(service);
     }
@@ -238,10 +234,6 @@ public class JobModelImpl implements JobModel {
                 log.debug(String.format("Generating implicit jobs for %", job));
             }
             generateImplicitJobs(job);
-            for (Job subJob : getInitialSubJobs(job)) {
-                changeStatus(subJob, getInitialState(subJob.getService()),
-                             "Initially available job (automatically set)");
-            }
         }
     }
 
@@ -438,10 +430,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<MetaProtocol> getMetaprotocols(Job job) {
-        TypedQuery<MetaProtocol> query = em.createNamedQuery(MetaProtocol.FOR_JOB,
-                                                             MetaProtocol.class);
-        query.setParameter("serviceType", job.getService());
-        return query.getResultList();
+        return em.createNamedQuery(MetaProtocol.FOR_JOB, MetaProtocol.class).setParameter("service",
+                                                                                          job.getService()).getResultList();
     }
 
     /* (non-Javadoc)
@@ -462,11 +452,9 @@ public class JobModelImpl implements JobModel {
         if (parent.equals(kernel.getUnset())) {
             return Arrays.asList(getInitialState(service));
         }
-        TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_NEXT_STATUS_CODES,
-                                                           StatusCode.class);
-        query.setParameter("service", service);
-        query.setParameter("parent", parent);
-        return query.getResultList();
+        return em.createNamedQuery(Job.GET_NEXT_STATUS_CODES, StatusCode.class).setParameter("service",
+                                                                                             service).setParameter("parent",
+                                                                                                                   parent).getResultList();
     }
 
     /**
@@ -475,11 +463,10 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<ProductSequencingAuthorization> getParentActions(Job job) {
-        TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_PARENT_ACTIONS,
-                                                                               ProductSequencingAuthorization.class);
-        query.setParameter("event", job.getService());
-        query.setParameter("status", job.getStatus());
-        return query.getResultList();
+        return em.createNamedQuery(ProductSequencingAuthorization.GET_PARENT_ACTIONS,
+                                   ProductSequencingAuthorization.class).setParameter("event",
+                                                                                      job.getService()).setParameter("status",
+                                                                                                                     job.getStatus()).getResultList();
     }
 
     /**
@@ -636,12 +623,13 @@ public class JobModelImpl implements JobModel {
         Product service = resolve(job.getService(), protocol.getService());
         job.setService(service);
         job.setProduct(resolve(job.getProduct(), protocol.getProduct()));
-        job.setMaterial(resolve(job.getMaterial(), protocol.getMaterial()));
         job.setDeliverFrom(resolve(job.getDeliverFrom(),
                                    protocol.getDeliverFrom()));
         job.setDeliverTo(resolve(job.getDeliverTo(), protocol.getDeliverTo()));
-        job.setStatus(getInitialState(service));
+        job.setStatus(kernel.getUnset());
         em.persist(job);
+        changeStatus(job, getInitialState(service),
+                     "Initially available job (automatically set)");
     }
 
     @Override
@@ -786,13 +774,6 @@ public class JobModelImpl implements JobModel {
                                em.find(Product.class, service),
                                em.find(StatusCode.class, currentStatus),
                                em.find(StatusCode.class, nextStatus));
-    }
-
-    /**
-     * @param service
-     */
-    private void generateImplicitJobs(Long service) {
-        generateImplicitJobs((Job) null);
     }
 
     /**

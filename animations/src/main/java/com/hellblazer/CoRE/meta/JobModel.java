@@ -25,9 +25,10 @@ import java.util.List;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
+import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
@@ -363,5 +364,9 @@ public interface JobModel {
     List<Job> getTopLevelJobs();
 
     List<Job> getActiveSubJobsForService(Job job, Product service);
+
+    List<Protocol> getProtocols(Product service, Resource requester,
+                                Product product, Location deliverTo,
+                                Location deliverFrom);
 
 }

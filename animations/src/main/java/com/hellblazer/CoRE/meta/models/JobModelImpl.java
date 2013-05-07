@@ -33,8 +33,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
@@ -47,6 +51,7 @@ import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
+import com.hellblazer.CoRE.event.Protocol_;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
@@ -234,6 +239,10 @@ public class JobModelImpl implements JobModel {
                 log.debug(String.format("Generating implicit jobs for %", job));
             }
             generateImplicitJobs(job);
+            for (Job subJob : getInitialSubJobs(job)) {
+                changeStatus(subJob, getInitialState(subJob.getService()),
+                             "Initially available job (automatically set)");
+            }
         }
     }
 
@@ -475,29 +484,163 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<Protocol> getProtocols(Job job, MetaProtocol metaProtocol) {
-        TypedQuery<Protocol> protocols = em.createNamedQuery(Protocol.GET,
-                                                             Protocol.class);
-        protocols.setParameter("service",
-                               transform(job.getService(),
-                                         metaProtocol.getServiceType(),
-                                         "service", job));
-        protocols.setParameter("requester",
-                               transform(job.getRequester(),
-                                         metaProtocol.getRequestingResource(),
-                                         "requester", job));
-        protocols.setParameter("product",
-                               transform(job.getProduct(),
-                                         metaProtocol.getProductOrdered(),
-                                         "product", job));
-        protocols.setParameter("deliverTo",
-                               transform(job.getDeliverTo(),
-                                         metaProtocol.getDeliverTo(),
-                                         "deliver to", job));
-        protocols.setParameter("deliverFrom",
-                               transform(job.getDeliverFrom(),
-                                         metaProtocol.getDeliverFrom(),
-                                         "deliver from", job));
-        return protocols.getResultList();
+        // First we try for protocols which match the current job
+        List<Protocol> exactMatches = getProtocols(job.getService(),
+                                                   job.getRequester(),
+                                                   job.getProduct(),
+                                                   job.getDeliverTo(),
+                                                   job.getDeliverFrom());
+        if (!exactMatches.isEmpty()) {
+            return exactMatches;
+        }
+
+        // Now we try to find protocols which match transformations specified by the meta protocol
+
+        // Gather the transformations
+        Product transformedService = transform(job.getService(),
+                                               metaProtocol.getServiceType(),
+                                               "service", job);
+        Resource transformedRequester = transform(job.getRequester(),
+                                                  metaProtocol.getRequestingResource(),
+                                                  "requester", job);
+        Product transformedProduct = transform(job.getProduct(),
+                                               metaProtocol.getProductOrdered(),
+                                               "product", job);
+        Location transformedDeliverTo = transform(job.getDeliverTo(),
+                                                  metaProtocol.getDeliverTo(),
+                                                  "deliver to", job);
+        Location transformedDeliverFrom = transform(job.getDeliverFrom(),
+                                                    metaProtocol.getDeliverFrom(),
+                                                    "deliver from", job);
+
+        // Construct the query based on the transformations
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Protocol> cQuery = cb.createQuery(Protocol.class);
+        Root<Protocol> root = cQuery.from(Protocol.class);
+        cQuery.select(root);
+
+        Parameter<Product> serviceParameter = cb.parameter(Product.class);
+        Parameter<Product> productParameter = cb.parameter(Product.class);
+        Parameter<Resource> requesterParameter = cb.parameter(Resource.class);
+        Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
+        Parameter<Location> deliverToParameter = cb.parameter(Location.class);
+
+        Product service = transformService(job, transformedService);
+        Product product = tranformProduct(job, transformedProduct);
+        Location deliverFrom = transformDeliverFrom(job, transformedDeliverFrom);
+        Location deliverTo = transformDeliverTo(job, transformedDeliverTo);
+        Resource requester = transformRequester(job, transformedRequester);
+
+        if (service != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.service), serviceParameter));
+        }
+        if (product != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.product), productParameter));
+        }
+        if (requester != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.requester),
+                                  requesterParameter));
+        }
+        if (deliverFrom != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.deliverFrom),
+                                  deliverFromParameter));
+        }
+        if (deliverTo != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.deliverTo),
+                                  deliverToParameter));
+        }
+        
+        cQuery.select(root);
+
+        TypedQuery<Protocol> query = em.createQuery(cQuery);
+        if (service != null) {
+            query.setParameter(serviceParameter, service);
+        }
+        if (product != null) {
+            query.setParameter(productParameter, product);
+        }
+        if (deliverFrom != null) {
+            query.setParameter(deliverFromParameter, deliverFrom);
+        }
+        if (deliverTo != null) {
+            query.setParameter(deliverToParameter, deliverTo);
+        }
+        if (requester != null) {
+            query.setParameter(requesterParameter, requester);
+        }
+
+        return query.getResultList();
+    }
+
+    private Product transformService(Job job, Product transformedService) {
+        if (!transformedService.equals(kernel.getAnyProduct())) {
+            if (transformedService.equals(kernel.getSameProduct())) {
+                return job.getService();
+            } else {
+                return transformedService;
+            }
+        }
+        return null;
+    }
+
+    private Product tranformProduct(Job job, Product transformedProduct) {
+        if (!transformedProduct.equals(kernel.getAnyProduct())) {
+            if (transformedProduct.equals(kernel.getSameProduct())) {
+                return job.getProduct();
+            } else {
+                return transformedProduct;
+            }
+        }
+        return null;
+    }
+
+    private Location transformDeliverFrom(Job job,
+                                          Location transformedDeliverFrom) {
+        if (!transformedDeliverFrom.equals(kernel.getAnyLocation())) {
+            if (transformedDeliverFrom.equals(kernel.getSameLocation())) {
+                return job.getDeliverFrom();
+            } else {
+                return transformedDeliverFrom;
+            }
+        }
+        return null;
+    }
+
+    private Location transformDeliverTo(Job job, Location transformedDeliverTo) {
+        if (!transformedDeliverTo.equals(kernel.getAnyLocation())) {
+            if (transformedDeliverTo.equals(kernel.getSameLocation())) {
+                return job.getDeliverTo();
+            } else {
+                return transformedDeliverTo;
+            }
+        }
+        return null;
+    }
+
+    private Resource transformRequester(Job job, Resource transformedRequester) {
+        if (!transformedRequester.equals(kernel.getAnyResource())) {
+            if (transformedRequester.equals(kernel.getSameResource())) {
+                return job.getRequester();
+            } else {
+                return transformedRequester;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Protocol> getProtocols(Product service, Resource requester,
+                                       Product product, Location deliverTo,
+                                       Location deliverFrom) {
+        TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET,
+                                                         Protocol.class);
+        query.setParameter("service", service);
+        query.setParameter("requester", requester);
+        query.setParameter("product", product);
+        query.setParameter("deliverTo", deliverTo);
+        query.setParameter("deliverFrom", deliverFrom);
+        return query.getResultList();
     }
 
     /**
@@ -628,8 +771,6 @@ public class JobModelImpl implements JobModel {
         job.setDeliverTo(resolve(job.getDeliverTo(), protocol.getDeliverTo()));
         job.setStatus(kernel.getUnset());
         em.persist(job);
-        changeStatus(job, getInitialState(service),
-                     "Initially available job (automatically set)");
     }
 
     @Override

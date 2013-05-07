@@ -50,6 +50,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @SequenceGenerator(schema = "ruleform", name = "protocol_id_seq", sequenceName = "protocol_id_seq")
 public class Protocol extends Ruleform {
     public static final String GET              = "protocol.get";
+
     private static final long  serialVersionUID = 1L;
 
     /**

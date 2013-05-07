@@ -206,11 +206,11 @@ public class JobModelImpl implements JobModel {
         InDatabase.get().validateStateGraph();
     }
 
-    private final List<Product> modifiedEvents = new ArrayList<Product>();
     private final EntityManager em;
     private final Kernel        kernel;
-    private final ProductModel  productModel;
     private final LocationModel locationModel;
+    private final List<Product> modifiedEvents = new ArrayList<Product>();
+    private final ProductModel  productModel;
     private final ResourceModel resourceModel;
 
     public JobModelImpl(Model model) {
@@ -298,13 +298,6 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Job> getTopLevelJobs() {
-        TypedQuery<Job> query = em.createNamedQuery(Job.TOP_LEVEL_JOBS,
-                                                    Job.class);
-        return query.getResultList();
-    }
-
-    @Override
     public List<Job> getActiveExplicitJobs() {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_EXPLICIT_JOBS,
                                                     Job.class);
@@ -320,19 +313,19 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Job> getActiveSubJobsOf(Job job) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS,
-                                                    Job.class);
-        query.setParameter(1, job.getId());
-        return query.getResultList();
-    }
-
-    @Override
     public List<Job> getActiveSubJobsForService(Job job, Product service) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE,
                                                     Job.class);
         query.setParameter(1, job.getService().getId());
         query.setParameter(2, job.getId());
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Job> getActiveSubJobsOf(Job job) {
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS,
+                                                    Job.class);
+        query.setParameter(1, job.getId());
         return query.getResultList();
     }
 
@@ -353,6 +346,16 @@ public class JobModelImpl implements JobModel {
         return getAllActiveSubJobsOf(job, new HashSet<Job>());
     }
 
+    public Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally) {
+        List<Job> myJobs = getActiveSubJobsOf(job);
+        if (tally.addAll(myJobs)) {
+            for (Job j : myJobs) {
+                getAllActiveSubJobsOf(j, tally);
+            }
+        }
+        return tally;
+    }
+
     public List<Job> getAllActiveSubJobsOfJobAssignedToResource(Job parent,
                                                                 Resource resource) {
         List<Job> jobs = new ArrayList<Job>();
@@ -368,6 +371,22 @@ public class JobModelImpl implements JobModel {
             }
         }
         return jobs;
+    }
+
+    public void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
+                                                           Resource resource,
+                                                           List<Job> jobs) {
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
+                                                    Job.class);
+        query.setParameter("parent", parent);
+        query.setParameter("resource", resource);
+        for (Job subJob : query.getResultList()) {
+            if (isActive(subJob)) {
+                jobs.add(subJob);
+                getAllActiveSubJobsOfJobAssignedToResource(parent, resource,
+                                                           jobs);
+            }
+        }
     }
 
     /**
@@ -494,139 +513,14 @@ public class JobModelImpl implements JobModel {
             return exactMatches;
         }
 
-        // Now we try to find protocols which match transformations specified by the meta protocol
-
-        // Gather the transformations
-        Product transformedService = transform(job.getService(),
-                                               metaProtocol.getServiceType(),
-                                               "service", job);
-        Resource transformedRequester = transform(job.getRequester(),
-                                                  metaProtocol.getRequestingResource(),
-                                                  "requester", job);
-        Product transformedProduct = transform(job.getProduct(),
-                                               metaProtocol.getProductOrdered(),
-                                               "product", job);
-        Location transformedDeliverTo = transform(job.getDeliverTo(),
-                                                  metaProtocol.getDeliverTo(),
-                                                  "deliver to", job);
-        Location transformedDeliverFrom = transform(job.getDeliverFrom(),
-                                                    metaProtocol.getDeliverFrom(),
-                                                    "deliver from", job);
-
-        // Construct the query based on the transformations
+        // Find protocols which match transformations specified by the meta protocol
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Protocol> cQuery = cb.createQuery(Protocol.class);
         Root<Protocol> root = cQuery.from(Protocol.class);
         cQuery.select(root);
 
-        Parameter<Product> serviceParameter = cb.parameter(Product.class);
-        Parameter<Product> productParameter = cb.parameter(Product.class);
-        Parameter<Resource> requesterParameter = cb.parameter(Resource.class);
-        Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
-        Parameter<Location> deliverToParameter = cb.parameter(Location.class);
-
-        Product service = transformService(job, transformedService);
-        Product product = tranformProduct(job, transformedProduct);
-        Location deliverFrom = transformDeliverFrom(job, transformedDeliverFrom);
-        Location deliverTo = transformDeliverTo(job, transformedDeliverTo);
-        Resource requester = transformRequester(job, transformedRequester);
-
-        if (service != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.service), serviceParameter));
-        }
-        if (product != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.product), productParameter));
-        }
-        if (requester != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.requester),
-                                  requesterParameter));
-        }
-        if (deliverFrom != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.deliverFrom),
-                                  deliverFromParameter));
-        }
-        if (deliverTo != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.deliverTo),
-                                  deliverToParameter));
-        }
-        
-        cQuery.select(root);
-
-        TypedQuery<Protocol> query = em.createQuery(cQuery);
-        if (service != null) {
-            query.setParameter(serviceParameter, service);
-        }
-        if (product != null) {
-            query.setParameter(productParameter, product);
-        }
-        if (deliverFrom != null) {
-            query.setParameter(deliverFromParameter, deliverFrom);
-        }
-        if (deliverTo != null) {
-            query.setParameter(deliverToParameter, deliverTo);
-        }
-        if (requester != null) {
-            query.setParameter(requesterParameter, requester);
-        }
-
-        return query.getResultList();
-    }
-
-    private Product transformService(Job job, Product transformedService) {
-        if (!transformedService.equals(kernel.getAnyProduct())) {
-            if (transformedService.equals(kernel.getSameProduct())) {
-                return job.getService();
-            } else {
-                return transformedService;
-            }
-        }
-        return null;
-    }
-
-    private Product tranformProduct(Job job, Product transformedProduct) {
-        if (!transformedProduct.equals(kernel.getAnyProduct())) {
-            if (transformedProduct.equals(kernel.getSameProduct())) {
-                return job.getProduct();
-            } else {
-                return transformedProduct;
-            }
-        }
-        return null;
-    }
-
-    private Location transformDeliverFrom(Job job,
-                                          Location transformedDeliverFrom) {
-        if (!transformedDeliverFrom.equals(kernel.getAnyLocation())) {
-            if (transformedDeliverFrom.equals(kernel.getSameLocation())) {
-                return job.getDeliverFrom();
-            } else {
-                return transformedDeliverFrom;
-            }
-        }
-        return null;
-    }
-
-    private Location transformDeliverTo(Job job, Location transformedDeliverTo) {
-        if (!transformedDeliverTo.equals(kernel.getAnyLocation())) {
-            if (transformedDeliverTo.equals(kernel.getSameLocation())) {
-                return job.getDeliverTo();
-            } else {
-                return transformedDeliverTo;
-            }
-        }
-        return null;
-    }
-
-    private Resource transformRequester(Job job, Resource transformedRequester) {
-        if (!transformedRequester.equals(kernel.getAnyResource())) {
-            if (transformedRequester.equals(kernel.getSameResource())) {
-                return job.getRequester();
-            } else {
-                return transformedRequester;
-            }
-        }
-        return null;
+        return createQuery(cb, cQuery, root, metaProtocol, job).getResultList();
     }
 
     @Override
@@ -673,6 +567,13 @@ public class JobModelImpl implements JobModel {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES,
                                                            StatusCode.class);
 
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Job> getTopLevelJobs() {
+        TypedQuery<Job> query = em.createNamedQuery(Job.TOP_LEVEL_JOBS,
+                                                    Job.class);
         return query.getResultList();
     }
 
@@ -761,10 +662,9 @@ public class JobModelImpl implements JobModel {
     public void insertJob(Job parent, Protocol protocol) {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
+        job.setService(protocol.getRequestedService());
         job.setAssignTo(resolve(job.getAssignTo(), protocol.getAssignTo()));
         job.setRequester(resolve(job.getRequester(), protocol.getRequester()));
-        Product service = resolve(job.getService(), protocol.getService());
-        job.setService(service);
         job.setProduct(resolve(job.getProduct(), protocol.getProduct()));
         job.setDeliverFrom(resolve(job.getDeliverFrom(),
                                    protocol.getDeliverFrom()));
@@ -898,6 +798,74 @@ public class JobModelImpl implements JobModel {
         automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
     }
 
+    private TypedQuery<Protocol> createQuery(CriteriaBuilder cb,
+                                             CriteriaQuery<Protocol> cQuery,
+                                             Root<Protocol> root,
+                                             MetaProtocol metaProtocol, Job job) {
+
+        Product service = transform(job.getService(),
+                                    transform(job.getService(),
+                                              metaProtocol.getServiceType(),
+                                              "service", job));
+        Product product = transform(job.getProduct(),
+                                    transform(job.getProduct(),
+                                              metaProtocol.getProductOrdered(),
+                                              "product", job));
+        Location deliverFrom = transform(job.getDeliverFrom(),
+                                         transform(job.getDeliverFrom(),
+                                                   metaProtocol.getDeliverFrom(),
+                                                   "deliver from", job));
+        Location deliverTo = transform(job.getDeliverTo(),
+                                       transform(job.getDeliverTo(),
+                                                 metaProtocol.getDeliverTo(),
+                                                 "deliver to", job));
+        Resource requester = transform(job.getRequester(),
+                                       transform(job.getRequester(),
+                                                 metaProtocol.getRequestingResource(),
+                                                 "requester", job));
+        Parameter<Product> serviceParameter = cb.parameter(Product.class);
+        Parameter<Product> productParameter = cb.parameter(Product.class);
+        Parameter<Resource> requesterParameter = cb.parameter(Resource.class);
+        Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
+        Parameter<Location> deliverToParameter = cb.parameter(Location.class);
+        if (service != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.service), serviceParameter));
+        }
+        if (product != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.product), productParameter));
+        }
+        if (requester != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.requester),
+                                  requesterParameter));
+        }
+        if (deliverFrom != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.deliverFrom),
+                                  deliverFromParameter));
+        }
+        if (deliverTo != null) {
+            cQuery.where(cb.equal(root.get(Protocol_.deliverTo),
+                                  deliverToParameter));
+        }
+
+        TypedQuery<Protocol> query = em.createQuery(cQuery);
+        if (service != null) {
+            query.setParameter(serviceParameter, service);
+        }
+        if (product != null) {
+            query.setParameter(productParameter, product);
+        }
+        if (deliverFrom != null) {
+            query.setParameter(deliverFromParameter, deliverFrom);
+        }
+        if (deliverTo != null) {
+            query.setParameter(deliverToParameter, deliverTo);
+        }
+        if (requester != null) {
+            query.setParameter(requesterParameter, requester);
+        }
+        return query;
+    }
+
     /**
      * @param job
      * @param service
@@ -970,41 +938,6 @@ public class JobModelImpl implements JobModel {
         processSiblingChanges(em.find(Job.class, jobId));
     }
 
-    private void validateStateGraph() throws SQLException {
-        try {
-            validateStateGraph(modifiedEvents);
-        } finally {
-            modifiedEvents.clear();
-        }
-    }
-
-    protected Collection<Job> getAllActiveSubJobsOf(Job job,
-                                                    Collection<Job> tally) {
-        List<Job> myJobs = getActiveSubJobsOf(job);
-        if (tally.addAll(myJobs)) {
-            for (Job j : myJobs) {
-                getAllActiveSubJobsOf(j, tally);
-            }
-        }
-        return tally;
-    }
-
-    protected void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
-                                                              Resource resource,
-                                                              List<Job> jobs) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
-                                                    Job.class);
-        query.setParameter("parent", parent);
-        query.setParameter("resource", resource);
-        for (Job subJob : query.getResultList()) {
-            if (isActive(subJob)) {
-                jobs.add(subJob);
-                getAllActiveSubJobsOfJobAssignedToResource(parent, resource,
-                                                           jobs);
-            }
-        }
-    }
-
     /**
      * Answer the list of the active or terminated sub jobs of a given job,
      * recursively
@@ -1012,8 +945,8 @@ public class JobModelImpl implements JobModel {
      * @param job
      * @return
      */
-    protected Collection<Job> recursivelyGetActiveOrTerminalSubJobsOf(Job job,
-                                                                      Collection<Job> tally) {
+    private Collection<Job> recursivelyGetActiveOrTerminalSubJobsOf(Job job,
+                                                                    Collection<Job> tally) {
         List<Job> myJobs = getDirectActiveOrTerminalSubJobsOf(job);
         if (tally.addAll(myJobs)) {
             for (Job sub : myJobs) {
@@ -1024,23 +957,9 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * Resolve the value of an product, using the original and supplied values
-     */
-    protected Product resolve(Product original, Product supplied) {
-        if (kernel.getSameProduct().equals(supplied)) {
-            return original;
-        } else if (kernel.getAnyProduct().equals(supplied)) {
-            return original;
-        } else if (kernel.getOriginalProduct().equals(supplied)) {
-            return original;
-        }
-        return supplied;
-    }
-
-    /**
      * Resolve the value of a location, using the original and supplied values
      */
-    protected Location resolve(Location original, Location supplied) {
+    private Location resolve(Location original, Location supplied) {
         if (kernel.getSameLocation().equals(supplied)) {
             return original;
         } else if (kernel.getAnyLocation().equals(supplied)) {
@@ -1052,9 +971,23 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
+     * Resolve the value of an product, using the original and supplied values
+     */
+    private Product resolve(Product original, Product supplied) {
+        if (kernel.getSameProduct().equals(supplied)) {
+            return original;
+        } else if (kernel.getAnyProduct().equals(supplied)) {
+            return original;
+        } else if (kernel.getOriginalProduct().equals(supplied)) {
+            return original;
+        }
+        return supplied;
+    }
+
+    /**
      * Resolve the value of a resource, using the original and supplied values
      */
-    protected Resource resolve(Resource original, Resource supplied) {
+    private Resource resolve(Resource original, Resource supplied) {
         if (kernel.getSameResource().equals(supplied)) {
             return original;
         } else if (kernel.getAnyResource().equals(supplied)) {
@@ -1065,40 +998,19 @@ public class JobModelImpl implements JobModel {
         return supplied;
     }
 
-    /**
-     * Transform the product according to the relationship
-     * 
-     * @param product
-     *            - the product to transform
-     * @param relationship
-     *            - the relationship to use for transformation
-     * @param type
-     *            - the type of product in the job, used for logging
-     * @param job
-     *            - the Job, used for logging
-     * @return the transformed product, or null
-     */
-    protected Product transform(Product product, Relationship relationship,
-                                String type, Job job) {
-        if (kernel.getAnyRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (ANY) for %s for job %s", type,
-                                        job));
+    private Location transform(Location original, Location transformed) {
+        if (!original.equals(kernel.getAnyLocation())) {
+            if (original.equals(kernel.getSameLocation())) {
+                return original;
+            } else {
+                return transformed;
             }
-            return kernel.getAnyProduct();
-        } else if (kernel.getSameRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (SAME) for %s for job %s", type,
-                                        job));
-            }
-            return kernel.getSameProduct();
-        } else {
-            return productModel.getChild(product, relationship);
         }
+        return null;
     }
 
-    protected Location transform(Location location, Relationship relationship,
-                                 String type, Job job) {
+    private Location transform(Location location, Relationship relationship,
+                               String type, Job job) {
         if (kernel.getAnyRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (ANY) for %s for job %s", type,
@@ -1116,8 +1028,51 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    protected Resource transform(Resource resource, Relationship relationship,
-                                 String type, Job job) {
+    private Product transform(Product original, Product transformed) {
+        if (!original.equals(kernel.getAnyProduct())) {
+            if (original.equals(kernel.getSameProduct())) {
+                return original;
+            } else {
+                return transformed;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Transform the product according to the relationship
+     * 
+     * @param product
+     *            - the product to transform
+     * @param relationship
+     *            - the relationship to use for transformation
+     * @param type
+     *            - the type of product in the job, used for logging
+     * @param job
+     *            - the Job, used for logging
+     * @return the transformed product, or null
+     */
+    private Product transform(Product product, Relationship relationship,
+                              String type, Job job) {
+        if (kernel.getAnyRelationship().equals(relationship)) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Using (ANY) for %s for job %s", type,
+                                        job));
+            }
+            return kernel.getAnyProduct();
+        } else if (kernel.getSameRelationship().equals(relationship)) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Using (SAME) for %s for job %s", type,
+                                        job));
+            }
+            return kernel.getSameProduct();
+        } else {
+            return productModel.getChild(product, relationship);
+        }
+    }
+
+    private Resource transform(Resource resource, Relationship relationship,
+                               String type, Job job) {
         if (kernel.getAnyRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (ANY) for %s for job %s", type,
@@ -1132,6 +1087,25 @@ public class JobModelImpl implements JobModel {
             return kernel.getSameResource();
         } else {
             return resourceModel.getChild(resource, relationship);
+        }
+    }
+
+    private Resource transform(Resource original, Resource transformed) {
+        if (!transformed.equals(kernel.getAnyResource())) {
+            if (transformed.equals(kernel.getSameResource())) {
+                return original;
+            } else {
+                return transformed;
+            }
+        }
+        return null;
+    }
+
+    private void validateStateGraph() throws SQLException {
+        try {
+            validateStateGraph(modifiedEvents);
+        } finally {
+            modifiedEvents.clear();
         }
     }
 }

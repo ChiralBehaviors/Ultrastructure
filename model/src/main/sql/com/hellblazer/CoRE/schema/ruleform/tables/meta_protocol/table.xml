@@ -59,8 +59,8 @@
             COMMENT ON TABLE ruleform.meta_protocol
               IS 'Rules for generating masks for the protocol ruleform';
             COMMENT ON COLUMN ruleform.meta_protocol.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.meta_protocol.service IS 'The Event we are creating a mask for';
-            COMMENT ON COLUMN ruleform.meta_protocol.sequence_number IS 'Ordering and uniqueness, for when an Event can have multiple meta-protocol rules';
+            COMMENT ON COLUMN ruleform.meta_protocol.service IS 'The service we are creating a mask for';
+            COMMENT ON COLUMN ruleform.meta_protocol.sequence_number IS 'Ordering and uniqueness, for when a service can have multiple meta-protocol rules';
             COMMENT ON COLUMN ruleform.meta_protocol.service_type IS 'Used to select a mapped value from a Product';
             COMMENT ON COLUMN ruleform.meta_protocol.product_ordered IS 'Used to select a mapped value from a Product';
             COMMENT ON COLUMN ruleform.meta_protocol.job_mapping IS 'Used to select a mapped value from a Job';

@@ -24,8 +24,7 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_kind_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT coordinate_kind_name_key UNIQUE (name )
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
             )
             WITH (
               OIDS=FALSE

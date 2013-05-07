@@ -25,8 +25,7 @@
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT status_code_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT status_code_name_key UNIQUE (name )
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
             )
             WITH (
               OIDS=FALSE

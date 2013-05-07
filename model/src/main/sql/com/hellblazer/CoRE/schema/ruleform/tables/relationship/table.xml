@@ -30,8 +30,7 @@
               CONSTRAINT relationship_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT relationship_name_key UNIQUE (name ),
-              CONSTRAINT unique_inverses UNIQUE (inverse )
+              CONSTRAINT relationship_name_key UNIQUE (name )
             )
             WITH (
               OIDS=FALSE

@@ -47,10 +47,12 @@ import org.slf4j.LoggerFactory;
 import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.animation.RuleformIdIterator;
 import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
+import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.Protocol_;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
@@ -662,14 +664,20 @@ public class JobModelImpl implements JobModel {
     public void insertJob(Job parent, Protocol protocol) {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
-        job.setService(protocol.getRequestedService());
         job.setAssignTo(resolve(job.getAssignTo(), protocol.getAssignTo()));
         job.setRequester(resolve(job.getRequester(), protocol.getRequester()));
         job.setProduct(resolve(job.getProduct(), protocol.getProduct()));
         job.setDeliverFrom(resolve(job.getDeliverFrom(),
                                    protocol.getDeliverFrom()));
         job.setDeliverTo(resolve(job.getDeliverTo(), protocol.getDeliverTo()));
+        job.setService(protocol.getRequestedService());
         job.setStatus(kernel.getUnset());
+        for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
+            JobAttribute attribute = pAttribute.createJobAttribute();
+            attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
+            attribute.setJob(job);
+            em.persist(attribute);
+        }
         em.persist(job);
     }
 
@@ -963,7 +971,9 @@ public class JobModelImpl implements JobModel {
         if (kernel.getSameLocation().equals(supplied)) {
             return original;
         } else if (kernel.getAnyLocation().equals(supplied)) {
-            return original;
+            return null;
+        } else if (kernel.getNotApplicableLocation().equals(supplied)) {
+            return null;
         } else if (kernel.getOriginalLocation().equals(supplied)) {
             return original;
         }
@@ -976,8 +986,10 @@ public class JobModelImpl implements JobModel {
     private Product resolve(Product original, Product supplied) {
         if (kernel.getSameProduct().equals(supplied)) {
             return original;
+        } else if (kernel.getNotApplicableProduct().equals(supplied)) {
+            return null;
         } else if (kernel.getAnyProduct().equals(supplied)) {
-            return original;
+            return null;
         } else if (kernel.getOriginalProduct().equals(supplied)) {
             return original;
         }
@@ -990,8 +1002,10 @@ public class JobModelImpl implements JobModel {
     private Resource resolve(Resource original, Resource supplied) {
         if (kernel.getSameResource().equals(supplied)) {
             return original;
+        } else if (kernel.getNotApplicableResource().equals(supplied)) {
+            return null;
         } else if (kernel.getAnyResource().equals(supplied)) {
-            return original;
+            return null;
         } else if (kernel.getOriginalResource().equals(supplied)) {
             return original;
         }
@@ -999,8 +1013,11 @@ public class JobModelImpl implements JobModel {
     }
 
     private Location transform(Location original, Location transformed) {
-        if (!original.equals(kernel.getAnyLocation())) {
-            if (original.equals(kernel.getSameLocation())) {
+        if (transformed == null) {
+            return original;
+        }
+        if (!transformed.equals(kernel.getAnyLocation())) {
+            if (transformed.equals(kernel.getSameLocation())) {
                 return original;
             } else {
                 return transformed;
@@ -1011,12 +1028,18 @@ public class JobModelImpl implements JobModel {
 
     private Location transform(Location location, Relationship relationship,
                                String type, Job job) {
-        if (kernel.getAnyRelationship().equals(relationship)) {
+        if (kernel.getNotApplicableRelationship().equals(relationship)) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Using (Not Applicable) for %s for job %s",
+                                        type, job));
+            }
+            return kernel.getNotApplicableLocation();
+        } else if (kernel.getAnyRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (ANY) for %s for job %s", type,
                                         job));
             }
-            return kernel.getAnyLocation();
+            return kernel.getNotApplicableLocation();
         } else if (kernel.getSameRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (SAME) for %s for job %s", type,
@@ -1029,8 +1052,11 @@ public class JobModelImpl implements JobModel {
     }
 
     private Product transform(Product original, Product transformed) {
-        if (!original.equals(kernel.getAnyProduct())) {
-            if (original.equals(kernel.getSameProduct())) {
+        if (transformed == null) {
+            return original;
+        }
+        if (!transformed.equals(kernel.getAnyProduct())) {
+            if (transformed.equals(kernel.getSameProduct())) {
                 return original;
             } else {
                 return transformed;
@@ -1054,7 +1080,13 @@ public class JobModelImpl implements JobModel {
      */
     private Product transform(Product product, Relationship relationship,
                               String type, Job job) {
-        if (kernel.getAnyRelationship().equals(relationship)) {
+        if (kernel.getNotApplicableRelationship().equals(relationship)) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Using (Not Applicable) for %s for job %s",
+                                        type, job));
+            }
+            return kernel.getNotApplicableProduct();
+        } else if (kernel.getAnyRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (ANY) for %s for job %s", type,
                                         job));
@@ -1073,7 +1105,13 @@ public class JobModelImpl implements JobModel {
 
     private Resource transform(Resource resource, Relationship relationship,
                                String type, Job job) {
-        if (kernel.getAnyRelationship().equals(relationship)) {
+        if (kernel.getNotApplicableRelationship().equals(relationship)) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Using (Not Appplicable) for %s for job %s",
+                                        type, job));
+            }
+            return kernel.getNotApplicableResource();
+        } else if (kernel.getAnyRelationship().equals(relationship)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Using (ANY) for %s for job %s", type,
                                         job));
@@ -1091,6 +1129,9 @@ public class JobModelImpl implements JobModel {
     }
 
     private Resource transform(Resource original, Resource transformed) {
+        if (transformed == null) {
+            return original;
+        }
         if (!transformed.equals(kernel.getAnyResource())) {
             if (transformed.equals(kernel.getSameResource())) {
                 return original;

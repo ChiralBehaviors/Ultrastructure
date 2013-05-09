@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Hal Hildebrand. All rights reserved.
+ * Copyright (C) 2013 Hal Hildebrand. All rights reserved.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -35,23 +35,23 @@ import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the job_attribute database table.
+ * The persistent class for the protocol_attribute database table.
  * 
  */
 @javax.persistence.Entity
-@Table(name = "job_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "job_attribute_id_seq", sequenceName = "job_attribute_id_seq")
-public class JobAttribute extends AttributeValue<Job> {
+@Table(name = "protocol_attribute", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "protocol_attribute_id_seq", sequenceName = "protocol_attribute_id_seq")
+public class ProtocolAttribute extends AttributeValue<Protocol> {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator = "job_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "protocol_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Job
+    //bi-directional many-to-one association to Protocol
     @ManyToOne
-    @JoinColumn(name = "job")
-    private Job               job;
+    @JoinColumn(name = "protocol")
+    private Protocol          protocol;
 
     //bi-directional many-to-one association to Location
     @ManyToOne
@@ -68,13 +68,37 @@ public class JobAttribute extends AttributeValue<Job> {
     @JoinColumn(name = "resource_value")
     private Product           resource_value;
 
-    public JobAttribute() {
+    public Location getLocationValue() {
+        return location_value;
+    }
+
+    public void setLocationValue(Location location_value) {
+        this.location_value = location_value;
+    }
+
+    public Product getProductValue() {
+        return product_value;
+    }
+
+    public void setProductValue(Product product_value) {
+        this.product_value = product_value;
+    }
+
+    public Product getResourceValue() {
+        return resource_value;
+    }
+
+    public void setResourceValue(Product resource_value) {
+        this.resource_value = resource_value;
+    }
+
+    public ProtocolAttribute() {
     }
 
     /**
      * @param attribute
      */
-    public JobAttribute(Attribute attribute) {
+    public ProtocolAttribute(Attribute attribute) {
         super(attribute);
     }
 
@@ -83,8 +107,8 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, BigDecimal value,
-                        Resource updatedBy) {
+    public ProtocolAttribute(Attribute attribute, BigDecimal value,
+                             Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -93,7 +117,8 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, boolean value, Resource updatedBy) {
+    public ProtocolAttribute(Attribute attribute, boolean value,
+                             Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -102,7 +127,7 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, int value, Resource updatedBy) {
+    public ProtocolAttribute(Attribute attribute, int value, Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -110,7 +135,7 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param attribute
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, Resource updatedBy) {
+    public ProtocolAttribute(Attribute attribute, Resource updatedBy) {
         super(attribute, updatedBy);
     }
 
@@ -119,7 +144,8 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, String value, Resource updatedBy) {
+    public ProtocolAttribute(Attribute attribute, String value,
+                             Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -127,21 +153,21 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param attribute
      * @param unit
      */
-    public JobAttribute(Attribute attribute, Unit unit) {
+    public ProtocolAttribute(Attribute attribute, Unit unit) {
         super(attribute, unit);
     }
 
     /**
      * @param id
      */
-    public JobAttribute(Long id) {
+    public ProtocolAttribute(Long id) {
         super(id);
     }
 
     /**
      * @param updatedBy
      */
-    public JobAttribute(Resource updatedBy) {
+    public ProtocolAttribute(Resource updatedBy) {
         super(updatedBy);
     }
 
@@ -150,36 +176,16 @@ public class JobAttribute extends AttributeValue<Job> {
         return id;
     }
 
-    public Job getJob() {
-        return job;
-    }
-
-    public Location getLocationValue() {
-        return location_value;
-    }
-
-    public Product getProductValue() {
-        return product_value;
-    }
-
-    public Product getResourceValue() {
-        return resource_value;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.attribute.AttributeValue#getRuleformAttribute()
-     */
-    @Override
-    public SingularAttribute<JobAttribute, Job> getRuleformAttribute() {
-        return JobAttribute_.job;
+    public Protocol getProtocol() {
+        return protocol;
     }
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
-    public Class<Job> getRuleformClass() {
-        return Job.class;
+    public Class<Protocol> getRuleformClass() {
+        return Protocol.class;
     }
 
     @Override
@@ -187,19 +193,33 @@ public class JobAttribute extends AttributeValue<Job> {
         this.id = id;
     }
 
-    public void setJob(Job job) {
-        this.job = job;
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
     }
 
-    public void setLocationValue(Location location_value) {
-        this.location_value = location_value;
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.attribute.AttributeValue#getRuleformAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends AttributeValue<Protocol>, Protocol> getRuleformAttribute() {
+        return ProtocolAttribute_.protocol;
     }
 
-    public void setProductValue(Product product_value) {
-        this.product_value = product_value;
+    /**
+     * @return a new job attribute cloned from the receiver
+     */
+    public JobAttribute createJobAttribute() {
+        JobAttribute clone = new JobAttribute();
+        clone.setAttribute(getAttribute());
+        copyInto(clone);
+        return clone;
     }
 
-    public void setResourceValue(Product resource_value) {
-        this.resource_value = resource_value;
+    @Override
+    public void copyInto(JobAttribute clone) {
+        super.copyInto(clone);
+        clone.setLocationValue(getLocationValue());
+        clone.setResourceValue(getResourceValue());
+        clone.setProductValue(getProductValue());
     }
 }

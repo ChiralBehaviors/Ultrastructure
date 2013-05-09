@@ -31,6 +31,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -275,6 +276,22 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
 
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    /**
+     * Copy the state of the receiver into the clone
+     * 
+     * @param clone
+     */
+    public void copyInto(JobAttribute clone) {
+        clone.setAttribute(getAttribute());
+        clone.setBinaryValue(getBinaryValue());
+        clone.setBooleanValue(getBooleanValue());
+        clone.setIntegerValue(getIntegerValue());
+        clone.setNumericValue(getNumericValue());
+        clone.setTextValue(getTextValue());
+        clone.setTimestampValue(getTimestampValue());
+        clone.setUnit(getUnit());
     }
 
 }

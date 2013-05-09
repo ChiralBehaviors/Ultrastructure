@@ -758,9 +758,11 @@ public class JobScenario {
 
     private void constructStatusCodes() {
         success = new StatusCode("Success", "Something went right", core);
+        success.setPropagateChildren(true);
         em.persist(success);
 
         failure = new StatusCode("Failure", "Something went wrong", core);
+        failure.setFailParent(true);
         em.persist(failure);
 
         active = new StatusCode("Active", "Working on it now", core);

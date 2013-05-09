@@ -44,6 +44,7 @@
 		<class>com.hellblazer.CoRE.event.JobChronology</class>
 		<class>com.hellblazer.CoRE.event.MetaProtocol</class>
 		<class>com.hellblazer.CoRE.event.Protocol</class>
+        <class>com.hellblazer.CoRE.event.ProtocolAttribute</class>
 		<class>com.hellblazer.CoRE.event.StatusCode</class>
 		<class>com.hellblazer.CoRE.event.StatusCodeSequencing</class>
 		<class>com.hellblazer.CoRE.location.Location</class>

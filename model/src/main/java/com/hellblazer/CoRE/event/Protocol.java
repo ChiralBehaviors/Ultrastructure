@@ -18,6 +18,8 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.Protocol.GET;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,9 +28,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.product.Product;
@@ -49,79 +53,94 @@ import com.hellblazer.CoRE.resource.Resource;
 @Table(name = "protocol", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_id_seq", sequenceName = "protocol_id_seq")
 public class Protocol extends Ruleform {
-    public static final String GET              = "protocol.get";
+    public static final String     GET              = "protocol.get";
 
-    private static final long  serialVersionUID = 1L;
+    private static final long      serialVersionUID = 1L;
 
     /**
      * The resource to assign to the job represented by this instance
      */
     @ManyToOne
     @JoinColumn(name = "assign_to")
-    private Resource           assignTo;
+    private Resource               assignTo;
+
+    /**
+     * The attributes of this protocol
+     */
+    @OneToMany(mappedBy = "protocol")
+    @JsonIgnore
+    private Set<ProtocolAttribute> attributes;
 
     /**
      * the location to deliver the product from
      */
     @ManyToOne
     @JoinColumn(name = "deliver_from")
-    private Location           deliverFrom;
+    private Location               deliverFrom;
 
     /**
      * The location to deliver the product to
      */
     @ManyToOne
     @JoinColumn(name = "deliver_to")
-    private Location           deliverTo;
+    private Location               deliverTo;
 
     @Id
     @GeneratedValue(generator = "protocol_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+    private Long                   id;
 
     /**
      * The product of the service
      */
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product            product;
+    private Product                product;
 
     /**
      * The ordered product
      */
     @ManyToOne
     @JoinColumn(name = "product_ordered")
-    private Product            productOrdered;
+    private Product                productOrdered;
 
     /**
      * The requested service to be performed
      */
     @ManyToOne
     @JoinColumn(name = "requested_service")
-    private Product            requestedService;
+    private Product                requestedService;
 
     /**
      * The resource that requested the product of this service
      */
     @ManyToOne
     @JoinColumn(name = "requester")
-    private Resource           requester;
+    private Resource               requester;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber   = 1;
+    private Integer                sequenceNumber   = 1;
 
     /**
      * The service to be performed
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Product            service;
+    private Product                service;
 
     /**
      * The sub service
      */
     @ManyToOne
     @JoinColumn(name = "sub_service")
-    private Product            subService;
+    private Product                subService;
+
+    public Set<ProtocolAttribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Set<ProtocolAttribute> protocolAttributes) {
+        attributes = protocolAttributes;
+    }
 
     public Protocol() {
     }

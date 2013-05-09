@@ -37,7 +37,6 @@ import static com.hellblazer.CoRE.event.Job.TOP_LEVEL_JOBS;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,7 +47,6 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -185,13 +183,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String TOP_LEVEL_JOBS                    = "job.topLevelJobs";
 
     private static final long  serialVersionUID                  = 1L;
-
-    public static boolean getActive(Job job, EntityManager em) {
-        Query query = em.createNativeQuery("SELECT * FROM ruleform.is_job_active(?) AS active");
-        query.setParameter(1, job.getId());
-        return (Boolean) query.getSingleResult();
-    }
-
+    
     /**
      * The resource assigned to this job
      */
@@ -260,7 +252,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     private Resource           requester;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber = 1;
+    private Integer            sequenceNumber                    = 1;
 
     /**
      * The service this job is performing

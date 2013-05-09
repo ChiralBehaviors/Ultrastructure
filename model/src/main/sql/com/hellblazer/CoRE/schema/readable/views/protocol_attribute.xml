@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.protocol_attribute AS 
+			 SELECT base_table.id, base_table.protocol, at.name AS attribute, 
+			        base_table.sequence_number,
+			        base_table.text_value, base_table.numeric_value, 
+			        base_table.integer_value, u.name AS unit, 
+			        base_table.notes, res.name AS research, 
+			        up.name AS updated_by, base_table.update_date
+			   FROM ruleform.protocol_attribute base_table
+			   JOIN ruleform.attribute at ON base_table.attribute = at.id
+			   LEFT JOIN ruleform.unit u ON base_table.unit = u.id
+			   LEFT JOIN ruleform.research res ON base_table.research = res.id
+			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			
+			ALTER TABLE readable.protocol_attribute
+			  OWNER TO core;
+			GRANT ALL ON TABLE readable.protocol_attribute TO core;
+			GRANT SELECT ON TABLE readable.protocol_attribute TO core_read_write;
+			GRANT SELECT ON TABLE readable.protocol_attribute TO core_read_only;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.protocol_attribute" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

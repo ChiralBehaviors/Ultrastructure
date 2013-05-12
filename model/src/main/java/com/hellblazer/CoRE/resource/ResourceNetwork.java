@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.resource;
 
-import static com.hellblazer.CoRE.resource.ResourceNetwork.GET_CHILD;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
@@ -49,14 +48,9 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                             + "and n.distance = 1 "
                                                                             + "and n.relationship.preferred = FALSE "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ResourceNetwork n"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM ResourceNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship") })
+               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ResourceNetwork n") })
 public class ResourceNetwork extends NetworkRuleform<Resource> {
     private static final long  serialVersionUID                 = 1L;
-    public static final String GET_CHILD                        = "resourceNetwork.getChild";
     public static final String GET_USED_RELATIONSHIPS           = "resourceNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "resource.immediateChildrenNetworkRules";
 

@@ -22,6 +22,7 @@ import static com.hellblazer.CoRE.location.Location.FIND_ATTRIBUTE_AUTHORIZATION
 import static com.hellblazer.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.hellblazer.CoRE.location.Location.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.location.Location.GET_CHILD;
 import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
 import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
 
@@ -84,23 +85,29 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                          + "WHERE la.classification = :classification "
                                                                          + "AND la.classifier = :classifier "
                                                                          + "AND la.groupingResource = :groupingResource"),
-               @NamedQuery(name = LOCATION_NAME, query = "SELECT la.name FROM Location la WHERE la.id = :id") })
+               @NamedQuery(name = LOCATION_NAME, query = "SELECT la.name FROM Location la WHERE la.id = :id"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                     + "FROM LocationNetwork rn "
+                                                     + "WHERE rn.parent = :parent "
+                                                     + "AND rn.relationship = :relationship") })
 @NamedNativeQueries({
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Location extends ExistentialRuleform implements
         Networked<Location, LocationNetwork>, Attributable<LocationAttribute> {
-    private static final long      serialVersionUID                         = 1L;
     public static final String     FIND_ATTRIBUTE_AUTHORIZATIONS            = "location.findAttributeAuthorizations";
+    public static final String     FIND_BY_ID                               = "location.findById";
+    public static final String     FIND_BY_NAME                             = "location.findByName";
     public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "location"
                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "location.findClassifiedAttributes";
     public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "location.findGroupedAttributeAuthorizations";
+    public static final String     GET_CHILD                                = "location"
+                                                                              + GET_CHILD_SUFFIX;
     public static final String     LOCATION_NAME                            = "location.getName";
     public static final String     NAME_SEARCH                              = "location"
                                                                               + NAME_SEARCH_SUFFIX;
-    public static final String     FIND_BY_ID                               = "location.findById";
-    public static final String     FIND_BY_NAME                             = "location.findByName";
+    private static final long      serialVersionUID                         = 1L;
 
     //bi-directional many-to-one association to LocationAttribute
     @OneToMany(mappedBy = "location")
@@ -114,7 +121,7 @@ public class Location extends ExistentialRuleform implements
     //bi-directional many-to-one association to ProductLocation
     @OneToMany(mappedBy = "location")
     @JsonIgnore
-    private Set<ProductLocation>    entities;
+    private Set<ProductLocation>   entities;
 
     @Id
     @GeneratedValue(generator = "location_id_seq", strategy = GenerationType.SEQUENCE)

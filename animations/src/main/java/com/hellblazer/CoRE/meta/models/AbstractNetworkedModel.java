@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -356,7 +357,11 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                                          product);
         query.setParameter("parent", parent);
         query.setParameter("relationship", r);
-        return query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     /* (non-Javadoc)

@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.resource.Resource.FIND_BY_NAME;
 import static com.hellblazer.CoRE.resource.Resource.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.resource.Resource.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.hellblazer.CoRE.resource.Resource.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.resource.Resource.GET_CHILD;
 import static com.hellblazer.CoRE.resource.Resource.UNLINKED;
 import static com.hellblazer.CoRE.resource.ResourceAttribute.GET_ATTRIBUTE;
 
@@ -83,7 +84,11 @@ import com.hellblazer.CoRE.product.ProductNetwork;
                                                                                     + "WHERE ra.classification = :classification "
                                                                                     + "AND ra.classifier = :classifier"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from ResourceAttributeAuthorization ra "
-                                                                                 + "WHERE ra.groupingResource = :groupingResource") })
+                                                                                 + "WHERE ra.groupingResource = :groupingResource"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                     + "FROM ResourceNetwork rn "
+                                                     + "WHERE rn.parent = :parent "
+                                                     + "AND rn.relationship = :relationship") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM resource AS unlinked "
@@ -105,9 +110,8 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 @SequenceGenerator(schema = "ruleform", name = "resource_id_seq", sequenceName = "resource_id_seq")
 public class Resource extends ExistentialRuleform implements
         Networked<Resource, ResourceNetwork>, Attributable<ResourceAttribute> {
-    private static final long      serialVersionUID                         = 1L;
-
     public static final String     AUTHORIZED_RESOURCE_ATTRIBUTES           = "resource.authorizedAttributes";
+
     public static final String     FIND_BY_NAME                             = "resource"
                                                                               + FIND_BY_NAME_SUFFIX;
     public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "resource"
@@ -116,11 +120,14 @@ public class Resource extends ExistentialRuleform implements
                                                                               + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "resource"
                                                                               + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String     GET_CHILD                                = "resource"
+                                                                              + GET_CHILD_SUFFIX;
     public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "resource.immediateChildrenNetworkRules";
     public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "resource.qualifiedEntityNetworkRules";
     public static final String     RESOURCE_ATTRIBUTES_BY_CLASSIFICATION    = "resource.resourceAttributesByClassification";
     public static final String     UNLINKED                                 = "resource"
                                                                               + UNLINKED_SUFFIX;
+    private static final long      serialVersionUID                         = 1L;
 
     //bi-directional many-to-one association to ResourceAttribute
     @OneToMany(mappedBy = "resource", cascade = CascadeType.ALL)
@@ -289,7 +296,7 @@ public class Resource extends ExistentialRuleform implements
     public List<ProductNetwork> getQualifiedEntityNetworkRules(EntityManager em) {
         return em.createNamedQuery(QUALIFIED_ENTITY_NETWORK_RULES,
                                    ProductNetwork.class).setParameter("resource",
-                                                                     this).getResultList();
+                                                                      this).getResultList();
     }
 
     /* (non-Javadoc)

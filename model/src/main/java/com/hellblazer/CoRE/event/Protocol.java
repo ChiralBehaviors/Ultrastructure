@@ -47,7 +47,9 @@ import com.hellblazer.CoRE.resource.Resource;
 @NamedQueries({ @NamedQuery(name = GET, query = "SELECT p FROM Protocol p "
                                                 + "WHERE p.service = :service "
                                                 + "    AND p.product =:product"
-                                                + "    AND p.subService = :subService"
+                                                + "    AND p.requester = :requester"
+                                                + "    AND p.deliverFrom = :deliverFrom"
+                                                + "    AND p.deliverTo = :deliverTo"
                                                 + " ORDER BY p.sequenceNumber") })
 @javax.persistence.Entity
 @Table(name = "protocol", schema = "ruleform")

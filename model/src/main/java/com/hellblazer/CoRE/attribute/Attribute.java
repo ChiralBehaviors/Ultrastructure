@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.attribute;
 import static com.hellblazer.CoRE.attribute.Attribute.FIND_BY_NAME;
 import static com.hellblazer.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD;
 import static com.hellblazer.CoRE.attribute.Attribute.NAME_SEARCH;
 import static com.hellblazer.CoRE.attribute.Attribute.UNLINKED;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
@@ -70,7 +71,11 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from AttributeMetaAttributeAuthorization ama "
                                                                                     + "WHERE ama.classification = :classification "
                                                                                     + "AND ama.classifier = :classifier"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name") })
+               @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                     + "FROM AttributeNetwork rn "
+                                                     + "WHERE rn.parent = :parent "
+                                                     + "AND rn.relationship = :relationship") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM attribute AS unlinked "
@@ -93,15 +98,17 @@ import com.hellblazer.CoRE.resource.Resource;
 public class Attribute extends ExistentialRuleform implements
         Networked<Attribute, AttributeNetwork>,
         Attributable<AttributeMetaAttribute> {
-    private static final long           serialVersionUID                         = 1L;
     public static final String          FIND_BY_NAME                             = "attribute.findByName";
-    public static final String          NAME_SEARCH                              = "attribute"
-                                                                                   + NAME_SEARCH_SUFFIX;
-    public static final String          UNLINKED                                 = "attribute.unlinked";
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "attribute"
                                                                                    + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "attribute"
                                                                                    + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String          GET_CHILD                                = "attribute"
+                                                                                   + GET_CHILD_SUFFIX;
+    public static final String          NAME_SEARCH                              = "attribute"
+                                                                                   + NAME_SEARCH_SUFFIX;
+    public static final String          UNLINKED                                 = "attribute.unlinked";
+    private static final long           serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute
     @OneToMany(mappedBy = "attribute")

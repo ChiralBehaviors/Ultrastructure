@@ -18,7 +18,6 @@ package com.hellblazer.CoRE.product;
 
 import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
-import static com.hellblazer.CoRE.product.ProductNetwork.GET_CHILD;
 import static com.hellblazer.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
 
 import java.util.List;
@@ -56,15 +55,10 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                             + "and n.distance = 1 "
                                                                             + "and n.relationship.preferred = FALSE "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM ProductNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship") })
+               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n") })
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
     private static final long  serialVersionUID       = 1L;
-    public static final String GET_CHILD              = "productNetwork.getChild";
     public static final String GET_USED_RELATIONSHIPS = "productNetwork"
                                                         + USED_RELATIONSHIPS_SUFFIX;
 
@@ -84,7 +78,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
 
     @Id
     @GeneratedValue(generator = "product_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                        id;
+    private Long                         id;
 
     //bi-directional many-to-one association to Product
     @ManyToOne(cascade = CascadeType.ALL)
@@ -99,7 +93,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      * @param updatedBy
      */
     public ProductNetwork(Product parent, Relationship relationship,
-                         Product child, Resource updatedBy) {
+                          Product child, Resource updatedBy) {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;

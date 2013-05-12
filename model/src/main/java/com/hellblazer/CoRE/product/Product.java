@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.product.Product.FIND_FLAGGED;
 import static com.hellblazer.CoRE.product.Product.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.product.Product.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.hellblazer.CoRE.product.Product.FIND_GROUPED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.product.Product.GET_CHILD;
 import static com.hellblazer.CoRE.product.Product.NAME_SEARCH;
 import static com.hellblazer.CoRE.product.Product.SUBSUMING_ENTITIES;
 import static com.hellblazer.CoRE.product.Product.UPDATED_BY;
@@ -106,7 +107,11 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
                                                                          + "WHERE ea.classification = :classification "
                                                                          + "AND ea.classifier = :classifier "
-                                                                         + "AND ea.groupingResource = :groupingResource") })
+                                                                         + "AND ea.groupingResource = :groupingResource"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                     + "FROM ProductNetwork rn "
+                                                     + "WHERE rn.parent = :parent "
+                                                     + "AND rn.relationship = :relationship") })
 @NamedNativeQueries({
 // ?1 = #queryString, ?2 = #numberOfMatches
 @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
@@ -116,35 +121,37 @@ import com.hellblazer.CoRE.resource.Resource;
 public class Product extends ExistentialRuleform implements
         Networked<Product, ProductNetwork>, Attributable<ProductAttribute> {
 
-    public static final String   FIND_GROUPED_ATTRIBUTE_VALUES                          = "product"
-                                                                                          + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String   CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
-    public static final String   FIND_ALL                                               = "product.findAll";
-    public static final String   FIND_ATTRIBUTE_AUTHORIZATIONS                          = "product.findAttributeAuthorizations";
-    public static final String   FIND_BY_ID                                             = "product.findById";
-    public static final String   FIND_BY_NAME                                           = "product"
-                                                                                          + FIND_BY_NAME_SUFFIX;
-    public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "product"
-                                                                                          + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-    public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "product"
-                                                                                          + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String   FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "product"
-                                                                                          + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String   FIND_FLAGGED                                           = "product.findFlagged";
-    public static final String   FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS                  = "product"
-                                                                                          + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
-    public static final String   FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE    = "product"
-                                                                                          + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-    public static final String   IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";
-    public static final String   NAME_SEARCH                                            = "product"
-                                                                                          + NAME_SEARCH_SUFFIX;
-    public static final String   SUBSUMING_ENTITIES                                     = "product.subsumingEntities";
-    public static final String   UNIQUE_ENTITY_BY_ATTRIBUTE_VALUE                       = "product.uniqueEntityByAttributeValue";
-    public static final String   UPDATED_BY                                             = "product"
-                                                                                          + GET_UPDATED_BY_SUFFIX;
-    public static final String   UPDATED_BY_NAME                                        = "product.getUpdatedByName";
+    public static final String    CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
+    public static final String    FIND_ALL                                               = "product.findAll";
+    public static final String    FIND_ATTRIBUTE_AUTHORIZATIONS                          = "product.findAttributeAuthorizations";
+    public static final String    FIND_BY_ID                                             = "product.findById";
+    public static final String    FIND_BY_NAME                                           = "product"
+                                                                                           + FIND_BY_NAME_SUFFIX;
+    public static final String    FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "product"
+                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String    FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "product"
+                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String    FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "product"
+                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String    FIND_FLAGGED                                           = "product.findFlagged";
+    public static final String    FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS                  = "product"
+                                                                                           + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
+    public static final String    FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE    = "product"
+                                                                                           + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String    FIND_GROUPED_ATTRIBUTE_VALUES                          = "product"
+                                                                                           + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String    GET_CHILD                                              = "product"
+                                                                                           + GET_CHILD_SUFFIX;
+    public static final String    IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";
+    public static final String    NAME_SEARCH                                            = "product"
+                                                                                           + NAME_SEARCH_SUFFIX;
+    public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";
+    public static final String    UNIQUE_ENTITY_BY_ATTRIBUTE_VALUE                       = "product.uniqueEntityByAttributeValue";
+    public static final String    UPDATED_BY                                             = "product"
+                                                                                           + GET_UPDATED_BY_SUFFIX;
+    public static final String    UPDATED_BY_NAME                                        = "product.getUpdatedByName";
 
-    private static final long    serialVersionUID                                       = 1L;
+    private static final long     serialVersionUID                                       = 1L;
 
     //bi-directional many-to-one association to ProductAttribute
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
@@ -153,7 +160,7 @@ public class Product extends ExistentialRuleform implements
 
     @Id
     @GeneratedValue(generator = "product_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                 id;
+    private Long                  id;
 
     //bi-directional many-to-one association to ProductLocation
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
@@ -302,14 +309,14 @@ public class Product extends ExistentialRuleform implements
     public List<ProductNetwork> getImmediateChildren(EntityManager em) {
         return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
                                    ProductNetwork.class).setParameter("product",
-                                                                     this).getResultList();
+                                                                      this).getResultList();
     }
 
     public List<ProductLocationNetwork> getLocationRules(EntityManager em,
-                                                        CoordinateKind kind) {
+                                                         CoordinateKind kind) {
         return em.createNamedQuery(LOCATION_RULES, ProductLocationNetwork.class).setParameter("product",
-                                                                                             this).setParameter("kind",
-                                                                                                                kind).getResultList();
+                                                                                              this).setParameter("kind",
+                                                                                                                 kind).getResultList();
     }
 
     public Set<ProductLocation> getLocations() {
@@ -337,8 +344,8 @@ public class Product extends ExistentialRuleform implements
                      Resource inverseSoftware, EntityManager em) {
         ProductNetwork link = new ProductNetwork(this, r, child, updatedBy);
         em.persist(link);
-        ProductNetwork inverse = new ProductNetwork(child, r.getInverse(), this,
-                                                  inverseSoftware);
+        ProductNetwork inverse = new ProductNetwork(child, r.getInverse(),
+                                                    this, inverseSoftware);
         em.persist(inverse);
     }
 

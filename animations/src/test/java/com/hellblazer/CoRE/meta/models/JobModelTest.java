@@ -56,7 +56,7 @@ public class JobModelTest extends AbstractModelTest {
         Job topLevelJob = topLevelJobs.get(0);
 
         assertNull(topLevelJob.getParent());
-        assertTrue(jobModel.isActive(topLevelJob)); 
+        assertTrue(jobModel.isActive(topLevelJob));
         List<Job> activeExplicit = jobModel.getActiveExplicitJobs();
         assertEquals(1, activeExplicit.size());
         assertEquals(topLevelJob, activeExplicit.get(0));
@@ -65,6 +65,8 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(0, jobModel.getSiblingActions(topLevelJob).size());
         assertEquals(1, jobModel.getActiveSubJobsOf(topLevelJob).size());
         assertEquals(0, jobModel.getActiveJobsFor(scenario.htsfTech).size());
+        assertEquals(4, jobModel.getMetaprotocols(topLevelJob).size());
+        assertEquals(9, jobModel.getProtocols(topLevelJob, scenario.mp1).size());
     }
 
     private List<Job> findAllJobs() {

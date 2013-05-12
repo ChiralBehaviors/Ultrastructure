@@ -34,9 +34,7 @@ import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceNetwork;
 
 /**
  * @author hhildebrand
@@ -135,7 +133,8 @@ public class AttributeModelImpl
         return attribute;
     }
 
-    public Attribute transform(Product service, Resource resource, Product product) {
+    public Attribute transform(Product service, Resource resource,
+                               Product product) {
 
         Attribute txfmd = null;
         for (TransformationMetarule transfromationMetarule : getTransformationMetarules(service)) {
@@ -150,7 +149,8 @@ public class AttributeModelImpl
             if (kernel.getSameProduct().equals(transfromationMetarule.getProductMap())) {
                 mappedProduct = kernel.getSameProduct();
             } else {
-                mappedProduct = getMappedProduct(transfromationMetarule, product);
+                mappedProduct = getMappedProduct(transfromationMetarule,
+                                                 product);
             }
             for (Transformation transformation : getTransformations(service,
                                                                     mappedResource,
@@ -168,8 +168,8 @@ public class AttributeModelImpl
                 } else {
                     txfmProduct = transformation.getProductKey();
                 }
-                Product foundProduct = findProduct(transformation, txfmResource,
-                                                txfmProduct);
+                Product foundProduct = findProduct(transformation,
+                                                   txfmResource, txfmProduct);
 
                 txfmd = findAttribute(transformation, foundProduct);
                 if (txfmd != null) {
@@ -188,7 +188,8 @@ public class AttributeModelImpl
      * @param product
      * @return
      */
-    private Attribute findAttribute(Transformation transformation, Product product) {
+    private Attribute findAttribute(Transformation transformation,
+                                    Product product) {
         TypedQuery<Attribute> attrQuery = em.createNamedQuery(ProductAttribute.FIND_ATTRIBUTE_VALUE_FROM_RESOURCE,
                                                               Attribute.class);
         attrQuery.setParameter("resource",
@@ -204,13 +205,13 @@ public class AttributeModelImpl
      * @param product
      * @return
      */
-    private Product findProduct(Transformation transformation, Resource resource,
-                              Product product) {
-        TypedQuery<Product> productNetworkQuery = em.createQuery(ProductNetwork.GET_CHILD,
-                                                               Product.class);
+    private Product findProduct(Transformation transformation,
+                                Resource resource, Product product) {
+        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILD,
+                                                                 Product.class);
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
-                                        transformation.getRelationshipKey());
+                                         transformation.getRelationshipKey());
         // productNetworkQuery.setParameter("resource", resource);
         return productNetworkQuery.getSingleResult();
     }
@@ -221,12 +222,12 @@ public class AttributeModelImpl
      * @return
      */
     private Product getMappedProduct(TransformationMetarule transfromationMetarule,
-                                   Product product) {
-        TypedQuery<Product> productNetworkQuery = em.createQuery(ProductNetwork.GET_CHILD,
-                                                               Product.class);
+                                     Product product) {
+        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILD,
+                                                                 Product.class);
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
-                                        transfromationMetarule.getRelationshipMap());
+                                         transfromationMetarule.getRelationshipMap());
         // productNetworkQuery.setParameter("resource", transfromationMetarule.getProductNetworkResource());
         return productNetworkQuery.getSingleResult();
     }
@@ -238,7 +239,7 @@ public class AttributeModelImpl
      */
     private Resource getMappedResource(TransformationMetarule transfromationMetarule,
                                        Resource resource) {
-        TypedQuery<Resource> resourceNetworkQuery = em.createQuery(ResourceNetwork.GET_CHILD,
+        TypedQuery<Resource> resourceNetworkQuery = em.createQuery(Resource.GET_CHILD,
                                                                    Resource.class);
         resourceNetworkQuery.setParameter("parent", resource);
         resourceNetworkQuery.setParameter("relationship",

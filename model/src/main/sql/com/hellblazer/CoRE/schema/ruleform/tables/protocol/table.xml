@@ -16,7 +16,6 @@
               product bigint NOT NULL,
               deliver_to bigint NOT NULL,
               deliver_from bigint NOT NULL,
-              sub_service bigint NOT NULL,
               sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an service / key combination can have multiple protocol rules
               assign_to bigint NOT NULL, -- The Resource that should perform the service
               requester bigint NOT NULL, -- The Resource that requested the service
@@ -52,13 +51,10 @@
               CONSTRAINT protocol_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_sub_service_fkey FOREIGN KEY (sub_service)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_key UNIQUE (requester, service, 
+              CONSTRAINT protocol_key UNIQUE (requester, requested_service, service, 
                                               product, deliver_to, deliver_from , 
                                               sequence_number )
             )

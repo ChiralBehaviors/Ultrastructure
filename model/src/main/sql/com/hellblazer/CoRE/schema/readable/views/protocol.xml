@@ -11,7 +11,7 @@
 			 SELECT base_table.id,
 			   r.name AS requester, rs.name AS requested_service, 
                po.name AS product_ordered, s.name AS service, p.name AS product, 
-			   dt.name AS deliver_to, df.name AS deliver_from, sub.name AS sub_service, 
+			   dt.name AS deliver_to, df.name AS deliver_from, 
 			   base_table.sequence_number, assign.name AS assign_to, base_table.notes, 
 			   res.name AS research, up.name AS updated_by, base_table.update_date
 			   FROM ruleform.protocol base_table
@@ -21,7 +21,6 @@
                JOIN ruleform.product p ON base_table.product = p.id
                JOIN ruleform.location dt ON base_table.deliver_to = dt.id
                JOIN ruleform.location df ON base_table.deliver_from = df.id
-			   JOIN ruleform.product sub ON base_table.sub_service = sub.id
 			   JOIN ruleform.resource assign ON base_table.assign_to = assign.id
                JOIN ruleform.resource r ON base_table.requester = r.id
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id

@@ -526,12 +526,12 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Protocol> getProtocols(Product service, Resource requester,
-                                       Product product, Location deliverTo,
-                                       Location deliverFrom) {
+    public List<Protocol> getProtocols(Product requestedService,
+                                       Resource requester, Product product,
+                                       Location deliverTo, Location deliverFrom) {
         TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET,
                                                          Protocol.class);
-        query.setParameter("service", service);
+        query.setParameter("requestedService", requestedService);
         query.setParameter("requester", requester);
         query.setParameter("product", product);
         query.setParameter("deliverTo", deliverTo);
@@ -837,7 +837,7 @@ public class JobModelImpl implements JobModel {
         Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
         Parameter<Location> deliverToParameter = cb.parameter(Location.class);
         if (service != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.service), serviceParameter));
+            cQuery.where(cb.equal(root.get(Protocol_.requestedService), serviceParameter));
         }
         if (product != null) {
             cQuery.where(cb.equal(root.get(Protocol_.product), productParameter));
@@ -1013,6 +1013,10 @@ public class JobModelImpl implements JobModel {
     }
 
     private Location transform(Location original, Location transformed) {
+        if (original.equals(kernel.getAnyLocation())
+            || original.equals(kernel.getSameLocation())) {
+            return null;
+        }
         if (transformed == null) {
             return original;
         }
@@ -1052,6 +1056,10 @@ public class JobModelImpl implements JobModel {
     }
 
     private Product transform(Product original, Product transformed) {
+        if (original.equals(kernel.getAnyProduct())
+            || original.equals(kernel.getSameProduct())) {
+            return null;
+        }
         if (transformed == null) {
             return original;
         }
@@ -1129,6 +1137,10 @@ public class JobModelImpl implements JobModel {
     }
 
     private Resource transform(Resource original, Resource transformed) {
+        if (original.equals(kernel.getAnyResource())
+            || original.equals(kernel.getSameResource())) {
+            return null;
+        }
         if (transformed == null) {
             return original;
         }

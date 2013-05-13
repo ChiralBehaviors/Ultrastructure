@@ -45,7 +45,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 @NamedQueries({ @NamedQuery(name = GET, query = "SELECT p FROM Protocol p "
-                                                + "WHERE p.service = :service "
+                                                + "WHERE p.requestedService = :requestedService "
                                                 + "    AND p.product =:product"
                                                 + "    AND p.requester = :requester"
                                                 + "    AND p.deliverFrom = :deliverFrom"
@@ -128,13 +128,6 @@ public class Protocol extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "service")
     private Product                service;
-
-    /**
-     * The sub service
-     */
-    @ManyToOne
-    @JoinColumn(name = "sub_service")
-    private Product                subService;
 
     public Set<ProtocolAttribute> getAttributes() {
         return attributes;
@@ -223,13 +216,6 @@ public class Protocol extends Ruleform {
         return service;
     }
 
-    /**
-     * @return the subService
-     */
-    public Product getSubService() {
-        return subService;
-    }
-
     public void setAssignTo(Resource assignTo) {
         this.assignTo = assignTo;
     }
@@ -297,13 +283,5 @@ public class Protocol extends Ruleform {
      */
     public void setService(Product service) {
         this.service = service;
-    }
-
-    /**
-     * @param subService
-     *            the subService to set
-     */
-    public void setSubService(Product subService) {
-        this.subService = subService;
     }
 }

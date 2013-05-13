@@ -304,8 +304,7 @@ public class JobScenario {
         p01.setService(resuspend);
         p01.setRequestedService(htsfIlluminaSequencing);
         p01.setProductOrdered(teBuffer);
-        p01.setSubService(kernel.getAnyProduct());
-        p01.setProduct(kernel.getAnyProduct());
+        p01.setProduct(kernel.getNotApplicableProduct());
         p01.setDeliverFrom(kernel.getAnyLocation());
         p01.setDeliverTo(kernel.getAnyLocation());
         p01.setAssignTo(htsfTech);
@@ -316,8 +315,7 @@ public class JobScenario {
         p02.setService(libraryPrep);
         p02.setRequestedService(htsfIlluminaSequencing);
         p02.setProductOrdered(unpreparedSample);
-        p02.setSubService(kernel.getAnyProduct());
-        p02.setProduct(kernel.getAnyProduct());
+        p02.setProduct(kernel.getNotApplicableProduct());
         p02.setDeliverFrom(kernel.getAnyLocation());
         p02.setDeliverTo(kernel.getAnyLocation());
         p02.setAssignTo(htsfTech);
@@ -325,74 +323,68 @@ public class JobScenario {
 
         p03 = new Protocol(core);
         p03.setRequester(kernel.getAnyResource());
-        p03.setService(doChipSeqPrep);
-        p03.setRequestedService(htsfIlluminaSequencing);
-        p03.setProductOrdered(kernel.getAnyProduct());
-        p03.setProduct(kernel.getAnyProduct());
+        p03.setService(chipSeq);
+        p03.setRequestedService(doChipSeqPrep);
+        p03.setProductOrdered(kernel.getNotApplicableProduct());
+        p03.setProduct(kernel.getNotApplicableProduct());
         p03.setDeliverFrom(kernel.getAnyLocation());
         p03.setDeliverTo(kernel.getAnyLocation());
-        p03.setSubService(chipSeq);
         p03.setAssignTo(htsfTech);
         em.persist(p03);
 
         p04 = new Protocol(core);
         p04.setRequester(kernel.getAnyResource());
-        p04.setService(customPrimerAnalysis);
-        p04.setRequestedService(htsfIlluminaSequencing);
-        p04.setProductOrdered(kernel.getAnyProduct());
-        p04.setProduct(kernel.getAnyProduct());
+        p04.setService(preparePrimers);
+        p04.setRequestedService(customPrimerAnalysis);
+        p04.setProductOrdered(kernel.getNotApplicableProduct());
+        p04.setProduct(kernel.getNotApplicableProduct());
         p04.setDeliverFrom(kernel.getAnyLocation());
         p04.setDeliverTo(kernel.getAnyLocation());
         p04.setAssignTo(htsfTech);
-        p04.setSubService(preparePrimers);
         em.persist(p04);
 
         p05 = new Protocol(core);
         p05.setRequester(kernel.getAnyResource());
-        p05.setService(doDgePrep);
-        p05.setRequestedService(htsfIlluminaSequencing);
-        p05.setProductOrdered(kernel.getAnyProduct());
-        p05.setProduct(kernel.getAnyProduct());
+        p05.setService(dge);
+        p05.setRequestedService(doDgePrep);
+        p05.setProductOrdered(kernel.getNotApplicableProduct());
+        p05.setProduct(kernel.getNotApplicableProduct());
         p05.setDeliverFrom(kernel.getAnyLocation());
         p05.setDeliverTo(kernel.getAnyLocation());
         p05.setAssignTo(htsfTech);
-        p05.setSubService(dge);
         em.persist(p05);
 
         p06 = new Protocol(core);
         p06.setRequester(kernel.getAnyResource());
-        p06.setService(doMiRnaPrep);
-        p06.setRequestedService(htsfIlluminaSequencing);
-        p06.setProductOrdered(kernel.getAnyProduct());
-        p06.setProduct(kernel.getAnyProduct());
+        p06.setService(miRNA);
+        p06.setRequestedService(doMiRnaPrep);
+        p06.setProductOrdered(kernel.getNotApplicableProduct());
+        p06.setProduct(kernel.getNotApplicableProduct());
         p06.setDeliverFrom(kernel.getAnyLocation());
         p06.setDeliverTo(kernel.getAnyLocation());
         p06.setAssignTo(htsfTech);
-        p06.setSubService(miRNA);
         em.persist(p06);
 
         p07 = new Protocol(core);
         p07.setRequester(kernel.getAnyResource());
-        p07.setService(doPairedEndAnalysisPrep);
-        p07.setRequestedService(htsfIlluminaSequencing);
-        p07.setProductOrdered(kernel.getAnyProduct());
-        p07.setProduct(kernel.getAnyProduct());
+        p07.setService(pairedEndAnalysis);
+        p07.setRequestedService(doPairedEndAnalysisPrep);
+        p07.setProductOrdered(kernel.getNotApplicableProduct());
+        p07.setProduct(kernel.getNotApplicableProduct());
         p07.setDeliverFrom(kernel.getAnyLocation());
         p07.setDeliverTo(kernel.getAnyLocation());
         p07.setAssignTo(htsfTech);
-        p07.setSubService(pairedEndAnalysis);
         em.persist(p07);
 
         p08 = new Protocol(core);
         p08.setRequester(kernel.getAnyResource());
         p08.setService(clusterGen);
         p08.setRequestedService(htsfIlluminaSequencing);
-        p08.setProductOrdered(kernel.getAnyProduct());
-        p08.setProduct(kernel.getAnyProduct());
+        p08.setProductOrdered(kernel.getNotApplicableProduct());
+        p08.setProduct(kernel.getNotApplicableProduct());
         p08.setDeliverFrom(kernel.getAnyLocation());
         p08.setDeliverTo(kernel.getAnyLocation());
         p08.setAssignTo(htsfTech);
-        p08.setSubService(kernel.getAnyProduct());
         em.persist(p08);
 
         Protocol p9 = new Protocol(core);
@@ -400,12 +392,11 @@ public class JobScenario {
         p9.setSequenceNumber(2);
         p9.setService(sequenceClusters);
         p9.setRequestedService(htsfIlluminaSequencing);
-        p9.setProductOrdered(kernel.getAnyProduct());
-        p9.setProduct(kernel.getAnyProduct());
+        p9.setProductOrdered(kernel.getNotApplicableProduct());
+        p9.setProduct(kernel.getNotApplicableProduct());
         p9.setDeliverFrom(kernel.getAnyLocation());
         p9.setDeliverTo(kernel.getAnyLocation());
         p9.setAssignTo(htsfTech);
-        p9.setSubService(kernel.getAnyProduct());
         em.persist(p9);
 
         p10 = new Protocol(core);
@@ -413,13 +404,12 @@ public class JobScenario {
         p10.setSequenceNumber(3);
         p10.setService(dataAnalysis);
         p10.setRequestedService(htsfIlluminaSequencing);
-        p10.setProductOrdered(kernel.getAnyProduct());
-        p10.setProduct(kernel.getAnyProduct());
+        p10.setProductOrdered(kernel.getNotApplicableProduct());
+        p10.setProduct(kernel.getNotApplicableProduct());
         p10.setDeliverFrom(kernel.getAnyLocation());
         p10.setDeliverTo(kernel.getAnyLocation());
         p10.setAssignTo(htsfTech);
-        p10.setSubService(kernel.getAnyProduct());
-        em.persist(p9);
+        em.persist(p10);
     }
 
     private void constructRelationships() {

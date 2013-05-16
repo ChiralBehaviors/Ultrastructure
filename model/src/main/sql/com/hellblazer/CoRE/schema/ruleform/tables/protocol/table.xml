@@ -11,11 +11,12 @@
             (
               id bigserial NOT NULL, -- Unique identifier
               requested_service bigint NOT NULL,
-              product_ordered bigint NOT NULL,
-              service bigint NOT NULL,
-              product bigint NOT NULL,
+              requested_product bigint NOT NULL,
               deliver_to bigint NOT NULL,
               deliver_from bigint NOT NULL,
+              service bigint NOT NULL,
+              product bigint NOT NULL,
+              copy_attributes boolean DEFAULT FALSE,
               sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an service / key combination can have multiple protocol rules
               assign_to bigint NOT NULL, -- The Resource that should perform the service
               requester bigint NOT NULL, -- The Resource that requested the service
@@ -33,7 +34,7 @@
               CONSTRAINT protocol_requested_service_fkey FOREIGN KEY (requested_service)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_product_ordered_fkey FOREIGN KEY (product_ordered)
+              CONSTRAINT protocol_product_ordered_fkey FOREIGN KEY (requested_product)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_service_fkey FOREIGN KEY (service)
@@ -43,20 +44,17 @@
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_deliver_to_fkey FOREIGN KEY (deliver_to)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_deliver_from_fkey FOREIGN KEY (deliver_from)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_key UNIQUE (requester, requested_service, service, 
-                                              product, deliver_to, deliver_from , 
-                                              sequence_number )
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
             )
             WITH (
               OIDS=FALSE

@@ -73,6 +73,9 @@ public class Protocol extends Ruleform {
     @JsonIgnore
     private Set<ProtocolAttribute> attributes;
 
+    @Column(name = "copy_attributes")
+    private boolean                copyAttributes   = false;
+
     /**
      * the location to deliver the product from
      */
@@ -102,8 +105,8 @@ public class Protocol extends Ruleform {
      * The ordered product
      */
     @ManyToOne
-    @JoinColumn(name = "product_ordered")
-    private Product                productOrdered;
+    @JoinColumn(name = "requested_product")
+    private Product                requestedProduct;
 
     /**
      * The requested service to be performed
@@ -129,14 +132,6 @@ public class Protocol extends Ruleform {
     @JoinColumn(name = "service")
     private Product                service;
 
-    public Set<ProtocolAttribute> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Set<ProtocolAttribute> protocolAttributes) {
-        attributes = protocolAttributes;
-    }
-
     public Protocol() {
     }
 
@@ -145,6 +140,39 @@ public class Protocol extends Ruleform {
      */
     public Protocol(Long id) {
         super(id);
+    }
+
+    public Protocol(Product requestedService, Resource requester,
+                    Product requestedProduct, Location deliverTo,
+                    Location deliverFrom, Resource assignTo, Product service,
+                    Product product, Resource updatedBy) {
+        super(updatedBy);
+        assert requestedProduct != null;
+        assert requester != null;
+        assert requestedProduct != null;
+        assert deliverTo != null;
+        assert deliverFrom != null;
+        assert assignTo != null;
+        assert service != null;
+        assert product != null;
+        assert updatedBy != null;
+        setRequestedService(requestedService);
+        setRequester(requester);
+        setRequestedProduct(requestedProduct);
+        setDeliverTo(deliverTo);
+        setDeliverFrom(deliverFrom);
+        setAssignTo(assignTo);
+        setService(service);
+        setProduct(product);
+    }
+
+    public Protocol(Product requestedService, Resource requester,
+                    Product requestedProduct, Location deliverTo,
+                    Location deliverFrom, Resource assignTo, Product service,
+                    Product product, boolean copyAttributes, Resource updatedBy) {
+        this(requestedService, requester, requestedProduct, deliverTo,
+             deliverFrom, assignTo, service, product, updatedBy);
+        setCopyAttributes(copyAttributes);
     }
 
     /**
@@ -156,6 +184,10 @@ public class Protocol extends Ruleform {
 
     public Resource getAssignTo() {
         return assignTo;
+    }
+
+    public Set<ProtocolAttribute> getAttributes() {
+        return attributes;
     }
 
     /**
@@ -184,11 +216,8 @@ public class Protocol extends Ruleform {
         return product;
     }
 
-    /**
-     * @return the productOrdered
-     */
-    public Product getProductOrdered() {
-        return productOrdered;
+    public Product getRequestedProduct() {
+        return requestedProduct;
     }
 
     /**
@@ -216,8 +245,20 @@ public class Protocol extends Ruleform {
         return service;
     }
 
+    public boolean isCopyAttributes() {
+        return copyAttributes;
+    }
+
     public void setAssignTo(Resource assignTo) {
         this.assignTo = assignTo;
+    }
+
+    public void setAttributes(Set<ProtocolAttribute> protocolAttributes) {
+        attributes = protocolAttributes;
+    }
+
+    public void setCopyAttributes(boolean copyAttributes) {
+        this.copyAttributes = copyAttributes;
     }
 
     /**
@@ -249,12 +290,8 @@ public class Protocol extends Ruleform {
         this.product = product;
     }
 
-    /**
-     * @param productOrdered
-     *            the productOrdered to set
-     */
-    public void setProductOrdered(Product productOrdered) {
-        this.productOrdered = productOrdered;
+    public void setRequestedProduct(Product requestedProduct) {
+        this.requestedProduct = requestedProduct;
     }
 
     /**

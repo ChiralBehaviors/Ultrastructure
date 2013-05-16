@@ -303,7 +303,7 @@ public class JobScenario {
         p01.setRequester(kernel.getAnyResource());
         p01.setService(resuspend);
         p01.setRequestedService(htsfIlluminaSequencing);
-        p01.setProductOrdered(teBuffer);
+        p01.setRequestedProduct(teBuffer);
         p01.setProduct(kernel.getNotApplicableProduct());
         p01.setDeliverFrom(kernel.getAnyLocation());
         p01.setDeliverTo(kernel.getAnyLocation());
@@ -314,7 +314,7 @@ public class JobScenario {
         p02.setRequester(kernel.getAnyResource());
         p02.setService(libraryPrep);
         p02.setRequestedService(htsfIlluminaSequencing);
-        p02.setProductOrdered(unpreparedSample);
+        p02.setRequestedProduct(unpreparedSample);
         p02.setProduct(kernel.getNotApplicableProduct());
         p02.setDeliverFrom(kernel.getAnyLocation());
         p02.setDeliverTo(kernel.getAnyLocation());
@@ -325,7 +325,7 @@ public class JobScenario {
         p03.setRequester(kernel.getAnyResource());
         p03.setService(chipSeq);
         p03.setRequestedService(doChipSeqPrep);
-        p03.setProductOrdered(kernel.getNotApplicableProduct());
+        p03.setRequestedProduct(kernel.getNotApplicableProduct());
         p03.setProduct(kernel.getNotApplicableProduct());
         p03.setDeliverFrom(kernel.getAnyLocation());
         p03.setDeliverTo(kernel.getAnyLocation());
@@ -336,7 +336,7 @@ public class JobScenario {
         p04.setRequester(kernel.getAnyResource());
         p04.setService(preparePrimers);
         p04.setRequestedService(customPrimerAnalysis);
-        p04.setProductOrdered(kernel.getNotApplicableProduct());
+        p04.setRequestedProduct(kernel.getNotApplicableProduct());
         p04.setProduct(kernel.getNotApplicableProduct());
         p04.setDeliverFrom(kernel.getAnyLocation());
         p04.setDeliverTo(kernel.getAnyLocation());
@@ -347,7 +347,7 @@ public class JobScenario {
         p05.setRequester(kernel.getAnyResource());
         p05.setService(dge);
         p05.setRequestedService(doDgePrep);
-        p05.setProductOrdered(kernel.getNotApplicableProduct());
+        p05.setRequestedProduct(kernel.getNotApplicableProduct());
         p05.setProduct(kernel.getNotApplicableProduct());
         p05.setDeliverFrom(kernel.getAnyLocation());
         p05.setDeliverTo(kernel.getAnyLocation());
@@ -358,7 +358,7 @@ public class JobScenario {
         p06.setRequester(kernel.getAnyResource());
         p06.setService(miRNA);
         p06.setRequestedService(doMiRnaPrep);
-        p06.setProductOrdered(kernel.getNotApplicableProduct());
+        p06.setRequestedProduct(kernel.getNotApplicableProduct());
         p06.setProduct(kernel.getNotApplicableProduct());
         p06.setDeliverFrom(kernel.getAnyLocation());
         p06.setDeliverTo(kernel.getAnyLocation());
@@ -369,7 +369,7 @@ public class JobScenario {
         p07.setRequester(kernel.getAnyResource());
         p07.setService(pairedEndAnalysis);
         p07.setRequestedService(doPairedEndAnalysisPrep);
-        p07.setProductOrdered(kernel.getNotApplicableProduct());
+        p07.setRequestedProduct(kernel.getNotApplicableProduct());
         p07.setProduct(kernel.getNotApplicableProduct());
         p07.setDeliverFrom(kernel.getAnyLocation());
         p07.setDeliverTo(kernel.getAnyLocation());
@@ -380,7 +380,7 @@ public class JobScenario {
         p08.setRequester(kernel.getAnyResource());
         p08.setService(clusterGen);
         p08.setRequestedService(htsfIlluminaSequencing);
-        p08.setProductOrdered(kernel.getNotApplicableProduct());
+        p08.setRequestedProduct(kernel.getNotApplicableProduct());
         p08.setProduct(kernel.getNotApplicableProduct());
         p08.setDeliverFrom(kernel.getAnyLocation());
         p08.setDeliverTo(kernel.getAnyLocation());
@@ -392,7 +392,7 @@ public class JobScenario {
         p9.setSequenceNumber(2);
         p9.setService(sequenceClusters);
         p9.setRequestedService(htsfIlluminaSequencing);
-        p9.setProductOrdered(kernel.getNotApplicableProduct());
+        p9.setRequestedProduct(kernel.getNotApplicableProduct());
         p9.setProduct(kernel.getNotApplicableProduct());
         p9.setDeliverFrom(kernel.getAnyLocation());
         p9.setDeliverTo(kernel.getAnyLocation());
@@ -404,7 +404,7 @@ public class JobScenario {
         p10.setSequenceNumber(3);
         p10.setService(dataAnalysis);
         p10.setRequestedService(htsfIlluminaSequencing);
-        p10.setProductOrdered(kernel.getNotApplicableProduct());
+        p10.setRequestedProduct(kernel.getNotApplicableProduct());
         p10.setProduct(kernel.getNotApplicableProduct());
         p10.setDeliverFrom(kernel.getAnyLocation());
         p10.setDeliverTo(kernel.getAnyLocation());

@@ -1019,14 +1019,10 @@ public class JobModelImpl implements JobModel {
         if (transformed == null) {
             return original;
         }
-        if (!transformed.equals(kernel.getAnyLocation())) {
-            if (transformed.equals(kernel.getSameLocation())) {
-                return original;
-            } else {
-                return transformed;
-            }
+        if (transformed.equals(kernel.getSameLocation())) {
+            return original;
         }
-        return null;
+        return transformed;
     }
 
     private Location transform(Location location, Relationship relationship,
@@ -1063,14 +1059,10 @@ public class JobModelImpl implements JobModel {
         if (transformed == null) {
             return original;
         }
-        if (!transformed.equals(kernel.getAnyProduct())) {
-            if (transformed.equals(kernel.getSameProduct())) {
-                return original;
-            } else {
-                return transformed;
-            }
+        if (transformed.equals(kernel.getSameProduct())) {
+            return original;
         }
-        return null;
+        return transformed;
     }
 
     /**
@@ -1145,14 +1137,10 @@ public class JobModelImpl implements JobModel {
         if (transformed == null) {
             return original;
         }
-        if (!transformed.equals(kernel.getAnyResource())) {
-            if (transformed.equals(kernel.getSameResource())) {
-                return original;
-            } else {
-                return transformed;
-            }
+        if (transformed.equals(kernel.getSameResource())) {
+            return original;
         }
-        return null;
+        return transformed;
     }
 
     private void validateStateGraph() throws SQLException {

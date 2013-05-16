@@ -517,12 +517,7 @@ public class JobModelImpl implements JobModel {
 
         // Find protocols which match transformations specified by the meta protocol
 
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Protocol> cQuery = cb.createQuery(Protocol.class);
-        Root<Protocol> root = cQuery.from(Protocol.class);
-        cQuery.select(root);
-
-        return createQuery(cb, cQuery, root, metaProtocol, job).getResultList();
+        return createQuery(metaProtocol, job).getResultList();
     }
 
     @Override
@@ -806,10 +801,7 @@ public class JobModelImpl implements JobModel {
         automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
     }
 
-    private TypedQuery<Protocol> createQuery(CriteriaBuilder cb,
-                                             CriteriaQuery<Protocol> cQuery,
-                                             Root<Protocol> root,
-                                             MetaProtocol metaProtocol, Job job) {
+    private TypedQuery<Protocol> createQuery(MetaProtocol metaProtocol, Job job) {
 
         Product service = transform(job.getService(),
                                     transform(job.getService(),
@@ -831,13 +823,19 @@ public class JobModelImpl implements JobModel {
                                        transform(job.getRequester(),
                                                  metaProtocol.getRequestingResource(),
                                                  "requester", job));
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Protocol> cQuery = cb.createQuery(Protocol.class);
+        Root<Protocol> root = cQuery.from(Protocol.class);
+        cQuery.select(root);
         Parameter<Product> serviceParameter = cb.parameter(Product.class);
         Parameter<Product> productParameter = cb.parameter(Product.class);
         Parameter<Resource> requesterParameter = cb.parameter(Resource.class);
         Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
         Parameter<Location> deliverToParameter = cb.parameter(Location.class);
         if (service != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.requestedService), serviceParameter));
+            cQuery.where(cb.equal(root.get(Protocol_.requestedService),
+                                  serviceParameter));
         }
         if (product != null) {
             cQuery.where(cb.equal(root.get(Protocol_.product), productParameter));
@@ -1014,7 +1012,8 @@ public class JobModelImpl implements JobModel {
 
     private Location transform(Location original, Location transformed) {
         if (original.equals(kernel.getAnyLocation())
-            || original.equals(kernel.getSameLocation())) {
+            || original.equals(kernel.getSameLocation())
+            || original.equals(kernel.getNotApplicableLocation())) {
             return null;
         }
         if (transformed == null) {
@@ -1057,7 +1056,8 @@ public class JobModelImpl implements JobModel {
 
     private Product transform(Product original, Product transformed) {
         if (original.equals(kernel.getAnyProduct())
-            || original.equals(kernel.getSameProduct())) {
+            || original.equals(kernel.getSameProduct())
+            || original.equals(kernel.getNotApplicableProduct())) {
             return null;
         }
         if (transformed == null) {
@@ -1138,7 +1138,8 @@ public class JobModelImpl implements JobModel {
 
     private Resource transform(Resource original, Resource transformed) {
         if (original.equals(kernel.getAnyResource())
-            || original.equals(kernel.getSameResource())) {
+            || original.equals(kernel.getSameResource())
+            || original.equals(kernel.getNotApplicableResource())) {
             return null;
         }
         if (transformed == null) {

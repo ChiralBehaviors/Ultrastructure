@@ -1,36 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-    
-    <changeSet id="1" author="hhildebrand">
-        <sql splitStatements="false"><![CDATA[
+
+	<changeSet id="1" author="hhildebrand">
+		<sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.ensure_valid_service_and_status()
-              RETURNS trigger AS
-            $BODY$
-            BEGIN
-                IF (NEW.next_sibling IS NOT NULL AND NEW.next_sibling_status IS NOT NULL) THEN
-                    IF ( SELECT NOT EXISTS(
-                        SELECT service, parent_code
-                        FROM ruleform.status_code_sequencing
-                        WHERE service = NEW.next_sibling
-                          AND parent_code = NEW.next_sibling_status
-                        ))
-                    THEN
-                        RAISE EXCEPTION 'next_sibling and next_sibling_status must refer to valid combination in status_code_sequencing!  "%" -> "%" is not valid!', ruleform.service_name(NEW.next_sibling_event), ruleform.status_code_name(NEW.next_sibling_status);
-                    END IF;
-                END IF;
-                RETURN NEW;
-            END;
-            $BODY$
-              LANGUAGE plpgsql STABLE
+                RETURNS trigger
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.ensure_valid_service_and_status'
+                LANGUAGE javaU STABLE
               COST 100;
             ALTER FUNCTION ruleform.ensure_valid_service_and_status()
               OWNER TO core;
             ]]>
-        </sql>
-        <rollback> DROP FUNCTION ruleform.ensure_valid_service_and_status(); </rollback>
-    </changeSet>
+		</sql>
+		<rollback> DROP FUNCTION ruleform.ensure_valid_service_and_status();
+		</rollback>
+	</changeSet>
 </databaseChangeLog>

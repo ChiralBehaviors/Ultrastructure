@@ -118,6 +118,12 @@ public class JobModelImpl implements JobModel {
         }
     }
 
+    public static void ensure_valid_service_and_status(TriggerData triggerData)
+                                                                               throws SQLException {
+        InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
+                                                     (Long) triggerData.getNew().getObject("next_sibling_status"));
+    }
+
     public static Long get_initial_state(Long service) {
         return InDatabase.get().getInitialState(service);
     }
@@ -209,6 +215,7 @@ public class JobModelImpl implements JobModel {
     }
 
     private final EntityManager em;
+
     private final Kernel        kernel;
     private final LocationModel locationModel;
     private final List<Product> modifiedEvents = new ArrayList<Product>();
@@ -288,6 +295,24 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public void ensureValidServiceAndStatus(Product nextSibling,
+                                            StatusCode nextSiblingStatus)
+                                                                         throws SQLException {
+        TypedQuery<Long> query = em.createNamedQuery(StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS,
+                                                     Long.class);
+        if (nextSibling == null || nextSiblingStatus == null) {
+            return;
+        }
+        query.setParameter("service", nextSibling);
+        query.setParameter("parentCode", nextSiblingStatus);
+        if (query.getSingleResult() == 0) {
+            throw new SQLException(
+                                   String.format("'next sibling and next sibling status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
+                                                 nextSibling, nextSiblingStatus));
+        }
+    }
+
+    @Override
     public void generateImplicitJobs(Job job) {
         for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
             for (Protocol protocol : getProtocols(job, metaProtocol)) {
@@ -348,6 +373,7 @@ public class JobModelImpl implements JobModel {
         return getAllActiveSubJobsOf(job, new HashSet<Job>());
     }
 
+    @Override
     public Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally) {
         List<Job> myJobs = getActiveSubJobsOf(job);
         if (tally.addAll(myJobs)) {
@@ -358,6 +384,7 @@ public class JobModelImpl implements JobModel {
         return tally;
     }
 
+    @Override
     public List<Job> getAllActiveSubJobsOfJobAssignedToResource(Job parent,
                                                                 Resource resource) {
         List<Job> jobs = new ArrayList<Job>();
@@ -375,6 +402,7 @@ public class JobModelImpl implements JobModel {
         return jobs;
     }
 
+    @Override
     public void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
                                                            Resource resource,
                                                            List<Job> jobs) {
@@ -399,7 +427,7 @@ public class JobModelImpl implements JobModel {
     public List<ProductSequencingAuthorization> getChildActions(Job job) {
         TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_CHILD_ACTIONS,
                                                                                ProductSequencingAuthorization.class);
-        query.setParameter("product", job.getService());
+        query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
         List<ProductSequencingAuthorization> childActions = query.getResultList();
         return childActions;
@@ -494,7 +522,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<ProductSequencingAuthorization> getParentActions(Job job) {
         return em.createNamedQuery(ProductSequencingAuthorization.GET_PARENT_ACTIONS,
-                                   ProductSequencingAuthorization.class).setParameter("event",
+                                   ProductSequencingAuthorization.class).setParameter("service",
                                                                                       job.getService()).setParameter("status",
                                                                                                                      job.getStatus()).getResultList();
     }
@@ -542,7 +570,7 @@ public class JobModelImpl implements JobModel {
     public List<ProductSequencingAuthorization> getSiblingActions(Job job) {
         TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_SIBLING_ACTIONS,
                                                                                ProductSequencingAuthorization.class);
-        query.setParameter("product", job.getService());
+        query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
     }
@@ -560,6 +588,7 @@ public class JobModelImpl implements JobModel {
         return result;
     }
 
+    @Override
     public List<StatusCode> getTerminalStates(Job job) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES,
                                                            StatusCode.class);
@@ -574,6 +603,7 @@ public class JobModelImpl implements JobModel {
         return query.getResultList();
     }
 
+    @Override
     public List<Job> getTopLevelJobsWithSubJobsAssignedToResource(Resource resource) {
         List<Job> jobs = new ArrayList<Job>();
         for (Job job : getActiveExplicitJobs()) {
@@ -698,14 +728,15 @@ public class JobModelImpl implements JobModel {
     @Override
     public boolean isValidNextStatus(Product service, StatusCode parent,
                                      StatusCode next) {
-        TypedQuery<Boolean> query = em.createNamedQuery(StatusCodeSequencing.IS_VALID_NEXT_STATUS,
-                                                        Boolean.class);
+        TypedQuery<Integer> query = em.createNamedQuery(StatusCodeSequencing.IS_VALID_NEXT_STATUS,
+                                                        Integer.class);
         query.setParameter(1, service.getId());
         query.setParameter(2, parent.getId());
         query.setParameter(3, next.getId());
-        return query.getSingleResult();
+        return query.getSingleResult() > 0;
     }
 
+    @Override
     public void logModifiedService(Long scs) {
         modifiedEvents.add(em.find(Product.class, scs));
     }
@@ -889,6 +920,16 @@ public class JobModelImpl implements JobModel {
                                em.find(Product.class, service),
                                em.find(StatusCode.class, currentStatus),
                                em.find(StatusCode.class, nextStatus));
+    }
+
+    private void ensureValidServiceAndStatus(Long nextSibling,
+                                             Long nextSiblingStatus)
+                                                                    throws SQLException {
+        if (nextSibling == null || nextSiblingStatus == null) {
+            return;
+        }
+        ensureValidServiceAndStatus(em.find(Product.class, nextSibling),
+                                    em.find(StatusCode.class, nextSiblingStatus));
     }
 
     /**

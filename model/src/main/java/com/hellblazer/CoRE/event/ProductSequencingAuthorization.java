@@ -41,19 +41,19 @@ import com.hellblazer.CoRE.resource.Resource;
  */
 @NamedQueries({
                @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSequencingAuthorization AS seq "
-                                                               + "WHERE seq.parent = :product"
+                                                               + "WHERE seq.parent = :service"
                                                                + " AND seq.statusCode = :status "
                                                                + "  AND seq.nextSibling IS NOT NULL "
                                                                + "  AND seq.nextSiblingStatus IS NOT NULL "
                                                                + "ORDER BY seq.sequenceNumber"),
                @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductSequencingAuthorization AS seq "
-                                                             + "WHERE seq.parent = :product"
+                                                             + "WHERE seq.parent = :service"
                                                              + "  AND seq.statusCode = :status "
                                                              + "  AND seq.nextChild IS NOT NULL"
                                                              + "  AND seq.nextChildStatus IS NOT NULL "
                                                              + "ORDER BY seq.sequenceNumber"),
                @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductSequencingAuthorization AS seq "
-                                                              + " WHERE seq.parent = :product"
+                                                              + " WHERE seq.parent = :service"
                                                               + "   AND seq.statusCode = :status "
                                                               + "   AND ("
                                                               + "         (seq.parentStatusToSet NOT NULL) OR "
@@ -77,12 +77,12 @@ public class ProductSequencingAuthorization extends Ruleform {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "my_parent")
-    private Product             myParent;
+    private Product            myParent;
 
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "next_child")
-    private Product             nextChild;
+    private Product            nextChild;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -92,7 +92,7 @@ public class ProductSequencingAuthorization extends Ruleform {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "next_sibling")
-    private Product             nextSibling;
+    private Product            nextSibling;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -102,7 +102,7 @@ public class ProductSequencingAuthorization extends Ruleform {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Product             parent;
+    private Product            parent;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -136,6 +136,16 @@ public class ProductSequencingAuthorization extends Ruleform {
     public ProductSequencingAuthorization(Resource updatedBy) {
         super(updatedBy);
     }
+
+    public ProductSequencingAuthorization(Product parent,
+                                          StatusCode nextChildStatus,
+                                          Product nextChild, Resource updatedBy) {
+        super(updatedBy);
+        setParent(parent);
+        setNextChildStatus(nextChildStatus);
+        setNextChild(nextChild);
+    }
+
 
     @Override
     public Long getId() {

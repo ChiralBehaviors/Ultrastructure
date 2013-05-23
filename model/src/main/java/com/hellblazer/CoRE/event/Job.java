@@ -183,7 +183,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String TOP_LEVEL_JOBS                    = "job.topLevelJobs";
 
     private static final long  serialVersionUID                  = 1L;
-    
+
     /**
      * The resource assigned to this job
      */
@@ -271,6 +271,19 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public Job() {
     }
 
+    public Job(Job parent, Resource assignTo, Product service, Product product,
+               Location deliverTo, Location deliverFrom, Resource requester,
+               Resource updatedBy) {
+        this(updatedBy);
+        setParent(parent);
+        setAssignTo(assignTo);
+        setService(service);
+        setProduct(product);
+        setDeliverTo(deliverTo);
+        setDeliverFrom(deliverFrom);
+        setRequester(requester);
+    }
+
     /**
      * @param id
      */
@@ -283,6 +296,13 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     public Job(Resource updatedBy) {
         super(updatedBy);
+    }
+
+    public Job(Resource assignTo, Product service, Product product,
+               Location deliverTo, Location deliverFrom, Resource requester,
+               Resource updatedBy) {
+        this(null, assignTo, service, product, deliverTo, deliverFrom,
+             requester, updatedBy);
     }
 
     public Resource getAssignTo() {

@@ -18,7 +18,10 @@ package com.hellblazer.CoRE.example.orderProcessing;
 
 import javax.persistence.EntityManager;
 
+import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.event.Protocol;
+import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.meta.Kernel;
@@ -88,16 +91,42 @@ public class ExampleLoader {
     private Resource            manufacturer;
     private Resource            nonExemptResource;
     private Resource            orgA;
-
     private final Model         model;
-
     private Resource            core;
+    private Product             notApplicableProduct;
+    private Product             anyProduct;
+    private Resource            anyResource;
+    private Location            anyLocation;
+    private Product             sameProduct;
+    private Attribute           priceAttribute;
+    private Attribute           taxRateAttribute;
+
+    private Attribute           discountAttribute;
 
     public ExampleLoader(EntityManager em) throws Exception {
         this.em = em;
         model = new ModelImpl(em);
         kernel = model.getKernel();
         core = kernel.getCore();
+        notApplicableProduct = kernel.getNotApplicableProduct();
+        sameProduct = kernel.getSameProduct();
+        anyProduct = kernel.getAnyProduct();
+        anyResource = kernel.getAnyResource();
+        anyLocation = kernel.getAnyLocation();
+    }
+
+    public void createAttributes() {
+        priceAttribute = new Attribute("price", "price", core,
+                                       ValueType.NUMERIC);
+        em.persist(priceAttribute);
+
+        taxRateAttribute = new Attribute("tax rate", "tax rate", core,
+                                         ValueType.NUMERIC);
+        em.persist(taxRateAttribute);
+
+        discountAttribute = new Attribute("discount", "discount", core,
+                                          ValueType.NUMERIC);
+        em.persist(discountAttribute);
     }
 
     public void createEntities() {
@@ -208,20 +237,113 @@ public class ExampleLoader {
     }
 
     public void createMetaProtocols() {
-        // TODO Auto-generated method stub
-
+        // TODO
     }
 
     public void createProtocols() {
-        Protocol p1 = new Protocol(core);
-        p1.setService(checkCredit);
-        p1.setRequester(externalCust);
-        p1.setRequestedService(deliver);
-        p1.setDeliverTo(us);
-        p1.setDeliverFrom(us);
-        p1.setProduct(kernel.getAnyProduct());
+        Protocol p1 = new Protocol(deliver, externalCust, anyProduct, us, us,
+                                   cpu, checkCredit, notApplicableProduct, core);
         em.persist(p1);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
 
+        Protocol p2 = new Protocol(deliver, externalCust, anyProduct, euro, us,
+                                   creditDept, checkLetterOfCredit,
+                                   notApplicableProduct, core);
+        em.persist(p2);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Protocol p3 = new Protocol(deliver, externalCust, abc486, euro, us,
+                                   cpu, printCustomsDeclaration,
+                                   notApplicableProduct, core);
+        em.persist(p3);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Protocol p4 = new Protocol(deliver, anyResource, anyProduct,
+                                   anyLocation, anyLocation, factory1Resource,
+                                   pick, sameProduct, core);
+        em.persist(p4);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Protocol p5 = new Protocol(deliver, anyResource, anyProduct,
+                                   anyLocation, anyLocation, factory1Resource,
+                                   deliver, sameProduct, true, core);
+        em.persist(p5);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Protocol p6 = new Protocol(deliver, externalCust, abc486, anyLocation,
+                                   us, billingComputer, fee, sameProduct, core);
+        em.persist(p6);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        
+        ProtocolAttribute price = new ProtocolAttribute(priceAttribute, core);
+        price.setNumericValue(1500);
+        price.setProtocol(p6);
+        em.persist(price);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Protocol p7 = new Protocol(deliver, nonExemptResource, nonExempt, dc,
+                                   anyLocation, billingComputer, salesTax,
+                                   sameProduct, core);
+        em.persist(p7);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        
+        ProtocolAttribute taxRate = new ProtocolAttribute(taxRateAttribute,
+                                                          core);
+        taxRate.setNumericValue(0.0575);
+        taxRate.setProtocol(p7);
+        em.persist(taxRate);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Protocol p8 = new Protocol(deliver, externalCust, abc486, euro, us,
+                                   billingComputer, discount, sameProduct, core);
+        em.persist(p8);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        
+        ProtocolAttribute discount = new ProtocolAttribute(discountAttribute,
+                                                           core);
+        discount.setNumericValue(0.05);
+        discount.setProtocol(p7);
+        em.persist(discount);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Protocol p9 = new Protocol(deliver, georgeTownUniversity, abc486, dc,
+                                   us, billingComputer, fee, sameProduct, core);
+        em.persist(p9);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        
+        ProtocolAttribute discountedPrice = new ProtocolAttribute(
+                                                                  priceAttribute,
+                                                                  core);
+        discountedPrice.setNumericValue(1250);
+        discountedPrice.setProtocol(p9);
+        em.persist(discountedPrice);
+        
+        em.getTransaction().commit();
+        em.getTransaction().begin();
     }
 
     public void createRelationships() {
@@ -362,6 +484,7 @@ public class ExampleLoader {
 
     public void load() {
         createResources();
+        createAttributes();
         createEntities();
         createLocationContexts();
         createLocations();
@@ -369,9 +492,7 @@ public class ExampleLoader {
         createProductNetworks();
         createResourceNetworks();
         createLocationNetworks();
-        /*
         createProtocols();
         createMetaProtocols();
-        */
     }
 }

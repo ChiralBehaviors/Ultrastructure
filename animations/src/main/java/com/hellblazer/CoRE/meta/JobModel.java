@@ -369,4 +369,23 @@ public interface JobModel {
                                 Product product, Location deliverTo,
                                 Location deliverFrom);
 
+    void ensureValidServiceAndStatus(Product nextSibling,
+                                     StatusCode nextSiblingStatus)
+                                                                  throws SQLException;
+
+    void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
+                                                    Resource resource,
+                                                    List<Job> jobs);
+
+    List<Job> getAllActiveSubJobsOfJobAssignedToResource(Job parent,
+                                                         Resource resource);
+
+    Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
+
+    void logModifiedService(Long scs);
+
+    List<Job> getTopLevelJobsWithSubJobsAssignedToResource(Resource resource);
+
+    List<StatusCode> getTerminalStates(Job job);
+
 }

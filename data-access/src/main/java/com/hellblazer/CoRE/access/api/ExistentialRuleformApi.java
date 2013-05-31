@@ -35,9 +35,9 @@ public class ExistentialRuleformApi {
 	//create
 	
 	//take individual args, create ruleform, persist or not as necessary
-	public static ExistentialRuleform create(Map<String, Object> params) {
-		
-	}
+//	public static ExistentialRuleform create(Map<String, Object> params) {
+//		
+//	}
 	//read
 	
 	//update

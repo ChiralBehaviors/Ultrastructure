@@ -11,9 +11,9 @@
             (
               id bigserial NOT NULL, -- Unique identifier
               protocol bigint NOT NULL, -- The protocol whose attributes are being specified
-              location_value bigint NOT NULL,
-              product_value bigint NOT NULL,
-              resource_value bigint NOT NULL,
+              location_value bigint,
+              product_value bigint,
+              resource_value bigint,
               attribute bigint NOT NULL, -- The Attribute or facet of the given protocol being declared
               sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when a protocol can have multiple values for a given Attribute
               text_value character varying, -- If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL

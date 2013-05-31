@@ -16,7 +16,7 @@
  */
 package com.hellblazer.CoRE.event;
 
-import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_CHILD_STATUS_CODES;
+import static com.hellblazer.CoRE.event.StatusCodeSequencing.*;
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_PARENT_STATUS_CODES;
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
@@ -45,13 +45,15 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 @NamedQueries({
-               @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT EXISTS( "
-                                                                + "SELECT id "
-                                                                + "FROM ruleform.status_code_sequencing "
-                                                                + "WHERE service = ? "
-                                                                + "  AND parent_code = ? "
-                                                                + "  AND child_code = ?"
-                                                                + ")"),
+               @NamedQuery(name = ENSURE_VALID_SERVICE_STATUS, query = "SELECT COUNT(scs.id) "
+                                                                       + "FROM StatusCodeSequencing AS scs "
+                                                                       + "WHERE scs.service = :service "
+                                                                       + "  AND scs.parentCode = :parentCode"),
+               @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT COUNT(scs.id) "
+                                                                + "FROM StatusCodeSequencing AS scs "
+                                                                + "WHERE scs.service = :service "
+                                                                + "  AND scs.parentCode = :parentCode "
+                                                                + "  AND scs.childCode = :childCode"),
                @NamedQuery(name = GET_PARENT_STATUS_CODES, query = "SELECT DISTINCT(scs.parentCode) "
                                                                    + " FROM StatusCodeSequencing scs "
                                                                    + " WHERE scs.service = :service"),
@@ -62,28 +64,29 @@ import com.hellblazer.CoRE.resource.Resource;
 @Table(name = "status_code_sequencing", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "status_code_sequencing_id_seq", sequenceName = "status_code_sequencing_id_seq")
 public class StatusCodeSequencing extends Ruleform {
-    public static final String GET_CHILD_STATUS_CODES  = "statusCodeSequencing.getChildStatusCodes";
-    public static final String GET_PARENT_STATUS_CODES = "statusCodeSequencing.getParentStatusCodes";
-    public static final String IS_VALID_NEXT_STATUS    = "statusCodeSequencing.isValidNextStatus";
+    public static final String  GET_CHILD_STATUS_CODES      = "statusCodeSequencing.getChildStatusCodes";
+    public static final String  GET_PARENT_STATUS_CODES     = "statusCodeSequencing.getParentStatusCodes";
+    public static final String  IS_VALID_NEXT_STATUS        = "statusCodeSequencing.isValidNextStatus";
+    public static final String  ENSURE_VALID_SERVICE_STATUS = "statusCodeSequencing.ensureValidServiceAndStatus";
 
-    private static final long  serialVersionUID        = 1L;
+    private static final long   serialVersionUID            = 1L;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "child_code")
-    private StatusCode         childCode;
+    private StatusCode          childCode;
 
     @Id
     @GeneratedValue(generator = "status_code_sequencing_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+    private Long                id;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "parent_code")
-    private StatusCode         parentCode;
+    private StatusCode          parentCode;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber          = 1;
+    private Integer             sequenceNumber              = 1;
 
     //bi-directional many-to-one association to Event
     @ManyToOne(optional = false)

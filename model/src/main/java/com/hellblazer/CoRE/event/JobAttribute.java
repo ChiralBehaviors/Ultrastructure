@@ -66,7 +66,7 @@ public class JobAttribute extends AttributeValue<Job> {
     //bi-directional many-to-one association to Resource
     @ManyToOne
     @JoinColumn(name = "resource_value")
-    private Product           resource_value;
+    private Resource           resource_value;
 
     public JobAttribute() {
     }
@@ -162,7 +162,7 @@ public class JobAttribute extends AttributeValue<Job> {
         return product_value;
     }
 
-    public Product getResourceValue() {
+    public Resource getResourceValue() {
         return resource_value;
     }
 
@@ -199,7 +199,7 @@ public class JobAttribute extends AttributeValue<Job> {
         this.product_value = product_value;
     }
 
-    public void setResourceValue(Product resource_value) {
+    public void setResourceValue(Resource resource_value) {
         this.resource_value = resource_value;
     }
 }

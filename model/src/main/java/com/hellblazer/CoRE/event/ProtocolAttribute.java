@@ -66,7 +66,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     //bi-directional many-to-one association to Resource
     @ManyToOne
     @JoinColumn(name = "resource_value")
-    private Product           resource_value;
+    private Resource           resource_value;
 
     public ProtocolAttribute() {
     }
@@ -182,7 +182,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
         return protocol;
     }
 
-    public Product getResourceValue() {
+    public Resource getResourceValue() {
         return resource_value;
     }
 
@@ -235,7 +235,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
         this.protocol = protocol;
     }
 
-    public void setResourceValue(Product resource_value) {
+    public void setResourceValue(Resource resource_value) {
         this.resource_value = resource_value;
     }
 }

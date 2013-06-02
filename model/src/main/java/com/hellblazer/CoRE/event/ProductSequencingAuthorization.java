@@ -74,6 +74,8 @@ public class ProductSequencingAuthorization extends Ruleform {
     @GeneratedValue(generator = "product_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
+    private boolean mandatory = false;
+
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "my_parent")
@@ -114,7 +116,7 @@ public class ProductSequencingAuthorization extends Ruleform {
 
     @Column(name = "set_if_active_siblings")
     private Boolean            setIfActiveSiblings;
-
+    
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "status_code")
@@ -130,13 +132,6 @@ public class ProductSequencingAuthorization extends Ruleform {
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public ProductSequencingAuthorization(Resource updatedBy) {
-        super(updatedBy);
-    }
-
     public ProductSequencingAuthorization(Product parent,
                                           StatusCode nextChildStatus,
                                           Product nextChild, Resource updatedBy) {
@@ -144,6 +139,13 @@ public class ProductSequencingAuthorization extends Ruleform {
         setParent(parent);
         setNextChildStatus(nextChildStatus);
         setNextChild(nextChild);
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public ProductSequencingAuthorization(Resource updatedBy) {
+        super(updatedBy);
     }
 
 
@@ -204,9 +206,17 @@ public class ProductSequencingAuthorization extends Ruleform {
         return statusCode;
     }
 
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
     }
 
     /**

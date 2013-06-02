@@ -155,11 +155,10 @@ public class JobScenario {
     }
 
     private void constructJobs() {
-        j1 = new Job(htsfTech, htsfIlluminaSequencing,
-                     kernel.getNotApplicableProduct(),
+        j1 = new Job(htsfTech, kernel.getNotApplicableResource(),
+                     htsfIlluminaSequencing, kernel.getNotApplicableProduct(),
                      kernel.getNotApplicableLocation(),
-                     kernel.getNotApplicableLocation(),
-                     kernel.getNotApplicableResource(), core);
+                     kernel.getNotApplicableLocation(), core);
         j1.setStatus(active);
         em.persist(j1);
 
@@ -677,6 +676,10 @@ public class JobScenario {
                                                    "Figure Out Why Cluster Sequencing Failed",
                                                    core);
         em.persist(figureOutWhyCLusterSeqFailed);
+
+        resuspend = new Product("Resuspend in Suitable Buffer",
+                                "Gotta get it in H2O for sequencing", core);
+        em.persist(resuspend);
     }
 
     private void constructStatusCodes() {
@@ -693,7 +696,7 @@ public class JobScenario {
 
         approvedButInactive = new StatusCode(
                                              "Approved, but Inactive",
-                                             "We going to do it, but we&apos;re not allowed to right now",
+                                             "We going to do it, but we're not allowed to right now",
                                              core);
         em.persist(approvedButInactive);
 
@@ -702,10 +705,6 @@ public class JobScenario {
                                    "We were going to do it, something happened in earlier processing that will prevent us.  This can be garbage-collected now",
                                    core);
         em.persist(abandoned);
-
-        resuspend = new Product("Resuspend in Suitable Buffer",
-                                "Gotta get it in H2O for sequencing", core);
-        em.persist(resuspend);
     }
 
     private void loadJobTestData() {

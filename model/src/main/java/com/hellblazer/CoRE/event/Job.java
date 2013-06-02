@@ -298,8 +298,8 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         super(updatedBy);
     }
 
-    public Job(Resource assignTo, Product service, Product product,
-               Location deliverTo, Location deliverFrom, Resource requester,
+    public Job(Resource assignTo, Resource requester, Product service,
+               Product product, Location deliverTo, Location deliverFrom,
                Resource updatedBy) {
         this(null, assignTo, service, product, deliverTo, deliverFrom,
              requester, updatedBy);

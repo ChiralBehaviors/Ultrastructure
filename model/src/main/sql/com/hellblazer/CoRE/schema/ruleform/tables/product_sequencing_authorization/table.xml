@@ -24,6 +24,8 @@
               set_if_active_siblings boolean, -- Determines if we set the parent job to the status denoted by "parent_status_to_set" 
                                               -- if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say
                                               -- those sibling jobs might have.
+              mandatory boolean, -- If true, then this authorization MUST be satisfied before any action, regardless of
+                                 -- any other applicable authorizations
               notes character varying, -- Additional notes regarding usage of this particular rule
               research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The Resource that last updated this rule

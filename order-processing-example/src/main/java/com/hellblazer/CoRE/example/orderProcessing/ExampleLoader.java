@@ -20,8 +20,11 @@ import javax.persistence.EntityManager;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
+import com.hellblazer.CoRE.event.MetaProtocol;
+import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProtocolAttribute;
+import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.meta.Kernel;
@@ -39,60 +42,66 @@ import com.hellblazer.CoRE.resource.ResourceNetwork;
 public class ExampleLoader {
     private final EntityManager em;
 
+    public Relationship         area;
+    public Relationship         city;
+    public Relationship         customerType;
+    public Relationship         state;
+    public Relationship         salesTaxStatus;
+    public Relationship         storageType;
+    public Relationship         street;
+    public Relationship         region;
+
+    public LocationContext      binCtxt;
+    public LocationContext      containmentCtxt;
+
+    public Location             rsb225;
+    public Location             bht378;
+    public Location             bin1;
+    public Location             bin15;
+    public Location             dc;
+    public Location             east_coast;
+    public Location             factory1;
+    public Location             france;
+    public Location             paris;
+    public Location             us;
+    public Location             wash;
+    public Location             euro;
+
+    public Product              abc486;
+    public Product              checkLetterOfCredit;
+    public Product              checkCredit;
+    public Product              deliver;
+    public Product              discount;
+    public Product              fee;
+    public Product              frozen;
+    public Product              nonExempt;
+    public Product              pick;
+    public Product              chemB;
+    public Product              roomTemp;
+    public Product              printCustomsDeclaration;
+    public Product              ship;
+    public Product              salesTax;
+
+    public Resource             billingComputer;
+    public Resource             cpu;
+    public Resource             creditDept;
+    public Resource             exempt;
+    public Resource             externalCust;
+    public Resource             factory1Resource;
+    public Resource             georgeTownUniversity;
+    public Resource             manufacturer;
+    public Resource             nonExemptResource;
+    public Resource             orgA;
+    public Resource             core;
+
+    public StatusCode           available;
+    public StatusCode           active;
+    public StatusCode           completed;
+    public StatusCode           failure;
+    public StatusCode           abandoned;
+
     private final Kernel        kernel;
-
-    private Relationship        area;
-    private Relationship        city;
-    private Relationship        customerType;
-    private Relationship        state;
-    private Relationship        salesTaxStatus;
-    private Relationship        storageType;
-    private Relationship        street;
-    private Relationship        region;
-
-    private LocationContext     binCtxt;
-    private LocationContext     containmentCtxt;
-
-    private Location            rsb225;
-    private Location            bht378;
-    private Location            bin1;
-    private Location            bin15;
-    private Location            dc;
-    private Location            east_coast;
-    private Location            factory1;
-    private Location            france;
-    private Location            paris;
-    private Location            us;
-    private Location            wash;
-    private Location            euro;
-
-    private Product             abc486;
-    private Product             checkLetterOfCredit;
-    private Product             checkCredit;
-    private Product             deliver;
-    private Product             discount;
-    private Product             fee;
-    private Product             frozen;
-    private Product             nonExempt;
-    private Product             pick;
-    private Product             chemB;
-    private Product             roomTemp;
-    private Product             printCustomsDeclaration;
-    private Product             ship;
-    private Product             salesTax;
-
-    private Resource            billingComputer;
-    private Resource            cpu;
-    private Resource            creditDept;
-    private Resource            exempt;
-    private Resource            externalCust;
-    private Resource            factory1Resource;
-    private Resource            georgeTownUniversity;
-    private Resource            manufacturer;
-    private Resource            nonExemptResource;
-    private Resource            orgA;
     private final Model         model;
-    private Resource            core;
     private Product             notApplicableProduct;
     private Product             anyProduct;
     private Resource            anyResource;
@@ -100,8 +109,9 @@ public class ExampleLoader {
     private Product             sameProduct;
     private Attribute           priceAttribute;
     private Attribute           taxRateAttribute;
-
     private Attribute           discountAttribute;
+    private Relationship        sameRelationship;
+    private Relationship        anyRelationship;
 
     public ExampleLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -113,6 +123,8 @@ public class ExampleLoader {
         anyProduct = kernel.getAnyProduct();
         anyResource = kernel.getAnyResource();
         anyLocation = kernel.getAnyLocation();
+        sameRelationship = kernel.getSameRelationship();
+        anyRelationship = kernel.getAnyRelationship();
     }
 
     public void createAttributes() {
@@ -168,15 +180,6 @@ public class ExampleLoader {
         salesTax = new Product("SalesTax", "Compute sales tax",
                                kernel.getCore());
         em.persist(salesTax);
-    }
-
-    public void createProductNetworks() {
-        model.getProductModel().link(abc486, storageType, roomTemp,
-                                     kernel.getCore());
-        model.getProductModel().link(abc486, salesTaxStatus, nonExempt,
-                                     kernel.getCore());
-        model.getProductModel().link(chemB, storageType, frozen,
-                                     kernel.getCore());
     }
 
     public void createLocationContexts() {
@@ -237,14 +240,43 @@ public class ExampleLoader {
     }
 
     public void createMetaProtocols() {
-        // TODO
+        MetaProtocol m1 = new MetaProtocol(deliver, 1, sameRelationship,
+                                           sameRelationship, state, area, core);
+        em.persist(m1);
+        MetaProtocol m2 = new MetaProtocol(deliver, 2, customerType,
+                                           sameRelationship, area, area, core);
+        em.persist(m2);
+        MetaProtocol m3 = new MetaProtocol(deliver, 3, customerType,
+                                           anyRelationship, area, area, core);
+        em.persist(m3);
+        MetaProtocol m4 = new MetaProtocol(deliver, 4, customerType,
+                                           sameRelationship, anyRelationship,
+                                           area, core);
+        em.persist(m4);
+        MetaProtocol m5 = new MetaProtocol(deliver, 5, salesTaxStatus,
+                                           sameRelationship, state,
+                                           anyRelationship, core);
+        em.persist(m5);
+        MetaProtocol m6 = new MetaProtocol(deliver, 6, anyRelationship,
+                                           anyRelationship, anyRelationship,
+                                           anyRelationship, core);
+        em.persist(m6);
+    }
+
+    public void createProductNetworks() {
+        model.getProductModel().link(abc486, storageType, roomTemp,
+                                     kernel.getCore());
+        model.getProductModel().link(abc486, salesTaxStatus, nonExempt,
+                                     kernel.getCore());
+        model.getProductModel().link(chemB, storageType, frozen,
+                                     kernel.getCore());
     }
 
     public void createProtocols() {
         Protocol p1 = new Protocol(deliver, externalCust, anyProduct, us, us,
                                    cpu, checkCredit, notApplicableProduct, core);
         em.persist(p1);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
@@ -252,7 +284,7 @@ public class ExampleLoader {
                                    creditDept, checkLetterOfCredit,
                                    notApplicableProduct, core);
         em.persist(p2);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
@@ -260,7 +292,7 @@ public class ExampleLoader {
                                    cpu, printCustomsDeclaration,
                                    notApplicableProduct, core);
         em.persist(p3);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
@@ -268,7 +300,7 @@ public class ExampleLoader {
                                    anyLocation, anyLocation, factory1Resource,
                                    pick, sameProduct, core);
         em.persist(p4);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
@@ -276,22 +308,22 @@ public class ExampleLoader {
                                    anyLocation, anyLocation, factory1Resource,
                                    deliver, sameProduct, true, core);
         em.persist(p5);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
         Protocol p6 = new Protocol(deliver, externalCust, abc486, anyLocation,
                                    us, billingComputer, fee, sameProduct, core);
         em.persist(p6);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
-        
+
         ProtocolAttribute price = new ProtocolAttribute(priceAttribute, core);
         price.setNumericValue(1500);
         price.setProtocol(p6);
         em.persist(price);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
@@ -299,49 +331,49 @@ public class ExampleLoader {
                                    anyLocation, billingComputer, salesTax,
                                    sameProduct, core);
         em.persist(p7);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
-        
+
         ProtocolAttribute taxRate = new ProtocolAttribute(taxRateAttribute,
                                                           core);
         taxRate.setNumericValue(0.0575);
         taxRate.setProtocol(p7);
         em.persist(taxRate);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
         Protocol p8 = new Protocol(deliver, externalCust, abc486, euro, us,
                                    billingComputer, discount, sameProduct, core);
         em.persist(p8);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
-        
+
         ProtocolAttribute discount = new ProtocolAttribute(discountAttribute,
                                                            core);
         discount.setNumericValue(0.05);
         discount.setProtocol(p7);
         em.persist(discount);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
 
         Protocol p9 = new Protocol(deliver, georgeTownUniversity, abc486, dc,
                                    us, billingComputer, fee, sameProduct, core);
         em.persist(p9);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
-        
+
         ProtocolAttribute discountedPrice = new ProtocolAttribute(
                                                                   priceAttribute,
                                                                   core);
         discountedPrice.setNumericValue(1250);
         discountedPrice.setProtocol(p9);
         em.persist(discountedPrice);
-        
+
         em.getTransaction().commit();
         em.getTransaction().begin();
     }
@@ -479,6 +511,77 @@ public class ExampleLoader {
         em.persist(orgA);
     }
 
+    public void createStatusCodes() {
+
+        available = new StatusCode("Available",
+                                   "The job is available for execution", core);
+        em.persist(available);
+
+        active = new StatusCode("Active", "Working on it now", core);
+        em.persist(active);
+
+        completed = new StatusCode("Completed", "Completed Job", core);
+        completed.setPropagateChildren(true);
+        em.persist(completed);
+
+        failure = new StatusCode("Failure", "Something went wrong", core);
+        failure.setFailParent(true);
+        em.persist(failure);
+
+        abandoned = new StatusCode(
+                                   "Abandoned",
+                                   "We were going to do it, something happened in earlier processing that will prevent us.  This can be garbage-collected now",
+                                   core);
+        em.persist(abandoned);
+    }
+
+    public void createSequencingAuthorizations() {
+        ProductSequencingAuthorization psa1 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa1.setParent(deliver);
+        psa1.setStatusCode(active);
+        psa1.setSequenceNumber(1);
+        psa1.setNextChild(fee);
+        psa1.setNextChildStatus(available);
+        em.persist(psa1);
+
+        ProductSequencingAuthorization psa2 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa2.setParent(deliver);
+        psa2.setStatusCode(active);
+        psa2.setSequenceNumber(2);
+        psa2.setNextChild(checkCredit);
+        psa2.setNextChildStatus(available);
+        em.persist(psa2);
+
+        ProductSequencingAuthorization psa3 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa3.setParent(deliver);
+        psa3.setStatusCode(active);
+        psa3.setSequenceNumber(3);
+        psa3.setNextChild(pick);
+        psa3.setNextChildStatus(available);
+        em.persist(psa3);
+
+        ProductSequencingAuthorization psa4 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa4.setParent(pick);
+        psa4.setStatusCode(completed);
+        psa4.setSequenceNumber(4);
+        psa4.setNextSibling(ship);
+        psa4.setNextSiblingStatus(available);
+        em.persist(psa4);
+
+        ProductSequencingAuthorization psa5 = new ProductSequencingAuthorization(
+                                                                                 core);
+        psa5.setParent(deliver);
+        psa5.setStatusCode(active);
+        psa5.setSequenceNumber(5);
+        psa5.setNextSibling(printCustomsDeclaration);
+        psa5.setNextSiblingStatus(available);
+        em.persist(psa5);
+    }
+
     public void initEntityManager() throws Exception {
     }
 
@@ -494,5 +597,7 @@ public class ExampleLoader {
         createLocationNetworks();
         createProtocols();
         createMetaProtocols();
+        createStatusCodes();
+        // createSequencingAuthorizations();
     }
 }

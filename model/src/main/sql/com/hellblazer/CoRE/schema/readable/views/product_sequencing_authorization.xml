@@ -13,8 +13,8 @@
 			        ncs.name AS next_child_status, nss.name AS next_sibling, 
 			        nss.name AS next_sibling_status, mp.name AS my_parent, 
 			        mps.name AS parent_status_to_set, base_table.set_if_active_siblings, 
-			        base_table.notes, res.name AS research, up.name AS updated_by, 
-			        base_table.update_date
+			        base_table.mandatory, base_table.notes, res.name AS research, 
+			        up.name AS updated_by, base_table.update_date
 			   FROM ruleform.product_sequencing_authorization base_table
 			   JOIN ruleform.product p ON base_table.parent = p.id
 			   JOIN ruleform.status_code sc ON base_table.status_code = sc.id

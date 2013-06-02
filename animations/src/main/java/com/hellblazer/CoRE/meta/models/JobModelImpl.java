@@ -834,7 +834,7 @@ public class JobModelImpl implements JobModel {
 
     private TypedQuery<Protocol> createQuery(MetaProtocol metaProtocol, Job job) {
 
-        Product service = transform(job.getService(),
+        Product requestedService = transform(job.getService(),
                                     transform(job.getService(),
                                               metaProtocol.getServiceType(),
                                               "service", job));
@@ -864,7 +864,7 @@ public class JobModelImpl implements JobModel {
         Parameter<Resource> requesterParameter = cb.parameter(Resource.class);
         Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
         Parameter<Location> deliverToParameter = cb.parameter(Location.class);
-        if (service != null) {
+        if (requestedService != null) {
             cQuery.where(cb.equal(root.get(Protocol_.requestedService),
                                   serviceParameter));
         }
@@ -885,8 +885,8 @@ public class JobModelImpl implements JobModel {
         }
 
         TypedQuery<Protocol> query = em.createQuery(cQuery);
-        if (service != null) {
-            query.setParameter(serviceParameter, service);
+        if (requestedService != null) {
+            query.setParameter(serviceParameter, requestedService);
         }
         if (product != null) {
             query.setParameter(productParameter, product);

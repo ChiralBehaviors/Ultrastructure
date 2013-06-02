@@ -84,7 +84,7 @@ public class MetaProtocol extends Ruleform {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Product             service;
+    private Product            service;
 
     /**
      * the relationship that transforms the service type
@@ -114,6 +114,30 @@ public class MetaProtocol extends Ruleform {
      */
     public MetaProtocol(Resource updatedBy) {
         super(updatedBy);
+    }
+
+    public MetaProtocol(Product service, Relationship requestingResource,
+                        Relationship serviceType, Relationship deliverTo,
+                        Relationship deliverFrom, Resource updatedBy) {
+        super(updatedBy);
+        setService(service);
+        setRequestingResource(requestingResource);
+        setServiceType(serviceType);
+        setDeliverTo(deliverTo);
+        setDeliverFrom(deliverFrom);
+    }
+
+    public MetaProtocol(Product service, int sequenceNumber,
+                        Relationship requestingResource,
+                        Relationship serviceType, Relationship deliverTo,
+                        Relationship deliverFrom, Resource updatedBy) {
+        super(updatedBy);
+        setService(service);
+        setSequenceNumber(sequenceNumber);
+        setRequestingResource(requestingResource);
+        setServiceType(serviceType);
+        setDeliverTo(deliverTo);
+        setDeliverFrom(deliverFrom);
     }
 
     /**

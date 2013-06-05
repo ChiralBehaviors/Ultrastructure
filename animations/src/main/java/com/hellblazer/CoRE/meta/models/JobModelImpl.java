@@ -50,7 +50,9 @@ import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.Protocol_;
@@ -424,12 +426,12 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ProductSequencingAuthorization> getChildActions(Job job) {
-        TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_CHILD_ACTIONS,
-                                                                               ProductSequencingAuthorization.class);
+    public List<ProductChildSequencingAuthorization> getChildActions(Job job) {
+        TypedQuery<ProductChildSequencingAuthorization> query = em.createNamedQuery(ProductChildSequencingAuthorization.GET_CHILD_ACTIONS,
+                                                                                    ProductChildSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
-        List<ProductSequencingAuthorization> childActions = query.getResultList();
+        List<ProductChildSequencingAuthorization> childActions = query.getResultList();
         return childActions;
     }
 
@@ -520,11 +522,11 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ProductSequencingAuthorization> getParentActions(Job job) {
-        return em.createNamedQuery(ProductSequencingAuthorization.GET_PARENT_ACTIONS,
-                                   ProductSequencingAuthorization.class).setParameter("service",
-                                                                                      job.getService()).setParameter("status",
-                                                                                                                     job.getStatus()).getResultList();
+    public List<ProductParentSequencingAuthorization> getParentActions(Job job) {
+        return em.createNamedQuery(ProductParentSequencingAuthorization.GET_PARENT_ACTIONS,
+                                   ProductParentSequencingAuthorization.class).setParameter("service",
+                                                                                            job.getService()).setParameter("status",
+                                                                                                                           job.getStatus()).getResultList();
     }
 
     /**
@@ -567,9 +569,9 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ProductSequencingAuthorization> getSiblingActions(Job job) {
-        TypedQuery<ProductSequencingAuthorization> query = em.createNamedQuery(ProductSequencingAuthorization.GET_SIBLING_ACTIONS,
-                                                                               ProductSequencingAuthorization.class);
+    public List<ProductSiblingSequencingAuthorization> getSiblingActions(Job job) {
+        TypedQuery<ProductSiblingSequencingAuthorization> query = em.createNamedQuery(ProductSiblingSequencingAuthorization.GET_SIBLING_ACTIONS,
+                                                                                      ProductSiblingSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
@@ -746,8 +748,8 @@ public class JobModelImpl implements JobModel {
         if (log.isInfoEnabled()) {
             log.info(String.format("Processing children of Job %s", job));
         }
-        List<ProductSequencingAuthorization> childActions = getChildActions(job);
-        for (ProductSequencingAuthorization seq : childActions) {
+        List<ProductChildSequencingAuthorization> childActions = getChildActions(job);
+        for (ProductChildSequencingAuthorization seq : childActions) {
             // This can be merged into the same outer query... just doing quick and dirty now
 
             // for each child job that is active (not UNSET or terminal) update their status to this one
@@ -769,7 +771,7 @@ public class JobModelImpl implements JobModel {
             log.info(String.format("Processing parent of Job %s", job));
         }
 
-        for (ProductSequencingAuthorization seq : getParentActions(job)) {
+        for (ProductParentSequencingAuthorization seq : getParentActions(job)) {
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
                 // If the parent job has the specified event then, make the change
                 // if the specified event is NULL then set it
@@ -791,7 +793,7 @@ public class JobModelImpl implements JobModel {
             log.info(String.format("Processing siblings of Job %s", job));
         }
 
-        for (ProductSequencingAuthorization seq : getSiblingActions(job)) {
+        for (ProductSiblingSequencingAuthorization seq : getSiblingActions(job)) {
             for (Job sibling : getUnsetSiblings(job.getParent(),
                                                 seq.getNextSibling())) {
                 changeStatus(sibling,
@@ -835,9 +837,9 @@ public class JobModelImpl implements JobModel {
     private TypedQuery<Protocol> createQuery(MetaProtocol metaProtocol, Job job) {
 
         Product requestedService = transform(job.getService(),
-                                    transform(job.getService(),
-                                              metaProtocol.getServiceType(),
-                                              "service", job));
+                                             transform(job.getService(),
+                                                       metaProtocol.getServiceType(),
+                                                       "service", job));
         Product product = transform(job.getProduct(),
                                     transform(job.getProduct(),
                                               metaProtocol.getProductOrdered(),

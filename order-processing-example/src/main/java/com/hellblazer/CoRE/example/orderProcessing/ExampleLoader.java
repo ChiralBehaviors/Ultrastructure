@@ -21,7 +21,8 @@ import javax.persistence.EntityManager;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.ProductSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.StatusCode;
@@ -536,8 +537,8 @@ public class ExampleLoader {
     }
 
     public void createSequencingAuthorizations() {
-        ProductSequencingAuthorization psa1 = new ProductSequencingAuthorization(
-                                                                                 core);
+        ProductChildSequencingAuthorization psa1 = new ProductChildSequencingAuthorization(
+                                                                                           core);
         psa1.setParent(deliver);
         psa1.setStatusCode(active);
         psa1.setSequenceNumber(1);
@@ -545,8 +546,8 @@ public class ExampleLoader {
         psa1.setNextChildStatus(available);
         em.persist(psa1);
 
-        ProductSequencingAuthorization psa2 = new ProductSequencingAuthorization(
-                                                                                 core);
+        ProductChildSequencingAuthorization psa2 = new ProductChildSequencingAuthorization(
+                                                                                           core);
         psa2.setParent(deliver);
         psa2.setStatusCode(active);
         psa2.setSequenceNumber(2);
@@ -554,8 +555,8 @@ public class ExampleLoader {
         psa2.setNextChildStatus(available);
         em.persist(psa2);
 
-        ProductSequencingAuthorization psa3 = new ProductSequencingAuthorization(
-                                                                                 core);
+        ProductChildSequencingAuthorization psa3 = new ProductChildSequencingAuthorization(
+                                                                                           core);
         psa3.setParent(deliver);
         psa3.setStatusCode(active);
         psa3.setSequenceNumber(3);
@@ -563,8 +564,8 @@ public class ExampleLoader {
         psa3.setNextChildStatus(available);
         em.persist(psa3);
 
-        ProductSequencingAuthorization psa4 = new ProductSequencingAuthorization(
-                                                                                 core);
+        ProductSiblingSequencingAuthorization psa4 = new ProductSiblingSequencingAuthorization(
+                                                                                               core);
         psa4.setParent(pick);
         psa4.setStatusCode(completed);
         psa4.setSequenceNumber(4);
@@ -572,8 +573,8 @@ public class ExampleLoader {
         psa4.setNextSiblingStatus(available);
         em.persist(psa4);
 
-        ProductSequencingAuthorization psa5 = new ProductSequencingAuthorization(
-                                                                                 core);
+        ProductSiblingSequencingAuthorization psa5 = new ProductSiblingSequencingAuthorization(
+                                                                                               core);
         psa5.setParent(deliver);
         psa5.setStatusCode(active);
         psa5.setSequenceNumber(5);

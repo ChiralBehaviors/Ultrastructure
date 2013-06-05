@@ -7,8 +7,11 @@
 
     <changeSet id="1"
         author="hhildebrand">
-        <sql> CREATE TRIGGER product_sequencing_authorization_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.product_sequencing_authorization FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER product_sequencing_authorization_update_date ON ruleform.product_sequencing_authorization; </rollback>
+        <sql> CREATE INDEX product_child_sequencing_authorization_research_fkey_idx ON ruleform.product_child_sequencing_authorization USING btree
+            (research ); </sql>
+        <rollback>
+            <dropIndex tableName="ruleform.product_child_sequencing_authorization" indexName="product_child_sequencing_authorization_research_fkey_idx"
+            />
+        </rollback>
     </changeSet>
 </databaseChangeLog>

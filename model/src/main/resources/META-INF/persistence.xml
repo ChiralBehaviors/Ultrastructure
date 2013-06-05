@@ -38,7 +38,9 @@
 		<class>com.hellblazer.CoRE.product.ProductNetworkAttribute</class>
 		<class>com.hellblazer.CoRE.product.ProductNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.product.ProductNetworkDeduction</class>
-		<class>com.hellblazer.CoRE.event.ProductSequencingAuthorization</class>
+		<class>com.hellblazer.CoRE.event.ProductChildSequencingAuthorization</class>
+        <class>com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization</class>
+        <class>com.hellblazer.CoRE.event.ProductParentSequencingAuthorization</class>
 		<class>com.hellblazer.CoRE.event.Job</class>
 		<class>com.hellblazer.CoRE.event.JobAttribute</class>
 		<class>com.hellblazer.CoRE.event.JobChronology</class>

@@ -56,6 +56,7 @@
     <include relativeToChangelogFile="true" file="tables/meta_protocol-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol_attribute.xml"/>
+    <include relativeToChangelogFile="true" file="tables/protocol_attribute_authorization.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_relationship-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/transformation-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml"/>

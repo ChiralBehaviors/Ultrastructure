@@ -7,16 +7,16 @@
 
 	<changeSet id="1" author="hhildebrand">
 		<sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.ensure_valid_service_and_status()
+            CREATE OR REPLACE FUNCTION ruleform.ensure_valid_child_service_and_status()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.ensure_valid_service_and_status'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.ensure_valid_child_service_and_status'
                 LANGUAGE javaU STABLE
               COST 100;
-            ALTER FUNCTION ruleform.ensure_valid_service_and_status()
+            ALTER FUNCTION ruleform.ensure_valid_child_service_and_status()
               OWNER TO core;
             ]]>
 		</sql>
-		<rollback> DROP FUNCTION ruleform.ensure_valid_service_and_status();
+		<rollback> DROP FUNCTION ruleform.ensure_valid_child_service_and_status();
 		</rollback>
 	</changeSet>
 </databaseChangeLog>

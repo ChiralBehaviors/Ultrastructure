@@ -120,7 +120,7 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    public static void ensure_valid_service_and_status(TriggerData triggerData)
+    public static void ensure_valid_sibling_service_and_status(TriggerData triggerData)
                                                                                throws SQLException {
         InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
                                                      (Long) triggerData.getNew().getObject("next_sibling_status"));

@@ -52,7 +52,11 @@
 	<include relativeToChangelogFile="true"
 		file="functions/ensure_next_state_is_valid.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/ensure_valid_service_and_status.xml" />
+		file="functions/ensure_valid_child_service_and_status.xml" />
+    <include relativeToChangelogFile="true"
+        file="functions/ensure_valid_parent_service_and_status.xml" />
+    <include relativeToChangelogFile="true"
+        file="functions/ensure_valid_sibling_service_and_status.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/ensure_valid_initial_state.xml" />
 	<include relativeToChangelogFile="true"

@@ -121,9 +121,21 @@ public class JobModelImpl implements JobModel {
     }
 
     public static void ensure_valid_sibling_service_and_status(TriggerData triggerData)
-                                                                               throws SQLException {
+                                                                                       throws SQLException {
         InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
                                                      (Long) triggerData.getNew().getObject("next_sibling_status"));
+    }
+
+    public static void ensure_valid_child_service_and_status(TriggerData triggerData)
+                                                                                     throws SQLException {
+        InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_child"),
+                                                     (Long) triggerData.getNew().getObject("next_child_status"));
+    }
+
+    public static void ensure_valid_parent_service_and_status(TriggerData triggerData)
+                                                                                      throws SQLException {
+        InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("myParent"),
+                                                     (Long) triggerData.getNew().getObject("parent_status_to_set"));
     }
 
     public static Long get_initial_state(Long service) {
@@ -277,13 +289,8 @@ public class JobModelImpl implements JobModel {
         if (nextStatus.equals(nextStatus)) {
             return; // Nothing to do
         }
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Transitioning service %s, job %s, from %s to %s",
-                                   job, service, currentStatus, nextStatus));
-        }
         if (!getNextStatusCodes(service, currentStatus).contains(nextStatus)) {
             if (kernel.getUnset().equals(currentStatus)) {
-
                 throw new SQLException(
                                        String.format("%s is not set up to come after the special (UNSET) status code for Service %s. Please configure it to be an initial state in the Status Code Sequencing ruleform if this is what you want.",
                                                      nextStatus, service,
@@ -297,20 +304,16 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void ensureValidServiceAndStatus(Product nextSibling,
-                                            StatusCode nextSiblingStatus)
-                                                                         throws SQLException {
+    public void ensureValidServiceAndStatus(Product service, StatusCode status)
+                                                                               throws SQLException {
         TypedQuery<Long> query = em.createNamedQuery(StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS,
                                                      Long.class);
-        if (nextSibling == null || nextSiblingStatus == null) {
-            return;
-        }
-        query.setParameter("service", nextSibling);
-        query.setParameter("parentCode", nextSiblingStatus);
+        query.setParameter("service", service);
+        query.setParameter("parentCode", status);
         if (query.getSingleResult() == 0) {
             throw new SQLException(
-                                   String.format("'next sibling and next sibling status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
-                                                 nextSibling, nextSiblingStatus));
+                                   String.format("'service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
+                                                 service, status));
         }
     }
 
@@ -924,14 +927,10 @@ public class JobModelImpl implements JobModel {
                                em.find(StatusCode.class, nextStatus));
     }
 
-    private void ensureValidServiceAndStatus(Long nextSibling,
-                                             Long nextSiblingStatus)
-                                                                    throws SQLException {
-        if (nextSibling == null || nextSiblingStatus == null) {
-            return;
-        }
-        ensureValidServiceAndStatus(em.find(Product.class, nextSibling),
-                                    em.find(StatusCode.class, nextSiblingStatus));
+    private void ensureValidServiceAndStatus(Long service, Long status)
+                                                                       throws SQLException {
+        ensureValidServiceAndStatus(em.find(Product.class, service),
+                                    em.find(StatusCode.class, status));
     }
 
     /**

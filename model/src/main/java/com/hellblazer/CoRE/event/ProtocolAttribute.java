@@ -30,8 +30,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -52,21 +50,6 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     @ManyToOne
     @JoinColumn(name = "protocol")
     private Protocol          protocol;
-
-    //bi-directional many-to-one association to Location
-    @ManyToOne
-    @JoinColumn(name = "location_value")
-    private Location          location_value;
-
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           product_value;
-
-    //bi-directional many-to-one association to Resource
-    @ManyToOne
-    @JoinColumn(name = "resource_value")
-    private Resource           resource_value;
 
     public ProtocolAttribute() {
     }
@@ -147,14 +130,6 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
         super(updatedBy);
     }
 
-    @Override
-    public void copyInto(JobAttribute clone) {
-        super.copyInto(clone);
-        clone.setLocationValue(getLocationValue());
-        clone.setResourceValue(getResourceValue());
-        clone.setProductValue(getProductValue());
-    }
-
     /**
      * @return a new job attribute cloned from the receiver
      */
@@ -168,23 +143,11 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     @Override
     public Long getId() {
         return id;
-    }
-
-    public Location getLocationValue() {
-        return location_value;
-    }
-
-    public Product getProductValue() {
-        return product_value;
-    }
+    } 
 
     public Protocol getProtocol() {
         return protocol;
-    }
-
-    public Resource getResourceValue() {
-        return resource_value;
-    }
+    } 
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.attribute.AttributeValue#getRuleformAttribute()
@@ -205,11 +168,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setLocationValue(Location location_value) {
-        this.location_value = location_value;
-    }
+    } 
 
     public void setNumericValue(double value) {
         setNumericValue(BigDecimal.valueOf(value));
@@ -225,17 +184,9 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
 
     public void setNumericValue(long value) {
         setNumericValue(BigDecimal.valueOf(value));
-    }
-
-    public void setProductValue(Product product_value) {
-        this.product_value = product_value;
-    }
+    } 
 
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
-    }
-
-    public void setResourceValue(Resource resource_value) {
-        this.resource_value = resource_value;
-    }
+    } 
 }

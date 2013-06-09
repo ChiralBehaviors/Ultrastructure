@@ -35,7 +35,7 @@ import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the product_location database table.
+ * The authorization rule form that defines rules for relating products to locations.
  * 
  */
 @javax.persistence.Entity

@@ -30,8 +30,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -52,21 +50,6 @@ public class JobAttribute extends AttributeValue<Job> {
     @ManyToOne
     @JoinColumn(name = "job")
     private Job               job;
-
-    //bi-directional many-to-one association to Location
-    @ManyToOne
-    @JoinColumn(name = "location_value")
-    private Location          location_value;
-
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           product_value;
-
-    //bi-directional many-to-one association to Resource
-    @ManyToOne
-    @JoinColumn(name = "resource_value")
-    private Resource           resource_value;
 
     public JobAttribute() {
     }
@@ -154,18 +137,6 @@ public class JobAttribute extends AttributeValue<Job> {
         return job;
     }
 
-    public Location getLocationValue() {
-        return location_value;
-    }
-
-    public Product getProductValue() {
-        return product_value;
-    }
-
-    public Resource getResourceValue() {
-        return resource_value;
-    }
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
@@ -189,17 +160,5 @@ public class JobAttribute extends AttributeValue<Job> {
 
     public void setJob(Job job) {
         this.job = job;
-    }
-
-    public void setLocationValue(Location location_value) {
-        this.location_value = location_value;
-    }
-
-    public void setProductValue(Product product_value) {
-        this.product_value = product_value;
-    }
-
-    public void setResourceValue(Resource resource_value) {
-        this.resource_value = resource_value;
     }
 }

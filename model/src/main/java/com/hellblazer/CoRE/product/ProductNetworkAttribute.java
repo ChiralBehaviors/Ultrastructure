@@ -33,7 +33,9 @@ import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the product_network_attribute database table.
+ * The attribute value for product attributes
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

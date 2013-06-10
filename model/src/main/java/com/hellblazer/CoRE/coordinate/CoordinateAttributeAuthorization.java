@@ -29,8 +29,7 @@ import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * 
- * The persistent class for the coordinate_attribute_authorization database
- * table.
+ * The authorization of an attribute for a coordinate.
  * 
  * @author hhildebrand
  * 

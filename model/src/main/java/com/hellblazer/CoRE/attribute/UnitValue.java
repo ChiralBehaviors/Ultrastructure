@@ -34,7 +34,9 @@ import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the unit_values database table.
+ * The value of a unit.
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

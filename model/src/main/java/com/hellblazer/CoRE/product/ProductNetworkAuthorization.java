@@ -31,6 +31,8 @@ import com.hellblazer.CoRE.network.NetworkAuthorization;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
+ * The authorization for product networks
+ * 
  * @author hhildebrand
  * 
  */

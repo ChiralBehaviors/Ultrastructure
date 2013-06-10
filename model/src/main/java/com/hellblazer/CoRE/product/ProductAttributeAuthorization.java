@@ -30,7 +30,9 @@ import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the product_attribute_authorization database table.
+ * The authorizations relating products and their attributes
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

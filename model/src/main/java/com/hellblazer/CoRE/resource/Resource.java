@@ -51,18 +51,12 @@ import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
- * An product that can provide information, produce products, or perform work.
+ * An agency that can provide information, produce products, or perform work.
  * 
  * Examples are people, lab groups, software, books, bank accounts, output files
  * of computational analyses, etc.
  * 
- * "SELECT " + "  value " + "FROM " + "       ResourceAttribute value " +
- * "JOIN ResourceAttribute auth on auth.authorizedAttribute = value.attribute "
- * +
- * "JOIN ResourceNetwork network on network.relationship = auth.classification AND network.child = auth.classifier "
- * + "WHERE "+ "        value.resource = :resource AND " +
- * "        auth.classification = :classificatoin AND " +
- * "        auth.classifier = :classifier "
+ * @author hhildebrand
  * 
  */
 @NamedQueries({

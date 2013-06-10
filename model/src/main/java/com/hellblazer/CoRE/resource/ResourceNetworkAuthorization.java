@@ -30,6 +30,8 @@ import javax.persistence.Table;
 import com.hellblazer.CoRE.network.NetworkAuthorization;
 
 /**
+ * The authorized network relationshps of agencies
+ * 
  * @author hhildebrand
  * 
  */

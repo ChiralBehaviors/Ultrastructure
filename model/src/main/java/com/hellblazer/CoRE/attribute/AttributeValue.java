@@ -35,6 +35,8 @@ import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
+ * The abstract attribute value.
+ * 
  * @author hhildebrand
  * 
  */

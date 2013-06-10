@@ -33,7 +33,9 @@ import com.hellblazer.CoRE.coordinate.Coordinate;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the product_location_network database table.
+ * The network relationships of product locations
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

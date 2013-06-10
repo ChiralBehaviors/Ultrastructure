@@ -27,7 +27,9 @@ import javax.persistence.Table;
 import com.hellblazer.CoRE.Ruleform;
 
 /**
- * The persistent class for the unit database table.
+ * The attribute unit.
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

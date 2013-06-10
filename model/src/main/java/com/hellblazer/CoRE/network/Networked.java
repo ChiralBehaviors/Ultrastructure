@@ -24,6 +24,8 @@ import javax.persistence.EntityManager;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
+ * The common interface for all networked entities.
+ * 
  * @author hhildebrand
  * 
  */

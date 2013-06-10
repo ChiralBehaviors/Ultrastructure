@@ -27,6 +27,9 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
+ * 
+ * The abstract super class of all network authorizations.
+ * 
  * @author hhildebrand
  * 
  */

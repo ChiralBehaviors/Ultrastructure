@@ -29,7 +29,9 @@ import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
- * The persistent class for the resource_attribute_authorization database table.
+ * The authorizations for attributes on entities.
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

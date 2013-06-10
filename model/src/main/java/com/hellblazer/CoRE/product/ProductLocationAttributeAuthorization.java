@@ -26,8 +26,9 @@ import com.hellblazer.CoRE.attribute.AttributeAuthorization;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the product_location_attribute_authorization database
- * table.
+ * The authorization for product location attributes
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

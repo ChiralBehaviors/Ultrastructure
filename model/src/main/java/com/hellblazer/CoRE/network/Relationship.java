@@ -39,6 +39,8 @@ import com.hellblazer.CoRE.resource.Resource;
  * The existential rule form that defines relationships between existential rule
  * form instances, providing the edge connecting two nodes in a directed graph.
  * 
+ * @author hhildebrand
+ * 
  */
 @javax.persistence.Entity
 @Table(name = "relationship", schema = "ruleform")

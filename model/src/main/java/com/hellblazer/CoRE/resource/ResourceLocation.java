@@ -29,7 +29,9 @@ import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
- * The persistent class for the resource_location database table.
+ * The authorization relating agencies to location
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

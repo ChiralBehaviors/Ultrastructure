@@ -36,7 +36,9 @@ import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
 
 /**
- * The persistent class for the resource_attribute database table.
+ * The attribute value of an agency attribute
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

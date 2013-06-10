@@ -31,7 +31,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the attribute_meta_attribute database table.
+ * An attribute value on an attribute
  * 
  */
 @javax.persistence.Entity

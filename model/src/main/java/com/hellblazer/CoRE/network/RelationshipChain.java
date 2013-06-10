@@ -28,7 +28,9 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the relationship_chain database table.
+ * A chain of relationships.
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

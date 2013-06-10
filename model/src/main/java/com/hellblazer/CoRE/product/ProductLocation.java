@@ -37,6 +37,8 @@ import com.hellblazer.CoRE.resource.Resource;
 /**
  * The authorization rule form that defines rules for relating products to locations.
  * 
+ * @author hhildebrand
+ * 
  */
 @javax.persistence.Entity
 @Table(name = "product_location", schema = "ruleform")

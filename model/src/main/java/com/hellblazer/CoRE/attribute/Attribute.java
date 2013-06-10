@@ -53,6 +53,8 @@ import com.hellblazer.CoRE.resource.Resource;
  * Existential ruleform for all attributes in the CoRE database. This table
  * defines and describes all attributes.
  * 
+ * @author hhildebrand
+ * 
  */
 @NamedQueries({
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "

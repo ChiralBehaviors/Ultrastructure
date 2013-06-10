@@ -25,7 +25,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * The persistent class for the research database table.
+ * The existential entity representing some kind of research.
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

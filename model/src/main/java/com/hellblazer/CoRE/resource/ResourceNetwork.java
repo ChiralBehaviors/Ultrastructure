@@ -36,7 +36,9 @@ import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
- * The persistent class for the resource_network database table.
+ * The network relationships of agencies
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

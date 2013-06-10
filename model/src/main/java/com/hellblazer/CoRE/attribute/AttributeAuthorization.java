@@ -30,6 +30,9 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
+ * 
+ * The abstract authorization for attributes on entities.
+ * 
  * @author hhildebrand
  * 
  */

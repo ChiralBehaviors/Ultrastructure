@@ -37,7 +37,9 @@ import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the product_attribute database table.
+ * The attribute values of product attributes
+ * 
+ * @author hhildebrand
  * 
  */
 @NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_RESOURCE, query = "SELECT ea FROM ProductAttribute ea"

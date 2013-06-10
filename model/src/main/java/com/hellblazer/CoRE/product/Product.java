@@ -64,6 +64,8 @@ import com.hellblazer.CoRE.resource.Resource;
 /**
  * A Thing. A product, or an artifact.
  * 
+ * @author hhildebrand
+ * 
  */
 @NamedQueries({
                @NamedQuery(name = FIND_FLAGGED, query = "select e from Product e where e.research is not null"),

@@ -27,6 +27,8 @@ import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
+ * The authorization for attributes on attributes
+ * 
  * @author hhildebrand
  * 
  */

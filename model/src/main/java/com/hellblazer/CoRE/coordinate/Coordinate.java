@@ -45,7 +45,9 @@ import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the coordinate database table.
+ * The location coordinate.
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

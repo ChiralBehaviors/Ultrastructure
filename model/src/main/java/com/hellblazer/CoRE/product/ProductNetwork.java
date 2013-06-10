@@ -43,7 +43,9 @@ import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The persistent class for the product_network database table.
+ * The network relationships of products.
+ * 
+ * @author hhildebrand
  * 
  */
 @javax.persistence.Entity

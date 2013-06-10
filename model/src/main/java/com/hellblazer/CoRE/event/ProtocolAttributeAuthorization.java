@@ -46,35 +46,23 @@ import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.*;
                                                                             + "FROM "
                                                                             + "       ProtocolAttribute attrValue, "
                                                                             + "       ProtocolAttributeAuthorization auth, "
-                                                                            + "       ProductNetwork network, "
+                                                                            + "       ProductNetwork network "
                                                                             + "WHERE "
                                                                             + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.service_classification AND "
+                                                                            + "        network.relationship = auth.serviceClassification AND "
                                                                             + "        network.parent = auth.service AND"
-                                                                            + "        network.relationship = auth.product_classification AND "
+                                                                            + "        network.relationship = auth.productClassification AND "
                                                                             + "        network.parent = auth.product AND"
-                                                                            + "        attrValue.protocol = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
+                                                                            + "        attrValue.protocol = :ruleform "),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_VALUES, query = "select attr from ProtocolAttributeAuthorization attr where "
                                                                          + "attr.product = :ruleform "
                                                                          + "AND attr.id IN ("
                                                                          + "select ea.authorizedAttribute from ProductAttributeAuthorization ea "
                                                                          + "WHERE ea.groupingResource = :resource)"),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProtocolAttributeAuthorization ea "
-                                                                                    + "WHERE ea.classification = :classification "
-                                                                                    + "AND ea.classifier = :classifier"),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProtocolAttributeAuthorization ea "
-                                                                                                  + "WHERE ea.classification = :classification "
-                                                                                                  + "AND ea.classifier = :classifier AND ea.authorizedAttribute = :attribute"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
                                                                                  + "WHERE ea.groupingResource = :groupingResource"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProtocolAttributeAuthorization ea "
-                                                                                               + "WHERE ea.groupingResource = :groupingResource AND ea.authorizedAttribute = :attribute"),
-               @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProtocolAttributeAuthorization ea "
-                                                                         + "WHERE ea.classification = :classification "
-                                                                         + "AND ea.classifier = :classifier "
-                                                                         + "AND ea.groupingResource = :groupingResource") })
+                                                                                               + "WHERE ea.groupingResource = :groupingResource AND ea.authorizedAttribute = :attribute") })
 @javax.persistence.Entity
 @Table(name = "protocol_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_attribute_authorization_id_seq", sequenceName = "protocol_attribute_authorization_id_seq")
@@ -117,7 +105,7 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
 
     @ManyToOne
     @JoinColumn(name = "product_classification")
-    private Relationship       procuctClassification;
+    private Relationship       productClassification;
 
     @ManyToOne
     @JoinColumn(name = "product")
@@ -202,8 +190,8 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
         return id;
     }
 
-    public Relationship getProcuctClassification() {
-        return procuctClassification;
+    public Relationship getProductClassification() {
+        return productClassification;
     }
 
     public Product getProduct() {
@@ -251,8 +239,8 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
         this.id = id;
     }
 
-    public void setProcuctClassification(Relationship procuctClassification) {
-        this.procuctClassification = procuctClassification;
+    public void setProductClassification(Relationship procuctClassification) {
+        this.productClassification = procuctClassification;
     }
 
     public void setProduct(Product product) {

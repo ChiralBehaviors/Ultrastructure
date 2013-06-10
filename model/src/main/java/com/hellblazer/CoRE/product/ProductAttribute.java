@@ -43,7 +43,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 @NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_RESOURCE, query = "SELECT ea FROM ProductAttribute ea"
-                                                                               + "   AND ea.product = :product "
+                                                                               + "   WHERE ea.product = :product "
                                                                                + "   AND ea.attribute = :attribute") })
 @javax.persistence.Entity
 @Table(name = "product_attribute", schema = "ruleform")

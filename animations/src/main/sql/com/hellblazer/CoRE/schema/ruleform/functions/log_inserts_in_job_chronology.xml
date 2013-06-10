@@ -9,7 +9,7 @@
 		<sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION ruleform.log_inserts_in_job_chronology()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.logInsertsInJobChronology'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.log_inserts_in_job_chronology'
               LANGUAGE javaU VOLATILE SECURITY DEFINER
               COST 100;
             ]]>

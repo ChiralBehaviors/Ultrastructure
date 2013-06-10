@@ -85,6 +85,10 @@ public interface JobModel {
                                 StatusCode currentStatus, StatusCode nextStatus)
                                                                                 throws SQLException;
 
+    void ensureValidServiceAndStatus(Product nextSibling,
+                                     StatusCode nextSiblingStatus)
+                                                                  throws SQLException;
+
     /**
      * For a given job, generates all the implicit jobs that need to be done
      * 
@@ -114,6 +118,8 @@ public interface JobModel {
      */
     List<Job> getActiveJobsFor(Resource resource);
 
+    List<Job> getActiveSubJobsForService(Job job, Product service);
+
     /**
      * Answer the list of active sub jobs (children) of the job
      * 
@@ -141,6 +147,15 @@ public interface JobModel {
      *         are active
      */
     Collection<Job> getAllActiveSubJobsOf(Job job);
+
+    Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
+
+    List<Job> getAllActiveSubJobsOfJobAssignedToResource(Job parent,
+                                                         Resource resource);
+
+    void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
+                                                    Resource resource,
+                                                    List<Job> jobs);
 
     /**
      * Answer the list of sequencing authorizations that have the job's service
@@ -239,6 +254,10 @@ public interface JobModel {
      */
     List<Protocol> getProtocols(Job job, MetaProtocol metaprotocol);
 
+    List<Protocol> getProtocols(Product service, Resource requester,
+                                Product product, Location deliverTo,
+                                Location deliverFrom);
+
     /**
      * Answer the list of sibling actions for the job
      * 
@@ -254,6 +273,15 @@ public interface JobModel {
      * @return the collection of status codes for a service
      */
     Collection<StatusCode> getStatusCodesFor(Product service);
+
+    List<StatusCode> getTerminalStates(Job job);
+
+    /**
+     * @return the list of jobs that have no parent
+     */
+    List<Job> getTopLevelJobs();
+
+    List<Job> getTopLevelJobsWithSubJobsAssignedToResource(Resource resource);
 
     /**
      * Answer the list of siblings of a service that have the unset status
@@ -330,12 +358,21 @@ public interface JobModel {
     boolean isValidNextStatus(Product service, StatusCode parent,
                               StatusCode next);
 
+    void logModifiedService(Long scs);
+
     /**
      * Process all the implicit status changes of the children of a job
      * 
      * @param job
      */
     void processChildChanges(Job job);
+
+    /**
+     * Process all the implicit status changes of a job
+     * 
+     * @param job
+     */
+    void processJobChange(Job job);
 
     /**
      * Process all the implicit status changes of the parent of a job
@@ -359,35 +396,5 @@ public interface JobModel {
      * @throws SQLException
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
-
-    /**
-     * @return the list of jobs that have no parent
-     */
-    List<Job> getTopLevelJobs();
-
-    List<Job> getActiveSubJobsForService(Job job, Product service);
-
-    List<Protocol> getProtocols(Product service, Resource requester,
-                                Product product, Location deliverTo,
-                                Location deliverFrom);
-
-    void ensureValidServiceAndStatus(Product nextSibling,
-                                     StatusCode nextSiblingStatus)
-                                                                  throws SQLException;
-
-    void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
-                                                    Resource resource,
-                                                    List<Job> jobs);
-
-    List<Job> getAllActiveSubJobsOfJobAssignedToResource(Job parent,
-                                                         Resource resource);
-
-    Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
-
-    void logModifiedService(Long scs);
-
-    List<Job> getTopLevelJobsWithSubJobsAssignedToResource(Resource resource);
-
-    List<StatusCode> getTerminalStates(Job job);
 
 }

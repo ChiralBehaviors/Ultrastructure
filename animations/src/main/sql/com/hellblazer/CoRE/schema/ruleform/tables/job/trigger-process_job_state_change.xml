@@ -7,8 +7,8 @@
 
     <changeSet id="1"
         author="hhildebrand">
-        <sql> CREATE TRIGGER process_state_change_1_children AFTER UPDATE ON ruleform.job FOR EACH
-            ROW EXECUTE PROCEDURE ruleform.process_child_changes(); </sql>
-        <rollback> DROP TRIGGER process_state_change_1_children ON ruleform.job; </rollback>
+        <sql> CREATE TRIGGER process_job_state_change AFTER UPDATE ON ruleform.job FOR EACH
+            ROW EXECUTE PROCEDURE ruleform.process_job_change(); </sql>
+        <rollback> DROP TRIGGER process_job_state_change ON ruleform.job; </rollback>
     </changeSet>
 </databaseChangeLog>

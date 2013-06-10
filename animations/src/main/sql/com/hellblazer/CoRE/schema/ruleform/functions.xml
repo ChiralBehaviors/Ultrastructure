@@ -62,11 +62,7 @@
 	<include relativeToChangelogFile="true"
 		file="functions/log_modified_product_status_code_sequencing.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/process_child_changes.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/process_parent_changes.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/process_sibling_changes.xml" />
+		file="functions/process_job_change.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/valid_resource_attribute.xml" />
 	<include relativeToChangelogFile="true"

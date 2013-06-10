@@ -106,6 +106,12 @@ public class JobModelImpl implements JobModel {
                                                 triggerData.getNew().getLong("status"));
     }
 
+    public static void ensure_valid_child_service_and_status(TriggerData triggerData)
+                                                                                     throws SQLException {
+        InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_child"),
+                                                     (Long) triggerData.getNew().getObject("next_child_status"));
+    }
+
     public static void ensure_valid_initial_state(TriggerData triggerData)
                                                                           throws SQLException {
         InDatabaseEntityManager.establishContext();
@@ -120,22 +126,16 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    public static void ensure_valid_sibling_service_and_status(TriggerData triggerData)
-                                                                                       throws SQLException {
-        InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
-                                                     (Long) triggerData.getNew().getObject("next_sibling_status"));
-    }
-
-    public static void ensure_valid_child_service_and_status(TriggerData triggerData)
-                                                                                     throws SQLException {
-        InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_child"),
-                                                     (Long) triggerData.getNew().getObject("next_child_status"));
-    }
-
     public static void ensure_valid_parent_service_and_status(TriggerData triggerData)
                                                                                       throws SQLException {
         InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("myParent"),
                                                      (Long) triggerData.getNew().getObject("parent_status_to_set"));
+    }
+
+    public static void ensure_valid_sibling_service_and_status(TriggerData triggerData)
+                                                                                       throws SQLException {
+        InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
+                                                     (Long) triggerData.getNew().getObject("next_sibling_status"));
     }
 
     public static Long get_initial_state(Long service) {
@@ -202,25 +202,15 @@ public class JobModelImpl implements JobModel {
         InDatabase.get().logModifiedService(triggerData.getNew().getLong("service"));
     }
 
-    public static void logInsertsInJobChronology(TriggerData triggerData)
-                                                                         throws SQLException {
+    public static void log_inserts_in_job_chronology(TriggerData triggerData)
+                                                                             throws SQLException {
         InDatabase.get().logInsertsInJobChronology(triggerData.getNew().getLong("id"),
                                                    triggerData.getNew().getLong("status"));
     }
 
-    public static void processChildChanges(TriggerData triggerData)
-                                                                   throws SQLException {
-        InDatabase.get().processChildChanges(triggerData.getNew().getLong("id"));
-    }
-
-    public static void processParentChanges(TriggerData triggerData)
-                                                                    throws SQLException {
-        InDatabase.get().processParentChanges(triggerData.getNew().getLong("id"));
-    }
-
-    public static void processSiblingChanges(TriggerData triggerData)
-                                                                     throws SQLException {
-        InDatabase.get().processSiblingChanges(triggerData.getNew().getLong("id"));
+    public static void process_job_change(TriggerData triggerData)
+                                                                  throws SQLException {
+        InDatabase.get().processJobChange(triggerData.getNew().getLong("id"));
     }
 
     public static void validate_state_graph(TriggerData triggerData)
@@ -229,7 +219,6 @@ public class JobModelImpl implements JobModel {
     }
 
     private final EntityManager em;
-
     private final Kernel        kernel;
     private final LocationModel locationModel;
     private final List<Product> modifiedEvents = new ArrayList<Product>();
@@ -747,6 +736,13 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public void processJobChange(Job job) {
+        processChildChanges(job);
+        processParentChanges(job);
+        processSiblingChanges(job);
+    }
+
+    @Override
     public void processChildChanges(Job job) {
         if (log.isInfoEnabled()) {
             log.info(String.format("Processing children of Job %s", job));
@@ -974,16 +970,8 @@ public class JobModelImpl implements JobModel {
                          "Initial insertion of job");
     }
 
-    private void processChildChanges(long jobId) {
-        processChildChanges(em.find(Job.class, jobId));
-    }
-
-    private void processParentChanges(long jobId) {
-        processParentChanges(em.find(Job.class, jobId));
-    }
-
-    private void processSiblingChanges(long jobId) {
-        processSiblingChanges(em.find(Job.class, jobId));
+    private void processJobChange(long jobId) {
+        processJobChange(em.find(Job.class, jobId));
     }
 
     /**

@@ -38,7 +38,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = FIND_BY_NAME, query = "select a from ProtocolAction a where a.name = :name") })
+@NamedQueries({ @NamedQuery(name = FIND_BY_NAME, query = "select a from Action a where a.name = :name") })
 @SequenceGenerator(schema = "ruleform", name = "action_id_seq", sequenceName = "action_id_seq")
 @Table(name = "action", schema = "ruleform")
 @Entity

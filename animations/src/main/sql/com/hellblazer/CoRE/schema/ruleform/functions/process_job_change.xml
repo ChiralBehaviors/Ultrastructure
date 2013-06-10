@@ -7,15 +7,15 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.process_child_changes()
+            CREATE OR REPLACE FUNCTION ruleform.process_job_change()
                 RETURNS trigger
-                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.process_child_changes'
+                AS 'com.hellblazer.CoRE.meta.models.JobModelImpl.process_job_change'
                 LANGUAGE javaU VOLATILE
               COST 100; 
-            ALTER FUNCTION ruleform.process_child_changes()
+            ALTER FUNCTION ruleform.process_job_change()
               OWNER TO core;
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.process_child_changes(); </rollback>
+        <rollback> DROP FUNCTION ruleform.process_job_change(); </rollback>
     </changeSet>
 </databaseChangeLog>

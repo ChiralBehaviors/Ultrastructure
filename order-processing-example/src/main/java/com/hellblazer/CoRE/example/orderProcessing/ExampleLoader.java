@@ -84,25 +84,30 @@ public class ExampleLoader {
     public Product              nonExempt;
     public Resource             nonExemptResource;
 
+    public Resource             orderFullfillment;
     public Resource             orgA;
     public Location             paris;
     public Product              pick;
     public Product              printCustomsDeclaration;
+    public Product              printPurchaseOrder;
     public Relationship         region;
     public Product              roomTemp;
     public Location             rsb225;
     public Product              salesTax;
     public Relationship         salesTaxStatus;
+
     public Product              ship;
     public Relationship         state;
-
     public Relationship         storageType;
     public Relationship         street;
     public StatusCode           unset;
     public Location             us;
+
+    public StatusCode           waitingOnFee;
+    public StatusCode           waitingOnPricing;
+    public StatusCode           waitingOnPurchaseOrder;
     public Location             wash;
     private Location            anyLocation;
-
     private Product             anyProduct;
     private Relationship        anyRelationship;
     private Resource            anyResource;
@@ -111,19 +116,12 @@ public class ExampleLoader {
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
+
     private StatusCode          pickCompleted;
     private Attribute           priceAttribute;
     private Product             sameProduct;
     private Relationship        sameRelationship;
     private Attribute           taxRateAttribute;
-
-    private Product             printPurchaseOrder;
-
-    private StatusCode          waitingOnPurchaseOrder;
-
-    private StatusCode          waitingOnPricing;
-
-    private StatusCode          waitingOnFee;
 
     public ExampleLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -151,63 +149,6 @@ public class ExampleLoader {
         discountAttribute = new Attribute("discount", "discount", core,
                                           ValueType.NUMERIC);
         em.persist(discountAttribute);
-    }
-
-    public void createProducts() {
-        abc486 = new Product("ABC486", "Laptop Computer", kernel.getCore());
-        em.persist(abc486);
-        frozen = new Product("Frozen", "Frozen products", kernel.getCore());
-        em.persist(frozen);
-        nonExempt = new Product("NonExempt", "Subject to sales tax",
-                                kernel.getCore());
-        em.persist(nonExempt);
-        chemB = new Product("ChemB", "Chemical B", kernel.getCore());
-        em.persist(chemB);
-        roomTemp = new Product("RoomTemp", "Room temperature products",
-                               kernel.getCore());
-        em.persist(roomTemp);
-    }
-
-    public void createServices() {
-        deliver = new Product("Deliver", "Deliver product", kernel.getCore());
-        em.persist(deliver);
-
-        pick = new Product("Pick", "Pick inventory", kernel.getCore());
-        em.persist(pick);
-
-        ship = new Product("Ship", "Ship inventory", kernel.getCore());
-        em.persist(ship);
-
-        checkCredit = new Product("CheckCredit",
-                                  "Check customer inhouse credit",
-                                  kernel.getCore());
-        em.persist(checkCredit);
-
-        checkLetterOfCredit = new Product("CheckLetterOfCredit",
-                                          "Check customer letter of credit",
-                                          kernel.getCore());
-        em.persist(checkLetterOfCredit);
-
-        discount = new Product("Discount", "Compute fee discount ",
-                               kernel.getCore());
-        em.persist(discount);
-
-        fee = new Product("Fee", "Compute fee", kernel.getCore());
-        em.persist(fee);
-
-        printCustomsDeclaration = new Product("PrintCustomsDeclaration",
-                                              "Print the customs declaration",
-                                              kernel.getCore());
-        em.persist(printCustomsDeclaration);
-
-        printPurchaseOrder = new Product("PrintPurchaseOrder",
-                                         "Print the purchase order",
-                                         kernel.getCore());
-        em.persist(printPurchaseOrder);
-
-        salesTax = new Product("SalesTax", "Compute sales tax",
-                               kernel.getCore());
-        em.persist(salesTax);
     }
 
     public void createLocationContexts() {
@@ -298,6 +239,21 @@ public class ExampleLoader {
                                      kernel.getCore());
         model.getProductModel().link(chemB, storageType, frozen,
                                      kernel.getCore());
+    }
+
+    public void createProducts() {
+        abc486 = new Product("ABC486", "Laptop Computer", kernel.getCore());
+        em.persist(abc486);
+        frozen = new Product("Frozen", "Frozen products", kernel.getCore());
+        em.persist(frozen);
+        nonExempt = new Product("NonExempt", "Subject to sales tax",
+                                kernel.getCore());
+        em.persist(nonExempt);
+        chemB = new Product("ChemB", "Chemical B", kernel.getCore());
+        em.persist(chemB);
+        roomTemp = new Product("RoomTemp", "Room temperature products",
+                               kernel.getCore());
+        em.persist(roomTemp);
     }
 
     public void createProductSequencingAuthorizations() {
@@ -633,6 +589,52 @@ public class ExampleLoader {
 
         orgA = new Resource("OrgA", "Organization A", kernel.getCore());
         em.persist(orgA);
+
+        orderFullfillment = new Resource("Order Fullfillment",
+                                         "Order Fullfillment", kernel.getCore());
+        em.persist(orderFullfillment);
+    }
+
+    public void createServices() {
+        deliver = new Product("Deliver", "Deliver product", kernel.getCore());
+        em.persist(deliver);
+
+        pick = new Product("Pick", "Pick inventory", kernel.getCore());
+        em.persist(pick);
+
+        ship = new Product("Ship", "Ship inventory", kernel.getCore());
+        em.persist(ship);
+
+        checkCredit = new Product("CheckCredit",
+                                  "Check customer inhouse credit",
+                                  kernel.getCore());
+        em.persist(checkCredit);
+
+        checkLetterOfCredit = new Product("CheckLetterOfCredit",
+                                          "Check customer letter of credit",
+                                          kernel.getCore());
+        em.persist(checkLetterOfCredit);
+
+        discount = new Product("Discount", "Compute fee discount ",
+                               kernel.getCore());
+        em.persist(discount);
+
+        fee = new Product("Fee", "Compute fee", kernel.getCore());
+        em.persist(fee);
+
+        printCustomsDeclaration = new Product("PrintCustomsDeclaration",
+                                              "Print the customs declaration",
+                                              kernel.getCore());
+        em.persist(printCustomsDeclaration);
+
+        printPurchaseOrder = new Product("PrintPurchaseOrder",
+                                         "Print the purchase order",
+                                         kernel.getCore());
+        em.persist(printPurchaseOrder);
+
+        salesTax = new Product("SalesTax", "Compute sales tax",
+                               kernel.getCore());
+        em.persist(salesTax);
     }
 
     public void createStatusCodes() {

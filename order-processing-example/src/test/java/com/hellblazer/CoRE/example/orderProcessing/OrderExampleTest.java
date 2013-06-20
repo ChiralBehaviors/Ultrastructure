@@ -75,9 +75,15 @@ public class OrderExampleTest {
         txn.begin();
         scenario.load();
         txn.commit();
-        Job order = new Job(null, scenario.georgeTownUniversity,
-                            scenario.deliver, scenario.abc486, scenario.rsb225,
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment,
+                            scenario.georgeTownUniversity, scenario.deliver,
+                            scenario.abc486, scenario.rsb225,
                             scenario.factory1, scenario.core);
         em.persist(order);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.active);
+        txn.commit();
     }
 }

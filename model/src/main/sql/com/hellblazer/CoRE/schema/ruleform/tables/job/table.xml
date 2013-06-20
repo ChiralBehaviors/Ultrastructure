@@ -31,10 +31,10 @@
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_deliver_to_fkey FOREIGN KEY (deliver_to)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_deliver_from_fkey FOREIGN KEY (deliver_from)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.location (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_service_fkey FOREIGN KEY (service)
                   REFERENCES ruleform.product (id) MATCH SIMPLE

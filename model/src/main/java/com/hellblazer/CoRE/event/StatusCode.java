@@ -74,7 +74,7 @@ public class StatusCode extends ExistentialRuleform {
     private Long               id;
 
     @Column(name = "propagate_children")
-    private Boolean            propagateChildren = false;
+    private Boolean            propagateChildren = true;
 
     public StatusCode() {
     }

@@ -22,6 +22,7 @@ import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
+import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProtocolAttribute;
@@ -41,91 +42,101 @@ import com.hellblazer.CoRE.resource.ResourceNetwork;
  * 
  */
 public class ExampleLoader {
-    private final EntityManager em;
-
-    public Relationship         area;
-    public Relationship         city;
-    public Relationship         customerType;
-    public Relationship         state;
-    public Relationship         salesTaxStatus;
-    public Relationship         storageType;
-    public Relationship         street;
-    public Relationship         region;
-
-    public LocationContext      binCtxt;
-    public LocationContext      containmentCtxt;
-
-    public Location             rsb225;
-    public Location             bht378;
-    public Location             bin1;
-    public Location             bin15;
-    public Location             dc;
-    public Location             east_coast;
-    public Location             factory1;
-    public Location             france;
-    public Location             paris;
-    public Location             us;
-    public Location             wash;
-    public Location             euro;
-
-    public Product              abc486;
-    public Product              checkLetterOfCredit;
-    public Product              checkCredit;
-    public Product              deliver;
-    public Product              discount;
-    public Product              fee;
-    public Product              frozen;
-    public Product              nonExempt;
-    public Product              pick;
-    public Product              chemB;
-    public Product              roomTemp;
-    public Product              printCustomsDeclaration;
-    public Product              ship;
-    public Product              salesTax;
-
-    public Resource             billingComputer;
-    public Resource             cpu;
-    public Resource             creditDept;
-    public Resource             exempt;
-    public Resource             externalCust;
-    public Resource             factory1Resource;
-    public Resource             georgeTownUniversity;
-    public Resource             manufacturer;
-    public Resource             nonExemptResource;
-    public Resource             orgA;
-    public Resource             core;
-
-    public StatusCode           available;
-    public StatusCode           active;
-    public StatusCode           completed;
-    public StatusCode           failure;
     public StatusCode           abandoned;
 
+    public Product              abc486;
+    public StatusCode           active;
+    public Relationship         area;
+    public StatusCode           available;
+    public Location             bht378;
+    public Resource             billingComputer;
+    public Location             bin1;
+    public Location             bin15;
+
+    public LocationContext      binCtxt;
+    public Product              checkCredit;
+
+    public Product              checkLetterOfCredit;
+    public Product              chemB;
+    public Relationship         city;
+    public StatusCode           completed;
+    public LocationContext      containmentCtxt;
+    public Resource             core;
+    public Resource             cpu;
+    public Resource             creditDept;
+    public Relationship         customerType;
+    public Location             dc;
+    public Product              deliver;
+    public Product              discount;
+
+    public Location             east_coast;
+    public Location             euro;
+    public Resource             exempt;
+    public Resource             externalCust;
+    public Location             factory1;
+    public Resource             factory1Resource;
+    public StatusCode           failure;
+    public Product              fee;
+    public Location             france;
+    public Product              frozen;
+    public Resource             georgeTownUniversity;
+    public Resource             manufacturer;
+    public Product              nonExempt;
+    public Resource             nonExemptResource;
+
+    public Resource             orgA;
+    public Location             paris;
+    public Product              pick;
+    public Product              printCustomsDeclaration;
+    public Relationship         region;
+    public Product              roomTemp;
+    public Location             rsb225;
+    public Product              salesTax;
+    public Relationship         salesTaxStatus;
+    public Product              ship;
+    public Relationship         state;
+
+    public Relationship         storageType;
+    public Relationship         street;
+    public StatusCode           unset;
+    public Location             us;
+    public Location             wash;
+    private Location            anyLocation;
+
+    private Product             anyProduct;
+    private Relationship        anyRelationship;
+    private Resource            anyResource;
+    private StatusCode          creditChecked;
+    private Attribute           discountAttribute;
+    private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
-    private Product             notApplicableProduct;
-    private Product             anyProduct;
-    private Resource            anyResource;
-    private Location            anyLocation;
-    private Product             sameProduct;
+    private StatusCode          pickCompleted;
     private Attribute           priceAttribute;
-    private Attribute           taxRateAttribute;
-    private Attribute           discountAttribute;
+    private Product             sameProduct;
     private Relationship        sameRelationship;
-    private Relationship        anyRelationship;
+    private Attribute           taxRateAttribute;
+
+    private Product             printPurchaseOrder;
+
+    private StatusCode          waitingOnPurchaseOrder;
+
+    private StatusCode          waitingOnPricing;
+
+    private StatusCode          waitingOnFee;
 
     public ExampleLoader(EntityManager em) throws Exception {
         this.em = em;
         model = new ModelImpl(em);
         kernel = model.getKernel();
         core = kernel.getCore();
-        notApplicableProduct = kernel.getNotApplicableProduct();
         sameProduct = kernel.getSameProduct();
         anyProduct = kernel.getAnyProduct();
         anyResource = kernel.getAnyResource();
         anyLocation = kernel.getAnyLocation();
         sameRelationship = kernel.getSameRelationship();
         anyRelationship = kernel.getAnyRelationship();
+        unset = kernel.getUnset();
     }
 
     public void createAttributes() {
@@ -142,42 +153,58 @@ public class ExampleLoader {
         em.persist(discountAttribute);
     }
 
-    public void createEntities() {
+    public void createProducts() {
         abc486 = new Product("ABC486", "Laptop Computer", kernel.getCore());
         em.persist(abc486);
-        checkCredit = new Product("CheckCredit",
-                                  "Check customer inhouse credit",
-                                  kernel.getCore());
-        em.persist(checkCredit);
-        checkLetterOfCredit = new Product("CheckLetterOfCredit",
-                                          "Check customer letter of credit",
-                                          kernel.getCore());
-        em.persist(checkLetterOfCredit);
-        deliver = new Product("Deliver", "Deliver product", kernel.getCore());
-        em.persist(deliver);
-        discount = new Product("Discount", "Compute fee discount ",
-                               kernel.getCore());
-        em.persist(discount);
-        fee = new Product("Fee", "Compute fee", kernel.getCore());
-        em.persist(fee);
         frozen = new Product("Frozen", "Frozen products", kernel.getCore());
         em.persist(frozen);
         nonExempt = new Product("NonExempt", "Subject to sales tax",
                                 kernel.getCore());
         em.persist(nonExempt);
-        pick = new Product("Pick", "Pick inventory", kernel.getCore());
-        em.persist(pick);
         chemB = new Product("ChemB", "Chemical B", kernel.getCore());
         em.persist(chemB);
+        roomTemp = new Product("RoomTemp", "Room temperature products",
+                               kernel.getCore());
+        em.persist(roomTemp);
+    }
+
+    public void createServices() {
+        deliver = new Product("Deliver", "Deliver product", kernel.getCore());
+        em.persist(deliver);
+
+        pick = new Product("Pick", "Pick inventory", kernel.getCore());
+        em.persist(pick);
+
+        ship = new Product("Ship", "Ship inventory", kernel.getCore());
+        em.persist(ship);
+
+        checkCredit = new Product("CheckCredit",
+                                  "Check customer inhouse credit",
+                                  kernel.getCore());
+        em.persist(checkCredit);
+
+        checkLetterOfCredit = new Product("CheckLetterOfCredit",
+                                          "Check customer letter of credit",
+                                          kernel.getCore());
+        em.persist(checkLetterOfCredit);
+
+        discount = new Product("Discount", "Compute fee discount ",
+                               kernel.getCore());
+        em.persist(discount);
+
+        fee = new Product("Fee", "Compute fee", kernel.getCore());
+        em.persist(fee);
+
         printCustomsDeclaration = new Product("PrintCustomsDeclaration",
                                               "Print the customs declaration",
                                               kernel.getCore());
         em.persist(printCustomsDeclaration);
-        roomTemp = new Product("RoomTemp", "Room temperature products",
-                               kernel.getCore());
-        em.persist(roomTemp);
-        ship = new Product("Ship", "Ship inventory", kernel.getCore());
-        em.persist(ship);
+
+        printPurchaseOrder = new Product("PrintPurchaseOrder",
+                                         "Print the purchase order",
+                                         kernel.getCore());
+        em.persist(printPurchaseOrder);
+
         salesTax = new Product("SalesTax", "Compute sales tax",
                                kernel.getCore());
         em.persist(salesTax);
@@ -273,110 +300,206 @@ public class ExampleLoader {
                                      kernel.getCore());
     }
 
+    public void createProductSequencingAuthorizations() {
+        ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(
+                                                                                                   core);
+        activatePick.setParent(deliver);
+        activatePick.setStatusCode(active);
+        activatePick.setNextChild(pick);
+        activatePick.setNextChildStatus(available);
+        em.persist(activatePick);
+
+        ProductSiblingSequencingAuthorization activatePrintCustomsDeclaration = new ProductSiblingSequencingAuthorization(
+                                                                                                                          core);
+        activatePrintCustomsDeclaration.setParent(printPurchaseOrder);
+        activatePrintCustomsDeclaration.setStatusCode(completed);
+        activatePrintCustomsDeclaration.setNextSibling(printCustomsDeclaration);
+        activatePrintCustomsDeclaration.setNextSiblingStatus(available);
+        em.persist(activatePrintCustomsDeclaration);
+
+        ProductParentSequencingAuthorization productPicked = new ProductParentSequencingAuthorization(
+                                                                                                      core);
+        productPicked.setParent(pick);
+        productPicked.setStatusCode(completed);
+        productPicked.setMyParent(deliver);
+        productPicked.setParentStatusToSet(completed);
+        productPicked.setSetIfActiveSiblings(false);
+        em.persist(productPicked);
+
+        ProductParentSequencingAuthorization checkCreditCompleted = new ProductParentSequencingAuthorization(
+                                                                                                             core);
+        checkCreditCompleted.setParent(checkCredit);
+        checkCreditCompleted.setStatusCode(completed);
+        checkCreditCompleted.setMyParent(pick);
+        checkCreditCompleted.setParentStatusToSet(creditChecked);
+        em.persist(checkCreditCompleted);
+
+        ProductParentSequencingAuthorization checkLetterOfCreditCompleted = new ProductParentSequencingAuthorization(
+                                                                                                                     core);
+        checkLetterOfCreditCompleted.setParent(checkLetterOfCredit);
+        checkLetterOfCreditCompleted.setStatusCode(completed);
+        checkLetterOfCreditCompleted.setMyParent(pick);
+        checkLetterOfCreditCompleted.setParentStatusToSet(creditChecked);
+        em.persist(checkLetterOfCreditCompleted);
+
+        ProductSiblingSequencingAuthorization activateShip = new ProductSiblingSequencingAuthorization(
+                                                                                                       core);
+        activateShip.setParent(pick);
+        activateShip.setStatusCode(completed);
+        activateShip.setNextSibling(ship);
+        activateShip.setNextSiblingStatus(waitingOnPurchaseOrder);
+        em.persist(activateShip);
+
+        ProductParentSequencingAuthorization activateShipFromPrintCustomsDeclaration = new ProductParentSequencingAuthorization(
+                                                                                                                                core);
+        activateShipFromPrintCustomsDeclaration.setParent(printCustomsDeclaration);
+        activateShipFromPrintCustomsDeclaration.setStatusCode(completed);
+        activateShipFromPrintCustomsDeclaration.setMyParent(ship);
+        activateShipFromPrintCustomsDeclaration.setParentStatusToSet(available);
+        activateShipFromPrintCustomsDeclaration.setSetIfActiveSiblings(false);
+        em.persist(activateShipFromPrintCustomsDeclaration);
+
+        ProductParentSequencingAuthorization activateShipFromPrintPurchaseOrder = new ProductParentSequencingAuthorization(
+                                                                                                                           core);
+        activateShipFromPrintPurchaseOrder.setParent(printPurchaseOrder);
+        activateShipFromPrintPurchaseOrder.setStatusCode(completed);
+        activateShipFromPrintPurchaseOrder.setMyParent(ship);
+        activateShipFromPrintPurchaseOrder.setParentStatusToSet(available);
+        activateShipFromPrintPurchaseOrder.setSetIfActiveSiblings(false);
+        em.persist(activateShipFromPrintPurchaseOrder);
+
+        ProductChildSequencingAuthorization activatePrintPurchaseOrder = new ProductChildSequencingAuthorization(
+                                                                                                                 core);
+        activatePrintPurchaseOrder.setParent(ship);
+        activatePrintPurchaseOrder.setStatusCode(waitingOnPurchaseOrder);
+        activatePrintPurchaseOrder.setNextChild(printPurchaseOrder);
+        activatePrintPurchaseOrder.setNextChildStatus(waitingOnFee);
+        em.persist(activatePrintPurchaseOrder);
+
+        ProductChildSequencingAuthorization activateFee = new ProductChildSequencingAuthorization(
+                                                                                                  core);
+        activateFee.setParent(printPurchaseOrder);
+        activateFee.setStatusCode(waitingOnFee);
+        activateFee.setNextChild(fee);
+        activateFee.setNextChildStatus(active);
+        em.persist(activateFee);
+
+        ProductSiblingSequencingAuthorization activateDiscount = new ProductSiblingSequencingAuthorization(
+                                                                                                           core);
+        activateDiscount.setParent(fee);
+        activateDiscount.setStatusCode(completed);
+        activateDiscount.setNextSibling(discount);
+        activateDiscount.setNextSiblingStatus(available);
+        em.persist(activateDiscount);
+
+        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromFee = new ProductParentSequencingAuthorization(
+                                                                                                                          core);
+        activatePrintPurchaseOrderFromFee.setParent(fee);
+        activatePrintPurchaseOrderFromFee.setStatusCode(completed);
+        activatePrintPurchaseOrderFromFee.setMyParent(printPurchaseOrder);
+        activatePrintPurchaseOrderFromFee.setParentStatusToSet(available);
+        activatePrintPurchaseOrderFromFee.setSetIfActiveSiblings(false);
+        em.persist(activatePrintPurchaseOrderFromFee);
+
+        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromDiscount = new ProductParentSequencingAuthorization(
+                                                                                                                               core);
+        activatePrintPurchaseOrderFromDiscount.setParent(discount);
+        activatePrintPurchaseOrderFromDiscount.setStatusCode(completed);
+        activatePrintPurchaseOrderFromDiscount.setMyParent(printPurchaseOrder);
+        activatePrintPurchaseOrderFromDiscount.setParentStatusToSet(available);
+        activatePrintPurchaseOrderFromDiscount.setSetIfActiveSiblings(false);
+        em.persist(activatePrintPurchaseOrderFromDiscount);
+    }
+
     public void createProtocols() {
-        Protocol p1 = new Protocol(deliver, externalCust, anyProduct, us, us,
-                                   cpu, checkCredit, notApplicableProduct, core);
-        em.persist(p1);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        Protocol pickProtocol = new Protocol(deliver, anyResource, anyProduct,
+                                             anyLocation, anyLocation,
+                                             factory1Resource, pick,
+                                             sameProduct, core);
+        em.persist(pickProtocol);
 
-        Protocol p2 = new Protocol(deliver, externalCust, anyProduct, euro, us,
-                                   creditDept, checkLetterOfCredit,
-                                   notApplicableProduct, core);
-        em.persist(p2);
+        Protocol chkCreditProtocol = new Protocol(pick, externalCust,
+                                                  anyProduct, us, us, cpu,
+                                                  checkCredit, sameProduct,
+                                                  core);
+        em.persist(chkCreditProtocol);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        Protocol chkLtrCrdtProtocol = new Protocol(pick, externalCust,
+                                                   anyProduct, euro, us,
+                                                   creditDept,
+                                                   checkLetterOfCredit,
+                                                   sameProduct, core);
+        em.persist(chkLtrCrdtProtocol);
 
-        Protocol p3 = new Protocol(deliver, externalCust, abc486, euro, us,
-                                   cpu, printCustomsDeclaration,
-                                   notApplicableProduct, core);
-        em.persist(p3);
+        Protocol shipProtocol = new Protocol(deliver, anyResource, anyProduct,
+                                             anyLocation, anyLocation,
+                                             factory1Resource, ship,
+                                             sameProduct, true, core);
+        em.persist(shipProtocol);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        Protocol printCustDeclProtocol = new Protocol(ship, externalCust,
+                                                      abc486, euro, us, cpu,
+                                                      printCustomsDeclaration,
+                                                      sameProduct, core);
+        em.persist(printCustDeclProtocol);
 
-        Protocol p4 = new Protocol(deliver, anyResource, anyProduct,
-                                   anyLocation, anyLocation, factory1Resource,
-                                   pick, sameProduct, core);
-        em.persist(p4);
+        Protocol printPoProtocol = new Protocol(ship, externalCust, abc486,
+                                                euro, us, cpu,
+                                                printPurchaseOrder,
+                                                sameProduct, core);
+        em.persist(printPoProtocol);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Protocol p5 = new Protocol(deliver, anyResource, anyProduct,
-                                   anyLocation, anyLocation, factory1Resource,
-                                   deliver, sameProduct, true, core);
-        em.persist(p5);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Protocol p6 = new Protocol(deliver, externalCust, abc486, anyLocation,
-                                   us, billingComputer, fee, sameProduct, core);
-        em.persist(p6);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        Protocol feeProtocol = new Protocol(printPurchaseOrder, externalCust,
+                                            abc486, anyLocation, us,
+                                            billingComputer, fee, sameProduct,
+                                            core);
+        em.persist(feeProtocol);
 
         ProtocolAttribute price = new ProtocolAttribute(priceAttribute, core);
         price.setNumericValue(1500);
-        price.setProtocol(p6);
+        price.setProtocol(feeProtocol);
         em.persist(price);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Protocol p7 = new Protocol(deliver, nonExemptResource, nonExempt, dc,
-                                   anyLocation, billingComputer, salesTax,
-                                   sameProduct, core);
-        em.persist(p7);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        Protocol salesTaxProtocol = new Protocol(fee, nonExemptResource,
+                                                 nonExempt, dc, anyLocation,
+                                                 billingComputer, salesTax,
+                                                 sameProduct, core);
+        em.persist(salesTaxProtocol);
 
         ProtocolAttribute taxRate = new ProtocolAttribute(taxRateAttribute,
                                                           core);
         taxRate.setNumericValue(0.0575);
-        taxRate.setProtocol(p7);
+        taxRate.setProtocol(salesTaxProtocol);
         em.persist(taxRate);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        Protocol discountProtocol = new Protocol(fee, externalCust, abc486,
+                                                 euro, us, billingComputer,
+                                                 discount, sameProduct, core);
+        em.persist(discountProtocol);
 
-        Protocol p8 = new Protocol(deliver, externalCust, abc486, euro, us,
-                                   billingComputer, discount, sameProduct, core);
-        em.persist(p8);
+        ProtocolAttribute euroDiscount = new ProtocolAttribute(
+                                                               discountAttribute,
+                                                               core);
+        euroDiscount.setNumericValue(0.05);
+        euroDiscount.setProtocol(salesTaxProtocol);
+        em.persist(euroDiscount);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        ProtocolAttribute discount = new ProtocolAttribute(discountAttribute,
+        Protocol gtuDiscountedPriceProtocol = new Protocol(
+                                                           fee,
+                                                           georgeTownUniversity,
+                                                           abc486, dc, us,
+                                                           billingComputer,
+                                                           fee, sameProduct,
                                                            core);
-        discount.setNumericValue(0.05);
-        discount.setProtocol(p7);
-        em.persist(discount);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Protocol p9 = new Protocol(deliver, georgeTownUniversity, abc486, dc,
-                                   us, billingComputer, fee, sameProduct, core);
-        em.persist(p9);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.persist(gtuDiscountedPriceProtocol);
 
         ProtocolAttribute discountedPrice = new ProtocolAttribute(
                                                                   priceAttribute,
                                                                   core);
         discountedPrice.setNumericValue(1250);
-        discountedPrice.setProtocol(p9);
+        discountedPrice.setProtocol(gtuDiscountedPriceProtocol);
         em.persist(discountedPrice);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
     }
 
     public void createRelationships() {
@@ -521,6 +644,15 @@ public class ExampleLoader {
         active = new StatusCode("Active", "Working on it now", core);
         em.persist(active);
 
+        creditChecked = new StatusCode("Credit Checked",
+                                       "Credit has been checked", core);
+        em.persist(active);
+
+        completed = new StatusCode("Credit Check Completed",
+                                   "Completed Credit Check", core);
+        completed.setPropagateChildren(true);
+        em.persist(completed);
+
         completed = new StatusCode("Completed", "Completed Job", core);
         completed.setPropagateChildren(true);
         em.persist(completed);
@@ -529,6 +661,28 @@ public class ExampleLoader {
         failure.setFailParent(true);
         em.persist(failure);
 
+        pickCompleted = new StatusCode("Pick Completed",
+                                       "Pick product has been completed", core);
+        em.persist(pickCompleted);
+
+        waitingOnPurchaseOrder = new StatusCode(
+                                                "Waiting on purchase order",
+                                                "Waiting for purchase order to be completed",
+                                                core);
+        em.persist(waitingOnPurchaseOrder);
+
+        waitingOnPricing = new StatusCode(
+                                          "Waiting on pricing",
+                                          "Waiting for pricing to be completed",
+                                          core);
+        em.persist(waitingOnPricing);
+
+        waitingOnFee = new StatusCode(
+                                      "Waiting on fee calculation",
+                                      "Waiting for fee calculation to be completed",
+                                      core);
+        em.persist(waitingOnFee);
+
         abandoned = new StatusCode(
                                    "Abandoned",
                                    "We were going to do it, something happened in earlier processing that will prevent us.  This can be garbage-collected now",
@@ -536,60 +690,11 @@ public class ExampleLoader {
         em.persist(abandoned);
     }
 
-    public void createSequencingAuthorizations() {
-        ProductChildSequencingAuthorization psa1 = new ProductChildSequencingAuthorization(
-                                                                                           core);
-        psa1.setParent(deliver);
-        psa1.setStatusCode(active);
-        psa1.setSequenceNumber(1);
-        psa1.setNextChild(fee);
-        psa1.setNextChildStatus(available);
-        em.persist(psa1);
-
-        ProductChildSequencingAuthorization psa2 = new ProductChildSequencingAuthorization(
-                                                                                           core);
-        psa2.setParent(deliver);
-        psa2.setStatusCode(active);
-        psa2.setSequenceNumber(2);
-        psa2.setNextChild(checkCredit);
-        psa2.setNextChildStatus(available);
-        em.persist(psa2);
-
-        ProductChildSequencingAuthorization psa3 = new ProductChildSequencingAuthorization(
-                                                                                           core);
-        psa3.setParent(deliver);
-        psa3.setStatusCode(active);
-        psa3.setSequenceNumber(3);
-        psa3.setNextChild(pick);
-        psa3.setNextChildStatus(available);
-        em.persist(psa3);
-
-        ProductSiblingSequencingAuthorization psa4 = new ProductSiblingSequencingAuthorization(
-                                                                                               core);
-        psa4.setParent(pick);
-        psa4.setStatusCode(completed);
-        psa4.setSequenceNumber(4);
-        psa4.setNextSibling(ship);
-        psa4.setNextSiblingStatus(available);
-        em.persist(psa4);
-
-        ProductSiblingSequencingAuthorization psa5 = new ProductSiblingSequencingAuthorization(
-                                                                                               core);
-        psa5.setParent(deliver);
-        psa5.setStatusCode(active);
-        psa5.setSequenceNumber(5);
-        psa5.setNextSibling(printCustomsDeclaration);
-        psa5.setNextSiblingStatus(available);
-        em.persist(psa5);
-    }
-
-    public void initEntityManager() throws Exception {
-    }
-
     public void load() {
         createResources();
         createAttributes();
-        createEntities();
+        createProducts();
+        createServices();
         createLocationContexts();
         createLocations();
         createRelationships();

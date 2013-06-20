@@ -95,6 +95,12 @@ public class JobModelImpl implements JobModel {
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(TriggerData triggerData)
                                                                                                       throws SQLException {
+        if (triggerData.getNew().getLong("status") == triggerData.getOld().getLong("status")) {
+            if (log.isDebugEnabled()) {
+                log.debug("Job status unchanged");
+            }
+            return;
+        }
         InDatabase.get().automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
     }
 
@@ -308,12 +314,14 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void generateImplicitJobs(Job job) {
-        for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
-            for (Protocol protocol : getProtocols(job, metaProtocol)) {
-                insertJob(job, protocol);
-            }
-            if (metaProtocol.getStopOnMatch()) {
-                break;
+        if (job.getStatus().getPropagateChildren()) {
+            for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
+                for (Protocol protocol : getProtocols(job, metaProtocol)) {
+                    insertJob(job, protocol);
+                }
+                if (metaProtocol.getStopOnMatch()) {
+                    break;
+                }
             }
         }
     }

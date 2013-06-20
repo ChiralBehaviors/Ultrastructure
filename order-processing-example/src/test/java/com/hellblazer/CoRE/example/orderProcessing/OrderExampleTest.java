@@ -26,9 +26,12 @@
 
 package com.hellblazer.CoRE.example.orderProcessing;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -85,5 +88,7 @@ public class OrderExampleTest {
         txn.begin();
         order.setStatus(scenario.active);
         txn.commit();
+        List<Job> jobs = em.createQuery("select j from Job j", Job.class).getResultList();
+        assertEquals(1, jobs.size());
     }
 }

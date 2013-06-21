@@ -13,7 +13,7 @@
               name character varying NOT NULL,
               description character varying,
               preferred boolean NOT NULL,
-              inverse bigint NOT NULL,
+              inverse bigint,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,

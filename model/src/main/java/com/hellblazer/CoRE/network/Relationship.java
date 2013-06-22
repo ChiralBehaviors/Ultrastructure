@@ -19,6 +19,7 @@ import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -64,6 +65,13 @@ public class Relationship extends ExistentialRuleform {
     private String            operator;
 
     private Boolean           preferred        = Boolean.FALSE;
+    
+    /*
+     * If true, allows direct edges to be created between nodes by inference. So if a R1 b R2 c,
+     * then we could derive a R1 c if this is true. If not, we will not derive that relationship
+     */
+    @Column(name="is_transient")
+    private Boolean			  isTransient = Boolean.TRUE;
 
     public Relationship() {
     }
@@ -154,6 +162,10 @@ public class Relationship extends ExistentialRuleform {
     public Boolean getPreferred() {
         return preferred;
     }
+    
+    public Boolean getIsTransient() {
+    	return isTransient;
+    }
 
     @Override
     public void setId(Long id) {
@@ -172,4 +184,8 @@ public class Relationship extends ExistentialRuleform {
     public void setPreferred(Boolean preferred) {
         this.preferred = preferred;
     }
+    
+	public void setIsTransient(Boolean isTransient) {
+		this.isTransient = isTransient;
+	}
 }

@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.resource.Resource.FIND_BY_NAME;
 import static com.hellblazer.CoRE.resource.Resource.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.resource.Resource.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.hellblazer.CoRE.resource.Resource.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.resource.Resource.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.resource.Resource.GET_CHILD;
 import static com.hellblazer.CoRE.resource.Resource.UNLINKED;
 import static com.hellblazer.CoRE.resource.ResourceAttribute.GET_ATTRIBUTE;
@@ -82,7 +83,10 @@ import com.hellblazer.CoRE.product.ProductNetwork;
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
                                                      + "FROM ResourceNetwork rn "
                                                      + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship") })
+                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                        + "FROM ResourceNetwork n "
+                                                                        + "WHERE n.child = :child") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM resource AS unlinked "
@@ -116,6 +120,8 @@ public class Resource extends ExistentialRuleform implements
                                                                               + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String     GET_CHILD                                = "resource"
                                                                               + GET_CHILD_SUFFIX;
+    public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "resource"
+                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "resource.immediateChildrenNetworkRules";
     public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "resource.qualifiedEntityNetworkRules";
     public static final String     RESOURCE_ATTRIBUTES_BY_CLASSIFICATION    = "resource.resourceAttributesByClassification";

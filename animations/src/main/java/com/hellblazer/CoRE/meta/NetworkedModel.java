@@ -252,4 +252,13 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      */
     void link(RuleForm parent, Relationship r, RuleForm child,
               Resource updatedBy);
+
+    /**
+     * Propagate the deductions for the inserted network relationship
+     * 
+     * @param parent
+     * @param relationship
+     * @param child
+     */
+    void propagate(RuleForm parent, Relationship relationship, RuleForm child);
 }

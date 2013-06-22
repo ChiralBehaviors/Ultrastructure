@@ -22,6 +22,7 @@ import static com.hellblazer.CoRE.location.Location.FIND_ATTRIBUTE_AUTHORIZATION
 import static com.hellblazer.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.hellblazer.CoRE.location.Location.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.location.Location.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.location.Location.GET_CHILD;
 import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
 import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
@@ -89,7 +90,10 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
                                                      + "FROM LocationNetwork rn "
                                                      + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship") })
+                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                        + "FROM LocationNetwork n "
+                                                                        + "WHERE n.child = :child") })
 @NamedNativeQueries({
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
@@ -107,6 +111,8 @@ public class Location extends ExistentialRuleform implements
     public static final String     LOCATION_NAME                            = "location.getName";
     public static final String     NAME_SEARCH                              = "location"
                                                                               + NAME_SEARCH_SUFFIX;
+    public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "location"
+                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 
     //bi-directional many-to-one association to LocationAttribute

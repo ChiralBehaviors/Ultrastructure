@@ -42,7 +42,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.event.MetaProtocol;
+import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
+import com.hellblazer.CoRE.meta.JobModel;
+import com.hellblazer.CoRE.meta.Model;
+import com.hellblazer.CoRE.meta.models.ModelImpl;
 
 /**
  * @author hhildebrand
@@ -51,12 +56,16 @@ import com.hellblazer.CoRE.meta.BootstrapLoader;
 public class OrderExampleTest {
 
     private EntityManager em;
+    private Model         model;
+    private JobModel      jobModel;
 
     public OrderExampleTest() throws IOException {
         Properties properties = new Properties();
         InputStream is = ExampleLoader.class.getResourceAsStream("/jpa.properties");
         properties.load(is);
         em = Persistence.createEntityManagerFactory("CoRE", properties).createEntityManager();
+        model = new ModelImpl(em);
+        jobModel = model.getJobModel();
     }
 
     @Before
@@ -88,6 +97,13 @@ public class OrderExampleTest {
         txn.begin();
         order.setStatus(scenario.active);
         txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        // assertEquals(1, metaProtocols.size());
+        for (MetaProtocol metaProtocol : metaProtocols) {
+            List<Protocol> protocols = jobModel.getProtocols(order,
+                                                             metaProtocols.get(0));
+            // assertEquals(1, protocols.size());
+        }
         List<Job> jobs = em.createQuery("select j from Job j", Job.class).getResultList();
         assertEquals(1, jobs.size());
     }

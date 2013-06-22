@@ -130,18 +130,18 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return builder.toString();
     }
 
-    private final Class<AttributeAuthorization> authorization;
+    private final Class<AttributeAuthorization>    authorization;
 
-    private final Class<AttributeType>          attribute;
-    protected final Kernel                      kernel;
-    protected final EntityManager               em;
-    private final Class<RuleForm>               product;
-    private final Class<Networked<RuleForm, ?>> network;
-    private final String                        prefix;
-    private final String                        networkPrefix;
+    private final Class<AttributeType>             attribute;
+    protected final Kernel                         kernel;
+    protected final EntityManager                  em;
+    private final Class<RuleForm>                  product;
+    private final Class<NetworkRuleform<RuleForm>> network;
+    private final String                           prefix;
+    private final String                           networkPrefix;
     @SuppressWarnings("unused")
-    private final String                        productTable;
-    private final String                        networkTable;
+    private final String                           productTable;
+    private final String                           networkTable;
 
     @SuppressWarnings("unchecked")
     public AbstractNetworkedModel(EntityManager em, Kernel kernel) {
@@ -150,7 +150,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         product = extractedEntity();
         authorization = extractedAuthorization();
         attribute = extractedAttribute();
-        network = (Class<Networked<RuleForm, ?>>) getNetworkOf(product);
+        network = (Class<NetworkRuleform<RuleForm>>) getNetworkOf(product);
         prefix = ModelImpl.prefixFor(product);
         networkPrefix = ModelImpl.prefixFor(network);
         productTable = tableName(product);
@@ -389,7 +389,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
          */
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(product);
-        Root<Networked<RuleForm, ?>> networkForm = query.from(network);
+        Root<NetworkRuleform<RuleForm>> networkForm = query.from(network);
         query.select((Selection<? extends RuleForm>) networkForm.fetch("child"));
         query.where(cb.equal(networkForm.get("relationship"), relationship),
                     cb.notEqual(networkForm.get("child"), parent));
@@ -431,7 +431,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(product);
         Root<RuleForm> form = query.from(product);
-        Root<Networked<RuleForm, ?>> networkForm = query.from(network);
+        Root<NetworkRuleform<RuleForm>> networkForm = query.from(network);
         query.where(cb.equal(networkForm.get("parent"), parent),
                     cb.equal(networkForm.get("relationship"), relationship),
                     cb.notEqual(networkForm.get("child"), form));
@@ -459,10 +459,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         parent.link(r, child, updatedBy, kernel.getInverseSoftware(), em);
     }
 
-    public void createInverseRelationshipo(RuleForm parent, Relationship r, RuleForm child, Resource updatedBy) {
-    	child.link(r.getInverse(), parent, updatedBy, kernel.getInverseSoftware(), em);
+    public void createInverseRelationshipo(RuleForm parent, Relationship r,
+                                           RuleForm child, Resource updatedBy) {
+        child.link(r.getInverse(), parent, updatedBy,
+                   kernel.getInverseSoftware(), em);
     }
-    
+
     @SuppressWarnings("unchecked")
     private Class<AttributeType> extractedAttribute() {
         return (Class<AttributeType>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[2];
@@ -520,5 +522,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
             }
         }
         return allowedValues;
+    }
+
+    @Override
+    public void propagate(RuleForm parent, Relationship relationship,
+                          RuleForm child) {
     }
 }

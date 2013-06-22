@@ -16,7 +16,7 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.Product.FIND_ALL;
+import static com.hellblazer.CoRE.product.Product.*;
 import static com.hellblazer.CoRE.product.Product.FIND_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.product.Product.FIND_BY_ID;
 import static com.hellblazer.CoRE.product.Product.FIND_BY_NAME;
@@ -113,7 +113,10 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
                                                      + "FROM ProductNetwork rn "
                                                      + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship") })
+                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                        + "FROM ProductNetwork n "
+                                                                        + "WHERE n.child = :child") })
 @NamedNativeQueries({
 // ?1 = #queryString, ?2 = #numberOfMatches
 @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
@@ -142,6 +145,8 @@ public class Product extends ExistentialRuleform implements
                                                                                            + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
     public static final String    FIND_GROUPED_ATTRIBUTE_VALUES                          = "product"
                                                                                            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String    GET_ALL_PARENT_RELATIONSHIPS                           = "product"
+                                                                                           + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String    GET_CHILD                                              = "product"
                                                                                            + GET_CHILD_SUFFIX;
     public static final String    IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";

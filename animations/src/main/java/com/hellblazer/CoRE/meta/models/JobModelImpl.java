@@ -909,6 +909,7 @@ public class JobModelImpl implements JobModel {
         if (requester != null) {
             query.setParameter(requesterParameter, requester);
         }
+        System.out.println(query);
         return query;
     }
 

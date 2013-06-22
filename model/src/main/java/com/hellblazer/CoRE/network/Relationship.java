@@ -71,7 +71,7 @@ public class Relationship extends ExistentialRuleform {
      * then we could derive a R1 c if this is true. If not, we will not derive that relationship
      */
     @Column(name="is_transient")
-    private Boolean			  isTransient = Boolean.TRUE;
+    private Boolean			  isTransient = Boolean.FALSE;
 
     public Relationship() {
     }
@@ -185,6 +185,10 @@ public class Relationship extends ExistentialRuleform {
         this.preferred = preferred;
     }
     
+    /**
+     * Defaults to false if not set.
+     * @param isTransient
+     */
 	public void setIsTransient(Boolean isTransient) {
 		this.isTransient = isTransient;
 	}

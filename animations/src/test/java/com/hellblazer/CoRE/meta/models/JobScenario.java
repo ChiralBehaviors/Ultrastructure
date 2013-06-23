@@ -217,29 +217,41 @@ public class JobScenario {
         mp1 = new MetaProtocol(core);
         mp1.setService(htsfIlluminaSequencing);
         mp1.setSequenceNumber(1);
+        mp1.setRequestingResource(kernel.getNotApplicableRelationship());
         mp1.setServiceType(sampleType);
         mp1.setProductOrdered(dissolvedIn);
+        mp1.setDeliverFrom(kernel.getNotApplicableRelationship());
+        mp1.setDeliverTo(kernel.getNotApplicableRelationship());
         em.persist(mp1);
 
         mp2 = new MetaProtocol(core);
+        mp2.setRequestingResource(kernel.getNotApplicableRelationship());
         mp2.setService(htsfIlluminaSequencing);
         mp2.setSequenceNumber(2);
         mp2.setServiceType(sampleType);
         mp2.setProductOrdered(htfsLibPrepStatus);
+        mp2.setDeliverFrom(kernel.getNotApplicableRelationship());
+        mp2.setDeliverTo(kernel.getNotApplicableRelationship());
         em.persist(mp2);
 
         mp3 = new MetaProtocol(core);
+        mp3.setRequestingResource(kernel.getNotApplicableRelationship());
         mp3.setService(htsfIlluminaSequencing);
         mp3.setSequenceNumber(3);
         mp3.setServiceType(sampleType);
         mp3.setProductOrdered(kernel.getAnyRelationship());
+        mp3.setDeliverFrom(kernel.getNotApplicableRelationship());
+        mp3.setDeliverTo(kernel.getNotApplicableRelationship());
         em.persist(mp3);
 
         mp4 = new MetaProtocol(core);
+        mp4.setRequestingResource(kernel.getNotApplicableRelationship());
         mp4.setService(htsfIlluminaSequencing);
         mp4.setSequenceNumber(4);
         mp4.setServiceType(sampleType);
         mp4.setProductOrdered(kernel.getAnyRelationship());
+        mp4.setDeliverFrom(kernel.getNotApplicableRelationship());
+        mp4.setDeliverTo(kernel.getNotApplicableRelationship());
         em.persist(mp4);
     }
 

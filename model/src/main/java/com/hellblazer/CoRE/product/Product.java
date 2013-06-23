@@ -110,13 +110,13 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                          + "WHERE ea.classification = :classification "
                                                                          + "AND ea.classifier = :classifier "
                                                                          + "AND ea.groupingResource = :groupingResource"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM ProductNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                     + "FROM ProductNetwork n "
+                                                     + "WHERE n.parent = :p "
+                                                     + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM ProductNetwork n "
-                                                                        + "WHERE n.child = :child") })
+                                                                        + "WHERE n.child = :c") })
 @NamedNativeQueries({
 // ?1 = #queryString, ?2 = #numberOfMatches
 @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })

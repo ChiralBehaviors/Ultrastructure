@@ -87,13 +87,13 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                          + "AND la.classifier = :classifier "
                                                                          + "AND la.groupingResource = :groupingResource"),
                @NamedQuery(name = LOCATION_NAME, query = "SELECT la.name FROM Location la WHERE la.id = :id"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM LocationNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                     + "FROM LocationNetwork n "
+                                                     + "WHERE n.parent = :p "
+                                                     + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM LocationNetwork n "
-                                                                        + "WHERE n.child = :child") })
+                                                                        + "WHERE n.child = :c") })
 @NamedNativeQueries({
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })

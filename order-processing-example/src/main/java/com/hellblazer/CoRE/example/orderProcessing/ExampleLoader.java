@@ -88,21 +88,24 @@ public class ExampleLoader {
     public Resource             orgA;
     public Location             paris;
     public Product              pick;
+    public StatusCode           pickCompleted;
+    public Attribute            priceAttribute;
     public Product              printCustomsDeclaration;
     public Product              printPurchaseOrder;
     public Relationship         region;
     public Product              roomTemp;
     public Location             rsb225;
+
     public Product              salesTax;
     public Relationship         salesTaxStatus;
-
     public Product              ship;
     public Relationship         state;
     public Relationship         storageType;
     public Relationship         street;
+
+    public Attribute            taxRateAttribute;
     public StatusCode           unset;
     public Location             us;
-
     public StatusCode           waitingOnFee;
     public StatusCode           waitingOnPricing;
     public StatusCode           waitingOnPurchaseOrder;
@@ -113,15 +116,13 @@ public class ExampleLoader {
     private Resource            anyResource;
     private StatusCode          creditChecked;
     private Attribute           discountAttribute;
+
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
-
-    private StatusCode          pickCompleted;
-    private Attribute           priceAttribute;
+    private Relationship        notApplicableRelationship;
     private Product             sameProduct;
     private Relationship        sameRelationship;
-    private Attribute           taxRateAttribute;
 
     public ExampleLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -134,6 +135,7 @@ public class ExampleLoader {
         anyLocation = kernel.getAnyLocation();
         sameRelationship = kernel.getSameRelationship();
         anyRelationship = kernel.getAnyRelationship();
+        notApplicableRelationship = kernel.getNotApplicableRelationship();
         unset = kernel.getUnset();
     }
 
@@ -209,26 +211,36 @@ public class ExampleLoader {
     }
 
     public void createMetaProtocols() {
-        MetaProtocol m1 = new MetaProtocol(deliver, 1, sameRelationship,
-                                           sameRelationship, state, area, core);
+        MetaProtocol m1 = new MetaProtocol(deliver, 1,
+                                           notApplicableRelationship,
+                                           sameRelationship, sameRelationship,
+                                           state, area, core);
         em.persist(m1);
-        MetaProtocol m2 = new MetaProtocol(deliver, 2, customerType,
-                                           sameRelationship, area, area, core);
+        MetaProtocol m2 = new MetaProtocol(deliver, 2,
+                                           notApplicableRelationship,
+                                           customerType, sameRelationship,
+                                           area, area, core);
         em.persist(m2);
-        MetaProtocol m3 = new MetaProtocol(deliver, 3, customerType,
-                                           anyRelationship, area, area, core);
-        em.persist(m3);
-        MetaProtocol m4 = new MetaProtocol(deliver, 4, customerType,
-                                           sameRelationship, anyRelationship,
+        MetaProtocol m3 = new MetaProtocol(deliver, 3,
+                                           notApplicableRelationship,
+                                           customerType, anyRelationship, area,
                                            area, core);
+        em.persist(m3);
+        MetaProtocol m4 = new MetaProtocol(deliver, 4,
+                                           notApplicableRelationship,
+                                           customerType, sameRelationship,
+                                           anyRelationship, area, core);
         em.persist(m4);
-        MetaProtocol m5 = new MetaProtocol(deliver, 5, salesTaxStatus,
-                                           sameRelationship, state,
-                                           anyRelationship, core);
+        MetaProtocol m5 = new MetaProtocol(deliver, 5,
+                                           notApplicableRelationship,
+                                           salesTaxStatus, sameRelationship,
+                                           state, anyRelationship, core);
         em.persist(m5);
-        MetaProtocol m6 = new MetaProtocol(deliver, 6, anyRelationship,
+        MetaProtocol m6 = new MetaProtocol(deliver, 6,
+                                           notApplicableRelationship,
                                            anyRelationship, anyRelationship,
-                                           anyRelationship, core);
+                                           anyRelationship, anyRelationship,
+                                           core);
         em.persist(m6);
     }
 

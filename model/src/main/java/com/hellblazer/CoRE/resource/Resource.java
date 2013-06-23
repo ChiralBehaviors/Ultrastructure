@@ -80,13 +80,13 @@ import com.hellblazer.CoRE.product.ProductNetwork;
                                                                                     + "AND ra.classifier = :classifier"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from ResourceAttributeAuthorization ra "
                                                                                  + "WHERE ra.groupingResource = :groupingResource"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM ResourceNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                     + "FROM ResourceNetwork n "
+                                                     + "WHERE n.parent = :p "
+                                                     + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM ResourceNetwork n "
-                                                                        + "WHERE n.child = :child") })
+                                                                        + "WHERE n.child = :c") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM resource AS unlinked "

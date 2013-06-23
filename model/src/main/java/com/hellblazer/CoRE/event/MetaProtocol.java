@@ -128,12 +128,14 @@ public class MetaProtocol extends Ruleform {
     }
 
     public MetaProtocol(Product service, int sequenceNumber,
+                        Relationship productOrdered,
                         Relationship requestingResource,
                         Relationship serviceType, Relationship deliverTo,
                         Relationship deliverFrom, Resource updatedBy) {
         super(updatedBy);
         setService(service);
         setSequenceNumber(sequenceNumber);
+        setProductOrdered(productOrdered);
         setRequestingResource(requestingResource);
         setServiceType(serviceType);
         setDeliverTo(deliverTo);

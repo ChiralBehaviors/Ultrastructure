@@ -10,7 +10,7 @@
 	        CREATE OR REPLACE VIEW readable.meta_protocol AS 
 	             SELECT base_table.id, s.name AS service, base_table.sequence_number, 
 	                    rr.name AS requesting_resource, st.name AS service_type, 
-	                    po.name AS product_ordered, jr.name AS job_mapping, dt.name AS deliver_to, 
+	                    po.name AS product_ordered, dt.name AS deliver_to, 
 	                    df.name AS deliver_from, base_table.stop_on_match,
 	                    base_table.notes, res.name AS research, 
 	                    up.name AS updated_by, base_table.update_date
@@ -19,7 +19,6 @@
                    LEFT JOIN ruleform.relationship rr ON base_table.requesting_resource = rr.id
 				   LEFT JOIN ruleform.relationship st ON base_table.service_type = st.id
 				   LEFT JOIN ruleform.relationship po ON base_table.product_ordered = po.id
-				   LEFT JOIN ruleform.relationship jr ON base_table.job_mapping = jr.id
                    LEFT JOIN ruleform.relationship dt ON base_table.deliver_to= dt.id
                    LEFT JOIN ruleform.relationship df ON base_table.deliver_from = df.id
 				   LEFT JOIN ruleform.research res ON base_table.research = res.id

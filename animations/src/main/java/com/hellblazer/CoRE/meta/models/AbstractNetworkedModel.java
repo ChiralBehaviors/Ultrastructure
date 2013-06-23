@@ -355,8 +355,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         TypedQuery<RuleForm> query = em.createNamedQuery(prefix
                                                                  + GET_CHILD_SUFFIX,
                                                          product);
-        query.setParameter("parent", parent);
-        query.setParameter("relationship", r);
+        query.setParameter("p", parent);
+        query.setParameter("r", r);
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {

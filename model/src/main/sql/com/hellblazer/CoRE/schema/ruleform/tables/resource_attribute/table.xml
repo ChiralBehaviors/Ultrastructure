@@ -24,12 +24,9 @@
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              attribute_value bigint,
+
               CONSTRAINT resource_attribute_pkey PRIMARY KEY (id ),
               CONSTRAINT resource_attribute_attribute_fkey FOREIGN KEY (attribute)
-                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT resource_attribute_attribute_value_fkey FOREIGN KEY (attribute_value)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT resource_attribute_research_fkey FOREIGN KEY (research)
@@ -46,7 +43,7 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT resource_attribute_resource_key UNIQUE (resource , attribute ),
               CONSTRAINT resource_attribute_sequence_number_check CHECK (sequence_number > 0),
-              CONSTRAINT resource_attribute_valid_value CHECK ((ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value) + ruleform.null_zero(attribute_value)) = 1)
+              CONSTRAINT resource_attribute_valid_value CHECK ((ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
             )
             WITH (
               OIDS=FALSE

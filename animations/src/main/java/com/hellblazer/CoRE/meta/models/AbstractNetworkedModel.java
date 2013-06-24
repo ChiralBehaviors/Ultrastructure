@@ -459,7 +459,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         parent.link(r, child, updatedBy, kernel.getInverseSoftware(), em);
     }
 
-    public void createInverseRelationshipo(RuleForm parent, Relationship r,
+    public void createInverseRelationship(RuleForm parent, Relationship r,
                                            RuleForm child, Resource updatedBy) {
         child.link(r.getInverse(), parent, updatedBy,
                    kernel.getInverseSoftware(), em);

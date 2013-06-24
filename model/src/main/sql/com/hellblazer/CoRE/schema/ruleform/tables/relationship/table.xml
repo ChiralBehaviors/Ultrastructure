@@ -19,7 +19,7 @@
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               pinned boolean NOT NULL DEFAULT false,
-              is_transient boolean NOT NULL DEFAULT false,
+              is_transitive boolean NOT NULL DEFAULT false,
               operator ruleform.relational_operator,  
               CONSTRAINT relationship_pkey PRIMARY KEY (id ),
               CONSTRAINT relationship_inverse_fkey FOREIGN KEY (inverse)

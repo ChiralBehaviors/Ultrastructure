@@ -51,7 +51,7 @@
     <include relativeToChangelogFile="true" file="tables/resource_attribute_authorization/trigger-resource_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_network_authorization/trigger-resource_network_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_attribute/trigger-resource_attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_location/trigger-resource_location_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/resource_ruleform/trigger-resource_ruleform_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_network/trigger-resource_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_product/trigger-resource_product_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_restrict_pinnned.xml"/>

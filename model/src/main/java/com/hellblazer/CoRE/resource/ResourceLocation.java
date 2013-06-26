@@ -35,13 +35,13 @@ import com.hellblazer.CoRE.network.Relationship;
  * 
  */
 @javax.persistence.Entity
-@Table(name = "resource_ruleform", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "resource_ruleform_id_seq", sequenceName = "resource_ruleform_id_seq")
+@Table(name = "resource_authorization", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "resource_authorization_id_seq", sequenceName = "resource_authorization_id_seq")
 public class ResourceLocation extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator = "resource_ruleform_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "resource_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
     //bi-directional many-to-one association to Location

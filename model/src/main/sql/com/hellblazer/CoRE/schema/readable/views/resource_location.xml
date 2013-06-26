@@ -9,7 +9,7 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.resource_location AS 
 			 SELECT rl.id, r.name AS resource, rel.name AS relationship, l.name AS location, rl.notes, res.name AS research, up.name AS updated_by, rl.update_date
-			   FROM ruleform.resource_ruleform rl
+			   FROM ruleform.resource_authorization rl
 			   JOIN ruleform.resource r ON rl.resource = r.id
 			   JOIN ruleform.relationship rel ON rl.relationship = rel.id
 			   JOIN ruleform.location l ON rl.location = l.id

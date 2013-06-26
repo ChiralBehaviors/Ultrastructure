@@ -47,7 +47,7 @@
 	<ruleform.resource />
 	<ruleform.resource_attribute />
 	<ruleform.resource_attribute_authorization />
-	<ruleform.resource_ruleform />
+	<ruleform.resource_authorization />
 	<ruleform.resource_network />
 	<ruleform.resource_network_authorization />
 	<ruleform.status_code />

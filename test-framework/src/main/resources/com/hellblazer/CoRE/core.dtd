@@ -45,7 +45,7 @@
     ruleform.resource|
     ruleform.resource_attribute|
     ruleform.resource_attribute_authorization|
-    ruleform.resource_ruleform|
+    ruleform.resource_authorization|
     ruleform.resource_network|
     ruleform.resource_network_authorization|
     ruleform.status_code|
@@ -763,8 +763,8 @@
     update_date CDATA #REQUIRED
 >
 
-<!ELEMENT ruleform.resource_ruleform EMPTY>
-<!ATTLIST ruleform.resource_ruleform
+<!ELEMENT ruleform.resource_authorization EMPTY>
+<!ATTLIST ruleform.resource_authorization
     id CDATA #REQUIRED
     resource CDATA #REQUIRED
     relationship CDATA #REQUIRED

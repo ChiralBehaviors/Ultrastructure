@@ -40,7 +40,7 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         Ruleform {
     private static final long serialVersionUID = 1L;
 
-    private Integer           distance         = 0;
+    private Integer           distance         = 1;
 
     @ManyToOne
     @JoinColumn(name = "relationship")

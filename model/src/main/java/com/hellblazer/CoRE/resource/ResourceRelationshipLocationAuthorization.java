@@ -34,35 +34,36 @@ import com.hellblazer.CoRE.location.Location;
 
 /**
  * @author Halloran Parry
- *
+ * 
  */
 @javax.persistence.Entity
 @DiscriminatorValue("location")
-public class ResourceRelationshipLocationAuthorization extends ResourceAuthorization {
-	private static final long serialVersionUID = 1L;
-	
-	
-	public ResourceRelationshipLocationAuthorization() {
-		setRuleformType("location");
-	}
-	
+public class ResourceRelationshipLocationAuthorization extends
+        ResourceAuthorization {
+    private static final long serialVersionUID = 1L;
+
+    public ResourceRelationshipLocationAuthorization() {
+        setRuleformType("location");
+    }
+
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "location")
-    private Location          location;
+    private Location location;
 
-	/**
-	 * @return the location
-	 */
-	public Location getLocation() {
-		return location;
-	}
+    /**
+     * @return the location
+     */
+    public Location getLocation() {
+        return location;
+    }
 
-	/**
-	 * @param location the location to set
-	 */
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+    /**
+     * @param location
+     *            the location to set
+     */
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
 }

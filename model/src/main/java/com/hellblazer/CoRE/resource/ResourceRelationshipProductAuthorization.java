@@ -34,34 +34,36 @@ import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author Halloran Parry
- *
+ * 
  */
 @javax.persistence.Entity
 @DiscriminatorValue("product")
-public class ResourceRelationshipProductAuthorization extends ResourceAuthorization {
-	private static final long serialVersionUID = 1L;
-	
-	
-	public ResourceRelationshipProductAuthorization() {
-		setRuleformType("product");
-	}
+public class ResourceRelationshipProductAuthorization extends
+        ResourceAuthorization {
+    private static final long serialVersionUID = 1L;
+
+    public ResourceRelationshipProductAuthorization() {
+        setRuleformType("product");
+    }
+
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product          product;
+    private Product product;
 
-	/**
-	 * @return the product
-	 */
-	public Product getProduct() {
-		return product;
-	}
+    /**
+     * @return the product
+     */
+    public Product getProduct() {
+        return product;
+    }
 
-	/**
-	 * @param product the product to set
-	 */
-	public void setProduct(Product product) {
-		this.product = product;
-	}
+    /**
+     * @param product
+     *            the product to set
+     */
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
 }

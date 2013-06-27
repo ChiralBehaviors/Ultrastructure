@@ -32,7 +32,8 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
- * The authorization relating agencies to other existential ruleforms via a Relationship
+ * The authorization relating agencies to other existential ruleforms via a
+ * Relationship
  * 
  * @author hhildebrand
  * 
@@ -44,41 +45,38 @@ import com.hellblazer.CoRE.network.Relationship;
 @DiscriminatorColumn(name = "ruleform_type")
 public abstract class ResourceAuthorization extends Ruleform {
     private static final long serialVersionUID = 1L;
-   
-    @Column(name="ruleform_type")
-    private String ruleformType;
-    
+
+    @Column(name = "ruleform_type")
+    private String            ruleformType;
 
     /**
-	 * @return the ruleformType
-	 */
-	public String getRuleformType() {
-		return ruleformType;
-	}
+     * @return the ruleformType
+     */
+    public String getRuleformType() {
+        return ruleformType;
+    }
 
-	/**
-	 * @param ruleformType the ruleformType to set
-	 */
-	public void setRuleformType(String ruleformType) {
-		this.ruleformType = ruleformType;
-	}
+    /**
+     * @param ruleformType
+     *            the ruleformType to set
+     */
+    public void setRuleformType(String ruleformType) {
+        this.ruleformType = ruleformType;
+    }
 
-	@Id
+    @Id
     @GeneratedValue(generator = "resource_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
-
-
+    private Long         id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship")
-    private Relationship      relationship;
+    private Relationship relationship;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
     @JoinColumn(name = "resource")
-    private Resource          resource;
-
+    private Resource     resource;
 
     @Override
     public Long getId() {

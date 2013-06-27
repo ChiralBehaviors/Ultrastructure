@@ -34,34 +34,36 @@ import com.hellblazer.CoRE.attribute.Attribute;
 
 /**
  * @author Halloran Parry
- *
+ * 
  */
 @javax.persistence.Entity
 @DiscriminatorValue("attribute")
-public class ResourceRelationshipAttributeAuthorization extends ResourceAuthorization {
-	private static final long serialVersionUID = 1L;
-	
-	public ResourceRelationshipAttributeAuthorization() {
-		setRuleformType("attribute");
-	}
-	
+public class ResourceRelationshipAttributeAuthorization extends
+        ResourceAuthorization {
+    private static final long serialVersionUID = 1L;
+
+    public ResourceRelationshipAttributeAuthorization() {
+        setRuleformType("attribute");
+    }
+
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "attribute")
-    private Attribute          attribute;
+    private Attribute attribute;
 
-	/**
-	 * @return the attribute
-	 */
-	public Attribute getAttribute() {
-		return attribute;
-	}
+    /**
+     * @return the attribute
+     */
+    public Attribute getAttribute() {
+        return attribute;
+    }
 
-	/**
-	 * @param product the attribute to set
-	 */
-	public void setAttribute(Attribute attribute) {
-		this.attribute = attribute;
-	}
+    /**
+     * @param product
+     *            the attribute to set
+     */
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
+    }
 
 }

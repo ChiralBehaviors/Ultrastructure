@@ -109,7 +109,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -167,7 +167,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
      * @see java.lang.Object#hashCode()
      */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         if (getId() == null) {
             return 31;
         }

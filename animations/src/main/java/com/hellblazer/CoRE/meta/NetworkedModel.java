@@ -254,6 +254,12 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
               Resource updatedBy);
 
     /**
+     * Propagate the network inferences based on the tracked additions,
+     * deletions and modifications
+     */
+    void propagate();
+
+    /**
      * Propagate the deductions for the inserted network relationship
      * 
      * @param parent
@@ -261,4 +267,32 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * @param child
      */
     void propagate(RuleForm parent, Relationship relationship, RuleForm child);
+
+    /**
+     * Track the added network edge
+     * 
+     * @param ruleform
+     */
+    void trackNetworkEdgeAdded(Long ruleform);
+
+    /**
+     * Track the deleted network edge
+     * 
+     * @param parent
+     * @param relationship TODO
+     */
+    void networkEdgeDeleted(long parent, long relationship);
+
+    /**
+     * Track the modifed network edge
+     * 
+     * @param oldParent
+     * @param oldRelationship
+     * @param oldChild
+     * @param newParent
+     * @param newRelationship
+     * @param newChild
+     */
+    void trackNetworkEdgeModified(Long oldParent, Long oldRelationship, Long oldChild,
+                       Long newParent, Long newRelationship, Long newChild);
 }

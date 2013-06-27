@@ -40,7 +40,7 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         Ruleform {
     private static final long serialVersionUID = 1L;
 
-    private Integer           distance         = 1;
+    private Integer           distance         = 0;
 
     @ManyToOne
     @JoinColumn(name = "relationship")
@@ -73,6 +73,24 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         super(updatedBy);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        @SuppressWarnings("unchecked")
+        NetworkRuleform<E> other = (NetworkRuleform<E>) obj;
+        return getParent().equals(other.getParent())
+               && getRelationship().equals(other.getRelationship())
+               && getChild().equals(other.getChild());
+    }
+
     abstract public E getChild();
 
     /**
@@ -89,6 +107,19 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
      */
     public Relationship getRelationship() {
         return relationship;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                 + (getParent() == null ? 0 : getParent().hashCode());
+        result = prime * result
+                 + (relationship == null ? 0 : relationship.hashCode());
+        result = prime * result
+                 + (getChild() == null ? 0 : getChild().hashCode());
+        return result;
     }
 
     abstract public void setChild(E child);

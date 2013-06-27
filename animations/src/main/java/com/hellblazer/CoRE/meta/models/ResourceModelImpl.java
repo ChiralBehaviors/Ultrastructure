@@ -17,8 +17,13 @@
 
 package com.hellblazer.CoRE.meta.models;
 
+import java.sql.SQLException;
+
 import javax.persistence.EntityManager;
 
+import org.postgresql.pljava.TriggerData;
+
+import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.ResourceModel;
@@ -36,6 +41,47 @@ public class ResourceModelImpl
         extends
         AbstractNetworkedModel<Resource, ResourceAttributeAuthorization, ResourceAttribute>
         implements ResourceModel {
+
+    private static class InDatabase {
+        private static final ResourceModelImpl SINGLETON;
+
+        static {
+            SINGLETON = new ResourceModelImpl(InDatabaseEntityManager.getEm());
+        }
+
+        public static ResourceModelImpl get() {
+            InDatabaseEntityManager.establishContext();
+            return SINGLETON;
+        }
+    }
+
+    public static void track_network_added(TriggerData data)
+                                                            throws SQLException {
+        InDatabase.get().trackNetworkEdgeAdded(data.getNew().getLong("id"));
+    }
+
+    public static void track_network_deleted(TriggerData data)
+                                                              throws SQLException {
+        InDatabase.get().networkEdgeDeleted(data.getNew().getLong("parent"),
+                                            data.getNew().getLong("relationship"));
+    }
+
+    public static void track_network_modified(TriggerData data)
+                                                               throws SQLException {
+        InDatabase.get().trackNetworkEdgeModified(data.getOld().getLong("parent"),
+                                                  data.getOld().getLong("relationship"),
+                                                  data.getOld().getLong("child"),
+                                                  data.getNew().getLong("parent"),
+                                                  data.getNew().getLong("relationship"),
+                                                  data.getNew().getLong("child"));
+    }
+
+    /**
+     * @param em
+     */
+    public ResourceModelImpl(EntityManager em) {
+        super(em, new KernelImpl(em));
+    }
 
     /**
      * @param em

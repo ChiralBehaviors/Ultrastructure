@@ -17,11 +17,16 @@
 
 package com.hellblazer.CoRE.meta.models;
 
+import java.sql.SQLException;
+
 import javax.persistence.EntityManager;
 
+import org.postgresql.pljava.TriggerData;
+
+import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.Kernel;
+import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
@@ -37,6 +42,47 @@ public class ProductModelImpl
         AbstractNetworkedModel<Product, ProductAttributeAuthorization, ProductAttribute>
         implements ProductModel {
 
+    private static class InDatabase {
+        private static final ProductModel SINGLETON;
+
+        static {
+            SINGLETON = new ProductModelImpl(InDatabaseEntityManager.getEm());
+        }
+
+        public static ProductModel get() {
+            InDatabaseEntityManager.establishContext();
+            return SINGLETON;
+        }
+    }
+
+    public static void track_network_added(TriggerData data)
+                                                            throws SQLException {
+        InDatabase.get().trackNetworkEdgeAdded(data.getNew().getLong("id"));
+    }
+
+    public static void track_network_deleted(TriggerData data)
+                                                              throws SQLException {
+        InDatabase.get().networkEdgeDeleted(data.getNew().getLong("parent"),
+                                            data.getNew().getLong("relationship"));
+    }
+
+    public static void track_network_modified(TriggerData data)
+                                                               throws SQLException {
+        InDatabase.get().trackNetworkEdgeModified(data.getOld().getLong("parent"),
+                                                  data.getOld().getLong("relationship"),
+                                                  data.getOld().getLong("child"),
+                                                  data.getNew().getLong("parent"),
+                                                  data.getNew().getLong("relationship"),
+                                                  data.getNew().getLong("child"));
+    }
+
+    /**
+     * @param em
+     */
+    public ProductModelImpl(EntityManager em) {
+        super(em, new KernelImpl(em));
+    }
+
     /**
      * @param em
      */
@@ -51,10 +97,10 @@ public class ProductModelImpl
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
         for (Attribute attribute : attributes) {
             ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(
-                                                                                          aspect.getClassification(),
-                                                                                          aspect.getClassifier(),
-                                                                                          attribute,
-                                                                                          kernel.getCoreModel());
+                                                                                            aspect.getClassification(),
+                                                                                            aspect.getClassifier(),
+                                                                                            attribute,
+                                                                                            kernel.getCoreModel());
             em.persist(authorization);
         }
     }
@@ -88,7 +134,8 @@ public class ProductModelImpl
      */
     @Override
     final public Product create(String name, String description,
-                               Aspect<Product> aspect, Aspect<Product>... aspects) {
+                                Aspect<Product> aspect,
+                                Aspect<Product>... aspects) {
         Product resource = new Product(name, description, kernel.getCoreModel());
         em.persist(resource);
         initialize(resource, aspect);
@@ -109,8 +156,8 @@ public class ProductModelImpl
                       kernel.getCoreModel(), kernel.getInverseSoftware(), em);
         for (ProductAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             ProductAttribute attribute = new ProductAttribute(
-                                                            authorization.getAuthorizedAttribute(),
-                                                            kernel.getCoreModel());
+                                                              authorization.getAuthorizedAttribute(),
+                                                              kernel.getCoreModel());
             attribute.setProduct(resource);
             defaultValue(attribute);
             em.persist(attribute);

@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.meta.models;
 import static com.hellblazer.CoRE.location.LocationMetaRule.CONTEXT_META_RULES;
 import static com.hellblazer.CoRE.location.LocationRelationship.RULES;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,9 +31,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Selection;
 
+import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.location.ContextAttribute;
@@ -59,6 +62,46 @@ public class LocationModelImpl
         AbstractNetworkedModel<Location, LocationAttributeAuthorization, LocationAttribute>
         implements LocationModel {
     private static final Logger LOG = LoggerFactory.getLogger(LocationModelImpl.class);
+
+    private static class InDatabase {
+        private static final LocationModelImpl SINGLETON;
+
+        static {
+            SINGLETON = new LocationModelImpl(InDatabaseEntityManager.getEm());
+        }
+
+        public static LocationModelImpl get() {
+            InDatabaseEntityManager.establishContext();
+            return SINGLETON;
+        }
+    }
+
+    public static void track_network_added(TriggerData data)
+                                                            throws SQLException {
+        InDatabase.get().trackNetworkEdgeAdded(data.getNew().getLong("id"));
+    }
+
+    public static void network_edge_deleted(TriggerData data)
+                                                              throws SQLException {
+        InDatabase.get().networkEdgeDeleted(data.getNew().getLong("parent"), data.getNew().getLong("relationship"));
+    }
+
+    public static void track_network_modified(TriggerData data)
+                                                               throws SQLException {
+        InDatabase.get().trackNetworkEdgeModified(data.getOld().getLong("parent"),
+                                       data.getOld().getLong("relationship"),
+                                       data.getOld().getLong("child"),
+                                       data.getNew().getLong("parent"),
+                                       data.getNew().getLong("relationship"),
+                                       data.getNew().getLong("child"));
+    }
+
+    /**
+     * @param em
+     */
+    public LocationModelImpl(EntityManager em) {
+        super(em, new KernelImpl(em));
+    }
 
     /**
      * @param em
@@ -371,7 +414,7 @@ public class LocationModelImpl
                  */
                 LOG.debug(String.format("using the %s", WellKnownObject.ANY));
                 mappedProduct = new ModelImpl(em).find(WellKnownObject.ANY,
-                                                      Product.class);
+                                                       Product.class);
             }
 
             //------------------------------------------------------------------

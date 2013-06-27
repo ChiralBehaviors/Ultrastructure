@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, salesforce.com, inc.
+ * Copyright (c) 2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided
@@ -28,7 +28,6 @@ package com.hellblazer.CoRE.resource;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.attribute.Attribute;
@@ -39,7 +38,6 @@ import com.hellblazer.CoRE.attribute.Attribute;
  */
 @javax.persistence.Entity
 @Table(name = "resource_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "resource_authorization_id_seq", sequenceName = "resource_authorization_id_seq")
 public class ResourceRelationshipAttributeAuthorization extends ResourceAuthorization {
 	private static final long serialVersionUID = 1L;
 	

@@ -24,18 +24,20 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
- * The authorization relating agencies to location
+ * The authorization relating agencies to other existential ruleforms via a Relationship
  * 
  * @author hhildebrand
  * 
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@SequenceGenerator(schema = "ruleform", name = "resource_authorization_id_seq", sequenceName = "resource_authorization_id_seq")
 public abstract class ResourceAuthorization extends Ruleform {
     private static final long serialVersionUID = 1L;
 

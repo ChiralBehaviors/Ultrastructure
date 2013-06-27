@@ -70,8 +70,8 @@ public class Relationship extends ExistentialRuleform {
      * If true, allows direct edges to be created between nodes by inference. So if a R1 b R2 c,
      * then we could derive a R1 c if this is true. If not, we will not derive that relationship
      */
-    @Column(name="is_transient")
-    private Boolean			  isTransient = Boolean.FALSE;
+    @Column(name="is_transitive")
+    private Boolean			  isTransitive = Boolean.FALSE;
 
     public Relationship() {
     }
@@ -163,8 +163,8 @@ public class Relationship extends ExistentialRuleform {
         return preferred;
     }
     
-    public Boolean getIsTransient() {
-    	return isTransient;
+    public Boolean getIsTransitive() {
+    	return isTransitive;
     }
 
     @Override
@@ -189,7 +189,7 @@ public class Relationship extends ExistentialRuleform {
      * Defaults to false if not set.
      * @param isTransient
      */
-	public void setIsTransient(Boolean isTransient) {
-		this.isTransient = isTransient;
+	public void setIsTransitive(Boolean isTransitive) {
+		this.isTransitive = isTransitive;
 	}
 }

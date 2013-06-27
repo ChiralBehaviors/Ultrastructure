@@ -59,7 +59,9 @@
 		file="/views/resource_attribute.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/resource_attribute_authorization.xml" />
-	<include relativeToChangelogFile="true" file="/views/resource_location.xml" />
+	<include relativeToChangelogFile="true" file="/views/resource_relationship_location.xml" />
+	<include relativeToChangelogFile="true" file="/views/resource_relationship_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/resource_relationship_product.xml" />
 	<include relativeToChangelogFile="true" file="/views/resource_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/status_code.xml" />
 	<include relativeToChangelogFile="true"

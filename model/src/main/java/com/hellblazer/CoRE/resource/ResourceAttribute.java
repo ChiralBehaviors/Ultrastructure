@@ -49,10 +49,6 @@ public class ResourceAttribute extends AttributeValue<Resource> {
     private static final long  serialVersionUID = 1L;
     public static final String GET_ATTRIBUTE    = "resourceAttribute.getAttribute";
 
-    //bi-directional many-to-one association to Attribute
-    @ManyToOne
-    @JoinColumn(name = "attribute_value")
-    private Attribute          attributeValue;
 
     @Id
     @GeneratedValue(generator = "resource_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -142,10 +138,6 @@ public class ResourceAttribute extends AttributeValue<Resource> {
         super(updatedBy);
     }
 
-    public Attribute getAttributeValue() {
-        return attributeValue;
-    }
-
     @Override
     public Long getId() {
         return id;
@@ -169,10 +161,6 @@ public class ResourceAttribute extends AttributeValue<Resource> {
     @Override
     public Class<Resource> getRuleformClass() {
         return Resource.class;
-    }
-
-    public void setAttributeValue(Attribute attribute1) {
-        attributeValue = attribute1;
     }
 
     @Override

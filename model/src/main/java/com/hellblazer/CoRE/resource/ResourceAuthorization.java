@@ -16,6 +16,8 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,8 +25,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
@@ -35,13 +37,33 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-@MappedSuperclass
+@javax.persistence.Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "resource_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "resource_authorization_id_seq", sequenceName = "resource_authorization_id_seq")
+@DiscriminatorColumn(name = "ruleform_type")
 public abstract class ResourceAuthorization extends Ruleform {
     private static final long serialVersionUID = 1L;
+   
+    @Column(name="ruleform_type")
+    private String ruleformType;
+    
 
-    @Id
+    /**
+	 * @return the ruleformType
+	 */
+	public String getRuleformType() {
+		return ruleformType;
+	}
+
+	/**
+	 * @param ruleformType the ruleformType to set
+	 */
+	public void setRuleformType(String ruleformType) {
+		this.ruleformType = ruleformType;
+	}
+
+	@Id
     @GeneratedValue(generator = "resource_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
@@ -57,22 +79,6 @@ public abstract class ResourceAuthorization extends Ruleform {
     @JoinColumn(name = "resource")
     private Resource          resource;
 
-    public ResourceAuthorization() {
-    }
-
-    /**
-     * @param id
-     */
-    public ResourceAuthorization(Long id) {
-        super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public ResourceAuthorization(Resource updatedBy) {
-        super(updatedBy);
-    }
 
     @Override
     public Long getId() {

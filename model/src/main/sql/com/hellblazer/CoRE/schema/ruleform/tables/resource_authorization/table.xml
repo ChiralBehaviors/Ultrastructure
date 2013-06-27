@@ -12,6 +12,7 @@
               id bigserial NOT NULL,
               resource bigint NOT NULL,
               relationship bigint NOT NULL,
+              ruleform_type character varying NOT NULL,
               location bigint,
               product bigint, 
               attribute bigint,

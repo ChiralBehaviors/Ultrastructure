@@ -26,9 +26,9 @@
 
 package com.hellblazer.CoRE.resource;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 import com.hellblazer.CoRE.product.Product;
 
@@ -37,10 +37,14 @@ import com.hellblazer.CoRE.product.Product;
  *
  */
 @javax.persistence.Entity
-@Table(name = "resource_authorization", schema = "ruleform")
+@DiscriminatorValue("product")
 public class ResourceRelationshipProductAuthorization extends ResourceAuthorization {
 	private static final long serialVersionUID = 1L;
 	
+	
+	public ResourceRelationshipProductAuthorization() {
+		setRuleformType("product");
+	}
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "product")

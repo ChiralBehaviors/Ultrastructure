@@ -23,6 +23,8 @@ import junit.framework.Assert;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Test;
 
+import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.test.DatabaseTestContext;
 
 /**
@@ -66,6 +68,29 @@ public class ResourceTest extends DatabaseTestContext {
         Assert.assertTrue(foo.getUpdatedBy().equals(test));
 
         commitTransaction();
+    }
+    
+    @Test
+    public void testResourceAuthorizationConstraints() {
+    	em.getTransaction().begin();
+        Resource test = em.find(Resource.class, 1L);
+        
+        Relationship r = new Relationship("r", test);
+        em.persist(r);
+        
+        Product p = new Product("p", test);
+        em.persist(p);
+        
+        ResourceRelationshipProductAuthorization auth = new ResourceRelationshipProductAuthorization();
+        auth.setProduct(p);
+        auth.setRelationship(r);
+        auth.setResource(test);
+        auth.setUpdatedBy(test);
+        
+        em.persist(auth);
+        em.getTransaction().commit();
+        
+        
     }
 
     @Override

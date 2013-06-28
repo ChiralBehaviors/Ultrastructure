@@ -42,6 +42,7 @@
     <include relativeToChangelogFile="true" file="/views/protocol_attribute.xml" />
 	<include relativeToChangelogFile="true" file="/views/job_chronology.xml" />
 	<include relativeToChangelogFile="true" file="/views/location.xml" />
+    <include relativeToChangelogFile="true" file="/views/location_network.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/location_attribute_authorization.xml" />
 	<include relativeToChangelogFile="true"

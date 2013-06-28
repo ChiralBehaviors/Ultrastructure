@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.location_network AS 
+			 SELECT n.id, p.name AS parent, rel.name AS relationship, c.name AS child, n.ordering, n.distance, n.notes, r.name AS research, u.name AS updated_by, n.update_date
+			   FROM ruleform.location_network n
+			   JOIN ruleform.location p ON n.parent = p.id
+			   JOIN ruleform.relationship rel ON n.relationship = rel.id
+			   JOIN ruleform.location c ON n.child = c.id
+			   JOIN ruleform.resource u ON n.updated_by = u.id
+			   LEFT JOIN ruleform.research r ON n.research = r.id;
+			
+			ALTER TABLE readable.location_network
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.location_network" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

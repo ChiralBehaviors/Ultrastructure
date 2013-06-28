@@ -41,7 +41,6 @@ public class RelationshipNetworkTest extends DatabaseTestContext {
 		
 		commitTransaction();
 		
-		
 	}
 
 	/* (non-Javadoc)

@@ -23,7 +23,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -33,11 +32,8 @@ import com.hellblazer.CoRE.resource.Resource;
 @javax.persistence.Entity
 @Table(name="relationship_network", schema="ruleform")
 @SequenceGenerator(schema = "ruleform", name = "relationship_network_id_seq", sequenceName = "relationship_network_id_seq", allocationSize = 1)
-public class RelationshipNetwork extends Ruleform {
+public class RelationshipNetwork extends NetworkRuleform<Relationship> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	@Id
 	private long id;
@@ -92,6 +88,7 @@ public class RelationshipNetwork extends Ruleform {
 	/**
 	 * @param parent the parent to set
 	 */
+	@Override
 	public void setParent(Relationship parent) {
 		this.parent = parent;
 	}
@@ -106,6 +103,7 @@ public class RelationshipNetwork extends Ruleform {
 	/**
 	 * @param child the child to set
 	 */
+	@Override
 	public void setChild(Relationship child) {
 		this.child = child;
 	}

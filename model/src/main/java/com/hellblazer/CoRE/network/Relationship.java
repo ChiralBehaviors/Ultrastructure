@@ -18,8 +18,12 @@ package com.hellblazer.CoRE.network;
 import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +54,7 @@ import com.hellblazer.CoRE.resource.Resource;
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQueries({ @NamedNativeQuery(name = "relationship"
                                                +  NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
-public class Relationship extends ExistentialRuleform {
+public class Relationship extends ExistentialRuleform implements Networked<Relationship, RelationshipNetwork>{
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -191,5 +195,78 @@ public class Relationship extends ExistentialRuleform {
      */
 	public void setIsTransitive(Boolean isTransitive) {
 		this.isTransitive = isTransitive;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#addChildRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
+	 */
+	@Override
+	public void addChildRelationship(RelationshipNetwork relationship) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#addParentRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
+	 */
+	@Override
+	public void addParentRelationship(RelationshipNetwork relationship) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#getImmediateChildren(javax.persistence.EntityManager)
+	 */
+	@Override
+	public List<RelationshipNetwork> getImmediateChildren(EntityManager em) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#getNetworkByChild()
+	 */
+	@Override
+	public Set<RelationshipNetwork> getNetworkByChild() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#getNetworkByParent()
+	 */
+	@Override
+	public Set<RelationshipNetwork> getNetworkByParent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.resource.Resource, com.hellblazer.CoRE.resource.Resource, javax.persistence.EntityManager)
+	 */
+	@Override
+	public void link(Relationship r, Relationship child, Resource updatedBy,
+			Resource inverseSoftware, EntityManager em) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#setNetworkByChild(java.util.Set)
+	 */
+	@Override
+	public void setNetworkByChild(Set<RelationshipNetwork> theNetworkByChild) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.network.Networked#setNetworkByParent(java.util.Set)
+	 */
+	@Override
+	public void setNetworkByParent(Set<RelationshipNetwork> theNetworkByParent) {
+		// TODO Auto-generated method stub
+		
 	}
 }

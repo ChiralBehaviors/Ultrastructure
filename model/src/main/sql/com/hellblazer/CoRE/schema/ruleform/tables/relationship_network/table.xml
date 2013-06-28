@@ -14,15 +14,17 @@
               child bigserial NOT NULL,
               description character varying,
               notes character varying,
+              research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              pinned boolean NOT NULL DEFAULT false,
               is_transitive boolean NOT NULL DEFAULT false,
               operator ruleform.relational_operator,  
               CONSTRAINT relationship_network_pkey PRIMARY KEY (id ),
               CONSTRAINT parent_fkey FOREIGN KEY (parent)
               	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
               	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, 
+              CONSTRAINT relationship_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE,
               CONSTRAINT child_fkey FOREIGN KEY (child)
               	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
               	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,

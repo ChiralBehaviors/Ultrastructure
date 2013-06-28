@@ -10,5 +10,4 @@
     <include relativeToChangelogFile="true" file="relationship_network/grants.xml"/>
     <include relativeToChangelogFile="true" file="relationship_network/index-relationship.xml"/>
     <include relativeToChangelogFile="true" file="relationship_network/owner.xml"/>
-
 </databaseChangeLog>

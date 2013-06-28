@@ -16,11 +16,15 @@
  */
 package com.hellblazer.CoRE.network;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author Halloran Parry
@@ -38,12 +42,32 @@ public class RelationshipNetwork extends Ruleform {
 	@Id
 	private long id;
 	
+	@ManyToOne
+    @JoinColumn(name = "parent")
 	private Relationship parent;
 	
+	@ManyToOne
+    @JoinColumn(name = "child")
 	private Relationship child;
 	
+	@Column(name="is_transitive")
 	private boolean isTransitive;
 	
+	/**
+	 * 
+	 * @param parent
+	 * @param child
+	 * @param isTransitive
+	 * @param updatedBy
+	 */
+	public RelationshipNetwork(Relationship parent, Relationship child,
+			boolean isTransitive, Resource updatedBy) {
+		this.parent = parent;
+		this.child = child;
+		this.isTransitive = isTransitive;
+		setUpdatedBy(updatedBy);
+	}
+
 	@Override
 	public Long getId() {
 		return id;

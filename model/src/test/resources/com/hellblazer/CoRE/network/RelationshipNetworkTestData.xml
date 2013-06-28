@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <ruleform.resource 
+    id="1"
+    name="CoRE" 
+    description="The CoRE Ultra-Structure system"
+    notes="A rule with a resource of 'CoRE' is one of the main system rules"
+    updated_by="1" 
+    pinned="true"
+    update_date="2007-01-24 15:54:00.000000"/>
+  <ruleform.relationship
+  	id="1"
+  	name="isA"
+  	description="A is a B"
+  	updated_by="1"
+  	pinned="true"
+  	preferred="true"
+  	update_date="2007-01-24 15:54:00.000000"/>
+  <ruleform.relationship
+  	id="2"
+  	name="expresses"
+  	description="A expresses B"
+  	updated_by="1"
+  	pinned="true"
+  	preferred="true"
+  	update_date="2007-01-24 15:54:00.000000"/>
+</dataset>

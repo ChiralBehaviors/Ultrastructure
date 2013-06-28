@@ -10,8 +10,8 @@
             CREATE TABLE ruleform.relationship_network
             (
               id bigserial NOT NULL,
-              relationship1 bigserial NOT NULL,
-              relationship2 bigserial NOT NULL,
+              parent bigserial NOT NULL,
+              child bigserial NOT NULL,
               description character varying,
               notes character varying,
               updated_by bigint NOT NULL,
@@ -20,10 +20,10 @@
               is_transitive boolean NOT NULL DEFAULT false,
               operator ruleform.relational_operator,  
               CONSTRAINT relationship_network_pkey PRIMARY KEY (id ),
-              CONSTRAINT relationship1_fkey FOREIGN KEY (relationship1)
+              CONSTRAINT parent_fkey FOREIGN KEY (parent)
               	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
               	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, 
-              CONSTRAINT relationship2_fkey FOREIGN KEY (relationship2)
+              CONSTRAINT child_fkey FOREIGN KEY (child)
               	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
               	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT relationship_updated_by_fkey FOREIGN KEY (updated_by)

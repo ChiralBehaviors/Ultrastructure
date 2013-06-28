@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hparry">
         <sql> CREATE INDEX relationship_fkey_idx ON ruleform.relationship_network USING btree
-            (relationship1 ); </sql>
+            (parent ); </sql>
         <rollback>
             <dropIndex tableName="ruleform.relationship_network" indexName="relationship_fkey_idx"/>
         </rollback>

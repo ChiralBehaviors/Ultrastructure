@@ -33,9 +33,11 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.resource.Resource;
@@ -76,6 +78,16 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
      */
     @Column(name="is_transitive")
     private Boolean			  isTransitive = Boolean.FALSE;
+    
+    //bi-directional many-to-one association to RelationshipNetwork
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<RelationshipNetwork>   networkByChild;
+
+    //bi-directional many-to-one association to RelationshipNetwork
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<RelationshipNetwork>   networkByParent;
 
     public Relationship() {
     }
@@ -201,8 +213,9 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
 	 * @see com.hellblazer.CoRE.network.Networked#addChildRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
 	 */
 	@Override
-	public void addChildRelationship(RelationshipNetwork relationship) {
-		// TODO Auto-generated method stub
+	public void addChildRelationship(RelationshipNetwork link) {
+		link.setChild(this);
+        networkByChild.add(link);
 		
 	}
 
@@ -210,8 +223,9 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
 	 * @see com.hellblazer.CoRE.network.Networked#addParentRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
 	 */
 	@Override
-	public void addParentRelationship(RelationshipNetwork relationship) {
-		// TODO Auto-generated method stub
+	public void addParentRelationship(RelationshipNetwork link) {
+		link.setParent(this);
+		networkByParent.add(link);
 		
 	}
 
@@ -229,8 +243,7 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
 	 */
 	@Override
 	public Set<RelationshipNetwork> getNetworkByChild() {
-		// TODO Auto-generated method stub
-		return null;
+		return networkByChild;
 	}
 
 	/* (non-Javadoc)
@@ -238,8 +251,7 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
 	 */
 	@Override
 	public Set<RelationshipNetwork> getNetworkByParent() {
-		// TODO Auto-generated method stub
-		return null;
+		return networkByParent;
 	}
 
 	/* (non-Javadoc)
@@ -257,7 +269,7 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
 	 */
 	@Override
 	public void setNetworkByChild(Set<RelationshipNetwork> theNetworkByChild) {
-		// TODO Auto-generated method stub
+		networkByChild = theNetworkByChild;
 		
 	}
 
@@ -266,7 +278,7 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
 	 */
 	@Override
 	public void setNetworkByParent(Set<RelationshipNetwork> theNetworkByParent) {
-		// TODO Auto-generated method stub
+		networkByParent = theNetworkByParent;
 		
 	}
 }

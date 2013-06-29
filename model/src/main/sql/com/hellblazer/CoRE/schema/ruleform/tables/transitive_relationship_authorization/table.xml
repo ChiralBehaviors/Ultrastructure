@@ -7,28 +7,27 @@
 
 	<changeSet id="1" author="hparry">
 		<sql><![CDATA[
-            CREATE TABLE ruleform.relationship_network
+            CREATE TABLE ruleform.transitive_relationship_authorization
             (
               id bigserial NOT NULL,
-              parent bigserial NOT NULL,
-              child bigserial NOT NULL,
+              relationship bigserial NOT NULL,
+              is_transitive boolean NOT NULL DEFAULT true,
+              authorized_relationship bigserial NOT NULL,
               description character varying,
-              inferred boolean NOT NULL DEFAULT false,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              is_transitive boolean NOT NULL DEFAULT false,
               operator ruleform.relational_operator,  
               CONSTRAINT relationship_network_pkey PRIMARY KEY (id ),
-              CONSTRAINT parent_fkey FOREIGN KEY (parent)
+              CONSTRAINT parent_fkey FOREIGN KEY (relationship)
               	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
               	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, 
+              CONSTRAINT child_fkey FOREIGN KEY (authorized_relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT relationship_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE,
-              CONSTRAINT child_fkey FOREIGN KEY (child)
-              	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-              	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT relationship_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
@@ -39,7 +38,7 @@
             ]]>
 		</sql>
 		<rollback>
-			<dropTable tableName="ruleform.relationship_network" />
+			<dropTable tableName="ruleform.transitive_relationship_authorization" />
 		</rollback>
 	</changeSet>
 </databaseChangeLog>

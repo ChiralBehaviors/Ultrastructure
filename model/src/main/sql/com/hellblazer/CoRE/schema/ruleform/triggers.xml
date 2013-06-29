@@ -48,7 +48,7 @@
     <include relativeToChangelogFile="true" file="tables/relationship_chain/trigger-relationship_chain_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/relationship_network/trigger-relationship_network_update_date.xml" />
+    <include relativeToChangelogFile="true" file="tables/transitive_relationship_authorization/trigger-transitive_relationship_authorization_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/resource_attribute_authorization/trigger-resource_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_network_authorization/trigger-resource_network_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_attribute/trigger-resource_attribute_update_date.xml"/>

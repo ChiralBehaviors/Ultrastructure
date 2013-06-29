@@ -55,7 +55,7 @@
 	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/relationship_chain.xml" />
-	<include relativeToChangelogFile="true" file="/views/relationship_network.xml" />
+	<include relativeToChangelogFile="true" file="/views/transitive_relationship_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/resource.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/resource_attribute.xml" />

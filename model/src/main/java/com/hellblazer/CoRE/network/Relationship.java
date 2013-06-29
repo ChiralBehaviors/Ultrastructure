@@ -19,10 +19,7 @@ package com.hellblazer.CoRE.network;
 import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 
-import java.util.Set;
-
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,11 +29,9 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.resource.Resource;
@@ -56,37 +51,20 @@ import com.hellblazer.CoRE.resource.Resource;
 @NamedNativeQueries({ @NamedNativeQuery(name = "relationship"
                                                + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Relationship extends ExistentialRuleform {
-    private static final long        serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(generator = "relationship_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                     id;
+    private Long              id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "inverse")
-    private Relationship             inverse;
+    private Relationship      inverse;
 
-    private String                   operator;
+    private String            operator;
 
-    private Boolean                  preferred        = Boolean.FALSE;
-
-    /*
-     * If true, allows direct edges to be created between nodes by inference. So if a R1 b R2 c,
-     * then we could derive a R1 c if this is true. If not, we will not derive that relationship
-     */
-    @Column(name = "is_transitive")
-    private Boolean                  isTransitive     = Boolean.FALSE;
-
-    //bi-directional many-to-one association to RelationshipNetwork
-    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<RelationshipNetwork> networkByChild;
-
-    //bi-directional many-to-one association to RelationshipNetwork
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<RelationshipNetwork> networkByParent;
+    private Boolean           preferred        = Boolean.FALSE;
 
     public Relationship() {
     }
@@ -170,10 +148,6 @@ public class Relationship extends ExistentialRuleform {
         return inverse;
     }
 
-    public Boolean getIsTransitive() {
-        return isTransitive;
-    }
-
     public String getOperator() {
         return operator;
     }
@@ -190,15 +164,6 @@ public class Relationship extends ExistentialRuleform {
     public void setInverse(Relationship relationship) {
         inverse = relationship;
         relationship.inverse = this;
-    }
-
-    /**
-     * Defaults to false if not set.
-     * 
-     * @param isTransient
-     */
-    public void setIsTransitive(Boolean isTransitive) {
-        this.isTransitive = isTransitive;
     }
 
     public void setOperator(String operator) {

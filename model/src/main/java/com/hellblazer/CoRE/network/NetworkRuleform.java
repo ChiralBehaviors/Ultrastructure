@@ -40,7 +40,7 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         Ruleform {
     private static final long serialVersionUID = 1L;
 
-    private Integer           distance         = 1;
+    private boolean           inferred         = false;
 
     @ManyToOne
     @JoinColumn(name = "relationship")
@@ -93,13 +93,6 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
 
     abstract public E getChild();
 
-    /**
-     * @return the distance
-     */
-    public Integer getDistance() {
-        return distance;
-    }
-
     abstract public E getParent();
 
     /**
@@ -122,14 +115,14 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         return result;
     }
 
+    public boolean isInferred() {
+        return inferred;
+    }
+
     abstract public void setChild(E child);
 
-    /**
-     * @param distance
-     *            the distance to set
-     */
-    public void setDistance(Integer distance) {
-        this.distance = distance;
+    public void setInferred(boolean inferred) {
+        this.inferred = inferred;
     }
 
     abstract public void setParent(E parent);

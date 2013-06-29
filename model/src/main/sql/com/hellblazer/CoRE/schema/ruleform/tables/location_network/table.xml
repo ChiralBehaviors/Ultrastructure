@@ -13,7 +13,7 @@
               parent bigint NOT NULL,
               relationship bigint NOT NULL,
               child bigint NOT NULL,
-              distance integer NOT NULL DEFAULT 1,
+              inferred boolean NOT NULL DEFAULT FALSE,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
@@ -29,8 +29,7 @@
               CONSTRAINT location_network_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_network_parent_key UNIQUE (parent , relationship , child ),
-              CONSTRAINT valid_distance CHECK (distance >= 1)
+              CONSTRAINT location_network_parent_key UNIQUE (parent , relationship , child )
             )
             WITH (
               OIDS=FALSE

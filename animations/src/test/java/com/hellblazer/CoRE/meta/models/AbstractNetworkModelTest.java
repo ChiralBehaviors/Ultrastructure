@@ -35,20 +35,6 @@ import com.hellblazer.CoRE.resource.Resource;
 public class AbstractNetworkModelTest extends AbstractModelTest {
 
     @Test
-    public void testClearDeducedRules() {
-        em.getTransaction().begin();
-        model.getResourceModel().clearDeducedRules();
-        em.getTransaction().commit();
-    }
-
-    @Test
-    public void testGenerateInverses() {
-        em.getTransaction().begin();
-        model.getResourceModel().generateInverses();
-        em.getTransaction().commit();
-    }
-
-    @Test
     public void testInGroup() {
         em.getTransaction().begin();
         Relationship classification = new Relationship(

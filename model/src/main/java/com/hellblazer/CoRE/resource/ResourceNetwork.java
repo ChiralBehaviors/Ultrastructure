@@ -47,7 +47,7 @@ import com.hellblazer.CoRE.network.Relationship;
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from ResourceNetwork AS n "
                                                                             + "where n.parent = :resource "
-                                                                            + "and n.distance = 1 "
+                                                                            + "and n.inferred = FALSE "
                                                                             + "and n.relationship.preferred = FALSE "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ResourceNetwork n") })

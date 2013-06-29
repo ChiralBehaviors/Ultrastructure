@@ -42,7 +42,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @Table(name = "attribute_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
 @NamedQueries({ @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
-                                                                             + "WHERE n.parent = :attribute and n.distance = 1 and n.relationship.preferred = FALSE "
+                                                                             + "WHERE n.parent = :attribute and n.inferred = FALSE and n.relationship.preferred = FALSE "
                                                                              + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private static final long  serialVersionUID                 = 1L;

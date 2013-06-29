@@ -9,7 +9,6 @@
     <include relativeToChangelogFile="true" file="attribute_network/table.xml"/>
     <include relativeToChangelogFile="true" file="attribute_network/grants.xml"/>
     <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_child.xml"/>
-    <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_distance.xml"/>
     <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_parent.xml"/>
     <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_relationship.xml"/>
     <include relativeToChangelogFile="true" file="attribute_network/index-attribute_network_research.xml"/>

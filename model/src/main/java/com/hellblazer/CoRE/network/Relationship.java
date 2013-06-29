@@ -41,6 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.resource.ResourceNetwork;
 
 /**
  * The existential rule form that defines relationships between existential rule
@@ -56,7 +57,7 @@ import com.hellblazer.CoRE.resource.Resource;
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQueries({ @NamedNativeQuery(name = "relationship"
                                                +  NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
-public class Relationship extends ExistentialRuleform implements Networked<Relationship, RelationshipNetwork>{
+public class Relationship extends ExistentialRuleform {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -209,76 +210,5 @@ public class Relationship extends ExistentialRuleform implements Networked<Relat
 		this.isTransitive = isTransitive;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#addChildRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
-	 */
-	@Override
-	public void addChildRelationship(RelationshipNetwork link) {
-		link.setChild(this);
-        networkByChild.add(link);
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#addParentRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
-	 */
-	@Override
-	public void addParentRelationship(RelationshipNetwork link) {
-		link.setParent(this);
-		networkByParent.add(link);
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#getImmediateChildren(javax.persistence.EntityManager)
-	 */
-	@Override
-	public List<RelationshipNetwork> getImmediateChildren(EntityManager em) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#getNetworkByChild()
-	 */
-	@Override
-	public Set<RelationshipNetwork> getNetworkByChild() {
-		return networkByChild;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#getNetworkByParent()
-	 */
-	@Override
-	public Set<RelationshipNetwork> getNetworkByParent() {
-		return networkByParent;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.resource.Resource, com.hellblazer.CoRE.resource.Resource, javax.persistence.EntityManager)
-	 */
-	@Override
-	public void link(Relationship r, Relationship child, Resource updatedBy,
-			Resource inverseSoftware, EntityManager em) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#setNetworkByChild(java.util.Set)
-	 */
-	@Override
-	public void setNetworkByChild(Set<RelationshipNetwork> theNetworkByChild) {
-		networkByChild = theNetworkByChild;
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.network.Networked#setNetworkByParent(java.util.Set)
-	 */
-	@Override
-	public void setNetworkByParent(Set<RelationshipNetwork> theNetworkByParent) {
-		networkByParent = theNetworkByParent;
-		
-	}
+	
 }

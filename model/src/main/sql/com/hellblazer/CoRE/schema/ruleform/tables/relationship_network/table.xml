@@ -13,6 +13,7 @@
               parent bigserial NOT NULL,
               child bigserial NOT NULL,
               description character varying,
+              inferred boolean NOT NULL DEFAULT false,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,

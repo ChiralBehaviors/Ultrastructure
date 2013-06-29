@@ -18,7 +18,6 @@
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              operator ruleform.relational_operator,  
               CONSTRAINT relationship_network_pkey PRIMARY KEY (id ),
               CONSTRAINT parent_fkey FOREIGN KEY (relationship)
               	  REFERENCES ruleform.relationship (id) MATCH SIMPLE

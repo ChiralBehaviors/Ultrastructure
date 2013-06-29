@@ -156,6 +156,7 @@ public abstract class DatabaseTestContext {
             try {
                 op.execute(c, dataSet);
             } catch (BatchUpdateException e) {
+                e.printStackTrace();
                 if (e.getNextException() != null) {
                     throw e.getNextException();
                 }

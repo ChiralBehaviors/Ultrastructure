@@ -122,7 +122,7 @@
     parent CDATA #REQUIRED
     relationship CDATA #REQUIRED
     child CDATA #REQUIRED
-    distance CDATA #REQUIRED
+    inferred CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED
@@ -409,7 +409,7 @@
     parent CDATA #REQUIRED
     relationship CDATA #REQUIRED
     child CDATA #REQUIRED
-    distance CDATA #REQUIRED
+    inferred CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED
@@ -610,7 +610,7 @@
     parent CDATA #REQUIRED
     relationship CDATA #REQUIRED
     child CDATA #REQUIRED
-    distance CDATA #REQUIRED
+    inferred CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED
@@ -783,7 +783,7 @@
     parent CDATA #REQUIRED
     relationship CDATA #REQUIRED
     child CDATA #REQUIRED
-    distance CDATA #REQUIRED
+    inferred CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED

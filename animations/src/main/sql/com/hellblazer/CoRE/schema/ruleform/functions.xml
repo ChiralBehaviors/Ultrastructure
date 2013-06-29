@@ -31,17 +31,6 @@
 	<include relativeToChangelogFile="true"
 		file="functions/nest_coordinates.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/np_clear_deduced_rules.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/np_generate_inverse_rules.xml" />
-	<include relativeToChangelogFile="true" file="functions/np_propagate.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/np_propagate_all.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/np_propagate_network.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/np_propagate_network_with_deduction.xml" />
-	<include relativeToChangelogFile="true"
 		file="functions/resource_get_allowed_text_values.xml" />
 	<include relativeToChangelogFile="true" file="functions/transform.xml" />
 	<include relativeToChangelogFile="true" file="functions/translation.xml" />

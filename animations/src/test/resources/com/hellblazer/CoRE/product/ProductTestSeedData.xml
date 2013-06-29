@@ -47,21 +47,21 @@
 		pinned="false" />
 
 
-	<ruleform.product id="1" name="Mass List 1" updated_by="1"
-		update_date="2008-05-20 13:55:38.98048" pinned="false" />
+	<ruleform.product id="1" name="Mass List 1"
+		updated_by="1" update_date="2008-05-20 13:55:38.98048" pinned="false" />
 	<ruleform.product id="2" name="Precursor Ion 1"
 		updated_by="1" update_date="2008-05-20 13:55:38.98048" pinned="false" />
 	<ruleform.product id="3" name="Precursor Ion 2"
 		updated_by="1" update_date="2008-05-20 13:55:38.98048" pinned="false" />
-	<ruleform.product id="4" name="Mass List 2" updated_by="1"
-		update_date="2008-05-20 13:55:38.98048" pinned="false" />
+	<ruleform.product id="4" name="Mass List 2"
+		updated_by="1" update_date="2008-05-20 13:55:38.98048" pinned="false" />
 	<ruleform.product id="5" name="Precursor Ion 3"
 		updated_by="1" update_date="2008-05-20 13:55:38.98048" pinned="false" />
 	<ruleform.product id="6" name="Precursor Ion 4"
 		updated_by="1" update_date="2008-05-20 13:55:38.98048" pinned="false" />
 
-	<ruleform.product id="7" name="Product Ion" updated_by="1"
-		update_date="2008-05-20 13:55:38.98048" pinned="false" />
+	<ruleform.product id="7" name="Product Ion"
+		updated_by="1" update_date="2008-05-20 13:55:38.98048" pinned="false" />
 	<!-- Don't use product id = 8, because this is used in createProductFromGroup 
 		test -->
 
@@ -85,16 +85,16 @@
 		updated_by="1" update_date="2007-07-05 10:51:15.702266" />
 
 	<ruleform.product_network id="1" resource="2"
-		parent="2" relationship="163" child="1" distance="1" updated_by="1"
+		parent="2" relationship="163" child="1" inferred="FALSE" updated_by="1"
 		update_date="2008-05-20 13:55:38.98048" ordering="1" />
 	<ruleform.product_network id="2" resource="2"
-		parent="3" relationship="163" child="1" distance="1" updated_by="1"
+		parent="3" relationship="163" child="1" inferred="FALSE" updated_by="1"
 		update_date="2008-05-20 13:55:38.98048" ordering="2" />
 	<ruleform.product_network id="3" resource="3"
-		parent="5" relationship="163" child="4" distance="1" updated_by="1"
+		parent="5" relationship="163" child="4" inferred="FALSE" updated_by="1"
 		update_date="2008-05-20 13:55:38.98048" ordering="1" />
 	<ruleform.product_network id="4" resource="3"
-		parent="6" relationship="163" child="4" distance="1" updated_by="1"
+		parent="6" relationship="163" child="4" inferred="FALSE" updated_by="1"
 		update_date="2008-05-20 13:55:38.98048" ordering="1" />
 
 </dataset>

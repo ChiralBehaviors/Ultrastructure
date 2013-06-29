@@ -75,18 +75,6 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
     void authorize(Aspect<RuleForm> aspect, Attribute... attributes);
 
     /**
-     * This function removes all deduced rules from the given network table.
-     * While this can be simply done by 'DELETE FROM
-     * <table>
-     * WHERE ...', this function adds some error checking, and helpfully resets
-     * the sequence backing the 'id' column to reclaim the ids used by the
-     * deleted inferred rules.
-     * 
-     * This function pins the 'Inverse Software' resource.
-     */
-    void clearDeducedRules();
-
-    /**
      * Create a new instance of the RuleForm based on the provided prototype
      * 
      * @param prototype
@@ -94,8 +82,6 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * @return the new instance
      */
     RuleForm create(RuleForm prototype);
-
-    void generateInverses();
 
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
@@ -270,29 +256,14 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
 
     /**
      * Track the added network edge
-     * 
-     * @param ruleform
      */
-    void trackNetworkEdgeAdded(Long ruleform);
+    void trackNetworkEdgeAdded(long parent, long relationship, long child);
 
     /**
      * Track the deleted network edge
      * 
      * @param parent
-     * @param relationship TODO
+     * @param relationship
      */
     void networkEdgeDeleted(long parent, long relationship);
-
-    /**
-     * Track the modifed network edge
-     * 
-     * @param oldParent
-     * @param oldRelationship
-     * @param oldChild
-     * @param newParent
-     * @param newRelationship
-     * @param newChild
-     */
-    void trackNetworkEdgeModified(Long oldParent, Long oldRelationship, Long oldChild,
-                       Long newParent, Long newRelationship, Long newChild);
 }

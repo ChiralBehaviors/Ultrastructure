@@ -9,7 +9,6 @@
     <include relativeToChangelogFile="true" file="product_network/table.xml"/>
     <include relativeToChangelogFile="true" file="product_network/grants.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-product_network_child.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/index-product_network_distance.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-product_network_parent.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-product_network_relationship.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-product_network_research.xml"/>

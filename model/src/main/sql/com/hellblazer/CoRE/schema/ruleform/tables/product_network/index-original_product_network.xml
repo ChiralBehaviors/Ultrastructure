@@ -13,7 +13,7 @@
 			ON ruleform.product_network
 			USING btree
 			(id )
-			WHERE distance = 1 AND updated_by <> 31; 
+			WHERE inferred = FALSE; 
 			]]>
 		</sql>
 		<rollback>

@@ -175,7 +175,6 @@ public class ProductTest extends DatabaseTestContext {
         ProductNetwork net = new ProductNetwork();
         net.setRelationship(includes);
         net.setChild(b2);
-        net.setDistance(1);
         net.setUpdatedBy(core);
 
         // This should get persisted in the database automatically

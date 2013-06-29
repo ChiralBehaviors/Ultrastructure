@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hparry">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.relationship_network
+            (
+              id bigserial NOT NULL,
+              relationship1 bigserial NOT NULL,
+              relationship2 bigserial NOT NULL,
+              description character varying,
+              notes character varying,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              pinned boolean NOT NULL DEFAULT false,
+              is_transitive boolean NOT NULL DEFAULT false,
+              operator ruleform.relational_operator,  
+              CONSTRAINT relationship_network_pkey PRIMARY KEY (id ),
+              CONSTRAINT relationship1_fkey FOREIGN KEY (relationship1)
+              	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+              	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, 
+              CONSTRAINT relationship2_fkey FOREIGN KEY (relationship2)
+              	  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+              	  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT relationship_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.relationship_network" />
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

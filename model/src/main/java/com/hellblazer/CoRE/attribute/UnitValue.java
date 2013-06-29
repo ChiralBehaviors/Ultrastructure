@@ -51,7 +51,7 @@ public class UnitValue extends Ruleform {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
-    private Product            productValue;
+    private Product           productValue;
 
     @Id
     @GeneratedValue(generator = "unit_value_id_seq", strategy = GenerationType.SEQUENCE)

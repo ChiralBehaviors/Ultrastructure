@@ -35,7 +35,8 @@ import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * The authorization rule form that defines rules for relating products to locations.
+ * The authorization rule form that defines rules for relating products to
+ * locations.
  * 
  * @author hhildebrand
  * 
@@ -45,7 +46,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @SequenceGenerator(schema = "ruleform", name = "product_location_id_seq", sequenceName = "product_location_id_seq")
 public class ProductLocation extends Ruleform implements
         Attributable<ProductLocationAttribute> {
-    private static final long            serialVersionUID = 1L;
+    private static final long             serialVersionUID = 1L;
 
     //bi-directional many-to-one association to ProductLocationAttribute
     @OneToMany(mappedBy = "productLocation")
@@ -59,22 +60,22 @@ public class ProductLocation extends Ruleform implements
 
     @Id
     @GeneratedValue(generator = "product_location_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                         id;
+    private Long                          id;
 
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "location")
-    private Location                     location;
+    private Location                      location;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship")
-    private Relationship                 relationship;
+    private Relationship                  relationship;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
     @JoinColumn(name = "resource")
-    private Resource                     resource;
+    private Resource                      resource;
 
     public ProductLocation() {
     }
@@ -106,10 +107,6 @@ public class ProductLocation extends Ruleform implements
         return ProductLocationAttribute.class;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     @Override
     public Long getId() {
         return id;
@@ -117,6 +114,10 @@ public class ProductLocation extends Ruleform implements
 
     public Location getLocation() {
         return location;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     public Relationship getRelationship() {
@@ -132,10 +133,6 @@ public class ProductLocation extends Ruleform implements
         attributes = productLocationAttributes;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     @Override
     public void setId(Long id) {
         this.id = id;
@@ -143,6 +140,10 @@ public class ProductLocation extends Ruleform implements
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public void setRelationship(Relationship relationship) {

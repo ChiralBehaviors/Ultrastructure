@@ -15,15 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.hellblazer.CoRE.network;
+
 import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceNetwork;
 
 /**
  * The existential rule form that defines relationships between existential rule
@@ -53,42 +51,42 @@ import com.hellblazer.CoRE.resource.ResourceNetwork;
 @javax.persistence.Entity
 @Table(name = "relationship", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "relationship_id_seq", sequenceName = "relationship_id_seq", allocationSize = 1)
-@NamedQueries({ @NamedQuery(name = "relationship" +  FIND_BY_NAME_SUFFIX, query = "select e from Relationship e where e.name = :name") })
+@NamedQueries({ @NamedQuery(name = "relationship" + FIND_BY_NAME_SUFFIX, query = "select e from Relationship e where e.name = :name") })
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQueries({ @NamedNativeQuery(name = "relationship"
-                                               +  NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
+                                               + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Relationship extends ExistentialRuleform {
-    private static final long serialVersionUID = 1L;
+    private static final long        serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(generator = "relationship_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+    private Long                     id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "inverse")
-    private Relationship      inverse;
+    private Relationship             inverse;
 
-    private String            operator;
+    private String                   operator;
 
-    private Boolean           preferred        = Boolean.FALSE;
-    
+    private Boolean                  preferred        = Boolean.FALSE;
+
     /*
      * If true, allows direct edges to be created between nodes by inference. So if a R1 b R2 c,
      * then we could derive a R1 c if this is true. If not, we will not derive that relationship
      */
-    @Column(name="is_transitive")
-    private Boolean			  isTransitive = Boolean.FALSE;
-    
+    @Column(name = "is_transitive")
+    private Boolean                  isTransitive     = Boolean.FALSE;
+
     //bi-directional many-to-one association to RelationshipNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<RelationshipNetwork>   networkByChild;
+    private Set<RelationshipNetwork> networkByChild;
 
     //bi-directional many-to-one association to RelationshipNetwork
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<RelationshipNetwork>   networkByParent;
+    private Set<RelationshipNetwork> networkByParent;
 
     public Relationship() {
     }
@@ -172,16 +170,16 @@ public class Relationship extends ExistentialRuleform {
         return inverse;
     }
 
+    public Boolean getIsTransitive() {
+        return isTransitive;
+    }
+
     public String getOperator() {
         return operator;
     }
 
     public Boolean getPreferred() {
         return preferred;
-    }
-    
-    public Boolean getIsTransitive() {
-    	return isTransitive;
     }
 
     @Override
@@ -194,6 +192,15 @@ public class Relationship extends ExistentialRuleform {
         relationship.inverse = this;
     }
 
+    /**
+     * Defaults to false if not set.
+     * 
+     * @param isTransient
+     */
+    public void setIsTransitive(Boolean isTransitive) {
+        this.isTransitive = isTransitive;
+    }
+
     public void setOperator(String operator) {
         this.operator = operator;
     }
@@ -201,14 +208,5 @@ public class Relationship extends ExistentialRuleform {
     public void setPreferred(Boolean preferred) {
         this.preferred = preferred;
     }
-    
-    /**
-     * Defaults to false if not set.
-     * @param isTransient
-     */
-	public void setIsTransitive(Boolean isTransitive) {
-		this.isTransitive = isTransitive;
-	}
 
-	
 }

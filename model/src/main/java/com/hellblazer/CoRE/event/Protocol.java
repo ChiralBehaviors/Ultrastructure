@@ -145,6 +145,15 @@ public class Protocol extends Ruleform {
     public Protocol(Product requestedService, Resource requester,
                     Product requestedProduct, Location deliverTo,
                     Location deliverFrom, Resource assignTo, Product service,
+                    Product product, boolean copyAttributes, Resource updatedBy) {
+        this(requestedService, requester, requestedProduct, deliverTo,
+             deliverFrom, assignTo, service, product, updatedBy);
+        setCopyAttributes(copyAttributes);
+    }
+
+    public Protocol(Product requestedService, Resource requester,
+                    Product requestedProduct, Location deliverTo,
+                    Location deliverFrom, Resource assignTo, Product service,
                     Product product, Resource updatedBy) {
         super(updatedBy);
         assert requestedProduct != null;
@@ -164,15 +173,6 @@ public class Protocol extends Ruleform {
         setAssignTo(assignTo);
         setService(service);
         setProduct(product);
-    }
-
-    public Protocol(Product requestedService, Resource requester,
-                    Product requestedProduct, Location deliverTo,
-                    Location deliverFrom, Resource assignTo, Product service,
-                    Product product, boolean copyAttributes, Resource updatedBy) {
-        this(requestedService, requester, requestedProduct, deliverTo,
-             deliverFrom, assignTo, service, product, updatedBy);
-        setCopyAttributes(copyAttributes);
     }
 
     /**

@@ -46,7 +46,7 @@ public class LocationAttribute extends AttributeValue<Location> {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
-    private Product            productValue;
+    private Product           productValue;
 
     @Id
     @GeneratedValue(generator = "location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -140,10 +140,6 @@ public class LocationAttribute extends AttributeValue<Location> {
         super(updatedBy);
     }
 
-    public Product getProductValue() {
-        return productValue;
-    }
-
     @Override
     public Long getId() {
         return id;
@@ -151,6 +147,10 @@ public class LocationAttribute extends AttributeValue<Location> {
 
     public Location getLocation() {
         return location;
+    }
+
+    public Product getProductValue() {
+        return productValue;
     }
 
     public Resource getResourceValue() {

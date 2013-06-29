@@ -55,7 +55,7 @@ public class ProductAttribute extends AttributeValue<Product> {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product             product;
+    private Product            product;
 
     @Id
     @GeneratedValue(generator = "product_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -77,7 +77,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param updatedBy
      */
     public ProductAttribute(Attribute attribute, BigDecimal value,
-                           Resource updatedBy) {
+                            Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -87,7 +87,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param updatedBy
      */
     public ProductAttribute(Attribute attribute, boolean value,
-                           Resource updatedBy) {
+                            Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -113,7 +113,8 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param value
      * @param updatedBy
      */
-    public ProductAttribute(Attribute attribute, String value, Resource updatedBy) {
+    public ProductAttribute(Attribute attribute, String value,
+                            Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -139,13 +140,13 @@ public class ProductAttribute extends AttributeValue<Product> {
         super(updatedBy);
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     @Override
     public Long getId() {
         return id;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     /* (non-Javadoc)
@@ -164,12 +165,12 @@ public class ProductAttribute extends AttributeValue<Product> {
         return Product.class;
     }
 
-    public void setProduct(Product product2) {
-        product = product2;
-    }
-
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setProduct(Product product2) {
+        product = product2;
     }
 }

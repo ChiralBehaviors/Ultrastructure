@@ -65,7 +65,7 @@ public class Transformation extends Ruleform implements Serializable {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product             product;
+    private Product            product;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
@@ -75,7 +75,7 @@ public class Transformation extends Ruleform implements Serializable {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_key")
-    private Product             productKey;
+    private Product            productKey;
 
     @Id
     @GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
@@ -102,7 +102,7 @@ public class Transformation extends Ruleform implements Serializable {
     //bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "service")
-    private Product             service;
+    private Product            service;
 
     public Transformation() {
     }
@@ -119,17 +119,17 @@ public class Transformation extends Ruleform implements Serializable {
         return product;
     }
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
     public Resource getProductAttributeResource() {
         return productAttributeResource;
     }
 
     public Product getProductKey() {
         return productKey;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Relationship getRelationshipKey() {

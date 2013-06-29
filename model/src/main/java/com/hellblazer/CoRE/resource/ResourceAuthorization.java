@@ -49,34 +49,19 @@ public abstract class ResourceAuthorization extends Ruleform {
     @Column(name = "ruleform_type")
     private String            ruleformType;
 
-    /**
-     * @return the ruleformType
-     */
-    public String getRuleformType() {
-        return ruleformType;
-    }
-
-    /**
-     * @param ruleformType
-     *            the ruleformType to set
-     */
-    public void setRuleformType(String ruleformType) {
-        this.ruleformType = ruleformType;
-    }
-
     @Id
     @GeneratedValue(generator = "resource_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long         id;
+    private Long              id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship")
-    private Relationship relationship;
+    private Relationship      relationship;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
     @JoinColumn(name = "resource")
-    private Resource     resource;
+    private Resource          resource;
 
     @Override
     public Long getId() {
@@ -91,6 +76,13 @@ public abstract class ResourceAuthorization extends Ruleform {
         return resource;
     }
 
+    /**
+     * @return the ruleformType
+     */
+    public String getRuleformType() {
+        return ruleformType;
+    }
+
     @Override
     public void setId(Long id) {
         this.id = id;
@@ -102,5 +94,13 @@ public abstract class ResourceAuthorization extends Ruleform {
 
     public void setResource(Resource resource2) {
         resource = resource2;
+    }
+
+    /**
+     * @param ruleformType
+     *            the ruleformType to set
+     */
+    public void setRuleformType(String ruleformType) {
+        this.ruleformType = ruleformType;
     }
 }

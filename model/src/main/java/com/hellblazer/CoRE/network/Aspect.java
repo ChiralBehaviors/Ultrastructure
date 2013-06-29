@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.network;
 
-
 /**
  * An Aspect is the classification of an networked ruleform within a network.
  * The network relation is A relationship B, where "relationship" is the

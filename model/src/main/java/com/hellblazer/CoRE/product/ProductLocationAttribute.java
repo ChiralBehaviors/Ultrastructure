@@ -47,12 +47,12 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     //bi-directional many-to-one association to ProductLocation
     @ManyToOne
     @JoinColumn(name = "product_location")
-    private ProductLocation    productLocation;
+    private ProductLocation   productLocation;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
-    private Product            productValue;
+    private Product           productValue;
 
     @Id
     @GeneratedValue(generator = "product_location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -79,7 +79,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, BigDecimal value,
-                                   Resource updatedBy) {
+                                    Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -89,7 +89,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, boolean value,
-                                   Resource updatedBy) {
+                                    Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -99,7 +99,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, int value,
-                                   Resource updatedBy) {
+                                    Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -117,7 +117,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, String value,
-                                   Resource updatedBy) {
+                                    Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 

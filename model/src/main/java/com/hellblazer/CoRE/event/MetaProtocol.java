@@ -109,24 +109,6 @@ public class MetaProtocol extends Ruleform {
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public MetaProtocol(Resource updatedBy) {
-        super(updatedBy);
-    }
-
-    public MetaProtocol(Product service, Relationship requestingResource,
-                        Relationship serviceType, Relationship deliverTo,
-                        Relationship deliverFrom, Resource updatedBy) {
-        super(updatedBy);
-        setService(service);
-        setRequestingResource(requestingResource);
-        setServiceType(serviceType);
-        setDeliverTo(deliverTo);
-        setDeliverFrom(deliverFrom);
-    }
-
     public MetaProtocol(Product service, int sequenceNumber,
                         Relationship productOrdered,
                         Relationship requestingResource,
@@ -140,6 +122,24 @@ public class MetaProtocol extends Ruleform {
         setServiceType(serviceType);
         setDeliverTo(deliverTo);
         setDeliverFrom(deliverFrom);
+    }
+
+    public MetaProtocol(Product service, Relationship requestingResource,
+                        Relationship serviceType, Relationship deliverTo,
+                        Relationship deliverFrom, Resource updatedBy) {
+        super(updatedBy);
+        setService(service);
+        setRequestingResource(requestingResource);
+        setServiceType(serviceType);
+        setDeliverTo(deliverTo);
+        setDeliverFrom(deliverFrom);
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public MetaProtocol(Resource updatedBy) {
+        super(updatedBy);
     }
 
     /**

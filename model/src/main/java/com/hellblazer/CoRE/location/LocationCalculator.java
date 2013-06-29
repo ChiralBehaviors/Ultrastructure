@@ -49,7 +49,7 @@ public class LocationCalculator {
          * The contextual Product to which <code>baseCoordinate</code> is
          * relative.
          */
-        private final Product                    currentContext;
+        private final Product                   currentContext;
 
         /**
          * The index in <code>definitions</code> at which the current definition
@@ -279,7 +279,7 @@ public class LocationCalculator {
             LOG.debug(String.format("Nestable for %s", info));
 
             List<ProductLocationNetwork> locationRules = info.getCurrentContext().getLocationRules(em,
-                                                                                                  info.getBaseCoordinate().getKind());
+                                                                                                   info.getBaseCoordinate().getKind());
 
             if (!locationRules.isEmpty()) {
                 // we can still do some nesting

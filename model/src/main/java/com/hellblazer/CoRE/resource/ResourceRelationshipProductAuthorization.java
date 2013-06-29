@@ -33,14 +33,14 @@ public class ResourceRelationshipProductAuthorization extends
         ResourceAuthorization {
     private static final long serialVersionUID = 1L;
 
-    public ResourceRelationshipProductAuthorization() {
-        setRuleformType("product");
-    }
-
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product product;
+    private Product           product;
+
+    public ResourceRelationshipProductAuthorization() {
+        setRuleformType("product");
+    }
 
     /**
      * @return the product

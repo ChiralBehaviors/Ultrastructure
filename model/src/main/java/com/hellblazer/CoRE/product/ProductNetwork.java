@@ -91,15 +91,10 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     /**
-     * @param relationship
-     * @param updatedBy
+     * @param id
      */
-    public ProductNetwork(Product parent, Relationship relationship,
-                          Product child, Resource updatedBy) {
-        super(relationship, updatedBy);
-        setRelationship(relationship);
-        this.parent = parent;
-        this.child = child;
+    public ProductNetwork(Long id) {
+        super(id);
     }
 
     /**
@@ -115,10 +110,15 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     /**
-     * @param id
+     * @param relationship
+     * @param updatedBy
      */
-    public ProductNetwork(Long id) {
-        super(id);
+    public ProductNetwork(Product parent, Relationship relationship,
+                          Product child, Resource updatedBy) {
+        super(relationship, updatedBy);
+        setRelationship(relationship);
+        this.parent = parent;
+        this.child = child;
     }
 
     /**

@@ -47,12 +47,12 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     //bi-directional many-to-one association to ProductNetwork
     @ManyToOne
     @JoinColumn(name = "network_rule")
-    private ProductNetwork     productNetwork;
+    private ProductNetwork    productNetwork;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
-    private Product            productValue;
+    private Product           productValue;
 
     @Id
     @GeneratedValue(generator = "product_network_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -79,7 +79,7 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
      * @param updatedBy
      */
     public ProductNetworkAttribute(Attribute attribute, BigDecimal value,
-                                  Resource updatedBy) {
+                                   Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -89,7 +89,7 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
      * @param updatedBy
      */
     public ProductNetworkAttribute(Attribute attribute, boolean value,
-                                  Resource updatedBy) {
+                                   Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -99,7 +99,7 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
      * @param updatedBy
      */
     public ProductNetworkAttribute(Attribute attribute, int value,
-                                  Resource updatedBy) {
+                                   Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -117,7 +117,7 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
      * @param updatedBy
      */
     public ProductNetworkAttribute(Attribute attribute, String value,
-                                  Resource updatedBy) {
+                                   Resource updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -143,17 +143,17 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         super(updatedBy);
     }
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
     public ProductNetwork getProductNetwork() {
         return productNetwork;
     }
 
     public Product getProductValue() {
         return productValue;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Resource getResource() {
@@ -176,17 +176,17 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         return ProductNetwork.class;
     }
 
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setProductNetwork(ProductNetwork productNetwork) {
         this.productNetwork = productNetwork;
     }
 
     public void setProductValue(Product product) {
         productValue = product;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setResource(Resource resource2) {

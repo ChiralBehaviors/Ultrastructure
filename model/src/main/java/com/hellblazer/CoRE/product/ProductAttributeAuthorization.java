@@ -45,7 +45,7 @@ public class ProductAttributeAuthorization extends
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "classifier")
-    private Product            classifier;
+    private Product           classifier;
 
     @Id
     @GeneratedValue(generator = "product_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
@@ -67,13 +67,15 @@ public class ProductAttributeAuthorization extends
      * @param updatedBy
      */
     public ProductAttributeAuthorization(Relationship classification,
-                                        Attribute authorized, Resource updatedBy) {
+                                         Attribute authorized,
+                                         Resource updatedBy) {
         super(classification, authorized, updatedBy);
     }
 
     public ProductAttributeAuthorization(Relationship classification,
-                                        Product classifier,
-                                        Attribute authorized, Resource updatedBy) {
+                                         Product classifier,
+                                         Attribute authorized,
+                                         Resource updatedBy) {
         super(classification, authorized, updatedBy);
         this.classifier = classifier;
     }
@@ -83,7 +85,7 @@ public class ProductAttributeAuthorization extends
      * @param updatedBy
      */
     public ProductAttributeAuthorization(Relationship classification,
-                                        Resource updatedBy) {
+                                         Resource updatedBy) {
         super(classification, updatedBy);
     }
 

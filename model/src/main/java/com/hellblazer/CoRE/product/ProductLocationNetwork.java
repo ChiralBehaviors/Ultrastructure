@@ -49,7 +49,7 @@ public class ProductLocationNetwork extends Ruleform {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "contextual_product")
-    private Product             contextualProduct;                                         ;
+    private Product            contextualProduct;                                         ;
 
     //bi-directional many-to-one association to Coordinate
     @ManyToOne
@@ -59,7 +59,7 @@ public class ProductLocationNetwork extends Ruleform {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product")
-    private Product             product;
+    private Product            product;
 
     @Id
     @GeneratedValue(generator = "product_location_network_id_seq", strategy = GenerationType.SEQUENCE)
@@ -95,13 +95,13 @@ public class ProductLocationNetwork extends Ruleform {
         return coordinate;
     }
 
-    public Product getProdut() {
-        return product;
-    }
-
     @Override
     public Long getId() {
         return id;
+    }
+
+    public Product getProdut() {
+        return product;
     }
 
     public Resource getResource() {
@@ -116,13 +116,13 @@ public class ProductLocationNetwork extends Ruleform {
         this.coordinate = coordinate;
     }
 
-    public void setProduct(Product product2) {
-        product = product2;
-    }
-
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setProduct(Product product2) {
+        product = product2;
     }
 
     public void setResource(Resource resource2) {

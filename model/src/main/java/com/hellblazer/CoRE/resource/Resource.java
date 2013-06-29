@@ -138,7 +138,6 @@ public class Resource extends ExistentialRuleform implements
     @GeneratedValue(generator = "resource_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                   id;
 
-
     //bi-directional many-to-one association to ResourceNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -275,7 +274,6 @@ public class Resource extends ExistentialRuleform implements
                                                                        this).getResultList();
     }
 
-
     @Override
     public Set<ResourceNetwork> getNetworkByChild() {
         return networkByChild;
@@ -319,7 +317,6 @@ public class Resource extends ExistentialRuleform implements
     public void setId(Long id) {
         this.id = id;
     }
-
 
     @Override
     public void setNetworkByChild(Set<ResourceNetwork> resourceNetworks3) {

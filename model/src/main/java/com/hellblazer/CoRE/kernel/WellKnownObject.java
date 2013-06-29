@@ -246,105 +246,6 @@ public interface WellKnownObject {
         }
     }
 
-    public static enum WellKnownProduct implements WellKnownObject {
-        ANY() {
-
-            @Override
-            public String description() {
-                return "A special Product that stands for any product";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ANY;
-            }
-
-        },
-        ENTITY() {
-
-            @Override
-            public String description() {
-                return "A special Product that stands for the originally supplied product";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ENTITY;
-            }
-
-        },
-        NOT_APPLICABLE() {
-
-            @Override
-            public String description() {
-                return "Special product that stands for 'not applicable'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
-        ORIGINAL() {
-
-            @Override
-            public String description() {
-                return "A special Product that stands for the originally supplied product";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ORIGINAL;
-            }
-
-        },
-        SAME() {
-
-            @Override
-            public String description() {
-                return "Special product that stands for the same product supplied";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.SAME;
-            }
-
-        };
-
-        /* (non-Javadoc)
-         * @see com.hellblazer.CoRE.kernel.WellKnownObject#id()
-         */
-        @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.hellblazer.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.product";
-        }
-    }
-
     public static enum WellKnownLocation implements WellKnownObject {
         ANY() {
 
@@ -527,12 +428,12 @@ public interface WellKnownObject {
         }
     }
 
-    public static enum WellKnownRelationship implements WellKnownObject {
+    public static enum WellKnownProduct implements WellKnownObject {
         ANY() {
 
             @Override
             public String description() {
-                return "A special Relationship that stands for any relationship";
+                return "A special Product that stands for any product";
             }
 
             /* (non-Javadoc)
@@ -543,9 +444,108 @@ public interface WellKnownObject {
                 return WellKnownObject.ANY;
             }
 
+        },
+        ENTITY() {
+
+            @Override
+            public String description() {
+                return "A special Product that stands for the originally supplied product";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.ENTITY;
+            }
+
+        },
+        NOT_APPLICABLE() {
+
+            @Override
+            public String description() {
+                return "Special product that stands for 'not applicable'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.NOT_APPLICABLE;
+            }
+
+        },
+        ORIGINAL() {
+
+            @Override
+            public String description() {
+                return "A special Product that stands for the originally supplied product";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.ORIGINAL;
+            }
+
+        },
+        SAME() {
+
+            @Override
+            public String description() {
+                return "Special product that stands for the same product supplied";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.SAME;
+            }
+
+        };
+
+        /* (non-Javadoc)
+         * @see com.hellblazer.CoRE.kernel.WellKnownObject#id()
+         */
+        @Override
+        public Long id() {
+            return Long.valueOf(ordinal() + 1);
+        }
+
+        /* (non-Javadoc)
+         * @see com.hellblazer.CoRE.kernel.WellKnownObject#tableName()
+         */
+        @Override
+        public String tableName() {
+            return "ruleform.product";
+        }
+    }
+
+    public static enum WellKnownRelationship implements WellKnownObject {
+        ANY() {
+
+            @Override
+            public String description() {
+                return "A special Relationship that stands for any relationship";
+            }
+
             @Override
             public WellKnownRelationship inverse() {
                 return WellKnownRelationship.ANY;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.ANY;
             }
 
             @Override
@@ -561,17 +561,17 @@ public interface WellKnownObject {
                 return "A contains B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IS_CONTAINED_IN;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.CONTAINS;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.IS_CONTAINED_IN;
             }
 
             @Override
@@ -587,17 +587,17 @@ public interface WellKnownObject {
                 return "A developed B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.DEVELOPED_BY;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.DEVELOPED;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.DEVELOPED_BY;
             }
 
             @Override
@@ -613,17 +613,17 @@ public interface WellKnownObject {
                 return "A is developed by B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.DEVELOPED;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.DEVELOPED_BY;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.DEVELOPED;
             }
 
             @Override
@@ -639,17 +639,17 @@ public interface WellKnownObject {
                 return "A equals B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.EQUALS;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.EQUALS;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.EQUALS;
             }
 
             @Override
@@ -665,17 +665,17 @@ public interface WellKnownObject {
                 return "A is a former member of B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.HAD_MEMBER;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.FORMER_MEMBER_OF;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.HAD_MEMBER;
             }
 
             @Override
@@ -691,17 +691,17 @@ public interface WellKnownObject {
                 return "A > B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.LESS_THAN;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.GREATER_THAN;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.LESS_THAN;
             }
 
             @Override
@@ -717,17 +717,17 @@ public interface WellKnownObject {
                 return "A >= B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.LESS_THAN_OR_EQUAL;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.GREATER_THAN_OR_EQUALS;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.LESS_THAN_OR_EQUAL;
             }
 
             @Override
@@ -743,17 +743,17 @@ public interface WellKnownObject {
                 return "A had member B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.FORMER_MEMBER_OF;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.HAD_MEMBER;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.FORMER_MEMBER_OF;
             }
 
             @Override
@@ -769,17 +769,17 @@ public interface WellKnownObject {
                 return "A has exception B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IS_EXCEPTION_TO;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.HAS_EXCEPTION;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.IS_EXCEPTION_TO;
             }
 
             @Override
@@ -795,17 +795,17 @@ public interface WellKnownObject {
                 return "The leader of A is B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.HEAD_OF;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.HAS_HEAD;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.HEAD_OF;
             }
 
             @Override
@@ -821,17 +821,17 @@ public interface WellKnownObject {
                 return "A has member B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.MEMBER_OF;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.HAS_MEMBER;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.MEMBER_OF;
             }
 
             @Override
@@ -847,17 +847,17 @@ public interface WellKnownObject {
                 return "A has version B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.VERSION_OF;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.HAS_VERSION;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.VERSION_OF;
             }
 
             @Override
@@ -873,17 +873,17 @@ public interface WellKnownObject {
                 return "A is the head of B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.HAS_HEAD;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.HEAD_OF;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.HAS_HEAD;
             }
 
             @Override
@@ -899,17 +899,17 @@ public interface WellKnownObject {
                 return "A includes B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IS_A;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.INCLUDES;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.IS_A;
             }
 
             @Override
@@ -925,17 +925,17 @@ public interface WellKnownObject {
                 return "A is a B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.INCLUDES;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.IS_A;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.INCLUDES;
             }
 
             @Override
@@ -951,17 +951,17 @@ public interface WellKnownObject {
                 return "A is contained in B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.CONTAINS;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.IS_CONTAINED_IN;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.CONTAINS;
             }
 
             @Override
@@ -977,17 +977,17 @@ public interface WellKnownObject {
                 return "A is exception to B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.HAS_EXCEPTION;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.IS_EXCEPTION_TO;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.HAS_EXCEPTION;
             }
 
             @Override
@@ -1003,17 +1003,17 @@ public interface WellKnownObject {
                 return "A is the location of B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.MAPS_TO_LOCATION;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.IS_LOCATION_OF;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.MAPS_TO_LOCATION;
             }
 
             @Override
@@ -1029,17 +1029,17 @@ public interface WellKnownObject {
                 return "A < B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.GREATER_THAN;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.LESS_THAN;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.GREATER_THAN;
             }
 
             @Override
@@ -1055,17 +1055,17 @@ public interface WellKnownObject {
                 return "A <= B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.GREATER_THAN_OR_EQUAL;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.LESS_THAN_OR_EQUALS;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.GREATER_THAN_OR_EQUAL;
             }
 
             @Override
@@ -1081,17 +1081,17 @@ public interface WellKnownObject {
                 return "A maps to location B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IS_LOCATION_OF;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.MAPS_TO_LOCATION;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.IS_LOCATION_OF;
             }
 
             @Override
@@ -1107,17 +1107,17 @@ public interface WellKnownObject {
                 return "A is a member of B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.HAS_MEMBER;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.MEMBER_OF;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.HAS_MEMBER;
             }
 
             @Override
@@ -1133,17 +1133,17 @@ public interface WellKnownObject {
                 return "A is not applicable to B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.NOT_APPLICABLE;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.NOT_APPLICABLE;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.NOT_APPLICABLE;
             }
 
             @Override
@@ -1159,17 +1159,17 @@ public interface WellKnownObject {
                 return "A's prototype is B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.PROTOTYPE_OF;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.PROTOTYPE;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.PROTOTYPE_OF;
             }
 
             @Override
@@ -1185,17 +1185,17 @@ public interface WellKnownObject {
                 return "A is the prototype of B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.PROTOTYPE;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.PROTOTYPE_OF;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.PROTOTYPE;
             }
 
             @Override
@@ -1211,17 +1211,17 @@ public interface WellKnownObject {
                 return "Special relationship used in metarule tables to indicate that no network transformation should be performed";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.SAME;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.SAME;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.SAME;
             }
 
             @Override
@@ -1237,17 +1237,17 @@ public interface WellKnownObject {
                 return "A is a version of B";
             }
 
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.HAS_VERSION;
+            }
+
             /* (non-Javadoc)
              * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String productName() {
                 return WellKnownObject.VERSION_OF;
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.HAS_VERSION;
             }
 
             @Override
@@ -1596,15 +1596,15 @@ public interface WellKnownObject {
 
     /**
      * 
-     * @return the name of the wko
-     */
-    String productName();
-
-    /**
-     * 
      * @return the id of the wko
      */
     Long id();
+
+    /**
+     * 
+     * @return the name of the wko
+     */
+    String productName();
 
     /**
      * 

@@ -17,6 +17,17 @@
 
 package com.hellblazer.CoRE.event;
 
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,8 +44,6 @@ import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
-import static com.hellblazer.CoRE.network.Networked.*;
-import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.*;
 
 /**
  * @author hhildebrand
@@ -164,7 +173,6 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     public ProtocolAttributeAuthorization(Resource updatedBy) {
         super(updatedBy);
     }
- 
 
     public Location getDeliverFrom() {
         return deliverFrom;
@@ -190,12 +198,12 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
         return id;
     }
 
-    public Relationship getProductClassification() {
-        return productClassification;
-    }
-
     public Product getProduct() {
         return product;
+    }
+
+    public Relationship getProductClassification() {
+        return productClassification;
     }
 
     public Resource getRequester() {
@@ -205,7 +213,6 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     public Relationship getRequesterClassification() {
         return requesterClassification;
     }
- 
 
     public Product getService() {
         return service;
@@ -239,12 +246,12 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
         this.id = id;
     }
 
-    public void setProductClassification(Relationship procuctClassification) {
-        this.productClassification = procuctClassification;
-    }
-
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public void setProductClassification(Relationship procuctClassification) {
+        productClassification = procuctClassification;
     }
 
     public void setRequester(Resource requester) {

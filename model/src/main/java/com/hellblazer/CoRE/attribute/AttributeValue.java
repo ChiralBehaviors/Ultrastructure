@@ -133,6 +133,22 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         super(updatedBy);
     }
 
+    /**
+     * Copy the state of the receiver into the clone
+     * 
+     * @param clone
+     */
+    public void copyInto(JobAttribute clone) {
+        clone.setAttribute(getAttribute());
+        clone.setBinaryValue(getBinaryValue());
+        clone.setBooleanValue(getBooleanValue());
+        clone.setIntegerValue(getIntegerValue());
+        clone.setNumericValue(getNumericValue());
+        clone.setTextValue(getTextValue());
+        clone.setTimestampValue(getTimestampValue());
+        clone.setUnit(getUnit());
+    }
+
     public Attribute getAttribute() {
         return attribute;
     }
@@ -278,22 +294,6 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
 
     public void setUnit(Unit unit) {
         this.unit = unit;
-    }
-
-    /**
-     * Copy the state of the receiver into the clone
-     * 
-     * @param clone
-     */
-    public void copyInto(JobAttribute clone) {
-        clone.setAttribute(getAttribute());
-        clone.setBinaryValue(getBinaryValue());
-        clone.setBooleanValue(getBooleanValue());
-        clone.setIntegerValue(getIntegerValue());
-        clone.setNumericValue(getNumericValue());
-        clone.setTextValue(getTextValue());
-        clone.setTimestampValue(getTimestampValue());
-        clone.setUnit(getUnit());
     }
 
 }

@@ -34,7 +34,7 @@ public class CoordinateBundle {
      * The context in which the location denoted by <code>coordinates</code>
      * should be resolved.
      */
-    private final Product                    finalContext;
+    private final Product                   finalContext;
 
     /**
      * Bundles the List of coordinates with the given Product as context. All

@@ -45,12 +45,12 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "authorized_parent")
-    private Product            authorizedParent;
+    private Product           authorizedParent;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "classifier")
-    private Product            classifier;
+    private Product           classifier;
 
     @Id
     @GeneratedValue(generator = "product_network_authorization_id_seq", strategy = GenerationType.SEQUENCE)

@@ -63,7 +63,7 @@ public class Capability extends Ruleform {
 
     @ManyToOne
     @JoinColumn(name = "target_product")
-    private Product            targetProduct;
+    private Product           targetProduct;
 
     @ManyToOne
     @JoinColumn(name = "target_location")
@@ -106,6 +106,14 @@ public class Capability extends Ruleform {
         setTargetAttribute(target);
     }
 
+    public Capability(Resource subject, Action verb, Location target,
+                      String notes, Resource updatedBy) {
+        this(notes, updatedBy);
+        this.subject = subject;
+        this.verb = verb;
+        setTargetLocation(target);
+    }
+
     /**
      * @param subject
      * @param notes
@@ -117,14 +125,6 @@ public class Capability extends Ruleform {
         this.subject = subject;
         this.verb = verb;
         setTargetProduct(target);
-    }
-
-    public Capability(Resource subject, Action verb, Location target,
-                      String notes, Resource updatedBy) {
-        this(notes, updatedBy);
-        this.subject = subject;
-        this.verb = verb;
-        setTargetLocation(target);
     }
 
     public Capability(Resource subject, Action verb, Resource target,
@@ -178,12 +178,12 @@ public class Capability extends Ruleform {
         return targetAttribute;
     }
 
-    public Product getTargetProduct() {
-        return targetProduct;
-    }
-
     public Location getTargetLocation() {
         return targetLocation;
+    }
+
+    public Product getTargetProduct() {
+        return targetProduct;
     }
 
     public Resource getTargetResource() {
@@ -215,14 +215,14 @@ public class Capability extends Ruleform {
         targetType = Target.Attribute;
     }
 
-    public void setTargetProduct(Product targetProduct) {
-        this.targetProduct = targetProduct;
-        targetType = Target.Product;
-    }
-
     public void setTargetLocation(Location targetLocation) {
         this.targetLocation = targetLocation;
         targetType = Target.Location;
+    }
+
+    public void setTargetProduct(Product targetProduct) {
+        this.targetProduct = targetProduct;
+        targetType = Target.Product;
     }
 
     public void setTargetResource(Resource targetResource) {

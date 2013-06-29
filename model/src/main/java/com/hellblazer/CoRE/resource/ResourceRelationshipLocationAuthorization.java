@@ -33,14 +33,14 @@ public class ResourceRelationshipLocationAuthorization extends
         ResourceAuthorization {
     private static final long serialVersionUID = 1L;
 
-    public ResourceRelationshipLocationAuthorization() {
-        setRuleformType("location");
-    }
-
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "location")
-    private Location location;
+    private Location          location;
+
+    public ResourceRelationshipLocationAuthorization() {
+        setRuleformType("location");
+    }
 
     /**
      * @return the location

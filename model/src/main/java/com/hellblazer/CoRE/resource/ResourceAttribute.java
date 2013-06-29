@@ -49,7 +49,6 @@ public class ResourceAttribute extends AttributeValue<Resource> {
     private static final long  serialVersionUID = 1L;
     public static final String GET_ATTRIBUTE    = "resourceAttribute.getAttribute";
 
-
     @Id
     @GeneratedValue(generator = "resource_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;

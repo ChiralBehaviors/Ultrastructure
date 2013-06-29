@@ -16,7 +16,7 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.Product.*;
+import static com.hellblazer.CoRE.product.Product.FIND_ALL;
 import static com.hellblazer.CoRE.product.Product.FIND_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.product.Product.FIND_BY_ID;
 import static com.hellblazer.CoRE.product.Product.FIND_BY_NAME;
@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.product.Product.FIND_FLAGGED;
 import static com.hellblazer.CoRE.product.Product.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.product.Product.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.hellblazer.CoRE.product.Product.FIND_GROUPED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.product.Product.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.product.Product.GET_CHILD;
 import static com.hellblazer.CoRE.product.Product.NAME_SEARCH;
 import static com.hellblazer.CoRE.product.Product.SUBSUMING_ENTITIES;

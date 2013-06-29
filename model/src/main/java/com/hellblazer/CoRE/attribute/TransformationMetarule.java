@@ -77,16 +77,12 @@ public class TransformationMetarule extends Ruleform implements Serializable {
      */
     @ManyToOne
     @JoinColumn(name = "service")
-    private Product             service;
+    private Product            service;
 
     @Column(name = "stop_on_match")
     private Boolean            stopOnMatch;
 
     public TransformationMetarule() {
-    }
-
-    public Relationship getProductMap() {
-        return productMap;
     }
 
     public Resource getEntityNetworkResource() {
@@ -96,6 +92,10 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     @Override
     public Long getId() {
         return id;
+    }
+
+    public Relationship getProductMap() {
+        return productMap;
     }
 
     public Relationship getRelationshipMap() {

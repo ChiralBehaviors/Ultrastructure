@@ -53,7 +53,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
-    private Product            productValue;
+    private Product           productValue;
 
     @Id
     @GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -143,13 +143,13 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
         return coordinate;
     }
 
-    public Product getProductValue() {
-        return productValue;
-    }
-
     @Override
     public Long getId() {
         return id;
+    }
+
+    public Product getProductValue() {
+        return productValue;
     }
 
     /* (non-Javadoc)
@@ -172,12 +172,12 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
         this.coordinate = coordinate;
     }
 
-    public void setProductValue(Product product) {
-        productValue = product;
-    }
-
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setProductValue(Product product) {
+        productValue = product;
     }
 }

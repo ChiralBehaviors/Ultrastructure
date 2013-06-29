@@ -32,14 +32,14 @@ public class ResourceRelationshipAttributeAuthorization extends
         ResourceAuthorization {
     private static final long serialVersionUID = 1L;
 
-    public ResourceRelationshipAttributeAuthorization() {
-        setRuleformType("attribute");
-    }
-
     //bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "attribute")
-    private Attribute attribute;
+    private Attribute         attribute;
+
+    public ResourceRelationshipAttributeAuthorization() {
+        setRuleformType("attribute");
+    }
 
     /**
      * @return the attribute

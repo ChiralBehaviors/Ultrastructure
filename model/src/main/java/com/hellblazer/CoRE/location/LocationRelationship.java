@@ -77,7 +77,7 @@ public class LocationRelationship extends Ruleform {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_mapped_value")
-    private Product             productMappedValue;
+    private Product            productMappedValue;
 
     @Id
     @GeneratedValue(generator = "location_relationship_id_seq", strategy = GenerationType.SEQUENCE)

@@ -143,11 +143,11 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     @Override
     public Long getId() {
         return id;
-    } 
+    }
 
     public Protocol getProtocol() {
         return protocol;
-    } 
+    }
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.attribute.AttributeValue#getRuleformAttribute()
@@ -168,7 +168,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    } 
+    }
 
     public void setNumericValue(double value) {
         setNumericValue(BigDecimal.valueOf(value));
@@ -184,9 +184,9 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
 
     public void setNumericValue(long value) {
         setNumericValue(BigDecimal.valueOf(value));
-    } 
+    }
 
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
-    } 
+    }
 }

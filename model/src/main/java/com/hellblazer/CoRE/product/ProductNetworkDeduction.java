@@ -44,7 +44,7 @@ public class ProductNetworkDeduction implements Serializable {
     //bi-directional many-to-one association to ProductNetwork
     @ManyToOne
     @JoinColumn(name = "deduction")
-    private ProductNetwork     deduction;
+    private ProductNetwork    deduction;
 
     @Id
     @GeneratedValue(generator = "product_network_deduction_id_seq", strategy = GenerationType.SEQUENCE)
@@ -53,12 +53,12 @@ public class ProductNetworkDeduction implements Serializable {
     //bi-directional many-to-one association to ProductNetwork
     @ManyToOne
     @JoinColumn(name = "premise1")
-    private ProductNetwork     premise1;
+    private ProductNetwork    premise1;
 
     //bi-directional many-to-one association to ProductNetwork
     @ManyToOne
     @JoinColumn(name = "premise2")
-    private ProductNetwork     premise2;
+    private ProductNetwork    premise2;
 
     @Column(name = "update_date")
     private Timestamp         updateDate;

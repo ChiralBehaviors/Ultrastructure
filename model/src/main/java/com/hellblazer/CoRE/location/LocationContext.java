@@ -52,11 +52,10 @@ import com.hellblazer.CoRE.resource.Resource;
 @javax.persistence.Entity
 @Table(name = "location_context", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_context_id_seq", sequenceName = "location_context_id_seq")
-@NamedQueries({ @NamedQuery(name = "locationContext"
-                                   +  FIND_BY_NAME_SUFFIX, query = "select e from LocationContext e where e.name = :name"), })
+@NamedQueries({ @NamedQuery(name = "locationContext" + FIND_BY_NAME_SUFFIX, query = "select e from LocationContext e where e.name = :name"), })
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQueries({ @NamedNativeQuery(name = "locationContext"
-                                               +  NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location_context', ?1, ?2)", resultClass = NameSearchResult.class) })
+                                               + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location_context', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class LocationContext extends ExistentialRuleform implements
         Attributable<ContextAttribute> {
     private static final long  serialVersionUID = 1L;

@@ -16,7 +16,8 @@
  */
 package com.hellblazer.CoRE.event;
 
-import static com.hellblazer.CoRE.event.StatusCodeSequencing.*;
+import static com.hellblazer.CoRE.event.StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS;
+import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_CHILD_STATUS_CODES;
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_PARENT_STATUS_CODES;
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
@@ -106,21 +107,6 @@ public class StatusCodeSequencing extends Ruleform {
     public StatusCodeSequencing() {
     }
 
-    public StatusCodeSequencing(Product service, StatusCode parent,
-                                StatusCode child, int sequenceNumber,
-                                Resource updatedBy) {
-        this(service, parent, child, updatedBy);
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    public StatusCodeSequencing(Product service, StatusCode parent,
-                                StatusCode child, Resource updatedBy) {
-        super(updatedBy);
-        this.service = service;
-        parentCode = parent;
-        childCode = child;
-    }
-
     /**
      * @param id
      */
@@ -134,6 +120,21 @@ public class StatusCodeSequencing extends Ruleform {
      */
     public StatusCodeSequencing(Long id, Resource updatedBy) {
         super(id, updatedBy);
+    }
+
+    public StatusCodeSequencing(Product service, StatusCode parent,
+                                StatusCode child, int sequenceNumber,
+                                Resource updatedBy) {
+        this(service, parent, child, updatedBy);
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    public StatusCodeSequencing(Product service, StatusCode parent,
+                                StatusCode child, Resource updatedBy) {
+        super(updatedBy);
+        this.service = service;
+        parentCode = parent;
+        childCode = child;
     }
 
     /**

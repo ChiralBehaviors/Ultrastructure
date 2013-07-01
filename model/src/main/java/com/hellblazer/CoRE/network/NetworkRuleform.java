@@ -45,14 +45,14 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                        + "         premise2.child, "
                                                                                        + "         premise1.id, "
                                                                                        + "         premise2.id "
-                                                                                       + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child, n.distance "
-                                                                                       + "              FROM last_pass_rules ) as premise1 "
+                                                                                       + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child"
+                                                                                       + "              FROM last_pass_rules AS n) as premise1 "
                                                                                        + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
                                                                                        + "            FROM ruleform.resource_network AS n "
                                                                                        + "            WHERE n.inferred = FALSE) as premise2  "
                                                                                        + "         ON premise2.parent = premise1.child "
                                                                                        + "         AND premise2.child <> premise1.parent "
-                                                                                       + "     JOIN network_inferrence AS deduction "
+                                                                                       + "     JOIN ruleform.network_inferrence AS deduction "
                                                                                        + "         ON premise1.relationship = deduction.premise1 "
                                                                                        + "         AND premise2.relationship = deduction.premise2 ") })
 @MappedSuperclass
@@ -61,7 +61,7 @@ import com.hellblazer.CoRE.resource.Resource;
 abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         Ruleform {
     private static final long  serialVersionUID               = 1L;
-    public static final String INFERRENCE_STEP_FROM_LAST_PASS = "";
+    public static final String INFERRENCE_STEP_FROM_LAST_PASS = "networkRuleform.inferrenceStepFromLastPass";
 
     private boolean            inferred                       = false;
 

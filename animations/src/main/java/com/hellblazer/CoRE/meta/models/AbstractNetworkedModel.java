@@ -17,8 +17,20 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static com.hellblazer.CoRE.network.Networked.*;
-import static com.hellblazer.CoRE.network.NetworkRuleform.*;
+import static com.hellblazer.CoRE.network.NetworkRuleform.INFERRENCE_STEP_FROM_LAST_PASS;
+import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GET_CHILD_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.UNLINKED_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
 
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
@@ -106,7 +118,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
      */
     private static String tableName(Class<?> product) {
         StringBuilder builder = new StringBuilder();
-        builder.append("ruleform.");
         boolean first = true;
         for (char c : product.getSimpleName().toCharArray()) {
             if (Character.isUpperCase(c)) {
@@ -129,6 +140,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     private final Class<RuleForm>                  entity;
     private final Class<NetworkRuleform<RuleForm>> network;
     private final String                           networkPrefix;
+    private final String                           unqualifiedNetworkTable;
     private final String                           networkTable;
     private final String                           prefix;
     protected final EntityManager                  em;
@@ -144,7 +156,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         network = (Class<NetworkRuleform<RuleForm>>) getNetworkOf(entity);
         prefix = ModelImpl.prefixFor(entity);
         networkPrefix = ModelImpl.prefixFor(network);
-        networkTable = tableName(network);
+        unqualifiedNetworkTable = tableName(network);
+        networkTable = String.format("ruleform.%s", unqualifiedNetworkTable);
     }
 
     public void createInverseRelationship(RuleForm parent, Relationship r,
@@ -416,8 +429,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     public void propagate() {
         createDeductionTemporaryTables();
         boolean firstPass = true;
-        int newRules = 0;
-        do {
+        
+        do {int newRules;
             // Deduce all possible rules
             if (firstPass) {
                 newRules = em.createNamedQuery(networkPrefix
@@ -426,19 +439,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
             } else {
                 newRules = em.createNamedQuery(INFERRENCE_STEP_FROM_LAST_PASS).executeUpdate();
             }
+            if (newRules == 0) {
+                break;
+            }
             // Gather all rules which exist
             em.createNamedQuery(networkPrefix
                                         + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
-            // Record the path of the deduced rules
-            em.createNamedQuery(networkPrefix + RECORD_DEDUCTION_PATH_SUFFIX).executeUpdate();
             // Deduce the new rules
             em.createNamedQuery(networkPrefix + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
             // Insert the new rules
-            em.createNamedQuery(networkPrefix + INSERT_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
-            // Update the deduction path
-            em.createNamedQuery(networkPrefix + INSERT_DEDUCTION_PATH_SUFFIX).executeUpdate();
+            Query insert = em.createNamedQuery(networkPrefix
+                                               + INSERT_NEW_NETWORK_RULES_SUFFIX);
+            insert.setParameter(1, kernel.getPropagationSoftware().getId());
+            insert.executeUpdate();
             cleanupDeductionTables();
-        } while (newRules != 0);
+        } while (true);
     }
 
     private void cleanupDeductionTables() {
@@ -466,8 +481,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
                                      + "child BIGINT NOT NULL,"
-                                     + "distance INTEGER NOT NULL,"
-                                     + "updated_by BIGINT NOT NULL,"
                                      + "premise1 BIGINT NOT NULL,"
                                      + "premise2 BIGINT NOT NULL)").executeUpdate();
     }
@@ -477,20 +490,18 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                      + "id BIGINT NOT NULL,"
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
-                                     + "child BIGINT NOT NULL,"
-                                     + "distance INTEGER NOT NULL,"
-                                     + "updated_by BIGINT NOT NULL)").executeUpdate();
+                                     + "child BIGINT NOT NULL)").executeUpdate();
     }
 
     private void createDeductions() {
-        em.createNativeQuery(String.format("CREATE TEMPORARY TABLE %s_deductions ("
-                                                   + "id BIGINT NOT NULL,"
-                                                   + "parent BIGINT NOT NULL,"
-                                                   + "relationship BIGINT NOT NULL,"
-                                                   + "child BIGINT NOT NULL,"
-                                                   + "premise1 BIGINT NOT NULL,"
+        em.createNativeQuery(String.format("CREATE TEMPORARY TABLE %s_deduction ("
+                                                   + "id BIGINT NOT NULL, "
+                                                   + "parent BIGINT NOT NULL, "
+                                                   + "relationship BIGINT NOT NULL, "
+                                                   + "child BIGINT NOT NULL, "
+                                                   + "premise1 BIGINT NOT NULL, "
                                                    + "premise2 BIGINT NOT NULL)",
-                                           networkTable)).executeUpdate();
+                                           unqualifiedNetworkTable)).executeUpdate();
     }
 
     private void createDeductionTemporaryTables() {
@@ -506,9 +517,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                      + "id BIGINT NOT NULL,"
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
-                                     + "child BIGINT NOT NULL,"
-                                     + "distance INTEGER NOT NULL,"
-                                     + "updated_by BIGINT NOT NULL)").executeUpdate();
+                                     + "child BIGINT NOT NULL)").executeUpdate();
     }
 
     private void createWorkingMemory() {
@@ -516,8 +525,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
                                      + "child BIGINT NOT NULL,"
-                                     + "distance INTEGER NOT NULL,"
-                                     + "updated_by BIGINT NOT NULL,"
                                      + "premise1 BIGINT NOT NULL,"
                                      + "premise2 BIGINT NOT NULL )").executeUpdate();
     }

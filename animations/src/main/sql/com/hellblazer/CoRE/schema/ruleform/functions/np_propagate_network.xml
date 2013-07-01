@@ -128,12 +128,7 @@
                        'INSERT INTO working_memory(
                        --resource, 
                        parent, relationship, child, distance, updated_by, premise1, premise2)   
-                            SELECT 
-                            -- CASE 
-                            --                 WHEN premise1.resource = premise2.resource 
-                            --                     THEN premise1.resource 
-                            --                 ELSE resource_id('|| quote_literal(propagation_resource) ||') 
-                            --             END AS resource,
+                            SELECT  
                             premise1.parent, 
                             chain.result, 
                             premise2.child,

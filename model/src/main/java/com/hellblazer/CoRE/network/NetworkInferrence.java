@@ -69,10 +69,49 @@ public class NetworkInferrence extends Ruleform {
     }
 
     /**
+     * @param id
+     * @param updatedBy
+     */
+    public NetworkInferrence(Long id, Resource updatedBy) {
+        super(id, updatedBy);
+    }
+
+    public NetworkInferrence(Relationship premise1, Relationship premise2,
+                             Relationship inferrence) {
+        super();
+        this.premise1 = premise1;
+        this.premise2 = premise2;
+        this.inferrence = inferrence;
+    }
+
+    public NetworkInferrence(Relationship premise1, Relationship premise2,
+                             Relationship inferrence, Resource updatedBy) {
+        super(updatedBy);
+        this.premise1 = premise1;
+        this.premise2 = premise2;
+        this.inferrence = inferrence;
+    }
+
+    /**
      * @param updatedBy
      */
     public NetworkInferrence(Resource updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param notes
+     */
+    public NetworkInferrence(String notes) {
+        super(notes);
+    }
+
+    /**
+     * @param notes
+     * @param updatedBy
+     */
+    public NetworkInferrence(String notes, Resource updatedBy) {
+        super(notes, updatedBy);
     }
 
     @Override

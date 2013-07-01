@@ -19,17 +19,13 @@ package com.hellblazer.CoRE.resource;
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INSERT_DEDUCTION_PATH_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.RECORD_DEDUCTION_PATH_SUFFIX;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.INFERENCE_STEP;
-import static com.hellblazer.CoRE.resource.ResourceNetwork.INSERT_DEDUCTION_PATH;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.INSERT_NEW_NETWORK_RULES;
-import static com.hellblazer.CoRE.resource.ResourceNetwork.RECORD_DEDUCTION_PATH;
 
 import java.util.List;
 
@@ -73,14 +69,14 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                       + "         premise2.child, "
                                                                       + "         premise1.id, "
                                                                       + "         premise2.id "
-                                                                      + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child, n.distance "
-                                                                      + "              FROM ruleform.network_inferrence ) as premise1 "
+                                                                      + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child "
+                                                                      + "              FROM ruleform.resource_network AS n) as premise1 "
                                                                       + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
                                                                       + "            FROM ruleform.resource_network AS n "
                                                                       + "            WHERE n.inferred = FALSE) as premise2  "
                                                                       + "         ON premise2.parent = premise1.child "
                                                                       + "         AND premise2.child <> premise1.parent "
-                                                                      + "     JOIN network_inferrence AS deduction "
+                                                                      + "     JOIN ruleform.network_inferrence AS deduction "
                                                                       + "         ON premise1.relationship = deduction.premise1 "
                                                                       + "         AND premise2.relationship = deduction.premise2 "),
                      @NamedNativeQuery(name = GATHER_EXISTING_NETWORK_RULES, query = "INSERT INTO current_pass_existing_rules "
@@ -90,38 +86,20 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                      + "    ON wm.parent = exist.parent "
                                                                                      + "    AND wm.relationship = exist.relationship "
                                                                                      + "    AND wm.child = exist.child"),
-                     @NamedNativeQuery(name = RECORD_DEDUCTION_PATH, query = "INSERT INTO resource_network_deduction(deduction, premise1, premise2) "
-                                                                             + "SELECT c.id, c.premise1, c.premise2) "
-                                                                             + "    FROM current_pass_existing_rules AS c "
-                                                                             + "    LEFT OUTER JOIN resource_network_deduction AS b "
-                                                                             + "        ON c.id = b.deduction "
-                                                                             + "        AND c.premise1 = b.premise1 "
-                                                                             + "        AND c.premise2 = b.premise2 "
-                                                                             + "     WHERE b.deduction IS NULL "
-                                                                             + "     AND b.premise1 IS NULL "
-                                                                             + "     AND b.premise2 IS NULL "),
                      @NamedNativeQuery(name = DEDUCE_NEW_NETWORK_RULES, query = "INSERT INTO current_pass_rules "
-                                                                                + "    SELECT nextval(resource_network_id_seq), wm.* "
+                                                                                + "    SELECT nextval('ruleform.resource_network_id_seq'), wm.* "
                                                                                 + "    FROM (SELECT parent, relationship, child"
                                                                                 + "          FROM working_memory GROUP BY parent, relationship, child) AS wm "
-                                                                                + "    LEFT OUTER JOIN resource_network AS exist "
+                                                                                + "    LEFT OUTER JOIN ruleform.resource_network AS exist "
                                                                                 + "         ON wm.parent = exist.parent "
                                                                                 + "         AND wm.relationship = exist.relationship "
                                                                                 + "         AND wm.child = exist.child "
                                                                                 + "     WHERE exist.parent IS NULL "
                                                                                 + "     AND exist.relationship IS NULL "
                                                                                 + "     AND exist.child IS NULL"),
-                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "INSERT INTO resource_network(id, parent, relationship, child, TRUE) "
-                                                                                + "    SELECT id, parent, relationship, child "
-                                                                                + "    FROM current_pass_rules"),
-                     @NamedNativeQuery(name = INSERT_DEDUCTION_PATH, query = "INSERT INTO resource_network_deduction(deduction, premise1, premise2)"
-                                                                             + "SELECT cpr.id, wm.premise1, wm.premise2) "
-                                                                             + "FROM current_pass_rules AS cpr "
-                                                                             + "JOIN working_memory AS wm "
-                                                                             + "   ON cpr.resource = wm.resource "
-                                                                             + "   AND cpr.parent = wm.parent "
-                                                                             + "   AND cpr.relationship = wm.relationship "
-                                                                             + "   AND cpr.child = wm.child") })
+                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "INSERT INTO ruleform.resource_network(id, parent, relationship, child, inferred, updated_by) "
+                                                                                + "    SELECT id, parent, relationship, child, TRUE, ?1 "
+                                                                                + "    FROM current_pass_rules") })
 public class ResourceNetwork extends NetworkRuleform<Resource> {
     private static final long  serialVersionUID                 = 1L;
     public static final String GET_USED_RELATIONSHIPS           = "resourceNetwork.getUsedRelationships";
@@ -130,14 +108,10 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
                                                                   + INFERENCE_STEP_SUFFIX;
     public static final String GATHER_EXISTING_NETWORK_RULES    = "resourceNetwork"
                                                                   + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String RECORD_DEDUCTION_PATH            = "resourceNetwork"
-                                                                  + RECORD_DEDUCTION_PATH_SUFFIX;
     public static final String DEDUCE_NEW_NETWORK_RULES         = "resourceNetwork"
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES         = "resourceNetwork"
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    public static final String INSERT_DEDUCTION_PATH            = "resourceNetwork"
-                                                                  + INSERT_DEDUCTION_PATH_SUFFIX;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne

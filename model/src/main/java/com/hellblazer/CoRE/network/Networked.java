@@ -42,10 +42,8 @@ public interface Networked<E extends Networked<E, N>, N extends NetworkRuleform<
     String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";
     String INFERENCE_STEP_SUFFIX                                         = ".inference";
     String GATHER_EXISTING_NETWORK_RULES_SUFFIX                          = ".gatherExistingNetworkRules";
-    String RECORD_DEDUCTION_PATH_SUFFIX                                  = ".recordDeductionPath";
     String DEDUCE_NEW_NETWORK_RULES_SUFFIX                               = ".deduceNewNetworkRules";
     String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
-    String INSERT_DEDUCTION_PATH_SUFFIX                                  = ".insertDeductionPath";
 
     void addChildRelationship(N relationship);
 

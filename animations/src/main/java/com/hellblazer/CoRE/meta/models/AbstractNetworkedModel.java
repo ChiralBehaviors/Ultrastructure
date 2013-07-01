@@ -17,15 +17,8 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GET_CHILD_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.UNLINKED_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.*;
+import static com.hellblazer.CoRE.network.NetworkRuleform.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
@@ -33,7 +26,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -422,7 +414,40 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
 
     @Override
     public void propagate() {
-        new HashSet<NetworkRuleform<RuleForm>>();
+        createDeductionTemporaryTables();
+        boolean firstPass = true;
+        int newRules = 0;
+        do {
+            // Deduce all possible rules
+            if (firstPass) {
+                newRules = em.createNamedQuery(networkPrefix
+                                                       + INFERENCE_STEP_SUFFIX).executeUpdate();
+                firstPass = false;
+            } else {
+                newRules = em.createNamedQuery(INFERRENCE_STEP_FROM_LAST_PASS).executeUpdate();
+            }
+            // Gather all rules which exist
+            em.createNamedQuery(networkPrefix
+                                        + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
+            // Record the path of the deduced rules
+            em.createNamedQuery(networkPrefix + RECORD_DEDUCTION_PATH_SUFFIX).executeUpdate();
+            // Deduce the new rules
+            em.createNamedQuery(networkPrefix + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
+            // Insert the new rules
+            em.createNamedQuery(networkPrefix + INSERT_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
+            // Update the deduction path
+            em.createNamedQuery(networkPrefix + INSERT_DEDUCTION_PATH_SUFFIX).executeUpdate();
+            cleanupDeductionTables();
+        } while (newRules != 0);
+    }
+
+    private void cleanupDeductionTables() {
+        em.createNativeQuery("TRUNCATE TABLE last_pass_rules");
+        em.createNativeQuery("ALTER TABLE current_pass_rules RENAME TO temp_last_pass_rules");
+        em.createNativeQuery("ALTER TABLE last_pass_rules RENAME TO current_pass_rules");
+        em.createNativeQuery("ALTER TABLE temp_last_pass_rules RENAME TO last_pass_rules");
+        em.createNativeQuery("TRUNCATE current_pass_existing_rules");
+        em.createNativeQuery("TRUNCATE working_memory");
     }
 
     @Override
@@ -433,6 +458,68 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     @Override
     public void trackNetworkEdgeAdded(long parent, long relationship, long child) {
         addedEdges.add(new long[] { parent, relationship, child });
+    }
+
+    private void createCurrentPassExistingRules() {
+        em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_existing_rules ("
+                                     + "id BIGINT NOT NULL,"
+                                     + "parent BIGINT NOT NULL,"
+                                     + "relationship BIGINT NOT NULL,"
+                                     + "child BIGINT NOT NULL,"
+                                     + "distance INTEGER NOT NULL,"
+                                     + "updated_by BIGINT NOT NULL,"
+                                     + "premise1 BIGINT NOT NULL,"
+                                     + "premise2 BIGINT NOT NULL)").executeUpdate();
+    }
+
+    private void createCurrentPassRules() {
+        em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
+                                     + "id BIGINT NOT NULL,"
+                                     + "parent BIGINT NOT NULL,"
+                                     + "relationship BIGINT NOT NULL,"
+                                     + "child BIGINT NOT NULL,"
+                                     + "distance INTEGER NOT NULL,"
+                                     + "updated_by BIGINT NOT NULL)").executeUpdate();
+    }
+
+    private void createDeductions() {
+        em.createNativeQuery(String.format("CREATE TEMPORARY TABLE %s_deductions ("
+                                                   + "id BIGINT NOT NULL,"
+                                                   + "parent BIGINT NOT NULL,"
+                                                   + "relationship BIGINT NOT NULL,"
+                                                   + "child BIGINT NOT NULL,"
+                                                   + "premise1 BIGINT NOT NULL,"
+                                                   + "premise2 BIGINT NOT NULL)",
+                                           networkTable)).executeUpdate();
+    }
+
+    private void createDeductionTemporaryTables() {
+        createWorkingMemory();
+        createCurrentPassRules();
+        createCurrentPassExistingRules();
+        createLastPassRules();
+        createDeductions();
+    }
+
+    private void createLastPassRules() {
+        em.createNativeQuery("CREATE TEMPORARY TABLE last_pass_rules ("
+                                     + "id BIGINT NOT NULL,"
+                                     + "parent BIGINT NOT NULL,"
+                                     + "relationship BIGINT NOT NULL,"
+                                     + "child BIGINT NOT NULL,"
+                                     + "distance INTEGER NOT NULL,"
+                                     + "updated_by BIGINT NOT NULL)").executeUpdate();
+    }
+
+    private void createWorkingMemory() {
+        em.createNativeQuery("CREATE TEMPORARY TABLE working_memory("
+                                     + "parent BIGINT NOT NULL,"
+                                     + "relationship BIGINT NOT NULL,"
+                                     + "child BIGINT NOT NULL,"
+                                     + "distance INTEGER NOT NULL,"
+                                     + "updated_by BIGINT NOT NULL,"
+                                     + "premise1 BIGINT NOT NULL,"
+                                     + "premise2 BIGINT NOT NULL )").executeUpdate();
     }
 
     @SuppressWarnings("unchecked")

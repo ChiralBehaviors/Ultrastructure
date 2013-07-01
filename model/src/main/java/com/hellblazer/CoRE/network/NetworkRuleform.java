@@ -16,6 +16,8 @@
  */
 package com.hellblazer.CoRE.network;
 
+import static com.hellblazer.CoRE.network.NetworkRuleform.*;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Inheritance;
@@ -23,6 +25,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
@@ -33,18 +37,37 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
+
+@NamedNativeQueries({ @NamedNativeQuery(name = INFERRENCE_STEP_FROM_LAST_PASS, query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
+                                                                                       + "     SELECT "
+                                                                                       + "         premise1.parent, "
+                                                                                       + "         deduction.inferrence, "
+                                                                                       + "         premise2.child, "
+                                                                                       + "         premise1.id, "
+                                                                                       + "         premise2.id "
+                                                                                       + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child, n.distance "
+                                                                                       + "              FROM last_pass_rules ) as premise1 "
+                                                                                       + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
+                                                                                       + "            FROM ruleform.resource_network AS n "
+                                                                                       + "            WHERE n.inferred = FALSE) as premise2  "
+                                                                                       + "         ON premise2.parent = premise1.child "
+                                                                                       + "         AND premise2.child <> premise1.parent "
+                                                                                       + "     JOIN network_inferrence AS deduction "
+                                                                                       + "         ON premise1.relationship = deduction.premise1 "
+                                                                                       + "         AND premise2.relationship = deduction.premise2 ") })
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Access(AccessType.FIELD)
 abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         Ruleform {
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID               = 1L;
+    public static final String INFERRENCE_STEP_FROM_LAST_PASS = "";
 
-    private boolean           inferred         = false;
+    private boolean            inferred                       = false;
 
     @ManyToOne
     @JoinColumn(name = "relationship")
-    private Relationship      relationship;
+    private Relationship       relationship;
 
     public NetworkRuleform() {
         super();

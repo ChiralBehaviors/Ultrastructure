@@ -7,11 +7,11 @@
 
     <changeSet id="1"
         author="hhildebrand">
-        <sql> CREATE INDEX relationship_chain_updated_by_fkey_idx ON ruleform.relationship_chain USING btree
+        <sql> CREATE INDEX network_inferrence_updated_by_fkey_idx ON ruleform.network_inferrence USING btree
             (updated_by ); </sql>
         <rollback>
-            <dropIndex tableName="ruleform.relationship_chain"
-                indexName="relationship_chain_updated_by_fkey_idx"/>
+            <dropIndex tableName="ruleform.network_inferrence"
+                indexName="network_inferrence_updated_by_fkey_idx"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

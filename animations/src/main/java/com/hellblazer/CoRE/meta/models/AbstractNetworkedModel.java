@@ -35,15 +35,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
@@ -70,6 +73,8 @@ import com.hellblazer.CoRE.resource.ResourceNetwork;
 abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm, ?>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<?>>
         implements
         NetworkedModel<RuleForm, AttributeAuthorization, AttributeType> {
+
+    private static Logger log = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
     /**
      * @param attr
@@ -126,7 +131,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return builder.toString();
     }
 
-    private final List<long[]>                       addedEdges = new ArrayList<long[]>();
+    private final List<long[]>                     addedEdges = new ArrayList<long[]>();
     private final Class<AttributeType>             attribute;
     private final Class<AttributeAuthorization>    authorization;
     private final Class<RuleForm>                  entity;
@@ -148,12 +153,46 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         prefix = ModelImpl.prefixFor(entity);
         networkPrefix = ModelImpl.prefixFor(network);
         networkTable = tableName(network);
-    } 
+    }
+
+    public void createInverseRelationship(RuleForm parent, Relationship r,
+                                          RuleForm child, Resource updatedBy) {
+        child.link(r.getInverse(), parent, updatedBy,
+                   kernel.getInverseSoftware(), em);
+    }
 
     public void createInverseRelationshipo(RuleForm parent, Relationship r,
                                            RuleForm child, Resource updatedBy) {
         child.link(r.getInverse(), parent, updatedBy,
                    kernel.getInverseSoftware(), em);
+    }
+
+    public void generateInverses() {
+        String q = String.format("INSERT INTO %s(parent, relationship, child, updated_by, distance) "
+                                         + "SELECT net.child as parent, "
+                                         + "    rel.inverse as relationship, "
+                                         + "    net.parent as child, "
+                                         + "    ?1 as updated_by,"
+                                         + "    net.distance "
+                                         + "FROM %s AS net "
+                                         + "JOIN ruleform.relationship AS rel ON net.relationship = rel.id "
+                                         + "LEFT OUTER JOIN %s AS exist "
+                                         + "    ON net.child = exist.parent "
+                                         + "    AND rel.inverse = exist.relationship "
+                                         + "    AND net.parent = exist.child "
+                                         + " WHERE exist.parent IS NULL "
+                                         + "  AND exist.relationship IS NULL "
+                                         + "  AND exist.child IS NULL",
+                                 networkTable, networkTable, networkTable);
+        Query query = em.createNativeQuery(q);
+        query.setParameter(1, kernel.getInverseSoftware().getId());
+        long then = System.currentTimeMillis();
+        int created = query.executeUpdate();
+        if (log.isInfoEnabled()) {
+            log.info(String.format("created %s inverse rules of %s in %s ms",
+                                   created, networkPrefix,
+                                   System.currentTimeMillis() - then));
+        }
     }
 
     @Override
@@ -375,8 +414,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     @Override
+    public void networkEdgeDeleted(long parent, long relationship) {
+        em.createNativeQuery(String.format("DELETE FROM %s WHERE parent = %s AND relationship = %s",
+                                           networkTable, parent, relationship));
+
+    }
+
+    @Override
     public void propagate() {
-        Set<NetworkRuleform<RuleForm>> generated = new HashSet<NetworkRuleform<RuleForm>>();
+        new HashSet<NetworkRuleform<RuleForm>>();
     }
 
     @Override
@@ -386,20 +432,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
 
     @Override
     public void trackNetworkEdgeAdded(long parent, long relationship, long child) {
-        addedEdges.add(new long[] {parent, relationship, child});
-    }
-
-    @Override
-    public void networkEdgeDeleted(long parent, long relationship) {
-        em.createNativeQuery(String.format("DELETE FROM %s WHERE parent = %s AND relationship = %s",
-                                           networkTable, parent, relationship));
-
-    }
-
-    public void createInverseRelationship(RuleForm parent, Relationship r,
-                                          RuleForm child, Resource updatedBy) {
-        child.link(r.getInverse(), parent, updatedBy,
-                   kernel.getInverseSoftware(), em);
+        addedEdges.add(new long[] { parent, relationship, child });
     }
 
     @SuppressWarnings("unchecked")

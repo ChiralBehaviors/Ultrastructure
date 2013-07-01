@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE TABLE ruleform.relationship_chain
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
+            CREATE TABLE ruleform.network_inferrence
             (
               id bigserial NOT NULL,
-              input1 bigint NOT NULL,
-              input2 bigint NOT NULL,
-              result bigint NOT NULL,
+              premise1 bigint NOT NULL,
+              premise2 bigint NOT NULL,
+              inferrence bigint NOT NULL,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              CONSTRAINT relationship_chain_pkey PRIMARY KEY (id ),
-              CONSTRAINT relationship_chain_relationship1_fkey FOREIGN KEY (input1)
+              CONSTRAINT network_inferrence_pkey PRIMARY KEY (id ),
+              CONSTRAINT network_inferrence_relationship1_fkey FOREIGN KEY (premise1)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT relationship_chain_relationship2_fkey FOREIGN KEY (input2)
+              CONSTRAINT network_inferrence_relationship2_fkey FOREIGN KEY (premise2)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT relationship_chain_relationship3_fkey FOREIGN KEY (result)
+              CONSTRAINT network_inferrence_relationship3_fkey FOREIGN KEY (inferrence)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT relationship_chain_research_fkey FOREIGN KEY (research)
+              CONSTRAINT network_inferrence_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT relationship_chain_updated_by_fkey FOREIGN KEY (updated_by)
+              CONSTRAINT network_inferrence_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT relationship_chain_relationship1_key UNIQUE (input1 , input2 )
+              CONSTRAINT network_inferrence_relationship1_key UNIQUE (premise1 , premise2 )
             )
             WITH (
               OIDS=FALSE
             );
             ]]>
-        </sql>
-        <rollback>
-            <dropTable tableName="ruleform.relationship_chain"/>
-        </rollback>
-    </changeSet>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.network_inferrence" />
+		</rollback>
+	</changeSet>
 </databaseChangeLog>

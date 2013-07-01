@@ -40,7 +40,7 @@
     ruleform.meta_protocol|
     ruleform.protocol|
     ruleform.relationship|
-    ruleform.relationship_chain|
+    ruleform.network_inferrence|
     ruleform.research|
     ruleform.resource|
     ruleform.resource_attribute|
@@ -695,12 +695,12 @@
     operator CDATA #IMPLIED
 >
 
-<!ELEMENT ruleform.relationship_chain EMPTY>
-<!ATTLIST ruleform.relationship_chain
+<!ELEMENT ruleform.network_inferrence EMPTY>
+<!ATTLIST ruleform.network_inferrence
     id CDATA #REQUIRED
-    input1 CDATA #REQUIRED
-    input2 CDATA #REQUIRED
-    result CDATA #REQUIRED
+    premise1 CDATA #REQUIRED
+    premise2 CDATA #REQUIRED
+    inferrence CDATA #REQUIRED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED
     updated_by CDATA #REQUIRED

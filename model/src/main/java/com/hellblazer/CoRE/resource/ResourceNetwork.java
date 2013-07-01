@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.resource;
 
 import static com.hellblazer.CoRE.resource.ResourceNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
+import static com.hellblazer.CoRE.network.Networked.*;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
@@ -51,10 +54,30 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                             + "and n.relationship.preferred = FALSE "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ResourceNetwork n") })
+@NamedNativeQueries({ @NamedNativeQuery(name = "INFERENCE_STEP", query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
+                                                                         + "     SELECT "
+                                                                         + "         premise1.parent, "
+                                                                         + "         chain.result, "
+                                                                         + "         premise2.child, "
+                                                                         + "         premise1.id, "
+                                                                         + "         premise2.id "
+                                                                         + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child, n.distance "
+                                                                         + "              FROM ruleform.resource_network ) as premise1 "
+                                                                         + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child"
+                                                                         + "               FROM ruleform.resource_network AS n "
+                                                                         + "                  WHERE n.distance = 1 "
+                                                                         + "                  AND n.inferred = FALSE) as premise2  "
+                                                                         + "     ON premise2.parent = premise1.child "
+                                                                         + "         AND premise2.child <> premise1.parent "
+                                                                         + "     JOIN relationship_chain AS chain "
+                                                                         + "         ON premise1.relationship = chain.premise1 "
+                                                                         + "         AND premise2.relationship = chain.premise2 "), })
 public class ResourceNetwork extends NetworkRuleform<Resource> {
     private static final long  serialVersionUID                 = 1L;
     public static final String GET_USED_RELATIONSHIPS           = "resourceNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "resource.immediateChildrenNetworkRules";
+    public static final String INFERENCE_STEP                   = "resourceNetwork"
+                                                                  + INFERENCE_STEP_SUFFIX;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne

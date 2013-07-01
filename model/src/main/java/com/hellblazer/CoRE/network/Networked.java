@@ -40,6 +40,7 @@ public interface Networked<E extends Networked<E, N>, N extends NetworkRuleform<
     String GET_CHILD_SUFFIX                                              = ".getChild";
     String UNLINKED_SUFFIX                                               = ".unlinked";
     String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";
+    String INFERENCE_STEP_SUFFIX                                         = ".inference";
 
     void addChildRelationship(N relationship);
 

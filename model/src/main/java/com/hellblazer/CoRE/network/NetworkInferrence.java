@@ -34,44 +34,44 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 @javax.persistence.Entity
-@Table(name = "relationship_chain", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "relationship_chain_id_seq", sequenceName = "relationship_chain_id_seq")
-public class RelationshipChain extends Ruleform {
+@Table(name = "network_inferrence", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "network_inferrence_id_seq", sequenceName = "network_inferrence_id_seq")
+public class NetworkInferrence extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator = "relationship_chain_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "network_inferrence_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
-    @JoinColumn(name = "input1")
-    private Relationship      input1;
+    @JoinColumn(name = "inferrence")
+    private Relationship      inferrence;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
-    @JoinColumn(name = "input2")
-    private Relationship      input2;
+    @JoinColumn(name = "premise1")
+    private Relationship      premise1;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
-    @JoinColumn(name = "result")
-    private Relationship      result;
+    @JoinColumn(name = "premise2")
+    private Relationship      premise2;
 
-    public RelationshipChain() {
+    public NetworkInferrence() {
     }
 
     /**
      * @param id
      */
-    public RelationshipChain(Long id) {
+    public NetworkInferrence(Long id) {
         super(id);
     }
 
     /**
      * @param updatedBy
      */
-    public RelationshipChain(Resource updatedBy) {
+    public NetworkInferrence(Resource updatedBy) {
         super(updatedBy);
     }
 
@@ -80,16 +80,16 @@ public class RelationshipChain extends Ruleform {
         return id;
     }
 
-    public Relationship getInput1() {
-        return input1;
+    public Relationship getInferrence() {
+        return inferrence;
     }
 
-    public Relationship getInput2() {
-        return input2;
+    public Relationship getPremise1() {
+        return premise1;
     }
 
-    public Relationship getRelationship1() {
-        return result;
+    public Relationship getPremise2() {
+        return premise2;
     }
 
     @Override
@@ -97,15 +97,15 @@ public class RelationshipChain extends Ruleform {
         this.id = id;
     }
 
-    public void setInput1(Relationship input) {
-        input1 = input;
+    public void setInferrence(Relationship inferrence) {
+        this.inferrence = inferrence;
     }
 
-    public void setInput2(Relationship input) {
-        input2 = input;
+    public void setPremise1(Relationship premise1) {
+        this.premise1 = premise1;
     }
 
-    public void setR(Relationship result) {
-        this.result = result;
+    public void setPremise2(Relationship premise2) {
+        this.premise2 = premise2;
     }
 }

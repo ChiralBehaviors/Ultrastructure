@@ -59,7 +59,7 @@
 		<class>com.hellblazer.CoRE.location.LocationNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationRelationship</class>
 		<class>com.hellblazer.CoRE.network.Relationship</class>
-		<class>com.hellblazer.CoRE.network.RelationshipChain</class>
+		<class>com.hellblazer.CoRE.network.NetworkInferrence</class>
 		<class>com.hellblazer.CoRE.network.NetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.network.NetworkRuleform</class>
 		<class>com.hellblazer.CoRE.network.TransitiveRelationshipAuthorization</class>

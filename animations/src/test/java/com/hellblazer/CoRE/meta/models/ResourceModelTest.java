@@ -17,6 +17,8 @@
 
 package com.hellblazer.CoRE.meta.models;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -42,9 +44,9 @@ public class ResourceModelTest extends AbstractModelTest {
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);
         em.persist(equals2);
-        NetworkInferrence aIsA = new NetworkInferrence(equals, equals2, equals,
-                                                       core);
-        em.persist(aIsA);
+        NetworkInferrence aEqualsA = new NetworkInferrence(equals, equals2,
+                                                           equals, core);
+        em.persist(aEqualsA);
         Resource a = new Resource("A", "A", core);
         em.persist(a);
         Resource b = new Resource("B", "B", core);
@@ -63,11 +65,17 @@ public class ResourceModelTest extends AbstractModelTest {
         model.getResourceModel().propagate();
 
         em.getTransaction().commit();
+        em.clear();
 
-        @SuppressWarnings("unused")
-        List<ResourceNetwork> edges = em.createQuery("SELECT edge FROM ResourceNetwork edge",
+        List<ResourceNetwork> edges = em.createQuery("SELECT edge FROM ResourceNetwork edge WHERE edge.inferred = TRUE",
                                                      ResourceNetwork.class).getResultList();
-        // assertEquals(3, edges.size());
+        assertEquals(1, edges.size());
+        ResourceNetwork inferredEdge = edges.get(0);
+        assertEquals(model.getKernel().getPropagationSoftware(),
+                     inferredEdge.getUpdatedBy());
+        assertEquals(a, inferredEdge.getParent());
+        assertEquals(c, inferredEdge.getChild());
+        assertEquals(equals, inferredEdge.getRelationship());
     }
 
 }

@@ -429,8 +429,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     public void propagate() {
         createDeductionTemporaryTables();
         boolean firstPass = true;
-        
-        do {int newRules;
+
+        do {
+            int newRules;
             // Deduce all possible rules
             if (firstPass) {
                 newRules = em.createNamedQuery(networkPrefix
@@ -439,19 +440,24 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
             } else {
                 newRules = em.createNamedQuery(INFERRENCE_STEP_FROM_LAST_PASS).executeUpdate();
             }
+            log.info(String.format("inferred %s new rules", newRules));
             if (newRules == 0) {
                 break;
             }
             // Gather all rules which exist
-            em.createNamedQuery(networkPrefix
-                                        + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
+            int existing = em.createNamedQuery(networkPrefix
+                                                       + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
+            log.info(String.format("gathered %s existing rules", existing));
             // Deduce the new rules
-            em.createNamedQuery(networkPrefix + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
+            int deduced = em.createNamedQuery(networkPrefix
+                                                      + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
+            log.info(String.format("deduced %s rules", deduced));
             // Insert the new rules
             Query insert = em.createNamedQuery(networkPrefix
                                                + INSERT_NEW_NETWORK_RULES_SUFFIX);
             insert.setParameter(1, kernel.getPropagationSoftware().getId());
-            insert.executeUpdate();
+            int inserted = insert.executeUpdate();
+            log.info(String.format("inserted %s new rules", inserted));
             cleanupDeductionTables();
         } while (true);
     }

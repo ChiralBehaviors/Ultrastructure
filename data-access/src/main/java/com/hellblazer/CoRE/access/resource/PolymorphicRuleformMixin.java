@@ -59,7 +59,7 @@ import com.hellblazer.CoRE.location.LocationMetaRule;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.location.LocationNetworkAuthorization;
 import com.hellblazer.CoRE.location.LocationRelationship;
-import com.hellblazer.CoRE.network.NetworkInferrence;
+import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.network.TransitiveRelationshipAuthorization;
 import com.hellblazer.CoRE.product.Product;
@@ -84,9 +84,9 @@ import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
 
 /**
  * A class for deserializing ruleforms. If you want your ruleform deserialized polymorphically,
- * it must be registered here.
+ * it must be registered here. It MUST descend from Ruleform in order to be correctly deserialized.
  * 
- * For now, we're only deserializing to concrete types
+ * For now, we're only deserializing to concrete types, but if you need an abstract type, just add it in.
  * @author hparry
  *
  */
@@ -140,7 +140,7 @@ import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
 	@Type(value = LocationNetworkAuthorization.class, name = "locationNetworkAuthorization"),
 	@Type(value = LocationRelationship.class, name = "locationRelationship"),
 	
-	@Type(value = NetworkInferrence.class, name = "networkInferrence"),
+	@Type(value = NetworkInference.class, name = "networkInference"),
 	@Type(value = Relationship.class, name = "relationship"),
 	@Type(value = TransitiveRelationshipAuthorization.class, name = "transitiveRelationshipAuthorization"),
 	

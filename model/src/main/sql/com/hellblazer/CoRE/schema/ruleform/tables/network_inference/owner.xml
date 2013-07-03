@@ -6,12 +6,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.network_inferrence TO core;
-            GRANT SELECT ON TABLE ruleform.network_inferrence TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.network_inferrence TO core_read_write;
-            ]]>
-        </sql>
+        <sql> ALTER TABLE ruleform.network_inference OWNER TO core; </sql>
         <rollback/>
     </changeSet>
 </databaseChangeLog>

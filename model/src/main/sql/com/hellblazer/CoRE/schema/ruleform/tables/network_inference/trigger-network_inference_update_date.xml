@@ -7,11 +7,8 @@
 
     <changeSet id="1"
         author="hhildebrand">
-        <sql> CREATE INDEX network_inferrence_research_fkey_idx ON ruleform.network_inferrence USING btree
-            (research ); </sql>
-        <rollback>
-            <dropIndex tableName="ruleform.network_inferrence" indexName="network_inferrence_research_fkey_idx"
-            />
-        </rollback>
+        <sql> CREATE TRIGGER network_inference_update_date BEFORE INSERT OR UPDATE ON
+            ruleform.network_inference FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
+        <rollback> DROP TRIGGER network_inference_update_date ON ruleform.network_inference; </rollback>
     </changeSet>
 </databaseChangeLog>

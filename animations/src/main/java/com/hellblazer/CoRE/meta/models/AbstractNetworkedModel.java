@@ -17,7 +17,7 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static com.hellblazer.CoRE.network.NetworkRuleform.INFERRENCE_STEP_FROM_LAST_PASS;
+import static com.hellblazer.CoRE.network.NetworkRuleform.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
@@ -438,7 +438,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                                        + INFERENCE_STEP_SUFFIX).executeUpdate();
                 firstPass = false;
             } else {
-                newRules = em.createNamedQuery(INFERRENCE_STEP_FROM_LAST_PASS).executeUpdate();
+                newRules = em.createNamedQuery(INFERENCE_STEP_FROM_LAST_PASS).executeUpdate();
             }
             log.info(String.format("inferred %s new rules", newRules));
             if (newRules == 0) {

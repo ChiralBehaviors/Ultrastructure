@@ -34,19 +34,19 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 @javax.persistence.Entity
-@Table(name = "network_inferrence", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "network_inferrence_id_seq", sequenceName = "network_inferrence_id_seq")
-public class NetworkInferrence extends Ruleform {
+@Table(name = "network_inference", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "network_inference_id_seq", sequenceName = "network_inference_id_seq")
+public class NetworkInference extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator = "network_inferrence_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "network_inference_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
-    @JoinColumn(name = "inferrence")
-    private Relationship      inferrence;
+    @JoinColumn(name = "inference")
+    private Relationship      inference;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
@@ -58,13 +58,13 @@ public class NetworkInferrence extends Ruleform {
     @JoinColumn(name = "premise2")
     private Relationship      premise2;
 
-    public NetworkInferrence() {
+    public NetworkInference() {
     }
 
     /**
      * @param id
      */
-    public NetworkInferrence(Long id) {
+    public NetworkInference(Long id) {
         super(id);
     }
 
@@ -72,37 +72,37 @@ public class NetworkInferrence extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public NetworkInferrence(Long id, Resource updatedBy) {
+    public NetworkInference(Long id, Resource updatedBy) {
         super(id, updatedBy);
     }
 
-    public NetworkInferrence(Relationship premise1, Relationship premise2,
-                             Relationship inferrence) {
+    public NetworkInference(Relationship premise1, Relationship premise2,
+                             Relationship inference) {
         super();
         this.premise1 = premise1;
         this.premise2 = premise2;
-        this.inferrence = inferrence;
+        this.inference = inference;
     }
 
-    public NetworkInferrence(Relationship premise1, Relationship premise2,
-                             Relationship inferrence, Resource updatedBy) {
+    public NetworkInference(Relationship premise1, Relationship premise2,
+                             Relationship inference, Resource updatedBy) {
         super(updatedBy);
         this.premise1 = premise1;
         this.premise2 = premise2;
-        this.inferrence = inferrence;
+        this.inference = inference;
     }
 
     /**
      * @param updatedBy
      */
-    public NetworkInferrence(Resource updatedBy) {
+    public NetworkInference(Resource updatedBy) {
         super(updatedBy);
     }
 
     /**
      * @param notes
      */
-    public NetworkInferrence(String notes) {
+    public NetworkInference(String notes) {
         super(notes);
     }
 
@@ -110,7 +110,7 @@ public class NetworkInferrence extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public NetworkInferrence(String notes, Resource updatedBy) {
+    public NetworkInference(String notes, Resource updatedBy) {
         super(notes, updatedBy);
     }
 
@@ -119,8 +119,8 @@ public class NetworkInferrence extends Ruleform {
         return id;
     }
 
-    public Relationship getInferrence() {
-        return inferrence;
+    public Relationship getInference() {
+        return inference;
     }
 
     public Relationship getPremise1() {
@@ -136,8 +136,8 @@ public class NetworkInferrence extends Ruleform {
         this.id = id;
     }
 
-    public void setInferrence(Relationship inferrence) {
-        this.inferrence = inferrence;
+    public void setInference(Relationship inference) {
+        this.inference = inference;
     }
 
     public void setPremise1(Relationship premise1) {

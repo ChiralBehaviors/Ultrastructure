@@ -35,6 +35,7 @@ public class CoREModule extends SimpleModule {
 
 	@Override
 	public void setupModule(SetupContext context) {
+		
 		context.setMixInAnnotations(Ruleform.class, PolymorphicRuleformMixin.class);
 		super.setupModule(context);
 	}

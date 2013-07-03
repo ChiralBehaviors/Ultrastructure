@@ -56,6 +56,9 @@ public class DataAccessBundle implements
         properties.put("openjpa.EntityManagerFactoryPool", "true");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
                                                                           properties);
+        //necessary for polymorphic ruleform deserialization
+        CoREModule module = new CoREModule();
+        environment.getObjectMapperFactory().registerModule(module);
         environment.addResource(new CrudResource(emf));
         environment.addResource(new CrudGuiResource(unit));
         environment.addResource(new DomainResource(
@@ -64,7 +67,7 @@ public class DataAccessBundle implements
         environment.addResource(new TraversalResource(emf));
         environment.addHealthCheck(new JpaHealthCheck(emf));
         environment.addResource(new CollectionResource(emf));
-
+        
     }
 
     @Override

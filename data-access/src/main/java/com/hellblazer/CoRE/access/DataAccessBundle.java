@@ -24,6 +24,7 @@ import javax.persistence.Persistence;
 import org.apache.openjpa.persistence.OpenJPAEntityManagerFactory;
 
 import com.hellblazer.CoRE.access.health.JpaHealthCheck;
+import com.hellblazer.CoRE.access.resource.CollectionResource;
 import com.hellblazer.CoRE.access.resource.CrudGuiResource;
 import com.hellblazer.CoRE.access.resource.CrudResource;
 import com.hellblazer.CoRE.access.resource.DomainResource;
@@ -62,6 +63,7 @@ public class DataAccessBundle implements
                                                    (OpenJPAEntityManagerFactory) emf));
         environment.addResource(new TraversalResource(emf));
         environment.addHealthCheck(new JpaHealthCheck(emf));
+        environment.addResource(new CollectionResource(emf));
 
     }
 

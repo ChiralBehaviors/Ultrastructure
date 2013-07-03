@@ -20,6 +20,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -30,6 +31,7 @@ import com.hellblazer.CoRE.resource.Resource;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+
 abstract public class ExistentialRuleform extends Ruleform {
     private static final long serialVersionUID = 1L;
 

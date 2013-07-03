@@ -29,6 +29,7 @@ import javax.persistence.MappedSuperclass;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.hellblazer.CoRE.json.RuleformIdGenerator;
 import com.hellblazer.CoRE.resource.Resource;
 
@@ -42,6 +43,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@type")
 abstract public class Ruleform implements Serializable, Cloneable {
     public static final String FIND_BY_NAME_SUFFIX   = ".findByName";
     public static final String NAME_SEARCH_SUFFIX    = ".namesearch";

@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.network;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -40,16 +41,16 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "authorized_relationship")
     private Relationship      authorizedRelationship;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "grouping_resource")
     private Resource          groupingResource;
 

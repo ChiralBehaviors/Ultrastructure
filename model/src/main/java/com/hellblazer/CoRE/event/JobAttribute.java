@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.event;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,7 +48,7 @@ public class JobAttribute extends AttributeValue<Job> {
     private Long              id;
 
     //bi-directional many-to-one association to Job
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "job")
     private Job               job;
 

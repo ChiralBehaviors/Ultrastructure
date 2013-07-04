@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.network;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -40,11 +41,11 @@ public class TransitiveRelationshipAuthorization extends Ruleform {
     @Id
     private long              id;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "relationship")
     private Relationship      relationship;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "authorized_relationship")
     private Relationship      authorizedRelationship;
 

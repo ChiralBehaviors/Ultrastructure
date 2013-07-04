@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.network;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,17 +45,17 @@ public class NetworkInference extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "inference")
     private Relationship      inference;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "premise1")
     private Relationship      premise1;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "premise2")
     private Relationship      premise2;
 

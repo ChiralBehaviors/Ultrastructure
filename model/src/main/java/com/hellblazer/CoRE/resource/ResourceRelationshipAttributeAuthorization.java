@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,7 +34,7 @@ public class ResourceRelationshipAttributeAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Location
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 

@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,12 +46,12 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to ProductNetwork
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "network_rule")
     private ProductNetwork    productNetwork;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product_value")
     private Product           productValue;
 
@@ -59,7 +60,7 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     private Long              id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource")
     private Resource          resource;
 

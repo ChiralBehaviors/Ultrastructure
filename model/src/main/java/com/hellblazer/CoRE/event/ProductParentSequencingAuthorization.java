@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.ProductParentSequencingAuthorization.GET_PARENT_ACTIONS;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -53,15 +54,15 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @GeneratedValue(generator = "product_child_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "my_parent")
     private Product            myParent;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "parent")
     private Product            parent;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "parent_status_to_set")
     private StatusCode         parentStatusToSet;
 
@@ -70,7 +71,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
 
     @Column(name = "set_if_active_siblings")
     private Boolean            setIfActiveSiblings;
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 

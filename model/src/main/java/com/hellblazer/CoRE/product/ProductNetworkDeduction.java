@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.product;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,7 +43,7 @@ public class ProductNetworkDeduction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to ProductNetwork
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "deduction")
     private ProductNetwork    deduction;
 
@@ -51,12 +52,12 @@ public class ProductNetworkDeduction implements Serializable {
     private Long              id;
 
     //bi-directional many-to-one association to ProductNetwork
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "premise1")
     private ProductNetwork    premise1;
 
     //bi-directional many-to-one association to ProductNetwork
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "premise2")
     private ProductNetwork    premise2;
 
@@ -64,7 +65,7 @@ public class ProductNetworkDeduction implements Serializable {
     private Timestamp         updateDate;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "updated_by")
     private Resource          updatedBy;
 

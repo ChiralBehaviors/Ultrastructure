@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.product;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,7 +44,7 @@ public class ProductAttributeAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "classifier")
     private Product           classifier;
 

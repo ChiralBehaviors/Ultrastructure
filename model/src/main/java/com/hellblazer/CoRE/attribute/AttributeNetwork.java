@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.attribute;
 
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +51,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public static final String GET_USED_RELATIONSHIPS           = "attributeNetwork.getUsedRelationships";
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "child")
     private Attribute          child;
 
@@ -59,7 +60,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private Long               id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "parent")
     private Attribute          parent;
 

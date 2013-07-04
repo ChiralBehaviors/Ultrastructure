@@ -28,6 +28,7 @@ import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHOR
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -92,19 +93,19 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
 
     private static final long  serialVersionUID                                       = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "deliver_from")
     private Location           deliverFrom;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "deliver_from_classification")
     private Relationship       deliverFromClassification;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "deliver_to_classification")
     private Relationship       deliverToClassification;
 
@@ -112,27 +113,27 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     @GeneratedValue(generator = "protocol_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product_classification")
     private Relationship       productClassification;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product")
     private Product            product;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "requester")
     private Resource           requester;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "requester_classification")
     private Relationship       requesterClassification;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "service")
     private Product            service;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "service_classification")
     private Relationship       serviceClassification;
 

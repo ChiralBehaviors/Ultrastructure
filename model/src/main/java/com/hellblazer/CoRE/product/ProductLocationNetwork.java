@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product;
 
 import static com.hellblazer.CoRE.product.ProductLocationNetwork.LOCATION_RULES;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,17 +48,17 @@ public class ProductLocationNetwork extends Ruleform {
     public static final String LOCATION_RULES   = "productLocationNetwork.locationRules";
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "contextual_product")
     private Product            contextualProduct;                                         ;
 
     //bi-directional many-to-one association to Coordinate
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "coordinate")
     private Coordinate         coordinate;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product")
     private Product            product;
 
@@ -66,7 +67,7 @@ public class ProductLocationNetwork extends Ruleform {
     private Long               id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource")
     private Resource           resource;
 

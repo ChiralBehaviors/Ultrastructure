@@ -20,6 +20,7 @@ import static com.hellblazer.CoRE.event.Protocol.GET;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -62,7 +63,7 @@ public class Protocol extends Ruleform {
     /**
      * The resource to assign to the job represented by this instance
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "assign_to")
     private Resource               assignTo;
 
@@ -79,14 +80,14 @@ public class Protocol extends Ruleform {
     /**
      * the location to deliver the product from
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "deliver_from")
     private Location               deliverFrom;
 
     /**
      * The location to deliver the product to
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "deliver_to")
     private Location               deliverTo;
 
@@ -97,28 +98,28 @@ public class Protocol extends Ruleform {
     /**
      * The product of the service
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product")
     private Product                product;
 
     /**
      * The ordered product
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "requested_product")
     private Product                requestedProduct;
 
     /**
      * The requested service to be performed
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "requested_service")
     private Product                requestedService;
 
     /**
      * The resource that requested the product of this service
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "requester")
     private Resource               requester;
 
@@ -128,7 +129,7 @@ public class Protocol extends Ruleform {
     /**
      * The service to be performed
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "service")
     private Product                service;
 

@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,12 +46,12 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to ProductLocation
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product_location")
     private ProductLocation   productLocation;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product_value")
     private Product           productValue;
 
@@ -59,7 +60,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     private Long              id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource")
     private Resource          resource;
 

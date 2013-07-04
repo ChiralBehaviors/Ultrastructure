@@ -61,7 +61,6 @@ import com.hellblazer.CoRE.location.LocationNetworkAuthorization;
 import com.hellblazer.CoRE.location.LocationRelationship;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.network.TransitiveRelationshipAuthorization;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
@@ -142,7 +141,6 @@ import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
 	
 	@Type(value = NetworkInference.class, name = "networkInference"),
 	@Type(value = Relationship.class, name = "relationship"),
-	@Type(value = TransitiveRelationshipAuthorization.class, name = "transitiveRelationshipAuthorization"),
 	
 	@Type(value = Product.class, name = "product"),
 	@Type(value = ProductAttribute.class, name = "productAttribute"),

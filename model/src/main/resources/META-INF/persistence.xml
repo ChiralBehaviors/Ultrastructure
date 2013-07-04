@@ -62,7 +62,6 @@
 		<class>com.hellblazer.CoRE.network.NetworkInference</class>
 		<class>com.hellblazer.CoRE.network.NetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.network.NetworkRuleform</class>
-		<class>com.hellblazer.CoRE.network.TransitiveRelationshipAuthorization</class>
 		<class>com.hellblazer.CoRE.Research</class>
 		<class>com.hellblazer.CoRE.resource.Resource</class>
 		<class>com.hellblazer.CoRE.resource.ResourceAttribute</class>

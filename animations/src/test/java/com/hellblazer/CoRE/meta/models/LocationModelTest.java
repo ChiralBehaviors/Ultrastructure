@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.network.NetworkInferrence;
+import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductNetwork;
@@ -45,7 +45,7 @@ public class LocationModelTest extends AbstractModelTest {
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);
         em.persist(equals2);
-        NetworkInferrence aEqualsA = new NetworkInferrence(equals, equals2,
+        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
                                                            equals, core);
         em.persist(aEqualsA);
         Product a = new Product("A", "A", core);

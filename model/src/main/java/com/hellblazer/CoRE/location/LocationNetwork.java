@@ -54,7 +54,7 @@ import com.hellblazer.CoRE.resource.Resource;
     @NamedNativeQuery(name = INFERENCE_STEP, query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
                                                      + "     SELECT "
                                                      + "         premise1.parent, "
-                                                     + "         deduction.inferrence, "
+                                                     + "         deduction.inference, "
                                                      + "         premise2.child, "
                                                      + "         premise1.id, "
                                                      + "         premise2.id "
@@ -65,7 +65,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                      + "            WHERE n.inferred = FALSE) as premise2  "
                                                      + "         ON premise2.parent = premise1.child "
                                                      + "         AND premise2.child <> premise1.parent "
-                                                     + "     JOIN ruleform.network_inferrence AS deduction "
+                                                     + "     JOIN ruleform.network_inference AS deduction "
                                                      + "         ON premise1.relationship = deduction.premise1 "
                                                      + "         AND premise2.relationship = deduction.premise2 "),
     @NamedNativeQuery(name = GATHER_EXISTING_NETWORK_RULES, query = "INSERT INTO current_pass_existing_rules "

@@ -27,40 +27,45 @@ import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
  * @author hparry
- *
+ * 
  */
 public class CollectionResourceTest extends DatabaseTest {
-	
-	CollectionResource resource;
-	Resource core;
-	
-	
-	public void testCollectionResource() {
-		resource = new CollectionResource(emf);
-		em.getTransaction().begin();
+
+    CollectionResource resource;
+    Resource           core;
+
+    @Test
+    public void testCollectionResource() {
+        resource = new CollectionResource(emf);
+        em.getTransaction().begin();
 
         Resource core = new Resource("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
         em.getTransaction().commit();
-		Assert.assertTrue(core != null);
-		Resource user = new Resource("User", null, core);
-		Product channel = new Product("MyChannel", null, user);
-		Relationship owns = new Relationship("owns", null, core);
-		Relationship ownedBy = new Relationship("ownedBy", null, core);
-		owns.setInverse(ownedBy);
-		ownedBy.setInverse(owns);
-		
-		Ruleform[] rules = new Ruleform[4];
-		rules[0] = user;
-		rules[1] = channel;
-		rules[2] = owns;
-		rules[3] = ownedBy;
-		
-		resource.post(rules);
-		
-	}
+        Assert.assertTrue(core != null);
+        Resource user = new Resource("User", null, core);
+        Product channel = new Product("MyChannel", null, core);
+        Relationship owns = new Relationship("owns", null, core);
+        Relationship ownedBy = new Relationship("ownedBy", null, core);
+        /*
+        owns.setInverse(ownedBy);
+        ownedBy.setInverse(owns);
+        */
 
+        Ruleform[] rules = new Ruleform[4];
+        rules[0] = user;
+        rules[1] = channel;
+        rules[2] = owns;
+        rules[3] = ownedBy;
 
+        em.getTransaction().begin();
+
+        for (Ruleform r : rules) {
+            em.merge(r);
+        }
+        em.getTransaction().commit();
+
+    }
 
 }

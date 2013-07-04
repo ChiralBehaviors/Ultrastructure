@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
-import org.dbunit.operation.DatabaseOperation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,20 +23,26 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.test.DatabaseTestContext;
+import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
  * @author hparry
  *
  */
-public class CollectionResourceTest extends DatabaseTestContext {
+public class CollectionResourceTest extends DatabaseTest {
 	
 	CollectionResource resource;
 	Resource core;
 	
 	
 	public void testCollectionResource() {
-		core = em.find(Resource.class, 1L);
+		resource = new CollectionResource(emf);
+		em.getTransaction().begin();
+
+        Resource core = new Resource("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
+        em.getTransaction().commit();
 		Assert.assertTrue(core != null);
 		Resource user = new Resource("User", null, core);
 		Product channel = new Product("MyChannel", null, user);
@@ -56,15 +61,6 @@ public class CollectionResourceTest extends DatabaseTestContext {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.test.DatabaseTestContext#prepareSettings()
-	 */
-	@Override
-	protected void prepareSettings() {
-		dataSetLocation = "CollectionResourceTestData.xml";
-        beforeTestOperations.add(DatabaseOperation.CLEAN_INSERT);
-		resource = new CollectionResource(emf);
-		
-	}
+
 
 }

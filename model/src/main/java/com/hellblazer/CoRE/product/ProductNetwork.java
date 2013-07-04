@@ -16,9 +16,17 @@
  */
 package com.hellblazer.CoRE.product;
 
+import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
+import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP;
+import static com.hellblazer.CoRE.product.ProductNetwork.INSERT_NEW_NETWORK_RULES;
 
 import java.util.List;
 import java.util.Set;
@@ -30,6 +38,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -48,6 +58,45 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
+@NamedNativeQueries({
+                     @NamedNativeQuery(name = INFERENCE_STEP, query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
+                                                                      + "     SELECT "
+                                                                      + "         premise1.parent, "
+                                                                      + "         deduction.inferrence, "
+                                                                      + "         premise2.child, "
+                                                                      + "         premise1.id, "
+                                                                      + "         premise2.id "
+                                                                      + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child "
+                                                                      + "              FROM ruleform.product_network AS n) as premise1 "
+                                                                      + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
+                                                                      + "            FROM ruleform.product_network AS n "
+                                                                      + "            WHERE n.inferred = FALSE) as premise2  "
+                                                                      + "         ON premise2.parent = premise1.child "
+                                                                      + "         AND premise2.child <> premise1.parent "
+                                                                      + "     JOIN ruleform.network_inferrence AS deduction "
+                                                                      + "         ON premise1.relationship = deduction.premise1 "
+                                                                      + "         AND premise2.relationship = deduction.premise2 "),
+                     @NamedNativeQuery(name = GATHER_EXISTING_NETWORK_RULES, query = "INSERT INTO current_pass_existing_rules "
+                                                                                     + "SELECT exist.id, wm.* "
+                                                                                     + "FROM working_memory AS wm "
+                                                                                     + "JOIN ruleform.product_network AS exist "
+                                                                                     + "    ON wm.parent = exist.parent "
+                                                                                     + "    AND wm.relationship = exist.relationship "
+                                                                                     + "    AND wm.child = exist.child"),
+                     @NamedNativeQuery(name = DEDUCE_NEW_NETWORK_RULES, query = "INSERT INTO current_pass_rules "
+                                                                                + "    SELECT nextval('ruleform.product_network_id_seq'), wm.* "
+                                                                                + "    FROM (SELECT parent, relationship, child"
+                                                                                + "          FROM working_memory GROUP BY parent, relationship, child) AS wm "
+                                                                                + "    LEFT OUTER JOIN ruleform.product_network AS exist "
+                                                                                + "         ON wm.parent = exist.parent "
+                                                                                + "         AND wm.relationship = exist.relationship "
+                                                                                + "         AND wm.child = exist.child "
+                                                                                + "     WHERE exist.parent IS NULL "
+                                                                                + "     AND exist.relationship IS NULL "
+                                                                                + "     AND exist.child IS NULL"),
+                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "INSERT INTO ruleform.product_network(id, parent, relationship, child, inferred, updated_by) "
+                                                                                + "    SELECT id, parent, relationship, child, TRUE, ?1 "
+                                                                                + "    FROM current_pass_rules") })
 @javax.persistence.Entity
 @Table(name = "product_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_network_id_seq", sequenceName = "product_network_id_seq", allocationSize = 1)
@@ -60,9 +109,17 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n") })
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
-    private static final long  serialVersionUID       = 1L;
-    public static final String GET_USED_RELATIONSHIPS = "productNetwork"
-                                                        + USED_RELATIONSHIPS_SUFFIX;
+    private static final long  serialVersionUID              = 1L;
+    public static final String GET_USED_RELATIONSHIPS        = "productNetwork"
+                                                               + USED_RELATIONSHIPS_SUFFIX;
+    public static final String INFERENCE_STEP                = "productNetwork"
+                                                               + INFERENCE_STEP_SUFFIX;
+    public static final String GATHER_EXISTING_NETWORK_RULES = "productNetwork"
+                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     public static List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();

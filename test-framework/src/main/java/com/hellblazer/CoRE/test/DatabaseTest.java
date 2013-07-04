@@ -37,13 +37,14 @@ abstract public class DatabaseTest {
     protected static Connection    connection;
     protected static EntityManager em;
     private static final String    SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-
+    protected static EntityManagerFactory emf;
+    
     @BeforeClass
     public static void setup() throws Exception {
 
         Properties properties = new Properties();
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("CoRE",
+        emf = Persistence.createEntityManagerFactory("CoRE",
                                                                           properties);
         em = emf.createEntityManager();
         connection = em.unwrap(Connection.class);

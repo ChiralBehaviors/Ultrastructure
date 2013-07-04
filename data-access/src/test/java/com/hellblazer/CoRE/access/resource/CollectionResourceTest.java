@@ -41,16 +41,16 @@ public class CollectionResourceTest extends DatabaseTest {
 
         Resource core = new Resource("CoRE");
         core.setUpdatedBy(core);
-        em.persist(core);
+        core = em.merge(core);
         Assert.assertTrue(core != null);
         Resource user = new Resource("User", null, core);
-        em.persist(user);
+        user = em.merge(user);
         Product channel = new Product("MyChannel", null, core);
-        em.persist(channel);
+        channel = em.merge(channel);
         Relationship owns = new Relationship("owns", null, core);
-        em.persist(owns);
+        owns = em.merge(owns);
         Relationship ownedBy = new Relationship("ownedBy", null, core);
-        em.persist(ownedBy); 
+        ownedBy = em.merge(ownedBy); 
         owns.setInverse(ownedBy);
         ownedBy.setInverse(owns); 
 
@@ -60,9 +60,6 @@ public class CollectionResourceTest extends DatabaseTest {
         rules[2] = owns;
         rules[3] = ownedBy; 
 
-        for (Ruleform r : rules) {
-            em.merge(r);
-        }
         em.getTransaction().commit();
 
     }

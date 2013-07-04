@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -33,10 +34,13 @@ import com.hellblazer.CoRE.Ruleform;
 @Path("/v{version : \\d+}/services/data/collection")
 public class CollectionResource {
 	
+	EntityManager em;
+	
 	/**
 	 * @param emf
 	 */
 	public CollectionResource(EntityManagerFactory emf) {
+		em = emf.createEntityManager();
 	}
 
 	@GET
@@ -48,7 +52,15 @@ public class CollectionResource {
 	@POST
 	@Path("/")
 	public Response post(Ruleform[] ruleforms) {
-		return null;
+		em.getTransaction().begin();
+		
+		for (Ruleform r : ruleforms) {
+			em.merge(r);
+		}
+		em.getTransaction().commit();
+		
+		return Response.ok().build();
+		
 	}
 
 }

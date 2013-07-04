@@ -19,6 +19,7 @@ package com.hellblazer.CoRE;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -60,7 +61,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Column(name = "update_date")
     private Timestamp          updateDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "updated_by")
     private Resource           updatedBy;
 

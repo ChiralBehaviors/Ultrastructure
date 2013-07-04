@@ -42,24 +42,23 @@ public class CollectionResourceTest extends DatabaseTest {
         Resource core = new Resource("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
-        em.getTransaction().commit();
         Assert.assertTrue(core != null);
         Resource user = new Resource("User", null, core);
+        em.persist(user);
         Product channel = new Product("MyChannel", null, core);
+        em.persist(channel);
         Relationship owns = new Relationship("owns", null, core);
+        em.persist(owns);
         Relationship ownedBy = new Relationship("ownedBy", null, core);
-        /*
+        em.persist(ownedBy); 
         owns.setInverse(ownedBy);
-        ownedBy.setInverse(owns);
-        */
+        ownedBy.setInverse(owns); 
 
         Ruleform[] rules = new Ruleform[4];
         rules[0] = user;
         rules[1] = channel;
         rules[2] = owns;
-        rules[3] = ownedBy;
-
-        em.getTransaction().begin();
+        rules[3] = ownedBy; 
 
         for (Ruleform r : rules) {
             em.merge(r);

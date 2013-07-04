@@ -45,10 +45,9 @@
     <include relativeToChangelogFile="true" file="tables/location/trigger-location_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/meta_protocol/trigger-meta_protocol_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol/trigger-protocol_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/network_inferrence/trigger-network_inferrence_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/network_inference/trigger-network_inference_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/transitive_relationship_authorization/trigger-transitive_relationship_authorization_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/resource_attribute_authorization/trigger-resource_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_network_authorization/trigger-resource_network_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_attribute/trigger-resource_attribute_update_date.xml"/>

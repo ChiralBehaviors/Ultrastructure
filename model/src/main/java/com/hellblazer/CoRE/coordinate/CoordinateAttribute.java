@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.coordinate;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,12 +47,12 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Coordinate
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "coordinate")
     private Coordinate        coordinate;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product_value")
     private Product           productValue;
 

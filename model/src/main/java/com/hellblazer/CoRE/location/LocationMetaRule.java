@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.location;
 
 import static com.hellblazer.CoRE.location.LocationMetaRule.CONTEXT_META_RULES;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -48,7 +49,7 @@ public class LocationMetaRule extends Ruleform {
     public static final String CONTEXT_META_RULES = "locationMetaRule.contextMetaRules";
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "attribute_mask")
     private Attribute          attributeMask;
 
@@ -57,7 +58,7 @@ public class LocationMetaRule extends Ruleform {
     private Long               id;
 
     //bi-directional many-to-one association to LocationContext
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "location_context")
     private LocationContext    locationContext;
 

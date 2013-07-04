@@ -19,6 +19,7 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,12 +44,12 @@ public class ResourceNetworkAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "authorized_parent")
     private Resource          authorizedParent;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "classifier")
     private Resource          classifier;
 

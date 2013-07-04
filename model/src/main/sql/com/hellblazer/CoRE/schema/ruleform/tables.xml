@@ -32,8 +32,7 @@
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_kind_definition-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/network_inferrence.xml"/>
-    <include relativeToChangelogFile="true" file="tables/transitive_relationship_authorization.xml"/>
+    <include relativeToChangelogFile="true" file="tables/network_inference.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_network-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/resource_product-0.0.1.xml"/>

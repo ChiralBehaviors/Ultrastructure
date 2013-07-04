@@ -54,8 +54,7 @@
 	<include relativeToChangelogFile="true" file="/views/protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
 	<include relativeToChangelogFile="true"
-		file="/views/network_inferrence.xml" />
-	<include relativeToChangelogFile="true" file="/views/transitive_relationship_authorization.xml" />
+		file="/views/network_inference.xml" />
 	<include relativeToChangelogFile="true" file="/views/resource.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/resource_attribute.xml" />

@@ -29,6 +29,7 @@ import static com.hellblazer.CoRE.resource.ResourceNetwork.INSERT_NEW_NETWORK_RU
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -65,7 +66,7 @@ import com.hellblazer.CoRE.network.Relationship;
                      @NamedNativeQuery(name = INFERENCE_STEP, query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
                                                                       + "     SELECT "
                                                                       + "         premise1.parent, "
-                                                                      + "         deduction.inferrence, "
+                                                                      + "         deduction.inference, "
                                                                       + "         premise2.child, "
                                                                       + "         premise1.id, "
                                                                       + "         premise2.id "
@@ -76,7 +77,7 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                       + "            WHERE n.inferred = FALSE) as premise2  "
                                                                       + "         ON premise2.parent = premise1.child "
                                                                       + "         AND premise2.child <> premise1.parent "
-                                                                      + "     JOIN ruleform.network_inferrence AS deduction "
+                                                                      + "     JOIN ruleform.network_inference AS deduction "
                                                                       + "         ON premise1.relationship = deduction.premise1 "
                                                                       + "         AND premise2.relationship = deduction.premise2 "),
                      @NamedNativeQuery(name = GATHER_EXISTING_NETWORK_RULES, query = "INSERT INTO current_pass_existing_rules "
@@ -114,7 +115,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "child")
     private Resource           child;
 
@@ -123,7 +124,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
     private Long               id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "parent")
     private Resource           parent;
 

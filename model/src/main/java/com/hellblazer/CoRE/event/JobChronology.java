@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.event;
 
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,12 +46,12 @@ public class JobChronology extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to Job
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "job")
     private Job               job;
 
     //bi-directional many-to-one association to StatusCode
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "status")
     private StatusCode        statusCode;
 

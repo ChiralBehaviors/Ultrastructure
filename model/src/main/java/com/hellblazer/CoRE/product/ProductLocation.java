@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,7 +55,7 @@ public class ProductLocation extends Ruleform implements
     private Set<ProductLocationAttribute> attributes;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product")
     private Product                       product;
 
@@ -63,17 +64,17 @@ public class ProductLocation extends Ruleform implements
     private Long                          id;
 
     //bi-directional many-to-one association to Location
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "location")
     private Location                      location;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "relationship")
     private Relationship                  relationship;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource")
     private Resource                      resource;
 

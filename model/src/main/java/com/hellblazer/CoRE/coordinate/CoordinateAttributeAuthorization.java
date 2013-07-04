@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +43,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "classification_coordinate")
     private Coordinate        classificationCoordinate;
 
@@ -51,7 +52,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     private Long              id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource")
     private Resource          resource;
 

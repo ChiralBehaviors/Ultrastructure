@@ -20,6 +20,7 @@ import static com.hellblazer.CoRE.attribute.Transformation.GET;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -53,27 +54,27 @@ public class Transformation extends Ruleform implements Serializable {
     private static final long  serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "assign_to")
     private Resource           assignTo;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "attribute")
     private Attribute          attribute;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product")
     private Product            product;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product_attribute_resource")
     private Resource           productAttributeResource;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "product_key")
     private Product            productKey;
 
@@ -82,17 +83,17 @@ public class Transformation extends Ruleform implements Serializable {
     private Long               id;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "relationship_key")
     private Relationship       relationshipKey;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource")
     private Resource           resource;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource_key")
     private Resource           resourceKey;
 
@@ -100,7 +101,7 @@ public class Transformation extends Ruleform implements Serializable {
     private Integer            sequenceNumber;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "service")
     private Product            service;
 

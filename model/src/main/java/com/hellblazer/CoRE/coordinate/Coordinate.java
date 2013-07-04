@@ -23,6 +23,7 @@ import static com.hellblazer.CoRE.coordinate.Coordinate.ORDERED_ATTRIBUTES;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -75,15 +76,15 @@ public class Coordinate extends ExistentialRuleform implements
     private Long                     id;
 
     //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "kind")
     private CoordinateKind           kind;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "research")
     private Research                 research;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "updated_by")
     private Resource                 updatedBy;
 

@@ -24,6 +24,7 @@ import javax.persistence.Persistence;
 import org.apache.openjpa.persistence.OpenJPAEntityManagerFactory;
 
 import com.hellblazer.CoRE.access.health.JpaHealthCheck;
+import com.hellblazer.CoRE.access.resource.CollectionResource;
 import com.hellblazer.CoRE.access.resource.CrudGuiResource;
 import com.hellblazer.CoRE.access.resource.CrudResource;
 import com.hellblazer.CoRE.access.resource.DomainResource;
@@ -55,6 +56,9 @@ public class DataAccessBundle implements
         properties.put("openjpa.EntityManagerFactoryPool", "true");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
                                                                           properties);
+        //necessary for polymorphic ruleform deserialization
+        CoREModule module = new CoREModule();
+        environment.getObjectMapperFactory().registerModule(module);
         environment.addResource(new CrudResource(emf));
         environment.addResource(new CrudGuiResource(unit));
         environment.addResource(new DomainResource(
@@ -62,7 +66,8 @@ public class DataAccessBundle implements
                                                    (OpenJPAEntityManagerFactory) emf));
         environment.addResource(new TraversalResource(emf));
         environment.addHealthCheck(new JpaHealthCheck(emf));
-
+        environment.addResource(new CollectionResource(emf));
+        
     }
 
     @Override

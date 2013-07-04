@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.location;
 
+import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,7 +47,7 @@ public class ContextAttributeAuthorization extends AttributeAuthorization {
     private Long              id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "resource")
     private Resource          resource;
 

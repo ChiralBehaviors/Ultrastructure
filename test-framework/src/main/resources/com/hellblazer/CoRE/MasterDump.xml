@@ -42,7 +42,7 @@
 	<ruleform.meta_protocol />
 	<ruleform.protocol />
 	<ruleform.relationship />
-	<ruleform.network_inferrence />
+	<ruleform.network_inference />
 	<ruleform.research />
 	<ruleform.resource />
 	<ruleform.resource_attribute />

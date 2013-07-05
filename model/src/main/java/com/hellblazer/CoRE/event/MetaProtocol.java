@@ -18,7 +18,6 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.MetaProtocol.FOR_JOB;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -51,11 +50,11 @@ public class MetaProtocol extends Ruleform {
 
     private static final long  serialVersionUID = 1L;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
 
@@ -66,14 +65,14 @@ public class MetaProtocol extends Ruleform {
     /**
      * The relationship that transforms the product ordered
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_ordered")
     private Relationship       productOrdered;
 
     /**
      * the relationship that transforms the requesting resource
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "requesting_resource")
     private Relationship       requestingResource;
 
@@ -83,14 +82,14 @@ public class MetaProtocol extends Ruleform {
     /**
      * The service factor for this rule
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
 
     /**
      * the relationship that transforms the service type
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service_type")
     private Relationship       serviceType;
 

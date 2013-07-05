@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,7 +41,7 @@ public class CoordinateKindDefinition extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
@@ -51,11 +50,11 @@ public class CoordinateKindDefinition extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "kind")
     private CoordinateKind    kind;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "research")
     private Research          research;
 
@@ -63,11 +62,11 @@ public class CoordinateKindDefinition extends Ruleform {
     private Integer           sequenceNumber;
 
     //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "subordinate_coordinate_kind")
     private CoordinateKind    subordinateCoordinateKind;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "updated_by")
     private Resource          updatedBy;
 

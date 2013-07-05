@@ -21,7 +21,6 @@ import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_RELATI
 import static com.hellblazer.CoRE.location.LocationRelationship.RULES;
 import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -71,12 +70,12 @@ public class LocationRelationship extends Ruleform {
     private Relationship       attributeRelationship;
 
     //bi-directional many-to-one association to LocationContext
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "context")
     private LocationContext    context;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_mapped_value")
     private Product            productMappedValue;
 
@@ -85,17 +84,17 @@ public class LocationRelationship extends Ruleform {
     private Long               id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location_1_attribute")
     private Attribute          location1Attribute;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location_2_attribute")
     private Attribute          location2Attribute;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 
@@ -103,7 +102,7 @@ public class LocationRelationship extends Ruleform {
     private Integer            sequenceNumber;
 
     //bi-directional many-to-one association to LocationContext
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "target_context")
     private LocationContext    targetContext;
 

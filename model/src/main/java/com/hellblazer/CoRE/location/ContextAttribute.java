@@ -18,7 +18,6 @@ package com.hellblazer.CoRE.location;
 
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,7 +47,7 @@ public class ContextAttribute extends AttributeValue<LocationContext> {
     private Long              id;
 
     //bi-directional many-to-one association to LocationContext
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "context")
     private LocationContext   locationContext;
 

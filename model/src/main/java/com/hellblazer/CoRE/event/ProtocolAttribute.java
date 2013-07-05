@@ -18,7 +18,6 @@ package com.hellblazer.CoRE.event;
 
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,7 +47,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     private Long              id;
 
     //bi-directional many-to-one association to Protocol
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "protocol")
     private Protocol          protocol;
 

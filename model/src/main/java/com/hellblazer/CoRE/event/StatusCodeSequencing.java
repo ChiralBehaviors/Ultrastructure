@@ -23,7 +23,6 @@ import static com.hellblazer.CoRE.event.StatusCodeSequencing.IS_VALID_NEXT_STATU
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -83,7 +82,7 @@ public class StatusCodeSequencing extends Ruleform {
     private Long                id;
 
     //bi-directional many-to-one association to StatusCode
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "parent_code")
     private StatusCode          parentCode;
 
@@ -91,7 +90,7 @@ public class StatusCodeSequencing extends Ruleform {
     private Integer             sequenceNumber              = 1;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne(cascade=CascadeType.MERGE, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "service")
     private Product             service;
 

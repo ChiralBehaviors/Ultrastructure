@@ -17,7 +17,6 @@
 
 package com.hellblazer.CoRE.capability;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -54,30 +53,30 @@ public class Capability extends Ruleform {
     @GeneratedValue(generator = "capability_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "subject")
     private Resource          subject;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "target_attribute")
     private Attribute         targetAttribute;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "target_product")
     private Product           targetProduct;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "target_location")
     private Location          targetLocation;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "target_resource")
     private Resource          targetResource;
 
     @Column(name = "target_type")
     private Target            targetType;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "verb")
     private Action            verb;
 

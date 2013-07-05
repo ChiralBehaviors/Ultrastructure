@@ -120,7 +120,7 @@ public class Location extends ExistentialRuleform implements
     @JsonIgnore
     private Set<LocationAttribute> attributes;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "context")
     private LocationContext        context;
 

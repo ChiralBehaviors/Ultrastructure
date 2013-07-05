@@ -20,7 +20,6 @@ import static com.hellblazer.CoRE.resource.ResourceAttribute.GET_ATTRIBUTE;
 
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +54,7 @@ public class ResourceAttribute extends AttributeValue<Resource> {
     private Long               id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource")
     private Resource           resource;
 

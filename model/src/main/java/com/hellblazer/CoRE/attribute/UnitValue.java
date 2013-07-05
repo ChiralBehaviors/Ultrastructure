@@ -19,7 +19,6 @@ package com.hellblazer.CoRE.attribute;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -67,7 +66,7 @@ public class UnitValue extends Ruleform {
     private BigDecimal        numericValue;
 
     //bi-directional many-to-one association to Research
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "research")
     private Research          research;
 
@@ -78,7 +77,7 @@ public class UnitValue extends Ruleform {
     private String            textValue;
 
     //bi-directional many-to-one association to Unit
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "unit")
     private Unit              unit;
 
@@ -86,7 +85,7 @@ public class UnitValue extends Ruleform {
     private Timestamp         updateDate;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "updated_by")
     private Resource          updatedBy;
 

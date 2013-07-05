@@ -18,7 +18,6 @@ package com.hellblazer.CoRE.attribute;
 
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,12 +41,12 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute_value")
     private Attribute         attributeValue;
 
@@ -56,7 +55,7 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private Long              id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "meta_attribute")
     private Attribute         metaAttribute;
 

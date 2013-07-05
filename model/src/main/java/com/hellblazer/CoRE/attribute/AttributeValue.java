@@ -22,7 +22,6 @@ package com.hellblazer.CoRE.attribute;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -48,7 +47,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
@@ -74,7 +73,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private Timestamp         timestampValue;
 
     //bi-directional many-to-one association to Unit
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "unit")
     private Unit              unit;
 

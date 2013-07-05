@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.attribute;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -42,7 +41,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "classification")
     private Relationship      classification;
 

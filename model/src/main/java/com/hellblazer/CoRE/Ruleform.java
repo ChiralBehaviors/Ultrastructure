@@ -54,7 +54,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     private String             notes;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "research")
     private Research           research;
 

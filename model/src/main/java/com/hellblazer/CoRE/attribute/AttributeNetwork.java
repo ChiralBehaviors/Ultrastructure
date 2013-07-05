@@ -26,7 +26,6 @@ import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULE
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 
-import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -108,7 +107,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "child")
     private Attribute          child;
 
@@ -117,7 +116,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private Long               id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Attribute          parent;
 

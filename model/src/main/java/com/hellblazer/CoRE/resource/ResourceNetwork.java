@@ -29,7 +29,6 @@ import static com.hellblazer.CoRE.resource.ResourceNetwork.INSERT_NEW_NETWORK_RU
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -115,7 +114,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "child")
     private Resource           child;
 
@@ -124,7 +123,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
     private Long               id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Resource           parent;
 

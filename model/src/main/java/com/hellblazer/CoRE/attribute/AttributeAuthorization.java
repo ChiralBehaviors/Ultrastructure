@@ -19,7 +19,6 @@ package com.hellblazer.CoRE.attribute;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -43,12 +42,12 @@ abstract public class AttributeAuthorization extends Ruleform {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "authorized_attribute")
     private Attribute         authorizedAttribute;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "grouping_resource")
     private Resource          groupingResource;
 

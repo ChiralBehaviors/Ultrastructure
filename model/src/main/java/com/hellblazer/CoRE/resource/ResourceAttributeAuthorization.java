@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.resource;
 
-import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,7 +42,7 @@ public class ResourceAttributeAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "classifier")
     private Resource          classifier;
 

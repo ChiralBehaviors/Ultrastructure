@@ -23,7 +23,6 @@ import static com.hellblazer.CoRE.coordinate.CoordinateKind.TOP_LEVEL_KIND;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -112,11 +111,11 @@ public class CoordinateKind extends ExistentialRuleform {
     @JsonIgnore
     private Set<CoordinateNesting>        nestingRules;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "research")
     private Research                      research;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "updated_by")
     private Resource                      updatedBy;
 

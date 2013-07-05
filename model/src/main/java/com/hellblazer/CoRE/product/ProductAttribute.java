@@ -20,7 +20,6 @@ import static com.hellblazer.CoRE.product.ProductAttribute.FIND_ATTRIBUTE_VALUE_
 
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,7 +53,7 @@ public class ProductAttribute extends AttributeValue<Product> {
     private static final long  serialVersionUID                   = 1L;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product")
     private Product            product;
 

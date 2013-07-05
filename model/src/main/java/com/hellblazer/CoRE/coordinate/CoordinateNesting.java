@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -51,30 +50,30 @@ public class CoordinateNesting extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "inner_attribute")
     private Attribute         innerAttribute;
 
     //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "kind")
     private CoordinateKind    kind;
 
     private String            operation;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "outer_attribute")
     private Attribute         outerAttribute;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "research")
     private Research          research;
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "updated_by")
     private Resource          updatedBy;
 

@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.resource;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.GeneratedValue;
@@ -55,12 +54,12 @@ public abstract class ResourceAuthorization extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship      relationship;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource")
     private Resource          resource;
 

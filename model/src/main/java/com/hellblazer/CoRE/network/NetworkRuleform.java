@@ -16,11 +16,10 @@
  */
 package com.hellblazer.CoRE.network;
 
-import static com.hellblazer.CoRE.network.NetworkRuleform.INFERENCE_STEP_FROM_LAST_PASS;
+import static com.hellblazer.CoRE.network.NetworkRuleform.*;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -66,7 +65,7 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
 
     private boolean            inferred                       = false;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 

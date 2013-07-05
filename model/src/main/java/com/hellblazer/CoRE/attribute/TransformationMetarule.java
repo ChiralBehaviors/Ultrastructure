@@ -20,7 +20,6 @@ import static com.hellblazer.CoRE.attribute.TransformationMetarule.GET_BY_EVENT;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -52,12 +51,12 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     private static final long  serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_map")
     private Relationship       productMap;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_network_resource")
     private Resource           productNetworkResource;
 
@@ -66,7 +65,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     private Long               id;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource_map")
     private Relationship       relationshipMap;
 
@@ -76,7 +75,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     /**
      * The service performed
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
 

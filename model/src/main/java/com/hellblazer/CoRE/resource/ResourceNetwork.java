@@ -98,9 +98,15 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                 + "     WHERE exist.parent IS NULL "
                                                                                 + "     AND exist.relationship IS NULL "
                                                                                 + "     AND exist.child IS NULL"),
-                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "INSERT INTO ruleform.resource_network(id, parent, relationship, child, inferred, updated_by) "
-                                                                                + "    SELECT id, parent, relationship, child, TRUE, ?1 "
-                                                                                + "    FROM current_pass_rules") })
+                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "WITH upsert AS "
+                                                                                + "       (UPDATE ruleform.resource_network n  "
+                                                                                + "        SET id = n.id, parent = n.parent, child= n.child "
+                                                                                + "        FROM current_pass_rules cpr where n.id = cpr.id "
+                                                                                + "        RETURNING n.*) "
+                                                                                + "INSERT INTO ruleform.resource_network(id, parent, relationship, child, inferred, updated_by) "
+                                                                                + "        SELECT id, parent, relationship, child, TRUE, ?1 "
+                                                                                + "    FROM current_pass_rules cpr "
+                                                                                + "        WHERE cpr.id NOT IN (select u.id FROM upsert u)") })
 public class ResourceNetwork extends NetworkRuleform<Resource> {
     private static final long  serialVersionUID                 = 1L;
     public static final String GET_USED_RELATIONSHIPS           = "resourceNetwork.getUsedRelationships";
@@ -115,7 +121,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "child")
     private Resource           child;
 
@@ -124,7 +130,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
     private Long               id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "parent")
     private Resource           parent;
 

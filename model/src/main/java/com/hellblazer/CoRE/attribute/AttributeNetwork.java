@@ -85,9 +85,15 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                 + "     WHERE exist.parent IS NULL "
                                                                                 + "     AND exist.relationship IS NULL "
                                                                                 + "     AND exist.child IS NULL"),
-                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "INSERT INTO ruleform.attribute_network(id, parent, relationship, child, inferred, updated_by) "
-                                                                                + "    SELECT id, parent, relationship, child, TRUE, ?1 "
-                                                                                + "    FROM current_pass_rules") })
+                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "WITH upsert AS "
+                                                                                + "       (UPDATE ruleform.attribute_network_id_seq n  "
+                                                                                + "        SET id = n.id, parent = n.parent, child= n.child "
+                                                                                + "        FROM current_pass_rules cpr where n.id = cpr.id "
+                                                                                + "        RETURNING n.*) "
+                                                                                + "INSERT INTO ruleform.attribute_network_id_seq(id, parent, relationship, child, inferred, updated_by) "
+                                                                                + "        SELECT id, parent, relationship, child, TRUE, ?1 "
+                                                                                + "    FROM current_pass_rules cpr "
+                                                                                + "        WHERE cpr.id NOT IN (select u.id FROM upsert u)") })
 @javax.persistence.Entity
 @Table(name = "attribute_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
@@ -108,7 +114,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "child")
     private Attribute          child;
 
@@ -117,7 +123,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private Long               id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "parent")
     private Attribute          parent;
 

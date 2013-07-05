@@ -59,7 +59,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                      + "         premise1.id, "
                                                      + "         premise2.id "
                                                      + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child "
-                                                     + "              FROM ruleform.resource_network AS n) as premise1 "
+                                                     + "              FROM ruleform.location_network AS n) as premise1 "
                                                      + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
                                                      + "            FROM ruleform.location_network AS n "
                                                      + "            WHERE n.inferred = FALSE) as premise2  "

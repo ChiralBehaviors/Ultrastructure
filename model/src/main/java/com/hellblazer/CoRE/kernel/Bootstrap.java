@@ -25,7 +25,6 @@ import java.sql.SQLException;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAction;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocationContext;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownResource;
@@ -61,9 +60,6 @@ public class Bootstrap {
         for (WellKnownObject wko : WellKnownProduct.values()) {
             insert(wko);
         }
-        for (WellKnownObject wko : WellKnownLocationContext.values()) {
-            insert(wko);
-        }
         for (WellKnownLocation wko : WellKnownLocation.values()) {
             insert(wko);
         }
@@ -78,7 +74,6 @@ public class Bootstrap {
         adjustIdSeq(WellKnownAttribute.ANY);
         adjustIdSeq(WellKnownProduct.ANY);
         adjustIdSeq(WellKnownLocation.ANY);
-        adjustIdSeq(WellKnownLocationContext.ANY);
         adjustIdSeq(WellKnownRelationship.ANY);
         adjustIdSeq(WellKnownStatusCode.UNSET);
         alterTriggers(true);
@@ -113,7 +108,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownLocation wkl) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, pinned, updated_by, context) VALUES (?, ?, ?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, pinned, updated_by) VALUES (?, ?, ?, ?, ?)",
                                                                         wkl.tableName()));
         try {
             s.setLong(1, wkl.id());
@@ -121,7 +116,6 @@ public class Bootstrap {
             s.setString(3, wkl.description());
             s.setBoolean(4, true);
             s.setLong(5, WellKnownResource.CORE.id());
-            s.setLong(6, WellKnownLocationContext.LOCATION_CONTEXT.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert  %s", wkl),

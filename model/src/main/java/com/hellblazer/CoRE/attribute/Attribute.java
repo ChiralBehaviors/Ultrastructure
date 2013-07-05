@@ -190,6 +190,17 @@ public class Attribute extends ExistentialRuleform implements
      * @param name
      * @param description
      * @param updatedBy
+     */
+    public Attribute(String name, String description, ValueType valueType,
+                     Resource updatedBy) {
+        this(name, description, updatedBy);
+        this.valueType = valueType;
+    }
+
+    /**
+     * @param name
+     * @param description
+     * @param updatedBy
      * @param valueType
      */
     public Attribute(String name, String description, Resource updatedBy,

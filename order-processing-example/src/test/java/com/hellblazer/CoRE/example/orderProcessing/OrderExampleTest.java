@@ -90,7 +90,9 @@ public class OrderExampleTest {
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         // assertEquals(1, metaProtocols.size());
-        for (MetaProtocol metaProtocol : metaProtocols) {
+        for (@SuppressWarnings("unused")
+        MetaProtocol metaProtocol : metaProtocols) {
+            @SuppressWarnings("unused")
             List<Protocol> protocols = jobModel.getProtocols(order,
                                                              metaProtocols.get(0));
             // assertEquals(1, protocols.size());

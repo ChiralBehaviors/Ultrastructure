@@ -35,8 +35,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -118,11 +116,7 @@ public class Location extends ExistentialRuleform implements
     //bi-directional many-to-one association to LocationAttribute
     @OneToMany(mappedBy = "location")
     @JsonIgnore
-    private Set<LocationAttribute> attributes;
-
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "context")
-    private LocationContext        context;
+    private Set<LocationAttribute> attributes; 
 
     //bi-directional many-to-one association to ProductLocation
     @OneToMany(mappedBy = "location")
@@ -188,17 +182,6 @@ public class Location extends ExistentialRuleform implements
      * @param description
      * @param updatedBy
      */
-    public Location(String name, String description, LocationContext context,
-                    Resource updatedBy) {
-        this(name, description, updatedBy);
-        this.context = context;
-    }
-
-    /**
-     * @param name
-     * @param description
-     * @param updatedBy
-     */
     public Location(String name, String description, Resource updatedBy) {
         super(name, description, updatedBy);
     }
@@ -247,10 +230,6 @@ public class Location extends ExistentialRuleform implements
     public List<LocationContext> getAvailableTargetContexts(EntityManager em) {
         return em.createNamedQuery(TARGET_CONTEXTS, LocationContext.class).setParameter("context",
                                                                                         this).getResultList();
-    }
-
-    public LocationContext getContext() {
-        return context;
     }
 
     public Set<ProductLocation> getEntities() {
@@ -303,10 +282,6 @@ public class Location extends ExistentialRuleform implements
     @Override
     public void setAttributes(Set<LocationAttribute> locationAttributes) {
         attributes = locationAttributes;
-    }
-
-    public void setContext(LocationContext locationContext) {
-        context = locationContext;
     }
 
     public void setEntities(Set<ProductLocation> productLocations) {

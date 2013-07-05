@@ -180,33 +180,30 @@ public class ExampleLoader {
     }
 
     public void createLocations() {
-        rsb225 = new Location("225RSB", "225 Reiss Science Bldg",
-                              containmentCtxt, core);
+        rsb225 = new Location("225RSB", "225 Reiss Science Bldg", core);
         em.persist(rsb225);
-        bht378 = new Location("37BHT", "37 Bret Harte Terrace",
-                              containmentCtxt, core);
+        bht378 = new Location("37BHT", "37 Bret Harte Terrace", core);
         em.persist(bht378);
 
-        bin1 = new Location("BIN01", "Bin #1", binCtxt, core);
+        bin1 = new Location("BIN01", "Bin #1", core);
         em.persist(bin1);
-        bin15 = new Location("BIN15", "Bin #15", binCtxt, core);
+        bin15 = new Location("BIN15", "Bin #15", core);
         em.persist(bin15);
-        dc = new Location("DC", "District of Columbia", containmentCtxt, core);
+        dc = new Location("DC", "District of Columbia", core);
         em.persist(dc);
-        east_coast = new Location("EAST_COAST", "East Coast", containmentCtxt,
-                                  core);
+        east_coast = new Location("EAST_COAST", "East Coast", core);
         em.persist(east_coast);
-        factory1 = new Location("FACTORY1", "Factory 1", containmentCtxt, core);
+        factory1 = new Location("FACTORY1", "Factory 1", core);
         em.persist(factory1);
-        france = new Location("FRANCE", "France", containmentCtxt, core);
+        france = new Location("FRANCE", "France", core);
         em.persist(france);
-        paris = new Location("PARIS", "Paris", containmentCtxt, core);
+        paris = new Location("PARIS", "Paris", core);
         em.persist(paris);
-        us = new Location("US", "U.S. Locations", containmentCtxt, core);
+        us = new Location("US", "U.S. Locations", core);
         em.persist(us);
-        wash = new Location("WASH", "Washington", containmentCtxt, core);
+        wash = new Location("WASH", "Washington", core);
         em.persist(wash);
-        euro = new Location("Euro", "European locations", containmentCtxt, core);
+        euro = new Location("Euro", "European locations", core);
         em.persist(euro);
     }
 

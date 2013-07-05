@@ -61,7 +61,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Column(name = "update_date")
     private Timestamp          updateDate;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "updated_by")
     private Resource           updatedBy;
 

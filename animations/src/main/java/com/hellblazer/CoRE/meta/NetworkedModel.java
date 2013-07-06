@@ -246,20 +246,6 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
     void propagate();
 
     /**
-     * Propagate the deductions for the inserted network relationship
-     * 
-     * @param parent
-     * @param relationship
-     * @param child
-     */
-    void propagate(RuleForm parent, Relationship relationship, RuleForm child);
-
-    /**
-     * Track the added network edge
-     */
-    void trackNetworkEdgeAdded(long parent, long relationship, long child);
-
-    /**
      * Track the deleted network edge
      * 
      * @param parent

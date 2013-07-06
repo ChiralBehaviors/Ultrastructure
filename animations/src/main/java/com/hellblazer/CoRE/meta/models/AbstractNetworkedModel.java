@@ -134,7 +134,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return builder.toString();
     }
 
-    private final List<long[]>                     addedEdges = new ArrayList<long[]>();
     private final Class<AttributeType>             attribute;
     private final Class<AttributeAuthorization>    authorization;
     private final Class<RuleForm>                  entity;
@@ -477,16 +476,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         em.createNativeQuery("ALTER TABLE temp_last_pass_rules RENAME TO last_pass_rules");
         em.createNativeQuery("TRUNCATE current_pass_existing_rules");
         em.createNativeQuery("TRUNCATE working_memory");
-    }
-
-    @Override
-    public void propagate(RuleForm parent, Relationship relationship,
-                          RuleForm child) {
-    }
-
-    @Override
-    public void trackNetworkEdgeAdded(long parent, long relationship, long child) {
-        addedEdges.add(new long[] { parent, relationship, child });
     }
 
     private void createCurrentPassExistingRules() {

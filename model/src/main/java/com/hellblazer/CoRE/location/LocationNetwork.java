@@ -95,9 +95,15 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                 + "          AND n.child = cpr.child "
                                                                                 + "        RETURNING n.*) "
                                                                                 + "INSERT INTO ruleform.location_network(id, parent, relationship, child, inferred, updated_by) "
-                                                                                + "        SELECT id, parent, relationship, child, TRUE, ?1 "
+                                                                                + "        SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, TRUE, ?1 "
                                                                                 + "    FROM current_pass_rules cpr "
-                                                                                + "        WHERE cpr.id NOT IN (select u.id FROM upsert u)") })
+                                                                                + "    LEFT OUTER JOIN upsert AS exist "
+                                                                                + "        ON cpr.parent = exist.parent "
+                                                                                + "        AND cpr.relationship = exist.relationship "
+                                                                                + "        AND cpr.child = exist.child "
+                                                                                + "     WHERE exist.parent IS NULL "
+                                                                                + "     AND exist.relationship IS NULL "
+                                                                                + "     AND exist.child IS NULL") })
 @javax.persistence.Entity
 @Table(name = "location_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_network_id_seq", sequenceName = "location_network_id_seq")

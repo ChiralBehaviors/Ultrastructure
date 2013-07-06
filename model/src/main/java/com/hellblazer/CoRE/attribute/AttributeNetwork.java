@@ -86,11 +86,14 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                 + "     AND exist.relationship IS NULL "
                                                                                 + "     AND exist.child IS NULL"),
                      @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "WITH upsert AS "
-                                                                                + "       (UPDATE ruleform.attribute_network_id_seq n  "
+                                                                                + "       (UPDATE ruleform.attribute_network n  "
                                                                                 + "        SET id = n.id, parent = n.parent, child= n.child "
-                                                                                + "        FROM current_pass_rules cpr where n.id = cpr.id "
+                                                                                + "        FROM current_pass_rules cpr "
+                                                                                + "        WHERE n.parent = cpr.parent "
+                                                                                + "          AND n.relationship = cpr.relationship "
+                                                                                + "          AND n.child = cpr.child "
                                                                                 + "        RETURNING n.*) "
-                                                                                + "INSERT INTO ruleform.attribute_network_id_seq(id, parent, relationship, child, inferred, updated_by) "
+                                                                                + "INSERT INTO ruleform.attribute_network(id, parent, relationship, child, inferred, updated_by) "
                                                                                 + "        SELECT id, parent, relationship, child, TRUE, ?1 "
                                                                                 + "    FROM current_pass_rules cpr "
                                                                                 + "        WHERE cpr.id NOT IN (select u.id FROM upsert u)") })

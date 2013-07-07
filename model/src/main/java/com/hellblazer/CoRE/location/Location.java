@@ -120,10 +120,6 @@ public class Location extends ExistentialRuleform implements
     @JsonIgnore
     private Set<LocationAttribute> attributes;
 
-    @ManyToOne
-    @JoinColumn(name = "context")
-    private LocationContext        context;
-
     //bi-directional many-to-one association to ProductLocation
     @OneToMany(mappedBy = "location")
     @JsonIgnore

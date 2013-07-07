@@ -17,6 +17,8 @@
 
 package com.hellblazer.CoRE.meta.models;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -30,7 +32,6 @@ import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
-import static org.junit.Assert.*;
 
 /**
  * Common superclass for tests that need the initialized Kernel and model.

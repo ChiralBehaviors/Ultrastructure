@@ -19,10 +19,12 @@ package com.hellblazer.CoRE.access.resource;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
@@ -62,6 +64,45 @@ public class CollectionResourceTest extends DatabaseTest {
 
         em.getTransaction().commit();
 
+    }
+    
+    public void testMerge() {
+    	
+    	em.getTransaction().begin();
+    	//todo this will break if tests execute out of order
+    	Resource user = new Resource("User", null, core);
+    	em.persist(user);
+    	
+    	Relationship owns = new Relationship("owns", null, core);
+    	em.persist(owns);
+    	
+    	Relationship ownedBy = new Relationship("ownedBy", null, core);
+    	em.persist(ownedBy);
+    	owns.setInverse(ownedBy);
+    	ownedBy.setInverse(owns);
+    	em.getTransaction().commit();
+    	
+    	Product channel1 = new Product("Channel One", null, user);
+    	Product channel2 = new Product("Channel Two", null, user);
+    	Product clip1 = new Product("Clip 1", null, user);
+    	Product clip2 = new Product("Clip 2", null, user);
+    	Product clip3 = new Product("Clip 3", null, user);
+    	
+    	ExistentialRuleform[] rules = {channel1, channel2, clip1, clip2, clip3};
+    	
+    	em.getTransaction().begin();
+    	for (Ruleform r : rules) {
+    		em.persist(r);
+    	}
+    	
+    	//create network edges
+    	
+    	ResourceRelationshipProductAuthorization userCh1 = new ResourceRelationshipProductAuthorization(user, owns, channel1, user);
+    	em.persist(userCh1);
+    	ResourceRelationshipProductAuthorization userCh2 = new ResourceRelationshipProductAuthorization(user, owns, channel2, user);
+    	em.persist(userCh2);
+    	
+    	
     }
 
 }

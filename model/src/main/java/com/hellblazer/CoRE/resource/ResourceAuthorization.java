@@ -56,12 +56,12 @@ public abstract class ResourceAuthorization extends Ruleform {
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship")
-    private Relationship      relationship;
+    protected Relationship      relationship;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
     @JoinColumn(name = "resource")
-    private Resource          resource;
+    protected Resource          resource;
 
     @Override
     public Long getId() {

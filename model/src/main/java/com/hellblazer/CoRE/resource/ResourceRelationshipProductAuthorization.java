@@ -21,6 +21,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 
 /**
@@ -43,6 +44,20 @@ public class ResourceRelationshipProductAuthorization extends
     }
 
     /**
+	 * @param user
+	 * @param owns
+	 * @param channel1
+	 * @param user2
+	 */
+	public ResourceRelationshipProductAuthorization(Resource resource,
+			Relationship rel, Product product, Resource updatedBy) {
+		this.resource = resource;
+		this.product = product;
+		this.relationship = rel;
+		setUpdatedBy(updatedBy);
+	}
+
+	/**
      * @return the product
      */
     public Product getProduct() {

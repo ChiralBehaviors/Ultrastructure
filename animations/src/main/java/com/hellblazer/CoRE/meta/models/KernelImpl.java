@@ -24,14 +24,12 @@ import com.hellblazer.CoRE.capability.Action;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAction;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocationContext;
+import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownResource;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -45,79 +43,74 @@ import com.hellblazer.CoRE.resource.Resource;
  */
 public class KernelImpl implements Kernel {
 
-    private final Action          anything;
-    private final Action          anyAction;
-    private final Action          notApplicableAction;
-    private final Action          originalAction;
+    private final Action       anything;
+    private final Action       anyAction;
+    private final Action       notApplicableAction;
+    private final Action       originalAction;
 
-    private final Attribute       anyAttribute;
-    private final Attribute       attribute;
-    private final Attribute       loginAttribute;
-    private final Attribute       notApplicableAttribute;
-    private final Attribute       originalAttribute;
-    private final Attribute       passwordHashAttribute;
+    private final Attribute    anyAttribute;
+    private final Attribute    attribute;
+    private final Attribute    loginAttribute;
+    private final Attribute    notApplicableAttribute;
+    private final Attribute    originalAttribute;
+    private final Attribute    passwordHashAttribute;
 
-    private final Product          product;
-    private final Product          anyProduct;
-    private final Product          notApplicableProduct;
-    private final Product          originalProduct;
-    private final Product          sameProduct;
+    private final Product      product;
+    private final Product      anyProduct;
+    private final Product      notApplicableProduct;
+    private final Product      originalProduct;
+    private final Product      sameProduct;
 
-    private final Location        anyLocation;
-    private final Location        location;
-    private final Location        notApplicableLocation;
-    private final Location        originalLocation;
-    private final Location        sameLocation;
+    private final Location     anyLocation;
+    private final Location     location;
+    private final Location     notApplicableLocation;
+    private final Location     originalLocation;
+    private final Location     sameLocation;
 
-    private final LocationContext anyLocationContext;
-    private final LocationContext locationContext;
-    private final LocationContext notApplicableContext;
-    private final LocationContext originalLocationContext;
+    private final Resource     anyResource;
+    private final Resource     core;
+    private final Resource     coreAnimationSoftware;
+    private final Resource     coreModel;
+    private final Resource     coreUser;
+    private final Resource     inverseSoftware;
+    private final Resource     notApplicableResource;
+    private final Resource     originalResource;
+    private final Resource     propagationSoftware;
+    private final Resource     resource;
+    private final Resource     sameResource;
+    private final Resource     specialSystemResource;
+    private final Resource     superUser;
 
-    private final Resource        anyResource;
-    private final Resource        core;
-    private final Resource        coreAnimationSoftware;
-    private final Resource        coreModel;
-    private final Resource        coreUser;
-    private final Resource        inverseSoftware;
-    private final Resource        notApplicableResource;
-    private final Resource        originalResource;
-    private final Resource        propagationSoftware;
-    private final Resource        resource;
-    private final Resource        sameResource;
-    private final Resource        specialSystemResource;
-    private final Resource        superUser;
+    private final Relationship contains;
+    private final Relationship developed;
+    private final Relationship anyRelationship;
+    private final Relationship developedBy;
+    private final Relationship equals;
+    private final Relationship formerMemberOf;
+    private final Relationship greaterThan;
+    private final Relationship greaterThanOrEqual;
+    private final Relationship hadMember;
+    private final Relationship hasException;
+    private final Relationship hasHead;
+    private final Relationship hasMember;
+    private final Relationship hasVersion;
+    private final Relationship headOf;
+    private final Relationship includes;
+    private final Relationship isA;
+    private final Relationship isContainedIn;
+    private final Relationship isExceptionTo;
+    private final Relationship isLocationOf;
+    private final Relationship lessThan;
+    private final Relationship lessThanOrEqual;
+    private final Relationship mapsToLocation;
+    private final Relationship memberOf;
+    private final Relationship notApplicableRelationship;
+    private final Relationship prototype;
+    private final Relationship prototypeOf;
+    private final Relationship sameRelationship;
+    private final Relationship versionOf;
 
-    private final Relationship    contains;
-    private final Relationship    developed;
-    private final Relationship    anyRelationship;
-    private final Relationship    developedBy;
-    private final Relationship    equals;
-    private final Relationship    formerMemberOf;
-    private final Relationship    greaterThan;
-    private final Relationship    greaterThanOrEqual;
-    private final Relationship    hadMember;
-    private final Relationship    hasException;
-    private final Relationship    hasHead;
-    private final Relationship    hasMember;
-    private final Relationship    hasVersion;
-    private final Relationship    headOf;
-    private final Relationship    includes;
-    private final Relationship    isA;
-    private final Relationship    isContainedIn;
-    private final Relationship    isExceptionTo;
-    private final Relationship    isLocationOf;
-    private final Relationship    lessThan;
-    private final Relationship    lessThanOrEqual;
-    private final Relationship    mapsToLocation;
-    private final Relationship    memberOf;
-    private final Relationship    notApplicableRelationship;
-    private final Relationship    prototype;
-    private final Relationship    prototypeOf;
-    private final Relationship    sameRelationship;
-    private final Relationship    versionOf;
-
-    private final StatusCode      unset;
+    private final StatusCode   unset;
 
     public KernelImpl(EntityManager em) {
         anyAction = find(em, WellKnownAction.ANY);
@@ -137,11 +130,6 @@ public class KernelImpl implements Kernel {
         originalProduct = find(em, WellKnownProduct.ORIGINAL);
         sameProduct = find(em, WellKnownProduct.SAME);
         notApplicableProduct = find(em, WellKnownProduct.NOT_APPLICABLE);
-
-        anyLocationContext = find(em, WellKnownLocationContext.ANY);
-        originalLocationContext = find(em, WellKnownLocationContext.ORIGINAL);
-        locationContext = find(em, WellKnownLocationContext.LOCATION_CONTEXT);
-        notApplicableContext = find(em, WellKnownLocationContext.NOT_APPLICABLE);
 
         location = find(em, WellKnownLocation.LOCATION);
         anyLocation = find(em, WellKnownLocation.ANY);
@@ -229,14 +217,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Location getAnyLocation() {
         return anyLocation;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyLocationContext()
-     */
-    @Override
-    public LocationContext getAnyLocationContext() {
-        return anyLocationContext;
     }
 
     /* (non-Javadoc)
@@ -481,14 +461,6 @@ public class KernelImpl implements Kernel {
         return location;
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getLocationContext()
-     */
-    @Override
-    public LocationContext getLocationContext() {
-        return locationContext;
-    }
-
     @Override
     public Attribute getLoginAttribute() {
         return loginAttribute;
@@ -527,13 +499,6 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * @return the notApplicableContext
-     */
-    public LocationContext getNotApplicableContext() {
-        return notApplicableContext;
-    }
-
-    /**
      * @return the notApplicableProduct
      */
     @Override
@@ -547,14 +512,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Location getNotApplicableLocation() {
         return notApplicableLocation;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Kernel#getNotApplicableLocationContext()
-     */
-    @Override
-    public LocationContext getNotApplicableLocationContext() {
-        return notApplicableContext;
     }
 
     /**
@@ -603,14 +560,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Location getOriginalLocation() {
         return originalLocation;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalLocationContext()
-     */
-    @Override
-    public LocationContext getOriginalLocationContext() {
-        return originalLocationContext;
     }
 
     /* (non-Javadoc)
@@ -756,16 +705,6 @@ public class KernelImpl implements Kernel {
      */
     Location find(EntityManager em, WellKnownLocation wko) {
         return em.find(Location.class, wko.id());
-    }
-
-    /**
-     * 
-     * @param wko
-     * @return the {@link LocationContext} corresponding to the well known
-     *         object
-     */
-    LocationContext find(EntityManager em, WellKnownLocationContext wko) {
-        return em.find(LocationContext.class, wko.id());
     }
 
     /**

@@ -10,8 +10,7 @@
             CREATE TABLE ruleform.location
             (
               id bigserial NOT NULL,
-              name character varying NOT NULL,
-              context bigint NOT NULL,
+              name character varying NOT NULL, 
               description character varying,
               notes character varying,
               research bigint,
@@ -19,9 +18,6 @@
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               CONSTRAINT location_pkey PRIMARY KEY (id ),
-              CONSTRAINT location_context_fkey FOREIGN KEY (context)
-                  REFERENCES ruleform.location_context (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,

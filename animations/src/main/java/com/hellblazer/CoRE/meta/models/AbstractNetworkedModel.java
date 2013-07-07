@@ -134,7 +134,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return builder.toString();
     }
 
-    private final List<long[]>                     addedEdges = new ArrayList<long[]>();
     private final Class<AttributeType>             attribute;
     private final Class<AttributeAuthorization>    authorization;
     private final Class<RuleForm>                  entity;
@@ -440,24 +439,32 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
             } else {
                 newRules = em.createNamedQuery(INFERENCE_STEP_FROM_LAST_PASS).executeUpdate();
             }
-            log.info(String.format("inferred %s new rules", newRules));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("inferred %s new rules", newRules));
+            }
             if (newRules == 0) {
                 break;
             }
             // Gather all rules which exist
             int existing = em.createNamedQuery(networkPrefix
                                                        + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
-            log.info(String.format("gathered %s existing rules", existing));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("gathered %s existing rules", existing));
+            }
             // Deduce the new rules
             int deduced = em.createNamedQuery(networkPrefix
                                                       + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
-            log.info(String.format("deduced %s rules", deduced));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("deduced %s rules", deduced));
+            }
             // Insert the new rules
             Query insert = em.createNamedQuery(networkPrefix
                                                + INSERT_NEW_NETWORK_RULES_SUFFIX);
             insert.setParameter(1, kernel.getPropagationSoftware().getId());
             int inserted = insert.executeUpdate();
-            log.info(String.format("inserted %s new rules", inserted));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("inserted %s new rules", inserted));
+            }
             cleanupDeductionTables();
         } while (true);
     }
@@ -469,16 +476,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         em.createNativeQuery("ALTER TABLE temp_last_pass_rules RENAME TO last_pass_rules");
         em.createNativeQuery("TRUNCATE current_pass_existing_rules");
         em.createNativeQuery("TRUNCATE working_memory");
-    }
-
-    @Override
-    public void propagate(RuleForm parent, Relationship relationship,
-                          RuleForm child) {
-    }
-
-    @Override
-    public void trackNetworkEdgeAdded(long parent, long relationship, long child) {
-        addedEdges.add(new long[] { parent, relationship, child });
     }
 
     private void createCurrentPassExistingRules() {

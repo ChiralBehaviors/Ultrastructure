@@ -25,10 +25,6 @@
 	<include relativeToChangelogFile="true"
 		file="functions/get_attribute_type.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/get_location_context.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/get_related_locations.xml" />
-	<include relativeToChangelogFile="true"
 		file="functions/nest_coordinates.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/resource_get_allowed_text_values.xml" />

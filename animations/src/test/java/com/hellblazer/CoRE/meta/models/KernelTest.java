@@ -61,7 +61,6 @@ public class KernelTest {
         assertNotNull(kernel.getAnyAttribute());
         assertNotNull(kernel.getAnyProduct());
         assertNotNull(kernel.getAnyLocation());
-        assertNotNull(kernel.getAnyLocationContext());
         assertNotNull(kernel.getAnyRelationship());
         assertNotNull(kernel.getAnyResource());
         assertNotNull(kernel.getAnything());
@@ -90,14 +89,12 @@ public class KernelTest {
         assertNotNull(kernel.getLessThan());
         assertNotNull(kernel.getLessThanOrEqual());
         assertNotNull(kernel.getLocation());
-        assertNotNull(kernel.getLocationContext());
         assertNotNull(kernel.getMapsToLocation());
         assertNotNull(kernel.getMemberOf());
         assertNotNull(kernel.getOriginalAction());
         assertNotNull(kernel.getOriginalAttribute());
         assertNotNull(kernel.getOriginalProduct());
         assertNotNull(kernel.getOriginalLocation());
-        assertNotNull(kernel.getOriginalLocationContext());
         assertNotNull(kernel.getOriginalResource());
         assertNotNull(kernel.getPropagationSoftware());
         assertNotNull(kernel.getPrototype());

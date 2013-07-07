@@ -23,8 +23,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationNetwork;
+import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.attribute.AttributeNetwork;
+import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
@@ -33,7 +34,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-public class LocationModelTest extends AbstractModelTest {
+public class AttributeModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() {
@@ -48,30 +49,30 @@ public class LocationModelTest extends AbstractModelTest {
         NetworkInference aEqualsA = new NetworkInference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
-        Location a = new Location("A", "A", core);
+        Attribute a = new Attribute("A", "A", ValueType.BOOLEAN, core);
         em.persist(a);
-        Location b = new Location("B", "B", core);
+        Attribute b = new Attribute("B", "B", ValueType.BOOLEAN, core);
         em.persist(b);
-        Location c = new Location("C", "C", core);
+        Attribute c = new Attribute("C", "C", ValueType.BOOLEAN, core);
         em.persist(c);
-        LocationNetwork edgeA = new LocationNetwork(a, equals, b, core);
+        AttributeNetwork edgeA = new AttributeNetwork(a, equals, b, core);
         em.persist(edgeA);
-        LocationNetwork edgeB = new LocationNetwork(b, equals2, c, core);
+        AttributeNetwork edgeB = new AttributeNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
         em.getTransaction().commit();
 
         em.getTransaction().begin();
 
-        model.getLocationModel().propagate();
+        model.getAttributeModel().propagate();
 
         em.getTransaction().commit();
         em.clear();
 
-        List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
-                                                     LocationNetwork.class).getResultList();
+        List<AttributeNetwork> edges = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inferred = TRUE",
+                                                      AttributeNetwork.class).getResultList();
         assertEquals(1, edges.size());
-        LocationNetwork inferredEdge = edges.get(0);
+        AttributeNetwork inferredEdge = edges.get(0);
         assertEquals(model.getKernel().getPropagationSoftware(),
                      inferredEdge.getUpdatedBy());
         assertEquals(a, inferredEdge.getParent());

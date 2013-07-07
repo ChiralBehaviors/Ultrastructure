@@ -188,17 +188,6 @@ public class Location extends ExistentialRuleform implements
      * @param description
      * @param updatedBy
      */
-    public Location(String name, String description, LocationContext context,
-                    Resource updatedBy) {
-        this(name, description, updatedBy);
-        this.context = context;
-    }
-
-    /**
-     * @param name
-     * @param description
-     * @param updatedBy
-     */
     public Location(String name, String description, Resource updatedBy) {
         super(name, description, updatedBy);
     }
@@ -247,10 +236,6 @@ public class Location extends ExistentialRuleform implements
     public List<LocationContext> getAvailableTargetContexts(EntityManager em) {
         return em.createNamedQuery(TARGET_CONTEXTS, LocationContext.class).setParameter("context",
                                                                                         this).getResultList();
-    }
-
-    public LocationContext getContext() {
-        return context;
     }
 
     public Set<ProductLocation> getEntities() {
@@ -303,10 +288,6 @@ public class Location extends ExistentialRuleform implements
     @Override
     public void setAttributes(Set<LocationAttribute> locationAttributes) {
         attributes = locationAttributes;
-    }
-
-    public void setContext(LocationContext locationContext) {
-        context = locationContext;
     }
 
     public void setEntities(Set<ProductLocation> productLocations) {

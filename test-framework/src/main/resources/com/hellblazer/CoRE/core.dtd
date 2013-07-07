@@ -532,7 +532,6 @@
 <!ATTLIST ruleform.location
     id CDATA #REQUIRED
     name CDATA #REQUIRED
-    context CDATA #REQUIRED
     description CDATA #IMPLIED
     notes CDATA #IMPLIED
     research CDATA #IMPLIED

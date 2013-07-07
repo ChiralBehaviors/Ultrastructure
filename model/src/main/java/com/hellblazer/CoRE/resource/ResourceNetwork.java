@@ -97,9 +97,24 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                 + "     WHERE exist.parent IS NULL "
                                                                                 + "     AND exist.relationship IS NULL "
                                                                                 + "     AND exist.child IS NULL"),
-                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "INSERT INTO ruleform.resource_network(id, parent, relationship, child, inferred, updated_by) "
-                                                                                + "    SELECT id, parent, relationship, child, TRUE, ?1 "
-                                                                                + "    FROM current_pass_rules") })
+                     @NamedNativeQuery(name = INSERT_NEW_NETWORK_RULES, query = "WITH upsert AS "
+                                                                                + "       (UPDATE ruleform.resource_network n  "
+                                                                                + "        SET id = n.id, parent = n.parent, child= n.child "
+                                                                                + "        FROM current_pass_rules cpr "
+                                                                                + "        WHERE n.parent = cpr.parent "
+                                                                                + "          AND n.relationship = cpr.relationship "
+                                                                                + "          AND n.child = cpr.child "
+                                                                                + "        RETURNING n.*) "
+                                                                                + "INSERT INTO ruleform.resource_network(id, parent, relationship, child, inferred, updated_by) "
+                                                                                + "        SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, TRUE, ?1 "
+                                                                                + "    FROM current_pass_rules cpr "
+                                                                                + "    LEFT OUTER JOIN upsert AS exist "
+                                                                                + "        ON cpr.parent = exist.parent "
+                                                                                + "        AND cpr.relationship = exist.relationship "
+                                                                                + "        AND cpr.child = exist.child "
+                                                                                + "     WHERE exist.parent IS NULL "
+                                                                                + "     AND exist.relationship IS NULL "
+                                                                                + "     AND exist.child IS NULL") })
 public class ResourceNetwork extends NetworkRuleform<Resource> {
     private static final long  serialVersionUID                 = 1L;
     public static final String GET_USED_RELATIONSHIPS           = "resourceNetwork.getUsedRelationships";

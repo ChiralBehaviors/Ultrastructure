@@ -21,7 +21,6 @@ import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.capability.Action;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
@@ -39,8 +38,6 @@ public interface Kernel {
     Product getAnyProduct();
 
     Location getAnyLocation();
-
-    LocationContext getAnyLocationContext();
 
     Relationship getAnyRelationship();
 
@@ -104,8 +101,6 @@ public interface Kernel {
 
     Location getLocation();
 
-    LocationContext getLocationContext();
-
     Attribute getLoginAttribute();
 
     Relationship getMapsToLocation();
@@ -120,8 +115,6 @@ public interface Kernel {
 
     Location getNotApplicableLocation();
 
-    LocationContext getNotApplicableLocationContext();
-
     Relationship getNotApplicableRelationship();
 
     Resource getNotApplicableResource();
@@ -135,8 +128,6 @@ public interface Kernel {
     Location getOriginalLocation();
 
     Location getSameLocation();
-
-    LocationContext getOriginalLocationContext();
 
     Resource getOriginalResource();
 

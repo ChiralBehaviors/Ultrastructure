@@ -55,17 +55,6 @@ public class ResourceModelImpl
         }
     }
 
-    public static void track_network_added(TriggerData data)
-                                                            throws SQLException {
-        // Don't track inferred network edges
-        if (data.getNew().getBoolean("inferred")) {
-            return;
-        }
-        InDatabase.get().trackNetworkEdgeAdded(data.getNew().getLong("parent"),
-                                               data.getNew().getLong("relationship"),
-                                               data.getNew().getLong("child"));
-    }
-
     public static void track_network_deleted(TriggerData data)
                                                               throws SQLException {
         InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),

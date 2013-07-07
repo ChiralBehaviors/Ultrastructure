@@ -17,10 +17,13 @@
 
 package com.hellblazer.CoRE.meta.models;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
+import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.Attribute;
@@ -51,7 +54,6 @@ public class AttributeModelImpl
      * @author hhildebrand
      * 
      */
-    @SuppressWarnings("unused")
     private static class InDatabase {
         private static final AttributeModelImpl SINGLETON;
         static {
@@ -62,6 +64,22 @@ public class AttributeModelImpl
             InDatabaseEntityManager.establishContext();
             return SINGLETON;
         }
+    }
+
+    private static final String ATTRIBUTE_NETWORK_PROPAGATE = "AttributeNetwork.propagate";
+
+    public static void network_edge_deleted(TriggerData data)
+                                                             throws SQLException {
+        InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
+                                            data.getOld().getLong("relationship"));
+    }
+
+    public static void propagate_deductions(TriggerData data)
+                                                             throws SQLException {
+        if (!markPropagated(ATTRIBUTE_NETWORK_PROPAGATE)) {
+            return; // We be done
+        }
+        InDatabase.get().propagate();
     }
 
     /**

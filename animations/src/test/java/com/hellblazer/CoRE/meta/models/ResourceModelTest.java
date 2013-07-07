@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Test;
@@ -35,7 +36,7 @@ import com.hellblazer.CoRE.resource.ResourceNetwork;
 public class ResourceModelTest extends AbstractModelTest {
 
     @Test
-    public void testSimpleNetworkPropagation() {
+    public void testSimpleNetworkPropagation() throws SQLException {
         Resource core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
 
@@ -45,7 +46,7 @@ public class ResourceModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         em.persist(equals2);
         NetworkInference aEqualsA = new NetworkInference(equals, equals2,
-                                                           equals, core);
+                                                         equals, core);
         em.persist(aEqualsA);
         Resource a = new Resource("A", "A", core);
         em.persist(a);

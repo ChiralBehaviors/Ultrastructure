@@ -17,6 +17,7 @@
 
 package com.hellblazer.CoRE.meta;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.hellblazer.CoRE.attribute.Attribute;
@@ -242,6 +243,8 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
     /**
      * Propagate the network inferences based on the tracked additions,
      * deletions and modifications
+     * 
+     * @throws SQLException
      */
     void propagate();
 

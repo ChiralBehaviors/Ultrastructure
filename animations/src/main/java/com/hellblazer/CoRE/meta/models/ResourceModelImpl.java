@@ -42,6 +42,8 @@ public class ResourceModelImpl
         AbstractNetworkedModel<Resource, ResourceAttributeAuthorization, ResourceAttribute>
         implements ResourceModel {
 
+    private static final String RESOURCE_NETWORK_PROPAGATE = "ResourceNetwork.propagate";
+
     private static class InDatabase {
         private static final ResourceModelImpl SINGLETON;
 
@@ -53,6 +55,14 @@ public class ResourceModelImpl
             InDatabaseEntityManager.establishContext();
             return SINGLETON;
         }
+    }
+
+    public static void propagate_deductions(TriggerData data)
+                                                             throws SQLException {
+        if (!markPropagated(RESOURCE_NETWORK_PROPAGATE)) {
+            return; // We be done
+        }
+        InDatabase.get().propagate();
     }
 
     public static void track_network_deleted(TriggerData data)

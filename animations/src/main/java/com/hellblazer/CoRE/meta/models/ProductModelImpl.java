@@ -55,6 +55,16 @@ public class ProductModelImpl
         }
     }
 
+    private static final String PRODUCT_NETWORK_PROPAGATE = "ProductNetwork.propagate";
+
+    public static void propagate_deductions(TriggerData data)
+                                                             throws SQLException {
+        if (!markPropagated(PRODUCT_NETWORK_PROPAGATE)) {
+            return; // We be done
+        }
+        InDatabase.get().propagate();
+    }
+
     public static void track_network_deleted(TriggerData data)
                                                               throws SQLException {
         InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),

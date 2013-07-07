@@ -9,8 +9,9 @@
 	<include relativeToChangelogFile="true" file="functions/_clear_ids.xml" />
 	<include relativeToChangelogFile="true" file="functions/_contains_id.xml" />
 	<include relativeToChangelogFile="true" file="functions/_ids.xml" />
-    <include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
-    <include relativeToChangelogFile="true" file="functions/is_terminal_state.xml" />
+	<include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/is_terminal_state.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/attribute_usage.xml" />
 	<include relativeToChangelogFile="true"
@@ -38,10 +39,10 @@
 		file="functions/ensure_next_state_is_valid.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/ensure_valid_child_service_and_status.xml" />
-    <include relativeToChangelogFile="true"
-        file="functions/ensure_valid_parent_service_and_status.xml" />
-    <include relativeToChangelogFile="true"
-        file="functions/ensure_valid_sibling_service_and_status.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/ensure_valid_parent_service_and_status.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/ensure_valid_sibling_service_and_status.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/ensure_valid_initial_state.xml" />
 	<include relativeToChangelogFile="true"
@@ -52,4 +53,12 @@
 		file="functions/valid_resource_attribute.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/validate_state_graph.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/propagate_attribute_network_deductions.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/propagate_location_network_deductions.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/propagate_product_network_deductions.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/propagate_resource_network_deductions.xml" />
 </databaseChangeLog>

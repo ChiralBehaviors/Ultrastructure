@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql> CREATE TRIGGER trigger_propagate_product_network_deductions
+			AFTER
+			INSERT OR UPDATE ON
+			ruleform.product_network FOR EACH ROW EXECUTE PROCEDURE
+			ruleform.propagate_product_network_deductions();
+		</sql>
+		<rollback> DROP TRIGGER propagate_product_network_deductions ON
+			ruleform.product_network;
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

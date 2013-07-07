@@ -40,7 +40,7 @@ import com.hellblazer.CoRE.network.Aspect;
 public class LocationModelImpl
         extends
         AbstractNetworkedModel<Location, LocationAttributeAuthorization, LocationAttribute>
-        implements LocationModel { 
+        implements LocationModel {
 
     private static class InDatabase {
         private static final LocationModelImpl SINGLETON;
@@ -55,10 +55,20 @@ public class LocationModelImpl
         }
     }
 
+    private static final String LOCATION_NETWORK_PROPAGATE = "LocationNetwork.propagate";
+
     public static void network_edge_deleted(TriggerData data)
                                                              throws SQLException {
         InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
                                             data.getOld().getLong("relationship"));
+    }
+
+    public static void propagate_deductions(TriggerData data)
+                                                             throws SQLException {
+        if (!markPropagated(LOCATION_NETWORK_PROPAGATE)) {
+            return; // We be done
+        }
+        InDatabase.get().propagate();
     }
 
     /**

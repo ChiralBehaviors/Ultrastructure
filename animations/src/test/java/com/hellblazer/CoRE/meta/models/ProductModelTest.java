@@ -60,12 +60,6 @@ public class ProductModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.getTransaction().commit();
-
-        em.getTransaction().begin();
-
-        model.getProductModel().propagate();
-
-        em.getTransaction().commit();
         em.clear();
 
         List<ProductNetwork> edges = em.createQuery("SELECT edge FROM ProductNetwork edge WHERE edge.inferred = TRUE",

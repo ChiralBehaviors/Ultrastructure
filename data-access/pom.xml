@@ -14,11 +14,6 @@
 			<artifactId>dropwizard-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.openjpa</groupId>
-			<artifactId>openjpa-all</artifactId>
-			<version>2.2.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>0.9.6</version>
@@ -32,6 +27,16 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
 			<version>1.14</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>stax-api</artifactId>
+					<groupId>stax</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>stax-api</artifactId>
+					<groupId>javax.xml.stream</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -42,11 +47,18 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>model</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>stax-api</artifactId>
+					<groupId>javax.xml.stream</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
@@ -61,14 +73,10 @@
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>1.8.3</version>
-		</dependency>
-		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>test-framework</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>

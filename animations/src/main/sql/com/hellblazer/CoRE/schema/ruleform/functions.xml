@@ -61,4 +61,6 @@
 		file="functions/propagate_product_network_deductions.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/propagate_resource_network_deductions.xml" />
+	<include relativeToChangelogFile="true"
+		file="functions/if_table_exists.xml" />
 </databaseChangeLog>

@@ -60,12 +60,6 @@ public class LocationModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.getTransaction().commit();
-
-        em.getTransaction().begin();
-
-        model.getLocationModel().propagate();
-
-        em.getTransaction().commit();
         em.clear();
 
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",

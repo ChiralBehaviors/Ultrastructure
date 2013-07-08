@@ -60,12 +60,6 @@ public class ResourceModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.getTransaction().commit();
-
-        em.getTransaction().begin();
-
-        model.getResourceModel().propagate();
-
-        em.getTransaction().commit();
         em.clear();
 
         List<ResourceNetwork> edges = em.createQuery("SELECT edge FROM ResourceNetwork edge WHERE edge.inferred = TRUE",

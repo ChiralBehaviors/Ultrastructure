@@ -27,11 +27,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>postgres</groupId>
+			<groupId>com.hellblazer</groupId>
 			<artifactId>pljava-api</artifactId>
-			<version>1.4.3</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/pljava-api.jar</systemPath>
+			<version>0.0.1-SNAPSHOT</version> 
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>

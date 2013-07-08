@@ -62,11 +62,6 @@ public class AttributeModelTest extends AbstractModelTest {
 
         em.getTransaction().commit();
 
-        em.getTransaction().begin();
-
-        model.getAttributeModel().propagate();
-
-        em.getTransaction().commit();
         em.clear();
 
         List<AttributeNetwork> edges = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inferred = TRUE",

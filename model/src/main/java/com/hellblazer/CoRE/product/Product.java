@@ -151,6 +151,7 @@ public class Product extends ExistentialRuleform implements
     public static final String    GET_CHILD                                              = "product"
                                                                                            + GET_CHILD_SUFFIX;
     public static final String    IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";
+    public static final String    ALL_CHILDREN_NETWORK_RULES                       		 = "product.allChildrenNetworkRules";
     public static final String    NAME_SEARCH                                            = "product"
                                                                                            + NAME_SEARCH_SUFFIX;
     public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";

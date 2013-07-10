@@ -22,6 +22,7 @@ import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.Product.ALL_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
@@ -120,6 +121,10 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                             + "where n.parent = :product "
                                                                             + "and n.inferred = FALSE "
                                                                             + "and n.relationship.preferred = FALSE "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+               @NamedQuery(name = ALL_CHILDREN_NETWORK_RULES, query = "select n from ProductNetwork n "
+                                                                            + "where n.parent = :product "
+                                                                            + "and n.relationship = :relationship "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n") })
 public class ProductNetwork extends NetworkRuleform<Product> implements

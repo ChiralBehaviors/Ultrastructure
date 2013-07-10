@@ -75,5 +75,10 @@
 			<artifactId>postgresql</artifactId>
 			<version>9.2-1003-jdbc4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.hellblazer.CoRE</groupId>
+			<artifactId>animations</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

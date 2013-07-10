@@ -688,17 +688,18 @@ public class ExampleLoader {
     }
 
     public void createNetworkInferences() {
-        NetworkInference areaToRegion = new NetworkInference(area, region,
-                                                             region, core);
+        NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
+                                                             areaOf, core);
         em.persist(areaToRegion);
-        NetworkInference regionToState = new NetworkInference(region, state,
-                                                              region, core);
+        NetworkInference regionToState = new NetworkInference(regionOf,
+                                                              stateOf,
+                                                              regionOf, core);
         em.persist(regionToState);
-        NetworkInference stateToCity = new NetworkInference(state, city, state,
-                                                            core);
+        NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
+                                                            stateOf, core);
         em.persist(stateToCity);
-        NetworkInference cityToStreet = new NetworkInference(city, street,
-                                                             city, core);
+        NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
+                                                             cityOf, core);
         em.persist(cityToStreet);
     }
 }

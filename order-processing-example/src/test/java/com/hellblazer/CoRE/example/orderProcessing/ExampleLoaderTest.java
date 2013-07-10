@@ -64,6 +64,6 @@ public class ExampleLoaderTest {
     public void testNetworkInference() {
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
                                                      LocationNetwork.class).getResultList();
-        // assertEquals(5, edges.size());
+        assertEquals(12, edges.size());
     }
 }

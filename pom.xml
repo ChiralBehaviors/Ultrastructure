@@ -39,7 +39,7 @@
 		<module>data-access</module>
 		<module>service</module>
 		<module>order-processing-example</module>
-    <module>api</module>
+    
   </modules>
 
 	<dependencyManagement>

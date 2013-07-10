@@ -69,28 +69,30 @@ public class ResourceTest extends DatabaseTestContext {
 
         commitTransaction();
     }
-    
+
     @Test
     public void testResourceAuthorizationConstraints() {
-    	em.getTransaction().begin();
+        em.getTransaction().begin();
         Resource test = em.find(Resource.class, 1L);
-        
+
         Relationship r = new Relationship("r", test);
         em.persist(r);
-        
+        Relationship inverseR = new Relationship("inverse-r", null, test, r);
+        r.setInverse(inverseR);
+        em.persist(inverseR);
+
         Product p = new Product("p", test);
         em.persist(p);
-        
+
         ResourceRelationshipProductAuthorization auth = new ResourceRelationshipProductAuthorization();
         auth.setProduct(p);
         auth.setRelationship(r);
         auth.setResource(test);
         auth.setUpdatedBy(test);
-        
+
         em.persist(auth);
         em.getTransaction().commit();
-        
-        
+
     }
 
     @Override

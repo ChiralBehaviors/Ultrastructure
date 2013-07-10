@@ -13,13 +13,12 @@
               name character varying NOT NULL,
               description character varying,
               preferred boolean NOT NULL,
-              inverse bigint,
+              inverse bigint NOT NULL,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               pinned boolean NOT NULL DEFAULT false,
-              is_transitive boolean NOT NULL DEFAULT false,
               operator ruleform.relational_operator,  
               CONSTRAINT relationship_pkey PRIMARY KEY (id ),
               CONSTRAINT relationship_inverse_fkey FOREIGN KEY (inverse)
@@ -30,8 +29,7 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT relationship_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT relationship_name_key UNIQUE (name )
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
             )
             WITH (
               OIDS=FALSE

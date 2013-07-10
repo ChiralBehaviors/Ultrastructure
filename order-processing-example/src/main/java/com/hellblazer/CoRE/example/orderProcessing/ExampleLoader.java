@@ -28,10 +28,10 @@ import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
+import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
@@ -53,14 +53,12 @@ public class ExampleLoader {
     public Location             bin1;
     public Location             bin15;
 
-    public LocationContext      binCtxt;
     public Product              checkCredit;
 
     public Product              checkLetterOfCredit;
     public Product              chemB;
     public Relationship         city;
     public StatusCode           completed;
-    public LocationContext      containmentCtxt;
     public Resource             core;
     public Resource             cpu;
     public Resource             creditDept;
@@ -153,30 +151,17 @@ public class ExampleLoader {
         em.persist(discountAttribute);
     }
 
-    public void createLocationContexts() {
-        containmentCtxt = new LocationContext(
-                                              "Geographical Containment",
-                                              "The geographical containment hierarchy ",
-                                              kernel.getCore());
-        em.persist(containmentCtxt);
-        binCtxt = new LocationContext("Parts Bin",
-                                      "The bin location of an product.",
-                                      kernel.getCore());
-        em.persist(binCtxt);
-    }
-
     public void createLocationNetworks() {
-        model.getLocationModel().link(bin1, area, factory1, kernel.getCore());
-        model.getLocationModel().link(bin15, area, bin15, kernel.getCore());
-        model.getLocationModel().link(factory1, street, bht378,
-                                      kernel.getCore());
-        model.getLocationModel().link(rsb225, city, wash, kernel.getCore());
-        model.getLocationModel().link(bht378, city, wash, kernel.getCore());
-        model.getLocationModel().link(wash, state, dc, kernel.getCore());
-        model.getLocationModel().link(dc, region, east_coast, kernel.getCore());
-        model.getLocationModel().link(east_coast, area, us, kernel.getCore());
-        model.getLocationModel().link(paris, region, france, kernel.getCore());
-        model.getLocationModel().link(france, area, euro, billingComputer);
+        model.getLocationModel().link(bin1, area, factory1, core);
+        model.getLocationModel().link(bin15, area, factory1, core);
+        model.getLocationModel().link(factory1, street, bht378, core);
+        model.getLocationModel().link(rsb225, city, wash, core);
+        model.getLocationModel().link(bht378, city, wash, core);
+        model.getLocationModel().link(wash, state, dc, core);
+        model.getLocationModel().link(dc, region, east_coast, core);
+        model.getLocationModel().link(east_coast, area, us, core);
+        model.getLocationModel().link(paris, region, france, core);
+        model.getLocationModel().link(france, area, euro, core);
     }
 
     public void createLocations() {
@@ -242,26 +227,21 @@ public class ExampleLoader {
     }
 
     public void createProductNetworks() {
-        model.getProductModel().link(abc486, storageType, roomTemp,
-                                     kernel.getCore());
-        model.getProductModel().link(abc486, salesTaxStatus, nonExempt,
-                                     kernel.getCore());
-        model.getProductModel().link(chemB, storageType, frozen,
-                                     kernel.getCore());
+        model.getProductModel().link(abc486, storageType, roomTemp, core);
+        model.getProductModel().link(abc486, salesTaxStatus, nonExempt, core);
+        model.getProductModel().link(chemB, storageType, frozen, core);
     }
 
     public void createProducts() {
-        abc486 = new Product("ABC486", "Laptop Computer", kernel.getCore());
+        abc486 = new Product("ABC486", "Laptop Computer", core);
         em.persist(abc486);
-        frozen = new Product("Frozen", "Frozen products", kernel.getCore());
+        frozen = new Product("Frozen", "Frozen products", core);
         em.persist(frozen);
-        nonExempt = new Product("NonExempt", "Subject to sales tax",
-                                kernel.getCore());
+        nonExempt = new Product("NonExempt", "Subject to sales tax", core);
         em.persist(nonExempt);
-        chemB = new Product("ChemB", "Chemical B", kernel.getCore());
+        chemB = new Product("ChemB", "Chemical B", core);
         em.persist(chemB);
-        roomTemp = new Product("RoomTemp", "Room temperature products",
-                               kernel.getCore());
+        roomTemp = new Product("RoomTemp", "Room temperature products", core);
         em.persist(roomTemp);
     }
 
@@ -551,98 +531,88 @@ public class ExampleLoader {
 
     public void createResourceNetworks() {
         model.getResourceModel().link(georgeTownUniversity, customerType,
-                                      externalCust, kernel.getCore());
+                                      externalCust, core);
         model.getResourceModel().link(georgeTownUniversity, salesTaxStatus,
-                                      exempt, kernel.getCore());
-        model.getResourceModel().link(orgA, customerType, externalCust,
-                                      kernel.getCore());
+                                      exempt, core);
+        model.getResourceModel().link(orgA, customerType, externalCust, core);
         model.getResourceModel().link(orgA, salesTaxStatus, nonExemptResource,
-                                      kernel.getCore());
+                                      core);
     }
 
     public void createResources() {
         billingComputer = new Resource("Billing CPU", "The Billing Computer",
-                                       kernel.getCore());
+                                       core);
         em.persist(billingComputer);
 
-        cpu = new Resource("CPU", "Computer", kernel.getCore());
+        cpu = new Resource("CPU", "Computer", core);
         em.persist(cpu);
 
-        creditDept = new Resource("Credit", "Credit Department",
-                                  kernel.getCore());
+        creditDept = new Resource("Credit", "Credit Department", core);
         em.persist(creditDept);
 
-        exempt = new Resource("Exempt", "Exempt from sales taxes",
-                              kernel.getCore());
+        exempt = new Resource("Exempt", "Exempt from sales taxes", core);
         em.persist(exempt);
 
         externalCust = new Resource("Ext Customer",
-                                    "External (Paying) Customer",
-                                    kernel.getCore());
+                                    "External (Paying) Customer", core);
         em.persist(externalCust);
 
-        factory1Resource = new Resource("Factory1", "Factory #1",
-                                        kernel.getCore());
+        factory1Resource = new Resource("Factory1", "Factory #1", core);
         em.persist(factory1Resource);
 
-        georgeTownUniversity = new Resource("GU", "Georgetown University",
-                                            kernel.getCore());
+        georgeTownUniversity = new Resource("GU", "Georgetown University", core);
         em.persist(georgeTownUniversity);
 
-        manufacturer = new Resource("MNFR", "Manufacturer", kernel.getCore());
+        manufacturer = new Resource("MNFR", "Manufacturer", core);
         em.persist(manufacturer);
 
         nonExemptResource = new Resource("NonExempt", "Subject to sales taxes",
-                                         kernel.getCore());
+                                         core);
         em.persist(nonExemptResource);
 
-        orgA = new Resource("OrgA", "Organization A", kernel.getCore());
+        orgA = new Resource("OrgA", "Organization A", core);
         em.persist(orgA);
 
         orderFullfillment = new Resource("Order Fullfillment",
-                                         "Order Fullfillment", kernel.getCore());
+                                         "Order Fullfillment", core);
         em.persist(orderFullfillment);
     }
 
     public void createServices() {
-        deliver = new Product("Deliver", "Deliver product", kernel.getCore());
+        deliver = new Product("Deliver", "Deliver product", core);
         em.persist(deliver);
 
-        pick = new Product("Pick", "Pick inventory", kernel.getCore());
+        pick = new Product("Pick", "Pick inventory", core);
         em.persist(pick);
 
-        ship = new Product("Ship", "Ship inventory", kernel.getCore());
+        ship = new Product("Ship", "Ship inventory", core);
         em.persist(ship);
 
         checkCredit = new Product("CheckCredit",
-                                  "Check customer inhouse credit",
-                                  kernel.getCore());
+                                  "Check customer inhouse credit", core);
         em.persist(checkCredit);
 
         checkLetterOfCredit = new Product("CheckLetterOfCredit",
                                           "Check customer letter of credit",
-                                          kernel.getCore());
+                                          core);
         em.persist(checkLetterOfCredit);
 
-        discount = new Product("Discount", "Compute fee discount ",
-                               kernel.getCore());
+        discount = new Product("Discount", "Compute fee discount ", core);
         em.persist(discount);
 
-        fee = new Product("Fee", "Compute fee", kernel.getCore());
+        fee = new Product("Fee", "Compute fee", core);
         em.persist(fee);
 
         printCustomsDeclaration = new Product("PrintCustomsDeclaration",
                                               "Print the customs declaration",
-                                              kernel.getCore());
+                                              core);
         em.persist(printCustomsDeclaration);
 
         printPurchaseOrder = new Product("PrintPurchaseOrder",
-                                         "Print the purchase order",
-                                         kernel.getCore());
+                                         "Print the purchase order", core);
         em.persist(printPurchaseOrder);
 
-        salesTax = new Product("SalesTax", "Compute sales tax",
-                               kernel.getCore());
+        salesTax = new Product("SalesTax", "Compute sales tax", core);
         em.persist(salesTax);
     }
 
@@ -706,9 +676,9 @@ public class ExampleLoader {
         createAttributes();
         createProducts();
         createServices();
-        createLocationContexts();
         createLocations();
         createRelationships();
+        createNetworkInferences();
         createProductNetworks();
         createResourceNetworks();
         createLocationNetworks();
@@ -716,5 +686,20 @@ public class ExampleLoader {
         createMetaProtocols();
         createStatusCodes();
         // createSequencingAuthorizations();
+    }
+
+    public void createNetworkInferences() {
+        NetworkInference areaToRegion = new NetworkInference(area, region,
+                                                             region, core);
+        em.persist(areaToRegion);
+        NetworkInference regionToState = new NetworkInference(region, state,
+                                                              region, core);
+        em.persist(regionToState);
+        NetworkInference stateToCity = new NetworkInference(state, city, state,
+                                                            core);
+        em.persist(stateToCity);
+        NetworkInference cityToStreet = new NetworkInference(city, street,
+                                                             city, core);
+        em.persist(cityToStreet);
     }
 }

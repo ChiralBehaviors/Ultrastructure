@@ -65,13 +65,7 @@ public class ResourceModelTest extends AbstractModelTest {
 
         List<ResourceNetwork> edges = em.createQuery("SELECT edge FROM ResourceNetwork edge WHERE edge.inferred = TRUE",
                                                      ResourceNetwork.class).getResultList();
-        assertEquals(1, edges.size());
-        ResourceNetwork inferredEdge = edges.get(0);
-        assertEquals(model.getKernel().getPropagationSoftware(),
-                     inferredEdge.getUpdatedBy());
-        assertEquals(a, inferredEdge.getParent());
-        assertEquals(c, inferredEdge.getChild());
-        assertEquals(equals, inferredEdge.getRelationship());
+        assertEquals(2, edges.size());
     }
 
 }

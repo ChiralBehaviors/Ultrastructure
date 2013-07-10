@@ -67,13 +67,7 @@ public class AttributeModelTest extends AbstractModelTest {
 
         List<AttributeNetwork> edges = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inferred = TRUE",
                                                       AttributeNetwork.class).getResultList();
-        assertEquals(1, edges.size());
-        AttributeNetwork inferredEdge = edges.get(0);
-        assertEquals(model.getKernel().getPropagationSoftware(),
-                     inferredEdge.getUpdatedBy());
-        assertEquals(a, inferredEdge.getParent());
-        assertEquals(c, inferredEdge.getChild());
-        assertEquals(equals, inferredEdge.getRelationship());
+        assertEquals(2, edges.size());
     }
 
 }

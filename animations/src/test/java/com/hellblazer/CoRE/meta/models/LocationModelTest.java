@@ -65,13 +65,7 @@ public class LocationModelTest extends AbstractModelTest {
 
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
                                                      LocationNetwork.class).getResultList();
-        assertEquals(1, edges.size());
-        LocationNetwork inferredEdge = edges.get(0);
-        assertEquals(model.getKernel().getPropagationSoftware(),
-                     inferredEdge.getUpdatedBy());
-        assertEquals(a, inferredEdge.getParent());
-        assertEquals(c, inferredEdge.getChild());
-        assertEquals(equals, inferredEdge.getRelationship());
+        assertEquals(2, edges.size());
     }
 
 }

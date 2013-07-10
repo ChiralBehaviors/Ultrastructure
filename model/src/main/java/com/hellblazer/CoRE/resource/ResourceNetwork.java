@@ -18,9 +18,10 @@ package com.hellblazer.CoRE.resource;
 
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.resource.ResourceNetwork.DEDUCE_NEW_NETWORK_RULES;
+import static com.hellblazer.CoRE.resource.ResourceNetwork.*;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
@@ -115,7 +116,22 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                 + "        AND cpr.child = exist.child "
                                                                                 + "     WHERE exist.parent IS NULL "
                                                                                 + "     AND exist.relationship IS NULL "
-                                                                                + "     AND exist.child IS NULL") })
+                                                                                + "     AND exist.child IS NULL"),
+                     @NamedNativeQuery(name = GENERATE_NETWORK_INVERSES, query = "INSERT INTO ruleform.resource_network(parent, relationship, child, updated_by, inferred) "
+                                                                                 + "SELECT net.child as parent, "
+                                                                                 + "    rel.inverse as relationship, "
+                                                                                 + "    net.parent as child, "
+                                                                                 + "    ?1 as updated_by,"
+                                                                                 + "    net.inferred "
+                                                                                 + "FROM ruleform.resource_network AS net "
+                                                                                 + "JOIN ruleform.relationship AS rel ON net.relationship = rel.id "
+                                                                                 + "LEFT OUTER JOIN ruleform.resource_network AS exist "
+                                                                                 + "    ON net.child = exist.parent "
+                                                                                 + "    AND rel.inverse = exist.relationship "
+                                                                                 + "    AND net.parent = exist.child "
+                                                                                 + " WHERE exist.parent IS NULL "
+                                                                                 + "  AND exist.relationship IS NULL "
+                                                                                 + "  AND exist.child IS NULL") })
 public class ResourceNetwork extends NetworkRuleform<Resource> {
     private static final long  serialVersionUID                 = 1L;
     public static final String GET_USED_RELATIONSHIPS           = "resourceNetwork.getUsedRelationships";
@@ -124,6 +140,8 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
                                                                   + INFERENCE_STEP_SUFFIX;
     public static final String GATHER_EXISTING_NETWORK_RULES    = "resourceNetwork"
                                                                   + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String GENERATE_NETWORK_INVERSES        = "resourceNetwork"
+                                                                  + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String DEDUCE_NEW_NETWORK_RULES         = "resourceNetwork"
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES         = "resourceNetwork"

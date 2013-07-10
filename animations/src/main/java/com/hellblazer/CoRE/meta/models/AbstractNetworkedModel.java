@@ -26,6 +26,7 @@ import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHOR
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GET_CHILD_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
@@ -117,7 +118,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     public static boolean markPropagated(final String inPropagateKey)
-                                                                     throws SQLException { 
+                                                                     throws SQLException {
         final Session session = SessionManager.current();
         Boolean propagated = (Boolean) session.getAttribute(inPropagateKey);
         if (propagated != null) {
@@ -205,23 +206,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     public void generateInverses() {
-        String q = String.format("INSERT INTO %s(parent, relationship, child, updated_by, distance) "
-                                         + "SELECT net.child as parent, "
-                                         + "    rel.inverse as relationship, "
-                                         + "    net.parent as child, "
-                                         + "    ?1 as updated_by,"
-                                         + "    net.distance "
-                                         + "FROM %s AS net "
-                                         + "JOIN ruleform.relationship AS rel ON net.relationship = rel.id "
-                                         + "LEFT OUTER JOIN %s AS exist "
-                                         + "    ON net.child = exist.parent "
-                                         + "    AND rel.inverse = exist.relationship "
-                                         + "    AND net.parent = exist.child "
-                                         + " WHERE exist.parent IS NULL "
-                                         + "  AND exist.relationship IS NULL "
-                                         + "  AND exist.child IS NULL",
-                                 networkTable, networkTable, networkTable);
-        Query query = em.createNativeQuery(q);
+        Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
+                                                        GENERATE_NETWORK_INVERSES_SUFFIX));
         query.setParameter(1, kernel.getInverseSoftware().getId());
         long then = System.currentTimeMillis();
         int created = query.executeUpdate();
@@ -498,6 +484,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                 log.trace(String.format("inserted %s new rules", inserted));
             }
             alterDeductionTablesForNextPass();
+            generateInverses();
         } while (true);
     }
 

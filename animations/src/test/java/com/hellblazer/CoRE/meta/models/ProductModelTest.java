@@ -65,13 +65,7 @@ public class ProductModelTest extends AbstractModelTest {
 
         List<ProductNetwork> edges = em.createQuery("SELECT edge FROM ProductNetwork edge WHERE edge.inferred = TRUE",
                                                     ProductNetwork.class).getResultList();
-        assertEquals(1, edges.size());
-        ProductNetwork inferredEdge = edges.get(0);
-        assertEquals(model.getKernel().getPropagationSoftware(),
-                     inferredEdge.getUpdatedBy());
-        assertEquals(a, inferredEdge.getParent());
-        assertEquals(c, inferredEdge.getChild());
-        assertEquals(equals, inferredEdge.getRelationship());
+        assertEquals(2, edges.size());
     }
 
 }

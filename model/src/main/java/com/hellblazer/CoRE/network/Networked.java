@@ -30,20 +30,21 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 public interface Networked<E extends Networked<E, N>, N extends NetworkRuleform<E>> {
+    String DEDUCE_NEW_NETWORK_RULES_SUFFIX                               = ".deduceNewNetworkRules";
     String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findClassifiedAttributeAuthorizationsForAttribute";
     String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX               = ".findClassifiedAttributeAuthorizations";
     String FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX                       = ".findClassifiedAttributes";
     String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX     = ".findGroupedAttributeAuthorizationsForAttribute";
     String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX                   = ".findGroupedAttributeAuthorizations";
     String FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX                          = ".findGroupedAttributes";
+    String GATHER_EXISTING_NETWORK_RULES_SUFFIX                          = ".gatherExistingNetworkRules";
+    String GENERATE_NETWORK_INVERSES_SUFFIX                              = ".generateInverses";
     String GET_ALL_PARENT_RELATIONSHIPS_SUFFIX                           = ".getAllParentRelationships";
     String GET_CHILD_SUFFIX                                              = ".getChild";
+    String INFERENCE_STEP_SUFFIX                                         = ".inference";
+    String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
     String UNLINKED_SUFFIX                                               = ".unlinked";
     String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";
-    String INFERENCE_STEP_SUFFIX                                         = ".inference";
-    String GATHER_EXISTING_NETWORK_RULES_SUFFIX                          = ".gatherExistingNetworkRules";
-    String DEDUCE_NEW_NETWORK_RULES_SUFFIX                               = ".deduceNewNetworkRules";
-    String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
 
     void addChildRelationship(N relationship);
 

@@ -22,29 +22,49 @@ public class JobScenario {
 
     public Attribute                             a1;
     public Attribute                             a2;
+
     public StatusCode                            abandoned;
     public StatusCode                            active;
     public StatusCode                            approvedButInactive;
+    public StatusCode                            failure;
+    public StatusCode                            success;
+
+    public Relationship                          runType;
+    public Relationship                          runTypeOf;
+    public Relationship                          sampleType;
+    public Relationship                          sampleTypeOf;
+    public Relationship                          dissolvedIn;
+    public Relationship                          solventOf;
+    public Relationship                          htfsLibPrepStatus;
+    public Relationship                          htfsLibPrepStatusOf;
+
     public Product                               chipSeq;
     public Product                               clusterGen;
-    public Resource                              core;
     public Product                               customPrimerAnalysis;
     public Product                               dataAnalysis;
     public Product                               dge;
-    public Relationship                          dissolvedIn;
     public Product                               dnaSequencing;
     public Product                               doChipSeqPrep;
     public Product                               doDgePrep;
     public Product                               doMiRnaPrep;
     public Product                               doPairedEndAnalysisPrep;
-    public StatusCode                            failure;
-    public Product                               figureOutWhyCLusterSeqFailed;
-    public Relationship                          htfsLibPrepStatus;
-    public Relationship                          htfsLibPrepStatusOf;
-    public Resource                              htsf;
     public Product                               htsfIlluminaSequencing;
+    public Product                               pairedEndAnalysis;
+    public Product                               preparePrimers;
+    public Product                               figureOutWhyCLusterSeqFailed;
+    public Product                               sampleX;
     public Product                               htsfSample;
+    public Product                               libraryPrep;
+    public Product                               miRNA;
+    public Product                               resuspend;
+    public Product                               sequenceClusters;
+    public Product                               teBuffer;
+    public Product                               unpreparedSample;
+
+    public Resource                              htsf;
     public Resource                              htsfTech;
+    public Resource                              core;
+
     public Job                                   j1;
     public Job                                   j2;
     public Job                                   j3;
@@ -52,12 +72,12 @@ public class JobScenario {
     public Job                                   j5;
     public Job                                   j6;
     public Job                                   j7;
-    public Product                               libraryPrep;
-    public Product                               miRNA;
+
     public MetaProtocol                          mp1;
     public MetaProtocol                          mp2;
     public MetaProtocol                          mp3;
     public MetaProtocol                          mp4;
+
     public Protocol                              p01;
     public Protocol                              p02;
     public Protocol                              p03;
@@ -67,12 +87,13 @@ public class JobScenario {
     public Protocol                              p07;
     public Protocol                              p08;
     public Protocol                              p10;
+
     public ProductAttribute                      pa1;
     public ProductAttribute                      pa2;
-    public Product                               pairedEndAnalysis;
+
     public ProductNetwork                        pn1;
     public ProductNetwork                        pn2;
-    public Product                               preparePrimers;
+
     public ProductSiblingSequencingAuthorization psa02;
     public ProductSiblingSequencingAuthorization psa03;
     public ProductSiblingSequencingAuthorization psa04;
@@ -87,12 +108,7 @@ public class JobScenario {
     public ProductSiblingSequencingAuthorization psa12;
     public ProductSiblingSequencingAuthorization psa13;
     public ProductSiblingSequencingAuthorization psa14;
-    public Product                               resuspend;
-    public Relationship                          runType;
-    public Relationship                          runTypeOf;
-    public Relationship                          sampleType;
-    public Relationship                          sampleTypeOf;
-    public Product                               sampleX;
+
     public StatusCodeSequencing                  seq01;
     public StatusCodeSequencing                  seq02;
     public StatusCodeSequencing                  seq03;
@@ -127,11 +143,7 @@ public class JobScenario {
     public StatusCodeSequencing                  seq32;
     public StatusCodeSequencing                  seq33;
     public StatusCodeSequencing                  seq34;
-    public Product                               sequenceClusters;
-    public Relationship                          solventOf;
-    public StatusCode                            success;
-    public Product                               teBuffer;
-    public Product                               unpreparedSample;
+
     private final EntityManager                  em;
     private final Kernel                         kernel;
 

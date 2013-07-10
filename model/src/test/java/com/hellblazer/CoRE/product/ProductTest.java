@@ -153,52 +153,6 @@ public class ProductTest extends DatabaseTestContext {
         commitTransaction();
     }
 
-    @Test
-    public void testParentNetwork() {
-        beginTransaction();
-
-        Resource core = em.find(Resource.class, Long.valueOf(1L));
-        assertEquals("CoRE", core.getName());
-
-        Relationship includes = em.find(Relationship.class, Long.valueOf(2L));
-        assertEquals("includes", includes.getName());
-
-        Product b = em.find(Product.class, Long.valueOf(1L));
-        assertEquals("Peptide Foo", b.getName());
-
-        Product b2 = new Product();
-        b2.setName("Great Horny Toads!");
-        b2.setDescription("Foo!");
-        b2.setUpdatedBy(core);
-        em.persist(b2);
-
-        ProductNetwork net = new ProductNetwork();
-        net.setRelationship(includes);
-        net.setChild(b2);
-        net.setUpdatedBy(core);
-
-        // This should get persisted in the database automatically
-        b.addParentRelationship(net);
-
-        commitTransaction();
-
-        em.clear();
-        beginTransaction();
-
-        // now check to see that things went in as expected 
-        Query query = em.createNativeQuery("SELECT parent AS p, relationship AS rel, child AS c FROM ruleform.product_network WHERE parent = ?");
-        query.setParameter(1, b.getId());
-        Object[] result = (Object[]) query.getSingleResult();
-
-        assertNotNull("The expected ProductNetwork record was not returned.  Are you sure the ProductNetwork collection is mapped with cascade=\"save-update\"?",
-                      result);
-        assertEquals(b.getId(), result[0]);
-        assertEquals(includes.getId(), result[1]);
-        assertEquals(b2.getId(), result[2]);
-
-        commitTransaction();
-    }
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.testing.HibernateDatabaseTestCase#prepareSettings()
      */

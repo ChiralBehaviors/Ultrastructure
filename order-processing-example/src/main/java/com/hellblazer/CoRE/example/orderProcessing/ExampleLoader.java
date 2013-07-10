@@ -42,85 +42,92 @@ import com.hellblazer.CoRE.resource.ResourceNetwork;
  * 
  */
 public class ExampleLoader {
-    public StatusCode           abandoned;
 
-    public Product              abc486;
-    public StatusCode           active;
     public Relationship         area;
-    public StatusCode           available;
-    public Location             bht378;
-    public Resource             billingComputer;
-    public Location             bin1;
-    public Location             bin15;
-
-    public Product              checkCredit;
-
-    public Product              checkLetterOfCredit;
-    public Product              chemB;
+    public Relationship         areaOf;
     public Relationship         city;
-    public StatusCode           completed;
-    public Resource             core;
-    public Resource             cpu;
-    public Resource             creditDept;
+    public Relationship         cityOf;
     public Relationship         customerType;
-    public Location             dc;
-    public Product              deliver;
-    public Product              discount;
-
-    public Location             east_coast;
-    public Location             euro;
-    public Resource             exempt;
-    public Resource             externalCust;
-    public Location             factory1;
-    public Resource             factory1Resource;
-    public StatusCode           failure;
-    public Product              fee;
-    public Location             france;
-    public Product              frozen;
-    public Resource             georgeTownUniversity;
-    public Resource             manufacturer;
-    public Product              nonExempt;
-    public Resource             nonExemptResource;
-
-    public Resource             orderFullfillment;
-    public Resource             orgA;
-    public Location             paris;
-    public Product              pick;
-    public StatusCode           pickCompleted;
-    public Attribute            priceAttribute;
-    public Product              printCustomsDeclaration;
-    public Product              printPurchaseOrder;
+    public Relationship         customerTypeOf;
     public Relationship         region;
-    public Product              roomTemp;
-    public Location             rsb225;
-
-    public Product              salesTax;
-    public Relationship         salesTaxStatus;
-    public Product              ship;
+    public Relationship         regionOf;
     public Relationship         state;
+    public Relationship         stateOf;
+    public Relationship         salesTaxStatus;
+    public Relationship         salesTaxStatusOf;
     public Relationship         storageType;
+    public Relationship         storageTypeOf;
     public Relationship         street;
+    public Relationship         streetOf;
+    private Relationship        notApplicableRelationship;
+    private Relationship        sameRelationship;
+    private Relationship        anyRelationship;
 
-    public Attribute            taxRateAttribute;
     public StatusCode           unset;
-    public Location             us;
+    public StatusCode           abandoned;
+    public StatusCode           completed;
+    public StatusCode           failure;
+    public StatusCode           active;
+    public StatusCode           available;
+    public StatusCode           pickCompleted;
     public StatusCode           waitingOnFee;
     public StatusCode           waitingOnPricing;
     public StatusCode           waitingOnPurchaseOrder;
+    private StatusCode          creditChecked;
+
+    public Product              abc486;
+    public Product              checkCredit;
+    public Product              checkLetterOfCredit;
+    public Product              chemB;
+    public Product              deliver;
+    public Product              discount;
+    public Product              frozen;
+    public Product              fee;
+    public Product              printCustomsDeclaration;
+    public Product              printPurchaseOrder;
+    public Product              roomTemp;
+    public Product              pick;
+    public Product              salesTax;
+    public Product              ship;
+    public Product              nonExempt;
+    private Product             anyProduct;
+    private Product             sameProduct;
+
+    public Location             bht378;
+    public Location             bin1;
+    public Location             bin15;
+    public Location             dc;
+    public Location             east_coast;
+    public Location             euro;
+    public Location             france;
+    public Location             paris;
+    public Location             rsb225;
+    public Location             factory1;
+    public Location             us;
     public Location             wash;
     private Location            anyLocation;
-    private Product             anyProduct;
-    private Relationship        anyRelationship;
+
+    public Resource             billingComputer;
+    public Resource             core;
+    public Resource             cpu;
+    public Resource             creditDept;
+    public Resource             exempt;
+    public Resource             externalCust;
+    public Resource             factory1Resource;
+    public Resource             georgeTownUniversity;
+    public Resource             manufacturer;
+    public Resource             nonExemptResource;
+    public Resource             orderFullfillment;
+    public Resource             orgA;
     private Resource            anyResource;
-    private StatusCode          creditChecked;
-    private Attribute           discountAttribute;
+
+    public Attribute            priceAttribute;
+    public Attribute            taxRateAttribute;
+    public Attribute            discountAttribute;
 
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
-    private Relationship        notApplicableRelationship;
-    private Product             sameProduct;
-    private Relationship        sameRelationship;
 
     public ExampleLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -452,44 +459,39 @@ public class ExampleLoader {
                                 "A is a member of the economic community B",
                                 core, true);
         em.persist(area);
-        Relationship areaOf = new Relationship("Area Of",
-                                               "A is economic community of B",
-                                               core, area);
+        areaOf = new Relationship("Area Of", "A is economic community of B",
+                                  core, area);
         area.setInverse(areaOf);
         em.persist(areaOf);
 
         city = new Relationship("City", "A is located in the City B", core,
                                 true);
         em.persist(city);
-        Relationship cityOf = new Relationship("City Of", "A is the city of B",
-                                               core, city);
+        cityOf = new Relationship("City Of", "A is the city of B", core, city);
         city.setInverse(cityOf);
         em.persist(cityOf);
 
         customerType = new Relationship("Customer Type",
                                         "A has customer type of B", core, true);
         em.persist(customerType);
-        Relationship customerTypeOf = new Relationship(
-                                                       "Customer Type Of",
-                                                       "A is the customer type of B",
-                                                       core, customerType);
+        customerTypeOf = new Relationship("Customer Type Of",
+                                          "A is the customer type of B", core,
+                                          customerType);
         customerType.setInverse(customerTypeOf);
         em.persist(customerTypeOf);
 
         region = new Relationship("Region", "A's general region is B", core,
                                   true);
         em.persist(region);
-        Relationship regionOf = new Relationship("Region Of",
-                                                 "A is the region of B", core,
-                                                 region);
+        regionOf = new Relationship("Region Of", "A is the region of B", core,
+                                    region);
         region.setInverse(regionOf);
         em.persist(regionOf);
 
         state = new Relationship("State", "The State of A is B", core, true);
         em.persist(state);
-        Relationship stateOf = new Relationship("State Of",
-                                                "A is the state of B", core,
-                                                state);
+        stateOf = new Relationship("State Of", "A is the state of B", core,
+                                   state);
         state.setInverse(stateOf);
         em.persist(stateOf);
 
@@ -497,10 +499,9 @@ public class ExampleLoader {
                                           "The sales tax status of A is B",
                                           core, true);
         em.persist(salesTaxStatus);
-        Relationship salesTaxStatusOf = new Relationship(
-                                                         "SalesTaxStatus Of",
-                                                         "A is the sales tax status of B",
-                                                         core, salesTaxStatus);
+        salesTaxStatusOf = new Relationship("SalesTaxStatus Of",
+                                            "A is the sales tax status of B",
+                                            core, salesTaxStatus);
         salesTaxStatus.setInverse(salesTaxStatusOf);
         em.persist(salesTaxStatusOf);
 
@@ -509,18 +510,16 @@ public class ExampleLoader {
                                        "The type of storage required for A is B",
                                        core, true);
         em.persist(storageType);
-        Relationship storageTypeOf = new Relationship(
-                                                      "StorageType Of",
-                                                      "A is the storage type of B",
-                                                      core, storageType);
+        storageTypeOf = new Relationship("StorageType Of",
+                                         "A is the storage type of B", core,
+                                         storageType);
         storageType.setInverse(storageTypeOf);
         em.persist(storageTypeOf);
 
         street = new Relationship("Street", "The street of A is B", core, true);
         em.persist(street);
-        Relationship streetOf = new Relationship("Street of",
-                                                 "A is the street of B", core,
-                                                 street);
+        streetOf = new Relationship("Street of", "A is the street of B", core,
+                                    street);
         street.setInverse(streetOf);
         em.persist(streetOf);
     }

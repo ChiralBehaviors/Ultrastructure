@@ -35,7 +35,6 @@ import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceNetwork;
 
 /**
  * @author hhildebrand
@@ -104,7 +103,6 @@ public class ExampleLoader {
     public Location             rsb225;
     public Location             factory1;
     public Location             us;
-    public Location             wash;
     private Location            anyLocation;
 
     public Resource             billingComputer;
@@ -162,9 +160,8 @@ public class ExampleLoader {
         model.getLocationModel().link(bin1, area, factory1, core);
         model.getLocationModel().link(bin15, area, factory1, core);
         model.getLocationModel().link(factory1, street, bht378, core);
-        model.getLocationModel().link(rsb225, city, wash, core);
-        model.getLocationModel().link(bht378, city, wash, core);
-        model.getLocationModel().link(wash, state, dc, core);
+        model.getLocationModel().link(rsb225, city, dc, core);
+        model.getLocationModel().link(bht378, city, dc, core);
         model.getLocationModel().link(dc, region, east_coast, core);
         model.getLocationModel().link(east_coast, area, us, core);
         model.getLocationModel().link(paris, region, france, core);
@@ -193,8 +190,6 @@ public class ExampleLoader {
         em.persist(paris);
         us = new Location("US", "U.S. Locations", core);
         em.persist(us);
-        wash = new Location("WASH", "Washington", core);
-        em.persist(wash);
         euro = new Location("Euro", "European locations", core);
         em.persist(euro);
     }
@@ -522,10 +517,6 @@ public class ExampleLoader {
                                     street);
         street.setInverse(streetOf);
         em.persist(streetOf);
-    }
-
-    public void createResourceNetwork() {
-        em.persist(new ResourceNetwork());
     }
 
     public void createResourceNetworks() {

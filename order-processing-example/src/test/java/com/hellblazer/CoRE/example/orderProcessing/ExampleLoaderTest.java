@@ -17,7 +17,8 @@
 
 package com.hellblazer.CoRE.example.orderProcessing;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
@@ -25,12 +26,15 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
+import com.hellblazer.CoRE.meta.Kernel;
+import com.hellblazer.CoRE.meta.models.KernelImpl;
 
 /**
  * @author hhildebrand
@@ -39,6 +43,8 @@ import com.hellblazer.CoRE.meta.BootstrapLoader;
 public class ExampleLoaderTest {
 
     private EntityManager em;
+    private ExampleLoader scenario;
+    private Kernel        kernel;
 
     @Before
     public void initialize() throws Exception {
@@ -54,16 +60,61 @@ public class ExampleLoaderTest {
         txn.begin();
         bootstrap.bootstrap();
         txn.commit();
-        ExampleLoader exampleLoader = new ExampleLoader(em);
+        scenario = new ExampleLoader(em);
         txn.begin();
-        exampleLoader.load();
+        scenario.load();
         txn.commit();
+        kernel = new KernelImpl(em);
     }
 
     @Test
     public void testNetworkInference() {
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
                                                      LocationNetwork.class).getResultList();
-        assertEquals(12, edges.size());
+        assertEquals(6, edges.size());
+
+        TypedQuery<LocationNetwork> edgeQuery = em.createQuery("select edge FROM LocationNetwork edge WHERE edge.parent = :parent AND edge.relationship = :relationship AND edge.child = :child",
+                                                               LocationNetwork.class);
+        edgeQuery.setParameter("parent", scenario.factory1);
+        edgeQuery.setParameter("relationship", scenario.city);
+        edgeQuery.setParameter("child", scenario.dc);
+        LocationNetwork edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getInverseSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.dc);
+        edgeQuery.setParameter("relationship", scenario.cityOf);
+        edgeQuery.setParameter("child", scenario.factory1);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getPropagationSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.us);
+        edgeQuery.setParameter("relationship", scenario.areaOf);
+        edgeQuery.setParameter("child", scenario.dc);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getPropagationSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.dc);
+        edgeQuery.setParameter("relationship", scenario.area);
+        edgeQuery.setParameter("child", scenario.us);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getInverseSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.paris);
+        edgeQuery.setParameter("relationship", scenario.area);
+        edgeQuery.setParameter("child", scenario.euro);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getInverseSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.euro);
+        edgeQuery.setParameter("relationship", scenario.areaOf);
+        edgeQuery.setParameter("child", scenario.paris);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getPropagationSoftware(), edge.getUpdatedBy());
     }
 }

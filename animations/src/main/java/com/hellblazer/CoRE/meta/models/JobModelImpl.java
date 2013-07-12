@@ -255,7 +255,7 @@ public class JobModelImpl implements JobModel {
     public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job) {
         if (job.getStatus().getPropagateChildren()) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Generating implicit jobs for %", job));
+                log.debug(String.format("Generating implicit jobs for %s", job));
             }
             generateImplicitJobs(job);
             for (Job subJob : getInitialSubJobs(job)) {

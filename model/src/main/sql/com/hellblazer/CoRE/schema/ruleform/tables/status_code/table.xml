@@ -13,9 +13,9 @@
               name character varying NOT NULL, -- The unique name of a status code
               description character varying, -- A free-form textual description of a status code
               notes character varying, -- Additional notes regarding usage of the status code
-              pinned boolean NOT NULL DEFAULT false, -- Indicates that a rule has been pinned, restricting changes to the rule
-              fail_parent boolean NOT NULL DEFAULT false, -- Setting a job to this status code will trigger a cascading failure up to its parent
-              propagate_children boolean NOT NULL DEFAULT false, -- Setting a job to this status code will trigger the propagation of child (implicit) jobs
+              pinned boolean NOT NULL DEFAULT FALSE, -- Indicates that a rule has been pinned, restricting changes to the rule
+              fail_parent boolean NOT NULL DEFAULT TRUE, -- Setting a job to this status code will trigger a cascading failure up to its parent
+              propagate_children boolean NOT NULL DEFAULT TRUE, -- Setting a job to this status code will trigger the propagation of child (implicit) jobs
               research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The Resource that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed

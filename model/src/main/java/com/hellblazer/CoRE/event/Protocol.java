@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.Protocol.GET;
 
+import java.util.Collections;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -188,6 +189,9 @@ public class Protocol extends Ruleform {
     }
 
     public Set<ProtocolAttribute> getAttributes() {
+        if (attributes == null) {
+            return Collections.emptySet();
+        }
         return attributes;
     }
 

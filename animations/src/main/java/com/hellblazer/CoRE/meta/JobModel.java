@@ -244,6 +244,14 @@ public interface JobModel {
     List<ProductParentSequencingAuthorization> getParentActions(Job job);
 
     /**
+     * Answer the list of unique protocols applicable for a job
+     * 
+     * @param job
+     * @return the list of unique protocols applicable for a job
+     */
+    List<Protocol> getProtocols(Job job);
+
+    /**
      * Answer the matched list of protocols for a job, given the meta protocol
      * transformation
      * 

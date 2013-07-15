@@ -219,11 +219,17 @@ abstract public class Ruleform implements Serializable, Cloneable {
     	if (knownObjects.containsKey(this)) {
             return knownObjects.get(this);
     	}
-    	if (this.getId() != null && em.find(this.getClass(), this) != null) {
+    	this.traverseForeignKeys(em, knownObjects);
+    	if (this.getId() != null && em.getReference(this.getClass(), this.getId()) != null) {
+    		em.detach(this);
     		knownObjects.put(this, em.merge(this));
+    	} else {
+    		em.persist(this);
+    		em.refresh(this);
+    		knownObjects.put(this, this);
     	}
     	
-	    this.traverseForeignKeys(em, knownObjects);
+	    
 	    return knownObjects.get(this);
     }
 
@@ -240,7 +246,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
 		
 		//TODO either fix this or get rid of it
 		//research.manageEntity(em, knownObjects);
-		updatedBy.manageEntity(em, knownObjects);
+		if (updatedBy != null) {
+			updatedBy = (Resource) updatedBy.manageEntity(em, knownObjects);
+		}
 		
 	}
     

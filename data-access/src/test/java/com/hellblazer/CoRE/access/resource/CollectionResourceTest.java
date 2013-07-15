@@ -16,9 +16,12 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
+import javax.ws.rs.core.Response;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
@@ -102,6 +105,17 @@ public class CollectionResourceTest extends DatabaseTest {
     	ResourceRelationshipProductAuthorization userCh2 = new ResourceRelationshipProductAuthorization(user, owns, channel2, user);
     	em.persist(userCh2);
     	
+    	
+    }
+    
+    @Test
+    public void testInsertSingleRuleform() throws JsonProcessingException {
+    	resource = new CollectionResource(emf);
+    	Resource core = new Resource("hparry", "test resource");
+    	core.setUpdatedBy(core);
+    	
+    	Response res = resource.post(core);
+    	System.out.println(res.getEntity().toString());
     	
     }
 

@@ -19,7 +19,10 @@ package com.hellblazer.CoRE.capability;
 
 import static com.hellblazer.CoRE.capability.Action.FIND_BY_NAME;
 
+import java.util.Map;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +32,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -117,5 +121,15 @@ public class Action extends ExistentialRuleform {
     public void setId(Long id) {
         this.id = id;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		return;
+		
+	}
 
 }

@@ -16,8 +16,11 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -103,4 +106,16 @@ public abstract class ResourceAuthorization extends Ruleform {
     public void setRuleformType(String ruleformType) {
         this.ruleformType = ruleformType;
     }
+    
+    /* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		relationship.manageEntity(em, knownObjects);
+		resource.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

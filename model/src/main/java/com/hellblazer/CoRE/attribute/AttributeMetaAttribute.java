@@ -17,8 +17,10 @@
 package com.hellblazer.CoRE.attribute;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +30,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -176,4 +179,16 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		attribute.manageEntity(em, knownObjects);
+		attributeValue.manageEntity(em, knownObjects);
+		metaAttribute.manageEntity(em, knownObjects);
+		
+	}
 }

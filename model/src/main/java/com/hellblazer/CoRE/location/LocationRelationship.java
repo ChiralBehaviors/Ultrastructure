@@ -21,7 +21,10 @@ import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_RELATI
 import static com.hellblazer.CoRE.location.LocationRelationship.RULES;
 import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -196,4 +199,21 @@ public class LocationRelationship extends Ruleform {
     public void setTargetContext(LocationContext locationContext2) {
         targetContext = locationContext2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		attributeRelationship.manageEntity(em, knownObjects);
+		context.manageEntity(em, knownObjects);
+		productMappedValue.manageEntity(em, knownObjects);
+		location1Attribute.manageEntity(em, knownObjects);
+		location2Attribute.manageEntity(em, knownObjects);
+		relationship.manageEntity(em, knownObjects);
+		targetContext.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

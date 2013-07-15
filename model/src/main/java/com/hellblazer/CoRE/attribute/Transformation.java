@@ -19,8 +19,10 @@ package com.hellblazer.CoRE.attribute;
 import static com.hellblazer.CoRE.attribute.Transformation.GET;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -203,5 +205,24 @@ public class Transformation extends Ruleform implements Serializable {
     public void setService(Product service) {
         this.service = service;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		assignTo.manageEntity(em, knownObjects);
+		attribute.manageEntity(em, knownObjects);
+		product.manageEntity(em, knownObjects);
+		productAttributeResource.manageEntity(em, knownObjects);
+		productKey.manageEntity(em, knownObjects);
+		relationshipKey.manageEntity(em, knownObjects);
+		resource.manageEntity(em, knownObjects);
+		resourceKey.manageEntity(em, knownObjects);
+		service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

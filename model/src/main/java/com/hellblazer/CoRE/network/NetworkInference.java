@@ -16,6 +16,9 @@
  */
 package com.hellblazer.CoRE.network;
 
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -147,4 +150,17 @@ public class NetworkInference extends Ruleform {
     public void setPremise2(Relationship premise2) {
         this.premise2 = premise2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		inference.manageEntity(em, knownObjects);
+		premise1.manageEntity(em, knownObjects);
+		premise2.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.coordinate.Coordinate.NESTING_QUERY;
 import static com.hellblazer.CoRE.coordinate.Coordinate.ORDERED_ATTRIBUTES;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -41,6 +42,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.Research;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.resource.Resource;
 
@@ -78,14 +80,6 @@ public class Coordinate extends ExistentialRuleform implements
     @ManyToOne
     @JoinColumn(name = "kind")
     private CoordinateKind           kind;
-
-    @ManyToOne
-    @JoinColumn(name = "research")
-    private Research                 research;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private Resource                 updatedBy;
 
     public Coordinate() {
     }
@@ -250,4 +244,15 @@ public class Coordinate extends ExistentialRuleform implements
     public void setUpdatedBy(Resource updatedBy) {
         this.updatedBy = updatedBy;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		kind.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

@@ -79,5 +79,7 @@ public class CollectionResource {
                 "text/json").build();
 		
 	}
+	
+	
 
 }

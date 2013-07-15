@@ -18,8 +18,10 @@ package com.hellblazer.CoRE;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -55,14 +57,14 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "research")
-    private Research           research;
+	protected Research           research;
 
     @Column(name = "update_date")
     private Timestamp          updateDate;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private Resource           updatedBy;
+	protected Resource           updatedBy;
 
     public Ruleform() {
     }
@@ -212,4 +214,34 @@ abstract public class Ruleform implements Serializable, Cloneable {
     public String toString() {
         return String.format("%s[%s]", getClass(), getId());
     }
+
+	public Ruleform manageEntity(EntityManager em, Map<Ruleform, Ruleform> knownObjects) {
+    	if (knownObjects.containsKey(this)) {
+            return knownObjects.get(this);
+    	}
+    	if (this.getId() != null && em.find(this.getClass(), this) != null) {
+    		knownObjects.put(this, em.merge(this));
+    	}
+    	
+	    this.traverseForeignKeys(em, knownObjects);
+	    return knownObjects.get(this);
+    }
+
+	//am I traversing the merged entity or the non-merged uploaded state?
+	//might as well make it merged
+	/**
+	 * Calls manageEntity on each foreign key and replaces non-managed foreign key objects
+	 * with managed objects
+	 * @param em
+	 * @param knownObjects
+	 */
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		
+		//TODO either fix this or get rid of it
+		//research.manageEntity(em, knownObjects);
+		updatedBy.manageEntity(em, knownObjects);
+		
+	}
+    
 }

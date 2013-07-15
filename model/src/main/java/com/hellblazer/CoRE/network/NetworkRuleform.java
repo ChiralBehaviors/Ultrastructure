@@ -18,8 +18,11 @@ package com.hellblazer.CoRE.network;
 
 import static com.hellblazer.CoRE.network.NetworkRuleform.*;
 
+import java.util.Map;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -157,5 +160,16 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
     public void setRelationship(Relationship relationship) {
         this.relationship = relationship;
     }
+    
+    /* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		relationship.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

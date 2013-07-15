@@ -16,13 +16,20 @@
  */
 package com.hellblazer.CoRE.product;
 
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.AttributeAuthorization;
+import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -37,6 +44,17 @@ import com.hellblazer.CoRE.resource.Resource;
 public class ProductLocationAttributeAuthorization extends
         AttributeAuthorization {
     private static final long serialVersionUID = 1L;
+    
+    //TODO hhildebrand this should probably have an FK to product or productlocation or something
+    
+    @ManyToOne
+    @JoinColumn(name = "classifier")
+    private Product classifier;
+    
+    @ManyToOne
+    @JoinColumn(name = "classification")
+    private Relationship classification;
+    
 
     @Id
     @GeneratedValue(generator = "product_location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
@@ -68,4 +86,44 @@ public class ProductLocationAttributeAuthorization extends
     public void setId(Long id) {
         this.id = id;
     }
+
+	/**
+	 * @return the classifier
+	 */
+	public Product getClassifier() {
+		return classifier;
+	}
+
+	/**
+	 * @return the classification
+	 */
+	public Relationship getClassification() {
+		return classification;
+	}
+
+	/**
+	 * @param classifier the classifier to set
+	 */
+	public void setClassifier(Product classifier) {
+		this.classifier = classifier;
+	}
+
+	/**
+	 * @param classification the classification to set
+	 */
+	public void setClassification(Relationship classification) {
+		this.classification = classification;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		classifier.manageEntity(em, knownObjects);
+		classification.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

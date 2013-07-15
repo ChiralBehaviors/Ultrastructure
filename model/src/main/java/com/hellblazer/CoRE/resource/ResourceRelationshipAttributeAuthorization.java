@@ -16,10 +16,14 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 
 /**
@@ -55,5 +59,16 @@ public class ResourceRelationshipAttributeAuthorization extends
     public void setAttribute(Attribute attribute) {
         this.attribute = attribute;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		attribute.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

@@ -17,7 +17,9 @@
 package com.hellblazer.CoRE.event;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
@@ -189,4 +192,15 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		protocol.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

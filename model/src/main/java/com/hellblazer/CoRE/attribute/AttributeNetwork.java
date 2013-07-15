@@ -26,6 +26,9 @@ import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULE
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +41,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
@@ -200,4 +204,16 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public void setParent(Attribute parent) {
         this.parent = parent;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		child.manageEntity(em, knownObjects);
+		parent.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

@@ -16,8 +16,10 @@
  */
 package com.hellblazer.CoRE.product;
 
+import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -153,4 +155,18 @@ public class ProductLocation extends Ruleform implements
     public void setResource(Resource resource2) {
         resource = resource2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		product.manageEntity(em, knownObjects);
+		location.manageEntity(em, knownObjects);
+		relationship.manageEntity(em, knownObjects);
+		resource.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

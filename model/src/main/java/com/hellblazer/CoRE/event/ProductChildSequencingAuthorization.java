@@ -18,7 +18,10 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.ProductChildSequencingAuthorization.GET_CHILD_ACTIONS;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -182,5 +185,19 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		nextChild.manageEntity(em, knownObjects);
+		nextChildStatus.manageEntity(em, knownObjects);
+		parent.manageEntity(em, knownObjects);
+		statusCode.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

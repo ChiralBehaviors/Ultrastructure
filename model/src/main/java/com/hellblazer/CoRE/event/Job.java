@@ -34,9 +34,11 @@ import static com.hellblazer.CoRE.event.Job.INITIAL_STATES;
 import static com.hellblazer.CoRE.event.Job.STATUS_CODE;
 import static com.hellblazer.CoRE.event.Job.TOP_LEVEL_JOBS;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -472,4 +474,22 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
                + ", deliverFrom=" + deliverFrom + ", deliverTo=" + deliverTo
                + "]";
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		assignTo.manageEntity(em, knownObjects);
+		deliverFrom.manageEntity(em, knownObjects);
+		deliverTo.manageEntity(em, knownObjects);
+		parent.manageEntity(em, knownObjects);
+		product.manageEntity(em, knownObjects);
+		requester.manageEntity(em, knownObjects);
+		service.manageEntity(em, knownObjects);
+		status.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

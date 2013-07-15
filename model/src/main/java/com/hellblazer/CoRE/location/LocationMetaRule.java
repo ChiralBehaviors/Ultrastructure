@@ -18,7 +18,10 @@ package com.hellblazer.CoRE.location;
 
 import static com.hellblazer.CoRE.location.LocationMetaRule.CONTEXT_META_RULES;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -114,4 +117,16 @@ public class LocationMetaRule extends Ruleform {
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		attributeMask.manageEntity(em, knownObjects);
+		locationContext.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

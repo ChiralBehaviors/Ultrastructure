@@ -19,7 +19,10 @@ package com.hellblazer.CoRE.network;
 import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 
+import java.util.Map;
+
 import javax.persistence.CascadeType;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +37,7 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -173,5 +177,16 @@ public class Relationship extends ExistentialRuleform {
     public void setPreferred(Boolean preferred) {
         this.preferred = preferred;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		inverse.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

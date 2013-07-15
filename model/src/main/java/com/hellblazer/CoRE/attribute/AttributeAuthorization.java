@@ -18,8 +18,10 @@ package com.hellblazer.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -155,4 +157,16 @@ abstract public class AttributeAuthorization extends Ruleform {
     public void setTimestampValue(Timestamp timestampValue) {
         this.timestampValue = timestampValue;
     }
+    
+    /* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		authorizedAttribute.manageEntity(em, knownObjects);
+		groupingResource.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

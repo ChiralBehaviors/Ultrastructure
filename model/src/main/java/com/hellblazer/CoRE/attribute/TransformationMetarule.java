@@ -19,8 +19,10 @@ package com.hellblazer.CoRE.attribute;
 import static com.hellblazer.CoRE.attribute.TransformationMetarule.GET_BY_EVENT;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -149,5 +151,19 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     public void setStopOnMatch(Boolean stopOnMatch) {
         this.stopOnMatch = stopOnMatch;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		productMap.manageEntity(em, knownObjects);
+		productNetworkResource.manageEntity(em, knownObjects);
+		relationshipMap.manageEntity(em, knownObjects);
+		service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

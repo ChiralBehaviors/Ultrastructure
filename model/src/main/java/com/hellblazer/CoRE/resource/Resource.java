@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.resource.Resource.UNLINKED;
 import static com.hellblazer.CoRE.resource.ResourceAttribute.GET_ATTRIBUTE;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -45,6 +46,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.network.Networked;
@@ -327,4 +329,14 @@ public class Resource extends ExistentialRuleform implements
     public void setNetworkByParent(Set<ResourceNetwork> resourceNetworks2) {
         networkByParent = resourceNetworks2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		return;
+		
+	}
 }

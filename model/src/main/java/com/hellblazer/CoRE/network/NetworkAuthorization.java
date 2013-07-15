@@ -16,7 +16,10 @@
  */
 package com.hellblazer.CoRE.network;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -113,4 +116,17 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
+    
+    /* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		authorizedRelationship.manageEntity(em, knownObjects);
+		classification.manageEntity(em, knownObjects);
+		groupingResource.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

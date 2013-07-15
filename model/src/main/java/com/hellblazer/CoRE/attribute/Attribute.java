@@ -25,6 +25,7 @@ import static com.hellblazer.CoRE.attribute.Attribute.UNLINKED;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -45,6 +46,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
@@ -345,4 +347,14 @@ public class Attribute extends ExistentialRuleform implements
     public void setValueType(ValueType valueType) {
         this.valueType = valueType;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		return;
+		
+	}
 }

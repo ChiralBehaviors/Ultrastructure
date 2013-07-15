@@ -28,6 +28,9 @@ import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHOR
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +41,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeAuthorization;
 import com.hellblazer.CoRE.location.Location;
@@ -269,5 +273,25 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     public void setServiceClassification(Relationship serviceClassification) {
         this.serviceClassification = serviceClassification;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		deliverFrom.manageEntity(em, knownObjects);
+		deliverFromClassification.manageEntity(em, knownObjects);
+		deliverTo.manageEntity(em, knownObjects);
+		deliverToClassification.manageEntity(em, knownObjects);
+		productClassification.manageEntity(em, knownObjects);
+		product.manageEntity(em, knownObjects);
+		requester.manageEntity(em, knownObjects);
+		requesterClassification.manageEntity(em, knownObjects);
+		service.manageEntity(em, knownObjects);
+		serviceClassification.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

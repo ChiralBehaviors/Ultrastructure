@@ -16,7 +16,10 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -66,16 +69,9 @@ public class CoordinateNesting extends Ruleform {
     @JoinColumn(name = "outer_attribute")
     private Attribute         outerAttribute;
 
-    @ManyToOne
-    @JoinColumn(name = "research")
-    private Research          research;
-
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private Resource          updatedBy;
 
     public CoordinateNesting() {
     }
@@ -119,24 +115,8 @@ public class CoordinateNesting extends Ruleform {
         return outerAttribute;
     }
 
-    /**
-     * @return the research
-     */
-    @Override
-    public Research getResearch() {
-        return research;
-    }
-
     public Integer getSequenceNumber() {
         return sequenceNumber;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    @Override
-    public Resource getUpdatedBy() {
-        return updatedBy;
     }
 
     public void setAttribute(Attribute attribute3) {
@@ -164,26 +144,22 @@ public class CoordinateNesting extends Ruleform {
         outerAttribute = attribute1;
     }
 
-    /**
-     * @param research
-     *            the research to set
-     */
-    @Override
-    public void setResearch(Research research) {
-        this.research = research;
-    }
-
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 
-    /**
-     * @param updatedBy
-     *            the updatedBy to set
-     */
-    @Override
-    public void setUpdatedBy(Resource updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		attribute.manageEntity(em, knownObjects);
+		innerAttribute.manageEntity(em, knownObjects);
+		kind.manageEntity(em, knownObjects);
+		outerAttribute.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

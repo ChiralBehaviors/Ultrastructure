@@ -18,7 +18,10 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.MetaProtocol.FOR_JOB;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -264,4 +267,20 @@ public class MetaProtocol extends Ruleform {
     public void setStopOnMatch(Boolean stopOnMatch) {
         this.stopOnMatch = stopOnMatch;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		deliverFrom.manageEntity(em, knownObjects);
+		deliverTo.manageEntity(em, knownObjects);
+		productOrdered.manageEntity(em, knownObjects);
+		requestingResource.manageEntity(em, knownObjects);
+		service.manageEntity(em, knownObjects);
+		serviceType.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

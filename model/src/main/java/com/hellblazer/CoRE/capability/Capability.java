@@ -17,7 +17,10 @@
 
 package com.hellblazer.CoRE.capability;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -237,4 +240,20 @@ public class Capability extends Ruleform {
     public void setVerb(Action verb) {
         this.verb = verb;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		subject.manageEntity(em, knownObjects);
+		targetAttribute.manageEntity(em, knownObjects);
+		targetProduct.manageEntity(em, knownObjects);
+		targetLocation.manageEntity(em, knownObjects);
+		targetResource.manageEntity(em, knownObjects);
+		verb.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

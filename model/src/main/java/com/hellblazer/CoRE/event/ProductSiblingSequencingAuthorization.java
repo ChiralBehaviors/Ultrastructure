@@ -18,7 +18,10 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization.GET_SIBLING_ACTIONS;
 
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -183,5 +186,19 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
     public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		nextSibling.manageEntity(em, knownObjects);
+		nextSiblingStatus.manageEntity(em, knownObjects);
+		parent.manageEntity(em, knownObjects);
+		statusCode.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

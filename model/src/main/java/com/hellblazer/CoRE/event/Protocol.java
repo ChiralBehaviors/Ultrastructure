@@ -18,9 +18,11 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.Protocol.GET;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -321,4 +323,22 @@ public class Protocol extends Ruleform {
     public void setService(Product service) {
         this.service = service;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		assignTo.manageEntity(em, knownObjects);
+		deliverFrom.manageEntity(em, knownObjects);
+		deliverTo.manageEntity(em, knownObjects);
+		product.manageEntity(em, knownObjects);
+		requestedProduct.manageEntity(em, knownObjects);
+		requestedService.manageEntity(em, knownObjects);
+		requester.manageEntity(em, knownObjects);
+		service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

@@ -21,9 +21,11 @@ import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_CHILD_STATUS_CO
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_PARENT_STATUS_CODES;
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -237,4 +239,17 @@ public class StatusCodeSequencing extends Ruleform {
     public void setStatusCodeByParent(Set<ProductNetwork> statusCodeByParent) {
         this.statusCodeByParent = statusCodeByParent;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		childCode.manageEntity(em, knownObjects);
+		parentCode.manageEntity(em, knownObjects);
+		service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

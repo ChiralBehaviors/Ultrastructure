@@ -30,6 +30,7 @@ import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.product.ProductNetwork.INSERT_NEW_NETWORK_RULES;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -48,6 +49,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
@@ -260,4 +262,16 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     public void setParent(Product parent) {
         this.parent = parent;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		child.manageEntity(em, knownObjects);
+		parent.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

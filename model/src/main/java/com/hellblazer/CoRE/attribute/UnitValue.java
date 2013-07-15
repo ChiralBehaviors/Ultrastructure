@@ -18,8 +18,10 @@ package com.hellblazer.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -65,11 +67,6 @@ public class UnitValue extends Ruleform {
     @Column(name = "numeric_value")
     private BigDecimal        numericValue;
 
-    //bi-directional many-to-one association to Research
-    @ManyToOne
-    @JoinColumn(name = "research")
-    private Research          research;
-
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
 
@@ -80,14 +77,6 @@ public class UnitValue extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "unit")
     private Unit              unit;
-
-    @Column(name = "update_date")
-    private Timestamp         updateDate;
-
-    //bi-directional many-to-one association to Resource
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private Resource          updatedBy;
 
     public UnitValue() {
     }
@@ -118,11 +107,6 @@ public class UnitValue extends Ruleform {
         return numericValue;
     }
 
-    @Override
-    public Research getResearch() {
-        return research;
-    }
-
     public Integer getSequenceNumber() {
         return sequenceNumber;
     }
@@ -133,16 +117,6 @@ public class UnitValue extends Ruleform {
 
     public Unit getUnit() {
         return unit;
-    }
-
-    @Override
-    public Timestamp getUpdateDate() {
-        return updateDate;
-    }
-
-    @Override
-    public Resource getUpdatedBy() {
-        return updatedBy;
     }
 
     public void setBooleanValue(Boolean booleanValue) {
@@ -171,11 +145,6 @@ public class UnitValue extends Ruleform {
         this.numericValue = numericValue;
     }
 
-    @Override
-    public void setResearch(Research research) {
-        this.research = research;
-    }
-
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
@@ -188,14 +157,15 @@ public class UnitValue extends Ruleform {
         this.unit = unit;
     }
 
-    @Override
-    public void setUpdateDate(Timestamp updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    @Override
-    public void setUpdatedBy(Resource resource) {
-        updatedBy = resource;
-    }
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		productValue.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

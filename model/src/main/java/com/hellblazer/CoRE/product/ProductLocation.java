@@ -162,10 +162,10 @@ public class ProductLocation extends Ruleform implements
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		product.manageEntity(em, knownObjects);
-		location.manageEntity(em, knownObjects);
-		relationship.manageEntity(em, knownObjects);
-		resource.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (location != null) location = (Location) location.manageEntity(em, knownObjects);
+		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

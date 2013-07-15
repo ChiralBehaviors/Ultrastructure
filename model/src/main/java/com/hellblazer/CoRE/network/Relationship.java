@@ -184,7 +184,7 @@ public class Relationship extends ExistentialRuleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		inverse.manageEntity(em, knownObjects);
+		if (inverse != null) inverse = (Relationship) inverse.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

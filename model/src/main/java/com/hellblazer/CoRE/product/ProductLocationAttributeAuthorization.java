@@ -121,8 +121,8 @@ public class ProductLocationAttributeAuthorization extends
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		classifier.manageEntity(em, knownObjects);
-		classification.manageEntity(em, knownObjects);
+		if (classifier != null) classifier = (Product) classifier.manageEntity(em, knownObjects);
+		if (classification != null) classification = (Relationship) classification.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

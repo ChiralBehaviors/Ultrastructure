@@ -123,9 +123,9 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		authorizedRelationship.manageEntity(em, knownObjects);
-		classification.manageEntity(em, knownObjects);
-		groupingResource.manageEntity(em, knownObjects);
+		if (authorizedRelationship != null) authorizedRelationship = (Relationship) authorizedRelationship.manageEntity(em, knownObjects);
+		if (classification != null) classification = (Relationship) classification.manageEntity(em, knownObjects);
+		if (groupingResource != null) groupingResource = (Resource) groupingResource.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

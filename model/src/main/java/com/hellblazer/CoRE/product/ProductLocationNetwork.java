@@ -138,10 +138,10 @@ public class ProductLocationNetwork extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		contextualProduct.manageEntity(em, knownObjects);
-		coordinate.manageEntity(em, knownObjects);
-		product.manageEntity(em, knownObjects);
-		resource.manageEntity(em, knownObjects);
+		if (contextualProduct != null) contextualProduct = (Product) contextualProduct.manageEntity(em, knownObjects);
+		if (coordinate != null) coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

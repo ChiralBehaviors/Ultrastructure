@@ -246,9 +246,9 @@ public class StatusCodeSequencing extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		childCode.manageEntity(em, knownObjects);
-		parentCode.manageEntity(em, knownObjects);
-		service.manageEntity(em, knownObjects);
+		if (childCode != null) childCode = (StatusCode) childCode.manageEntity(em, knownObjects);
+		if (parentCode != null) parentCode = (StatusCode) parentCode.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

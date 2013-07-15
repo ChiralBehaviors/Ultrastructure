@@ -171,7 +171,7 @@ public class JobAttribute extends AttributeValue<Job> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		job.manageEntity(em, knownObjects);
+		if (job != null) job = (Job) job.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

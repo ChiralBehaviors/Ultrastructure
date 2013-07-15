@@ -67,7 +67,7 @@ public class ResourceRelationshipLocationAuthorization extends
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		location.manageEntity(em, knownObjects);
+		if (location != null) location = (Location) location.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

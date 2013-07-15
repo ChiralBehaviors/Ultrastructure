@@ -251,7 +251,7 @@ public class Coordinate extends ExistentialRuleform implements
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		kind.manageEntity(em, knownObjects);
+		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

@@ -135,8 +135,8 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		authorizedParent.manageEntity(em, knownObjects);
-		classifier.manageEntity(em, knownObjects);
+		if (authorizedParent != null) authorizedParent = (Product) authorizedParent.manageEntity(em, knownObjects);
+		if (classifier != null) classifier = (Product) classifier.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

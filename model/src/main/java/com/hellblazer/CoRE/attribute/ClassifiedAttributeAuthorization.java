@@ -107,7 +107,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		classification.manageEntity(em, knownObjects);
+		if (classification != null) classification = (Relationship) classification.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

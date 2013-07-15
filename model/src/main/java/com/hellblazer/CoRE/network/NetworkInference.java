@@ -157,9 +157,9 @@ public class NetworkInference extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		inference.manageEntity(em, knownObjects);
-		premise1.manageEntity(em, knownObjects);
-		premise2.manageEntity(em, knownObjects);
+		if (inference != null) inference = (Relationship) inference.manageEntity(em, knownObjects);
+		if (premise1 != null) premise1 = (Relationship) premise1.manageEntity(em, knownObjects);
+		if (premise2 != null) premise2 = (Relationship) premise2.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

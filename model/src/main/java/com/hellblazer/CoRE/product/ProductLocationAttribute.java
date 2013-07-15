@@ -202,9 +202,9 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		productLocation.manageEntity(em, knownObjects);
-		productValue.manageEntity(em, knownObjects);
-		resource.manageEntity(em, knownObjects);
+		if (productLocation != null) productLocation = (ProductLocation) productLocation.manageEntity(em, knownObjects);
+		if (productValue != null) productValue = (Product) productValue.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

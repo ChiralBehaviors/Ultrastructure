@@ -135,9 +135,9 @@ public class CoordinateKindDefinition extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		attribute.manageEntity(em, knownObjects);
-		kind.manageEntity(em, knownObjects);
-		subordinateCoordinateKind.manageEntity(em, knownObjects);
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+		if (subordinateCoordinateKind != null) subordinateCoordinateKind = (CoordinateKind) subordinateCoordinateKind.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

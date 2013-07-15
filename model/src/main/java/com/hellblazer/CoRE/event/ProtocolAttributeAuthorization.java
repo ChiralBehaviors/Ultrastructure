@@ -280,16 +280,16 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		deliverFrom.manageEntity(em, knownObjects);
-		deliverFromClassification.manageEntity(em, knownObjects);
-		deliverTo.manageEntity(em, knownObjects);
-		deliverToClassification.manageEntity(em, knownObjects);
-		productClassification.manageEntity(em, knownObjects);
-		product.manageEntity(em, knownObjects);
-		requester.manageEntity(em, knownObjects);
-		requesterClassification.manageEntity(em, knownObjects);
-		service.manageEntity(em, knownObjects);
-		serviceClassification.manageEntity(em, knownObjects);
+		if (deliverFrom != null) deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
+		if (deliverFromClassification != null) deliverFromClassification = (Relationship) deliverFromClassification.manageEntity(em, knownObjects);
+		if (deliverTo != null) deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
+		if (deliverToClassification != null) deliverToClassification = (Relationship) deliverToClassification.manageEntity(em, knownObjects);
+		if (productClassification != null) productClassification = (Relationship) productClassification.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (requester != null) requester = (Resource) requester.manageEntity(em, knownObjects);
+		if (requesterClassification != null) requesterClassification = (Relationship) requesterClassification.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		if (serviceClassification != null) serviceClassification = (Relationship) serviceClassification.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

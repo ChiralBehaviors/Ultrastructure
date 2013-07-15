@@ -220,8 +220,8 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		child.manageEntity(em, knownObjects);
-		parent.manageEntity(em, knownObjects);
+		if (child != null) child = (Resource) child.manageEntity(em, knownObjects);
+		if (parent != null) parent = (Resource) parent.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

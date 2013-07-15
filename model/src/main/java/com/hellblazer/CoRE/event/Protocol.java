@@ -330,14 +330,14 @@ public class Protocol extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		assignTo.manageEntity(em, knownObjects);
-		deliverFrom.manageEntity(em, knownObjects);
-		deliverTo.manageEntity(em, knownObjects);
-		product.manageEntity(em, knownObjects);
-		requestedProduct.manageEntity(em, knownObjects);
-		requestedService.manageEntity(em, knownObjects);
-		requester.manageEntity(em, knownObjects);
-		service.manageEntity(em, knownObjects);
+		if (assignTo != null) assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+		if (deliverFrom != null) deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
+		if (deliverTo != null) deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (requestedProduct != null) requestedProduct = (Product) requestedProduct.manageEntity(em, knownObjects);
+		if (requestedService != null) requestedService = (Product) requestedService.manageEntity(em, knownObjects);
+		if (requester != null) requester = (Resource) requester.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

@@ -269,8 +269,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		child.manageEntity(em, knownObjects);
-		parent.manageEntity(em, knownObjects);
+		if (child != null) child = (Product) child.manageEntity(em, knownObjects);
+		if (parent != null) parent = (Product) parent.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

@@ -212,15 +212,15 @@ public class Transformation extends Ruleform implements Serializable {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		assignTo.manageEntity(em, knownObjects);
-		attribute.manageEntity(em, knownObjects);
-		product.manageEntity(em, knownObjects);
-		productAttributeResource.manageEntity(em, knownObjects);
-		productKey.manageEntity(em, knownObjects);
-		relationshipKey.manageEntity(em, knownObjects);
-		resource.manageEntity(em, knownObjects);
-		resourceKey.manageEntity(em, knownObjects);
-		service.manageEntity(em, knownObjects);
+		if (assignTo != null) assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (productAttributeResource != null) productAttributeResource = (Resource) productAttributeResource.manageEntity(em, knownObjects);
+		if (productKey != null) productKey = (Product) productKey.manageEntity(em, knownObjects);
+		if (relationshipKey != null) relationshipKey = (Relationship) relationshipKey.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
+		if (resourceKey != null) resourceKey = (Resource) resourceKey.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

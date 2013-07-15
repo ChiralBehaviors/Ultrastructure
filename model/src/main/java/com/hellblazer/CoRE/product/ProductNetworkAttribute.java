@@ -202,9 +202,9 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		productNetwork.manageEntity(em, knownObjects);
-		productValue.manageEntity(em, knownObjects);
-		resource.manageEntity(em, knownObjects);
+		if (productNetwork != null) productNetwork = (ProductNetwork) productNetwork.manageEntity(em, knownObjects);
+		if (productValue != null) productValue = (Product) productValue.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

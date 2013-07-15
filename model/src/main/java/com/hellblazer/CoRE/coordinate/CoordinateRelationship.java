@@ -156,11 +156,11 @@ public class CoordinateRelationship extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		attribute.manageEntity(em, knownObjects);
-		attributeRelationship.manageEntity(em, knownObjects);
-		kind.manageEntity(em, knownObjects);
-		relationship.manageEntity(em, knownObjects);
-		subordinateCoordinateKind.manageEntity(em, knownObjects);
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		if (attributeRelationship != null) attributeRelationship = (Relationship) attributeRelationship.manageEntity(em, knownObjects);
+		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
+		if (subordinateCoordinateKind != null) subordinateCoordinateKind = (CoordinateKind) subordinateCoordinateKind.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

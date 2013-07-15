@@ -206,13 +206,13 @@ public class LocationRelationship extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		attributeRelationship.manageEntity(em, knownObjects);
-		context.manageEntity(em, knownObjects);
-		productMappedValue.manageEntity(em, knownObjects);
-		location1Attribute.manageEntity(em, knownObjects);
-		location2Attribute.manageEntity(em, knownObjects);
-		relationship.manageEntity(em, knownObjects);
-		targetContext.manageEntity(em, knownObjects);
+		if (attributeRelationship != null) attributeRelationship = (Relationship) attributeRelationship.manageEntity(em, knownObjects);
+		if (context != null) context = (LocationContext) context.manageEntity(em, knownObjects);
+		if (productMappedValue != null) productMappedValue = (Product) productMappedValue.manageEntity(em, knownObjects);
+		if (location1Attribute != null) location1Attribute = (Attribute) location1Attribute.manageEntity(em, knownObjects);
+		if (location2Attribute != null) location2Attribute = (Attribute) location2Attribute.manageEntity(em, knownObjects);
+		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
+		if (targetContext != null) targetContext = (LocationContext) targetContext.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

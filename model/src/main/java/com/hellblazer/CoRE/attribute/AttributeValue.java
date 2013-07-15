@@ -304,7 +304,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		attribute.manageEntity(em, knownObjects);
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

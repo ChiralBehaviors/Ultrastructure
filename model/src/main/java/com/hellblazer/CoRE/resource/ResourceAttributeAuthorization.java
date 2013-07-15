@@ -133,7 +133,7 @@ public class ResourceAttributeAuthorization extends
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		classifier.manageEntity(em, knownObjects);
+		if (classifier != null) classifier = (Resource) classifier.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

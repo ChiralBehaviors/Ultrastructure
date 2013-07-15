@@ -158,10 +158,10 @@ public class TransformationMetarule extends Ruleform implements Serializable {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		productMap.manageEntity(em, knownObjects);
-		productNetworkResource.manageEntity(em, knownObjects);
-		relationshipMap.manageEntity(em, knownObjects);
-		service.manageEntity(em, knownObjects);
+		if (productMap != null) productMap = (Relationship) productMap.manageEntity(em, knownObjects);
+		if (productNetworkResource != null) productNetworkResource = (Resource) productNetworkResource.manageEntity(em, knownObjects);
+		if (relationshipMap != null) relationshipMap = (Relationship) relationshipMap.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

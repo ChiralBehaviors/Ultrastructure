@@ -163,7 +163,7 @@ public class UnitValue extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		productValue.manageEntity(em, knownObjects);
+		if (productValue != null) productValue = (Product) productValue.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

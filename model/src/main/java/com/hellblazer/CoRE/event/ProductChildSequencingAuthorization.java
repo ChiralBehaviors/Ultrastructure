@@ -192,10 +192,10 @@ public class ProductChildSequencingAuthorization extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		nextChild.manageEntity(em, knownObjects);
-		nextChildStatus.manageEntity(em, knownObjects);
-		parent.manageEntity(em, knownObjects);
-		statusCode.manageEntity(em, knownObjects);
+		if (nextChild != null) nextChild = (Product) nextChild.manageEntity(em, knownObjects);
+		if (nextChildStatus != null) nextChildStatus = (StatusCode) nextChildStatus.manageEntity(em, knownObjects);
+		if (parent != null) parent = (Product) parent.manageEntity(em, knownObjects);
+		if (statusCode != null) statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

@@ -118,8 +118,8 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		classificationCoordinate.manageEntity(em, knownObjects);
-		resource.manageEntity(em, knownObjects);
+		if (classificationCoordinate != null) classificationCoordinate = (Coordinate) classificationCoordinate.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

@@ -124,8 +124,8 @@ public class LocationMetaRule extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		attributeMask.manageEntity(em, knownObjects);
-		locationContext.manageEntity(em, knownObjects);
+		if (attributeMask != null) attributeMask = (Attribute) attributeMask.manageEntity(em, knownObjects);
+		if (locationContext != null) locationContext = (LocationContext) locationContext.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

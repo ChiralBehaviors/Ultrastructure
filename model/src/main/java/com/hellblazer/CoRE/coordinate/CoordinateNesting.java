@@ -28,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.resource.Resource;
@@ -154,10 +153,10 @@ public class CoordinateNesting extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		attribute.manageEntity(em, knownObjects);
-		innerAttribute.manageEntity(em, knownObjects);
-		kind.manageEntity(em, knownObjects);
-		outerAttribute.manageEntity(em, knownObjects);
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		if (innerAttribute != null) innerAttribute = (Attribute) innerAttribute.manageEntity(em, knownObjects);
+		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+		if (outerAttribute != null) outerAttribute = (Attribute) outerAttribute.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

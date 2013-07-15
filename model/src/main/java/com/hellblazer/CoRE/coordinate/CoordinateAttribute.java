@@ -190,8 +190,8 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		coordinate.manageEntity(em, knownObjects);
-		productValue.manageEntity(em, knownObjects);
+		if (coordinate != null) coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
+		if (productValue != null) productValue = (Product) productValue.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

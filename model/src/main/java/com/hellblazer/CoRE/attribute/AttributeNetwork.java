@@ -211,8 +211,9 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		child.manageEntity(em, knownObjects);
-		parent.manageEntity(em, knownObjects);
+		if (child != null) child = (Attribute) child.manageEntity(em, knownObjects);
+		
+		if (parent != null) parent = (Attribute) parent.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

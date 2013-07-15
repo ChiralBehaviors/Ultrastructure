@@ -247,12 +247,12 @@ public class Capability extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		subject.manageEntity(em, knownObjects);
-		targetAttribute.manageEntity(em, knownObjects);
-		targetProduct.manageEntity(em, knownObjects);
-		targetLocation.manageEntity(em, knownObjects);
-		targetResource.manageEntity(em, knownObjects);
-		verb.manageEntity(em, knownObjects);
+		if (subject != null) subject = (Resource) subject.manageEntity(em, knownObjects);
+		if (targetAttribute != null) targetAttribute = (Attribute) targetAttribute.manageEntity(em, knownObjects);
+		if (targetProduct != null) targetProduct = (Product) targetProduct.manageEntity(em, knownObjects);
+		if (targetLocation != null) targetLocation = (Location) targetLocation.manageEntity(em, knownObjects);
+		if (targetResource != null) targetResource = (Resource) targetResource.manageEntity(em, knownObjects);
+		if (verb != null) verb = (Action) verb.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

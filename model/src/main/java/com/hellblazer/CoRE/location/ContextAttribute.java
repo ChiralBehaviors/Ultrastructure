@@ -183,7 +183,7 @@ public class ContextAttribute extends AttributeValue<LocationContext> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		locationContext.manageEntity(em, knownObjects);
+		if (locationContext != null) locationContext = (LocationContext) locationContext.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

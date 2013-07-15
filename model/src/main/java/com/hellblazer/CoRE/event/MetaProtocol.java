@@ -274,12 +274,12 @@ public class MetaProtocol extends Ruleform {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		deliverFrom.manageEntity(em, knownObjects);
-		deliverTo.manageEntity(em, knownObjects);
-		productOrdered.manageEntity(em, knownObjects);
-		requestingResource.manageEntity(em, knownObjects);
-		service.manageEntity(em, knownObjects);
-		serviceType.manageEntity(em, knownObjects);
+		if (deliverFrom != null) deliverFrom = (Relationship) deliverFrom.manageEntity(em, knownObjects);
+		if (deliverTo != null) deliverTo = (Relationship) deliverTo.manageEntity(em, knownObjects);
+		if (productOrdered != null) productOrdered = (Relationship) productOrdered.manageEntity(em, knownObjects);
+		if (requestingResource != null) requestingResource = (Relationship) requestingResource.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		if (serviceType != null) serviceType = (Relationship) serviceType.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

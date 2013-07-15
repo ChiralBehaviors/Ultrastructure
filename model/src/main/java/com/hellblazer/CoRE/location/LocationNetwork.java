@@ -210,8 +210,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		child.manageEntity(em, knownObjects);
-		parent.manageEntity(em, knownObjects);
+		if (child != null) child = (Location) child.manageEntity(em, knownObjects);
+		if (parent != null) parent = (Location) parent.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

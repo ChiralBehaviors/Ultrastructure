@@ -199,7 +199,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
 	@Override
 	public void traverseForeignKeys(EntityManager em,
 			Map<Ruleform, Ruleform> knownObjects) {
-		protocol.manageEntity(em, knownObjects);
+		if (protocol != null) protocol = (Protocol) protocol.manageEntity(em, knownObjects);
 		super.traverseForeignKeys(em, knownObjects);
 		
 	}

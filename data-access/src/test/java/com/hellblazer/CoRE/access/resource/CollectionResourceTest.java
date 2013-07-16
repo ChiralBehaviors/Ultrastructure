@@ -69,44 +69,6 @@ public class CollectionResourceTest extends DatabaseTest {
 
     }
     
-    public void testMerge() {
-    	
-    	em.getTransaction().begin();
-    	//todo this will break if tests execute out of order
-    	Resource user = new Resource("User", null, core);
-    	em.persist(user);
-    	
-    	Relationship owns = new Relationship("owns", null, core);
-    	em.persist(owns);
-    	
-    	Relationship ownedBy = new Relationship("ownedBy", null, core);
-    	em.persist(ownedBy);
-    	owns.setInverse(ownedBy);
-    	ownedBy.setInverse(owns);
-    	em.getTransaction().commit();
-    	
-    	Product channel1 = new Product("Channel One", null, user);
-    	Product channel2 = new Product("Channel Two", null, user);
-    	Product clip1 = new Product("Clip 1", null, user);
-    	Product clip2 = new Product("Clip 2", null, user);
-    	Product clip3 = new Product("Clip 3", null, user);
-    	
-    	ExistentialRuleform[] rules = {channel1, channel2, clip1, clip2, clip3};
-    	
-    	em.getTransaction().begin();
-    	for (Ruleform r : rules) {
-    		em.persist(r);
-    	}
-    	
-    	//create network edges
-    	
-    	ResourceRelationshipProductAuthorization userCh1 = new ResourceRelationshipProductAuthorization(user, owns, channel1, user);
-    	em.persist(userCh1);
-    	ResourceRelationshipProductAuthorization userCh2 = new ResourceRelationshipProductAuthorization(user, owns, channel2, user);
-    	em.persist(userCh2);
-    	
-    	
-    }
     
     @Test
     public void testInsertSingleRuleform() throws JsonProcessingException {
@@ -115,8 +77,19 @@ public class CollectionResourceTest extends DatabaseTest {
     	core.setUpdatedBy(core);
     	
     	Response res = resource.post(core);
-    	System.out.println(res.getEntity().toString());
+    	Assert.assertTrue(res.getStatus() == 200);
     	
+    }
+    
+    @Test
+    public void testInsertSimpleGraph() throws JsonProcessingException {
+    	resource = new CollectionResource(emf);
+    	Resource core = new Resource("insertSimpleGraph", "test resource");
+    	core.setUpdatedBy(core);
+    	
+    	Product prod = new Product("myProd", null, core);
+    	Response res = resource.post(prod);
+    	Assert.assertTrue(res.getStatus() == 200);
     }
 
 }

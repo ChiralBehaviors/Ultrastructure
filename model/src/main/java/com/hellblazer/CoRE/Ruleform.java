@@ -220,6 +220,10 @@ abstract public class Ruleform implements Serializable, Cloneable {
             return knownObjects.get(this);
     	}
     	
+    	//need to traverse leaf nodes first, before persisting this entity.
+    	knownObjects.put(this,  this);
+    	this.traverseForeignKeys(em, knownObjects);
+    	
     	if (this.getId() != null && em.getReference(this.getClass(), this.getId()) != null) {
     		em.detach(this);
     		knownObjects.put(this, em.merge(this));
@@ -228,7 +232,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     		em.refresh(this);
     		knownObjects.put(this, this);
     	}
-    	this.traverseForeignKeys(em, knownObjects);
+    	
 	    
 	    return knownObjects.get(this);
     }

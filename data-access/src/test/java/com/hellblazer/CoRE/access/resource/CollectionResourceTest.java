@@ -18,16 +18,14 @@ package com.hellblazer.CoRE.access.resource;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
@@ -47,7 +45,7 @@ public class CollectionResourceTest extends DatabaseTest {
         Resource core = new Resource("CoRE");
         core.setUpdatedBy(core);
         core = em.merge(core);
-        Assert.assertTrue(core != null);
+        assertTrue(core != null);
         Resource user = new Resource("User", null, core);
         user = em.merge(user);
         Product channel = new Product("MyChannel", null, core);
@@ -77,7 +75,7 @@ public class CollectionResourceTest extends DatabaseTest {
     	core.setUpdatedBy(core);
     	
     	Response res = resource.post(core);
-    	Assert.assertTrue(res.getStatus() == 200);
+    	assertTrue(res.getStatus() == 200);
     	
     }
     
@@ -89,7 +87,11 @@ public class CollectionResourceTest extends DatabaseTest {
     	
     	Product prod = new Product("myProd", null, core);
     	Response res = resource.post(prod);
-    	Assert.assertTrue(res.getStatus() == 200);
+    	
+    	assertTrue(res.getStatus() == 200);
+    	
+    	em.refresh(prod);
+    	assertNotNull(prod.getId());
     }
 
 }

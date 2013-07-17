@@ -18,11 +18,13 @@ package com.hellblazer.CoRE.location;
 
 import static com.hellblazer.CoRE.location.LocationNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.location.LocationNetwork.GATHER_EXISTING_NETWORK_RULES;
+import static com.hellblazer.CoRE.location.LocationNetwork.GENERATE_NETWORK_INVERSES;
 import static com.hellblazer.CoRE.location.LocationNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.location.LocationNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.location.LocationNetwork.INSERT_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 
@@ -105,7 +107,22 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                 + "        AND cpr.child = exist.child "
                                                                                 + "     WHERE exist.parent IS NULL "
                                                                                 + "     AND exist.relationship IS NULL "
-                                                                                + "     AND exist.child IS NULL") })
+                                                                                + "     AND exist.child IS NULL"),
+                     @NamedNativeQuery(name = GENERATE_NETWORK_INVERSES, query = "INSERT INTO ruleform.location_network(parent, relationship, child, updated_by, inferred) "
+                                                                                 + "SELECT net.child as parent, "
+                                                                                 + "    rel.inverse as relationship, "
+                                                                                 + "    net.parent as child, "
+                                                                                 + "    ?1 as updated_by,"
+                                                                                 + "    net.inferred "
+                                                                                 + "FROM ruleform.location_network AS net "
+                                                                                 + "JOIN ruleform.relationship AS rel ON net.relationship = rel.id "
+                                                                                 + "LEFT OUTER JOIN ruleform.location_network AS exist "
+                                                                                 + "    ON net.child = exist.parent "
+                                                                                 + "    AND rel.inverse = exist.relationship "
+                                                                                 + "    AND net.parent = exist.child "
+                                                                                 + " WHERE exist.parent IS NULL "
+                                                                                 + "  AND exist.relationship IS NULL "
+                                                                                 + "  AND exist.child IS NULL") })
 @javax.persistence.Entity
 @Table(name = "location_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_network_id_seq", sequenceName = "location_network_id_seq")
@@ -117,6 +134,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
                                                                + INFERENCE_STEP_SUFFIX;
     public static final String GATHER_EXISTING_NETWORK_RULES = "locationNetwork"
                                                                + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "locationNetwork"

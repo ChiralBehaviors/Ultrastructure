@@ -38,6 +38,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.postgresql.pljava.TriggerData;
@@ -314,16 +315,32 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void generateImplicitJobs(Job job) {
+        List<Protocol> protocols = getProtocols(job);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Found %s protocols for %s",
+                                    protocols.size(), job));
+        }
+        for (Protocol protocol : protocols) {
+            insertJob(job, protocol);
+        }
+    }
+
+    @Override
+    public List<Protocol> getProtocols(Job job) {
+        List<Protocol> protocols = new ArrayList<Protocol>();
         if (job.getStatus().getPropagateChildren()) {
             for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
                 for (Protocol protocol : getProtocols(job, metaProtocol)) {
-                    insertJob(job, protocol);
+                    if (!protocols.contains(protocol)) {
+                        protocols.add(protocol);
+                    }
                 }
                 if (metaProtocol.getStopOnMatch()) {
                     break;
                 }
             }
         }
+        return protocols;
     }
 
     @Override
@@ -842,11 +859,6 @@ public class JobModelImpl implements JobModel {
     }
 
     private TypedQuery<Protocol> createQuery(MetaProtocol metaProtocol, Job job) {
-
-        Product requestedService = transform(job.getService(),
-                                             transform(job.getService(),
-                                                       metaProtocol.getServiceType(),
-                                                       "service", job));
         Product product = transform(job.getProduct(),
                                     transform(job.getProduct(),
                                               metaProtocol.getProductOrdered(),
@@ -868,35 +880,54 @@ public class JobModelImpl implements JobModel {
         CriteriaQuery<Protocol> cQuery = cb.createQuery(Protocol.class);
         Root<Protocol> root = cQuery.from(Protocol.class);
         cQuery.select(root);
-        Parameter<Product> serviceParameter = cb.parameter(Product.class);
+        Parameter<Product> requestedServiceParameter = cb.parameter(Product.class);
         Parameter<Product> productParameter = cb.parameter(Product.class);
         Parameter<Resource> requesterParameter = cb.parameter(Resource.class);
         Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
         Parameter<Location> deliverToParameter = cb.parameter(Location.class);
-        if (requestedService != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.requestedService),
-                                  serviceParameter));
-        }
+
+        Predicate predicate = cb.equal(root.get(Protocol_.requestedService),
+                                       requestedServiceParameter);
         if (product != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.product), productParameter));
+            predicate = cb.and(predicate,
+                               cb.or(cb.equal(root.get(Protocol_.product),
+                                              productParameter),
+                                     cb.equal(root.get(Protocol_.product),
+                                              kernel.getAnyProduct()),
+                                     cb.equal(root.get(Protocol_.product),
+                                              kernel.getSameProduct())));
         }
         if (requester != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.requester),
-                                  requesterParameter));
+            predicate = cb.and(predicate,
+                               cb.or(cb.equal(root.get(Protocol_.requester),
+                                              requesterParameter),
+                                     cb.equal(root.get(Protocol_.requester),
+                                              kernel.getAnyResource()),
+                                     cb.equal(root.get(Protocol_.requester),
+                                              kernel.getSameResource())));
         }
         if (deliverFrom != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.deliverFrom),
-                                  deliverFromParameter));
+            predicate = cb.and(predicate,
+                               cb.or(cb.equal(root.get(Protocol_.deliverFrom),
+                                              deliverFromParameter),
+                                     cb.equal(root.get(Protocol_.deliverFrom),
+                                              kernel.getAnyLocation()),
+                                     cb.equal(root.get(Protocol_.deliverFrom),
+                                              kernel.getAnyLocation())));
         }
         if (deliverTo != null) {
-            cQuery.where(cb.equal(root.get(Protocol_.deliverTo),
-                                  deliverToParameter));
+            predicate = cb.and(predicate,
+                               cb.or(cb.equal(root.get(Protocol_.deliverTo),
+                                              deliverToParameter),
+                                     cb.equal(root.get(Protocol_.deliverTo),
+                                              kernel.getAnyLocation()),
+                                     cb.equal(root.get(Protocol_.deliverTo),
+                                              kernel.getAnyLocation())));
         }
+        cQuery.where(predicate);
 
         TypedQuery<Protocol> query = em.createQuery(cQuery);
-        if (requestedService != null) {
-            query.setParameter(serviceParameter, requestedService);
-        }
+        query.setParameter(requestedServiceParameter, job.getService());
         if (product != null) {
             query.setParameter(productParameter, product);
         }
@@ -909,7 +940,6 @@ public class JobModelImpl implements JobModel {
         if (requester != null) {
             query.setParameter(requesterParameter, requester);
         }
-        System.out.println(query);
         return query;
     }
 
@@ -1061,26 +1091,30 @@ public class JobModelImpl implements JobModel {
         if (transformed.equals(kernel.getSameLocation())) {
             return original;
         }
+        if (transformed.equals(kernel.getNotApplicableLocation())
+            || transformed.equals(kernel.getAnyLocation())) {
+            return null;
+        }
         return transformed;
     }
 
     private Location transform(Location location, Relationship relationship,
                                String type, Job job) {
         if (kernel.getNotApplicableRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (Not Applicable) for %s for job %s",
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (Not Applicable) for %s for job %s",
                                         type, job));
             }
             return kernel.getNotApplicableLocation();
         } else if (kernel.getAnyRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (ANY) for %s for job %s", type,
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (ANY) for %s for job %s", type,
                                         job));
             }
             return kernel.getNotApplicableLocation();
         } else if (kernel.getSameRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (SAME) for %s for job %s", type,
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (SAME) for %s for job %s", type,
                                         job));
             }
             return kernel.getSameLocation();
@@ -1101,6 +1135,10 @@ public class JobModelImpl implements JobModel {
         if (transformed.equals(kernel.getSameProduct())) {
             return original;
         }
+        if (transformed.equals(kernel.getNotApplicableProduct())
+            || transformed.equals(kernel.getAnyProduct())) {
+            return null;
+        }
         return transformed;
     }
 
@@ -1120,20 +1158,20 @@ public class JobModelImpl implements JobModel {
     private Product transform(Product product, Relationship relationship,
                               String type, Job job) {
         if (kernel.getNotApplicableRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (Not Applicable) for %s for job %s",
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (Not Applicable) for %s for job %s",
                                         type, job));
             }
             return kernel.getNotApplicableProduct();
         } else if (kernel.getAnyRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (ANY) for %s for job %s", type,
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (ANY) for %s for job %s", type,
                                         job));
             }
             return kernel.getAnyProduct();
         } else if (kernel.getSameRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (SAME) for %s for job %s", type,
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (SAME) for %s for job %s", type,
                                         job));
             }
             return kernel.getSameProduct();
@@ -1145,20 +1183,20 @@ public class JobModelImpl implements JobModel {
     private Resource transform(Resource resource, Relationship relationship,
                                String type, Job job) {
         if (kernel.getNotApplicableRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (Not Appplicable) for %s for job %s",
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (Not Appplicable) for %s for job %s",
                                         type, job));
             }
             return kernel.getNotApplicableResource();
         } else if (kernel.getAnyRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (ANY) for %s for job %s", type,
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (ANY) for %s for job %s", type,
                                         job));
             }
             return kernel.getAnyResource();
         } else if (kernel.getSameRelationship().equals(relationship)) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Using (SAME) for %s for job %s", type,
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (SAME) for %s for job %s", type,
                                         job));
             }
             return kernel.getSameResource();
@@ -1178,6 +1216,10 @@ public class JobModelImpl implements JobModel {
         }
         if (transformed.equals(kernel.getSameResource())) {
             return original;
+        }
+        if (transformed.equals(kernel.getNotApplicableResource())
+            || transformed.equals(kernel.getAnyResource())) {
+            return null;
         }
         return transformed;
     }

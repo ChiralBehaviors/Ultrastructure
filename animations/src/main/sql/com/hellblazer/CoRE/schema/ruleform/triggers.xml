@@ -25,7 +25,6 @@
 		file="tables/status_code_sequencing/trigger-ensure_valid_state_graph_.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/status_code_sequencing/trigger-log_modified_service.xml" />
-	<!-- 
 	<include relativeToChangelogFile="true"
 		file="tables/attribute_network/trigger_propagate_deductions.xml" />
 	<include relativeToChangelogFile="true"
@@ -34,6 +33,5 @@
 		file="tables/product_network/trigger_propagate_deductions.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/resource_network/trigger_propagate_deductions.xml" />
-	 -->
 
 </databaseChangeLog>

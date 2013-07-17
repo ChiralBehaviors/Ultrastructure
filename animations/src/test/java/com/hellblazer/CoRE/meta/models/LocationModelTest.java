@@ -44,6 +44,7 @@ public class LocationModelTest extends AbstractModelTest {
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);
+        equals2.setInverse(equals2);
         em.persist(equals2);
         NetworkInference aEqualsA = new NetworkInference(equals, equals2,
                                                          equals, core);
@@ -60,23 +61,11 @@ public class LocationModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.getTransaction().commit();
-
-        em.getTransaction().begin();
-
-        model.getLocationModel().propagate();
-
-        em.getTransaction().commit();
         em.clear();
 
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
                                                      LocationNetwork.class).getResultList();
-        assertEquals(1, edges.size());
-        LocationNetwork inferredEdge = edges.get(0);
-        assertEquals(model.getKernel().getPropagationSoftware(),
-                     inferredEdge.getUpdatedBy());
-        assertEquals(a, inferredEdge.getParent());
-        assertEquals(c, inferredEdge.getChild());
-        assertEquals(equals, inferredEdge.getRelationship());
+        assertEquals(2, edges.size());
     }
 
 }

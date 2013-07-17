@@ -98,7 +98,6 @@ import org.apache.openjpa.util.UnsupportedException;
 import org.apache.openjpa.util.UserException;
 import org.apache.openjpa.util.WrappedException;
 import org.apache.openjpa.validation.ValidatingLifecycleEventManager;
-import org.postgresql.pljava.Session;
 import org.postgresql.pljava.SessionManager;
 
 /**
@@ -4691,8 +4690,10 @@ public class BrokerImpl
         if ((_flags & FLAG_ACTIVE) == 0) {
             try { 
                 SessionManager.current();
-            }  catch (SQLException e) {
-                e.printStackTrace();
+            } catch (RuntimeException e) {
+                NoTransactionException ntr = new NoTransactionException(_loc.get("not-active"));
+                ntr.initCause(e);
+            } catch (SQLException e) {
                 NoTransactionException ntr = new NoTransactionException(_loc.get("not-active"));
                 ntr.initCause(e);
             }
@@ -4705,7 +4706,15 @@ public class BrokerImpl
      */
     private void assertTransactionOperation() {
         if ((_flags & FLAG_ACTIVE) == 0)
-            throw new InvalidStateException(_loc.get("not-active"));
+            try { 
+                SessionManager.current();
+            } catch (RuntimeException e) {
+                NoTransactionException ntr = new NoTransactionException(_loc.get("not-active"));
+                ntr.initCause(e);
+            } catch (SQLException e) {
+                NoTransactionException ntr = new NoTransactionException(_loc.get("not-active"));
+                ntr.initCause(e);
+            }
     }
 
     public void assertNontransactionalRead() {

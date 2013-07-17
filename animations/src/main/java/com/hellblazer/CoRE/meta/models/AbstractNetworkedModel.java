@@ -26,6 +26,7 @@ import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHOR
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GET_CHILD_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
@@ -123,6 +124,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         if (propagated != null) {
             return false;
         }
+        session.setAttribute(inPropagateKey, Boolean.TRUE);
         session.addTransactionListener(new TransactionListener() {
 
             @Override
@@ -204,23 +206,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     public void generateInverses() {
-        String q = String.format("INSERT INTO %s(parent, relationship, child, updated_by, distance) "
-                                         + "SELECT net.child as parent, "
-                                         + "    rel.inverse as relationship, "
-                                         + "    net.parent as child, "
-                                         + "    ?1 as updated_by,"
-                                         + "    net.distance "
-                                         + "FROM %s AS net "
-                                         + "JOIN ruleform.relationship AS rel ON net.relationship = rel.id "
-                                         + "LEFT OUTER JOIN %s AS exist "
-                                         + "    ON net.child = exist.parent "
-                                         + "    AND rel.inverse = exist.relationship "
-                                         + "    AND net.parent = exist.child "
-                                         + " WHERE exist.parent IS NULL "
-                                         + "  AND exist.relationship IS NULL "
-                                         + "  AND exist.child IS NULL",
-                                 networkTable, networkTable, networkTable);
-        Query query = em.createNativeQuery(q);
+        Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
+                                                        GENERATE_NETWORK_INVERSES_SUFFIX));
         query.setParameter(1, kernel.getInverseSoftware().getId());
         long then = System.currentTimeMillis();
         int created = query.executeUpdate();
@@ -460,49 +447,45 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     public void propagate() {
         createDeductionTemporaryTables();
         boolean firstPass = true;
-        try {
-            do {
-                int newRules;
-                // Deduce all possible rules
-                if (firstPass) {
-                    newRules = em.createNamedQuery(networkPrefix
-                                                           + INFERENCE_STEP_SUFFIX).executeUpdate();
-                    firstPass = false;
-                } else {
-                    newRules = em.createNamedQuery(INFERENCE_STEP_FROM_LAST_PASS).executeUpdate();
-                }
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("inferred %s new rules", newRules));
-                }
-                if (newRules == 0) {
-                    break;
-                }
-                // Gather all rules which exist
-                int existing = em.createNamedQuery(networkPrefix
-                                                           + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("gathered %s existing rules",
-                                            existing));
-                }
-                // Deduce the new rules
-                int deduced = em.createNamedQuery(networkPrefix
-                                                          + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("deduced %s rules", deduced));
-                }
-                // Insert the new rules
-                Query insert = em.createNamedQuery(networkPrefix
-                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX);
-                insert.setParameter(1, kernel.getPropagationSoftware().getId());
-                int inserted = insert.executeUpdate();
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("inserted %s new rules", inserted));
-                }
-                alterDeductionTablesForNextPass();
-            } while (true);
-        } finally {
-            dropDeductionTables();
-        }
+        do {
+            int newRules;
+            // Deduce all possible rules
+            if (firstPass) {
+                newRules = em.createNamedQuery(networkPrefix
+                                                       + INFERENCE_STEP_SUFFIX).executeUpdate();
+                firstPass = false;
+            } else {
+                newRules = em.createNamedQuery(INFERENCE_STEP_FROM_LAST_PASS).executeUpdate();
+            }
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("inferred %s new rules", newRules));
+            }
+            if (newRules == 0) {
+                break;
+            }
+            // Gather all rules which exist
+            int existing = em.createNamedQuery(networkPrefix
+                                                       + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("gathered %s existing rules", existing));
+            }
+            // Deduce the new rules
+            int deduced = em.createNamedQuery(networkPrefix
+                                                      + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("deduced %s rules", deduced));
+            }
+            // Insert the new rules
+            Query insert = em.createNamedQuery(networkPrefix
+                                               + INSERT_NEW_NETWORK_RULES_SUFFIX);
+            insert.setParameter(1, kernel.getPropagationSoftware().getId());
+            int inserted = insert.executeUpdate();
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("inserted %s new rules", inserted));
+            }
+            alterDeductionTablesForNextPass();
+            generateInverses();
+        } while (true);
     }
 
     private void alterDeductionTablesForNextPass() {
@@ -533,6 +516,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     private void createDeductionTemporaryTables() {
+        Query exists = em.createNativeQuery("SELECT public.iftableexists('working_memory')",
+                                            Boolean.class);
+        if ((Boolean) exists.getSingleResult()) {
+            em.createNativeQuery("TRUNCATE last_pass_rules").executeUpdate();
+            em.createNativeQuery("TRUNCATE current_pass_rules").executeUpdate();
+            em.createNativeQuery("TRUNCATE last_pass_rules").executeUpdate();
+            em.createNativeQuery("TRUNCATE current_pass_existing_rules").executeUpdate();
+            em.createNativeQuery("TRUNCATE working_memory").executeUpdate();
+            return;
+        }
         createWorkingMemory();
         createCurrentPassRules();
         createCurrentPassExistingRules();
@@ -554,13 +547,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                      + "child BIGINT NOT NULL,"
                                      + "premise1 BIGINT NOT NULL,"
                                      + "premise2 BIGINT NOT NULL )").executeUpdate();
-    }
-
-    private void dropDeductionTables() {
-        em.createNativeQuery("DROP TABLE last_pass_rules").executeUpdate();
-        em.createNativeQuery("DROP TABLE current_pass_rules").executeUpdate();
-        em.createNativeQuery("DROP TABLE current_pass_existing_rules").executeUpdate();
-        em.createNativeQuery("DROP TABLE working_memory").executeUpdate();
     }
 
     @SuppressWarnings("unchecked")

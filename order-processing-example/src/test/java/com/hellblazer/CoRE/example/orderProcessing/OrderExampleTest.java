@@ -89,14 +89,9 @@ public class OrderExampleTest {
         order.setStatus(scenario.active);
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
-        // assertEquals(1, metaProtocols.size());
-        for (@SuppressWarnings("unused")
-        MetaProtocol metaProtocol : metaProtocols) {
-            @SuppressWarnings("unused")
-            List<Protocol> protocols = jobModel.getProtocols(order,
-                                                             metaProtocols.get(0));
-            // assertEquals(1, protocols.size());
-        }
+        assertEquals(6, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
         List<Job> jobs = em.createQuery("select j from Job j", Job.class).getResultList();
         assertEquals(1, jobs.size());
     }

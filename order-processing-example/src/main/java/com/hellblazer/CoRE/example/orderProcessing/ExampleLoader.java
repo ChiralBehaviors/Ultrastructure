@@ -28,101 +28,104 @@ import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationContext;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
+import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceNetwork;
 
 /**
  * @author hhildebrand
  * 
  */
 public class ExampleLoader {
-    public StatusCode           abandoned;
 
-    public Product              abc486;
-    public StatusCode           active;
     public Relationship         area;
-    public StatusCode           available;
-    public Location             bht378;
-    public Resource             billingComputer;
-    public Location             bin1;
-    public Location             bin15;
-
-    public LocationContext      binCtxt;
-    public Product              checkCredit;
-
-    public Product              checkLetterOfCredit;
-    public Product              chemB;
+    public Relationship         areaOf;
     public Relationship         city;
-    public StatusCode           completed;
-    public LocationContext      containmentCtxt;
-    public Resource             core;
-    public Resource             cpu;
-    public Resource             creditDept;
+    public Relationship         cityOf;
     public Relationship         customerType;
-    public Location             dc;
-    public Product              deliver;
-    public Product              discount;
-
-    public Location             east_coast;
-    public Location             euro;
-    public Resource             exempt;
-    public Resource             externalCust;
-    public Location             factory1;
-    public Resource             factory1Resource;
-    public StatusCode           failure;
-    public Product              fee;
-    public Location             france;
-    public Product              frozen;
-    public Resource             georgeTownUniversity;
-    public Resource             manufacturer;
-    public Product              nonExempt;
-    public Resource             nonExemptResource;
-
-    public Resource             orderFullfillment;
-    public Resource             orgA;
-    public Location             paris;
-    public Product              pick;
-    public StatusCode           pickCompleted;
-    public Attribute            priceAttribute;
-    public Product              printCustomsDeclaration;
-    public Product              printPurchaseOrder;
+    public Relationship         customerTypeOf;
     public Relationship         region;
-    public Product              roomTemp;
-    public Location             rsb225;
-
-    public Product              salesTax;
-    public Relationship         salesTaxStatus;
-    public Product              ship;
+    public Relationship         regionOf;
     public Relationship         state;
+    public Relationship         stateOf;
+    public Relationship         salesTaxStatus;
+    public Relationship         salesTaxStatusOf;
     public Relationship         storageType;
+    public Relationship         storageTypeOf;
     public Relationship         street;
+    public Relationship         streetOf;
+    private Relationship        notApplicableRelationship;
+    private Relationship        sameRelationship;
+    private Relationship        anyRelationship;
 
-    public Attribute            taxRateAttribute;
     public StatusCode           unset;
-    public Location             us;
+    public StatusCode           abandoned;
+    public StatusCode           completed;
+    public StatusCode           failure;
+    public StatusCode           active;
+    public StatusCode           available;
+    public StatusCode           pickCompleted;
     public StatusCode           waitingOnFee;
     public StatusCode           waitingOnPricing;
     public StatusCode           waitingOnPurchaseOrder;
-    public Location             wash;
-    private Location            anyLocation;
-    private Product             anyProduct;
-    private Relationship        anyRelationship;
-    private Resource            anyResource;
     private StatusCode          creditChecked;
-    private Attribute           discountAttribute;
+
+    public Product              abc486;
+    public Product              checkCredit;
+    public Product              checkLetterOfCredit;
+    public Product              chemB;
+    public Product              deliver;
+    public Product              discount;
+    public Product              frozen;
+    public Product              fee;
+    public Product              printCustomsDeclaration;
+    public Product              printPurchaseOrder;
+    public Product              roomTemp;
+    public Product              pick;
+    public Product              salesTax;
+    public Product              ship;
+    public Product              nonExempt;
+    private Product             anyProduct;
+    private Product             sameProduct;
+
+    public Location             bht378;
+    public Location             bin1;
+    public Location             bin15;
+    public Location             dc;
+    public Location             east_coast;
+    public Location             euro;
+    public Location             france;
+    public Location             paris;
+    public Location             rsb225;
+    public Location             factory1;
+    public Location             us;
+    private Location            anyLocation;
+
+    public Resource             billingComputer;
+    public Resource             core;
+    public Resource             cpu;
+    public Resource             creditDept;
+    public Resource             exempt;
+    public Resource             externalCust;
+    public Resource             factory1Resource;
+    public Resource             georgeTownUniversity;
+    public Resource             manufacturer;
+    public Resource             nonExemptResource;
+    public Resource             orderFullfillment;
+    public Resource             orgA;
+    private Resource            anyResource;
+
+    public Attribute            priceAttribute;
+    public Attribute            taxRateAttribute;
+    public Attribute            discountAttribute;
 
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
-    private Relationship        notApplicableRelationship;
-    private Product             sameProduct;
-    private Relationship        sameRelationship;
 
     public ExampleLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -153,30 +156,16 @@ public class ExampleLoader {
         em.persist(discountAttribute);
     }
 
-    public void createLocationContexts() {
-        containmentCtxt = new LocationContext(
-                                              "Geographical Containment",
-                                              "The geographical containment hierarchy ",
-                                              kernel.getCore());
-        em.persist(containmentCtxt);
-        binCtxt = new LocationContext("Parts Bin",
-                                      "The bin location of an product.",
-                                      kernel.getCore());
-        em.persist(binCtxt);
-    }
-
     public void createLocationNetworks() {
-        model.getLocationModel().link(bin1, area, factory1, kernel.getCore());
-        model.getLocationModel().link(bin15, area, bin15, kernel.getCore());
-        model.getLocationModel().link(factory1, street, bht378,
-                                      kernel.getCore());
-        model.getLocationModel().link(rsb225, city, wash, kernel.getCore());
-        model.getLocationModel().link(bht378, city, wash, kernel.getCore());
-        model.getLocationModel().link(wash, state, dc, kernel.getCore());
-        model.getLocationModel().link(dc, region, east_coast, kernel.getCore());
-        model.getLocationModel().link(east_coast, area, us, kernel.getCore());
-        model.getLocationModel().link(paris, region, france, kernel.getCore());
-        model.getLocationModel().link(france, area, euro, billingComputer);
+        model.getLocationModel().link(bin1, area, factory1, core);
+        model.getLocationModel().link(bin15, area, factory1, core);
+        model.getLocationModel().link(factory1, street, bht378, core);
+        model.getLocationModel().link(rsb225, city, dc, core);
+        model.getLocationModel().link(bht378, city, dc, core);
+        model.getLocationModel().link(dc, region, east_coast, core);
+        model.getLocationModel().link(east_coast, area, us, core);
+        model.getLocationModel().link(paris, region, france, core);
+        model.getLocationModel().link(france, area, euro, core);
     }
 
     public void createLocations() {
@@ -201,8 +190,6 @@ public class ExampleLoader {
         em.persist(paris);
         us = new Location("US", "U.S. Locations", core);
         em.persist(us);
-        wash = new Location("WASH", "Washington", core);
-        em.persist(wash);
         euro = new Location("Euro", "European locations", core);
         em.persist(euro);
     }
@@ -242,26 +229,21 @@ public class ExampleLoader {
     }
 
     public void createProductNetworks() {
-        model.getProductModel().link(abc486, storageType, roomTemp,
-                                     kernel.getCore());
-        model.getProductModel().link(abc486, salesTaxStatus, nonExempt,
-                                     kernel.getCore());
-        model.getProductModel().link(chemB, storageType, frozen,
-                                     kernel.getCore());
+        model.getProductModel().link(abc486, storageType, roomTemp, core);
+        model.getProductModel().link(abc486, salesTaxStatus, nonExempt, core);
+        model.getProductModel().link(chemB, storageType, frozen, core);
     }
 
     public void createProducts() {
-        abc486 = new Product("ABC486", "Laptop Computer", kernel.getCore());
+        abc486 = new Product("ABC486", "Laptop Computer", core);
         em.persist(abc486);
-        frozen = new Product("Frozen", "Frozen products", kernel.getCore());
+        frozen = new Product("Frozen", "Frozen products", core);
         em.persist(frozen);
-        nonExempt = new Product("NonExempt", "Subject to sales tax",
-                                kernel.getCore());
+        nonExempt = new Product("NonExempt", "Subject to sales tax", core);
         em.persist(nonExempt);
-        chemB = new Product("ChemB", "Chemical B", kernel.getCore());
+        chemB = new Product("ChemB", "Chemical B", core);
         em.persist(chemB);
-        roomTemp = new Product("RoomTemp", "Room temperature products",
-                               kernel.getCore());
+        roomTemp = new Product("RoomTemp", "Room temperature products", core);
         em.persist(roomTemp);
     }
 
@@ -472,44 +454,39 @@ public class ExampleLoader {
                                 "A is a member of the economic community B",
                                 core, true);
         em.persist(area);
-        Relationship areaOf = new Relationship("Area Of",
-                                               "A is economic community of B",
-                                               core, area);
+        areaOf = new Relationship("Area Of", "A is economic community of B",
+                                  core, area);
         area.setInverse(areaOf);
         em.persist(areaOf);
 
         city = new Relationship("City", "A is located in the City B", core,
                                 true);
         em.persist(city);
-        Relationship cityOf = new Relationship("City Of", "A is the city of B",
-                                               core, city);
+        cityOf = new Relationship("City Of", "A is the city of B", core, city);
         city.setInverse(cityOf);
         em.persist(cityOf);
 
         customerType = new Relationship("Customer Type",
                                         "A has customer type of B", core, true);
         em.persist(customerType);
-        Relationship customerTypeOf = new Relationship(
-                                                       "Customer Type Of",
-                                                       "A is the customer type of B",
-                                                       core, customerType);
+        customerTypeOf = new Relationship("Customer Type Of",
+                                          "A is the customer type of B", core,
+                                          customerType);
         customerType.setInverse(customerTypeOf);
         em.persist(customerTypeOf);
 
         region = new Relationship("Region", "A's general region is B", core,
                                   true);
         em.persist(region);
-        Relationship regionOf = new Relationship("Region Of",
-                                                 "A is the region of B", core,
-                                                 region);
+        regionOf = new Relationship("Region Of", "A is the region of B", core,
+                                    region);
         region.setInverse(regionOf);
         em.persist(regionOf);
 
         state = new Relationship("State", "The State of A is B", core, true);
         em.persist(state);
-        Relationship stateOf = new Relationship("State Of",
-                                                "A is the state of B", core,
-                                                state);
+        stateOf = new Relationship("State Of", "A is the state of B", core,
+                                   state);
         state.setInverse(stateOf);
         em.persist(stateOf);
 
@@ -517,10 +494,9 @@ public class ExampleLoader {
                                           "The sales tax status of A is B",
                                           core, true);
         em.persist(salesTaxStatus);
-        Relationship salesTaxStatusOf = new Relationship(
-                                                         "SalesTaxStatus Of",
-                                                         "A is the sales tax status of B",
-                                                         core, salesTaxStatus);
+        salesTaxStatusOf = new Relationship("SalesTaxStatus Of",
+                                            "A is the sales tax status of B",
+                                            core, salesTaxStatus);
         salesTaxStatus.setInverse(salesTaxStatusOf);
         em.persist(salesTaxStatusOf);
 
@@ -529,120 +505,104 @@ public class ExampleLoader {
                                        "The type of storage required for A is B",
                                        core, true);
         em.persist(storageType);
-        Relationship storageTypeOf = new Relationship(
-                                                      "StorageType Of",
-                                                      "A is the storage type of B",
-                                                      core, storageType);
+        storageTypeOf = new Relationship("StorageType Of",
+                                         "A is the storage type of B", core,
+                                         storageType);
         storageType.setInverse(storageTypeOf);
         em.persist(storageTypeOf);
 
         street = new Relationship("Street", "The street of A is B", core, true);
         em.persist(street);
-        Relationship streetOf = new Relationship("Street of",
-                                                 "A is the street of B", core,
-                                                 street);
+        streetOf = new Relationship("Street of", "A is the street of B", core,
+                                    street);
         street.setInverse(streetOf);
         em.persist(streetOf);
     }
 
-    public void createResourceNetwork() {
-        em.persist(new ResourceNetwork());
-    }
-
     public void createResourceNetworks() {
         model.getResourceModel().link(georgeTownUniversity, customerType,
-                                      externalCust, kernel.getCore());
+                                      externalCust, core);
         model.getResourceModel().link(georgeTownUniversity, salesTaxStatus,
-                                      exempt, kernel.getCore());
-        model.getResourceModel().link(orgA, customerType, externalCust,
-                                      kernel.getCore());
+                                      exempt, core);
+        model.getResourceModel().link(orgA, customerType, externalCust, core);
         model.getResourceModel().link(orgA, salesTaxStatus, nonExemptResource,
-                                      kernel.getCore());
+                                      core);
     }
 
     public void createResources() {
         billingComputer = new Resource("Billing CPU", "The Billing Computer",
-                                       kernel.getCore());
+                                       core);
         em.persist(billingComputer);
 
-        cpu = new Resource("CPU", "Computer", kernel.getCore());
+        cpu = new Resource("CPU", "Computer", core);
         em.persist(cpu);
 
-        creditDept = new Resource("Credit", "Credit Department",
-                                  kernel.getCore());
+        creditDept = new Resource("Credit", "Credit Department", core);
         em.persist(creditDept);
 
-        exempt = new Resource("Exempt", "Exempt from sales taxes",
-                              kernel.getCore());
+        exempt = new Resource("Exempt", "Exempt from sales taxes", core);
         em.persist(exempt);
 
         externalCust = new Resource("Ext Customer",
-                                    "External (Paying) Customer",
-                                    kernel.getCore());
+                                    "External (Paying) Customer", core);
         em.persist(externalCust);
 
-        factory1Resource = new Resource("Factory1", "Factory #1",
-                                        kernel.getCore());
+        factory1Resource = new Resource("Factory1", "Factory #1", core);
         em.persist(factory1Resource);
 
-        georgeTownUniversity = new Resource("GU", "Georgetown University",
-                                            kernel.getCore());
+        georgeTownUniversity = new Resource("GU", "Georgetown University", core);
         em.persist(georgeTownUniversity);
 
-        manufacturer = new Resource("MNFR", "Manufacturer", kernel.getCore());
+        manufacturer = new Resource("MNFR", "Manufacturer", core);
         em.persist(manufacturer);
 
         nonExemptResource = new Resource("NonExempt", "Subject to sales taxes",
-                                         kernel.getCore());
+                                         core);
         em.persist(nonExemptResource);
 
-        orgA = new Resource("OrgA", "Organization A", kernel.getCore());
+        orgA = new Resource("OrgA", "Organization A", core);
         em.persist(orgA);
 
         orderFullfillment = new Resource("Order Fullfillment",
-                                         "Order Fullfillment", kernel.getCore());
+                                         "Order Fullfillment", core);
         em.persist(orderFullfillment);
     }
 
     public void createServices() {
-        deliver = new Product("Deliver", "Deliver product", kernel.getCore());
+        deliver = new Product("Deliver", "Deliver product", core);
         em.persist(deliver);
 
-        pick = new Product("Pick", "Pick inventory", kernel.getCore());
+        pick = new Product("Pick", "Pick inventory", core);
         em.persist(pick);
 
-        ship = new Product("Ship", "Ship inventory", kernel.getCore());
+        ship = new Product("Ship", "Ship inventory", core);
         em.persist(ship);
 
         checkCredit = new Product("CheckCredit",
-                                  "Check customer inhouse credit",
-                                  kernel.getCore());
+                                  "Check customer inhouse credit", core);
         em.persist(checkCredit);
 
         checkLetterOfCredit = new Product("CheckLetterOfCredit",
                                           "Check customer letter of credit",
-                                          kernel.getCore());
+                                          core);
         em.persist(checkLetterOfCredit);
 
-        discount = new Product("Discount", "Compute fee discount ",
-                               kernel.getCore());
+        discount = new Product("Discount", "Compute fee discount ", core);
         em.persist(discount);
 
-        fee = new Product("Fee", "Compute fee", kernel.getCore());
+        fee = new Product("Fee", "Compute fee", core);
         em.persist(fee);
 
         printCustomsDeclaration = new Product("PrintCustomsDeclaration",
                                               "Print the customs declaration",
-                                              kernel.getCore());
+                                              core);
         em.persist(printCustomsDeclaration);
 
         printPurchaseOrder = new Product("PrintPurchaseOrder",
-                                         "Print the purchase order",
-                                         kernel.getCore());
+                                         "Print the purchase order", core);
         em.persist(printPurchaseOrder);
 
-        salesTax = new Product("SalesTax", "Compute sales tax",
-                               kernel.getCore());
+        salesTax = new Product("SalesTax", "Compute sales tax", core);
         em.persist(salesTax);
     }
 
@@ -706,9 +666,9 @@ public class ExampleLoader {
         createAttributes();
         createProducts();
         createServices();
-        createLocationContexts();
         createLocations();
         createRelationships();
+        createNetworkInferences();
         createProductNetworks();
         createResourceNetworks();
         createLocationNetworks();
@@ -716,5 +676,21 @@ public class ExampleLoader {
         createMetaProtocols();
         createStatusCodes();
         // createSequencingAuthorizations();
+    }
+
+    public void createNetworkInferences() {
+        NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
+                                                             areaOf, core);
+        em.persist(areaToRegion);
+        NetworkInference regionToState = new NetworkInference(regionOf,
+                                                              stateOf,
+                                                              regionOf, core);
+        em.persist(regionToState);
+        NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
+                                                            stateOf, core);
+        em.persist(stateToCity);
+        NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
+                                                             cityOf, core);
+        em.persist(cityToStreet);
     }
 }

@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product;
 
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
@@ -25,6 +26,7 @@ import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RUL
 import static com.hellblazer.CoRE.product.Product.ALL_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.ProductNetwork.GENERATE_NETWORK_INVERSES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.product.ProductNetwork.INSERT_NEW_NETWORK_RULES;
@@ -114,7 +116,22 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                 + "        AND cpr.child = exist.child "
                                                                                 + "     WHERE exist.parent IS NULL "
                                                                                 + "     AND exist.relationship IS NULL "
-                                                                                + "     AND exist.child IS NULL") })
+                                                                                + "     AND exist.child IS NULL"),
+                     @NamedNativeQuery(name = GENERATE_NETWORK_INVERSES, query = "INSERT INTO ruleform.product_network(parent, relationship, child, updated_by, inferred) "
+                                                                                 + "SELECT net.child as parent, "
+                                                                                 + "    rel.inverse as relationship, "
+                                                                                 + "    net.parent as child, "
+                                                                                 + "    ?1 as updated_by,"
+                                                                                 + "    net.inferred "
+                                                                                 + "FROM ruleform.product_network AS net "
+                                                                                 + "JOIN ruleform.relationship AS rel ON net.relationship = rel.id "
+                                                                                 + "LEFT OUTER JOIN ruleform.product_network AS exist "
+                                                                                 + "    ON net.child = exist.parent "
+                                                                                 + "    AND rel.inverse = exist.relationship "
+                                                                                 + "    AND net.parent = exist.child "
+                                                                                 + " WHERE exist.parent IS NULL "
+                                                                                 + "  AND exist.relationship IS NULL "
+                                                                                 + "  AND exist.child IS NULL") })
 @javax.persistence.Entity
 @Table(name = "product_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_network_id_seq", sequenceName = "product_network_id_seq", allocationSize = 1)
@@ -138,6 +155,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
                                                                + INFERENCE_STEP_SUFFIX;
     public static final String GATHER_EXISTING_NETWORK_RULES = "productNetwork"
                                                                + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String GENERATE_NETWORK_INVERSES     = "productNetwork"
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"

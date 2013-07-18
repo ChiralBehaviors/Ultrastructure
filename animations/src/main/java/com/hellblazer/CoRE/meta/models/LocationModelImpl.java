@@ -17,13 +17,13 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
+import com.hellblazer.CoRE.animation.JSP;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationAttribute;
@@ -46,29 +46,40 @@ public class LocationModelImpl
         private static final LocationModelImpl SINGLETON;
 
         static {
-            SINGLETON = new LocationModelImpl(InDatabaseEntityManager.getEm());
+            SINGLETON = new LocationModelImpl(JSP.getEm());
         }
 
         public static LocationModelImpl get() {
-            InDatabaseEntityManager.establishContext();
             return SINGLETON;
         }
     }
 
     private static final String LOCATION_NETWORK_PROPAGATE = "LocationNetwork.propagate";
 
-    public static void network_edge_deleted(TriggerData data)
-                                                             throws SQLException {
-        InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
-                                            data.getOld().getLong("relationship"));
+    public static void network_edge_deleted(final TriggerData data)
+                                                                   throws Exception {
+        JSP.execute(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
+                                                    data.getOld().getLong("relationship"));
+                return null;
+            }
+        });
     }
 
-    public static void propagate_deductions(TriggerData data)
-                                                             throws SQLException {
+    public static void propagate_deductions(final TriggerData data)
+                                                                   throws Exception {
         if (!markPropagated(LOCATION_NETWORK_PROPAGATE)) {
             return; // We be done
         }
-        InDatabase.get().propagate();
+        JSP.execute(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                InDatabase.get().propagate();
+                return null;
+            }
+        });
     }
 
     /**

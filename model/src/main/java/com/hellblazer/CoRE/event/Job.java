@@ -127,7 +127,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                     + "  AND jc.time_stamp = "
                                                                                     + "    (SELECT max(time_stamp) FROM ruleform.job_chronology WHERE job = jc.job)"),
                      //Probably a candidate for 8.4 WITH query...
-                     @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.*  FROM ruleform.job AS j "
+                     @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.id  FROM ruleform.job AS j "
                                                                             + "JOIN ruleform.product_sibling_sequencing_authorization AS seq "
                                                                             + "    ON j.service = seq.parent "
                                                                             + "JOIN "

@@ -64,7 +64,7 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(0, jobModel.getChildActions(topLevelJob).size());
         assertEquals(0, jobModel.getSiblingActions(topLevelJob).size());
         assertEquals(1, jobModel.getActiveSubJobsOf(topLevelJob).size());
-        assertEquals(0, jobModel.getActiveJobsFor(scenario.htsfTech).size());
+        assertEquals(7, jobModel.getActiveJobsFor(scenario.htsfTech).size());
         assertEquals(4, jobModel.getMetaprotocols(topLevelJob).size());
         assertEquals(5, jobModel.getProtocols(topLevelJob, scenario.mp1).size());
     }

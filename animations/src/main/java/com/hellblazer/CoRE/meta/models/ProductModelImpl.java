@@ -17,13 +17,13 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
+import com.hellblazer.CoRE.animation.JSP;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.ProductModel;
@@ -46,29 +46,39 @@ public class ProductModelImpl
         private static final ProductModel SINGLETON;
 
         static {
-            SINGLETON = new ProductModelImpl(InDatabaseEntityManager.getEm());
+            SINGLETON = new ProductModelImpl(JSP.getEm());
         }
 
         public static ProductModel get() {
-            InDatabaseEntityManager.establishContext();
             return SINGLETON;
         }
     }
 
     private static final String PRODUCT_NETWORK_PROPAGATE = "ProductNetwork.propagate";
 
-    public static void propagate_deductions(TriggerData data)
-                                                             throws SQLException {
+    public static void propagate_deductions(TriggerData data) throws Exception {
         if (!markPropagated(PRODUCT_NETWORK_PROPAGATE)) {
             return; // We be done
         }
-        InDatabase.get().propagate();
+        JSP.execute(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                InDatabase.get().propagate();
+                return null;
+            }
+        });
     }
 
-    public static void track_network_deleted(TriggerData data)
-                                                              throws SQLException {
-        InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
-                                            data.getOld().getLong("relationship"));
+    public static void track_network_deleted(final TriggerData data)
+                                                                    throws Exception {
+        JSP.execute(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
+                                                    data.getOld().getLong("relationship"));
+                return null;
+            }
+        });
     }
 
     /**

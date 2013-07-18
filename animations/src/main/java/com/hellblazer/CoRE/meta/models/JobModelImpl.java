@@ -46,8 +46,6 @@ import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hellblazer.CoRE.animation.JSP;
-import com.hellblazer.CoRE.animation.RuleformIdIterator;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
@@ -60,6 +58,8 @@ import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.Protocol_;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
+import com.hellblazer.CoRE.jsp.JSP;
+import com.hellblazer.CoRE.jsp.RuleformIdIterator;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.JobModel;
@@ -488,7 +488,7 @@ public class JobModelImpl implements JobModel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.JobModel#getChronologyForJob(com.hellblazer.CoRE.animation.Job)
+     * @see com.hellblazer.CoRE.meta.JobModel#getChronologyForJob(com.hellblazer.CoRE.jsp.Job)
      */
     @Override
     public List<JobChronology> getChronologyForJob(Job job) {
@@ -558,7 +558,7 @@ public class JobModelImpl implements JobModel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.JobModel#getMostRecentChronologyEntry(com.hellblazer.CoRE.animation.Job)
+     * @see com.hellblazer.CoRE.meta.JobModel#getMostRecentChronologyEntry(com.hellblazer.CoRE.jsp.Job)
      */
     @Override
     public JobChronology getMostRecentChronologyEntry(Job job) {
@@ -779,7 +779,7 @@ public class JobModelImpl implements JobModel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.JobModel#isTerminalState(com.hellblazer.CoRE.animation.StatusCode, com.hellblazer.CoRE.animation.Event)
+     * @see com.hellblazer.CoRE.meta.JobModel#isTerminalState(com.hellblazer.CoRE.jsp.StatusCode, com.hellblazer.CoRE.jsp.Event)
      */
     @Override
     public boolean isTerminalState(StatusCode sc, Product service) {

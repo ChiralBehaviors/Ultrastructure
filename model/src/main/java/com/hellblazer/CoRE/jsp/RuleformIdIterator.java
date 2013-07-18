@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hellblazer.CoRE.animation;
+package com.hellblazer.CoRE.jsp;
 
 import java.util.Iterator;
 

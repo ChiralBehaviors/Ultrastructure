@@ -73,12 +73,12 @@
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.openjpa</groupId>
-            <artifactId>openjpa</artifactId>
-            <version>2.2.2</version>
-            <type>jar</type>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+			<version>2.2.2</version>
+			<type>jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -88,6 +88,16 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
 			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.uuid</groupId>
+			<artifactId>java-uuid-generator</artifactId>
+			<version>3.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hellblazer</groupId>
+			<artifactId>pljava-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
@@ -168,16 +178,16 @@
 								<openjpa.metamodel>TRUE</openjpa.metamodel>
 							</options>
 							<outputDirectory>${project.build.directory}/generated-sources/jpa</outputDirectory>
-						</configuration> 
-					</execution> 
+						</configuration>
+					</execution>
 				</executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.openjpa</groupId>
-                        <artifactId>openjpa-all</artifactId>
-                        <version>2.2.2</version>
-                    </dependency>
-                </dependencies>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.openjpa</groupId>
+						<artifactId>openjpa-all</artifactId>
+						<version>2.2.2</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<!-- Disable annotation processors during normal compilation -->
 			<plugin>

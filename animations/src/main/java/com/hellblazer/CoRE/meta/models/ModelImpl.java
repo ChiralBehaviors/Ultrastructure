@@ -34,9 +34,9 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.animation.JSP;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.AttributeValue_;
+import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.JobModel;

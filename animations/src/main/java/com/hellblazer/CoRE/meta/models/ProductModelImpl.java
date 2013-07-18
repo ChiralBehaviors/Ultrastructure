@@ -23,8 +23,8 @@ import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.animation.JSP;
 import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.network.Aspect;

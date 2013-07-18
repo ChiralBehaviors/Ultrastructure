@@ -23,8 +23,8 @@ import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.animation.JSP;
 import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationAttribute;
 import com.hellblazer.CoRE.location.LocationAttributeAuthorization;

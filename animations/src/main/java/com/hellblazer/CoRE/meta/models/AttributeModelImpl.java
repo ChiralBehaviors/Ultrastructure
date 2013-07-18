@@ -25,13 +25,13 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.animation.JSP;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.Transformation;
 import com.hellblazer.CoRE.attribute.TransformationMetarule;
+import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Aspect;

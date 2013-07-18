@@ -17,7 +17,6 @@
 package com.hellblazer.CoRE.attribute;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -30,10 +29,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The value of a unit.

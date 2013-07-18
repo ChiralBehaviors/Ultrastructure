@@ -16,8 +16,10 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.resource.Resource;
@@ -51,32 +52,25 @@ public class CoordinateNesting extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "inner_attribute")
     private Attribute         innerAttribute;
 
     //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "kind")
     private CoordinateKind    kind;
 
     private String            operation;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "outer_attribute")
     private Attribute         outerAttribute;
-
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "research")
-    private Research          research;
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "updated_by")
-    private Resource          updatedBy;
 
     public CoordinateNesting() {
     }
@@ -120,24 +114,8 @@ public class CoordinateNesting extends Ruleform {
         return outerAttribute;
     }
 
-    /**
-     * @return the research
-     */
-    @Override
-    public Research getResearch() {
-        return research;
-    }
-
     public Integer getSequenceNumber() {
         return sequenceNumber;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    @Override
-    public Resource getUpdatedBy() {
-        return updatedBy;
     }
 
     public void setAttribute(Attribute attribute3) {
@@ -165,26 +143,22 @@ public class CoordinateNesting extends Ruleform {
         outerAttribute = attribute1;
     }
 
-    /**
-     * @param research
-     *            the research to set
-     */
-    @Override
-    public void setResearch(Research research) {
-        this.research = research;
-    }
-
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 
-    /**
-     * @param updatedBy
-     *            the updatedBy to set
-     */
-    @Override
-    public void setUpdatedBy(Resource updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		if (innerAttribute != null) innerAttribute = (Attribute) innerAttribute.manageEntity(em, knownObjects);
+		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+		if (outerAttribute != null) outerAttribute = (Attribute) outerAttribute.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

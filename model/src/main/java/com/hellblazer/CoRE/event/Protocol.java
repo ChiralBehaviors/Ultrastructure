@@ -19,10 +19,11 @@ package com.hellblazer.CoRE.event;
 import static com.hellblazer.CoRE.event.Protocol.GET;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -64,7 +65,7 @@ public class Protocol extends Ruleform {
     /**
      * The resource to assign to the job represented by this instance
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "assign_to")
     private Resource               assignTo;
 
@@ -81,14 +82,14 @@ public class Protocol extends Ruleform {
     /**
      * the location to deliver the product from
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_from")
     private Location               deliverFrom;
 
     /**
      * The location to deliver the product to
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Location               deliverTo;
 
@@ -99,28 +100,28 @@ public class Protocol extends Ruleform {
     /**
      * The product of the service
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product")
     private Product                product;
 
     /**
      * The ordered product
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "requested_product")
     private Product                requestedProduct;
 
     /**
      * The requested service to be performed
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "requested_service")
     private Product                requestedService;
 
     /**
      * The resource that requested the product of this service
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "requester")
     private Resource               requester;
 
@@ -130,7 +131,7 @@ public class Protocol extends Ruleform {
     /**
      * The service to be performed
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product                service;
 
@@ -326,4 +327,22 @@ public class Protocol extends Ruleform {
     public void setService(Product service) {
         this.service = service;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (assignTo != null) assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+		if (deliverFrom != null) deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
+		if (deliverTo != null) deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (requestedProduct != null) requestedProduct = (Product) requestedProduct.manageEntity(em, knownObjects);
+		if (requestedService != null) requestedService = (Product) requestedService.manageEntity(em, knownObjects);
+		if (requester != null) requester = (Resource) requester.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

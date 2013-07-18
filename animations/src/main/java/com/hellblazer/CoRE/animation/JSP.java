@@ -19,8 +19,6 @@ package com.hellblazer.CoRE.animation;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -88,19 +86,9 @@ public class JSP {
             });
             log.info("Entity manager created");
         } catch (RuntimeException e) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter writer = new PrintWriter(stringWriter);
-            e.printStackTrace(writer);
-            writer.flush();
-            log.error(stringWriter.toString());
             log.error("Unable to initialize Animations", e);
             throw e;
         } catch (SQLException e) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter writer = new PrintWriter(stringWriter);
-            e.printStackTrace(writer);
-            writer.flush();
-            log.error(stringWriter.toString());
             log.error("Unable to retreive current Session from SessionManager",
                       e);
             throw new IllegalStateException(
@@ -115,7 +103,6 @@ public class JSP {
 
     public static <T> T execute(Callable<T> call) throws Exception {
         Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
-        SQLExceptions.class.getCanonicalName();
         return call.call();
     }
 }

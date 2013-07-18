@@ -19,9 +19,10 @@ package com.hellblazer.CoRE.attribute;
 import static com.hellblazer.CoRE.attribute.Transformation.GET;
 
 import java.io.Serializable;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,27 +55,27 @@ public class Transformation extends Ruleform implements Serializable {
     private static final long  serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "assign_to")
     private Resource           assignTo;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute          attribute;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product")
     private Product            product;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_attribute_resource")
     private Resource           productAttributeResource;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_key")
     private Product            productKey;
 
@@ -83,17 +84,17 @@ public class Transformation extends Ruleform implements Serializable {
     private Long               id;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "relationship_key")
     private Relationship       relationshipKey;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource")
     private Resource           resource;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource_key")
     private Resource           resourceKey;
 
@@ -101,7 +102,7 @@ public class Transformation extends Ruleform implements Serializable {
     private Integer            sequenceNumber;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
 
@@ -204,5 +205,24 @@ public class Transformation extends Ruleform implements Serializable {
     public void setService(Product service) {
         this.service = service;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (assignTo != null) assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (productAttributeResource != null) productAttributeResource = (Resource) productAttributeResource.manageEntity(em, knownObjects);
+		if (productKey != null) productKey = (Product) productKey.manageEntity(em, knownObjects);
+		if (relationshipKey != null) relationshipKey = (Relationship) relationshipKey.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
+		if (resourceKey != null) resourceKey = (Resource) resourceKey.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

@@ -18,8 +18,10 @@ package com.hellblazer.CoRE.location;
 
 import static com.hellblazer.CoRE.location.LocationMetaRule.CONTEXT_META_RULES;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,7 +51,7 @@ public class LocationMetaRule extends Ruleform {
     public static final String CONTEXT_META_RULES = "locationMetaRule.contextMetaRules";
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute_mask")
     private Attribute          attributeMask;
 
@@ -58,7 +60,7 @@ public class LocationMetaRule extends Ruleform {
     private Long               id;
 
     //bi-directional many-to-one association to LocationContext
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location_context")
     private LocationContext    locationContext;
 
@@ -115,4 +117,16 @@ public class LocationMetaRule extends Ruleform {
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (attributeMask != null) attributeMask = (Attribute) attributeMask.manageEntity(em, knownObjects);
+		if (locationContext != null) locationContext = (LocationContext) locationContext.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

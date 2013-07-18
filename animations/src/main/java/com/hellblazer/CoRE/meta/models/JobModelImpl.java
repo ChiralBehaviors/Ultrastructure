@@ -20,8 +20,6 @@ package com.hellblazer.CoRE.meta.models;
 import static com.hellblazer.CoRE.event.Job.CHRONOLOGY;
 import static java.lang.String.format;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -293,10 +291,12 @@ public class JobModelImpl implements JobModel {
                 log.info(String.format("Generating implicit jobs for %s", job));
             }
             generateImplicitJobs(job);
-            for (Job subJob : getInitialSubJobs(job)) {
-                changeStatus(subJob, getInitialState(subJob.getService()),
-                             "Initially available job (automatically set)");
-            }
+            /**
+             * TODO when id refactoring is complete for (Job subJob :
+             * getInitialSubJobs(job)) { changeStatus(subJob,
+             * getInitialState(subJob.getService()),
+             * "Initially available job (automatically set)"); }
+             **/
         }
     }
 
@@ -902,16 +902,7 @@ public class JobModelImpl implements JobModel {
      * @param job
      */
     private void automaticallyGenerateImplicitJobsForExplicitJobs(long job) {
-        try {
-            automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class,
-                                                                     job));
-        } catch (RuntimeException e) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter writer = new PrintWriter(stringWriter);
-            e.printStackTrace(writer);
-            writer.flush();
-            log.error(stringWriter.toString());
-        }
+        automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
     }
 
     private TypedQuery<Protocol> createQuery(MetaProtocol metaProtocol, Job job) {
@@ -1066,15 +1057,7 @@ public class JobModelImpl implements JobModel {
     }
 
     private void processJobChange(long jobId) {
-        try {
-            processJobChange(em.find(Job.class, jobId));
-        } catch (RuntimeException e) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter writer = new PrintWriter(stringWriter);
-            e.printStackTrace(writer);
-            writer.flush();
-            log.error(stringWriter.toString());
-        }
+        processJobChange(em.find(Job.class, jobId));
     }
 
     /**

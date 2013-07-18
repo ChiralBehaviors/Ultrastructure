@@ -18,9 +18,10 @@ package com.hellblazer.CoRE;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -54,16 +55,16 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     private String             notes;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "research")
-    private Research           research;
+	protected Research           research;
 
     @Column(name = "update_date")
     private Timestamp          updateDate;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "updated_by")
-    private Resource           updatedBy;
+	protected Resource           updatedBy;
 
     public Ruleform() {
     }
@@ -213,4 +214,46 @@ abstract public class Ruleform implements Serializable, Cloneable {
     public String toString() {
         return String.format("%s[%s]", getClass(), getId());
     }
+
+	public Ruleform manageEntity(EntityManager em, Map<Ruleform, Ruleform> knownObjects) {
+    	if (knownObjects.containsKey(this)) {
+            return knownObjects.get(this);
+    	}
+    	
+    	//need to traverse leaf nodes first, before persisting this entity.
+    	knownObjects.put(this,  this);
+    	this.traverseForeignKeys(em, knownObjects);
+    	
+    	if (this.getId() != null && em.getReference(this.getClass(), this.getId()) != null) {
+    		em.detach(this);
+    		knownObjects.put(this, em.merge(this));
+    	} else {
+    		em.persist(this);
+    		em.refresh(this);
+    		knownObjects.put(this, this);
+    	}
+    	
+	    
+	    return knownObjects.get(this);
+    }
+
+	//am I traversing the merged entity or the non-merged uploaded state?
+	//might as well make it merged
+	/**
+	 * Calls manageEntity on each foreign key and replaces non-managed foreign key objects
+	 * with managed objects
+	 * @param em
+	 * @param knownObjects
+	 */
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		
+		//TODO either fix this or get rid of it
+		//research.manageEntity(em, knownObjects);
+		if (updatedBy != null) {
+			updatedBy = (Resource) updatedBy.manageEntity(em, knownObjects);
+		}
+		
+	}
+    
 }

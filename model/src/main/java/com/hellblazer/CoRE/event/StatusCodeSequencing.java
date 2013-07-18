@@ -21,10 +21,11 @@ import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_CHILD_STATUS_CO
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.GET_PARENT_STATUS_CODES;
 import static com.hellblazer.CoRE.event.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
+import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -83,7 +84,7 @@ public class StatusCodeSequencing extends Ruleform {
     private Long                id;
 
     //bi-directional many-to-one association to StatusCode
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "parent_code")
     private StatusCode          parentCode;
 
@@ -91,7 +92,7 @@ public class StatusCodeSequencing extends Ruleform {
     private Integer             sequenceNumber              = 1;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne(cascade=CascadeType.MERGE, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "service")
     private Product             service;
 
@@ -238,4 +239,17 @@ public class StatusCodeSequencing extends Ruleform {
     public void setStatusCodeByParent(Set<ProductNetwork> statusCodeByParent) {
         this.statusCodeByParent = statusCodeByParent;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (childCode != null) childCode = (StatusCode) childCode.manageEntity(em, knownObjects);
+		if (parentCode != null) parentCode = (StatusCode) parentCode.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

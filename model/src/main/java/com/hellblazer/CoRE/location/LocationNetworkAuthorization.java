@@ -19,7 +19,9 @@
  */
 package com.hellblazer.CoRE.location;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.NetworkAuthorization;
 import com.hellblazer.CoRE.resource.Resource;
 
@@ -43,12 +46,12 @@ public class LocationNetworkAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "authorized_parent")
     private Location          authorizedParent;
 
     //bi-directional many-to-one association to Event
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "classifier")
     private Location          classifier;
 
@@ -124,4 +127,16 @@ public class LocationNetworkAuthorization extends
     public void setId(Long id) {
         this.id = id;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (authorizedParent != null) authorizedParent = (Location) authorizedParent.manageEntity(em, knownObjects);
+		if (classifier != null) classifier = (Location) classifier.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

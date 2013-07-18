@@ -16,7 +16,9 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.AttributeAuthorization;
 import com.hellblazer.CoRE.resource.Resource;
 
@@ -43,7 +46,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "classification_coordinate")
     private Coordinate        classificationCoordinate;
 
@@ -52,7 +55,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     private Long              id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource")
     private Resource          resource;
 
@@ -108,4 +111,16 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     public void setResource(Resource resource) {
         this.resource = resource;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (classificationCoordinate != null) classificationCoordinate = (Coordinate) classificationCoordinate.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

@@ -17,11 +17,15 @@
 
 package com.hellblazer.CoRE.resource;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 
 /**
@@ -35,7 +39,7 @@ public class ResourceRelationshipProductAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Location
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product")
     private Product           product;
 
@@ -44,6 +48,20 @@ public class ResourceRelationshipProductAuthorization extends
     }
 
     /**
+	 * @param user
+	 * @param owns
+	 * @param channel1
+	 * @param user2
+	 */
+	public ResourceRelationshipProductAuthorization(Resource resource,
+			Relationship rel, Product product, Resource updatedBy) {
+		this.resource = resource;
+		this.product = product;
+		this.relationship = rel;
+		setUpdatedBy(updatedBy);
+	}
+
+	/**
      * @return the product
      */
     public Product getProduct() {
@@ -57,5 +75,16 @@ public class ResourceRelationshipProductAuthorization extends
     public void setProduct(Product product) {
         this.product = product;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

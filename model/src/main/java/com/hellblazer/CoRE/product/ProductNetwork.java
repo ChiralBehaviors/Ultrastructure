@@ -23,6 +23,7 @@ import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.Product.ALL_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GENERATE_NETWORK_INVERSES;
@@ -31,6 +32,7 @@ import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.product.ProductNetwork.INSERT_NEW_NETWORK_RULES;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -49,6 +51,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
@@ -137,6 +140,10 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                             + "where n.parent = :product "
                                                                             + "and n.inferred = FALSE "
                                                                             + "and n.relationship.preferred = FALSE "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+               @NamedQuery(name = ALL_CHILDREN_NETWORK_RULES, query = "select n from ProductNetwork n "
+                                                                            + "where n.parent = :product "
+                                                                            + "and n.relationship = :relationship "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n") })
 public class ProductNetwork extends NetworkRuleform<Product> implements
@@ -274,4 +281,16 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     public void setParent(Product parent) {
         this.parent = parent;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (child != null) child = (Product) child.manageEntity(em, knownObjects);
+		if (parent != null) parent = (Product) parent.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

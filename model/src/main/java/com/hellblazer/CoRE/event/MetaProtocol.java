@@ -18,8 +18,10 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.MetaProtocol.FOR_JOB;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,11 +53,11 @@ public class MetaProtocol extends Ruleform {
 
     private static final long  serialVersionUID = 1L;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
 
@@ -66,14 +68,14 @@ public class MetaProtocol extends Ruleform {
     /**
      * The relationship that transforms the product ordered
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_ordered")
     private Relationship       productOrdered;
 
     /**
      * the relationship that transforms the requesting resource
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "requesting_resource")
     private Relationship       requestingResource;
 
@@ -83,14 +85,14 @@ public class MetaProtocol extends Ruleform {
     /**
      * The service factor for this rule
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
 
     /**
      * the relationship that transforms the service type
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service_type")
     private Relationship       serviceType;
 
@@ -265,4 +267,20 @@ public class MetaProtocol extends Ruleform {
     public void setStopOnMatch(Boolean stopOnMatch) {
         this.stopOnMatch = stopOnMatch;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (deliverFrom != null) deliverFrom = (Relationship) deliverFrom.manageEntity(em, knownObjects);
+		if (deliverTo != null) deliverTo = (Relationship) deliverTo.manageEntity(em, knownObjects);
+		if (productOrdered != null) productOrdered = (Relationship) productOrdered.manageEntity(em, knownObjects);
+		if (requestingResource != null) requestingResource = (Relationship) requestingResource.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		if (serviceType != null) serviceType = (Relationship) serviceType.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

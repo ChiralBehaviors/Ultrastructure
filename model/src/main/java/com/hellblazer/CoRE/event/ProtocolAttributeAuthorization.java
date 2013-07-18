@@ -28,7 +28,9 @@ import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHOR
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,6 +41,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeAuthorization;
 import com.hellblazer.CoRE.location.Location;
@@ -93,19 +96,19 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
 
     private static final long  serialVersionUID                                       = 1L;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_from")
     private Location           deliverFrom;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_from_classification")
     private Relationship       deliverFromClassification;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "deliver_to_classification")
     private Relationship       deliverToClassification;
 
@@ -113,27 +116,27 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     @GeneratedValue(generator = "protocol_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_classification")
     private Relationship       productClassification;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product")
     private Product            product;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "requester")
     private Resource           requester;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "requester_classification")
     private Relationship       requesterClassification;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service_classification")
     private Relationship       serviceClassification;
 
@@ -270,5 +273,25 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     public void setServiceClassification(Relationship serviceClassification) {
         this.serviceClassification = serviceClassification;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (deliverFrom != null) deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
+		if (deliverFromClassification != null) deliverFromClassification = (Relationship) deliverFromClassification.manageEntity(em, knownObjects);
+		if (deliverTo != null) deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
+		if (deliverToClassification != null) deliverToClassification = (Relationship) deliverToClassification.manageEntity(em, knownObjects);
+		if (productClassification != null) productClassification = (Relationship) productClassification.manageEntity(em, knownObjects);
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (requester != null) requester = (Resource) requester.manageEntity(em, knownObjects);
+		if (requesterClassification != null) requesterClassification = (Relationship) requesterClassification.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		if (serviceClassification != null) serviceClassification = (Relationship) serviceClassification.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

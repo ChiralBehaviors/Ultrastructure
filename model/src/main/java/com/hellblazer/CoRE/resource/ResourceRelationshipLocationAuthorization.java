@@ -17,11 +17,14 @@
 
 package com.hellblazer.CoRE.resource;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.location.Location;
 
 /**
@@ -35,7 +38,7 @@ public class ResourceRelationshipLocationAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Location
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location")
     private Location          location;
 
@@ -57,5 +60,16 @@ public class ResourceRelationshipLocationAuthorization extends
     public void setLocation(Location location) {
         this.location = location;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (location != null) location = (Location) location.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

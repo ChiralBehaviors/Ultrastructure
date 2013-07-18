@@ -35,6 +35,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -116,7 +118,7 @@ public class Location extends ExistentialRuleform implements
     //bi-directional many-to-one association to LocationAttribute
     @OneToMany(mappedBy = "location")
     @JsonIgnore
-    private Set<LocationAttribute> attributes; 
+    private Set<LocationAttribute> attributes;
 
     //bi-directional many-to-one association to ProductLocation
     @OneToMany(mappedBy = "location")

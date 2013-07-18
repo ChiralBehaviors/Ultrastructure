@@ -18,8 +18,10 @@ package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.ProductChildSequencingAuthorization.GET_CHILD_ACTIONS;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -53,22 +55,22 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     @GeneratedValue(generator = "product_child_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "next_child")
     private Product            nextChild;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "next_child_status")
     private StatusCode         nextChildStatus;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Product            parent;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber    = 1;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
@@ -183,5 +185,19 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (nextChild != null) nextChild = (Product) nextChild.manageEntity(em, knownObjects);
+		if (nextChildStatus != null) nextChildStatus = (StatusCode) nextChildStatus.manageEntity(em, knownObjects);
+		if (parent != null) parent = (Product) parent.manageEntity(em, knownObjects);
+		if (statusCode != null) statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

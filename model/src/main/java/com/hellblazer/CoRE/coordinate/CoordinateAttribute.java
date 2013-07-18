@@ -17,8 +17,9 @@
 package com.hellblazer.CoRE.coordinate;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
@@ -47,12 +49,12 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Coordinate
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "coordinate")
     private Coordinate        coordinate;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_value")
     private Product           productValue;
 
@@ -181,4 +183,16 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     public void setProductValue(Product product) {
         productValue = product;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (coordinate != null) coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
+		if (productValue != null) productValue = (Product) productValue.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

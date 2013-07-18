@@ -16,7 +16,9 @@
  */
 package com.hellblazer.CoRE.network;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,17 +47,17 @@ public class NetworkInference extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "inference")
     private Relationship      inference;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "premise1")
     private Relationship      premise1;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "premise2")
     private Relationship      premise2;
 
@@ -148,4 +150,17 @@ public class NetworkInference extends Ruleform {
     public void setPremise2(Relationship premise2) {
         this.premise2 = premise2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (inference != null) inference = (Relationship) inference.manageEntity(em, knownObjects);
+		if (premise1 != null) premise1 = (Relationship) premise1.manageEntity(em, knownObjects);
+		if (premise2 != null) premise2 = (Relationship) premise2.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

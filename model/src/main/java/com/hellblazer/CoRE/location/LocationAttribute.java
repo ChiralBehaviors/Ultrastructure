@@ -17,8 +17,9 @@
 package com.hellblazer.CoRE.location;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
@@ -45,7 +47,7 @@ public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_value")
     private Product           productValue;
 
@@ -53,12 +55,12 @@ public class LocationAttribute extends AttributeValue<Location> {
     @GeneratedValue(generator = "location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
     //bi-directional many-to-one association to Location
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location")
     private Location          location;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource_value")
     private Resource          resourceValue;
 
@@ -190,4 +192,17 @@ public class LocationAttribute extends AttributeValue<Location> {
     public void setResourceValue(Resource resource2) {
         resourceValue = resource2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (productValue != null) productValue = (Product) productValue.manageEntity(em, knownObjects);
+		if (location != null) location = (Location) location.manageEntity(em, knownObjects);
+		if (resourceValue != null) resourceValue = (Resource) resourceValue.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

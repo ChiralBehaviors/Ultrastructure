@@ -29,8 +29,8 @@ import static com.hellblazer.CoRE.resource.ResourceNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.resource.ResourceNetwork.INSERT_NEW_NETWORK_RULES;
 
 import java.util.List;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,6 +44,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
@@ -148,7 +149,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "child")
     private Resource           child;
 
@@ -157,7 +158,7 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
     private Long               id;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Resource           parent;
 
@@ -230,4 +231,16 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
     public void setParent(Resource resource2) {
         parent = resource2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (child != null) child = (Resource) child.manageEntity(em, knownObjects);
+		if (parent != null) parent = (Resource) parent.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

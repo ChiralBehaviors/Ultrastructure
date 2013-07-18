@@ -21,9 +21,9 @@ import static com.hellblazer.CoRE.coordinate.CoordinateKind.LOWER_LEVEL_KIND;
 import static com.hellblazer.CoRE.coordinate.CoordinateKind.TOP_LEVEL_KIND;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,6 +42,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.Research;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -112,13 +113,6 @@ public class CoordinateKind extends ExistentialRuleform {
     @JsonIgnore
     private Set<CoordinateNesting>        nestingRules;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "research")
-    private Research                      research;
-
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "updated_by")
-    private Resource                      updatedBy;
 
     public CoordinateKind() {
     }
@@ -187,22 +181,6 @@ public class CoordinateKind extends ExistentialRuleform {
         return nestingRules;
     }
 
-    /**
-     * @return the research
-     */
-    @Override
-    public Research getResearch() {
-        return research;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    @Override
-    public Resource getUpdatedBy() {
-        return updatedBy;
-    }
-
     public void setDefinitionRules(Set<CoordinateKindDefinition> coordinateKindDefinitions1) {
         definitionRules = coordinateKindDefinitions1;
     }
@@ -220,21 +198,5 @@ public class CoordinateKind extends ExistentialRuleform {
         nestingRules = coordinateNestings;
     }
 
-    /**
-     * @param research
-     *            the research to set
-     */
-    @Override
-    public void setResearch(Research research) {
-        this.research = research;
-    }
 
-    /**
-     * @param updatedBy
-     *            the updatedBy to set
-     */
-    @Override
-    public void setUpdatedBy(Resource updatedBy) {
-        this.updatedBy = updatedBy;
-    }
 }

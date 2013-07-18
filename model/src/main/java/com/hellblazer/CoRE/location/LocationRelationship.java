@@ -21,8 +21,10 @@ import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_RELATI
 import static com.hellblazer.CoRE.location.LocationRelationship.RULES;
 import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -71,12 +73,12 @@ public class LocationRelationship extends Ruleform {
     private Relationship       attributeRelationship;
 
     //bi-directional many-to-one association to LocationContext
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "context")
     private LocationContext    context;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_mapped_value")
     private Product            productMappedValue;
 
@@ -85,17 +87,17 @@ public class LocationRelationship extends Ruleform {
     private Long               id;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location_1_attribute")
     private Attribute          location1Attribute;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location_2_attribute")
     private Attribute          location2Attribute;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 
@@ -103,7 +105,7 @@ public class LocationRelationship extends Ruleform {
     private Integer            sequenceNumber;
 
     //bi-directional many-to-one association to LocationContext
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "target_context")
     private LocationContext    targetContext;
 
@@ -197,4 +199,21 @@ public class LocationRelationship extends Ruleform {
     public void setTargetContext(LocationContext locationContext2) {
         targetContext = locationContext2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (attributeRelationship != null) attributeRelationship = (Relationship) attributeRelationship.manageEntity(em, knownObjects);
+		if (context != null) context = (LocationContext) context.manageEntity(em, knownObjects);
+		if (productMappedValue != null) productMappedValue = (Product) productMappedValue.manageEntity(em, knownObjects);
+		if (location1Attribute != null) location1Attribute = (Attribute) location1Attribute.manageEntity(em, knownObjects);
+		if (location2Attribute != null) location2Attribute = (Attribute) location2Attribute.manageEntity(em, knownObjects);
+		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
+		if (targetContext != null) targetContext = (LocationContext) targetContext.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

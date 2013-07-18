@@ -21,9 +21,10 @@ package com.hellblazer.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -48,7 +49,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
@@ -74,7 +75,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private Timestamp         timestampValue;
 
     //bi-directional many-to-one association to Unit
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "unit")
     private Unit              unit;
 
@@ -296,5 +297,16 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
+    
+    /* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

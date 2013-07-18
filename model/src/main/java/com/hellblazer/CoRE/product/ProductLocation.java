@@ -16,9 +16,10 @@
  */
 package com.hellblazer.CoRE.product;
 
+import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +56,7 @@ public class ProductLocation extends Ruleform implements
     private Set<ProductLocationAttribute> attributes;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product")
     private Product                       product;
 
@@ -64,17 +65,17 @@ public class ProductLocation extends Ruleform implements
     private Long                          id;
 
     //bi-directional many-to-one association to Location
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "location")
     private Location                      location;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship                  relationship;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource")
     private Resource                      resource;
 
@@ -154,4 +155,18 @@ public class ProductLocation extends Ruleform implements
     public void setResource(Resource resource2) {
         resource = resource2;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
+		if (location != null) location = (Location) location.manageEntity(em, knownObjects);
+		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
+		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

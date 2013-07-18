@@ -16,13 +16,16 @@
  */
 package com.hellblazer.CoRE.attribute;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
@@ -42,7 +45,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
@@ -97,5 +100,18 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
     }
 
     abstract public void setClassifier(RuleForm classifier);
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (classification != null) classification = (Relationship) classification.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
+    
+    
 
 }

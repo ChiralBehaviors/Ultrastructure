@@ -16,8 +16,10 @@
  */
 package com.hellblazer.CoRE.coordinate;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +44,7 @@ public class CoordinateKindDefinition extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
@@ -51,25 +53,18 @@ public class CoordinateKindDefinition extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "kind")
     private CoordinateKind    kind;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "research")
-    private Research          research;
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
 
     //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "subordinate_coordinate_kind")
     private CoordinateKind    subordinateCoordinateKind;
-
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "updated_by")
-    private Resource          updatedBy;
 
     public CoordinateKindDefinition() {
     }
@@ -101,13 +96,6 @@ public class CoordinateKindDefinition extends Ruleform {
         return kind;
     }
 
-    /**
-     * @return the research
-     */
-    @Override
-    public Research getResearch() {
-        return research;
-    }
 
     public Integer getSequenceNumber() {
         return sequenceNumber;
@@ -117,13 +105,6 @@ public class CoordinateKindDefinition extends Ruleform {
         return subordinateCoordinateKind;
     }
 
-    /**
-     * @return the updatedBy
-     */
-    @Override
-    public Resource getUpdatedBy() {
-        return updatedBy;
-    }
 
     public void setAttribute(Attribute attribute) {
         this.attribute = attribute;
@@ -138,14 +119,6 @@ public class CoordinateKindDefinition extends Ruleform {
         kind = coordinateKind2;
     }
 
-    /**
-     * @param research
-     *            the research to set
-     */
-    @Override
-    public void setResearch(Research research) {
-        this.research = research;
-    }
 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
@@ -155,13 +128,18 @@ public class CoordinateKindDefinition extends Ruleform {
         subordinateCoordinateKind = coordinateKind1;
     }
 
-    /**
-     * @param updatedBy
-     *            the updatedBy to set
-     */
-    @Override
-    public void setUpdatedBy(Resource updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+		if (subordinateCoordinateKind != null) subordinateCoordinateKind = (CoordinateKind) subordinateCoordinateKind.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

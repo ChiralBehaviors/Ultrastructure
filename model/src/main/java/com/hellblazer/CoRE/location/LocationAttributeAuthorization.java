@@ -16,7 +16,9 @@
  */
 package com.hellblazer.CoRE.location;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
@@ -46,7 +49,7 @@ public class LocationAttributeAuthorization extends
     private static final long serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "classifier")
     private Location          classifier;
 
@@ -134,4 +137,15 @@ public class LocationAttributeAuthorization extends
     public void setId(Long id) {
         this.id = id;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (classifier != null) classifier = (Location) classifier.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

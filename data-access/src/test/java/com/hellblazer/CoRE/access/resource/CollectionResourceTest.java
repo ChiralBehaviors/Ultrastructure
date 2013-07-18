@@ -16,9 +16,12 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
-import org.junit.Assert;
+import javax.ws.rs.core.Response;
+
+import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -42,7 +45,7 @@ public class CollectionResourceTest extends DatabaseTest {
         Resource core = new Resource("CoRE");
         core.setUpdatedBy(core);
         core = em.merge(core);
-        Assert.assertTrue(core != null);
+        assertTrue(core != null);
         Resource user = new Resource("User", null, core);
         user = em.merge(user);
         Product channel = new Product("MyChannel", null, core);
@@ -62,6 +65,33 @@ public class CollectionResourceTest extends DatabaseTest {
 
         em.getTransaction().commit();
 
+    }
+    
+    
+    @Test
+    public void testInsertSingleRuleform() throws JsonProcessingException {
+    	resource = new CollectionResource(emf);
+    	Resource core = new Resource("hparry", "test resource");
+    	core.setUpdatedBy(core);
+    	
+    	Response res = resource.post(core);
+    	assertTrue(res.getStatus() == 200);
+    	
+    }
+    
+    @Test
+    public void testInsertSimpleGraph() throws JsonProcessingException {
+    	resource = new CollectionResource(emf);
+    	Resource core = new Resource("insertSimpleGraph", "test resource");
+    	core.setUpdatedBy(core);
+    	
+    	Product prod = new Product("myProd", null, core);
+    	Response res = resource.post(prod);
+    	
+    	assertTrue(res.getStatus() == 200);
+    	
+//    	em.refresh(prod);
+//    	assertNotNull(prod.getId());
     }
 
 }

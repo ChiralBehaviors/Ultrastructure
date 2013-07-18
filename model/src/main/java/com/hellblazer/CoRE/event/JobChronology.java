@@ -17,9 +17,10 @@
 package com.hellblazer.CoRE.event;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,12 +47,12 @@ public class JobChronology extends Ruleform {
     private Long              id;
 
     //bi-directional many-to-one association to Job
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "job")
     private Job               job;
 
     //bi-directional many-to-one association to StatusCode
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "status")
     private StatusCode        statusCode;
 
@@ -116,4 +117,16 @@ public class JobChronology extends Ruleform {
     public void setTimeStamp(Timestamp timeStamp) {
         this.timeStamp = timeStamp;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (job != null) job = (Job) job.manageEntity(em, knownObjects);
+		if (statusCode != null) statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

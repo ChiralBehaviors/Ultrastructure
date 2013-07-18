@@ -19,9 +19,10 @@ package com.hellblazer.CoRE.attribute;
 import static com.hellblazer.CoRE.attribute.TransformationMetarule.GET_BY_EVENT;
 
 import java.io.Serializable;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -52,12 +53,12 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     private static final long  serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_map")
     private Relationship       productMap;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "product_network_resource")
     private Resource           productNetworkResource;
 
@@ -66,7 +67,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     private Long               id;
 
     //bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "resource_map")
     private Relationship       relationshipMap;
 
@@ -76,7 +77,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     /**
      * The service performed
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
 
@@ -150,5 +151,19 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     public void setStopOnMatch(Boolean stopOnMatch) {
         this.stopOnMatch = stopOnMatch;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (productMap != null) productMap = (Relationship) productMap.manageEntity(em, knownObjects);
+		if (productNetworkResource != null) productNetworkResource = (Resource) productNetworkResource.manageEntity(em, knownObjects);
+		if (relationshipMap != null) relationshipMap = (Relationship) relationshipMap.manageEntity(em, knownObjects);
+		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 
 }

@@ -16,8 +16,10 @@
  */
 package com.hellblazer.CoRE.network;
 
-import javax.persistence.CascadeType;
+import java.util.Map;
+
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -41,16 +43,16 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "authorized_relationship")
     private Relationship      authorizedRelationship;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
     //bi-directional many-to-one association to Resource
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "grouping_resource")
     private Resource          groupingResource;
 
@@ -114,4 +116,17 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
+    
+    /* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (authorizedRelationship != null) authorizedRelationship = (Relationship) authorizedRelationship.manageEntity(em, knownObjects);
+		if (classification != null) classification = (Relationship) classification.manageEntity(em, knownObjects);
+		if (groupingResource != null) groupingResource = (Resource) groupingResource.manageEntity(em, knownObjects);
+		super.traverseForeignKeys(em, knownObjects);
+		
+	}
 }

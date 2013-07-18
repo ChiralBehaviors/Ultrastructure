@@ -24,7 +24,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -55,7 +57,8 @@ public class CollectionResource {
 
 	@POST
 	@Path("/")
-	public Response post(Ruleform graph) throws JsonProcessingException {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Ruleform post(Ruleform graph) throws JsonProcessingException {
 		em.getTransaction().begin();
 		try {
 
@@ -66,9 +69,7 @@ public class CollectionResource {
 			em.refresh(graph);
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.enableDefaultTyping();
-			return Response.ok(
-					mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(
-							graph)).build();
+			return graph;
 		} catch (Exception e) {
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();

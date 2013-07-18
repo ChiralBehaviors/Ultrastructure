@@ -61,6 +61,10 @@
 			<id>eclipselink</id>
 			<url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo/</url>
 		</repository>
+		<repository>
+            <id>hellblazer-snapshots</id>
+            <url>https://repository-hal900000.forge.cloudbees.com/snapshot/</url>
+        </repository>
 	</repositories>
 
 	<pluginRepositories>

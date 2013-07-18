@@ -61,6 +61,7 @@ public class InDatabaseEntityManager {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                               properties);
             EM = emf.createEntityManager();
+            EM.getTransaction().begin();
             log.info(String.format("Entities: %s",
                                    EM.getMetamodel().getEntities()));
             log.info("Product manager created");

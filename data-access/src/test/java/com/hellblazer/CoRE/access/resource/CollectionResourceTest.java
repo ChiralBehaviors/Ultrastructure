@@ -16,9 +16,12 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
-import javax.ws.rs.core.Response;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
+
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -74,24 +77,37 @@ public class CollectionResourceTest extends DatabaseTest {
     	Resource core = new Resource("hparry", "test resource");
     	core.setUpdatedBy(core);
     	
-    	Response res = resource.post(core);
-    	assertTrue(res.getStatus() == 200);
+    	core = (Resource) resource.post(core);
+    	assertNotNull(core.getId());
     	
     }
     
     @Test
-    public void testInsertSimpleGraph() throws JsonProcessingException {
+    public void testInsertSimpleGraph() throws IOException {
     	resource = new CollectionResource(emf);
     	Resource core = new Resource("insertSimpleGraph", "test resource");
     	core.setUpdatedBy(core);
     	
     	Product prod = new Product("myProd", null, core);
-    	Response res = resource.post(prod);
+    	Product res = (Product)resource.post(prod);
+    	assertNotNull(res.getId());
+    	assertEquals("myProd", res.getName());
+    }
+    
+    @Test
+    public void testInsertRelationshipAndInverse() throws JsonProcessingException {
+    	resource = new CollectionResource(emf);
+    	Resource core = new Resource("hparry", "test resource");
+    	core.setUpdatedBy(core);
     	
-    	assertTrue(res.getStatus() == 200);
+    	Relationship owns = new Relationship("owns", null, core);
+    	Relationship ownedBy = new Relationship("ownedBy", null, core);
+    	owns.setInverse(ownedBy);
+    	ownedBy.setInverse(owns);
     	
-//    	em.refresh(prod);
-//    	assertNotNull(prod.getId());
+    	Relationship graph = (Relationship) resource.post(owns);
+    	assertNotNull(graph.getId());
+    	assertNotNull(graph.getInverse().getId());
     }
 
 }

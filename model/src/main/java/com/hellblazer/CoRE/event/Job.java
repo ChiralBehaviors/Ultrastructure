@@ -37,6 +37,7 @@ import static com.hellblazer.CoRE.event.Job.TOP_LEVEL_JOBS;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
@@ -189,7 +190,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The resource assigned to this job
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "assign_to")
     private Resource           assignTo;
 
@@ -217,14 +218,14 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The location where the product will be delivered from
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "deliver_from")
     private Location           deliverFrom;
 
     /**
      * The location to deliver the product of this job
-     */
-    @ManyToOne
+     */ 
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
 
@@ -235,21 +236,21 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The parent of this job
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "parent")
     private Job                parent;
 
     /**
      * The end product of this job
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "product")
     private Product            product;
 
     /**
      * The consumer of this job's product
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "requester")
     private Resource           requester;
 
@@ -259,7 +260,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The service this job is performing
      */
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "service")
     private Product            service;
 

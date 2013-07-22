@@ -142,9 +142,9 @@ public class JobModelImpl implements JobModel {
                                                                           throws SQLException {
         long statusId = triggerData.getNew().getLong("status");
         if (statusId == 0) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Setting status of job to unset (%s)",
-                                       statusId));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Setting status of job to unset (%s)",
+                                        statusId));
             }
             triggerData.getNew().updateLong("status",
                                             WellKnownStatusCode.UNSET.id());
@@ -283,20 +283,18 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Generating implicit jobs for: %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Generating implicit jobs for: %s", job));
         }
         if (job.getStatus().getPropagateChildren()) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Generating implicit jobs for %s", job));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Generating implicit jobs for %s", job));
             }
             generateImplicitJobs(job);
-            /**
-             * TODO when id refactoring is complete for (Job subJob :
-             * getInitialSubJobs(job)) { changeStatus(subJob,
-             * getInitialState(subJob.getService()),
-             * "Initially available job (automatically set)"); }
-             **/
+            for (Job subJob : getInitialSubJobs(job)) {
+                changeStatus(subJob, getInitialState(subJob.getService()),
+                             "Initially available job (automatically set)");
+            }
         }
     }
 
@@ -351,9 +349,9 @@ public class JobModelImpl implements JobModel {
     @Override
     public void generateImplicitJobs(Job job) {
         List<Protocol> protocols = getProtocols(job);
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Found %s protocols for %s",
-                                   protocols.size(), job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Found %s protocols for %s",
+                                    protocols.size(), job));
         }
         for (Protocol protocol : protocols) {
             insertJob(job, protocol);
@@ -768,8 +766,10 @@ public class JobModelImpl implements JobModel {
             attribute.setJob(job);
             em.persist(attribute);
         }
-        log.info(String.format("Inserting job %s", job));
         em.persist(job);
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Inserted job %s", job));
+        }
     }
 
     @Override
@@ -816,8 +816,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processChildChanges(Job job) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing children of Job %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing children of Job %s", job));
         }
         List<ProductChildSequencingAuthorization> childActions = getChildActions(job);
         for (ProductChildSequencingAuthorization seq : childActions) {
@@ -838,8 +838,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processParentChanges(Job job) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing parent of Job %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing parent of Job %s", job));
         }
 
         for (ProductParentSequencingAuthorization seq : getParentActions(job)) {
@@ -860,8 +860,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processSiblingChanges(Job job) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing siblings of Job %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing siblings of Job %s", job));
         }
 
         for (ProductSiblingSequencingAuthorization seq : getSiblingActions(job)) {

@@ -22,6 +22,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductNetwork;
@@ -33,16 +35,16 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 public class ProductGraph extends AbstractNetworkGraph<Product> {
 
 	private Product origin;
-	private Relationship relationship;
-	private Product[] neighbors;
+	private Relationship[] relationships;
+	private Product[] nodes;
 	private EntityManager em;
 	
 	
-	public ProductGraph(Product origin, Relationship relationship, EntityManager em) {
-		this.origin = origin;
-		this.relationship = relationship;
+	public ProductGraph(Product node, Relationship[] relationships, EntityManager em) {
+		this.origin = node;
+		this.relationships = relationships;
 		this.em = em;
-		neighbors = findNeighbors();	
+		nodes = findNeighbors();	
 	}
 	
 	/**
@@ -52,15 +54,15 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 		//TODO HPARRY create a query that just gets the child nodes, not the ProductNetworks
 		Query q = em.createNamedQuery(Product.ALL_CHILDREN_NETWORK_RULES);
 		q.setParameter("product", origin);
-		q.setParameter("relationship", relationship);
+		q.setParameter("relationship", relationships[0]);
 		@SuppressWarnings("unchecked")
 		List<ProductNetwork> results = (List<ProductNetwork>)q.getResultList();
-		List<Product> neighbors = new LinkedList<Product>();
-		
+		List<Product> nodes = new LinkedList<Product>();
+		nodes.add(origin);
 		for (ProductNetwork pn : results) {
-			neighbors.add(pn.getChild());
+			nodes.add(pn.getChild());
 		}
-		return neighbors.toArray(new Product[0]);
+		return nodes.toArray(new Product[0]);
 		
 	}
 
@@ -71,20 +73,22 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 	public Product getOrigin() {
 		return origin;
 	}
+
 	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph#getRelationship()
+	 * @see com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph#getEdges()
 	 */
 	@Override
-	public Relationship getRelationship() {
-		return relationship;
+	public Relationship[] getEdges() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph#getNeighborNodes()
+	 * @see com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph#getNodes()
 	 */
 	@Override
-	public Product[] getNeighborNodes() {
-		return neighbors;
+	public ExistentialRuleform[] getNodes() {
+		return nodes;
 	}
 	
 	

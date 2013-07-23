@@ -67,7 +67,7 @@ public class StatusCode extends ExistentialRuleform {
     public static final String IS_TERMINAL_STATE = "statusCode.isTerminalState";
 
     @Column(name = "fail_parent")
-    private Boolean            failParent        = false;
+    private Boolean            failParent        = true;
 
     @Id
     @GeneratedValue(generator = "status_code_id_seq", strategy = GenerationType.SEQUENCE)

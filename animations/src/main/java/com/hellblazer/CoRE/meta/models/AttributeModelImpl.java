@@ -17,21 +17,21 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.Transformation;
 import com.hellblazer.CoRE.attribute.TransformationMetarule;
+import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Aspect;
@@ -57,29 +57,42 @@ public class AttributeModelImpl
     private static class InDatabase {
         private static final AttributeModelImpl SINGLETON;
         static {
-            SINGLETON = new AttributeModelImpl(InDatabaseEntityManager.getEm());
+            SINGLETON = new AttributeModelImpl(JSP.getEm());
         }
 
         public static AttributeModelImpl get() {
-            InDatabaseEntityManager.establishContext();
             return SINGLETON;
         }
     }
 
     private static final String ATTRIBUTE_NETWORK_PROPAGATE = "AttributeNetwork.propagate";
 
-    public static void network_edge_deleted(TriggerData data)
-                                                             throws SQLException {
-        InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
-                                            data.getOld().getLong("relationship"));
+    public static void network_edge_deleted(final TriggerData data)
+                                                                   throws Exception {
+        JSP.execute(new Callable<Void>() {
+
+            @Override
+            public Void call() throws Exception {
+                InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
+                                                    data.getOld().getLong("relationship"));
+                return null;
+            }
+        });
     }
 
-    public static void propagate_deductions(TriggerData data)
-                                                             throws SQLException {
+    public static void propagate_deductions(final TriggerData data)
+                                                                   throws Exception {
         if (!markPropagated(ATTRIBUTE_NETWORK_PROPAGATE)) {
             return; // We be done
         }
-        InDatabase.get().propagate();
+        JSP.execute(new Callable<Void>() {
+
+            @Override
+            public Void call() throws Exception {
+                InDatabase.get().propagate();
+                return null;
+            }
+        });
     }
 
     /**

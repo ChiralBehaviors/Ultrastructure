@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -33,10 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTestContext;
 

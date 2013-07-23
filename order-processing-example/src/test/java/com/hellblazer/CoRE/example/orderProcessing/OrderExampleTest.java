@@ -93,6 +93,6 @@ public class OrderExampleTest {
         List<Protocol> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         List<Job> jobs = em.createQuery("select j from Job j", Job.class).getResultList();
-        assertEquals(1, jobs.size());
+        assertEquals(3, jobs.size());
     }
 }

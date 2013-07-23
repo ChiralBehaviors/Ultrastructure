@@ -28,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.resource.Resource;

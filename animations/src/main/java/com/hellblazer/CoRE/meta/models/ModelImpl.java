@@ -34,9 +34,9 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.animation.InDatabaseEntityManager;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.AttributeValue_;
+import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.JobModel;
@@ -89,7 +89,7 @@ public class ModelImpl implements Model {
     public static void setPrincipal(Long resource,
                                     Long[] activeRoleRelationships,
                                     Long[] activeRoleResources) {
-        EntityManager em = InDatabaseEntityManager.getEm();
+        EntityManager em = JSP.getEm();
         if (activeRoleRelationships == null || activeRoleResources == null) {
             principal = new AuthenticatedPrincipal(em.find(Resource.class,
                                                            resource));

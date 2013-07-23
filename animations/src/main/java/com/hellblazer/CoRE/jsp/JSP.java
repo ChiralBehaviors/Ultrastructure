@@ -15,17 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hellblazer.CoRE.animation;
+package com.hellblazer.CoRE.jsp;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.apache.openjpa.jdbc.sql.SQLExceptions;
+import org.postgresql.pljava.Session;
+import org.postgresql.pljava.SessionManager;
+import org.postgresql.pljava.TransactionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +41,15 @@ import com.hellblazer.CoRE.kernel.WellKnownObject;
  * @author hhildebrand
  * 
  */
-public class InDatabaseEntityManager {
+public class JSP {
     private static final EntityManager EM;
-    private static final Logger        log = LoggerFactory.getLogger(InDatabaseEntityManager.class);
+    private static final Logger        log = LoggerFactory.getLogger(JSP.class);
 
     static {
         try {
-            establishContext();
-            InputStream is = InDatabaseEntityManager.class.getResourceAsStream("jpa.properties");
+            Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
+            SQLExceptions.class.getCanonicalName();
+            InputStream is = JSP.class.getResourceAsStream("jpa.properties");
             if (is == null) {
                 log.error("Unable to read jpa.properties, resource is null");
                 throw new IllegalStateException(
@@ -61,25 +67,42 @@ public class InDatabaseEntityManager {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                               properties);
             EM = emf.createEntityManager();
+            final Session current = SessionManager.current();
             EM.getTransaction().begin();
-            log.info(String.format("Entities: %s",
-                                   EM.getMetamodel().getEntities()));
-            log.info("Product manager created");
+            current.addTransactionListener(new TransactionListener() {
+
+                @Override
+                public void onPrepare(Session session) throws SQLException {
+                    EM.flush();
+                }
+
+                @Override
+                public void onCommit(Session session) throws SQLException {
+                }
+
+                @Override
+                public void onAbort(Session session) throws SQLException {
+                }
+            });
+            log.info("Entity manager created");
         } catch (RuntimeException e) {
             log.error("Unable to initialize Animations", e);
             throw e;
+        } catch (SQLException e) {
+            log.error("Unable to retreive current Session from SessionManager",
+                      e);
+            throw new IllegalStateException(
+                                            "Unable to retreive current Session from SessionManager",
+                                            e);
         }
-    }
-
-    /**
-     * Establish the class loading context
-     */
-    public static void establishContext() {
-        Thread.currentThread().setContextClassLoader(InDatabaseEntityManager.class.getClassLoader());
-        SQLExceptions.class.getCanonicalName();
     }
 
     public static EntityManager getEm() {
         return EM;
+    }
+
+    public static <T> T execute(Callable<T> call) throws Exception {
+        Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
+        return call.call();
     }
 }

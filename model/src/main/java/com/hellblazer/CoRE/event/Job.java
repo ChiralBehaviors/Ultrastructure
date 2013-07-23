@@ -37,6 +37,7 @@ import static com.hellblazer.CoRE.event.Job.TOP_LEVEL_JOBS;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
@@ -128,14 +129,14 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                     + "  AND jc.time_stamp = "
                                                                                     + "    (SELECT max(time_stamp) FROM ruleform.job_chronology WHERE job = jc.job)"),
                      //Probably a candidate for 8.4 WITH query...
-                     @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.*  FROM ruleform.job AS j "
-                                                                            + "JOIN ruleform.event_sequencing_authorization AS seq "
+                     @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.id  FROM ruleform.job AS j "
+                                                                            + "JOIN ruleform.product_sibling_sequencing_authorization AS seq "
                                                                             + "    ON j.service = seq.parent "
                                                                             + "JOIN "
                                                                             + "( SELECT service FROM ruleform.job WHERE parent = ? "
                                                                             + "  EXCEPT "
-                                                                            + "  SELECT next_sibling_event "
-                                                                            + "    FROM ruleform.event_sequencing_authorization "
+                                                                            + "  SELECT next_sibling_status "
+                                                                            + "    FROM ruleform.product_sibling_sequencing_authorization "
                                                                             + "    WHERE parent IN "
                                                                             + "    ( SELECT service FROM ruleform.job WHERE parent = ? ) "
                                                                             + ") AS valid ON j.service = valid.service "
@@ -189,7 +190,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The resource assigned to this job
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "assign_to")
     private Resource           assignTo;
 
@@ -217,14 +218,14 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The location where the product will be delivered from
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "deliver_from")
     private Location           deliverFrom;
 
     /**
      * The location to deliver the product of this job
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
 
@@ -235,21 +236,21 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The parent of this job
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
     private Job                parent;
 
     /**
      * The end product of this job
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product")
     private Product            product;
 
     /**
      * The consumer of this job's product
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "requester")
     private Resource           requester;
 
@@ -259,7 +260,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The service this job is performing
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "service")
     private Product            service;
 
@@ -475,21 +476,37 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
                + "]";
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (assignTo != null) assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
-		if (deliverFrom != null) deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
-		if (deliverTo != null) deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
-		if (parent != null) parent = (Job) parent.manageEntity(em, knownObjects);
-		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
-		if (requester != null) requester = (Resource) requester.manageEntity(em, knownObjects);
-		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
-		if (status != null) status = (StatusCode) status.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (assignTo != null) {
+            assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+        }
+        if (deliverFrom != null) {
+            deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
+        }
+        if (deliverTo != null) {
+            deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
+        }
+        if (parent != null) {
+            parent = (Job) parent.manageEntity(em, knownObjects);
+        }
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        if (requester != null) {
+            requester = (Resource) requester.manageEntity(em, knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        if (status != null) {
+            status = (StatusCode) status.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

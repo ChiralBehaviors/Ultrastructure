@@ -19,11 +19,8 @@ package com.hellblazer.CoRE.jsp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
@@ -70,15 +67,6 @@ public class JSP {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                               properties);
             EM = emf.createEntityManager();
-            StringWriter writer = new StringWriter();
-            PrintWriter pw = new PrintWriter(writer);
-            pw.println();
-            for (Entry<String, Object> entry : EM.getProperties().entrySet()) {
-                pw.println(String.format("%s = %s", entry.getKey(),
-                                         entry.getValue()));
-            }
-            pw.close();
-            log.info(String.format("JPA Properties: %s", writer.toString()));
             final Session current = SessionManager.current();
             EM.getTransaction().begin();
             current.addTransactionListener(new TransactionListener() {

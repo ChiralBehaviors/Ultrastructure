@@ -190,7 +190,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The resource assigned to this job
      */
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "assign_to")
     private Resource           assignTo;
 
@@ -218,14 +218,14 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The location where the product will be delivered from
      */
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "deliver_from")
     private Location           deliverFrom;
 
     /**
      * The location to deliver the product of this job
-     */ 
-    @ManyToOne(cascade=CascadeType.ALL)
+     */
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
 
@@ -236,21 +236,21 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The parent of this job
      */
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
     private Job                parent;
 
     /**
      * The end product of this job
      */
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product")
     private Product            product;
 
     /**
      * The consumer of this job's product
      */
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "requester")
     private Resource           requester;
 
@@ -260,7 +260,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The service this job is performing
      */
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "service")
     private Product            service;
 
@@ -476,21 +476,37 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
                + "]";
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (assignTo != null) assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
-		if (deliverFrom != null) deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
-		if (deliverTo != null) deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
-		if (parent != null) parent = (Job) parent.manageEntity(em, knownObjects);
-		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
-		if (requester != null) requester = (Resource) requester.manageEntity(em, knownObjects);
-		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
-		if (status != null) status = (StatusCode) status.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (assignTo != null) {
+            assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+        }
+        if (deliverFrom != null) {
+            deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
+        }
+        if (deliverTo != null) {
+            deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
+        }
+        if (parent != null) {
+            parent = (Job) parent.manageEntity(em, knownObjects);
+        }
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        if (requester != null) {
+            requester = (Resource) requester.manageEntity(em, knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        if (status != null) {
+            status = (StatusCode) status.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

@@ -20,17 +20,31 @@ import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
+ * Abstract class for representing the graphs created by networked ruleforms.
+ * The nodes are existential ruleforms and the edges are created by relationships.
+ * This means that the edges are a) directed and b) typed.
  * @author hparry
  *
  */
 public abstract class AbstractNetworkGraph<T extends ExistentialRuleform> {
 	
+	/**
+	 * 
+	 * @return the node at the center of the graph
+	 */
 	public abstract T getOrigin();
 	
-	public abstract Relationship getRelationship();
+	/**
+	 * Gets the "edges" of the graph. Note that these are relationships and authorizations, 
+	 * not foreign keys.
+	 * @return the compound network ruleforms that represent graph edges
+	 */
+	public abstract Relationship[] getEdges();
 	
-	//TODO HPARRY does this need to store relationship type as well?
-	//can it just be a list of nodes?
-	public abstract T[] getNeighborNodes();
+	/**
+	 * Returns the set of nodes in the graph. These are existential ruleforms.
+	 * @return
+	 */
+	public abstract ExistentialRuleform[] getNodes();
 
 }

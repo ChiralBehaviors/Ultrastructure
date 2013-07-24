@@ -25,13 +25,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph;
 import com.hellblazer.CoRE.meta.graph.ProductGraph;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -80,20 +79,18 @@ public class CollectionResource {
 	}
 
 	@GET
-	@Path("/product")
-	public Response getProductNetwork(@QueryParam("ruleId") long ruleId,
-			@QueryParam("relId") long relId) throws JsonProcessingException {
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public AbstractNetworkGraph getNetwork(Ruleform node, Relationship[] relationships) throws JsonProcessingException {
 
-		Product p = em.find(Product.class, ruleId);
-		Relationship r = em.find(Relationship.class, relId);
 
-		ProductGraph pg = new ProductGraph(p, r, em);
+		ProductGraph pg = new ProductGraph((Product)node, relationships, em);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enableDefaultTyping();
-		return Response.ok(
-				mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(
-						pg.getNeighborNodes()), "text/json").build();
+		return pg;
 
 	}
+
+
 
 }

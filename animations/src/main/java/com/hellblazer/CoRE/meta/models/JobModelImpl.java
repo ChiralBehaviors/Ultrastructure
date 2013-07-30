@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Parameter;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -156,7 +157,7 @@ public class JobModelImpl implements JobModel {
         JSP.execute(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("myParent"),
+                InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("parent"),
                                                              (Long) triggerData.getNew().getObject("parent_status_to_set"));
                 return null;
             }
@@ -338,7 +339,7 @@ public class JobModelImpl implements JobModel {
         TypedQuery<Long> query = em.createNamedQuery(StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS,
                                                      Long.class);
         query.setParameter("service", service);
-        query.setParameter("parentCode", status);
+        query.setParameter("code", status);
         if (query.getSingleResult() == 0) {
             throw new SQLException(
                                    String.format("'service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
@@ -513,10 +514,16 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public StatusCode getInitialState(Product service) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATES,
+        TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
                                                            StatusCode.class);
         query.setParameter(1, service.getId());
-        return query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        } catch (NonUniqueResultException e) {
+            throw new IllegalStateException(
+                                            String.format("Service %s has multiple initial states",
+                                                          service));
+        }
     }
 
     /**
@@ -713,7 +720,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public boolean hasInitialState(Product service) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATES,
+        TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
                                                            StatusCode.class);
         query.setParameter(1, service.getId());
         query.setMaxResults(1);

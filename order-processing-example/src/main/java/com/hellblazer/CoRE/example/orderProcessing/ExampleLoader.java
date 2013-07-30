@@ -27,6 +27,7 @@ import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
@@ -607,7 +608,6 @@ public class ExampleLoader {
     }
 
     public void createStatusCodes() {
-
         available = new StatusCode("Available",
                                    "The job is available for execution", core);
         em.persist(available);
@@ -617,12 +617,7 @@ public class ExampleLoader {
 
         creditChecked = new StatusCode("Credit Checked",
                                        "Credit has been checked", core);
-        em.persist(active);
-
-        completed = new StatusCode("Credit Check Completed",
-                                   "Completed Credit Check", core);
-        completed.setPropagateChildren(true);
-        em.persist(completed);
+        em.persist(creditChecked);
 
         completed = new StatusCode("Completed", "Completed Job", core);
         completed.setPropagateChildren(true);
@@ -675,7 +670,8 @@ public class ExampleLoader {
         createProtocols();
         createMetaProtocols();
         createStatusCodes();
-        // createSequencingAuthorizations();
+        createStatusCodeSequencing();
+        createProductSequencingAuthorizations();
     }
 
     public void createNetworkInferences() {
@@ -692,5 +688,126 @@ public class ExampleLoader {
         NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
                                                              cityOf, core);
         em.persist(cityToStreet);
+    }
+
+    public void createStatusCodeSequencing() {
+        StatusCodeSequencing s = new StatusCodeSequencing(pick, unset,
+                                                          available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(pick, available, active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(pick, active, completed, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(ship, unset, waitingOnPurchaseOrder, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(ship, waitingOnPurchaseOrder, available,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(ship, available, active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(ship, active, completed, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(deliver, unset, available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(deliver, available, active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(deliver, active, completed, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkCredit, unset, creditChecked, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkCredit, creditChecked, available,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkCredit, available, active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkCredit, active, completed, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkLetterOfCredit, unset, creditChecked,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkLetterOfCredit, creditChecked,
+                                     available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkLetterOfCredit, available, active,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(checkLetterOfCredit, active, completed,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(discount, unset, available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(discount, available, active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(discount, active, completed, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(fee, unset, waitingOnFee, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(fee, waitingOnFee, available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(fee, available, active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(fee, active, completed, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(printCustomsDeclaration, unset, available,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(printCustomsDeclaration, available,
+                                     active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(printCustomsDeclaration, active,
+                                     completed, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(printPurchaseOrder, unset, waitingOnFee,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(printPurchaseOrder, waitingOnFee,
+                                     available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(printPurchaseOrder, available, active,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(printPurchaseOrder, active, completed,
+                                     core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(salesTax, unset, available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(salesTax, available, active, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(salesTax, active, completed, core);
+        em.persist(s);
     }
 }

@@ -30,7 +30,7 @@ import static com.hellblazer.CoRE.event.Job.GET_SUB_JOBS_ASSIGNED_TO;
 import static com.hellblazer.CoRE.event.Job.GET_TERMINAL_STATES;
 import static com.hellblazer.CoRE.event.Job.GET_UNSET_SIBLINGS;
 import static com.hellblazer.CoRE.event.Job.HAS_SCS;
-import static com.hellblazer.CoRE.event.Job.INITIAL_STATES;
+import static com.hellblazer.CoRE.event.Job.INITIAL_STATE;
 import static com.hellblazer.CoRE.event.Job.STATUS_CODE;
 import static com.hellblazer.CoRE.event.Job.TOP_LEVEL_JOBS;
 
@@ -149,16 +149,16 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                    + " SELECT DISTINCT(child_code)"
                                                                    + " FROM ruleform.status_code_sequencing "
                                                                    + " WHERE service = ? ", resultClass = Long.class),
-                     @NamedNativeQuery(name = INITIAL_STATES, query = "SELECT distinct(sc.*) "
-                                                                      + "FROM ruleform.status_code_sequencing AS seq "
-                                                                      + "JOIN ruleform.status_code AS sc ON seq.parent_code = sc.id "
-                                                                      + "WHERE "
-                                                                      + "NOT EXISTS( "
-                                                                      + "  SELECT child_code FROM ruleform.status_code_sequencing "
-                                                                      + "  WHERE service = seq.service "
-                                                                      + "    AND child_code = seq.parent_code "
-                                                                      + ") "
-                                                                      + " AND seq.service = ?") })
+                     @NamedNativeQuery(name = INITIAL_STATE, query = "SELECT distinct(sc.*) "
+                                                                     + "FROM ruleform.status_code_sequencing AS seq "
+                                                                     + "JOIN ruleform.status_code AS sc ON seq.parent_code = sc.id "
+                                                                     + "WHERE "
+                                                                     + "NOT EXISTS( "
+                                                                     + "  SELECT child_code FROM ruleform.status_code_sequencing "
+                                                                     + "  WHERE service = seq.service "
+                                                                     + "    AND child_code = seq.parent_code "
+                                                                     + ") "
+                                                                     + " AND seq.service = ?") })
 @javax.persistence.Entity
 @Table(name = "job", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "job_id_seq", sequenceName = "job_id_seq")
@@ -181,7 +181,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String GET_TERMINAL_STATES               = "job.getTerminalStates";
     public static final String GET_UNSET_SIBLINGS                = "job.getUnsetSiblings";
     public static final String HAS_SCS                           = "job.hasScs";
-    public static final String INITIAL_STATES                    = "job.initialState";
+    public static final String INITIAL_STATE                     = "job.initialState";
     public static final String STATUS_CODE                       = "job.statusCode";
     public static final String TOP_LEVEL_JOBS                    = "job.topLevelJobs";
 

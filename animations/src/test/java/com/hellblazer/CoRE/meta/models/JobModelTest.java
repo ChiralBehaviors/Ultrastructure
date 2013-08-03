@@ -19,20 +19,23 @@ package com.hellblazer.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
 import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.event.MetaProtocol;
+import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
+import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.product.Product;
 
@@ -42,37 +45,16 @@ import com.hellblazer.CoRE.product.Product;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    @Test
-    public void testJobScenario() throws Exception {
+    private JobModel              jobModel;
+    private OrderProcessingLoader scenario;
 
-        JobModel jobModel = model.getJobModel();
-        JobScenario scenario = new JobScenario(model);
-        model.getEntityManager().clear();
-        List<Job> jobs = findAllJobs();
-        assertEquals(7, jobs.size());
-
-        List<Job> topLevelJobs = jobModel.getTopLevelJobs();
-        assertEquals(1, topLevelJobs.size());
-        Job topLevelJob = topLevelJobs.get(0);
-
-        assertNull(topLevelJob.getParent());
-        assertTrue(jobModel.isActive(topLevelJob));
-        List<Job> activeExplicit = jobModel.getActiveExplicitJobs();
-        assertEquals(1, activeExplicit.size());
-        assertEquals(topLevelJob, activeExplicit.get(0));
-        assertEquals(6, topLevelJob.getChildJobs().size());
-        assertEquals(0, jobModel.getChildActions(topLevelJob).size());
-        assertEquals(0, jobModel.getSiblingActions(topLevelJob).size());
-        assertEquals(1, jobModel.getActiveSubJobsOf(topLevelJob).size());
-        assertEquals(7, jobModel.getActiveJobsFor(scenario.htsfTech).size());
-        assertEquals(4, jobModel.getMetaprotocols(topLevelJob).size());
-        assertEquals(5, jobModel.getProtocols(topLevelJob, scenario.mp1).size());
-    }
-
-    private List<Job> findAllJobs() {
-        TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",
-                                                                     Job.class);
-        return query.getResultList();
+    public JobModelTest() throws Exception {
+        jobModel = model.getJobModel();
+        EntityTransaction txn = em.getTransaction();
+        scenario = new OrderProcessingLoader(em);
+        txn.begin();
+        scenario.load();
+        txn.commit();
     }
 
     @Test
@@ -169,5 +151,82 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(back);
         em.persist(terminate);
         em.getTransaction().commit();
+    }
+
+    @Test
+    public void testNetworkInference() {
+        List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
+                                                     LocationNetwork.class).getResultList();
+        assertEquals(12, edges.size());
+
+        TypedQuery<LocationNetwork> edgeQuery = em.createQuery("select edge FROM LocationNetwork edge WHERE edge.parent = :parent AND edge.relationship = :relationship AND edge.child = :child",
+                                                               LocationNetwork.class);
+        edgeQuery.setParameter("parent", scenario.factory1);
+        edgeQuery.setParameter("relationship", scenario.city);
+        edgeQuery.setParameter("child", scenario.dc);
+        LocationNetwork edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getInverseSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.dc);
+        edgeQuery.setParameter("relationship", scenario.cityOf);
+        edgeQuery.setParameter("child", scenario.factory1);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getPropagationSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.us);
+        edgeQuery.setParameter("relationship", scenario.areaOf);
+        edgeQuery.setParameter("child", scenario.dc);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getPropagationSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.dc);
+        edgeQuery.setParameter("relationship", scenario.area);
+        edgeQuery.setParameter("child", scenario.us);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getInverseSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.paris);
+        edgeQuery.setParameter("relationship", scenario.area);
+        edgeQuery.setParameter("child", scenario.euro);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getInverseSoftware(), edge.getUpdatedBy());
+
+        edgeQuery.setParameter("parent", scenario.euro);
+        edgeQuery.setParameter("relationship", scenario.areaOf);
+        edgeQuery.setParameter("child", scenario.paris);
+        edge = edgeQuery.getSingleResult();
+        assertEquals(true, edge.isInferred());
+        assertEquals(kernel.getPropagationSoftware(), edge.getUpdatedBy());
+    }
+
+    @Test
+    public void testOrder() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment,
+                            scenario.georgeTownUniversity, scenario.deliver,
+                            scenario.abc486, scenario.rsb225,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.active);
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(6, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        assertEquals(3, findAllJobs().size());
+    }
+
+    private List<Job> findAllJobs() {
+        TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",
+                                                                     Job.class);
+        return query.getResultList();
     }
 }

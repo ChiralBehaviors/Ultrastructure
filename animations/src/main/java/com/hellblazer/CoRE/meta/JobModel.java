@@ -92,13 +92,13 @@ public interface JobModel {
     /**
      * For a given job, generates all the implicit jobs that need to be done
      * 
-     * This is the jesus nut of the the event cluster animation. Currently, this
-     * is horrifically wrong. But it will get better soon.
+     * This is the jesus nut of the the event cluster animation.
      * 
      * @param jobId
+     * @return the list of jobs generated
      * @throws SQLException
      */
-    void generateImplicitJobs(Job job);
+    List<Job> generateImplicitJobs(Job job);
 
     /**
      * Retrieve a list of all currently active "explicit" (top level) Jobs.
@@ -339,7 +339,7 @@ public interface JobModel {
      */
     boolean hasTerminalSCCs(Product service) throws SQLException;
 
-    void insertJob(Job parent, Protocol protocol);
+    Job insertJob(Job parent, Protocol protocol);
 
     boolean isActive(Job job);
 

@@ -19,6 +19,8 @@ package com.hellblazer.CoRE.jsp;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -101,8 +103,16 @@ public class JSP {
         return EM;
     }
 
-    public static <T> T execute(Callable<T> call) throws Exception {
+    public static <T> T execute(Callable<T> call) throws SQLException {
         Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
-        return call.call();
+        try {
+            return call.call();
+        } catch (Throwable e) {
+            StringWriter writer = new StringWriter();
+            PrintWriter pWriter = new PrintWriter(writer);
+            e.printStackTrace(pWriter);
+            throw new SQLException(String.format("Stored procedure failed\n%s",
+                                                 writer.toString()), e);
+        }
     }
 }

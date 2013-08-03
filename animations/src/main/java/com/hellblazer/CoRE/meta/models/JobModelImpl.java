@@ -95,16 +95,11 @@ public class JobModelImpl implements JobModel {
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
-        if (triggerData.getOld() != null
-            && triggerData.getNew().getLong("status") == triggerData.getOld().getLong("status")) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Job status unchanged: %s"),
-                          triggerData.getOld().getLong("status"));
-            }
-            return;
+        if (triggerData.getOld() != null) {
+            log.info("Not generating implicit jobs for: "
+                     + triggerData.getNew().getLong("id"));
         }
         JSP.execute(new Callable<Void>() {
-
             @Override
             public Void call() throws Exception {
                 InDatabase.get().automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
@@ -284,17 +279,18 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job) {
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Generating implicit jobs for: %s", job));
-        }
         if (job.getStatus().getPropagateChildren()) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Generating implicit jobs for %s", job));
             }
-            generateImplicitJobs(job);
-            for (Job subJob : getInitialSubJobs(job)) {
+            for (Job subJob : generateImplicitJobs(job)) {
                 changeStatus(subJob, getInitialState(subJob.getService()),
                              "Initially available job (automatically set)");
+            }
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Not generating implicit jobs for: %s",
+                                        job));
             }
         }
     }
@@ -348,15 +344,17 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void generateImplicitJobs(Job job) {
+    public List<Job> generateImplicitJobs(Job job) {
         List<Protocol> protocols = getProtocols(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Found %s protocols for %s",
                                     protocols.size(), job));
         }
+        List<Job> jobs = new ArrayList<Job>();
         for (Protocol protocol : protocols) {
-            insertJob(job, protocol);
+            jobs.add(insertJob(job, protocol));
         }
+        return jobs;
     }
 
     @Override
@@ -750,13 +748,14 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * Insert the new job dedebugd by the protocol
+     * Insert the new job defined by the protocol
      * 
      * @param parent
      * @param protocol
+     * @return the newly created job
      */
     @Override
-    public void insertJob(Job parent, Protocol protocol) {
+    public Job insertJob(Job parent, Protocol protocol) {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
         job.setAssignTo(resolve(parent.getAssignTo(), protocol.getAssignTo()));
@@ -765,7 +764,7 @@ public class JobModelImpl implements JobModel {
         job.setDeliverFrom(resolve(parent.getDeliverFrom(),
                                    protocol.getDeliverFrom()));
         job.setDeliverTo(resolve(parent.getDeliverTo(), protocol.getDeliverTo()));
-        job.setService(protocol.getRequestedService());
+        job.setService(protocol.getService());
         job.setStatus(kernel.getUnset());
         for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
             JobAttribute attribute = pAttribute.createJobAttribute();
@@ -774,9 +773,10 @@ public class JobModelImpl implements JobModel {
             em.persist(attribute);
         }
         em.persist(job);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Inserted job %s", job));
+        if (log.isInfoEnabled()) {
+            log.info(String.format("Inserted job %s from protocol %s", job, protocol));
         }
+        return job;
     }
 
     @Override
@@ -816,6 +816,9 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processJobChange(Job job) {
+        if (log.isInfoEnabled()) {
+            log.info(String.format("Processing change in Job %s", job.getId()));
+        }
         processChildChanges(job);
         processParentChanges(job);
         processSiblingChanges(job);

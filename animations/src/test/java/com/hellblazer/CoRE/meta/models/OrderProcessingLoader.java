@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE.example.orderProcessing;
+package com.hellblazer.CoRE.meta.models;
 
 import javax.persistence.EntityManager;
 
@@ -41,7 +41,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-public class ExampleLoader {
+public class OrderProcessingLoader {
 
     public Relationship         area;
     public Relationship         areaOf;
@@ -128,7 +128,7 @@ public class ExampleLoader {
     private final Kernel        kernel;
     private final Model         model;
 
-    public ExampleLoader(EntityManager em) throws Exception {
+    public OrderProcessingLoader(EntityManager em) throws Exception {
         this.em = em;
         model = new ModelImpl(em);
         kernel = model.getKernel();
@@ -691,17 +691,11 @@ public class ExampleLoader {
     }
 
     public void createStatusCodeSequencing() {
-        StatusCodeSequencing s = new StatusCodeSequencing(pick, unset,
-                                                          available, core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(pick, available, active, core);
+        StatusCodeSequencing s = new StatusCodeSequencing(pick, available,
+                                                          active, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(pick, active, completed, core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(ship, unset, waitingOnPurchaseOrder, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(ship, waitingOnPurchaseOrder, available,
@@ -714,16 +708,10 @@ public class ExampleLoader {
         s = new StatusCodeSequencing(ship, active, completed, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(deliver, unset, available, core);
-        em.persist(s);
-
         s = new StatusCodeSequencing(deliver, available, active, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(deliver, active, completed, core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(checkCredit, unset, creditChecked, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(checkCredit, creditChecked, available,
@@ -736,12 +724,8 @@ public class ExampleLoader {
         s = new StatusCodeSequencing(checkCredit, active, completed, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(checkLetterOfCredit, unset, creditChecked,
-                                     core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(checkLetterOfCredit, creditChecked,
-                                     available, core);
+        s = new StatusCodeSequencing(checkLetterOfCredit, available,
+                                     creditChecked, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(checkLetterOfCredit, available, active,
@@ -752,16 +736,10 @@ public class ExampleLoader {
                                      core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(discount, unset, available, core);
-        em.persist(s);
-
         s = new StatusCodeSequencing(discount, available, active, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(discount, active, completed, core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(fee, unset, waitingOnFee, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(fee, waitingOnFee, available, core);
@@ -773,8 +751,8 @@ public class ExampleLoader {
         s = new StatusCodeSequencing(fee, active, completed, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(printCustomsDeclaration, unset, available,
-                                     core);
+        s = new StatusCodeSequencing(printCustomsDeclaration, waitingOnFee,
+                                     available, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(printCustomsDeclaration, available,
@@ -783,10 +761,6 @@ public class ExampleLoader {
 
         s = new StatusCodeSequencing(printCustomsDeclaration, active,
                                      completed, core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(printPurchaseOrder, unset, waitingOnFee,
-                                     core);
         em.persist(s);
 
         s = new StatusCodeSequencing(printPurchaseOrder, waitingOnFee,
@@ -799,9 +773,6 @@ public class ExampleLoader {
 
         s = new StatusCodeSequencing(printPurchaseOrder, active, completed,
                                      core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(salesTax, unset, available, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(salesTax, available, active, core);

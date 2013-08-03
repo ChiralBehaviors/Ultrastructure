@@ -773,8 +773,8 @@ public class JobModelImpl implements JobModel {
             em.persist(attribute);
         }
         em.persist(job);
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Inserted job %s from protocol %s", job, protocol));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Inserted job %s from protocol %s", job, protocol));
         }
         return job;
     }
@@ -816,8 +816,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processJobChange(Job job) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing change in Job %s", job.getId()));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing change in Job %s", job.getId()));
         }
         processChildChanges(job);
         processParentChanges(job);

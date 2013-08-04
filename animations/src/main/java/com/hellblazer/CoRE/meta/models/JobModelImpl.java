@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
@@ -61,6 +60,7 @@ import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.RuleformIdIterator;
+import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.JobModel;
@@ -79,26 +79,35 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 public class JobModelImpl implements JobModel {
-    private static class InDatabase {
-        private static final JobModelImpl SINGLETON;
+    private static interface Procedure<T> {
+        T call(JobModelImpl jobModel) throws Exception;
+    }
 
-        static {
-            SINGLETON = new JobModelImpl(new ModelImpl(JSP.getEm()));
+    private static class Call<T> implements StoredProcedure<T> {
+        private final Procedure<T> procedure;
+
+        public Call(Procedure<T> procedure) {
+            this.procedure = procedure;
         }
 
-        public static JobModelImpl get() {
-            return SINGLETON;
+        @Override
+        public T call(EntityManager em) throws Exception {
+            return procedure.call(new JobModelImpl(new ModelImpl(em)));
         }
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     private static final Logger log = LoggerFactory.getLogger(JobModelImpl.class);
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
                 return null;
             }
         });
@@ -106,13 +115,13 @@ public class JobModelImpl implements JobModel {
 
     public static void ensure_next_state_is_valid(final TriggerData triggerData)
                                                                                 throws Exception {
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().ensureNextStateIsValid(triggerData.getNew().getLong("id"),
-                                                        triggerData.getNew().getLong("service"),
-                                                        triggerData.getOld().getLong("status"),
-                                                        triggerData.getNew().getLong("status"));
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.ensureNextStateIsValid(triggerData.getNew().getLong("id"),
+                                                triggerData.getNew().getLong("service"),
+                                                triggerData.getOld().getLong("status"),
+                                                triggerData.getNew().getLong("status"));
                 return null;
             }
         });
@@ -120,11 +129,11 @@ public class JobModelImpl implements JobModel {
 
     public static void ensure_valid_child_service_and_status(final TriggerData triggerData)
                                                                                            throws Exception {
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_child"),
-                                                             (Long) triggerData.getNew().getObject("next_child_status"));
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_child"),
+                                                     (Long) triggerData.getNew().getObject("next_child_status"));
                 return null;
             }
         });
@@ -145,11 +154,11 @@ public class JobModelImpl implements JobModel {
 
     public static void ensure_valid_parent_service_and_status(final TriggerData triggerData)
                                                                                             throws Exception {
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("parent"),
-                                                             (Long) triggerData.getNew().getObject("parent_status_to_set"));
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("parent"),
+                                                     (Long) triggerData.getNew().getObject("parent_status_to_set"));
                 return null;
             }
         });
@@ -157,18 +166,24 @@ public class JobModelImpl implements JobModel {
 
     public static void ensure_valid_sibling_service_and_status(final TriggerData triggerData)
                                                                                              throws Exception {
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
-                                                             (Long) triggerData.getNew().getObject("next_sibling_status"));
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
+                                                     (Long) triggerData.getNew().getObject("next_sibling_status"));
                 return null;
             }
         });
     }
 
-    public static Long get_initial_state(Long service) {
-        return InDatabase.get().getInitialState(service);
+    public static Long get_initial_state(final Long service)
+                                                            throws SQLException {
+        return execute(new Procedure<Long>() {
+            @Override
+            public Long call(JobModelImpl jobModel) throws Exception {
+                return jobModel.getInitialState(service);
+            }
+        });
     }
 
     /**
@@ -178,10 +193,15 @@ public class JobModelImpl implements JobModel {
      * @return
      * @throws SQLException
      */
-    public static Iterator<Long> get_status_code_ids_for_service(Long serviceId)
-                                                                                throws SQLException {
-        return new RuleformIdIterator(
-                                      InDatabase.get().getStatusCodeIdsForEvent(serviceId).iterator());
+    public static Iterator<Long> get_status_code_ids_for_service(final Long serviceId)
+                                                                                      throws SQLException {
+        return execute(new Procedure<Iterator<Long>>() {
+            @Override
+            public Iterator<Long> call(JobModelImpl jobModel) throws Exception {
+                return new RuleformIdIterator(
+                                              jobModel.getStatusCodeIdsForEvent(serviceId).iterator());
+            }
+        });
     }
 
     /**
@@ -218,33 +238,69 @@ public class JobModelImpl implements JobModel {
         return false;
     }
 
-    public static boolean is_job_active(Long job) {
-        return InDatabase.get().isJobActive(job);
+    public static boolean is_job_active(final Long job) throws SQLException {
+        return execute(new Procedure<Boolean>() {
+            @Override
+            public Boolean call(JobModelImpl jobModel) throws Exception {
+                return jobModel.isJobActive(job);
+            }
+        });
     }
 
-    public static boolean is_terminal_state(Long service, Long statusCode) {
-        return InDatabase.get().isTerminalState(service, statusCode);
-    }
-
-    public static void log_modified_product_status_code_sequencing(TriggerData triggerData)
-                                                                                           throws SQLException {
-        InDatabase.get().logModifiedService(triggerData.getNew().getLong("service"));
-    }
-
-    public static void log_inserts_in_job_chronology(TriggerData triggerData)
-                                                                             throws SQLException {
-        InDatabase.get().logInsertsInJobChronology(triggerData.getNew().getLong("id"),
-                                                   triggerData.getNew().getLong("status"));
-    }
-
-    public static void process_job_change(TriggerData triggerData)
+    public static boolean is_terminal_state(final Long service,
+                                            final Long statusCode)
                                                                   throws SQLException {
-        InDatabase.get().processJobChange(triggerData.getNew().getLong("id"));
+        return execute(new Procedure<Boolean>() {
+            @Override
+            public Boolean call(JobModelImpl jobModel) throws Exception {
+                return jobModel.isTerminalState(service, statusCode);
+            }
+        });
+    }
+
+    public static void log_modified_product_status_code_sequencing(final TriggerData triggerData)
+                                                                                                 throws SQLException {
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.logModifiedService(triggerData.getNew().getLong("service"));
+                return null;
+            }
+        });
+    }
+
+    public static void log_inserts_in_job_chronology(final TriggerData triggerData)
+                                                                                   throws SQLException {
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.logInsertsInJobChronology(triggerData.getNew().getLong("id"),
+                                                   triggerData.getNew().getLong("status"));
+                return null;
+            }
+        });
+    }
+
+    public static void process_job_change(final TriggerData triggerData)
+                                                                        throws SQLException {
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.processJobChange(triggerData.getNew().getLong("id"));
+                return null;
+            }
+        });
     }
 
     public static void validate_state_graph(TriggerData triggerData)
                                                                     throws SQLException {
-        InDatabase.get().validateStateGraph();
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.validateStateGraph();
+                return null;
+            }
+        });
     }
 
     private final EntityManager em;

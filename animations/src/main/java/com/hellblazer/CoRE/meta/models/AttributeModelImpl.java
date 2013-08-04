@@ -17,8 +17,8 @@
 
 package com.hellblazer.CoRE.meta.models;
 
+import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -32,6 +32,7 @@ import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.Transformation;
 import com.hellblazer.CoRE.attribute.TransformationMetarule;
 import com.hellblazer.CoRE.jsp.JSP;
+import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Aspect;
@@ -48,33 +49,36 @@ public class AttributeModelImpl
         AbstractNetworkedModel<Attribute, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
 
-    /**
-     * Used to initialize a singleton for use within the DB
-     * 
-     * @author hhildebrand
-     * 
-     */
-    private static class InDatabase {
-        private static final AttributeModelImpl SINGLETON;
-        static {
-            SINGLETON = new AttributeModelImpl(JSP.getEm());
+    private static interface Procedure<T> {
+        T call(AttributeModelImpl attributeModel) throws Exception;
+    }
+
+    private static class Call<T> implements StoredProcedure<T> {
+        private final Procedure<T> procedure;
+
+        public Call(Procedure<T> procedure) {
+            this.procedure = procedure;
         }
 
-        public static AttributeModelImpl get() {
-            return SINGLETON;
+        @Override
+        public T call(EntityManager em) throws Exception {
+            return procedure.call(new AttributeModelImpl(em));
         }
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     private static final String ATTRIBUTE_NETWORK_PROPAGATE = "AttributeNetwork.propagate";
 
     public static void network_edge_deleted(final TriggerData data)
                                                                    throws Exception {
-        JSP.execute(new Callable<Void>() {
-
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                    data.getOld().getLong("relationship"));
+            public Void call(AttributeModelImpl attributeModel) throws Exception {
+                attributeModel.networkEdgeDeleted(data.getOld().getLong("parent"),
+                                                 data.getOld().getLong("relationship"));
                 return null;
             }
         });
@@ -85,11 +89,10 @@ public class AttributeModelImpl
         if (!markPropagated(ATTRIBUTE_NETWORK_PROPAGATE)) {
             return; // We be done
         }
-        JSP.execute(new Callable<Void>() {
-
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().propagate();
+            public Void call(AttributeModelImpl attributrModel) throws Exception {
+                attributrModel.propagate();
                 return null;
             }
         });

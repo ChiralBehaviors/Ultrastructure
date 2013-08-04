@@ -20,7 +20,6 @@ package com.hellblazer.CoRE.meta.models;
 import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -36,16 +35,13 @@ import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.AttributeValue_;
-import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.meta.AttributeModel;
-import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
+import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.ResourceModel;
-import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
@@ -89,6 +85,7 @@ public class ModelImpl implements Model {
     public static void setPrincipal(Long resource,
                                     Long[] activeRoleRelationships,
                                     Long[] activeRoleResources) {
+        /*
         EntityManager em = JSP.getEm();
         if (activeRoleRelationships == null || activeRoleResources == null) {
             principal = new AuthenticatedPrincipal(em.find(Resource.class,
@@ -109,11 +106,12 @@ public class ModelImpl implements Model {
             principal = new AuthenticatedPrincipal(em.find(Resource.class,
                                                            resource), aspects);
         }
+        */
     }
 
     private final AttributeModel attributeModel;
     private final EntityManager  em;
-    private final ProductModel    productModel;
+    private final ProductModel   productModel;
     private final Kernel         kernel;
     private final LocationModel  locationModel;
     private final ResourceModel  resourceModel;

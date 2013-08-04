@@ -67,9 +67,9 @@ public interface JobModel {
      * @param message
      *            an optional message about why the status was changed, the
      *            circumstances surrounding the change, etc.
-     * @return
+     * @return the merged job
      */
-    void changeStatus(Job job, StatusCode newStatus, String notes);
+    Job changeStatus(Job job, StatusCode newStatus, String notes);
 
     /**
      * Ensure that the nextStatus is a valid status transition from the

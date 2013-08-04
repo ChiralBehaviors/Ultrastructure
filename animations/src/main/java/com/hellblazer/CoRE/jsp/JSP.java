@@ -44,8 +44,13 @@ import com.hellblazer.CoRE.kernel.WellKnownObject;
  * 
  */
 public class JSP {
+    /**
+     * 
+     */
+    private static final String        ABORTED = "jsp.aborted";
     private static final EntityManager EM;
-    private static final Logger        log = LoggerFactory.getLogger(JSP.class);
+    private static final Logger        log     = LoggerFactory.getLogger(JSP.class);
+    private static Session             CURRENT_SESSION;
 
     static {
         try {
@@ -69,13 +74,14 @@ public class JSP {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                               properties);
             EM = emf.createEntityManager();
-            final Session current = SessionManager.current();
+            CURRENT_SESSION = SessionManager.current();
+            CURRENT_SESSION.setAttribute(ABORTED, Boolean.FALSE);
             EM.getTransaction().begin();
-            current.addTransactionListener(new TransactionListener() {
-
+            CURRENT_SESSION.addTransactionListener(new TransactionListener() {
                 @Override
                 public void onPrepare(Session session) throws SQLException {
-                    EM.flush();
+                    EM.getTransaction().commit();
+                    EM.getTransaction().begin();
                 }
 
                 @Override
@@ -84,6 +90,7 @@ public class JSP {
 
                 @Override
                 public void onAbort(Session session) throws SQLException {
+                    CURRENT_SESSION.setAttribute(ABORTED, Boolean.TRUE);
                 }
             });
             log.info("Entity manager created");
@@ -105,6 +112,11 @@ public class JSP {
 
     public static <T> T execute(Callable<T> call) throws SQLException {
         Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
+
+        if ((Boolean) CURRENT_SESSION.getAttribute(ABORTED)) {
+            EM.getTransaction().rollback();
+            CURRENT_SESSION.setAttribute(ABORTED, Boolean.FALSE);
+        }
         try {
             return call.call();
         } catch (Throwable e) {

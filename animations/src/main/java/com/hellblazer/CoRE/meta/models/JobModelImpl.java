@@ -95,10 +95,6 @@ public class JobModelImpl implements JobModel {
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
-        if (triggerData.getOld() != null) {
-            log.info("Not generating implicit jobs for: "
-                     + triggerData.getNew().getLong("id"));
-        }
         JSP.execute(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
@@ -296,15 +292,23 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void changeStatus(Job job, StatusCode newStatus, String notes) {
+    public Job changeStatus(Job job, StatusCode newStatus, String notes) {
         StatusCode oldStatus = job.getStatus();
         if (oldStatus.equals(newStatus)) {
-            return;
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Job status is already set to desired status %s",
+                                       job));
+            }
+            return job;
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
+        if (log.isInfoEnabled()) {
+            log.info(String.format("Setting %s status to %s", job, newStatus));
+        }
         job.setStatus(newStatus);
-        em.merge(job);
+        Job j = em.merge(job);
         addJobChronology(job, now, oldStatus, notes);
+        return j;
     }
 
     @Override
@@ -312,16 +316,10 @@ public class JobModelImpl implements JobModel {
                                        StatusCode currentStatus,
                                        StatusCode nextStatus)
                                                              throws SQLException {
-        if (nextStatus.equals(nextStatus)) {
-            return; // Nothing to do
+        if (kernel.getUnset().equals(currentStatus)) {
+            return;
         }
         if (!getNextStatusCodes(service, currentStatus).contains(nextStatus)) {
-            if (kernel.getUnset().equals(currentStatus)) {
-                throw new SQLException(
-                                       String.format("%s is not set up to come after the special (UNSET) status code for Service %s. Please configure it to be an initial state in the Status Code Sequencing ruleform if this is what you want.",
-                                                     nextStatus, service,
-                                                     currentStatus));
-            }
             throw new SQLException(
                                    String.format("%s is not allowed as a next state for Service %s coming from %s.  Please consult the Status Code Sequencing rules.",
                                                  nextStatus, service,
@@ -774,7 +772,8 @@ public class JobModelImpl implements JobModel {
         }
         em.persist(job);
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Inserted job %s from protocol %s", job, protocol));
+            log.trace(String.format("Inserted job %s from protocol %s", job,
+                                    protocol));
         }
         return job;
     }
@@ -1010,9 +1009,6 @@ public class JobModelImpl implements JobModel {
     private void ensureNextStateIsValid(long job, long service,
                                         long currentStatus, long nextStatus)
                                                                             throws SQLException {
-        if (currentStatus == nextStatus) {
-            return; // nothing to do
-        }
         ensureNextStateIsValid(em.find(Job.class, job),
                                em.find(Product.class, service),
                                em.find(StatusCode.class, currentStatus),

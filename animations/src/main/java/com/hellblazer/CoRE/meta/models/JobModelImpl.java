@@ -100,7 +100,8 @@ public class JobModelImpl implements JobModel {
         return JSP.call(new Call<T>(procedure));
     }
 
-    private static final Logger log = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final Logger     log               = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final List<Long> MODIFIED_SERVICES = new ArrayList<Long>();
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
@@ -260,13 +261,8 @@ public class JobModelImpl implements JobModel {
 
     public static void log_modified_product_status_code_sequencing(final TriggerData triggerData)
                                                                                                  throws SQLException {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.logModifiedService(triggerData.getNew().getLong("service"));
-                return null;
-            }
-        });
+
+        MODIFIED_SERVICES.add(triggerData.getNew().getLong("service"));
     }
 
     public static void log_inserts_in_job_chronology(final TriggerData triggerData)
@@ -306,7 +302,6 @@ public class JobModelImpl implements JobModel {
     private final EntityManager em;
     private final Kernel        kernel;
     private final LocationModel locationModel;
-    private final List<Product> modifiedEvents = new ArrayList<Product>();
     private final ProductModel  productModel;
     private final ResourceModel resourceModel;
 
@@ -865,11 +860,6 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void logModifiedService(Long scs) {
-        modifiedEvents.add(em.find(Product.class, scs));
-    }
-
-    @Override
     public void processJobChange(Job job) {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing change in Job %s", job.getId()));
@@ -942,13 +932,13 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * @param modifiedEventsFromStatusCodeSequencing2
+     * @param modifiedServices
      * @throws SQLException
      */
     @Override
-    public void validateStateGraph(List<Product> modifiedEvents)
-                                                                throws SQLException {
-        for (Product modifiedService : modifiedEvents) {
+    public void validateStateGraph(List<Product> modifiedServices)
+                                                                  throws SQLException {
+        for (Product modifiedService : modifiedServices) {
             if (modifiedService == null) {
                 continue;
             }
@@ -1335,9 +1325,30 @@ public class JobModelImpl implements JobModel {
 
     private void validateStateGraph() throws SQLException {
         try {
-            validateStateGraph(modifiedEvents);
+            validate_State_Graph(MODIFIED_SERVICES);
         } finally {
-            modifiedEvents.clear();
+            MODIFIED_SERVICES.clear();
         }
+    }
+
+    /**
+     * @param modifiedServices
+     * @throws SQLException
+     */
+    private void validate_State_Graph(List<Long> modifiedServices)
+                                                                  throws SQLException {
+        List<Product> modified = new ArrayList<Product>(modifiedServices.size());
+        for (Long id : modifiedServices) {
+            modified.add(em.find(Product.class, id));
+        }
+        validateStateGraph(modified);
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
+     */
+    @Override
+    public void logModifiedService(Long scs) {
+        MODIFIED_SERVICES.add(scs);
     }
 }

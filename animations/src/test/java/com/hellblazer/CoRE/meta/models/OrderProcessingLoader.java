@@ -201,28 +201,24 @@ public class OrderProcessingLoader {
                                            sameRelationship, sameRelationship,
                                            state, area, core);
         em.persist(m1);
-        MetaProtocol m2 = new MetaProtocol(deliver, 2,
-                                           notApplicableRelationship,
+        MetaProtocol m2 = new MetaProtocol(pick, 2, notApplicableRelationship,
                                            customerType, sameRelationship,
                                            area, area, core);
         em.persist(m2);
-        MetaProtocol m3 = new MetaProtocol(deliver, 3,
-                                           notApplicableRelationship,
+        MetaProtocol m3 = new MetaProtocol(ship, 3, notApplicableRelationship,
                                            customerType, anyRelationship, area,
                                            area, core);
         em.persist(m3);
-        MetaProtocol m4 = new MetaProtocol(deliver, 4,
-                                           notApplicableRelationship,
+        MetaProtocol m4 = new MetaProtocol(ship, 4, notApplicableRelationship,
                                            customerType, sameRelationship,
                                            anyRelationship, area, core);
         em.persist(m4);
-        MetaProtocol m5 = new MetaProtocol(deliver, 5,
+        MetaProtocol m5 = new MetaProtocol(salesTax, 5,
                                            notApplicableRelationship,
                                            salesTaxStatus, sameRelationship,
                                            state, anyRelationship, core);
         em.persist(m5);
-        MetaProtocol m6 = new MetaProtocol(deliver, 6,
-                                           notApplicableRelationship,
+        MetaProtocol m6 = new MetaProtocol(fee, 6, notApplicableRelationship,
                                            anyRelationship, anyRelationship,
                                            anyRelationship, anyRelationship,
                                            core);
@@ -249,13 +245,6 @@ public class OrderProcessingLoader {
     }
 
     public void createProductSequencingAuthorizations() {
-        ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(
-                                                                                                   core);
-        activatePick.setParent(deliver);
-        activatePick.setStatusCode(active);
-        activatePick.setNextChild(pick);
-        activatePick.setNextChildStatus(available);
-        em.persist(activatePick);
 
         ProductSiblingSequencingAuthorization activatePrintCustomsDeclaration = new ProductSiblingSequencingAuthorization(
                                                                                                                           core);
@@ -678,13 +667,42 @@ public class OrderProcessingLoader {
         NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
                                                              areaOf, core);
         em.persist(areaToRegion);
+        
+        NetworkInference areaToState = new NetworkInference(areaOf, stateOf,
+                                                            areaOf, core);
+        em.persist(areaToState);
+        
+        NetworkInference areaToCity = new NetworkInference(areaOf, cityOf,
+                                                           areaOf, core);
+        em.persist(areaToCity);
+        
+        NetworkInference areaToStreet = new NetworkInference(areaOf, streetOf,
+                                                             areaOf, core);
+        em.persist(areaToStreet);
+        
         NetworkInference regionToState = new NetworkInference(regionOf,
                                                               stateOf,
                                                               regionOf, core);
         em.persist(regionToState);
+        
+        NetworkInference regionToCity = new NetworkInference(regionOf, cityOf,
+                                                             regionOf, core);
+        em.persist(regionToCity);
+        
+        NetworkInference regionToStreet = new NetworkInference(regionOf,
+                                                               streetOf,
+                                                               regionOf, core);
+        em.persist(regionToStreet);
+        
         NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
                                                             stateOf, core);
         em.persist(stateToCity);
+        
+        NetworkInference stateToStreet = new NetworkInference(stateOf,
+                                                              streetOf,
+                                                              stateOf, core);
+        em.persist(stateToStreet);
+        
         NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
                                                              cityOf, core);
         em.persist(cityToStreet);

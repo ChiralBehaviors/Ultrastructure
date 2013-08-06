@@ -28,6 +28,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.event.Job;
@@ -48,7 +49,9 @@ public class JobModelTest extends AbstractModelTest {
     private JobModel              jobModel;
     private OrderProcessingLoader scenario;
 
-    public JobModelTest() throws Exception {
+    @Before
+    public void initialize() throws Exception {
+        super.initialize();
         jobModel = model.getJobModel();
         EntityTransaction txn = em.getTransaction();
         scenario = new OrderProcessingLoader(em);
@@ -157,7 +160,7 @@ public class JobModelTest extends AbstractModelTest {
     public void testNetworkInference() {
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
                                                      LocationNetwork.class).getResultList();
-        assertEquals(12, edges.size());
+        assertEquals(18, edges.size());
 
         TypedQuery<LocationNetwork> edgeQuery = em.createQuery("select edge FROM LocationNetwork edge WHERE edge.parent = :parent AND edge.relationship = :relationship AND edge.child = :child",
                                                                LocationNetwork.class);
@@ -218,10 +221,11 @@ public class JobModelTest extends AbstractModelTest {
         order.setStatus(scenario.active);
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
-        assertEquals(6, metaProtocols.size());
+        assertEquals(1, metaProtocols.size());
         List<Protocol> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
-        assertEquals(3, findAllJobs().size());
+        List<Job> jobs = findAllJobs();
+        assertEquals(6, jobs.size());
     }
 
     private List<Job> findAllJobs() {

@@ -6,9 +6,8 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
 	<changeSet id="1" author="hhildebrand">
-		<sql> CREATE CONSTRAINT TRIGGER create_implicit_jobs AFTER INSERT ON
+		<sql> CREATE TRIGGER create_implicit_jobs AFTER INSERT ON
 			ruleform.job
-			DEFERRABLE INITIALLY DEFERRED
 			FOR EACH ROW EXECUTE
 			PROCEDURE
 			ruleform.automatically_generate_implicit_jobs_for_explicit_jobs();

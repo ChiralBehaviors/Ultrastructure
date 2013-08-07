@@ -117,13 +117,19 @@
 					<jdbcUrl>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbcUrl>
 					<username>${testing.db.login}</username>
 					<password>${testing.db.password}</password>
-					<additional>
+					<excluded>
 						<resource>
-							<groupId>org.slf4j</groupId>
-							<artifactId>slf4j-jdk14</artifactId>
-							<version>1.7.2</version>
+							<groupId>org.apache.openjpa</groupId>
+							<artifactId>openjpa-all</artifactId>
+							<version>2.2.2</version>
+							<type>jar</type>
 						</resource>
-					</additional>
+						<resource>
+							<groupId>com.hellblazer</groupId>
+							<artifactId>pljava-api</artifactId>
+							<version>0.0.1-SNAPSHOT</version>
+						</resource>
+					</excluded>
 					<classpathProperty>pljavaClassPath</classpathProperty>
 				</configuration>
 				<executions>

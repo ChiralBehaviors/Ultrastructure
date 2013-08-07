@@ -32,6 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.StatusCode;
@@ -205,6 +206,23 @@ public class JobModelTest extends AbstractModelTest {
         edge = edgeQuery.getSingleResult();
         assertEquals(true, edge.isInferred());
         assertEquals(kernel.getPropagationSoftware(), edge.getUpdatedBy());
+    }
+
+    @Test
+    public void testJobAttribute() {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment,
+                            scenario.georgeTownUniversity, scenario.fee,
+                            scenario.abc486, scenario.rsb225,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+
+        JobAttribute attribute = scenario.price.createJobAttribute();
+        attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
+        attribute.setJob(order);
+        em.persist(attribute);
+        txn.commit();
     }
 
     @Test

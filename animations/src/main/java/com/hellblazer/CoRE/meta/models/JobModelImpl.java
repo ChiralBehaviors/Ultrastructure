@@ -47,14 +47,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.event.Job;
-import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.Protocol_;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
@@ -158,7 +156,7 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("parent"),
+                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("my_parent"),
                                                      (Long) triggerData.getNew().getObject("parent_status_to_set"));
                 return null;
             }
@@ -290,6 +288,9 @@ public class JobModelImpl implements JobModel {
 
     public static void validate_state_graph(TriggerData triggerData)
                                                                     throws SQLException {
+        if (true) {
+            return;
+        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
@@ -815,12 +816,14 @@ public class JobModelImpl implements JobModel {
         job.setDeliverTo(resolve(parent.getDeliverTo(), protocol.getDeliverTo()));
         job.setService(protocol.getService());
         job.setStatus(kernel.getUnset());
+        /*
         for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
             JobAttribute attribute = pAttribute.createJobAttribute();
             attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
             attribute.setJob(job);
             em.persist(attribute);
         }
+        */
         em.persist(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s from protocol %s", job,
@@ -1015,7 +1018,7 @@ public class JobModelImpl implements JobModel {
                                      cb.equal(root.get(Protocol_.deliverFrom),
                                               kernel.getAnyLocation()),
                                      cb.equal(root.get(Protocol_.deliverFrom),
-                                              kernel.getAnyLocation())));
+                                              kernel.getSameLocation())));
         }
         if (deliverTo != null) {
             predicate = cb.and(predicate,
@@ -1024,7 +1027,7 @@ public class JobModelImpl implements JobModel {
                                      cb.equal(root.get(Protocol_.deliverTo),
                                               kernel.getAnyLocation()),
                                      cb.equal(root.get(Protocol_.deliverTo),
-                                              kernel.getAnyLocation())));
+                                              kernel.getSameLocation())));
         }
         cQuery.where(predicate);
 
@@ -1041,6 +1044,11 @@ public class JobModelImpl implements JobModel {
         }
         if (requester != null) {
             query.setParameter(requesterParameter, requester);
+        }
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("%s, product: %s, deliverFrom: %s, deliverTo: %s, requester: %s",
+                                    query, product, deliverFrom, deliverTo,
+                                    requester));
         }
         return query;
     }

@@ -31,7 +31,6 @@ import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
-import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -73,7 +72,7 @@ public class OrderProcessingLoader {
     public StatusCode           waitingOnFee;
     public StatusCode           waitingOnPricing;
     public StatusCode           waitingOnPurchaseOrder;
-    private StatusCode          creditChecked;
+    public StatusCode           waitingOnCreditCheck;
 
     public Product              abc486;
     public Product              checkCredit;
@@ -127,6 +126,7 @@ public class OrderProcessingLoader {
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
+    public ProtocolAttribute price;
 
     public OrderProcessingLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -209,16 +209,13 @@ public class OrderProcessingLoader {
                                            customerType, anyRelationship, area,
                                            area, core);
         em.persist(m3);
-        MetaProtocol m4 = new MetaProtocol(ship, 4, notApplicableRelationship,
-                                           customerType, sameRelationship,
-                                           anyRelationship, area, core);
-        em.persist(m4);
         MetaProtocol m5 = new MetaProtocol(salesTax, 5,
                                            notApplicableRelationship,
                                            salesTaxStatus, sameRelationship,
                                            state, anyRelationship, core);
         em.persist(m5);
-        MetaProtocol m6 = new MetaProtocol(fee, 6, notApplicableRelationship,
+        MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 6,
+                                           notApplicableRelationship,
                                            anyRelationship, anyRelationship,
                                            anyRelationship, anyRelationship,
                                            core);
@@ -268,7 +265,7 @@ public class OrderProcessingLoader {
         checkCreditCompleted.setParent(checkCredit);
         checkCreditCompleted.setStatusCode(completed);
         checkCreditCompleted.setMyParent(pick);
-        checkCreditCompleted.setParentStatusToSet(creditChecked);
+        checkCreditCompleted.setParentStatusToSet(available);
         em.persist(checkCreditCompleted);
 
         ProductParentSequencingAuthorization checkLetterOfCreditCompleted = new ProductParentSequencingAuthorization(
@@ -276,7 +273,7 @@ public class OrderProcessingLoader {
         checkLetterOfCreditCompleted.setParent(checkLetterOfCredit);
         checkLetterOfCreditCompleted.setStatusCode(completed);
         checkLetterOfCreditCompleted.setMyParent(pick);
-        checkLetterOfCreditCompleted.setParentStatusToSet(creditChecked);
+        checkLetterOfCreditCompleted.setParentStatusToSet(available);
         em.persist(checkLetterOfCreditCompleted);
 
         ProductSiblingSequencingAuthorization activateShip = new ProductSiblingSequencingAuthorization(
@@ -382,7 +379,7 @@ public class OrderProcessingLoader {
         em.persist(printCustDeclProtocol);
 
         Protocol printPoProtocol = new Protocol(ship, externalCust, abc486,
-                                                euro, us, cpu,
+                                                anyLocation, us, cpu,
                                                 printPurchaseOrder,
                                                 sameProduct, core);
         em.persist(printPoProtocol);
@@ -393,7 +390,7 @@ public class OrderProcessingLoader {
                                             core);
         em.persist(feeProtocol);
 
-        ProtocolAttribute price = new ProtocolAttribute(priceAttribute, core);
+        price = new ProtocolAttribute(priceAttribute, core);
         price.setNumericValue(1500);
         price.setProtocol(feeProtocol);
         em.persist(price);
@@ -604,9 +601,11 @@ public class OrderProcessingLoader {
         active = new StatusCode("Active", "Working on it now", core);
         em.persist(active);
 
-        creditChecked = new StatusCode("Credit Checked",
-                                       "Credit has been checked", core);
-        em.persist(creditChecked);
+        waitingOnCreditCheck = new StatusCode(
+                                              "Waiting on Credit Check",
+                                              "Waiting for credit check to be completed",
+                                              core);
+        em.persist(waitingOnCreditCheck);
 
         completed = new StatusCode("Completed", "Completed Job", core);
         completed.setPropagateChildren(true);
@@ -667,50 +666,54 @@ public class OrderProcessingLoader {
         NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
                                                              areaOf, core);
         em.persist(areaToRegion);
-        
+
         NetworkInference areaToState = new NetworkInference(areaOf, stateOf,
                                                             areaOf, core);
         em.persist(areaToState);
-        
+
         NetworkInference areaToCity = new NetworkInference(areaOf, cityOf,
                                                            areaOf, core);
         em.persist(areaToCity);
-        
+
         NetworkInference areaToStreet = new NetworkInference(areaOf, streetOf,
                                                              areaOf, core);
         em.persist(areaToStreet);
-        
+
         NetworkInference regionToState = new NetworkInference(regionOf,
                                                               stateOf,
                                                               regionOf, core);
         em.persist(regionToState);
-        
+
         NetworkInference regionToCity = new NetworkInference(regionOf, cityOf,
                                                              regionOf, core);
         em.persist(regionToCity);
-        
+
         NetworkInference regionToStreet = new NetworkInference(regionOf,
                                                                streetOf,
                                                                regionOf, core);
         em.persist(regionToStreet);
-        
+
         NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
                                                             stateOf, core);
         em.persist(stateToCity);
-        
+
         NetworkInference stateToStreet = new NetworkInference(stateOf,
                                                               streetOf,
                                                               stateOf, core);
         em.persist(stateToStreet);
-        
+
         NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
                                                              cityOf, core);
         em.persist(cityToStreet);
     }
 
     public void createStatusCodeSequencing() {
-        StatusCodeSequencing s = new StatusCodeSequencing(pick, available,
-                                                          active, core);
+        StatusCodeSequencing s = new StatusCodeSequencing(pick,
+                                                          waitingOnCreditCheck,
+                                                          available, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(pick, available, active, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(pick, active, completed, core);
@@ -732,18 +735,10 @@ public class OrderProcessingLoader {
         s = new StatusCodeSequencing(deliver, active, completed, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(checkCredit, creditChecked, available,
-                                     core);
-        em.persist(s);
-
         s = new StatusCodeSequencing(checkCredit, available, active, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(checkCredit, active, completed, core);
-        em.persist(s);
-
-        s = new StatusCodeSequencing(checkLetterOfCredit, available,
-                                     creditChecked, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(checkLetterOfCredit, available, active,

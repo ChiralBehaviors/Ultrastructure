@@ -28,7 +28,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.apache.openjpa.jdbc.sql.SQLExceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,6 @@ public abstract class JSP {
 
     static {
         Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
-        SQLExceptions.class.getCanonicalName();
         InputStream is = JSP.class.getResourceAsStream("jpa.properties");
         if (is == null) {
             log.error("Unable to read jpa.properties, resource is null");

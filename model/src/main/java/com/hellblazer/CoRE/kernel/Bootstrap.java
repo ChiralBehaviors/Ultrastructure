@@ -79,15 +79,15 @@ public class Bootstrap {
         alterTriggers(true);
     }
 
-    public void clear() throws SQLException {
-        alterTriggers(false);
+    public void clear() throws SQLException { 
+        alterTriggers(false); 
         ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
-        while (r.next()) {
+        while (r.next()) { 
             String table = r.getString("name");
             String query = String.format("DELETE FROM %s", table);
             connection.createStatement().execute(query);
         }
-        r.close();
+        r.close(); 
         alterTriggers(true);
     }
 
@@ -164,6 +164,12 @@ public class Bootstrap {
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {
+        for (String table : new String[] { "ruleform.resource",
+                "ruleform.product", "ruleform.location" }) {
+            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
+                                         table, enable ? "ENABLE" : "DISABLE");
+            connection.createStatement().execute(query);
+        }
         ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
         while (r.next()) {
             String table = r.getString("name");

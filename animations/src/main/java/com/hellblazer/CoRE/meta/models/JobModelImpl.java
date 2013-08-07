@@ -288,9 +288,6 @@ public class JobModelImpl implements JobModel {
 
     public static void validate_state_graph(TriggerData triggerData)
                                                                     throws SQLException {
-        if (true) {
-            return;
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {

@@ -315,7 +315,7 @@ public class OrderProcessingLoader {
         activateFee.setParent(printPurchaseOrder);
         activateFee.setStatusCode(waitingOnFee);
         activateFee.setNextChild(fee);
-        activateFee.setNextChildStatus(active);
+        activateFee.setNextChildStatus(available);
         em.persist(activateFee);
 
         ProductSiblingSequencingAuthorization activateDiscount = new ProductSiblingSequencingAuthorization(

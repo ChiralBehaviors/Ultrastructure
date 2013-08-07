@@ -209,23 +209,6 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testJobAttribute() {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        Job order = new Job(scenario.orderFullfillment,
-                            scenario.georgeTownUniversity, scenario.fee,
-                            scenario.abc486, scenario.rsb225,
-                            scenario.factory1, scenario.core);
-        em.persist(order);
-
-        JobAttribute attribute = scenario.price.createJobAttribute();
-        attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
-        attribute.setJob(order);
-        em.persist(attribute);
-        txn.commit();
-    }
-
-    @Test
     public void testOrder() throws Exception {
         EntityTransaction txn = em.getTransaction();
         txn.begin();

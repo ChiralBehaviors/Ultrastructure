@@ -201,20 +201,20 @@ public class OrderProcessingLoader {
                                            sameRelationship, sameRelationship,
                                            state, area, core);
         em.persist(m1);
-        MetaProtocol m2 = new MetaProtocol(pick, 2, notApplicableRelationship,
+        MetaProtocol m2 = new MetaProtocol(pick, 1, notApplicableRelationship,
                                            customerType, sameRelationship,
                                            area, area, core);
         em.persist(m2);
-        MetaProtocol m3 = new MetaProtocol(ship, 3, notApplicableRelationship,
+        MetaProtocol m3 = new MetaProtocol(ship, 1, notApplicableRelationship,
                                            customerType, anyRelationship, area,
                                            area, core);
         em.persist(m3);
-        MetaProtocol m5 = new MetaProtocol(salesTax, 5,
+        MetaProtocol m5 = new MetaProtocol(salesTax, 1,
                                            notApplicableRelationship,
                                            salesTaxStatus, sameRelationship,
                                            state, anyRelationship, core);
         em.persist(m5);
-        MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 6,
+        MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 1,
                                            notApplicableRelationship,
                                            anyRelationship, anyRelationship,
                                            anyRelationship, anyRelationship,

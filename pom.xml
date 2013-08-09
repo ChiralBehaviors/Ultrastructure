@@ -36,10 +36,10 @@
 		<module>test-framework</module>
 		<module>model</module>
 		<module>animations</module>
+        <module>workspace-api</module>
 		<module>configuration</module>
 		<module>data-access</module>
 		<module>service</module>
-
 	</modules>
 
 	<dependencyManagement>

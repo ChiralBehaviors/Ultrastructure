@@ -12,7 +12,6 @@
             $BODY$
             DECLARE
                 _attribute ruleform.attribute%ROWTYPE;
-                _location_context ruleform.location_context%ROWTYPE;
             BEGIN
                 SELECT * INTO STRICT _attribute FROM attribute WHERE id = attribute_id;
                 RETURN _attribute.value_type;

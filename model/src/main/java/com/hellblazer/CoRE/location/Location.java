@@ -25,7 +25,6 @@ import static com.hellblazer.CoRE.location.Location.FIND_GROUPED_ATTRIBUTE_AUTHO
 import static com.hellblazer.CoRE.location.Location.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.location.Location.GET_CHILD;
 import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
-import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
 
 import java.util.List;
 import java.util.Set;
@@ -225,11 +224,6 @@ public class Location extends ExistentialRuleform implements
     @Override
     public Class<LocationAttribute> getAttributeType() {
         return LocationAttribute.class;
-    }
-
-    public List<LocationContext> getAvailableTargetContexts(EntityManager em) {
-        return em.createNamedQuery(TARGET_CONTEXTS, LocationContext.class).setParameter("context",
-                                                                                        this).getResultList();
     }
 
     public Set<ProductLocation> getEntities() {

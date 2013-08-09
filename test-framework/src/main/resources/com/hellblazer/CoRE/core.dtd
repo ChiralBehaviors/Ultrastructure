@@ -5,8 +5,6 @@
     ruleform.attribute_meta_attribute|
     ruleform.attribute_network|
     ruleform.capability|
-    ruleform.context_attribute|
-    ruleform.context_attribute_authorization|
     ruleform.coordinate|
     ruleform.coordinate_attribute|
     ruleform.coordinate_attribute_authorization|
@@ -32,8 +30,6 @@
     ruleform.location|
     ruleform.location_attribute|
     ruleform.location_attribute_authorization|
-    ruleform.location_context|
-    ruleform.location_meta_rule|
     ruleform.location_network|
     ruleform.location_network_authorization|
     ruleform.location_relationship|

@@ -11,7 +11,6 @@
     <include relativeToChangelogFile="true" file="tables/product-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/location_context-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_kind-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute-0.0.1.xml"/>
@@ -20,12 +19,9 @@
     <include relativeToChangelogFile="true" file="tables/coordinate-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_location-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_network-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/context_attribute-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/context_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_network_deduction-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/location_meta_rule-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/transformation_metarule-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/unit_values-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute_network-0.0.1.xml"/>

@@ -16,10 +16,7 @@
  */
 package com.hellblazer.CoRE.location;
 
-import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_CONTEXTS;
-import static com.hellblazer.CoRE.location.LocationRelationship.AVAILABLE_RELATIONSHIPS;
 import static com.hellblazer.CoRE.location.LocationRelationship.RULES;
-import static com.hellblazer.CoRE.location.LocationRelationship.TARGET_CONTEXTS;
 
 import java.util.Map;
 
@@ -48,22 +45,14 @@ import com.hellblazer.CoRE.resource.Resource;
 @javax.persistence.Entity
 @Table(name = "location_relationship", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_relationship_id_seq", sequenceName = "location_relationship_id_seq")
-@NamedQueries({
-               @NamedQuery(name = AVAILABLE_CONTEXTS, query = "SELECT distinct lr.context FROM LocationRelationship AS lr"),
-               @NamedQuery(name = TARGET_CONTEXTS, query = "SELECT distinct lr.targetContext FROM LocationRelationship AS lr WHERE lr.context = :context"),
-               @NamedQuery(name = AVAILABLE_RELATIONSHIPS, query = "SELECT distinct lr.relationship FROM LocationRelationship AS lr WHERE lr.context = :context AND lr.targetContext = :target"),
-               @NamedQuery(name = RULES, query = "select lr FROM LocationRelationship AS lr "
-                                                 + "WHERE lr.context = :context "
-                                                 + "AND lr.relationship = :relationship "
-                                                 + "AND lr.targetContext = :targetContext "
-                                                 + "AND lr.productMappedValue = :mappedEntityValue "
-                                                 + "ORDER BY lr.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = RULES, query = "select lr FROM LocationRelationship AS lr "
+                                                  + "WHERE lr.relationship = :relationship "
+                                                  + "AND lr.productMappedValue = :mappedEntityValue "
+                                                  + "ORDER BY lr.sequenceNumber") })
 public class LocationRelationship extends Ruleform {
     private static final long  serialVersionUID        = 1L;
-    public static final String AVAILABLE_CONTEXTS      = "locationRelationship.availableContexts";
     public static final String AVAILABLE_RELATIONSHIPS = "locationRelationship.availableRelationships";
     public static final String RULES                   = "locationRelationship.rules";
-    public static final String TARGET_CONTEXTS         = "locationRelationship.availableTargetContexts";
     public static final String FIND_BY_ID              = "locationRelationship.findById";
     public static final String FIND_BY_NAME            = "locationRelationship.findByName";
 
@@ -71,11 +60,6 @@ public class LocationRelationship extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "attribute_relationship")
     private Relationship       attributeRelationship;
-
-    //bi-directional many-to-one association to LocationContext
-    @ManyToOne
-    @JoinColumn(name = "context")
-    private LocationContext    context;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
@@ -104,11 +88,6 @@ public class LocationRelationship extends Ruleform {
     @Column(name = "sequence_number")
     private Integer            sequenceNumber;
 
-    //bi-directional many-to-one association to LocationContext
-    @ManyToOne
-    @JoinColumn(name = "target_context")
-    private LocationContext    targetContext;
-
     public LocationRelationship() {
     }
 
@@ -130,10 +109,6 @@ public class LocationRelationship extends Ruleform {
         return attributeRelationship;
     }
 
-    public LocationContext getContext() {
-        return context;
-    }
-
     public Product getEntityMappedValue() {
         return productMappedValue;
     }
@@ -151,10 +126,6 @@ public class LocationRelationship extends Ruleform {
         return location2Attribute;
     }
 
-    public LocationContext getLocationContext() {
-        return targetContext;
-    }
-
     public Relationship getRelationship() {
         return relationship;
     }
@@ -165,10 +136,6 @@ public class LocationRelationship extends Ruleform {
 
     public void setAttributeRelationship(Relationship relationship1) {
         attributeRelationship = relationship1;
-    }
-
-    public void setContext(LocationContext locationContext1) {
-        context = locationContext1;
     }
 
     public void setEntityMappedValue(Product product) {
@@ -196,24 +163,28 @@ public class LocationRelationship extends Ruleform {
         this.sequenceNumber = sequenceNumber;
     }
 
-    public void setTargetContext(LocationContext locationContext2) {
-        targetContext = locationContext2;
-    }
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (attributeRelationship != null)
+            attributeRelationship = (Relationship) attributeRelationship.manageEntity(em,
+                                                                                      knownObjects);
+        if (productMappedValue != null)
+            productMappedValue = (Product) productMappedValue.manageEntity(em,
+                                                                           knownObjects);
+        if (location1Attribute != null)
+            location1Attribute = (Attribute) location1Attribute.manageEntity(em,
+                                                                             knownObjects);
+        if (location2Attribute != null)
+            location2Attribute = (Attribute) location2Attribute.manageEntity(em,
+                                                                             knownObjects);
+        if (relationship != null)
+            relationship = (Relationship) relationship.manageEntity(em,
+                                                                    knownObjects);
+        super.traverseForeignKeys(em, knownObjects);
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (attributeRelationship != null) attributeRelationship = (Relationship) attributeRelationship.manageEntity(em, knownObjects);
-		if (context != null) context = (LocationContext) context.manageEntity(em, knownObjects);
-		if (productMappedValue != null) productMappedValue = (Product) productMappedValue.manageEntity(em, knownObjects);
-		if (location1Attribute != null) location1Attribute = (Attribute) location1Attribute.manageEntity(em, knownObjects);
-		if (location2Attribute != null) location2Attribute = (Attribute) location2Attribute.manageEntity(em, knownObjects);
-		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
-		if (targetContext != null) targetContext = (LocationContext) targetContext.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    }
 }

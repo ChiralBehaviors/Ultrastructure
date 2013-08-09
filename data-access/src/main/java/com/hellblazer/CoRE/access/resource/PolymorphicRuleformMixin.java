@@ -49,13 +49,9 @@ import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.ProtocolAttributeAuthorization;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
-import com.hellblazer.CoRE.location.ContextAttribute;
-import com.hellblazer.CoRE.location.ContextAttributeAuthorization;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationAttribute;
 import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
-import com.hellblazer.CoRE.location.LocationContext;
-import com.hellblazer.CoRE.location.LocationMetaRule;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.location.LocationNetworkAuthorization;
 import com.hellblazer.CoRE.location.LocationRelationship;
@@ -82,87 +78,82 @@ import com.hellblazer.CoRE.resource.ResourceRelationshipLocationAuthorization;
 import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
 
 /**
- * A class for deserializing ruleforms. If you want your ruleform deserialized polymorphically,
- * it must be registered here. It MUST descend from Ruleform in order to be correctly deserialized.
+ * A class for deserializing ruleforms. If you want your ruleform deserialized
+ * polymorphically, it must be registered here. It MUST descend from Ruleform in
+ * order to be correctly deserialized.
  * 
- * For now, we're only deserializing to concrete types, but if you need an abstract type, just add it in.
+ * For now, we're only deserializing to concrete types, but if you need an
+ * abstract type, just add it in.
+ * 
  * @author hparry
- *
+ * 
  */
-@JsonTypeInfo(  
-	    use = JsonTypeInfo.Id.NAME,  
-	    include = JsonTypeInfo.As.PROPERTY,  
-	    property = "type")  
-@JsonSubTypes({  
-	@Type(value = Attribute.class, name = "attribute"),
-	@Type(value = AttributeMetaAttribute.class, name = "attributeMetaAttribute"),
-	@Type(value = AttributeMetaAttributeAuthorization.class, name = "attributeMetaAttributeAuthorization"),
-	@Type(value = AttributeNetwork.class, name = "attributeNetwork"),
-	@Type(value = Transformation.class, name = "transformation"),
-	@Type(value = TransformationMetarule.class, name = "transformationMetarule"),
-	@Type(value = Unit.class, name = "unit"),
-	@Type(value = UnitValue.class, name = "unitValue"),
-	@Type(value = ValueType.class, name = "valueType"),
-	
-	@Type(value = Action.class, name = "action"),
-	@Type(value = Capability.class, name = "capability"),
-	
-	@Type(value = Coordinate.class, name = "coordinate"),
-	@Type(value = CoordinateAttribute.class, name = "coordinateAttribute"),
-	@Type(value = CoordinateAttributeAuthorization.class, name = "coordinateAttributeAuthorization"),
-	@Type(value = CoordinateKind.class, name = "coordinateKind"),
-	@Type(value = CoordinateKindDefinition.class, name = "coordinateKindDefinition"),
-	@Type(value = CoordinateNesting.class, name = "coordinateNesting"),
-	@Type(value = CoordinateRelationship.class, name = "coordinateRelationship"),
-	
-	@Type(value = Job.class, name = "job"),
-	@Type(value = JobAttribute.class, name = "jobAttribute"),
-	@Type(value = JobChronology.class, name = "jobChronology"),
-	@Type(value = MetaProtocol.class, name = "metaProtocol"),
-	@Type(value = ProductChildSequencingAuthorization.class, name = "productChildSequencingAuthorization"),
-	@Type(value = ProductParentSequencingAuthorization.class, name = "productParentSequencingAuthorization"),
-	@Type(value = ProductSiblingSequencingAuthorization.class, name = "productSiblingSequencingAuthorization"),
-	@Type(value = Protocol.class, name = "protocol"),
-	@Type(value = ProtocolAttribute.class, name = "protocolAttribute"),
-	@Type(value = ProtocolAttributeAuthorization.class, name = "protocolAttributeAuthorization"),
-	@Type(value = StatusCode.class, name = "statusCode"),
-	@Type(value = StatusCodeSequencing.class, name = "statusCodeSequencing"),
-	
-	@Type(value = ContextAttribute.class, name = "contextAttribute"),
-	@Type(value = ContextAttributeAuthorization.class, name = "contextAttributeAuthorization"),
-	@Type(value = Location.class, name = "location"),
-	@Type(value = LocationAttribute.class, name = "locationAttribute"),
-	@Type(value = LocationAttributeAuthorization.class, name = "locationAttributeAuthorization"),
-	@Type(value = LocationContext.class, name = "locationContext"),
-	@Type(value = LocationMetaRule.class, name = "locationMetaRule"),
-	@Type(value = LocationNetwork.class, name = "locationNetwork"),
-	@Type(value = LocationNetworkAuthorization.class, name = "locationNetworkAuthorization"),
-	@Type(value = LocationRelationship.class, name = "locationRelationship"),
-	
-	@Type(value = NetworkInference.class, name = "networkInference"),
-	@Type(value = Relationship.class, name = "relationship"),
-	
-	@Type(value = Product.class, name = "product"),
-	@Type(value = ProductAttribute.class, name = "productAttribute"),
-	@Type(value = ProductAttributeAuthorization.class, name = "productAttributeAuthorization"),
-	@Type(value = ProductLocation.class, name = "productLocation"),
-	@Type(value = ProductLocationAttribute.class, name = "productLocationAttribute"),
-	@Type(value = ProductLocationAttributeAuthorization.class, name = "productLocationAttributeAuthorization"),
-	@Type(value = ProductLocationNetwork.class, name = "productLocationNetwork"),
-	@Type(value = ProductNetwork.class, name = "productNetwork"),
-	@Type(value = ProductNetworkAttribute.class, name = "productNetworkAttribute"),
-	@Type(value = ProductNetworkAuthorization.class, name = "productNetworkAuthorization"),
-	@Type(value = ProductNetworkDeduction.class, name = "productNetworkDeduction"),
-	
-	@Type(value = Resource.class, name = "resource"),
-	@Type(value = ResourceAttribute.class, name = "resourceAttribute"),
-	@Type(value = ResourceAttributeAuthorization.class, name = "resourceAttributeAuthorization"),
-	@Type(value = ResourceNetwork.class, name = "resourceNetwork"),
-	@Type(value = ResourceNetworkAuthorization.class, name = "resourceNetworkAuthorization"),
-	@Type(value = ResourceRelationshipAttributeAuthorization.class, name = "resourceRelationshipAttributeAuthorization"),
-	@Type(value = ResourceRelationshipLocationAuthorization.class, name = "resourceRelationshipLocationAuthorization"),
-	@Type(value = ResourceRelationshipProductAuthorization.class, name = "resourceRelationshipProductAuthorization")	
-	}) 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+               @Type(value = Attribute.class, name = "attribute"),
+               @Type(value = AttributeMetaAttribute.class, name = "attributeMetaAttribute"),
+               @Type(value = AttributeMetaAttributeAuthorization.class, name = "attributeMetaAttributeAuthorization"),
+               @Type(value = AttributeNetwork.class, name = "attributeNetwork"),
+               @Type(value = Transformation.class, name = "transformation"),
+               @Type(value = TransformationMetarule.class, name = "transformationMetarule"),
+               @Type(value = Unit.class, name = "unit"),
+               @Type(value = UnitValue.class, name = "unitValue"),
+               @Type(value = ValueType.class, name = "valueType"),
+
+               @Type(value = Action.class, name = "action"),
+               @Type(value = Capability.class, name = "capability"),
+
+               @Type(value = Coordinate.class, name = "coordinate"),
+               @Type(value = CoordinateAttribute.class, name = "coordinateAttribute"),
+               @Type(value = CoordinateAttributeAuthorization.class, name = "coordinateAttributeAuthorization"),
+               @Type(value = CoordinateKind.class, name = "coordinateKind"),
+               @Type(value = CoordinateKindDefinition.class, name = "coordinateKindDefinition"),
+               @Type(value = CoordinateNesting.class, name = "coordinateNesting"),
+               @Type(value = CoordinateRelationship.class, name = "coordinateRelationship"),
+
+               @Type(value = Job.class, name = "job"),
+               @Type(value = JobAttribute.class, name = "jobAttribute"),
+               @Type(value = JobChronology.class, name = "jobChronology"),
+               @Type(value = MetaProtocol.class, name = "metaProtocol"),
+               @Type(value = ProductChildSequencingAuthorization.class, name = "productChildSequencingAuthorization"),
+               @Type(value = ProductParentSequencingAuthorization.class, name = "productParentSequencingAuthorization"),
+               @Type(value = ProductSiblingSequencingAuthorization.class, name = "productSiblingSequencingAuthorization"),
+               @Type(value = Protocol.class, name = "protocol"),
+               @Type(value = ProtocolAttribute.class, name = "protocolAttribute"),
+               @Type(value = ProtocolAttributeAuthorization.class, name = "protocolAttributeAuthorization"),
+               @Type(value = StatusCode.class, name = "statusCode"),
+               @Type(value = StatusCodeSequencing.class, name = "statusCodeSequencing"),
+
+               @Type(value = Location.class, name = "location"),
+               @Type(value = LocationAttribute.class, name = "locationAttribute"),
+               @Type(value = LocationAttributeAuthorization.class, name = "locationAttributeAuthorization"),
+               @Type(value = LocationNetwork.class, name = "locationNetwork"),
+               @Type(value = LocationNetworkAuthorization.class, name = "locationNetworkAuthorization"),
+               @Type(value = LocationRelationship.class, name = "locationRelationship"),
+
+               @Type(value = NetworkInference.class, name = "networkInference"),
+               @Type(value = Relationship.class, name = "relationship"),
+
+               @Type(value = Product.class, name = "product"),
+               @Type(value = ProductAttribute.class, name = "productAttribute"),
+               @Type(value = ProductAttributeAuthorization.class, name = "productAttributeAuthorization"),
+               @Type(value = ProductLocation.class, name = "productLocation"),
+               @Type(value = ProductLocationAttribute.class, name = "productLocationAttribute"),
+               @Type(value = ProductLocationAttributeAuthorization.class, name = "productLocationAttributeAuthorization"),
+               @Type(value = ProductLocationNetwork.class, name = "productLocationNetwork"),
+               @Type(value = ProductNetwork.class, name = "productNetwork"),
+               @Type(value = ProductNetworkAttribute.class, name = "productNetworkAttribute"),
+               @Type(value = ProductNetworkAuthorization.class, name = "productNetworkAuthorization"),
+               @Type(value = ProductNetworkDeduction.class, name = "productNetworkDeduction"),
+
+               @Type(value = Resource.class, name = "resource"),
+               @Type(value = ResourceAttribute.class, name = "resourceAttribute"),
+               @Type(value = ResourceAttributeAuthorization.class, name = "resourceAttributeAuthorization"),
+               @Type(value = ResourceNetwork.class, name = "resourceNetwork"),
+               @Type(value = ResourceNetworkAuthorization.class, name = "resourceNetworkAuthorization"),
+               @Type(value = ResourceRelationshipAttributeAuthorization.class, name = "resourceRelationshipAttributeAuthorization"),
+               @Type(value = ResourceRelationshipLocationAuthorization.class, name = "resourceRelationshipLocationAuthorization"),
+               @Type(value = ResourceRelationshipProductAuthorization.class, name = "resourceRelationshipProductAuthorization") })
 public abstract class PolymorphicRuleformMixin {
 
 }

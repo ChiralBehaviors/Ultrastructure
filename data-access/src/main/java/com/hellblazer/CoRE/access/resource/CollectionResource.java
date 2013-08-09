@@ -81,7 +81,7 @@ public class CollectionResource {
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public AbstractNetworkGraph getNetwork(Ruleform node, Relationship[] relationships) throws JsonProcessingException {
+	public AbstractNetworkGraph<?> getNetwork(Ruleform node, Relationship[] relationships) throws JsonProcessingException {
 
 
 		ProductGraph pg = new ProductGraph((Product)node, relationships, em);

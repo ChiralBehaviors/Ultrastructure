@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hellblazer.CoRE.meta.models;
+package com.hellblazer.CoRE.kernel;
 
 import javax.persistence.EntityManager;
 
@@ -30,7 +30,6 @@ import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownResource;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.resource.Resource;

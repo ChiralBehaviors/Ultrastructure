@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hellblazer.CoRE.meta;
+package com.hellblazer.CoRE.kernel;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.capability.Action;

@@ -70,6 +70,5 @@
 		<class>com.hellblazer.CoRE.resource.ResourceNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.ExistentialRuleform</class>
 		<class>com.hellblazer.CoRE.Ruleform</class>
-		<class>com.hellblazer.CoRE.workspace.Workspace</class>
 	</persistence-unit>
 </persistence>

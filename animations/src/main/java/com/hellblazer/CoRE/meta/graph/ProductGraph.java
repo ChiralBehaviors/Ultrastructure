@@ -36,6 +36,7 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 
 	private Product origin;
 	private Relationship[] relationships;
+	private ProductNetwork[] edges;
 	private Product[] nodes;
 	private EntityManager em;
 	
@@ -44,13 +45,13 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 		this.origin = node;
 		this.relationships = relationships;
 		this.em = em;
-		nodes = findNeighbors();	
+		findNeighbors();
 	}
 	
 	/**
 	 * @return
 	 */
-	private Product[] findNeighbors() {
+	private void findNeighbors() {
 		//TODO HPARRY create a query that just gets the child nodes, not the ProductNetworks
 		Query q = em.createNamedQuery(Product.ALL_CHILDREN_NETWORK_RULES);
 		q.setParameter("product", origin);
@@ -62,7 +63,8 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 		for (ProductNetwork pn : results) {
 			nodes.add(pn.getChild());
 		}
-		return nodes.toArray(new Product[0]);
+		edges = results.toArray(new ProductNetwork[]{});
+		this.nodes = nodes.toArray(new Product[0]);
 		
 	}
 
@@ -78,9 +80,8 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 	 * @see com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph#getEdges()
 	 */
 	@Override
-	public Relationship[] getEdges() {
-		// TODO Auto-generated method stub
-		return null;
+	public ProductNetwork[] getEdges() {
+		return edges;
 	}
 
 	/* (non-Javadoc)

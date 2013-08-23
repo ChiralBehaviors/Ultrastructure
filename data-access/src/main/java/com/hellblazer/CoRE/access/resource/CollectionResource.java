@@ -17,6 +17,8 @@
 package com.hellblazer.CoRE.access.resource;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -24,7 +26,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -78,15 +82,35 @@ public class CollectionResource {
 
 	}
 
+	
+	//TODO hparry this should take path args for node id and relationship id
+	//also type. How do we handle type in the path? Do we need to?
+	//Hal said something about universal IDs across all tables, but how do we know what
+	//entity we're querying?
+	//Just do type in the path and do routing. Remember app server routing? Do that.
+//	@GET
+//	@Path("/")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public AbstractNetworkGraph get(@Path)
+	
 	@GET
-	@Path("/")
+	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
+	public AbstractNetworkGraph get(@PathParam("id") long id, @QueryParam("rel") List<String> relIds) throws JsonProcessingException {
+		Product p = new Product();
+		p.setId(id);
+		List<Relationship> rels = new LinkedList<Relationship>();
+		for (String rid : relIds) {
+			Relationship r = new Relationship();
+			r.setId(Long.parseLong(rid));
+			rels.add(r);
+		}
+		return getNetwork(p, rels.toArray(new Relationship[]{}));
+	}
+	
 	public AbstractNetworkGraph getNetwork(Ruleform node, Relationship[] relationships) throws JsonProcessingException {
 
-
 		ProductGraph pg = new ProductGraph((Product)node, relationships, em);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enableDefaultTyping();
 		return pg;
 
 	}

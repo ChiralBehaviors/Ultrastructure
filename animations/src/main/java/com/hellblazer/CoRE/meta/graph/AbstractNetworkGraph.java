@@ -17,7 +17,7 @@
 package com.hellblazer.CoRE.meta.graph;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.network.NetworkRuleform;
 
 /**
  * Abstract class for representing the graphs created by networked ruleforms.
@@ -39,7 +39,7 @@ public abstract class AbstractNetworkGraph<T extends ExistentialRuleform> {
 	 * not foreign keys.
 	 * @return the compound network ruleforms that represent graph edges
 	 */
-	public abstract Relationship[] getEdges();
+	public abstract NetworkRuleform[] getEdges();
 	
 	/**
 	 * Returns the set of nodes in the graph. These are existential ruleforms.

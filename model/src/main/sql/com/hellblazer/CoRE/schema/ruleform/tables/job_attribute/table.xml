@@ -42,7 +42,7 @@
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_attribute_sequence_number_key UNIQUE (job , attribute , sequence_number ),
               CONSTRAINT job_attribute_sequence_number_check CHECK (sequence_number > 0),
-              CONSTRAINT job_attribute_valid_value CHECK ((ruleform.null_zero(text_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+              CONSTRAINT job_attribute_valid_value CHECK ((ruleform.null_zero(text_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value) + ruleform.null_zero(boolean_value)) = 1)
             )
             WITH (
               OIDS=FALSE

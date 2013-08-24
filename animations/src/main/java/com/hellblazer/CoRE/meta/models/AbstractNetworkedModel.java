@@ -17,7 +17,6 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static com.hellblazer.CoRE.network.NetworkRuleform.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
@@ -28,6 +27,7 @@ import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUE
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GET_CHILD_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.UNLINKED_SUFFIX;
@@ -61,9 +61,9 @@ import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
+import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationNetwork;
-import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.NetworkedModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
@@ -455,7 +455,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                                        + INFERENCE_STEP_SUFFIX).executeUpdate();
                 firstPass = false;
             } else {
-                newRules = em.createNamedQuery(INFERENCE_STEP_FROM_LAST_PASS).executeUpdate();
+                newRules = em.createNamedQuery(networkPrefix
+                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
             }
             if (log.isTraceEnabled()) {
                 log.trace(String.format("inferred %s new rules", newRules));

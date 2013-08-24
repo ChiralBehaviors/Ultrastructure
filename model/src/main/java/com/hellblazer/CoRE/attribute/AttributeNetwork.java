@@ -21,10 +21,12 @@ import static com.hellblazer.CoRE.attribute.AttributeNetwork.GATHER_EXISTING_NET
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.GENERATE_NETWORK_INVERSES;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.INFERENCE_STEP;
+import static com.hellblazer.CoRE.attribute.AttributeNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.INSERT_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 
@@ -72,6 +74,23 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                       + "     JOIN ruleform.network_inference AS deduction "
                                                                       + "         ON premise1.relationship = deduction.premise1 "
                                                                       + "         AND premise2.relationship = deduction.premise2 "),
+                     @NamedNativeQuery(name = INFERENCE_STEP_FROM_LAST_PASS, query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
+                                                                                     + "     SELECT "
+                                                                                     + "         premise1.parent, "
+                                                                                     + "         deduction.inference, "
+                                                                                     + "         premise2.child, "
+                                                                                     + "         premise1.id, "
+                                                                                     + "         premise2.id "
+                                                                                     + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child"
+                                                                                     + "              FROM last_pass_rules AS n) as premise1 "
+                                                                                     + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
+                                                                                     + "            FROM ruleform.attribute_network AS n "
+                                                                                     + "            WHERE n.inferred = FALSE) as premise2  "
+                                                                                     + "         ON premise2.parent = premise1.child "
+                                                                                     + "         AND premise2.child <> premise1.parent "
+                                                                                     + "     JOIN ruleform.network_inference AS deduction "
+                                                                                     + "         ON premise1.relationship = deduction.premise1 "
+                                                                                     + "         AND premise2.relationship = deduction.premise2 "),
                      @NamedNativeQuery(name = GATHER_EXISTING_NETWORK_RULES, query = "INSERT INTO current_pass_existing_rules "
                                                                                      + "SELECT exist.id, wm.* "
                                                                                      + "FROM working_memory AS wm "
@@ -143,6 +162,8 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES         = "attributeNetwork"
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS    = "attributeNetwork"
+                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 
     //bi-directional many-to-one association to Attribute
     @ManyToOne
@@ -224,16 +245,18 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
         this.parent = parent;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (child != null) child = (Attribute) child.manageEntity(em, knownObjects);
-		
-		if (parent != null) parent = (Attribute) parent.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (child != null)
+            child = (Attribute) child.manageEntity(em, knownObjects);
+
+        if (parent != null)
+            parent = (Attribute) parent.manageEntity(em, knownObjects);
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

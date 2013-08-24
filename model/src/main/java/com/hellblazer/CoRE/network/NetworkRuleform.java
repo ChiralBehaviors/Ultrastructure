@@ -16,8 +16,6 @@
  */
 package com.hellblazer.CoRE.network;
 
-import static com.hellblazer.CoRE.network.NetworkRuleform.*;
-
 import java.util.Map;
 
 import javax.persistence.Access;
@@ -28,8 +26,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.resource.Resource;
@@ -40,37 +36,18 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-
-@NamedNativeQueries({ @NamedNativeQuery(name = INFERENCE_STEP_FROM_LAST_PASS, query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
-                                                                                      + "     SELECT "
-                                                                                      + "         premise1.parent, "
-                                                                                      + "         deduction.inference, "
-                                                                                      + "         premise2.child, "
-                                                                                      + "         premise1.id, "
-                                                                                      + "         premise2.id "
-                                                                                      + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child"
-                                                                                      + "              FROM last_pass_rules AS n) as premise1 "
-                                                                                      + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
-                                                                                      + "            FROM ruleform.resource_network AS n "
-                                                                                      + "            WHERE n.inferred = FALSE) as premise2  "
-                                                                                      + "         ON premise2.parent = premise1.child "
-                                                                                      + "         AND premise2.child <> premise1.parent "
-                                                                                      + "     JOIN ruleform.network_inference AS deduction "
-                                                                                      + "         ON premise1.relationship = deduction.premise1 "
-                                                                                      + "         AND premise2.relationship = deduction.premise2 ") })
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Access(AccessType.FIELD)
 abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         Ruleform {
-    private static final long  serialVersionUID              = 1L;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "networkRuleform.inferenceStepFromLastPass";
+    private static final long serialVersionUID = 1L;
 
-    private boolean            inferred                      = false;
+    private boolean           inferred         = false;
 
     @ManyToOne
     @JoinColumn(name = "relationship")
-    private Relationship       relationship;
+    private Relationship      relationship;
 
     public NetworkRuleform() {
         super();
@@ -160,17 +137,19 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
     public void setRelationship(Relationship relationship) {
         this.relationship = relationship;
     }
-    
+
     /* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (relationship != null)
+            relationship = (Relationship) relationship.manageEntity(em,
+                                                                    knownObjects);
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
     public String toString() {
         return String.format("LocationNetwork[%s] %s >> %s >> %s: %s", getId(),

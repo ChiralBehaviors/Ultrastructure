@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
             CREATE TABLE ruleform.job_chronology
             (
               id bigserial NOT NULL, -- Unique identifier
@@ -17,6 +17,7 @@
               research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The Resource that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
+              sequence bigint NOT NULL,
               CONSTRAINT job_chronology_pkey PRIMARY KEY (id ),
               CONSTRAINT job_chronology_job_fkey FOREIGN KEY (job)
                   REFERENCES ruleform.job (id) MATCH SIMPLE
@@ -30,11 +31,14 @@
               CONSTRAINT job_chronology_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_chronology_job_time_stamp_key UNIQUE (job , time_stamp )
+              CONSTRAINT job_chronology_job_sequence_key UNIQUE (job , sequence )
             )
             WITH (
               OIDS=FALSE
             );
+            ALTER TABLE ruleform.job_chronology 
+                ALTER COLUMN sequence 
+                    SET DEFAULT NEXTVAL('ruleform.job_chronology_seq');
             COMMENT ON TABLE ruleform.job_chronology
                 IS 'Tracks when status changes occur on any given job';
             COMMENT ON COLUMN ruleform.job_chronology.id 
@@ -54,9 +58,9 @@
             COMMENT ON COLUMN ruleform.job_chronology.update_date 
                 IS 'The date this rule was last changed';
             ]]>
-        </sql>
-        <rollback>
-            <dropTable tableName="ruleform.job_chronology"/>
-        </rollback>
-    </changeSet>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.job_chronology" />
+		</rollback>
+	</changeSet>
 </databaseChangeLog>

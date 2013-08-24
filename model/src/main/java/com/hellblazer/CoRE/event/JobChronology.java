@@ -51,6 +51,10 @@ public class JobChronology extends Ruleform {
     @JoinColumn(name = "job")
     private Job               job;
 
+    @SequenceGenerator(schema = "ruleform", name = "job_chronology_seq", sequenceName = "job_chronology_seq")
+    @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
+    private Long              sequence;
+
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "status")
@@ -93,6 +97,10 @@ public class JobChronology extends Ruleform {
         return job;
     }
 
+    public Long getSequence() {
+        return sequence;
+    }
+
     public StatusCode getStatusCode() {
         return statusCode;
     }
@@ -118,15 +126,19 @@ public class JobChronology extends Ruleform {
         this.timeStamp = timeStamp;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (job != null) job = (Job) job.manageEntity(em, knownObjects);
-		if (statusCode != null) statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (job != null) {
+            job = (Job) job.manageEntity(em, knownObjects);
+        }
+        if (statusCode != null) {
+            statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

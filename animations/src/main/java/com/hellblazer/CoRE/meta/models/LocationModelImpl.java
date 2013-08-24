@@ -17,7 +17,7 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import java.util.concurrent.Callable;
+import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 
@@ -25,11 +25,13 @@ import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.jsp.JSP;
+import com.hellblazer.CoRE.jsp.StoredProcedure;
+import com.hellblazer.CoRE.kernel.Kernel;
+import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationAttribute;
 import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
 import com.hellblazer.CoRE.location.LocationNetwork;
-import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.network.Aspect;
 
@@ -42,27 +44,36 @@ public class LocationModelImpl
         AbstractNetworkedModel<Location, LocationAttributeAuthorization, LocationAttribute>
         implements LocationModel {
 
-    private static class InDatabase {
-        private static final LocationModelImpl SINGLETON;
+    private static interface Procedure<T> {
+        T call(LocationModelImpl locationModel) throws Exception;
+    }
 
-        static {
-            SINGLETON = new LocationModelImpl(JSP.getEm());
+    private static class Call<T> implements StoredProcedure<T> {
+        private final Procedure<T> procedure;
+
+        public Call(Procedure<T> procedure) {
+            this.procedure = procedure;
         }
 
-        public static LocationModelImpl get() {
-            return SINGLETON;
+        @Override
+        public T call(EntityManager em) throws Exception {
+            return procedure.call(new LocationModelImpl(em));
         }
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     private static final String LOCATION_NETWORK_PROPAGATE = "LocationNetwork.propagate";
 
     public static void network_edge_deleted(final TriggerData data)
                                                                    throws Exception {
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                    data.getOld().getLong("relationship"));
+            public Void call(LocationModelImpl locationModel) throws Exception {
+                locationModel.networkEdgeDeleted(data.getOld().getLong("parent"),
+                                                 data.getOld().getLong("relationship"));
                 return null;
             }
         });
@@ -73,10 +84,10 @@ public class LocationModelImpl
         if (!markPropagated(LOCATION_NETWORK_PROPAGATE)) {
             return; // We be done
         }
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().propagate();
+            public Void call(LocationModelImpl locationModel) throws Exception {
+                locationModel.propagate();
                 return null;
             }
         });

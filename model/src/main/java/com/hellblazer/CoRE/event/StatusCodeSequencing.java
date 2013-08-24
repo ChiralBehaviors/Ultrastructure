@@ -51,7 +51,8 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = ENSURE_VALID_SERVICE_STATUS, query = "SELECT COUNT(scs.id) "
                                                                        + "FROM StatusCodeSequencing AS scs "
                                                                        + "WHERE scs.service = :service "
-                                                                       + "  AND scs.parentCode = :parentCode"),
+                                                                       + "  AND (scs.parentCode = :code "
+                                                                       + "       OR scs.childCode = :code)"),
                @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT COUNT(scs.id) "
                                                                 + "FROM StatusCodeSequencing AS scs "
                                                                 + "WHERE scs.service = :service "

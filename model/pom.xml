@@ -75,7 +75,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.openjpa</groupId>
-			<artifactId>openjpa</artifactId>
+			<artifactId>openjpa-all</artifactId>
 			<version>2.2.2</version>
 			<type>jar</type>
 		</dependency>
@@ -266,6 +266,14 @@
 							<version>1.7.2</version>
 						</resource>
 					</additional>
+					<excluded>
+						<resource>
+							<groupId>org.apache.openjpa</groupId>
+							<artifactId>openjpa-all</artifactId>
+							<version>2.2.2</version>
+							<type>jar</type>
+						</resource>
+					</excluded>
 					<classpathProperty>pljavaClassPath</classpathProperty>
 				</configuration>
 				<executions>

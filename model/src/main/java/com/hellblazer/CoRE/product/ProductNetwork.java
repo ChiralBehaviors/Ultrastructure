@@ -19,16 +19,18 @@ package com.hellblazer.CoRE.product;
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
+import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
-import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.Product.ALL_CHILDREN_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GENERATE_NETWORK_INVERSES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP;
+import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.product.ProductNetwork.INSERT_NEW_NETWORK_RULES;
 
 import java.util.List;
@@ -81,6 +83,23 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                       + "     JOIN ruleform.network_inference AS deduction "
                                                                       + "         ON premise1.relationship = deduction.premise1 "
                                                                       + "         AND premise2.relationship = deduction.premise2 "),
+                     @NamedNativeQuery(name = INFERENCE_STEP_FROM_LAST_PASS, query = "INSERT INTO working_memory(parent, relationship, child, premise1, premise2) "
+                                                                                     + "     SELECT "
+                                                                                     + "         premise1.parent, "
+                                                                                     + "         deduction.inference, "
+                                                                                     + "         premise2.child, "
+                                                                                     + "         premise1.id, "
+                                                                                     + "         premise2.id "
+                                                                                     + "     FROM  (SELECT n.id, n.parent, n.relationship, n.child"
+                                                                                     + "              FROM last_pass_rules AS n) as premise1 "
+                                                                                     + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
+                                                                                     + "            FROM ruleform.product_network AS n "
+                                                                                     + "            WHERE n.inferred = FALSE) as premise2  "
+                                                                                     + "         ON premise2.parent = premise1.child "
+                                                                                     + "         AND premise2.child <> premise1.parent "
+                                                                                     + "     JOIN ruleform.network_inference AS deduction "
+                                                                                     + "         ON premise1.relationship = deduction.premise1 "
+                                                                                     + "         AND premise2.relationship = deduction.premise2 "),
                      @NamedNativeQuery(name = GATHER_EXISTING_NETWORK_RULES, query = "INSERT INTO current_pass_existing_rules "
                                                                                      + "SELECT exist.id, wm.* "
                                                                                      + "FROM working_memory AS wm "
@@ -142,9 +161,9 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                             + "and n.relationship.preferred = FALSE "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = ALL_CHILDREN_NETWORK_RULES, query = "select n from ProductNetwork n "
-                                                                            + "where n.parent = :product "
-                                                                            + "and n.relationship = :relationship "
-                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+                                                                      + "where n.parent = :product "
+                                                                      + "and n.relationship = :relationship "
+                                                                      + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n") })
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
@@ -161,6 +180,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS = "productNetwork"
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 
     public static List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
@@ -282,15 +303,17 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         this.parent = parent;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (child != null) child = (Product) child.manageEntity(em, knownObjects);
-		if (parent != null) parent = (Product) parent.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (child != null)
+            child = (Product) child.manageEntity(em, knownObjects);
+        if (parent != null)
+            parent = (Product) parent.manageEntity(em, knownObjects);
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

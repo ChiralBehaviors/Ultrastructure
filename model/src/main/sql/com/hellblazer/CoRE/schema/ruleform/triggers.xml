@@ -8,8 +8,7 @@
     
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/context_attribute/trigger-context_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml"/> 
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute/trigger-coordinate_attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_kind_definition/trigger-coordinate_kind_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_kind/trigger-coordinate_kind_restrict_pinned.xml"/>
@@ -35,10 +34,7 @@
     <include relativeToChangelogFile="true" file="tables/job_attribute/trigger-job_attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol_attribute/trigger-protocol_attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/job/trigger-job_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/location_attribute/trigger-location_attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/location_context/trigger-location_context_restrict_pinned.xml"/>
-    <include relativeToChangelogFile="true" file="tables/location_context/trigger-location_context_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/location_meta_rule/trigger-location_meta_rule_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/location_attribute/trigger-location_attribute_update_date.xml"/> 
     <include relativeToChangelogFile="true" file="tables/location_network/trigger-location_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_relationship/trigger-location_relationship_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/location/trigger-location_restrict_pinned.xml"/>
@@ -68,7 +64,6 @@
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute_authorization/trigger-coordinate_attribute_authorization_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/context_attribute_authorization/trigger-context_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_attribute_authorization/trigger-location_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/action/trigger-action_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/action/trigger-action_update_date.xml"/>

@@ -142,12 +142,26 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
      */
     public void copyInto(JobAttribute clone) {
         clone.setAttribute(getAttribute());
-        clone.setBinaryValue(getBinaryValue());
-        clone.setBooleanValue(getBooleanValue());
-        clone.setIntegerValue(getIntegerValue());
-        clone.setNumericValue(getNumericValue());
-        clone.setTextValue(getTextValue());
-        clone.setTimestampValue(getTimestampValue());
+        switch (attribute.getValueType()) {
+            case BINARY:
+                clone.setBinaryValue(getBinaryValue());
+                break;
+            case BOOLEAN:
+                clone.setBooleanValue(getBooleanValue());
+                break;
+            case INTEGER:
+                clone.setIntegerValue(getIntegerValue());
+                break;
+            case NUMERIC:
+                clone.setNumericValue(getNumericValue());
+                break;
+            case TEXT:
+                clone.setTextValue(getTextValue());
+                break;
+            case TIMESTAMP:
+                clone.setTimestampValue(getTimestampValue());
+                break;
+        }
         clone.setUnit(getUnit());
     }
 
@@ -297,16 +311,17 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
-    
+
     /* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (attribute != null)
+            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

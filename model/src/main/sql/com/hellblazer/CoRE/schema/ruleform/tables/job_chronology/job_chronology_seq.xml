@@ -6,13 +6,16 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
 	<changeSet id="1" author="hhildebrand">
-		<sql> CREATE TRIGGER create_implicit_jobs AFTER INSERT ON
-			ruleform.job
-			FOR EACH ROW EXECUTE
-			PROCEDURE
-			ruleform.automatically_generate_implicit_jobs_for_explicit_jobs();
+		<sql>
+			CREATE SEQUENCE ruleform.job_chronology_seq
+			INCREMENT 1
+			MINVALUE 1
+			MAXVALUE 9223372036854775807
+			START 4
+			CACHE 1;
+			ALTER TABLE
+			ruleform.job_chronology_seq
+			OWNER TO core;
 		</sql>
-		<rollback> DROP TRIGGER create_implicit_jobs ON ruleform.job;
-		</rollback>
 	</changeSet>
 </databaseChangeLog>

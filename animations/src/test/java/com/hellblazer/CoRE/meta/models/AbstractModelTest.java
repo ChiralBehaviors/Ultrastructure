@@ -26,11 +26,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 
+import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
-import com.hellblazer.CoRE.meta.Kernel;
 import com.hellblazer.CoRE.meta.Model;
 
 /**
@@ -41,12 +41,12 @@ import com.hellblazer.CoRE.meta.Model;
  */
 public class AbstractModelTest {
 
-    protected static Model         model;
-    protected static Kernel        kernel;
-    protected static EntityManager em;
+    protected Model         model;
+    protected Kernel        kernel;
+    protected EntityManager em;
 
-    @BeforeClass
-    public static void initializeModel() throws Exception {
+    @Before
+    public void initialize() throws Exception {
         InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
         assertNotNull("jpa properties missing", is);
         Properties properties = new Properties();

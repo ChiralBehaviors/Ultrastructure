@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
             CREATE TABLE ruleform.location_relationship
             (
               id bigserial NOT NULL,
-              context bigint NOT NULL,
               relationship bigint NOT NULL,
               target_context bigint NOT NULL,
               product_mapped_value bigint NOT NULL,
@@ -25,9 +24,6 @@
               CONSTRAINT location_relationship_pkey PRIMARY KEY (id ),
               CONSTRAINT location_relationship_attribute_relationship_fkey FOREIGN KEY (attribute_relationship)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_context_fkey FOREIGN KEY (context)
-                  REFERENCES ruleform.location_context (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_relationship_product_mapped_value_fkey FOREIGN KEY (product_mapped_value)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
@@ -44,22 +40,19 @@
               CONSTRAINT location_relationship_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_target_context_fkey FOREIGN KEY (target_context)
-                  REFERENCES ruleform.location_context (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_relationship_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.resource (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_context_key UNIQUE (context , relationship , target_context , product_mapped_value , sequence_number ),
+              CONSTRAINT location_relationship_context_key UNIQUE (relationship, product_mapped_value , sequence_number ),
               CONSTRAINT location_relationship_sequence_number_check CHECK (sequence_number > 0)
             )
             WITH (
               OIDS=FALSE
             );
             ]]>
-        </sql>
-        <rollback>
-            <dropTable tableName="ruleform.location_relationship"/>
-        </rollback>
-    </changeSet>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.location_relationship" />
+		</rollback>
+	</changeSet>
 </databaseChangeLog>

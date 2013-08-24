@@ -34,7 +34,7 @@ import javax.persistence.Persistence;
 import com.hellblazer.CoRE.Util;
 import com.hellblazer.CoRE.capability.Capability;
 import com.hellblazer.CoRE.kernel.Bootstrap;
-import com.hellblazer.CoRE.meta.models.KernelImpl;
+import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.resource.ResourceAttribute;
 import com.hellblazer.CoRE.resource.ResourceAttributeAuthorization;
 

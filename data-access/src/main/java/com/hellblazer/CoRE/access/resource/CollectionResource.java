@@ -83,17 +83,6 @@ public class CollectionResource {
 
 	}
 
-	
-	//TODO hparry this should take path args for node id and relationship id
-	//also type. How do we handle type in the path? Do we need to?
-	//Hal said something about universal IDs across all tables, but how do we know what
-	//entity we're querying?
-	//Just do type in the path and do routing. Remember app server routing? Do that.
-//	@GET
-//	@Path("/")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public AbstractNetworkGraph get(@Path)
-	
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)

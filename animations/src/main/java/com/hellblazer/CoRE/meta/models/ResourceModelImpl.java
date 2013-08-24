@@ -17,7 +17,7 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import java.util.concurrent.Callable;
+import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 
@@ -25,7 +25,9 @@ import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.jsp.JSP;
-import com.hellblazer.CoRE.meta.Kernel;
+import com.hellblazer.CoRE.jsp.StoredProcedure;
+import com.hellblazer.CoRE.kernel.Kernel;
+import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.ResourceModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.resource.Resource;
@@ -42,29 +44,38 @@ public class ResourceModelImpl
         AbstractNetworkedModel<Resource, ResourceAttributeAuthorization, ResourceAttribute>
         implements ResourceModel {
 
-    private static final String RESOURCE_NETWORK_PROPAGATE = "ResourceNetwork.propagate";
+    private static interface Procedure<T> {
+        T call(ResourceModelImpl productModel) throws Exception;
+    }
 
-    private static class InDatabase {
-        private static final ResourceModelImpl SINGLETON;
+    private static class Call<T> implements StoredProcedure<T> {
+        private final Procedure<T> procedure;
 
-        static {
-            SINGLETON = new ResourceModelImpl(JSP.getEm());
+        public Call(Procedure<T> procedure) {
+            this.procedure = procedure;
         }
 
-        public static ResourceModelImpl get() {
-            return SINGLETON;
+        @Override
+        public T call(EntityManager em) throws Exception {
+            return procedure.call(new ResourceModelImpl(em));
         }
     }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
+    }
+
+    private static final String RESOURCE_NETWORK_PROPAGATE = "ResourceNetwork.propagate";
 
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
         if (!markPropagated(RESOURCE_NETWORK_PROPAGATE)) {
             return; // We be done
         }
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().propagate();
+            public Void call(ResourceModelImpl resourceModel) throws Exception {
+                resourceModel.propagate();
                 return null;
             }
         });
@@ -72,11 +83,11 @@ public class ResourceModelImpl
 
     public static void track_network_deleted(final TriggerData data)
                                                                     throws Exception {
-        JSP.execute(new Callable<Void>() {
+        execute(new Procedure<Void>() {
             @Override
-            public Void call() throws Exception {
-                InDatabase.get().networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                    data.getOld().getLong("relationship"));
+            public Void call(ResourceModelImpl resourceModel) throws Exception {
+                resourceModel.networkEdgeDeleted(data.getOld().getLong("parent"),
+                                                 data.getOld().getLong("relationship"));
                 return null;
             }
         });

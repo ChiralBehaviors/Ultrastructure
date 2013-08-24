@@ -163,7 +163,7 @@ public class CollectionResourceTest extends DatabaseTest {
     	
     	ProductGraph pg = (ProductGraph) resource.getNetwork(p, new Relationship[]{owns});
     	
-    	assertEquals(pg.getOrigin().getId(), p.getId());
+    	assertEquals(pg.getNodes()[0].getId(), p.getId());
     	assertEquals(2, pg.getNodes().length);
     }
 

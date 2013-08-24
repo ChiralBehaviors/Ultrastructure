@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph;
 import com.hellblazer.CoRE.meta.graph.ProductGraph;
+import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 

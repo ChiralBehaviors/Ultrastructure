@@ -36,7 +36,7 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 
 	private Product origin;
 	private Relationship[] relationships;
-	private ProductNetwork[] edges;
+	private List<GraphEdge> edges;
 	private Product[] nodes;
 	private EntityManager em;
 	
@@ -59,28 +59,24 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 		@SuppressWarnings("unchecked")
 		List<ProductNetwork> results = (List<ProductNetwork>)q.getResultList();
 		List<Product> nodes = new LinkedList<Product>();
-		nodes.add(origin);
+		List<GraphEdge> edges = new LinkedList<GraphEdge>();
+		int i = 0;
 		for (ProductNetwork pn : results) {
 			nodes.add(pn.getChild());
+			edges.add(new GraphEdge(0, pn.getRelationship().getId(), i));
+			i++;
 		}
-		edges = results.toArray(new ProductNetwork[]{});
 		this.nodes = nodes.toArray(new Product[0]);
+		this.edges = edges;
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph#getOrigin()
-	 */
-	@Override
-	public Product getOrigin() {
-		return origin;
-	}
 
 	/* (non-Javadoc)
 	 * @see com.hellblazer.CoRE.meta.graph.AbstractNetworkGraph#getEdges()
 	 */
 	@Override
-	public ProductNetwork[] getEdges() {
+	public List<GraphEdge> getEdges() {
 		return edges;
 	}
 
@@ -92,5 +88,9 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 		return nodes;
 	}
 	
+	@Override
+	public Relationship[] getRelationships() {
+		return relationships;
+	}
 	
 }

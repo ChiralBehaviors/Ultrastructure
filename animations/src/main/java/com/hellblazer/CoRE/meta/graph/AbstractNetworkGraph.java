@@ -16,8 +16,11 @@
  */
 package com.hellblazer.CoRE.meta.graph;
 
+import java.util.List;
+
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.network.NetworkRuleform;
+import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * Abstract class for representing the graphs created by networked ruleforms.
@@ -28,23 +31,58 @@ import com.hellblazer.CoRE.network.NetworkRuleform;
  */
 public abstract class AbstractNetworkGraph<T extends ExistentialRuleform> {
 	
-	/**
-	 * 
-	 * @return the node at the center of the graph
-	 */
-	public abstract T getOrigin();
+
 	
 	/**
 	 * Gets the "edges" of the graph. Note that these are relationships and authorizations, 
 	 * not foreign keys.
 	 * @return the compound network ruleforms that represent graph edges
 	 */
-	public abstract NetworkRuleform[] getEdges();
+	public abstract List<GraphEdge> getEdges();
 	
 	/**
 	 * Returns the set of nodes in the graph. These are existential ruleforms.
 	 * @return
 	 */
 	public abstract ExistentialRuleform[] getNodes();
+	
+	/**
+	 * @return the list of relationships that appear in the graph. This information
+	 * is used for typifying edges.
+	 */
+	public abstract Relationship[] getRelationships();
+	
+	public class GraphEdge {
+		private long source;
+		private long target;
+		private long relationship;
+		
+		GraphEdge(long source, long relationship, long target) {
+			this.source = source;
+			this.target = target;
+			this.relationship = relationship;
+		}
+
+		/**
+		 * @return the source id
+		 */
+		public long getSource() {
+			return source;
+		}
+
+		/**
+		 * @return the target id
+		 */
+		public long getTarget() {
+			return target;
+		}
+
+		/**
+		 * @return the relationship id
+		 */
+		public long getRelationship() {
+			return relationship;
+		}
+	}
 
 }

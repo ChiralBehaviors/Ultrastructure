@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>Product Network Graph Example</title>
+<script type="text/javascript" src="js/jquery-1.8.0.js"></script>
+<script type="text/javascript" src="js/d3.v3.js"></script>
+<style type="text/css">
+/* No style rules here yet */
+</style>
+</head>
+<body>
+	<script type="text/javascript">
+		var network;
+		var w = 500;
+		var h = 500;
+		var r = 10;
+
+		$.getJSON(
+			"http://localhost:8080/v1/services/data/collection/2?rel=15&rel=16",
+			function(dataset) {
+				network = dataset;
+				var force = d3.layout.force().nodes(dataset.nodes)
+						.links(dataset.edges).size([ w, h ])
+						.linkDistance([ 50 ]).charge([ -100 ])
+						.start();
+
+				var colors = d3.scale.category10();
+
+				//Create SVG element
+				var svg = d3.select("body")
+				    .append("svg")
+				    .attr("width", w)
+				    .attr("height", h);
+
+				svg.append("svg:defs")
+				    .append("svg:marker")
+				    .attr("id", "marker")
+				    .attr("viewBox","0 -5 10 10")
+				    .attr("refX", 15)
+				    .attr("refY",-1.5)
+				    .attr("markerWidth", 6)
+				    .attr("markerHeight", 6)
+				    .attr("orient", "auto")
+					.append("svg:path")
+					.attr("d","M0,-30L40,0L0,30");
+
+				//Create edges as lines
+				var edges = svg.selectAll("path").data(
+						dataset.edges).enter().append("svg:path")
+						.style("stroke", "#ccc").style(
+								"stroke-width", 1).attr(
+								"marker-end", function(d) {
+									return "url(#marker)";
+								}).on("click", function() {
+							console.log("click!");
+						});
+
+				//Create nodes as circles
+				var nodes = svg.selectAll("circle").data(
+						dataset.nodes).enter().append("circle")
+						.attr("r", r).style("fill", function(d, i) {
+							return colors(i);
+						}).call(force.drag);
+
+				function tick() {
+					nodes.attr(
+							"cx",
+							function(d) {
+								return d.x = Math.max(r, Math.min(w
+										- r, d.x));
+							}).attr(
+							"cy",
+							function(d) {
+								return d.y = Math.max(r, Math.min(h
+										- r, d.y));
+							});
+					edges
+							.attr(
+									"d",
+									function(d) {
+										var dx = d.target.x
+												- d.source.x, dy = d.target.y
+												- d.source.y, dr = Math
+												.sqrt(dx * dx + dy
+														* dy);
+										return "M" + d.source.x
+												+ "," + d.source.y
+												+ "A" + dr + ","
+												+ dr + " 0 0,1 "
+												+ d.target.x + ","
+												+ d.target.y;
+									});
+
+				}
+
+				force.on("tick", tick);
+			});
+	</script>
+</body>
+</html>

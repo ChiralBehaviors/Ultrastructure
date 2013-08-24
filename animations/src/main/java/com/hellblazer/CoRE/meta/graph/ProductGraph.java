@@ -59,10 +59,15 @@ public class ProductGraph extends AbstractNetworkGraph<Product> {
 		@SuppressWarnings("unchecked")
 		List<ProductNetwork> results = (List<ProductNetwork>)q.getResultList();
 		List<Product> nodes = new LinkedList<Product>();
+		//origin node must ALWAYS be first in the list
+		nodes.add(origin);
 		List<GraphEdge> edges = new LinkedList<GraphEdge>();
 		int i = 0;
 		for (ProductNetwork pn : results) {
-			nodes.add(pn.getChild());
+			if (pn.getChild().getId() != origin.getId()) {
+				nodes.add(pn.getChild());
+			}
+			//TODO HPARRY this shouldn't always start at 0
 			edges.add(new GraphEdge(0, pn.getRelationship().getId(), i));
 			i++;
 		}

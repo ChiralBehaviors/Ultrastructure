@@ -166,5 +166,8 @@ public class CollectionResourceTest extends DatabaseTest {
     	assertEquals(pg.getNodes()[0].getId(), p.getId());
     	assertEquals(2, pg.getNodes().length);
     }
+    
+    //TODO HPARRY change this to network graph test
+    //add tests to make sure node and relationship lists are unique
 
 }

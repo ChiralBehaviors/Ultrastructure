@@ -25,6 +25,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The attribute unit.
@@ -42,7 +43,11 @@ public class Unit extends Ruleform {
 
     private String            datatype;
 
-    private Boolean           enumerated;
+    private String            description;
+
+    private String            name;
+
+    private Boolean           enumerated       = false;
 
     @Id
     @GeneratedValue(generator = "unit_id_seq", strategy = GenerationType.SEQUENCE)
@@ -55,12 +60,50 @@ public class Unit extends Ruleform {
     public Unit() {
     }
 
+    public Unit(Long id) {
+        super(id);
+    }
+
+    public Unit(Long id, Resource updatedBy) {
+        super(id, updatedBy);
+    }
+
+    public Unit(Resource updatedBy) {
+        super(updatedBy);
+    }
+
+    public Unit(String name) {
+        setName(name);
+    }
+
+    public Unit(String name, Resource updatedBy) {
+        super(updatedBy);
+        setName(name);
+    }
+
+    public Unit(String name, String description, Resource updatedBy) {
+        super(updatedBy);
+        setName(name);
+        setDescription(description);
+    }
+
+    public Unit(String name, String description, String notes,
+                Resource updatedBy) {
+        super(notes, updatedBy);
+        setName(name);
+        setDescription(description);
+    }
+
     public String getAbbreviation() {
         return abbreviation;
     }
 
     public String getDatatype() {
         return datatype;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Boolean getEnumerated() {
@@ -80,12 +123,20 @@ public class Unit extends Ruleform {
         return min;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
     public void setDatatype(String datatype) {
         this.datatype = datatype;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setEnumerated(Boolean enumerated) {
@@ -103,5 +154,9 @@ public class Unit extends Ruleform {
 
     public void setMin(BigDecimal min) {
         this.min = min;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

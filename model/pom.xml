@@ -165,13 +165,6 @@
 						</configuration>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.openjpa</groupId>
-						<artifactId>openjpa-all</artifactId>
-						<version>2.2.2</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 			<!-- Disable annotation processors during normal compilation -->
 			<plugin>
@@ -206,12 +199,6 @@
 						</goals>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.openjpa</groupId>
-						<artifactId>openjpa-all</artifactId>
-					</dependency>
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -242,12 +229,14 @@
 						<resource>
 							<groupId>org.slf4j</groupId>
 							<artifactId>slf4j-jdk14</artifactId>
+							<version>1.7.5</version>
 						</resource>
 					</additional>
 					<excluded>
 						<resource>
 							<groupId>org.apache.openjpa</groupId>
 							<artifactId>openjpa-all</artifactId>
+							<version>2.2.2</version>
 							<type>jar</type>
 						</resource>
 					</excluded>

@@ -122,11 +122,13 @@
 						<resource>
 							<groupId>org.apache.openjpa</groupId>
 							<artifactId>openjpa-all</artifactId>
+							<version>2.2.2</version>
 							<type>jar</type>
 						</resource>
 						<resource>
 							<groupId>com.hellblazer</groupId>
 							<artifactId>pljava-api</artifactId>
+							<version>0.0.1-SNAPSHOT</version>
 						</resource>
 					</excluded>
 					<classpathProperty>pljavaClassPath</classpathProperty>

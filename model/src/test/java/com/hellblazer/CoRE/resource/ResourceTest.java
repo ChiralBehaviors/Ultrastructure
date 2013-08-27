@@ -20,30 +20,30 @@ import javax.persistence.TypedQuery;
 
 import junit.framework.Assert;
 
-import org.dbunit.operation.DatabaseOperation;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.test.DatabaseTestContext;
+import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
  * 
  */
 
-public class ResourceTest extends DatabaseTestContext {
+public class ResourceTest extends DatabaseTest {
 
     @Test
     public void testEquals() {
         beginTransaction();
 
-        Resource test = new Resource();
-        test.setName("CoRE");
-        test.setId(1L);
-
         TypedQuery<Resource> query = em.createNamedQuery("resource.findByName",
                                                          Resource.class);
+
+        query.setParameter("name", "CoRE");
+        Resource test = query.getSingleResult();
+
         query.setParameter("name", "Foo");
         Resource foo = query.getSingleResult();
 
@@ -73,7 +73,11 @@ public class ResourceTest extends DatabaseTestContext {
     @Test
     public void testResourceAuthorizationConstraints() {
         em.getTransaction().begin();
-        Resource test = em.find(Resource.class, 1L);
+        TypedQuery<Resource> query = em.createNamedQuery("resource.findByName",
+                                                         Resource.class);
+
+        query.setParameter("name", "CoRE");
+        Resource test = query.getSingleResult();
 
         Relationship r = new Relationship("r", test);
         em.persist(r);
@@ -95,14 +99,16 @@ public class ResourceTest extends DatabaseTestContext {
 
     }
 
-    @Override
-    protected void prepareSettings() {
-        dataSetLocation = "ResourceTestData.xml";
-        beforeTestOperations.add(DatabaseOperation.CLEAN_INSERT);
-    }
+    @Before
+    public void initData() {
+        beginTransaction();
+        Resource core = new Resource("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
 
-    @Override
-    protected void setSequences() throws Exception {
-        getConnection().getConnection().createStatement().execute("SELECT setval('resource_id_seq', 2)");
+        Resource foo = new Resource("Foo", "More Foo", core);
+        em.persist(foo);
+        commitTransaction();
+        em.clear();
     }
 }

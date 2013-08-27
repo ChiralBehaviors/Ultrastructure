@@ -20,19 +20,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.dbunit.operation.DatabaseOperation;
+import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.test.DatabaseTestContext;
+import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
  * 
  */
-public class AttributeSearchTest extends DatabaseTestContext {
+public class AttributeSearchTest extends DatabaseTest {
 
     @Test
     public void searchByName() throws Exception {
@@ -42,8 +42,6 @@ public class AttributeSearchTest extends DatabaseTestContext {
     }
 
     public void searchByName(String name, boolean shouldFind) throws Exception {
-        beginTransaction();
-
         Model model = new ModelImpl(em, null);
 
         Attribute a = model.find(name, Attribute.class);
@@ -54,20 +52,24 @@ public class AttributeSearchTest extends DatabaseTestContext {
             // we weren't expecting to find anything
             assertNull(a);
         }
+    }
+    
+    @Before
+    public void initData() {
+        beginTransaction();
+
+        Resource core = new Resource("core");
+        core.setUpdatedBy(core);
+        em.persist(core);
+        
+        Attribute a1 = new Attribute("Attribute", core);
+        a1.setValueType(ValueType.INTEGER);
+        em.persist(a1);
+        
+        Attribute a2 = new Attribute("Wooziness", core);
+        a2.setValueType(ValueType.INTEGER);
+        em.persist(a2);  
 
         commitTransaction();
     }
-
-    @Override
-    protected void prepareSettings() {
-        dataSetLocation = "AttributeTestData.xml";
-        beforeTestOperations.add(DatabaseOperation.CLEAN_INSERT);
-    }
-
-    @Override
-    protected void setSequences() throws Exception {
-        setSequenceWithLastCalled("resource_id_seq", 1);
-        setSequenceWithLastCalled("attribute_id_seq", 1);
-    }
-
 }

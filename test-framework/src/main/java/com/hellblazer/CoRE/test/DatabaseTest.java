@@ -34,18 +34,17 @@ import org.junit.BeforeClass;
  * 
  */
 abstract public class DatabaseTest {
-    protected static Connection    connection;
-    protected static EntityManager em;
-    private static final String    SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    protected static Connection           connection;
+    protected static EntityManager        em;
+    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
     protected static EntityManagerFactory emf;
-    
+
     @BeforeClass
     public static void setup() throws Exception {
 
         Properties properties = new Properties();
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
-        emf = Persistence.createEntityManagerFactory("CoRE",
-                                                                          properties);
+        emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
         connection = em.unwrap(Connection.class);
     }
@@ -72,5 +71,19 @@ abstract public class DatabaseTest {
         }
         r.close();
         alterAllTriggers(true);
+    }
+
+    /**
+     * Initiates a database transaction.
+     */
+    protected void beginTransaction() {
+        em.getTransaction().begin();
+    }
+
+    /**
+     * Commits the current transaction, if it is still active.
+     */
+    protected final void commitTransaction() {
+        em.getTransaction().commit();
     }
 }

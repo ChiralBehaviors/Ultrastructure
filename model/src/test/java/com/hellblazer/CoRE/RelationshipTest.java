@@ -21,19 +21,19 @@ import static junit.framework.Assert.assertNotNull;
 
 import javax.persistence.TypedQuery;
 
-import org.dbunit.operation.DatabaseOperation;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.test.DatabaseTestContext;
+import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
  * 
  */
 
-public class RelationshipTest extends DatabaseTestContext {
+public class RelationshipTest extends DatabaseTest {
 
     @Test
     public void setInverseTest() {
@@ -108,13 +108,26 @@ public class RelationshipTest extends DatabaseTestContext {
         commitTransaction();
     }
 
-    @Override
-    protected void prepareSettings() {
-        dataSetLocation = "RelationshipTestSeedData.xml";
-        beforeTestOperations.add(DatabaseOperation.CLEAN_INSERT);
-    }
+    @Before
+    public void initData() {
+        beginTransaction();
+        Resource core = new Resource("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
 
-    @Override
-    protected void setSequences() throws Exception {
+        Relationship massList = new Relationship(
+                                                 "mass-list",
+                                                 "A is a member of the mass list B",
+                                                 core);
+        em.persist(massList);
+
+        Relationship massListOf = new Relationship(
+                                                   "mass-list-of",
+                                                   "A is a mass list that has B as a member",
+                                                   core, massList);
+        em.persist(massListOf);
+
+        commitTransaction();
+        em.clear();
     }
 }

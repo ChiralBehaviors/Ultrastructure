@@ -47,6 +47,11 @@ public class Research implements Serializable {
     public Research() {
     }
 
+    public Research(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public String getDescription() {
         return description;
     }

@@ -26,21 +26,25 @@ import java.util.Set;
 
 import javax.persistence.TypedQuery;
 
-import org.dbunit.operation.DatabaseOperation;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.attribute.Unit;
+import com.hellblazer.CoRE.attribute.ValueType;
+import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.test.DatabaseTestContext;
+import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
  * 
  */
 
-public class ProductTest extends DatabaseTestContext {
+public class ProductTest extends DatabaseTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProductTest.class);
 
@@ -75,8 +79,8 @@ public class ProductTest extends DatabaseTestContext {
         em.clear();
 
         TypedQuery<Product> productQuery = em.createNamedQuery("product.findByName",
-                                                             Product.class).setParameter("name",
-                                                                                        name);
+                                                               Product.class).setParameter("name",
+                                                                                           name);
 
         Product b2 = productQuery.getSingleResult();
 
@@ -88,14 +92,11 @@ public class ProductTest extends DatabaseTestContext {
     @SuppressWarnings("boxing")
     @Test
     public void testAttributes() {
-        beginTransaction();
-
         TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
-                                                            Product.class).setParameter("name",
-                                                                                       "Peptide Foo");
+                                                              Product.class).setParameter("name",
+                                                                                          "Peptide Foo");
         Product b = findProduct.getSingleResult();
         assertNotNull(b);
-        assertEquals(Long.valueOf(1L), b.getId());
         assertEquals(b.getName(), "Peptide Foo");
         LOG.debug(String.format("Product is: %s", b));
 
@@ -105,7 +106,6 @@ public class ProductTest extends DatabaseTestContext {
 
         Attribute a = findAttribute.getSingleResult();
         assertNotNull(a);
-        assertEquals(Long.valueOf(1L), a.getId());
         assertEquals(a.getName(), "Length");
         LOG.debug(String.format("Attribute is: %s", a));
 
@@ -116,68 +116,85 @@ public class ProductTest extends DatabaseTestContext {
         Iterator<ProductAttribute> iter = productAttributes.iterator();
         ProductAttribute bea = iter.next();
         assertNotNull(bea);
-        assertEquals(Long.valueOf(1L), bea.getId());
         assertEquals(b, bea.getProduct());
         assertEquals(a, bea.getAttribute());
 
         assertEquals(new BigDecimal("123"), bea.getNumericValue());
-
-        commitTransaction();
     }
 
-    public void testChildNetwork() {
+    @Before
+    public void initData() {
         beginTransaction();
-        Product b = em.find(Product.class, Long.valueOf(1L));
+        Research testingOnly = new Research("Testing Only",
+                                            "This rule is for testing purposes only.  It is not 'real'.");
+        em.persist(testingOnly);
+        Research improveDocumentation = new Research("Improve Documentation",
+                                                     "This rule needs better metadata.");
+        em.persist(improveDocumentation);
+        Research humanProtImport = new Research(
+                                                "HumanProt Import",
+                                                "A flag indicating that this rule is currently being used for importing HumanProt data into Ultra-Structure.");
+        em.persist(humanProtImport);
 
-        assertNotNull(b);
-        assertEquals("Peptide Foo", b.getName());
-        LOG.debug(String.format("Product is: %s", b));
+        Research considerDelition = new Research("Consider Deletion",
+                                                 "Consider deleting this rule");
+        em.persist(considerDelition);
 
-        Set<ProductNetwork> childRules = b.getNetworkByChild();
-        assertNotNull(childRules);
-        assertEquals(1, childRules.size());
+        Research investigateDataConsistency = new Research(
+                                                           "Investigate Data Consistency",
+                                                           "Consistency of this data is suspect.  Investigate further.");
+        em.persist(investigateDataConsistency);
 
-        Iterator<ProductNetwork> iter = childRules.iterator();
-        ProductNetwork ben = iter.next();
-        assertNotNull(ben);
-        assertEquals(Long.valueOf(1L), ben.getId());
-        assertEquals(ben.getChild(), b);
-        assertEquals("Top Node", ben.getParent().getName());
-        assertEquals("includes", ben.getRelationship().getName());
+        em.persist(considerDelition);
+
+        Resource core = new Resource("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
+
+        Product peptideFoo = new Product(
+                                         "Peptide Foo",
+                                         "The Foo peptide is lethal!  Do not eat!",
+                                         core);
+        em.persist(peptideFoo);
+
+        Product peptideBar = new Product(
+                                         "Peptide Bar",
+                                         "The Foo peptide is lethal!  Do not eat!",
+                                         core);
+        em.persist(peptideBar);
+
+        Attribute length = new Attribute(
+                                         "Length",
+                                         "Denotes the linear length of a thing",
+                                         ValueType.NUMERIC, core);
+        em.persist(length);
+
+        Unit aminoAcids = new Unit(
+                                   "Amino Acids",
+                                   "A unit of length for protein primary sequences",
+                                   core);
+        aminoAcids.setAbbreviation("aa");
+        em.persist(aminoAcids);
+
+        ProductAttribute attribute = new ProductAttribute(length, core);
+        attribute.setUnit(aminoAcids);
+        attribute.setProduct(peptideFoo);
+        attribute.setNumericValue(BigDecimal.valueOf(123));
+        em.persist(attribute);
+
+        Relationship isA = new Relationship(
+                                            "is-a",
+                                            "Taxonomic relationship indicating membership in a group or category.",
+                                            core);
+        em.persist(isA);
+
+        Relationship includes = new Relationship(
+                                                 "includes",
+                                                 "Taxonomic relationship defining membership in a group or category.  In 'A includes B', A is the more general product, while B is some specialization or grouping of A",
+                                                 core, isA);
+        em.persist(includes);
 
         commitTransaction();
+        em.clear();
     }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.testing.HibernateDatabaseTestCase#prepareSettings()
-     */
-    @Override
-    protected void prepareSettings() {
-        LOG.trace("Entering prepareSettings");
-        dataSetLocation = "ProductTest.xml";
-        beforeTestOperations.add(DatabaseOperation.CLEAN_INSERT);
-
-        LOG.trace("Exiting prepareSettings");
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.testing.HibernateDatabaseTestCase#setSequences()
-     */
-    @Override
-    protected void setSequences() throws Exception {
-        LOG.trace("Entering setSequences");
-        getConnection().getConnection().createStatement().execute("SELECT setval('resource_id_seq', 1)");
-        getConnection().getConnection().createStatement().execute("SELECT setval('attribute_id_seq', 1)");
-        getConnection().getConnection().createStatement().execute("SELECT setval('product_id_seq', 2)");
-        getConnection().getConnection().createStatement().execute("SELECT setval('unit_id_seq', 1)");
-        getConnection().getConnection().createStatement().execute("SELECT setval('product_attribute_id_seq', 1)");
-        getConnection().getConnection().createStatement().execute("SELECT setval('relationship_id_seq', 2)");
-        getConnection().getConnection().createStatement().execute("SELECT setval('research_id_seq', 5)");
-        getConnection().getConnection().createStatement().execute("SELECT setval('product_network_id_seq', 1, false)");
-        //getConnection().getConnection().createStatement().execute("SELECT setval('event_id_seq', 5)");
-        LOG.trace("Exiting setSequences");
-    }
-
 }

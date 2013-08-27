@@ -18,18 +18,16 @@
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>model</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>test-framework</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -49,23 +47,19 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>${postgresql.driver.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer</groupId>
 			<artifactId>pljava-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
-			<version>0.9.8</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>guava</artifactId>
@@ -76,7 +70,6 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>14.0.1</version>
 			<classifier>site</classifier>
 		</dependency>
 	</dependencies>
@@ -93,7 +86,6 @@
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
-				<version>2.0.5</version>
 				<dependencies>
 					<dependency>
 						<groupId>postgresql</groupId>
@@ -122,14 +114,6 @@
 			<plugin>
 				<groupId>com.hellblazer</groupId>
 				<artifactId>pljava-loader</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-				<dependencies>
-					<dependency>
-						<groupId>postgresql</groupId>
-						<artifactId>postgresql</artifactId>
-						<version>${postgresql.driver.version}</version>
-					</dependency>
-				</dependencies>
 				<configuration>
 					<jdbcUrl>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbcUrl>
 					<username>${testing.db.login}</username>
@@ -138,13 +122,11 @@
 						<resource>
 							<groupId>org.apache.openjpa</groupId>
 							<artifactId>openjpa-all</artifactId>
-							<version>2.2.2</version>
 							<type>jar</type>
 						</resource>
 						<resource>
 							<groupId>com.hellblazer</groupId>
 							<artifactId>pljava-api</artifactId>
-							<version>0.0.1-SNAPSHOT</version>
 						</resource>
 					</excluded>
 					<classpathProperty>pljavaClassPath</classpathProperty>
@@ -161,7 +143,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>sql-maven-plugin</artifactId>
-				<version>1.5</version>
 				<dependencies>
 					<dependency>
 						<groupId>postgresql</groupId>

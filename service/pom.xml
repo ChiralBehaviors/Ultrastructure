@@ -20,17 +20,16 @@
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>animations</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
-			<version>0.9.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>data-access</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>javax.persistence</artifactId>
@@ -41,18 +40,15 @@
 		<dependency>
 			<groupId>com.yammer.dropwizard</groupId>
 			<artifactId>dropwizard-auth</artifactId>
-			<version>0.6.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>${postgresql.driver.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -62,7 +58,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.4</version>
 				<configuration>
 					<createDependencyReducedPom>true</createDependencyReducedPom>
 					<filters>

@@ -7,8 +7,3 @@ jpa:
       openjpa.ConnectionURL: jdbc:postgresql://${testing.db.server}:${testing.db.port}/${testing.db.database}
       openjpa.ConnectionDriverName: org.postgresql.Driver
       openjpa.ConnectionFactoryProperties: PrettyPrint=true, PrettyPrintLineLength=80, PrintParameters=true
-      
-logging:
-	console:
-		enabled: TRUE
-		threshold: TRACE

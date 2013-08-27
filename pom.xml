@@ -236,6 +236,13 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>sql-maven-plugin</artifactId>
 					<version>1.5</version>
+					<dependencies>
+						<dependency>
+							<groupId>postgresql</groupId>
+							<artifactId>postgresql</artifactId>
+							<version>${postgresql.driver.version}</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>com.hellblazer</groupId>

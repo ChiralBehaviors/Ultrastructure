@@ -90,8 +90,7 @@ public class CollectionResource {
 		p.setId(id);
 		List<Relationship> rels = new LinkedList<Relationship>();
 		for (String rid : relIds) {
-			Relationship r = new Relationship();
-			r.setId(Long.parseLong(rid));
+			Relationship r = em.find(Relationship.class, rid);
 			rels.add(r);
 		}
 		return getNetwork(p, rels);

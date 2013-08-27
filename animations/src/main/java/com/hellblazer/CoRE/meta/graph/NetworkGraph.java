@@ -62,9 +62,9 @@ public final class NetworkGraph {
 				.getSubTypesOf(Ruleform.class)) {
 			if (!Modifier.isAbstract(form.getModifiers()) && form.getName().equalsIgnoreCase(node.getClass().getName())) {
 				nodeclz = form;
-				System.out.println("found node class: " + nodeclz.getName());
 			}
 		}
+		assert nodeclz != null;
 		findNeighbors();
 	}
 
@@ -132,8 +132,8 @@ public final class NetworkGraph {
 	 * @return the list of relationships that appear in the graph. This
 	 *         information is used for typifying edges.
 	 */
-	public Set<Relationship> getRelationships() {
-		return null;
+	public List<Relationship> getRelationships() {
+		return relationships;
 	}
 
 	public class GraphEdge {

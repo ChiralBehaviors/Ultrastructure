@@ -168,6 +168,7 @@ public class CollectionResourceTest extends DatabaseTest {
     	
     	assertEquals(ng.getNodes().get(0).getId(), p.getId());
     	assertEquals(2, ng.getNodes().size());
+    	assertNotNull(ng.getRelationships());
     }
     
     //TODO HPARRY change this to network graph test

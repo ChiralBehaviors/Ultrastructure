@@ -23,6 +23,7 @@ import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD;
 import static com.hellblazer.CoRE.attribute.Attribute.NAME_SEARCH;
 import static com.hellblazer.CoRE.attribute.Attribute.UNLINKED;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
+import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RELATIONSHIP;
 
 import java.util.List;
 import java.util.Set;
@@ -77,7 +78,11 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
                                                      + "FROM AttributeNetwork rn "
                                                      + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship") })
+                                                     + "AND rn.relationship = :relationship"),
+             @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM LocationNetwork n "
+						+ "WHERE n.parent = :location "
+						+ "AND n.relationship IN :relationships "
+						+ "ORDER by n.parent.name, n.relationship.name, n.child.name")})
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM attribute AS unlinked "
@@ -110,6 +115,8 @@ public class Attribute extends ExistentialRuleform implements
     public static final String          NAME_SEARCH                              = "attribute"
                                                                                    + NAME_SEARCH_SUFFIX;
     public static final String          UNLINKED                                 = "attribute.unlinked";
+    public static final String			GET_CHILD_RULES_BY_RELATIONSHIP			 = "attribute" 
+    																			   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long           serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute

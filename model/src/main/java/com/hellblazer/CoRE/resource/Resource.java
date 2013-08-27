@@ -25,6 +25,7 @@ import static com.hellblazer.CoRE.resource.Resource.GET_ALL_PARENT_RELATIONSHIPS
 import static com.hellblazer.CoRE.resource.Resource.GET_CHILD;
 import static com.hellblazer.CoRE.resource.Resource.UNLINKED;
 import static com.hellblazer.CoRE.resource.ResourceAttribute.GET_ATTRIBUTE;
+import static com.hellblazer.CoRE.resource.Resource.GET_CHILD_RULES_BY_RELATIONSHIP;
 
 import java.util.List;
 import java.util.Set;
@@ -86,7 +87,11 @@ import com.hellblazer.CoRE.product.ProductNetwork;
                                                      + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM ResourceNetwork n "
-                                                                        + "WHERE n.child = :c") })
+                                                                        + "WHERE n.child = :c"),
+				@NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ResourceNetwork n "
+						+ "WHERE n.parent = :resource "
+						+ "AND n.relationship IN :relationships "
+						+ "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM resource AS unlinked "
@@ -127,6 +132,8 @@ public class Resource extends ExistentialRuleform implements
     public static final String     RESOURCE_ATTRIBUTES_BY_CLASSIFICATION    = "resource.resourceAttributesByClassification";
     public static final String     UNLINKED                                 = "resource"
                                                                               + UNLINKED_SUFFIX;
+    public static final String	   GET_CHILD_RULES_BY_RELATIONSHIP 			= "resource" 
+                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 
     //bi-directional many-to-one association to ResourceAttribute

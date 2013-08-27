@@ -21,12 +21,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.meta.graph.ProductGraph;
+import com.hellblazer.CoRE.meta.graph.NetworkGraph;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductNetwork;
@@ -160,11 +161,13 @@ public class CollectionResourceTest extends DatabaseTest {
     	
     	resource.post(pn);
     	resource.post(pnI);
+    	LinkedList<Relationship> rels = new LinkedList<Relationship>();
+    	rels.add(owns);
     	
-    	ProductGraph pg = (ProductGraph) resource.getNetwork(p, new Relationship[]{owns});
+    	NetworkGraph ng = resource.getNetwork(p, rels);
     	
-    	assertEquals(pg.getNodes()[0].getId(), p.getId());
-    	assertEquals(2, pg.getNodes().length);
+    	assertEquals(ng.getNodes().get(0).getId(), p.getId());
+    	assertEquals(2, ng.getNodes().size());
     }
     
     //TODO HPARRY change this to network graph test

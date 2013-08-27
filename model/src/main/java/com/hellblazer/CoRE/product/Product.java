@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.product;
 
+import static com.hellblazer.CoRE.product.Product.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.product.Product.FIND_ALL;
 import static com.hellblazer.CoRE.product.Product.FIND_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.product.Product.FIND_BY_ID;
@@ -117,7 +118,11 @@ import com.hellblazer.CoRE.resource.Resource;
                                                      + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM ProductNetwork n "
-                                                                        + "WHERE n.child = :c") })
+                                                                        + "WHERE n.child = :c"),
+	            @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ProductNetwork n "
+	                    + "WHERE n.parent = :product "
+	                    + "AND n.relationship IN :relationships "
+	                    + "ORDER by n.parent.name, n.relationship.name, n.child.name")})
 @NamedNativeQueries({
 // ?1 = #queryString, ?2 = #numberOfMatches
 @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
@@ -151,7 +156,8 @@ public class Product extends ExistentialRuleform implements
     public static final String    GET_CHILD                                              = "product"
                                                                                            + GET_CHILD_SUFFIX;
     public static final String    IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";
-    public static final String    ALL_CHILDREN_NETWORK_RULES                       		 = "product.allChildrenNetworkRules";
+    public static final String    GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
+    																						+ GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String    NAME_SEARCH                                            = "product"
                                                                                            + NAME_SEARCH_SUFFIX;
     public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";

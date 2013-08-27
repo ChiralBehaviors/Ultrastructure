@@ -25,6 +25,7 @@ import static com.hellblazer.CoRE.location.Location.FIND_GROUPED_ATTRIBUTE_AUTHO
 import static com.hellblazer.CoRE.location.Location.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.location.Location.GET_CHILD;
 import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
+import static com.hellblazer.CoRE.location.Location.GET_CHILD_RULES_BY_RELATIONSHIP;
 
 import java.util.List;
 import java.util.Set;
@@ -90,7 +91,11 @@ import com.hellblazer.CoRE.resource.Resource;
                                                      + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM LocationNetwork n "
-                                                                        + "WHERE n.child = :c") })
+                                                                        + "WHERE n.child = :c"),
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM LocationNetwork n "
+																		+ "WHERE n.parent = :location "
+																		+ "AND n.relationship IN :relationships "
+																		+ "ORDER by n.parent.name, n.relationship.name, n.child.name")})
 @NamedNativeQueries({
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
@@ -110,6 +115,8 @@ public class Location extends ExistentialRuleform implements
                                                                               + NAME_SEARCH_SUFFIX;
     public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "location"
                                                                               + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String	   GET_CHILD_RULES_BY_RELATIONSHIP			= "location"
+    																		  + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 
     //bi-directional many-to-one association to LocationAttribute

@@ -18,6 +18,7 @@
 			"http://localhost:8080/v1/services/data/collection/2?rel=15&rel=16",
 			function(dataset) {
 				network = dataset;
+				console.log(dataset.nodes);
 				var force = d3.layout.force().nodes(dataset.nodes)
 						.links(dataset.edges).size([ w, h ])
 						.linkDistance([ 50 ]).charge([ -100 ])
@@ -44,14 +45,18 @@
 					.attr("d","M0,-30L40,0L0,30");
 
 				//Create edges as lines
-				var edges = svg.selectAll("path").data(
-						dataset.edges).enter().append("svg:path")
-						.style("stroke", "#ccc").style(
-								"stroke-width", 1).attr(
-								"marker-end", function(d) {
+				var edges = svg.selectAll("path")
+				            .data(dataset.edges)
+				            .enter()
+				            .append("svg:path")
+						    .style("stroke", "#ccc")
+						    .style("stroke-width", 1)
+						    .style("fill", "none")
+						    .attr("marker-end", function(d) {
 									return "url(#marker)";
-								}).on("click", function() {
-							console.log("click!");
+								})
+							.on("click", function() {
+							 console.log("click!");
 						});
 
 				//Create nodes as circles

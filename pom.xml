@@ -36,7 +36,7 @@
 		<module>test-framework</module>
 		<module>model</module>
 		<module>animations</module>
-        <module>workspace-api</module>
+		<module>workspace-api</module>
 		<module>configuration</module>
 		<module>data-access</module>
 		<module>service</module>
@@ -45,9 +45,140 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-jdk14</artifactId>
+				<version>1.7.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.hellblazer</groupId>
+				<artifactId>pljava-api</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>14.0.1</version>
+				<classifier>site</classifier>
+			</dependency>
+			<dependency>
 				<groupId>com.yammer.dropwizard</groupId>
 				<artifactId>dropwizard-core</artifactId>
 				<version>0.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>2.1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.hellblazer.CoRE</groupId>
+				<artifactId>test-framework</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-lang</artifactId>
+						<groupId>commons-lang</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>junit</artifactId>
+						<groupId>junit</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>slf4j-api</artifactId>
+						<groupId>org.slf4j</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.0.7</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>slf4j-api</artifactId>
+						<groupId>org.slf4j</groupId>
+					</exclusion>
+				</exclusions>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.driver.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa-all</artifactId>
+				<version>2.2.2</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
+				<version>1.7.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.uuid</groupId>
+				<artifactId>java-uuid-generator</artifactId>
+				<version>3.1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>javax.persistence</artifactId>
+				<version>2.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.yammer.dropwizard</groupId>
+				<artifactId>dropwizard-auth</artifactId>
+				<version>0.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>0.9.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-json</artifactId>
+				<version>1.14</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>stax-api</artifactId>
+						<groupId>stax</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>stax-api</artifactId>
+						<groupId>javax.xml.stream</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>1.9.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>9.2-1003-jdbc4</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -103,6 +234,33 @@
 		</testResources>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.openjpa</groupId>
+					<artifactId>openjpa-maven-plugin</artifactId>
+					<version>2.2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>sql-maven-plugin</artifactId>
+					<version>1.5</version>
+				</plugin>
+				<plugin>
+					<groupId>com.hellblazer</groupId>
+					<artifactId>pljava-loader</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+				</plugin>
+				<plugin>
+					<groupId>org.liquibase</groupId>
+					<artifactId>liquibase-maven-plugin</artifactId>
+					<version>2.0.5</version>
+					<dependencies>
+						<dependency>
+							<groupId>postgresql</groupId>
+							<artifactId>postgresql</artifactId>
+							<version>${postgresql.driver.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
@@ -180,6 +338,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
 					<version>1.7</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>2.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

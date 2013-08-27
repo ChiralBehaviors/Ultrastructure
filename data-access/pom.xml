@@ -16,12 +16,10 @@
 		<dependency>
 			<groupId>com.yammer.dropwizard</groupId>
 			<artifactId>dropwizard-auth</artifactId>
-			<version>0.5.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
-			<version>1.14</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>stax-api</artifactId>
@@ -36,18 +34,16 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.9.5</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>model</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>stax-api</artifactId>
@@ -60,28 +56,26 @@
 			<artifactId>model</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>configuration</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>test-framework</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.2-1003-jdbc4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hellblazer.CoRE</groupId>
 			<artifactId>animations</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

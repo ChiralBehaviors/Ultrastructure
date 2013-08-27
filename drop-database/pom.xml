@@ -13,7 +13,6 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>${postgresql.driver.version}</version>
 		</dependency>
 	</dependencies>
 

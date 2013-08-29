@@ -12,13 +12,14 @@
 		var network;
 		var w = 500;
 		var h = 500;
-		var r = 10;
+		var r = 2;
 
 		$.getJSON(
-			"http://localhost:8080/v1/services/data/collection/2?rel=15&rel=16",
+			"http://localhost:8080/v1/services/data/collection/2?rel=15",
 			function(dataset) {
 				network = dataset;
 				console.log(dataset.nodes);
+				console.log(dataset.edges);
 				var force = d3.layout.force().nodes(dataset.nodes)
 						.links(dataset.edges).size([ w, h ])
 						.linkDistance([ 50 ]).charge([ -100 ])
@@ -42,23 +43,52 @@
 				    .attr("markerHeight", 6)
 				    .attr("orient", "auto")
 					.append("svg:path")
-					.attr("d","M0,-30L40,0L0,30");
+					.attr("d","M0,-5L10,0L0,5");
 
 				//Create edges as lines
-				var edges = svg.selectAll("path")
+				/* var edges = svg.selectAll("path")
 				            .data(dataset.edges)
 				            .enter()
 				            .append("svg:path")
 						    .style("stroke", "#ccc")
 						    .style("stroke-width", 1)
 						    .style("fill", "none")
+						    .attr("name", function(d) {
+						    	console.log("source: " + d.source);
+                                console.log("target: " + d.target);
+                                return d.relationship;
+						    })
 						    .attr("marker-end", function(d) {
+						    	   
 									return "url(#marker)";
 								})
 							.on("click", function() {
 							 console.log("click!");
 						});
 
+				$.each(force.links(), function(l) {
+					console.log("link: " + l.source + " " + l.target);
+				}) */
+				
+				var edges = svg.selectAll("line")
+                .data(dataset.edges)
+                .enter()
+                .append("svg:line")
+                .style("stroke", "#ccc")
+                .style("stroke-width", 1)
+                .style("fill", "none")
+                .attr("name", function(d) {
+                    console.log("source: " + d.source);
+                    console.log("target: " + d.target);
+                    return d.relationship;
+                })
+                .attr("marker-end", function(d) {
+                       
+                        return "url(#marker)";
+                    })
+                .on("click", function() {
+                 console.log("click!");
+            }); 
 				//Create nodes as circles
 				var nodes = svg.selectAll("circle").data(
 						dataset.nodes).enter().append("circle")
@@ -78,7 +108,7 @@
 								return d.y = Math.max(r, Math.min(h
 										- r, d.y));
 							});
-					edges
+/* 					edges
 							.attr(
 									"d",
 									function(d) {
@@ -95,8 +125,12 @@
 												+ d.target.y;
 									});
 
-				}
-
+				} */
+				edges.attr("x1", function(d) { return d.source.x; })
+		        .attr("y1", function(d) { return d.source.y; })
+		        .attr("x2", function(d) { return d.target.x; })
+		        .attr("y2", function(d) { return d.target.y; }); 
+			}
 				force.on("tick", tick);
 			});
 	</script>

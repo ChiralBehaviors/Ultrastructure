@@ -35,6 +35,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.Ruleform;
@@ -64,6 +65,7 @@ public class Relationship extends ExistentialRuleform {
     //bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "inverse")
+    @JsonIgnore
     private Relationship      inverse;
 
     private String            operator;

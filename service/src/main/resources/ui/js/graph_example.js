@@ -64,16 +64,14 @@ var node = svg.selectAll(".node"),
 	link = svg.selectAll(".link");
 
 function start() {
-//	console.log("links: " + force.links());
-//	link = link.data(force.links(), function(d) {
-//		return d.source + "-" + d.target;
-//	});
-//	console.log("link: " + link);
-//	link.enter()
-//		.insert("line", ".node")
-//		.attr("class", "link");
-//	link.exit()
-//		.remove();
+	console.log("links: " + force.links());
+	link = link.data(force.links());
+	console.log("link: " + link);
+	link.enter()
+		.insert("line", ".node")
+		.attr("class", "link");
+	link.exit()
+		.remove();
 
 	node = node.data(force.nodes(), function(d) {
 		return d.id;
@@ -95,13 +93,13 @@ $.getJSON("http://localhost:8080/v1/services/data/collection/2?rel=15",
 			$.each(dataset.nodes, function(d, i) {
 				nodes.push(i);
 			});
-//			$.each(dataset.edges, function(d, i) {
-//				links.push(i);
-//			});
+			$.each(dataset.edges, function(d, i) {
+				links.push(i);
+			});
 			console.log(nodes);
-			//console.log(links);
+			console.log(links);
 			force.nodes(nodes);
-			//force.links(links);
+			force.links(links);
 			start();
 
 		});

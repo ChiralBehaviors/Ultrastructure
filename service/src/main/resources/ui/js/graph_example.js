@@ -64,9 +64,7 @@ var node = svg.selectAll(".node"),
 	link = svg.selectAll(".link");
 
 function start() {
-	console.log("links: " + force.links());
 	link = link.data(force.links());
-	console.log("link: " + link);
 	link.enter()
 		.insert("line", ".node")
 		.attr("class", "link");

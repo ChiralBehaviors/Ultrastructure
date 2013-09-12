@@ -17,11 +17,8 @@
 package com.hellblazer.CoRE.meta.graph;
 
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -45,10 +42,11 @@ public final class NetworkGraph {
 
 	private Ruleform origin;
 	private List<Relationship> relationships;
-	private List<GraphEdge> edges;
+	private List<NetworkRuleform<?>> edges;
 	private List<Ruleform> nodes;
 	private EntityManager em;
 	private Class<?> nodeclz;
+	private Class<?> edgeclz;
 
 	public NetworkGraph(Ruleform node, List<Relationship> relationships,
 			EntityManager em) {
@@ -64,47 +62,33 @@ public final class NetworkGraph {
 				nodeclz = form;
 			}
 		}
+		for (Class<? extends NetworkRuleform> form : reflections.getSubTypesOf(NetworkRuleform.class)) {
+			if (!Modifier.isAbstract(form.getModifiers()) && form.getName().equalsIgnoreCase(node.getClass().getName() + "network")) {
+				edgeclz = form;
+			}
+		}
 		assert nodeclz != null;
+		assert edgeclz != null;
+
 		findNeighbors();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void findNeighbors() {
 		//TODO if relationship array is null, get the whole graph
 		Query q = em.createNamedQuery(nodeclz.getSimpleName().toLowerCase() + Networked.GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX);
 		q.setParameter(nodeclz.getSimpleName().toLowerCase(), origin);
 		q.setParameter("relationships", relationships);
-		@SuppressWarnings("unchecked")
-		List<NetworkRuleform<?>> results = (List<NetworkRuleform<?>>) q.getResultList();
+		edges = (List<NetworkRuleform<?>>) q.getResultList();
 
-		Map<Ruleform, Integer> indices = new HashMap<Ruleform, Integer>();
 		nodes = new LinkedList<Ruleform>();
-		edges = new LinkedList<GraphEdge>();
 		nodes.add(origin);
-		indices.put(origin, 0);
-		for (NetworkRuleform<?> n : results) {
-			int source, target;
-			long relationship;
-			if (indices.get(n.getParent()) == null) {
-				source = nodes.size();
-				nodes.add((Ruleform) n.getParent());
-				indices.put((Ruleform) n.getParent(), source);
-			} else {
-				source = indices.get(n.getParent());
-			}
+		
 
-			if (indices.get(n.getChild()) == null) {
-				target = nodes.size();
-				nodes.add((Ruleform) n.getChild());
-				indices.put((Ruleform) n.getChild(), target);
-			} else {
-				target = indices.get(n.getChild());
-			}
-
-			relationship = n.getRelationship().getId();
-
-			edges.add(new GraphEdge(source, relationship, target));
-		}
-
+	}
+	
+	public Ruleform getOrigin() {
+		return this.origin;
 	}
 
 	/**
@@ -114,7 +98,7 @@ public final class NetworkGraph {
 	 * 
 	 * @return the compound network ruleforms that represent graph edges
 	 */
-	public List<GraphEdge> getEdges() {
+	public List<NetworkRuleform<?>> getEdges() {
 		return edges;
 	}
 
@@ -135,38 +119,39 @@ public final class NetworkGraph {
 	public List<Relationship> getRelationships() {
 		return relationships;
 	}
-
-	public class GraphEdge {
-		private long source;
-		private long target;
-		private long relationship;
-
-		GraphEdge(long source, long relationship, long target) {
-			this.source = source;
-			this.target = target;
-			this.relationship = relationship;
-		}
-
-		/**
-		 * @return the source id
-		 */
-		public long getSource() {
-			return source;
-		}
-
-		/**
-		 * @return the target id
-		 */
-		public long getTarget() {
-			return target;
-		}
-
-		/**
-		 * @return the relationship id
-		 */
-		public long getRelationship() {
-			return relationship;
-		}
+	
+	/**
+	 * returns the union of nodes and edges between this graph and g2. 
+	 * IMPORTANT: this is a destructive function
+	 * @param g2
+	 * @return
+	 */
+	public NetworkGraph union(NetworkGraph g2) {
+		return this;
 	}
+	
+	/**
+	 * returns the intersection of nodes and edges between this graph and g2. 
+	 * IMPORTANT: this is a destructive function
+	 * @param g2
+	 * @return
+	 */
+	public NetworkGraph intersection(NetworkGraph g2) {
+		return this;
+	}
+	
+	/**
+	 * returns the graph created by using the nodes from g2 to seed this graph 
+	 * IMPORTANT: this is a destructive function
+	 * @param g2
+	 * @return
+	 */
+	public NetworkGraph graphOf(NetworkGraph g2){
+		return this;
+	}
+	
+
+
+	
 
 }

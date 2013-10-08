@@ -79,8 +79,8 @@ import com.hellblazer.CoRE.resource.Resource;
                                                      + "FROM AttributeNetwork rn "
                                                      + "WHERE rn.parent = :parent "
                                                      + "AND rn.relationship = :relationship"),
-             @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM LocationNetwork n "
-						+ "WHERE n.parent = :location "
+             @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AttributeNetwork n "
+						+ "WHERE n.parent = :attribute "
 						+ "AND n.relationship IN :relationships "
 						+ "ORDER by n.parent.name, n.relationship.name, n.child.name")})
 @NamedNativeQueries({

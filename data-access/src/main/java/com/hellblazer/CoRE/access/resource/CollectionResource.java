@@ -34,7 +34,8 @@ import javax.ws.rs.core.MediaType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.meta.graph.NetworkGraph;
+import com.hellblazer.CoRE.meta.graph.SerializableGraph;
+import com.hellblazer.CoRE.meta.graph.impl.GraphQuery;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 
@@ -84,20 +85,24 @@ public class CollectionResource {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public NetworkGraph get(@PathParam("id") long id, @QueryParam("rel") List<String> relIds) throws JsonProcessingException {
+	public SerializableGraph get(@PathParam("id") long id, @QueryParam("rel") List<String> relIds) throws JsonProcessingException {
 
 		Product p = new Product();
 		p.setId(id);
+		List<Ruleform> nodes = new LinkedList<Ruleform>();
+		nodes.add(p);
 		List<Relationship> rels = new LinkedList<Relationship>();
 		for (String rid : relIds) {
 			Relationship r = em.find(Relationship.class, rid);
 			rels.add(r);
 		}
-		return getNetwork(p, rels);
+		GraphQuery ng = getNetwork(nodes, rels);
+		SerializableGraph sg = new SerializableGraph(ng);
+		return sg;
 	}
 	
-	public NetworkGraph getNetwork(Ruleform node, List<Relationship> relationships) throws JsonProcessingException {
-		NetworkGraph pg = new NetworkGraph(node, relationships, em);
+	public GraphQuery getNetwork(List<Ruleform> nodes, List<Relationship> relationships) throws JsonProcessingException {
+		GraphQuery pg = new GraphQuery(nodes, relationships, em);
 		return pg;
 
 	}

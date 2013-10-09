@@ -17,7 +17,6 @@
 
 package com.hellblazer.CoRE.meta.graph;
 
-import com.hellblazer.CoRE.Ruleform;
 
 /**
  * @author hparry
@@ -25,8 +24,8 @@ import com.hellblazer.CoRE.Ruleform;
  */
 public interface IEdge {
 	
-	public Ruleform getParent();
+	public INode<?> getParent();
 	
-	public Ruleform getChild();
+	public INode<?> getChild();
 
 }

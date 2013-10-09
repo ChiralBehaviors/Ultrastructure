@@ -28,17 +28,17 @@ import com.hellblazer.CoRE.meta.graph.INode;
  * @author hparry
  *
  */
-public class Graph<Ruleform> implements IGraph<Ruleform> {
+public class Graph implements IGraph {
 	
-	private List<INode<Ruleform>> nodes;
+	private List<INode<?>> nodes;
 	private List<IEdge> edges;
 	
-	public Graph(List<INode<Ruleform>> nodes, List<IEdge> edges) {
+	public Graph(List<INode<?>> nodes, List<IEdge> edges) {
 		this.nodes = nodes;
 		this.edges = edges;
 	}
 	
-	public List<INode<Ruleform>> getNodes() {
+	public List<INode<?>> getNodes() {
 		return nodes;
 	}
 	
@@ -47,15 +47,15 @@ public class Graph<Ruleform> implements IGraph<Ruleform> {
 	}
 	
 	@Override
-	public Graph<Ruleform> union(IGraph<Ruleform> g) {
+	public Graph union(IGraph g) {
 		nodes.addAll(g.getNodes());
 		edges.addAll(g.getEdges());
 		return this;
 	}
 	
 	@Override
-	public Graph<Ruleform> intersection(IGraph<Ruleform> g) {
-		for (INode<Ruleform> n : nodes) {
+	public Graph intersection(IGraph g) {
+		for (INode<?> n : nodes) {
 			if (!g.getNodes().contains(n)) {
 				nodes.remove(n);
 			}
@@ -73,7 +73,7 @@ public class Graph<Ruleform> implements IGraph<Ruleform> {
 	 * @see com.hellblazer.CoRE.meta.graph.IGraph#addNode(com.hellblazer.CoRE.meta.graph.INode)
 	 */
 	@Override
-	public IGraph<Ruleform> addNode(INode<Ruleform> n) {
+	public IGraph addNode(INode<?> n) {
 		this.nodes.add(n);
 		return this;
 	}
@@ -82,7 +82,7 @@ public class Graph<Ruleform> implements IGraph<Ruleform> {
 	 * @see com.hellblazer.CoRE.meta.graph.IGraph#addEdge(com.hellblazer.CoRE.meta.graph.IEdge)
 	 */
 	@Override
-	public IGraph<Ruleform> addEdge(IEdge e) {
+	public IGraph addEdge(IEdge e) {
 		this.edges.add(e);
 		return this;
 	}

@@ -14,28 +14,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE.meta.graph.impl;
-
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.meta.graph.INode;
+package com.hellblazer.CoRE.meta.graph;
 
 /**
- * Wrapper class to turn a Ruleform into a node. Yes, it would be nice if the Ruleform
- * class just implemented the INode interface directly, but the dependency management 
- * doesn't work out.
  * @author hparry
  *
  */
-public class NodeImpl implements INode<Ruleform> {
+public class TestEdgeImpl implements IEdge {
 	
-	private Ruleform node;
+	private INode<String> parent;
+	private INode<String> child;
 	
-	public NodeImpl(Ruleform node) {
-		this.node = node;
+	public TestEdgeImpl(String parent, String child) {
+		this.parent = new TestNodeImpl(parent);
+		this.child = new TestNodeImpl(child);
 	}
-	
-	public Ruleform getNode() {
-		return this.node;
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getParent()
+	 */
+	@Override
+	public INode<String> getParent() {
+		return this.parent;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getChild()
+	 */
+	@Override
+	public INode<String> getChild() {
+		return this.child;
 	}
 
 }

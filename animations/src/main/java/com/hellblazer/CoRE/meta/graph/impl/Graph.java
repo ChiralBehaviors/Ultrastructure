@@ -17,6 +17,7 @@
 
 package com.hellblazer.CoRE.meta.graph.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.hellblazer.CoRE.meta.graph.IEdge;
@@ -30,42 +31,77 @@ import com.hellblazer.CoRE.meta.graph.INode;
  */
 public class Graph implements IGraph {
 	
+
 	private List<INode<?>> nodes;
-	private List<IEdge> edges;
+	private List<IEdge<?>> edges;
 	
-	public Graph(List<INode<?>> nodes, List<IEdge> edges) {
+	public Graph(List<INode<?>> nodes, List<IEdge<?>> edges) {
 		this.nodes = nodes;
 		this.edges = edges;
 	}
 	
+	
+	/**
+	 * @param erisNodes
+	 * @param edges2
+	 */
+	public Graph(INode<?>[] nodes, List<IEdge<?>> edges) {
+		this.nodes = new LinkedList<INode<?>>();
+		for (INode<?> node : nodes) {
+			this.nodes.add(node);
+		}
+		this.edges = edges;
+	}
+
 	public List<INode<?>> getNodes() {
 		return nodes;
 	}
 	
-	public List<IEdge> getEdges() {
+	public List<IEdge<?>> getEdges() {
 		return edges;
 	}
 	
 	@Override
 	public Graph union(IGraph g) {
-		nodes.addAll(g.getNodes());
-		edges.addAll(g.getEdges());
+		List<INode<?>> newNodes = new LinkedList<INode<?>>();
+		if (nodes != null) {
+			newNodes.addAll(nodes);
+		}
+		if (g.getNodes() != null) {
+			newNodes.addAll(g.getNodes());
+		}
+		this.nodes = newNodes;
+
+		List<IEdge<?>> newEdges = new LinkedList<IEdge<?>>();
+		if (edges != null) {
+			newEdges.addAll(edges);
+		}
+		if (g.getEdges() != null) {
+			newEdges.addAll(g.getEdges());
+		}
+		edges = newEdges;
 		return this;
 	}
 	
 	@Override
 	public Graph intersection(IGraph g) {
+		List<INode<?>> newNodes = new LinkedList<INode<?>>();
 		for (INode<?> n : nodes) {
-			if (!g.getNodes().contains(n)) {
-				nodes.remove(n);
+			if (g.getNodes().contains(n)) {
+				newNodes.add(n);
+			}
+		}
+		this.nodes = newNodes;
+		
+		List<IEdge<?>> newEdges = new LinkedList<IEdge<?>>();
+		
+		for (IEdge<?> e : edges) {
+			if (g.getEdges().contains(e)) {
+				newEdges.add(e);
 			}
 		}
 		
-		for (IEdge e : edges) {
-			if (!g.getEdges().contains(e)) {
-				edges.remove(e);
-			}
-		}
+		this.edges = newEdges;
 		return this;
 	}
 
@@ -82,7 +118,7 @@ public class Graph implements IGraph {
 	 * @see com.hellblazer.CoRE.meta.graph.IGraph#addEdge(com.hellblazer.CoRE.meta.graph.IEdge)
 	 */
 	@Override
-	public IGraph addEdge(IEdge e) {
+	public IGraph addEdge(IEdge<?> e) {
 		this.edges.add(e);
 		return this;
 	}

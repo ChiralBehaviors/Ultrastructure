@@ -20,14 +20,23 @@ package com.hellblazer.CoRE.meta.graph;
  * @author hparry
  *
  */
-public class TestEdgeImpl implements IEdge {
+
+public class TestEdgeImpl implements IEdge<String> {
 	
-	private INode<String> parent;
-	private INode<String> child;
+	private TestNodeImpl parent;
+	private TestNodeImpl child;
+	private String edge;
 	
-	public TestEdgeImpl(String parent, String child) {
+	public TestEdgeImpl(String parent, String child, String edge) {
 		this.parent = new TestNodeImpl(parent);
 		this.child = new TestNodeImpl(child);
+		this.edge = edge;
+	}
+	
+	public TestEdgeImpl(TestNodeImpl parent, TestNodeImpl child, String edge) {
+		this.parent = parent;
+		this.child = child;
+		this.edge = edge;
 	}
 
 	/* (non-Javadoc)
@@ -45,5 +54,14 @@ public class TestEdgeImpl implements IEdge {
 	public INode<String> getChild() {
 		return this.child;
 	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getEdgeObject()
+	 */
+	@Override
+	public String getEdgeObject() {
+		return this.edge;
+	}
+	
 
 }

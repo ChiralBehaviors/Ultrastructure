@@ -27,7 +27,7 @@ public interface IGraph {
 	
 	public List<INode<?>> getNodes();
 	
-	public List<IEdge> getEdges();
+	public List<IEdge<?>> getEdges();
 	
 	public IGraph union(IGraph g);
 	
@@ -35,6 +35,6 @@ public interface IGraph {
 	
 	public IGraph addNode(INode<?> n);
 	
-	public IGraph addEdge(IEdge e);
+	public IGraph addEdge(IEdge<?> e);
 
 }

@@ -24,7 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -36,7 +36,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @javax.persistence.Entity
 @Table(name = "unit", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "unit_id_seq", sequenceName = "unit_id_seq")
-public class Unit extends Ruleform {
+public class Unit extends ExistentialRuleform {
     private static final long serialVersionUID = 1L;
 
     private String            abbreviation;

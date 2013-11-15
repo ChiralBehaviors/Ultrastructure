@@ -18,7 +18,6 @@
 package com.hellblazer.CoRE.kernel;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.capability.Action;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
@@ -31,8 +30,6 @@ import com.hellblazer.CoRE.resource.Resource;
  */
 public interface Kernel {
 
-    Action getAnyAction();
-
     Attribute getAnyAttribute();
 
     Product getAnyProduct();
@@ -42,8 +39,6 @@ public interface Kernel {
     Relationship getAnyRelationship();
 
     Resource getAnyResource();
-
-    Action getAnything();
 
     Attribute getAttribute();
 
@@ -107,8 +102,6 @@ public interface Kernel {
 
     Relationship getMemberOf();
 
-    Action getNotApplicableAction();
-
     Attribute getNotApplicableAttribute();
 
     Product getNotApplicableProduct();
@@ -119,8 +112,6 @@ public interface Kernel {
 
     Resource getNotApplicableResource();
 
-    Action getOriginalAction();
-
     Attribute getOriginalAttribute();
 
     Product getOriginalProduct();
@@ -130,10 +121,10 @@ public interface Kernel {
     Location getSameLocation();
 
     Resource getOriginalResource();
-    
+
     Relationship getOwnedBy();
 
-	Relationship getOwns();
+    Relationship getOwns();
 
     Attribute getPasswordHashAttribute();
 

@@ -32,7 +32,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.hellblazer.CoRE.Util;
-import com.hellblazer.CoRE.capability.Capability;
 import com.hellblazer.CoRE.kernel.Bootstrap;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.resource.ResourceAttribute;
@@ -94,7 +93,6 @@ public class BootstrapLoader extends Bootstrap {
         constructResourceNetworks();
         constructLocationNetworks();
         constructAttributeNetworks();
-        constructCapabilities();
         constructAspects();
         constructResourceAttributes();
     }
@@ -132,47 +130,13 @@ public class BootstrapLoader extends Bootstrap {
                                                kernel.getCore(), em);
     }
 
-    public void constructCapabilities() {
-        Capability coreAttributeCapability = new Capability(
-                                                            kernel.getCore(),
-                                                            kernel.getAnything(),
-                                                            kernel.getAttribute(),
-                                                            "The capability that gives CoRE the right to do anything to Attributes",
-                                                            kernel.getCore());
-        em.persist(coreAttributeCapability);
-
-        Capability coreEntityCapability = new Capability(
-                                                         kernel.getCore(),
-                                                         kernel.getAnything(),
-                                                         kernel.getProduct(),
-                                                         "The capability that gives CoRE the right to do anything to Entities",
-                                                         kernel.getCore());
-        em.persist(coreEntityCapability);
-
-        Capability coreLocationCapability = new Capability(
-                                                           kernel.getCore(),
-                                                           kernel.getAnything(),
-                                                           kernel.getLocation(),
-                                                           "The capability that gives CoRE the right to anything to Locations",
-                                                           kernel.getCore());
-        em.persist(coreLocationCapability);
-
-        Capability coreResourceCapability = new Capability(
-                                                           kernel.getCore(),
-                                                           kernel.getAnything(),
-                                                           kernel.getResource(),
-                                                           "The capability that gives CoRE the right to do anything to Resources",
-                                                           kernel.getCore());
-        em.persist(coreResourceCapability);
-    }
-
     public void constructProductNetworks() {
         kernel.getProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                kernel.getCore(), kernel.getCore(), em);
+                                 kernel.getCore(), kernel.getCore(), em);
         kernel.getAnyProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                   kernel.getCore(), kernel.getCore(), em);
+                                    kernel.getCore(), kernel.getCore(), em);
         kernel.getOriginalProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                        kernel.getCore(), kernel.getCore(), em);
+                                         kernel.getCore(), kernel.getCore(), em);
     }
 
     public void constructLocationNetworks() {

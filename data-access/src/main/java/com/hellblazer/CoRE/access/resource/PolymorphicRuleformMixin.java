@@ -28,8 +28,6 @@ import com.hellblazer.CoRE.attribute.TransformationMetarule;
 import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.attribute.UnitValue;
 import com.hellblazer.CoRE.attribute.ValueType;
-import com.hellblazer.CoRE.capability.Action;
-import com.hellblazer.CoRE.capability.Capability;
 import com.hellblazer.CoRE.coordinate.Coordinate;
 import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
 import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
@@ -99,9 +97,6 @@ import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
                @Type(value = Unit.class, name = "unit"),
                @Type(value = UnitValue.class, name = "unitValue"),
                @Type(value = ValueType.class, name = "valueType"),
-
-               @Type(value = Action.class, name = "action"),
-               @Type(value = Capability.class, name = "capability"),
 
                @Type(value = Coordinate.class, name = "coordinate"),
                @Type(value = CoordinateAttribute.class, name = "coordinateAttribute"),

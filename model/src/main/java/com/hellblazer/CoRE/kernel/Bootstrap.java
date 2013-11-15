@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAction;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
@@ -50,10 +49,7 @@ public class Bootstrap {
         alterTriggers(false);
         for (WellKnownObject wko : WellKnownResource.values()) {
             insert(wko);
-        }
-        for (WellKnownObject wko : WellKnownAction.values()) {
-            insert(wko);
-        }
+        } 
         for (WellKnownAttribute wko : WellKnownAttribute.values()) {
             insert(wko);
         }
@@ -70,7 +66,6 @@ public class Bootstrap {
             insert(wko);
         }
         adjustIdSeq(WellKnownResource.ANY);
-        adjustIdSeq(WellKnownAction.ANY);
         adjustIdSeq(WellKnownAttribute.ANY);
         adjustIdSeq(WellKnownProduct.ANY);
         adjustIdSeq(WellKnownLocation.ANY);

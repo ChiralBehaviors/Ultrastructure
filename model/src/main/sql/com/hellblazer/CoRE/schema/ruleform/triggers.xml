@@ -65,9 +65,6 @@
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute_authorization/trigger-coordinate_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_attribute_authorization/trigger-location_attribute_authorization_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/action/trigger-action_restrict_pinned.xml"/>
-    <include relativeToChangelogFile="true" file="tables/action/trigger-action_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/capability/trigger-capability_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute_authorization/trigger-attr_meta_attr_auth_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization/trigger-sourcing_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol_attribute_authorization/trigger-protocol_attribute_authorization_update_date.xml"/>

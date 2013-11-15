@@ -20,9 +20,7 @@ package com.hellblazer.CoRE.kernel;
 import javax.persistence.EntityManager;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.capability.Action;
 import com.hellblazer.CoRE.event.StatusCode;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAction;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
@@ -41,11 +39,6 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 public class KernelImpl implements Kernel {
-
-    private final Action       anything;
-    private final Action       anyAction;
-    private final Action       notApplicableAction;
-    private final Action       originalAction;
 
     private final Attribute    anyAttribute;
     private final Attribute    attribute;
@@ -114,10 +107,6 @@ public class KernelImpl implements Kernel {
     private final StatusCode   unset;
 
     public KernelImpl(EntityManager em) {
-        anyAction = find(em, WellKnownAction.ANY);
-        originalAction = find(em, WellKnownAction.ORIGINAL);
-        anything = find(em, WellKnownAction.ANYTHING);
-        notApplicableAction = find(em, WellKnownAction.NOT_APPLICABLE);
 
         attribute = find(em, WellKnownAttribute.ATTRIBUTE);
         anyAttribute = find(em, WellKnownAttribute.ANY);
@@ -192,14 +181,6 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyAction()
-     */
-    @Override
-    public Action getAnyAction() {
-        return anyAction;
-    }
-
-    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyAttribute()
      */
     @Override
@@ -237,14 +218,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Resource getAnyResource() {
         return anyResource;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnything()
-     */
-    @Override
-    public Action getAnything() {
-        return anything;
     }
 
     /* (non-Javadoc)
@@ -487,27 +460,19 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-	 * @return the ownedBy
-	 */
-    @Override
-	public Relationship getOwnedBy() {
-		return ownedBy;
-	}
-
-	/**
-	 * @return the owns
-	 */
-    @Override
-	public Relationship getOwns() {
-		return owns;
-	}
-
-	/**
-     * @return the notApplicableAction
+     * @return the ownedBy
      */
     @Override
-    public Action getNotApplicableAction() {
-        return notApplicableAction;
+    public Relationship getOwnedBy() {
+        return ownedBy;
+    }
+
+    /**
+     * @return the owns
+     */
+    @Override
+    public Relationship getOwns() {
+        return owns;
     }
 
     /**
@@ -548,14 +513,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Resource getNotApplicableResource() {
         return notApplicableResource;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalAction()
-     */
-    @Override
-    public Action getOriginalAction() {
-        return originalAction;
     }
 
     /* (non-Javadoc)
@@ -689,15 +646,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Location getSameLocation() {
         return sameLocation;
-    }
-
-    /**
-     * 
-     * @param wko
-     * @return the {@link Action} corresponding to the well known object
-     */
-    Action find(EntityManager em, WellKnownAction wko) {
-        return em.find(Action.class, wko.id());
     }
 
     /**

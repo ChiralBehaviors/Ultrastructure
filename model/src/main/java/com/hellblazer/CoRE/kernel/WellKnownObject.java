@@ -28,89 +28,6 @@ import com.hellblazer.CoRE.attribute.ValueType;
  */
 public interface WellKnownObject {
 
-    public static enum WellKnownAction implements WellKnownObject {
-        ANY() {
-
-            @Override
-            public String description() {
-                return "A special Action that stands for any action";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ANY;
-            }
-
-        },
-        ANYTHING() {
-
-            @Override
-            public String description() {
-                return "The capability to do anything";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ANYTHING;
-            }
-
-        },
-        NOT_APPLICABLE() {
-
-            @Override
-            public String description() {
-                return "A special Attribute that stands for 'not applicable'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
-        ORIGINAL() {
-
-            @Override
-            public String description() {
-                return "A special Attribute that stands for the originally supplied action";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ORIGINAL;
-            }
-
-        };
-
-        /* (non-Javadoc)
-         * @see com.hellblazer.CoRE.kernel.WellKnownObject#id()
-         */
-        @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.hellblazer.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.action";
-        }
-    }
-
     public static enum WellKnownAttribute implements WellKnownObject {
         ANY() {
 
@@ -1044,7 +961,7 @@ public interface WellKnownObject {
 
         },
         OWNS() {
-        	@Override
+            @Override
             public String description() {
                 return "A owns B";
             }
@@ -1068,7 +985,7 @@ public interface WellKnownObject {
             }
         },
         OWNED_BY() {
-        	@Override
+            @Override
             public String description() {
                 return "A is owned by B";
             }
@@ -1541,8 +1458,8 @@ public interface WellKnownObject {
     String MEMBER_OF                 = "member-of";
     String NOT_APPLICABLE            = "(N/A)";
     String ORIGINAL                  = "(Original)";
-    String OWNED_BY 				 = "ownedBy";
-    String OWNS						 = "owns";
+    String OWNED_BY                  = "ownedBy";
+    String OWNS                      = "owns";
     String PASSWORD_HASH             = "password-hash";
     String PROPAGATION_SOFTWARE      = "Propagation Software";
     String PROTOTYPE                 = "prototype";

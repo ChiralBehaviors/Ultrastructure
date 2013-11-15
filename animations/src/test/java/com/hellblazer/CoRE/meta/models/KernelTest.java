@@ -57,13 +57,11 @@ public class KernelTest {
         em.getTransaction().commit();
 
         Kernel kernel = new ModelImpl(em).getKernel();
-        assertNotNull(kernel.getAnyAction());
         assertNotNull(kernel.getAnyAttribute());
         assertNotNull(kernel.getAnyProduct());
         assertNotNull(kernel.getAnyLocation());
         assertNotNull(kernel.getAnyRelationship());
         assertNotNull(kernel.getAnyResource());
-        assertNotNull(kernel.getAnything());
         assertNotNull(kernel.getAttribute());
         assertNotNull(kernel.getContains());
         assertNotNull(kernel.getCore());
@@ -91,7 +89,6 @@ public class KernelTest {
         assertNotNull(kernel.getLocation());
         assertNotNull(kernel.getMapsToLocation());
         assertNotNull(kernel.getMemberOf());
-        assertNotNull(kernel.getOriginalAction());
         assertNotNull(kernel.getOriginalAttribute());
         assertNotNull(kernel.getOriginalProduct());
         assertNotNull(kernel.getOriginalLocation());

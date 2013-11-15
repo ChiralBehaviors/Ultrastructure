@@ -16,6 +16,7 @@
 		<model.jar.name>model</model.jar.name>
 		<model.jar.file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</model.jar.file>
 		<main.sql>${project.basedir}/src/main/sql</main.sql>
+		<java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
 	</properties>
 
 	<dependencies>

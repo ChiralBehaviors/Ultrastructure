@@ -199,12 +199,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                    kernel.getInverseSoftware(), em);
     }
 
-    public void createInverseRelationshipo(RuleForm parent, Relationship r,
-                                           RuleForm child, Resource updatedBy) {
-        child.link(r.getInverse(), parent, updatedBy,
-                   kernel.getInverseSoftware(), em);
-    }
-
     public void generateInverses() {
         Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
                                                         GENERATE_NETWORK_INVERSES_SUFFIX));

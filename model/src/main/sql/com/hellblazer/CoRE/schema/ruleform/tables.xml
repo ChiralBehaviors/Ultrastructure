@@ -59,8 +59,6 @@
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization.xml"/>
-    <include relativeToChangelogFile="true" file="tables/action.xml"/>
-    <include relativeToChangelogFile="true" file="tables/capability.xml"/>
     <include relativeToChangelogFile="true" file="tables/attr_meta_attr_auth-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization.xml"/>
 </databaseChangeLog>

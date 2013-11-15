@@ -130,6 +130,10 @@ public interface Kernel {
     Location getSameLocation();
 
     Resource getOriginalResource();
+    
+    Relationship getOwnedBy();
+
+	Relationship getOwns();
 
     Attribute getPasswordHashAttribute();
 

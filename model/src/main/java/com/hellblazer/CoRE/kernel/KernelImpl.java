@@ -104,6 +104,8 @@ public class KernelImpl implements Kernel {
     private final Relationship mapsToLocation;
     private final Relationship memberOf;
     private final Relationship notApplicableRelationship;
+    private final Relationship ownedBy;
+    private final Relationship owns;
     private final Relationship prototype;
     private final Relationship prototypeOf;
     private final Relationship sameRelationship;
@@ -182,8 +184,11 @@ public class KernelImpl implements Kernel {
         formerMemberOf = find(em, WellKnownRelationship.FORMER_MEMBER_OF);
         notApplicableRelationship = find(em,
                                          WellKnownRelationship.NOT_APPLICABLE);
+        ownedBy = find(em, WellKnownRelationship.OWNED_BY);
+        owns = find(em, WellKnownRelationship.OWNS);
 
         unset = find(em, WellKnownStatusCode.UNSET);
+
     }
 
     /* (non-Javadoc)
@@ -482,6 +487,22 @@ public class KernelImpl implements Kernel {
     }
 
     /**
+	 * @return the ownedBy
+	 */
+    @Override
+	public Relationship getOwnedBy() {
+		return ownedBy;
+	}
+
+	/**
+	 * @return the owns
+	 */
+    @Override
+	public Relationship getOwns() {
+		return owns;
+	}
+
+	/**
      * @return the notApplicableAction
      */
     @Override

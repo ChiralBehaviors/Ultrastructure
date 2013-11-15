@@ -1043,6 +1043,54 @@ public interface WellKnownObject {
             }
 
         },
+        OWNS() {
+        	@Override
+            public String description() {
+                return "A owns B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.OWNED_BY;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.OWNS;
+            }
+
+            @Override
+            boolean preferred() {
+                return true;
+            }
+        },
+        OWNED_BY() {
+        	@Override
+            public String description() {
+                return "A is owned by B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.OWNS;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.OWNED_BY;
+            }
+
+            @Override
+            boolean preferred() {
+                return false;
+            }
+        },
         NOT_APPLICABLE() {
 
             @Override
@@ -1493,6 +1541,8 @@ public interface WellKnownObject {
     String MEMBER_OF                 = "member-of";
     String NOT_APPLICABLE            = "(N/A)";
     String ORIGINAL                  = "(Original)";
+    String OWNED_BY 				 = "ownedBy";
+    String OWNS						 = "owns";
     String PASSWORD_HASH             = "password-hash";
     String PROPAGATION_SOFTWARE      = "Propagation Software";
     String PROTOTYPE                 = "prototype";

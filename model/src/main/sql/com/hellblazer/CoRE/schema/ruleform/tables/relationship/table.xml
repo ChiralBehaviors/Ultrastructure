@@ -21,6 +21,7 @@
               pinned boolean NOT NULL DEFAULT false,
               operator ruleform.relational_operator,  
               CONSTRAINT relationship_pkey PRIMARY KEY (id ),
+              CONSTRAINT relationship_name UNIQUE (name),
               CONSTRAINT relationship_inverse_fkey FOREIGN KEY (inverse)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED,

@@ -22,11 +22,11 @@ package com.hellblazer.CoRE.meta.graph;
  * @author hparry
  *
  */
-public interface IEdge<T> {
+public interface Edge<T> {
 	
-	public INode<?> getParent();
+	public Node<?> getParent();
 	
-	public INode<?> getChild();
+	public Node<?> getChild();
 	
 	public T getEdgeObject();
 

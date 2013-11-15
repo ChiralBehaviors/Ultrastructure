@@ -17,7 +17,7 @@
 package com.hellblazer.CoRE.meta.graph.impl;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.meta.graph.INode;
+import com.hellblazer.CoRE.meta.graph.Node;
 
 /**
  * Wrapper class to turn a Ruleform into a node. Yes, it would be nice if the Ruleform
@@ -26,7 +26,7 @@ import com.hellblazer.CoRE.meta.graph.INode;
  * @author hparry
  *
  */
-public class NodeImpl implements INode<Ruleform> {
+public class NodeImpl implements Node<Ruleform> {
 	
 	private Ruleform node;
 	

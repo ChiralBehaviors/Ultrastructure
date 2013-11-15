@@ -82,30 +82,30 @@ public class CollectionResource {
 
 	}
 
-	@GET
-	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public SerializableGraph get(@PathParam("id") long id, @QueryParam("rel") List<String> relIds) throws JsonProcessingException {
-
-		Product p = new Product();
-		p.setId(id);
-		List<Ruleform> nodes = new LinkedList<Ruleform>();
-		nodes.add(p);
-		List<Relationship> rels = new LinkedList<Relationship>();
-		for (String rid : relIds) {
-			Relationship r = em.find(Relationship.class, rid);
-			rels.add(r);
-		}
-		GraphQuery ng = getNetwork(nodes, rels);
-		SerializableGraph sg = new SerializableGraph(ng);
-		return sg;
-	}
-	
-	public GraphQuery getNetwork(List<Ruleform> nodes, List<Relationship> relationships) throws JsonProcessingException {
-		GraphQuery pg = new GraphQuery(nodes, relationships, em);
-		return pg;
-
-	}
+//	@GET
+//	@Path("/{id}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public SerializableGraph get(@PathParam("id") long id, @QueryParam("rel") List<String> relIds) throws JsonProcessingException {
+//
+//		Product p = new Product();
+//		p.setId(id);
+//		List<Ruleform> nodes = new LinkedList<Ruleform>();
+//		nodes.add(p);
+//		List<Relationship> rels = new LinkedList<Relationship>();
+//		for (String rid : relIds) {
+//			Relationship r = em.find(Relationship.class, rid);
+//			rels.add(r);
+//		}
+//		GraphQuery ng = getNetwork(nodes, rels);
+//		SerializableGraph sg = new SerializableGraph(ng);
+//		return sg;
+//	}
+//	
+//	public GraphQuery getNetwork(List<Ruleform> nodes, List<Relationship> relationships) throws JsonProcessingException {
+//		GraphQuery pg = new GraphQuery(nodes, relationships, em);
+//		return pg;
+//
+//	}
 
 
 

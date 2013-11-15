@@ -21,7 +21,7 @@ package com.hellblazer.CoRE.meta.graph;
  *
  */
 
-public class TestEdgeImpl implements IEdge<String> {
+public class TestEdgeImpl implements Edge<String> {
 	
 	private TestNodeImpl parent;
 	private TestNodeImpl child;
@@ -43,7 +43,7 @@ public class TestEdgeImpl implements IEdge<String> {
 	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getParent()
 	 */
 	@Override
-	public INode<String> getParent() {
+	public Node<String> getParent() {
 		return this.parent;
 	}
 
@@ -51,7 +51,7 @@ public class TestEdgeImpl implements IEdge<String> {
 	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getChild()
 	 */
 	@Override
-	public INode<String> getChild() {
+	public Node<String> getChild() {
 		return this.child;
 	}
 

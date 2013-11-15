@@ -20,7 +20,7 @@ package com.hellblazer.CoRE.meta.graph;
  * @author hparry
  *
  */
-public class TestNodeImpl implements INode<String>, Cloneable{
+public class TestNodeImpl implements Node<String>, Cloneable{
 	
 	private String node;
 	

@@ -23,18 +23,18 @@ import java.util.List;
  * @author hparry
  *
  */
-public interface IGraph {
+public interface Graph {
 	
-	public List<INode<?>> getNodes();
+	public List<Node<?>> getNodes();
 	
-	public List<IEdge<?>> getEdges();
+	public List<Edge<?>> getEdges();
 	
-	public IGraph union(IGraph g);
+	public Graph union(Graph g);
 	
-	public IGraph intersection(IGraph g);
+	public Graph intersection(Graph g);
 	
-	public IGraph addNode(INode<?> n);
+	public Graph addNode(Node<?> n);
 	
-	public IGraph addEdge(IEdge<?> e);
+	public Graph addEdge(Edge<?> e);
 
 }

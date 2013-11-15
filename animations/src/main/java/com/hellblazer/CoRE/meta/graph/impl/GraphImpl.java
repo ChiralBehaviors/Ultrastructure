@@ -20,24 +20,30 @@ package com.hellblazer.CoRE.meta.graph.impl;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.hellblazer.CoRE.meta.graph.IEdge;
-import com.hellblazer.CoRE.meta.graph.IGraph;
-import com.hellblazer.CoRE.meta.graph.INode;
+import com.hellblazer.CoRE.meta.graph.Edge;
+import com.hellblazer.CoRE.meta.graph.Graph;
+import com.hellblazer.CoRE.meta.graph.Node;
 
 /**
  * A graph of nodes and edges
  * @author hparry
  *
  */
-public class Graph implements IGraph {
+public class GraphImpl implements Graph {
 	
 
-	private List<INode<?>> nodes;
-	private List<IEdge<?>> edges;
+	private List<Node<?>> nodes;
+	private List<Edge<?>> edges;
 	
-	public Graph(List<INode<?>> nodes, List<IEdge<?>> edges) {
+	public GraphImpl(List<Node<?>> nodes, List<Edge<?>> edges) {
 		this.nodes = nodes;
 		this.edges = edges;
+		if (this.nodes == null) {
+			this.nodes = new LinkedList<Node<?>>();
+		}
+		if (this.edges == null) {
+			this.edges = new LinkedList<Edge<?>>();
+		}
 	}
 	
 	
@@ -45,63 +51,47 @@ public class Graph implements IGraph {
 	 * @param erisNodes
 	 * @param edges2
 	 */
-	public Graph(INode<?>[] nodes, List<IEdge<?>> edges) {
-		this.nodes = new LinkedList<INode<?>>();
-		for (INode<?> node : nodes) {
+	public GraphImpl(Node<?>[] nodes, List<Edge<?>> edges) {
+		this.nodes = new LinkedList<Node<?>>();
+		for (Node<?> node : nodes) {
 			this.nodes.add(node);
 		}
 		this.edges = edges;
 	}
 
-	public List<INode<?>> getNodes() {
+	public List<Node<?>> getNodes() {
 		return nodes;
 	}
 	
-	public List<IEdge<?>> getEdges() {
+	public List<Edge<?>> getEdges() {
 		return edges;
 	}
 	
 	@Override
-	public Graph union(IGraph g) {
-		List<INode<?>> newNodes = new LinkedList<INode<?>>();
-		if (nodes != null) {
-			newNodes.addAll(nodes);
-		}
-		if (g.getNodes() != null) {
-			newNodes.addAll(g.getNodes());
-		}
-		this.nodes = newNodes;
-
-		List<IEdge<?>> newEdges = new LinkedList<IEdge<?>>();
-		if (edges != null) {
-			newEdges.addAll(edges);
-		}
-		if (g.getEdges() != null) {
-			newEdges.addAll(g.getEdges());
-		}
-		edges = newEdges;
+	public GraphImpl union(Graph g) {
+		this.nodes.addAll(g.getNodes());
+		this.edges.addAll(g.getEdges());
 		return this;
 	}
 	
 	@Override
-	public Graph intersection(IGraph g) {
-		List<INode<?>> newNodes = new LinkedList<INode<?>>();
-		for (INode<?> n : nodes) {
-			if (g.getNodes().contains(n)) {
-				newNodes.add(n);
+	public GraphImpl intersection(Graph g) {
+		List<Node<?>> nodesToRemove = new LinkedList<Node<?>>();
+		for (Node<?> n : nodes) {
+			if (!g.getNodes().contains(n)) {
+				nodesToRemove.add(n);
 			}
 		}
-		this.nodes = newNodes;
+		nodes.remove(nodesToRemove);
 		
-		List<IEdge<?>> newEdges = new LinkedList<IEdge<?>>();
-		
-		for (IEdge<?> e : edges) {
-			if (g.getEdges().contains(e)) {
-				newEdges.add(e);
+		List<Edge<?>> edgesToRemove = new LinkedList<Edge<?>>();
+		for (Edge<?> e : edges) {
+			if (!g.getEdges().contains(e)) {
+				edgesToRemove.add(e);
 			}
 		}
 		
-		this.edges = newEdges;
+		edges.remove(edgesToRemove);
 		return this;
 	}
 
@@ -109,7 +99,7 @@ public class Graph implements IGraph {
 	 * @see com.hellblazer.CoRE.meta.graph.IGraph#addNode(com.hellblazer.CoRE.meta.graph.INode)
 	 */
 	@Override
-	public IGraph addNode(INode<?> n) {
+	public Graph addNode(Node<?> n) {
 		this.nodes.add(n);
 		return this;
 	}
@@ -118,7 +108,7 @@ public class Graph implements IGraph {
 	 * @see com.hellblazer.CoRE.meta.graph.IGraph#addEdge(com.hellblazer.CoRE.meta.graph.IEdge)
 	 */
 	@Override
-	public IGraph addEdge(IEdge<?> e) {
+	public Graph addEdge(Edge<?> e) {
 		this.edges.add(e);
 		return this;
 	}

@@ -4,7 +4,7 @@ package com.hellblazer.CoRE.meta.graph;
  * @author hparry
  *
  */
-public interface INode<T>{
+public interface Node<T>{
 
 	T getNode();
 

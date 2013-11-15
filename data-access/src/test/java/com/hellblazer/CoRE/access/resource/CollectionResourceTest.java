@@ -139,39 +139,39 @@ public class CollectionResourceTest extends DatabaseTest {
     	assertTrue(id == graph.getUpdatedBy().getId());
     }
     
-    @Test
-    public void testGet() throws JsonProcessingException {
-    	resource = new CollectionResource(emf);
-    	Resource core = new Resource("hparry", "test resource");
-    	core.setUpdatedBy(core);
-    	
-    	Product p = new Product("Product", null, core);
-    	Product q = new Product("Other Product", null, core);
-    	p = (Product) resource.post(p);
-    	q = (Product) resource.post(q);
-    	
-    	Relationship owns = new Relationship("owns", null, core);
-    	Relationship ownedBy = new Relationship("ownedBy", null, core);
-    	owns.setInverse(ownedBy);
-    	ownedBy.setInverse(owns);
-    	owns = (Relationship) resource.post(owns);
-   
-    	
-    	ProductNetwork pn = new ProductNetwork(p, owns, q, core);
-    	ProductNetwork pnI = new ProductNetwork(q, ownedBy, p, core);
-    	
-    	resource.post(pn);
-    	resource.post(pnI);
-    	LinkedList<Relationship> rels = new LinkedList<Relationship>();
-    	rels.add(owns);
-    	List<Ruleform> nodes = new LinkedList<Ruleform>();
-    	nodes.add(p);
-    	GraphQuery ng = resource.getNetwork(nodes, rels);
-    	
-    	assertEquals(ng.getNodes().get(0).getId(), p.getId());
-    	assertEquals(2, ng.getNodes().size());
-    	assertNotNull(ng.getRelationships());
-    }
+//    @Test
+//    public void testGet() throws JsonProcessingException {
+//    	resource = new CollectionResource(emf);
+//    	Resource core = new Resource("hparry", "test resource");
+//    	core.setUpdatedBy(core);
+//    	
+//    	Product p = new Product("Product", null, core);
+//    	Product q = new Product("Other Product", null, core);
+//    	p = (Product) resource.post(p);
+//    	q = (Product) resource.post(q);
+//    	
+//    	Relationship owns = new Relationship("owns", null, core);
+//    	Relationship ownedBy = new Relationship("ownedBy", null, core);
+//    	owns.setInverse(ownedBy);
+//    	ownedBy.setInverse(owns);
+//    	owns = (Relationship) resource.post(owns);
+//   
+//    	
+//    	ProductNetwork pn = new ProductNetwork(p, owns, q, core);
+//    	ProductNetwork pnI = new ProductNetwork(q, ownedBy, p, core);
+//    	
+//    	resource.post(pn);
+//    	resource.post(pnI);
+//    	LinkedList<Relationship> rels = new LinkedList<Relationship>();
+//    	rels.add(owns);
+//    	List<Ruleform> nodes = new LinkedList<Ruleform>();
+//    	nodes.add(p);
+//    	GraphQuery ng = resource.getNetwork(nodes, rels);
+//    	
+//    	assertEquals(ng.getNodes().get(0).getId(), p.getId());
+//    	assertEquals(2, ng.getNodes().size());
+//    	assertNotNull(ng.getRelationships());
+//    }
     
 
 }

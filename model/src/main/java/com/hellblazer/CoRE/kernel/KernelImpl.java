@@ -52,6 +52,7 @@ public class KernelImpl implements Kernel {
     private final Product      notApplicableProduct;
     private final Product      originalProduct;
     private final Product      sameProduct;
+    private final Product	   workspace;
 
     private final Location     anyLocation;
     private final Location     location;
@@ -120,6 +121,7 @@ public class KernelImpl implements Kernel {
         originalProduct = find(em, WellKnownProduct.ORIGINAL);
         sameProduct = find(em, WellKnownProduct.SAME);
         notApplicableProduct = find(em, WellKnownProduct.NOT_APPLICABLE);
+        workspace = find(em, WellKnownProduct.WORKSPACE);
 
         location = find(em, WellKnownLocation.LOCATION);
         anyLocation = find(em, WellKnownLocation.ANY);
@@ -638,6 +640,11 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getVersionOf() {
         return versionOf;
+    }
+    
+    @Override
+    public Product getWorkspace() {
+    	return workspace;
     }
 
     /* (non-Javadoc)

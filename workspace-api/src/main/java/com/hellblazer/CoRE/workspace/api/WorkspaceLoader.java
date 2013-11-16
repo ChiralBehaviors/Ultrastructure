@@ -89,6 +89,7 @@ public class WorkspaceLoader {
     public Product              salesTax;
     public Product              ship;
     public Product              nonExempt;
+    public Product				workspace;
     private Product             anyProduct;
     private Product             sameProduct;
 
@@ -138,6 +139,7 @@ public class WorkspaceLoader {
         sameRelationship = kernel.getSameRelationship();
         anyRelationship = kernel.getAnyRelationship();
         notApplicableRelationship = kernel.getNotApplicableRelationship();
+        workspace = kernel.getWorkspace();
         unset = kernel.getUnset();
     }
 

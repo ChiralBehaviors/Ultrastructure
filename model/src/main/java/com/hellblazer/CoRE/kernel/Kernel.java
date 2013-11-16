@@ -150,4 +150,6 @@ public interface Kernel {
 
     Relationship getVersionOf();
 
+	Product getWorkspace();
+
 }

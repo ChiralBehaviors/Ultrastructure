@@ -262,6 +262,8 @@ public interface WellKnownObject {
         }
     }
 
+	
+
     public static enum WellKnownProduct implements WellKnownObject {
         ANY() {
 
@@ -342,6 +344,20 @@ public interface WellKnownObject {
                 return WellKnownObject.SAME;
             }
 
+        },
+        WORKSPACE() {
+        	@Override
+            public String description() {
+                return "Special product that parents the network of objects that make a workspace";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.WORKSPACE;
+            }
         };
 
         /* (non-Javadoc)
@@ -1472,6 +1488,7 @@ public interface WellKnownObject {
     String SUPER_USER                = "CoRE Super User";
     String UNSET                     = "(UNSET)";
     String VERSION_OF                = "version-of";
+    String WORKSPACE 				 = "Workspace";
 
     /**
      * @return the descriptions of the wko

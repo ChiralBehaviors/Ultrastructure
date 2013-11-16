@@ -9,7 +9,7 @@
         id="1"
         author="hparry">
         <sql> CREATE INDEX relationship_fkey_idx ON
-            ruleform.combined_authorizations USING btree (relationship ); </sql>
+            ruleform.access_authorizations USING btree (relationship ); </sql>
         <rollback>
             <dropIndex tableName="ruleform.attribute_meta_attribute"
                 indexName="attribute_attribute_attribute_value_fkey_idx"/>

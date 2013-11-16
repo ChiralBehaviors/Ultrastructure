@@ -7,12 +7,13 @@
 
     <changeSet id="1" author="hparry">
         <sql><![CDATA[
-            CREATE TABLE ruleform.combined_authorizations
+            CREATE TABLE ruleform.access_authorizations
                 (
                   id bigserial NOT NULL,
                   product1 bigint,
                   resource1 bigint,
                   location1 bigint,
+                  authorization_type character varying NOT NULL,
                   relationship bigint NOT NULL,
                   product2 bigint,
                   resource2 bigint,
@@ -20,6 +21,7 @@
                   parent_transitive_relationship bigint,
                   child_transitive_relationship bigint,
                   description character varying,
+                  research bigint,
                   notes character varying,
                   updated_by bigint NOT NULL,
                   update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
@@ -28,18 +30,21 @@
                   CONSTRAINT authorization_updated_by_fkey FOREIGN KEY (updated_by)
                       REFERENCES ruleform.resource (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT relationship_research_fkey FOREIGN KEY (research)
+                      REFERENCES ruleform.research (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT parent_not_null CHECK (ruleform.null_zero(product1) + ruleform.null_zero(resource1) + ruleform.null_zero(location1) = 1),
                   CONSTRAINT child_not_null CHECK (ruleform.null_zero(product2) + ruleform.null_zero(resource2) + ruleform.null_zero(location2) = 1)
                 )
                 WITH (
                   OIDS=FALSE
                 );
-                COMMENT ON TABLE ruleform.combined_authorizations
+                COMMENT ON TABLE ruleform.access_authorizations
                       IS 'Authorizations to join networks of ruleforms';
             ]]>
         </sql>
         <rollback>
-            <dropTable tableName="ruleform.attribute"/>
+            <dropTable tableName="ruleform.access_authorizations"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

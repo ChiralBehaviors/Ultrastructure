@@ -7,8 +7,8 @@
 
     <changeSet id="1"
         author="hparry">
-        <sql> CREATE TRIGGER combined_authorizations_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.combined_authorizations FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER combined_authorizations ON ruleform.combined_authorizations; </rollback>
+        <sql> CREATE TRIGGER access_authorizations_update_date BEFORE INSERT OR UPDATE ON
+            ruleform.access_authorizations FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
+        <rollback> DROP TRIGGER access_authorizations ON ruleform.access_authorizations; </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -150,7 +151,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                  + " WHERE exist.parent IS NULL "
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "product_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_network_id_seq", sequenceName = "product_network_id_seq", allocationSize = 1)
 @NamedQueries({
@@ -159,7 +160,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                             + "and n.inferred = FALSE "
                                                                             + "and n.relationship.preferred = FALSE "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-               
+
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n") })
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
@@ -305,10 +306,12 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null)
+        if (child != null) {
             child = (Product) child.manageEntity(em, knownObjects);
-        if (parent != null)
+        }
+        if (parent != null) {
             parent = (Product) parent.manageEntity(em, knownObjects);
+        }
         super.traverseForeignKeys(em, knownObjects);
 
     }

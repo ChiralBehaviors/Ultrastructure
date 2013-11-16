@@ -36,60 +36,62 @@ import com.hellblazer.CoRE.resource.Resource;
 @Entity
 @DiscriminatorValue(AccessAuthorization.LOCATION_RESOURCE)
 public class LocationResourceAccessAuthorization extends
-		LocationAccessAuthorization {
-	private static final long serialVersionUID = 1L;
+        LocationAccessAuthorization {
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "resource2")
-	private Resource child;
+    @ManyToOne
+    @JoinColumn(name = "resource2")
+    private Resource          child;
 
-	public LocationResourceAccessAuthorization() {
-		super();
-		setAuthorizationType(AccessAuthorization.LOCATION_RESOURCE);
-	}
+    public LocationResourceAccessAuthorization() {
+        super();
+        setAuthorizationType(AccessAuthorization.LOCATION_RESOURCE);
+    }
 
-	/**
-	 * @param Resource
-	 * @param Relationship
-	 * @param Product
-	 * @param updatedBy
-	 */
-	public LocationResourceAccessAuthorization(Location parent,
-			Relationship relationship, Resource child, Resource updatedBy) {
-		this();
-		setParent(parent);
-		setRelationship(relationship);
-		setChild(child);
-		setUpdatedBy(updatedBy);
-	}
+    /**
+     * @param Resource
+     * @param Relationship
+     * @param Product
+     * @param updatedBy
+     */
+    public LocationResourceAccessAuthorization(Location parent,
+                                               Relationship relationship,
+                                               Resource child,
+                                               Resource updatedBy) {
+        this();
+        setParent(parent);
+        setRelationship(relationship);
+        setChild(child);
+        setUpdatedBy(updatedBy);
+    }
 
-	/**
-	 * @return the child
-	 */
-	public Resource getChild() {
-		return child;
-	}
+    /**
+     * @return the child
+     */
+    public Resource getChild() {
+        return child;
+    }
 
-	/**
-	 * @param child
-	 *            the child to set
-	 */
-	public void setChild(Resource child) {
-		this.child = child;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-	 * EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (child != null) {
-			this.child = (Resource) child.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
-	}
+    /**
+     * @param child
+     *            the child to set
+     */
+    public void setChild(Resource child) {
+        this.child = child;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (child != null) {
+            child = (Resource) child.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 }

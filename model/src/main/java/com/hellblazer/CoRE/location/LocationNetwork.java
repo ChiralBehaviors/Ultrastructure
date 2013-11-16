@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -142,7 +143,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                  + " WHERE exist.parent IS NULL "
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "location_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_network_id_seq", sequenceName = "location_network_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n") })
@@ -160,7 +161,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     public static final String INSERT_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS = "locationNetwork"
-            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 
     public static List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
@@ -250,10 +251,12 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null)
+        if (child != null) {
             child = (Location) child.manageEntity(em, knownObjects);
-        if (parent != null)
+        }
+        if (parent != null) {
             parent = (Location) parent.manageEntity(em, knownObjects);
+        }
         super.traverseForeignKeys(em, knownObjects);
 
     }

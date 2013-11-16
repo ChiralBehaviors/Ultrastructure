@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product;
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,44 +28,45 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
 
 /**
  * @author hparry
- *
+ * 
  */
-@javax.persistence.Entity
+@Entity
 public abstract class ProductAccessAuthorization extends AccessAuthorization {
 
-	private static final long serialVersionUID = 1L;
-	
-	@ManyToOne
-	@JoinColumn(name = "product1")
-	private Product parent;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @return the parent
-	 */
-	public Product getParent() {
-		return parent;
-	}
+    @ManyToOne
+    @JoinColumn(name = "product1")
+    private Product           parent;
 
-	/**
-	 * @param parent the parent to set
-	 */
-	public void setParent(Product parent) {
-		this.parent = parent;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-	 * EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (parent != null) {
-			this.parent = (Product) parent.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
-	}
+    /**
+     * @return the parent
+     */
+    public Product getParent() {
+        return parent;
+    }
+
+    /**
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(Product parent) {
+        this.parent = parent;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (parent != null) {
+            parent = (Product) parent.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 
 }

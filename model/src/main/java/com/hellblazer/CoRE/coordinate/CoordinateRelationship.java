@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.coordinate;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,7 +38,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the coordinate_relationship database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "coordinate_relationship", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_relationship_id_seq", sequenceName = "coordinate_relationship_id_seq")
 public class CoordinateRelationship extends Ruleform {
@@ -141,6 +142,7 @@ public class CoordinateRelationship extends Ruleform {
     public void setRelationship(Relationship relationship1) {
         relationship = relationship1;
     }
+
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
@@ -149,19 +151,32 @@ public class CoordinateRelationship extends Ruleform {
         subordinateCoordinateKind = coordinateKind2;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-		if (attributeRelationship != null) attributeRelationship = (Relationship) attributeRelationship.manageEntity(em, knownObjects);
-		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
-		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
-		if (subordinateCoordinateKind != null) subordinateCoordinateKind = (CoordinateKind) subordinateCoordinateKind.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (attribute != null) {
+            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+        }
+        if (attributeRelationship != null) {
+            attributeRelationship = (Relationship) attributeRelationship.manageEntity(em,
+                                                                                      knownObjects);
+        }
+        if (kind != null) {
+            kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+        }
+        if (relationship != null) {
+            relationship = (Relationship) relationship.manageEntity(em,
+                                                                    knownObjects);
+        }
+        if (subordinateCoordinateKind != null) {
+            subordinateCoordinateKind = (CoordinateKind) subordinateCoordinateKind.manageEntity(em,
+                                                                                                knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

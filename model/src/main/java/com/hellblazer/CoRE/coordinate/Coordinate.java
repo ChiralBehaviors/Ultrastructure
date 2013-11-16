@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -52,7 +53,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "coordinate", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_id_seq", sequenceName = "coordinate_id_seq")
 @NamedQueries({ @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from CoordinateAttribute as ca join ca.coordinate.kind.definitionRules as def where ca.coordinate = :coordinate and ca.attribute = def.attribute order by def.sequenceNumber") })
@@ -245,14 +246,16 @@ public class Coordinate extends ExistentialRuleform implements
         this.updatedBy = updatedBy;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (kind != null) {
+            kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

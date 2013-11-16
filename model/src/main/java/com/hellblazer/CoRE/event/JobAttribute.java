@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.event;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,7 +40,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the job_attribute database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "job_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "job_attribute_id_seq", sequenceName = "job_attribute_id_seq")
 public class JobAttribute extends AttributeValue<Job> {
@@ -165,14 +166,16 @@ public class JobAttribute extends AttributeValue<Job> {
         this.job = job;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (job != null) job = (Job) job.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (job != null) {
+            job = (Job) job.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

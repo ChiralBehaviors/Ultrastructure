@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.event;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,7 +40,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the protocol_attribute database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "protocol_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_attribute_id_seq", sequenceName = "protocol_attribute_id_seq")
 public class ProtocolAttribute extends AttributeValue<Protocol> {
@@ -193,14 +194,16 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
         this.protocol = protocol;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (protocol != null) protocol = (Protocol) protocol.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (protocol != null) {
+            protocol = (Protocol) protocol.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

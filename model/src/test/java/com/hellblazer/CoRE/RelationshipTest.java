@@ -35,6 +35,29 @@ import com.hellblazer.CoRE.test.DatabaseTest;
 
 public class RelationshipTest extends DatabaseTest {
 
+    @Before
+    public void initData() {
+        beginTransaction();
+        Resource core = new Resource("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
+
+        Relationship massList = new Relationship(
+                                                 "mass-list",
+                                                 "A is a member of the mass list B",
+                                                 core);
+        em.persist(massList);
+
+        Relationship massListOf = new Relationship(
+                                                   "mass-list-of",
+                                                   "A is a mass list that has B as a member",
+                                                   core, massList);
+        em.persist(massListOf);
+
+        commitTransaction();
+        em.clear();
+    }
+
     @Test
     public void setInverseTest() {
         Relationship r = new Relationship();
@@ -106,28 +129,5 @@ public class RelationshipTest extends DatabaseTest {
 
         //dao.flush();  
         commitTransaction();
-    }
-
-    @Before
-    public void initData() {
-        beginTransaction();
-        Resource core = new Resource("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
-
-        Relationship massList = new Relationship(
-                                                 "mass-list",
-                                                 "A is a member of the mass list B",
-                                                 core);
-        em.persist(massList);
-
-        Relationship massListOf = new Relationship(
-                                                   "mass-list-of",
-                                                   "A is a mass list that has B as a member",
-                                                   core, massList);
-        em.persist(massListOf);
-
-        commitTransaction();
-        em.clear();
     }
 }

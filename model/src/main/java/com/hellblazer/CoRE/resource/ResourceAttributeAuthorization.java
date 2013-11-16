@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.resource;
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,7 +39,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "resource_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "resource_attribute_authorization_id_seq", sequenceName = "resource_attribute_authorization_id_seq")
 public class ResourceAttributeAuthorization extends
@@ -127,14 +128,16 @@ public class ResourceAttributeAuthorization extends
         this.id = id;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (classifier != null) classifier = (Resource) classifier.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (classifier != null) {
+            classifier = (Resource) classifier.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

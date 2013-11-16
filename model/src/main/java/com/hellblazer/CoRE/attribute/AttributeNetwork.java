@@ -32,6 +32,7 @@ import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUF
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -142,7 +143,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                  + " WHERE exist.parent IS NULL "
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "attribute_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
 @NamedQueries({ @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
@@ -251,11 +252,13 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null)
+        if (child != null) {
             child = (Attribute) child.manageEntity(em, knownObjects);
+        }
 
-        if (parent != null)
+        if (parent != null) {
             parent = (Attribute) parent.manageEntity(em, knownObjects);
+        }
         super.traverseForeignKeys(em, knownObjects);
 
     }

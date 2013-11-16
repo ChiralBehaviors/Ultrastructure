@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.resource;
 import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,7 +33,7 @@ import com.hellblazer.CoRE.product.Product;
  * @author Halloran Parry
  * 
  */
-@javax.persistence.Entity
+@Entity
 @DiscriminatorValue("product")
 public class ResourceRelationshipProductAuthorization extends
         ResourceAuthorization {
@@ -48,20 +49,22 @@ public class ResourceRelationshipProductAuthorization extends
     }
 
     /**
-	 * @param user
-	 * @param owns
-	 * @param channel1
-	 * @param user2
-	 */
-	public ResourceRelationshipProductAuthorization(Resource resource,
-			Relationship rel, Product product, Resource updatedBy) {
-		this.resource = resource;
-		this.product = product;
-		this.relationship = rel;
-		setUpdatedBy(updatedBy);
-	}
+     * @param user
+     * @param owns
+     * @param channel1
+     * @param user2
+     */
+    public ResourceRelationshipProductAuthorization(Resource resource,
+                                                    Relationship rel,
+                                                    Product product,
+                                                    Resource updatedBy) {
+        this.resource = resource;
+        this.product = product;
+        relationship = rel;
+        setUpdatedBy(updatedBy);
+    }
 
-	/**
+    /**
      * @return the product
      */
     public Product getProduct() {
@@ -76,15 +79,17 @@ public class ResourceRelationshipProductAuthorization extends
         this.product = product;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

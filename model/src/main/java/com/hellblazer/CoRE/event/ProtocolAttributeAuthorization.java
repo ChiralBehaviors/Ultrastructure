@@ -30,6 +30,7 @@ import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUE
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -76,7 +77,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                  + "WHERE ea.groupingResource = :groupingResource"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProtocolAttributeAuthorization ea "
                                                                                                + "WHERE ea.groupingResource = :groupingResource AND ea.authorizedAttribute = :attribute") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "protocol_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_attribute_authorization_id_seq", sequenceName = "protocol_attribute_authorization_id_seq")
 public class ProtocolAttributeAuthorization extends AttributeAuthorization {
@@ -274,24 +275,49 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
         this.serviceClassification = serviceClassification;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (deliverFrom != null) deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
-		if (deliverFromClassification != null) deliverFromClassification = (Relationship) deliverFromClassification.manageEntity(em, knownObjects);
-		if (deliverTo != null) deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
-		if (deliverToClassification != null) deliverToClassification = (Relationship) deliverToClassification.manageEntity(em, knownObjects);
-		if (productClassification != null) productClassification = (Relationship) productClassification.manageEntity(em, knownObjects);
-		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
-		if (requester != null) requester = (Resource) requester.manageEntity(em, knownObjects);
-		if (requesterClassification != null) requesterClassification = (Relationship) requesterClassification.manageEntity(em, knownObjects);
-		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
-		if (serviceClassification != null) serviceClassification = (Relationship) serviceClassification.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (deliverFrom != null) {
+            deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
+        }
+        if (deliverFromClassification != null) {
+            deliverFromClassification = (Relationship) deliverFromClassification.manageEntity(em,
+                                                                                              knownObjects);
+        }
+        if (deliverTo != null) {
+            deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
+        }
+        if (deliverToClassification != null) {
+            deliverToClassification = (Relationship) deliverToClassification.manageEntity(em,
+                                                                                          knownObjects);
+        }
+        if (productClassification != null) {
+            productClassification = (Relationship) productClassification.manageEntity(em,
+                                                                                      knownObjects);
+        }
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        if (requester != null) {
+            requester = (Resource) requester.manageEntity(em, knownObjects);
+        }
+        if (requesterClassification != null) {
+            requesterClassification = (Relationship) requesterClassification.manageEntity(em,
+                                                                                          knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        if (serviceClassification != null) {
+            serviceClassification = (Relationship) serviceClassification.manageEntity(em,
+                                                                                      knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

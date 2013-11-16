@@ -22,6 +22,7 @@ import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -48,7 +49,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "relationship", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "relationship_id_seq", sequenceName = "relationship_id_seq", allocationSize = 1)
 @NamedQueries({ @NamedQuery(name = "relationship" + FIND_BY_NAME_SUFFIX, query = "select e from Relationship e where e.name = :name") })
@@ -180,15 +181,17 @@ public class Relationship extends ExistentialRuleform {
         this.preferred = preferred;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (inverse != null) inverse = (Relationship) inverse.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (inverse != null) {
+            inverse = (Relationship) inverse.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

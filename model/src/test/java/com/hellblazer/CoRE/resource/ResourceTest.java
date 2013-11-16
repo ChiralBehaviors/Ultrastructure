@@ -34,6 +34,19 @@ import com.hellblazer.CoRE.test.DatabaseTest;
 
 public class ResourceTest extends DatabaseTest {
 
+    @Before
+    public void initData() {
+        beginTransaction();
+        Resource core = new Resource("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
+
+        Resource foo = new Resource("Foo", "More Foo", core);
+        em.persist(foo);
+        commitTransaction();
+        em.clear();
+    }
+
     @Test
     public void testEquals() {
         beginTransaction();
@@ -97,18 +110,5 @@ public class ResourceTest extends DatabaseTest {
         em.persist(auth);
         em.getTransaction().commit();
 
-    }
-
-    @Before
-    public void initData() {
-        beginTransaction();
-        Resource core = new Resource("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
-
-        Resource foo = new Resource("Foo", "More Foo", core);
-        em.persist(foo);
-        commitTransaction();
-        em.clear();
     }
 }

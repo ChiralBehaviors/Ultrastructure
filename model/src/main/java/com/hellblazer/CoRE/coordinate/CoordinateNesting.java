@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.coordinate;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the coordinate_nesting database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "coordinate_nesting", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_nesting_id_seq", sequenceName = "coordinate_nesting_id_seq")
 public class CoordinateNesting extends Ruleform {
@@ -70,7 +71,6 @@ public class CoordinateNesting extends Ruleform {
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
-
 
     public CoordinateNesting() {
     }
@@ -147,18 +147,28 @@ public class CoordinateNesting extends Ruleform {
         this.sequenceNumber = sequenceNumber;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-		if (innerAttribute != null) innerAttribute = (Attribute) innerAttribute.manageEntity(em, knownObjects);
-		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
-		if (outerAttribute != null) outerAttribute = (Attribute) outerAttribute.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (attribute != null) {
+            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+        }
+        if (innerAttribute != null) {
+            innerAttribute = (Attribute) innerAttribute.manageEntity(em,
+                                                                     knownObjects);
+        }
+        if (kind != null) {
+            kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+        }
+        if (outerAttribute != null) {
+            outerAttribute = (Attribute) outerAttribute.manageEntity(em,
+                                                                     knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

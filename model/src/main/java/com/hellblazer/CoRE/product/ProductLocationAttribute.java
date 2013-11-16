@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.product;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,7 +42,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @SequenceGenerator(schema = "ruleform", name = "product_location_attribute_id_seq", sequenceName = "product_location_attribute_id_seq")
 @Table(name = "product_location_attribute", schema = "ruleform")
 public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
@@ -196,16 +197,23 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         resource = resource2;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (productLocation != null) productLocation = (ProductLocation) productLocation.manageEntity(em, knownObjects);
-		if (productValue != null) productValue = (Product) productValue.manageEntity(em, knownObjects);
-		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (productLocation != null) {
+            productLocation = (ProductLocation) productLocation.manageEntity(em,
+                                                                             knownObjects);
+        }
+        if (productValue != null) {
+            productValue = (Product) productValue.manageEntity(em, knownObjects);
+        }
+        if (resource != null) {
+            resource = (Resource) resource.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

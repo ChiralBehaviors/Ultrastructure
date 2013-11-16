@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.coordinate;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the coordinate_kind_definition database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "coordinate_kind_definition", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_kind_definition_id_seq", sequenceName = "coordinate_kind_definition_id_seq")
 public class CoordinateKindDefinition extends Ruleform {
@@ -55,7 +56,6 @@ public class CoordinateKindDefinition extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "kind")
     private CoordinateKind    kind;
-
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
@@ -95,7 +95,6 @@ public class CoordinateKindDefinition extends Ruleform {
         return kind;
     }
 
-
     public Integer getSequenceNumber() {
         return sequenceNumber;
     }
@@ -103,7 +102,6 @@ public class CoordinateKindDefinition extends Ruleform {
     public CoordinateKind getSubordinateCoordinateKind() {
         return subordinateCoordinateKind;
     }
-
 
     public void setAttribute(Attribute attribute) {
         this.attribute = attribute;
@@ -118,7 +116,6 @@ public class CoordinateKindDefinition extends Ruleform {
         kind = coordinateKind2;
     }
 
-
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
@@ -127,18 +124,24 @@ public class CoordinateKindDefinition extends Ruleform {
         subordinateCoordinateKind = coordinateKind1;
     }
 
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (attribute != null) {
+            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+        }
+        if (kind != null) {
+            kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
+        }
+        if (subordinateCoordinateKind != null) {
+            subordinateCoordinateKind = (CoordinateKind) subordinateCoordinateKind.manageEntity(em,
+                                                                                                knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-		if (kind != null) kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
-		if (subordinateCoordinateKind != null) subordinateCoordinateKind = (CoordinateKind) subordinateCoordinateKind.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    }
 
 }

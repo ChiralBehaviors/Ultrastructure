@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.resource.ResourceAttribute.GET_ATTRIBUTE;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,7 +45,7 @@ import com.hellblazer.CoRE.attribute.Unit;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "resource_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "resource_attribute_id_seq", sequenceName = "resource_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from ResourceAttribute ra where ra.resource = :resource and ra.attribute = :attribute") })
@@ -174,14 +175,16 @@ public class ResourceAttribute extends AttributeValue<Resource> {
         resource = resource2;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (resource != null) {
+            resource = (Resource) resource.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

@@ -69,6 +69,7 @@
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization/trigger-sourcing_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol_attribute_authorization/trigger-protocol_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/access_authorizations/trigger-access_authorizations_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/workspace_authorizations/trigger-workspace_authorizations_update_date.xml"/>
     
     
 </databaseChangeLog>

@@ -20,6 +20,7 @@ import static com.hellblazer.CoRE.product.ProductLocationNetwork.LOCATION_RULES;
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,7 +42,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "product_location_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_location_network_id_seq", sequenceName = "product_location_network_id_seq")
 @NamedQueries({ @NamedQuery(name = LOCATION_RULES, query = "select n from ProductLocationNetwork n where n.product = :product and n.coordinate.kind = :coordinateKind") })
@@ -132,17 +133,26 @@ public class ProductLocationNetwork extends Ruleform {
         resource = resource2;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (contextualProduct != null) contextualProduct = (Product) contextualProduct.manageEntity(em, knownObjects);
-		if (coordinate != null) coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
-		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
-		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (contextualProduct != null) {
+            contextualProduct = (Product) contextualProduct.manageEntity(em,
+                                                                         knownObjects);
+        }
+        if (coordinate != null) {
+            coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
+        }
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        if (resource != null) {
+            resource = (Resource) resource.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.coordinate;
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,7 +39,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "coordinate_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_attribute_authorization_id_seq", sequenceName = "coordinate_attribute_authorization_id_seq")
 public class CoordinateAttributeAuthorization extends AttributeAuthorization {
@@ -112,15 +113,20 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
         this.resource = resource;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (classificationCoordinate != null) classificationCoordinate = (Coordinate) classificationCoordinate.manageEntity(em, knownObjects);
-		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (classificationCoordinate != null) {
+            classificationCoordinate = (Coordinate) classificationCoordinate.manageEntity(em,
+                                                                                          knownObjects);
+        }
+        if (resource != null) {
+            resource = (Resource) resource.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

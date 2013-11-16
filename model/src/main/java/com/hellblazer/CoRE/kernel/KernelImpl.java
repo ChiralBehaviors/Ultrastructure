@@ -191,19 +191,19 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyProduct()
-     */
-    @Override
-    public Product getAnyProduct() {
-        return anyProduct;
-    }
-
-    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyLocation()
      */
     @Override
     public Location getAnyLocation() {
         return anyLocation;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyProduct()
+     */
+    @Override
+    public Product getAnyProduct() {
+        return anyProduct;
     }
 
     /* (non-Javadoc)
@@ -281,14 +281,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getDevelopedBy() {
         return developedBy;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getProduct()
-     */
-    @Override
-    public Product getProduct() {
-        return product;
     }
 
     /* (non-Javadoc)
@@ -462,22 +454,6 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * @return the ownedBy
-     */
-    @Override
-    public Relationship getOwnedBy() {
-        return ownedBy;
-    }
-
-    /**
-     * @return the owns
-     */
-    @Override
-    public Relationship getOwns() {
-        return owns;
-    }
-
-    /**
      * @return the notApplicableAttribute
      */
     @Override
@@ -486,19 +462,19 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * @return the notApplicableProduct
-     */
-    @Override
-    public Product getNotApplicableProduct() {
-        return notApplicableProduct;
-    }
-
-    /**
      * @return the notApplicableLocation
      */
     @Override
     public Location getNotApplicableLocation() {
         return notApplicableLocation;
+    }
+
+    /**
+     * @return the notApplicableProduct
+     */
+    @Override
+    public Product getNotApplicableProduct() {
+        return notApplicableProduct;
     }
 
     /**
@@ -526,19 +502,19 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalProduct()
-     */
-    @Override
-    public Product getOriginalProduct() {
-        return originalProduct;
-    }
-
-    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalLocation()
      */
     @Override
     public Location getOriginalLocation() {
         return originalLocation;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalProduct()
+     */
+    @Override
+    public Product getOriginalProduct() {
+        return originalProduct;
     }
 
     /* (non-Javadoc)
@@ -549,9 +525,33 @@ public class KernelImpl implements Kernel {
         return originalResource;
     }
 
+    /**
+     * @return the ownedBy
+     */
+    @Override
+    public Relationship getOwnedBy() {
+        return ownedBy;
+    }
+
+    /**
+     * @return the owns
+     */
+    @Override
+    public Relationship getOwns() {
+        return owns;
+    }
+
     @Override
     public Attribute getPasswordHashAttribute() {
         return passwordHashAttribute;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getProduct()
+     */
+    @Override
+    public Product getProduct() {
+        return product;
     }
 
     /* (non-Javadoc)
@@ -584,6 +584,14 @@ public class KernelImpl implements Kernel {
     @Override
     public Resource getResource() {
         return resource;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.Kernel#getSameLocation()
+     */
+    @Override
+    public Location getSameLocation() {
+        return sameLocation;
     }
 
     /**
@@ -647,14 +655,6 @@ public class KernelImpl implements Kernel {
     	return workspace;
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Kernel#getSameLocation()
-     */
-    @Override
-    public Location getSameLocation() {
-        return sameLocation;
-    }
-
     /**
      * 
      * @param wko
@@ -667,19 +667,19 @@ public class KernelImpl implements Kernel {
     /**
      * 
      * @param wko
-     * @return the {@link Product} corresponding to the well known object
+     * @return the {@link Location} corresponding to the well known object
      */
-    Product find(EntityManager em, WellKnownProduct wko) {
-        return em.find(Product.class, wko.id());
+    Location find(EntityManager em, WellKnownLocation wko) {
+        return em.find(Location.class, wko.id());
     }
 
     /**
      * 
      * @param wko
-     * @return the {@link Location} corresponding to the well known object
+     * @return the {@link Product} corresponding to the well known object
      */
-    Location find(EntityManager em, WellKnownLocation wko) {
-        return em.find(Location.class, wko.id());
+    Product find(EntityManager em, WellKnownProduct wko) {
+        return em.find(Product.class, wko.id());
     }
 
     /**

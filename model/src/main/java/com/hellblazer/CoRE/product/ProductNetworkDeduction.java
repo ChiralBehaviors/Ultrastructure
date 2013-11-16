@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,7 +36,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the product_network_deduction database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "product_network_deduction", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_network_deduction_id_seq", sequenceName = "product_network_deduction_id_seq")
 public class ProductNetworkDeduction implements Serializable {

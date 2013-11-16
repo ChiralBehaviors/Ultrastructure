@@ -116,17 +116,26 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
-    
+
     /* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (authorizedRelationship != null) authorizedRelationship = (Relationship) authorizedRelationship.manageEntity(em, knownObjects);
-		if (classification != null) classification = (Relationship) classification.manageEntity(em, knownObjects);
-		if (groupingResource != null) groupingResource = (Resource) groupingResource.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (authorizedRelationship != null) {
+            authorizedRelationship = (Relationship) authorizedRelationship.manageEntity(em,
+                                                                                        knownObjects);
+        }
+        if (classification != null) {
+            classification = (Relationship) classification.manageEntity(em,
+                                                                        knownObjects);
+        }
+        if (groupingResource != null) {
+            groupingResource = (Resource) groupingResource.manageEntity(em,
+                                                                        knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

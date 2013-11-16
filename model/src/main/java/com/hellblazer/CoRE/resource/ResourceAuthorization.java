@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,7 +42,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "resource_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "resource_authorization_id_seq", sequenceName = "resource_authorization_id_seq")
@@ -59,12 +60,12 @@ public abstract class ResourceAuthorization extends Ruleform {
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship")
-    protected Relationship      relationship;
+    protected Relationship    relationship;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
     @JoinColumn(name = "resource")
-    protected Resource          resource;
+    protected Resource        resource;
 
     @Override
     public Long getId() {
@@ -106,16 +107,21 @@ public abstract class ResourceAuthorization extends Ruleform {
     public void setRuleformType(String ruleformType) {
         this.ruleformType = ruleformType;
     }
-    
+
     /* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (relationship != null) relationship = (Relationship) relationship.manageEntity(em, knownObjects);
-		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (relationship != null) {
+            relationship = (Relationship) relationship.manageEntity(em,
+                                                                    knownObjects);
+        }
+        if (resource != null) {
+            resource = (Resource) resource.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

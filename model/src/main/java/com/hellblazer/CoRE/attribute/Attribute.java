@@ -20,15 +20,16 @@ import static com.hellblazer.CoRE.attribute.Attribute.FIND_BY_NAME;
 import static com.hellblazer.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD;
+import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.attribute.Attribute.NAME_SEARCH;
 import static com.hellblazer.CoRE.attribute.Attribute.UNLINKED;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
-import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RELATIONSHIP;
 
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -79,10 +80,10 @@ import com.hellblazer.CoRE.resource.Resource;
                                                      + "FROM AttributeNetwork rn "
                                                      + "WHERE rn.parent = :parent "
                                                      + "AND rn.relationship = :relationship"),
-             @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AttributeNetwork n "
-						+ "WHERE n.parent = :attribute "
-						+ "AND n.relationship IN :relationships "
-						+ "ORDER by n.parent.name, n.relationship.name, n.child.name")})
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AttributeNetwork n "
+                                                                           + "WHERE n.parent = :attribute "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM attribute AS unlinked "
@@ -99,7 +100,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                 + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class),
                      // ?1 = :queryString, ?2 = :numberOfMatches
                      @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
-@javax.persistence.Entity
+@Entity
 @Table(name = "attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_id_seq", sequenceName = "attribute_id_seq")
 public class Attribute extends ExistentialRuleform implements
@@ -115,8 +116,8 @@ public class Attribute extends ExistentialRuleform implements
     public static final String          NAME_SEARCH                              = "attribute"
                                                                                    + NAME_SEARCH_SUFFIX;
     public static final String          UNLINKED                                 = "attribute.unlinked";
-    public static final String			GET_CHILD_RULES_BY_RELATIONSHIP			 = "attribute" 
-    																			   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String          GET_CHILD_RULES_BY_RELATIONSHIP          = "attribute"
+                                                                                   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long           serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute
@@ -197,23 +198,23 @@ public class Attribute extends ExistentialRuleform implements
      * @param name
      * @param description
      * @param updatedBy
-     */
-    public Attribute(String name, String description, ValueType valueType,
-                     Resource updatedBy) {
-        this(name, description, updatedBy);
-        this.valueType = valueType;
-    }
-
-    /**
-     * @param name
-     * @param description
-     * @param updatedBy
      * @param valueType
      */
     public Attribute(String name, String description, Resource updatedBy,
                      ValueType valueType) {
         super(name, description, updatedBy);
         setValueType(valueType);
+    }
+
+    /**
+     * @param name
+     * @param description
+     * @param updatedBy
+     */
+    public Attribute(String name, String description, ValueType valueType,
+                     Resource updatedBy) {
+        this(name, description, updatedBy);
+        this.valueType = valueType;
     }
 
     public void addAttribute(AttributeMetaAttribute attribute) {

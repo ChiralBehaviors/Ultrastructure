@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the job_chronology database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "job_chronology", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "job_chronology_id_seq", sequenceName = "job_chronology_id_seq")
 public class JobChronology extends Ruleform {

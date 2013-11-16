@@ -43,11 +43,14 @@ public class LocationProductAccessAuthorization extends
     @JoinColumn(name = "product2")
     private Product           child;
 
+    {
+        setAuthorizationType(AccessAuthorization.LOCATION_PRODUCT);
+    }
+
     private static final long serialVersionUID = 1L;
 
     public LocationProductAccessAuthorization() {
         super();
-        setAuthorizationType(AccessAuthorization.LOCATION_PRODUCT);
     }
 
     /**

@@ -44,9 +44,12 @@ public class ResourceProductAccessAuthorization extends
 
     private static final long serialVersionUID = 1L;
 
+    {
+        setAuthorizationType(AccessAuthorization.RESOURCE_PRODUCT);
+    }
+
     public ResourceProductAccessAuthorization() {
         super();
-        setAuthorizationType(AccessAuthorization.RESOURCE_PRODUCT);
     }
 
     /**

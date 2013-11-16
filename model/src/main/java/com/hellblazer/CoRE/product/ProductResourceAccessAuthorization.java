@@ -40,13 +40,16 @@ public class ProductResourceAccessAuthorization extends
 
     private static final long serialVersionUID = 1L;
 
+    {
+        setAuthorizationType(AccessAuthorization.PRODUCT_RESOURCE);
+    }
+
     @ManyToOne
     @JoinColumn(name = "resource2")
     private Resource          child;
 
     public ProductResourceAccessAuthorization() {
         super();
-        setAuthorizationType(AccessAuthorization.PRODUCT_LOCATION);
     }
 
     /**

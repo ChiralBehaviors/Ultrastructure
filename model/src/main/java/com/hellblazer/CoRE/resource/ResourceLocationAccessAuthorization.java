@@ -40,13 +40,16 @@ public class ResourceLocationAccessAuthorization extends
 
     private static final long serialVersionUID = 1L;
 
+    {
+        setAuthorizationType(AccessAuthorization.RESOURCE_LOCATION);
+    }
+
     @ManyToOne
     @JoinColumn(name = "location2")
     private Location          child;
 
     public ResourceLocationAccessAuthorization() {
         super();
-        setAuthorizationType(AccessAuthorization.RESOURCE_LOCATION);
     }
 
     /**

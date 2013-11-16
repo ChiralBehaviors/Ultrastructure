@@ -8,8 +8,8 @@
     <changeSet
         id="1"
         author="hparry">
-        <sql> CREATE INDEX access_authorizations_parent_fkey_idx ON
-            ruleform.access_authorizations USING btree (product1, resource1, location1 ); </sql>
+        <sql> CREATE INDEX access_authorization_parent_fkey_idx ON
+            ruleform.access_authorization USING btree (product1, resource1, location1 ); </sql>
         <rollback>
             <dropIndex tableName="ruleform.attribute_meta_attribute"
                 indexName="attribute_attribute_attribute_value_fkey_idx"/>

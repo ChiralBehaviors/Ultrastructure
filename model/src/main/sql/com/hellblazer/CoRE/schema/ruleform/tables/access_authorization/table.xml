@@ -7,7 +7,7 @@
 
     <changeSet id="1" author="hparry">
         <sql><![CDATA[
-            CREATE TABLE ruleform.access_authorizations
+            CREATE TABLE ruleform.access_authorization
                 (
                   id bigserial NOT NULL,
                   product1 bigint,
@@ -26,52 +26,52 @@
                   updated_by bigint NOT NULL,
                   update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
                   
-                  CONSTRAINT access_authorizations_pkey PRIMARY KEY (id ),
-                  CONSTRAINT access_authorizations_product1_fkey FOREIGN KEY (product1)
+                  CONSTRAINT access_authorization_pkey PRIMARY KEY (id ),
+                  CONSTRAINT access_authorization_product1_fkey FOREIGN KEY (product1)
                       REFERENCES ruleform.product (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_resource1_fkey FOREIGN KEY (resource1)
+                  CONSTRAINT access_authorization_resource1_fkey FOREIGN KEY (resource1)
                       REFERENCES ruleform.resource (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_location1_fkey FOREIGN KEY (location1)
+                  CONSTRAINT access_authorization_location1_fkey FOREIGN KEY (location1)
                       REFERENCES ruleform.location (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_relationship_fkey FOREIGN KEY (relationship)
+                  CONSTRAINT access_authorization_relationship_fkey FOREIGN KEY (relationship)
                       REFERENCES ruleform.relationship (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_product2_fkey FOREIGN KEY (product2)
+                  CONSTRAINT access_authorization_product2_fkey FOREIGN KEY (product2)
                       REFERENCES ruleform.product (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_resource2_fkey FOREIGN KEY (resource2)
+                  CONSTRAINT access_authorization_resource2_fkey FOREIGN KEY (resource2)
                       REFERENCES ruleform.resource (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_location2_fkey FOREIGN KEY (location2)
+                  CONSTRAINT access_authorization_location2_fkey FOREIGN KEY (location2)
                       REFERENCES ruleform.location (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_updated_by_fkey FOREIGN KEY (updated_by)
+                  CONSTRAINT access_authorization_updated_by_fkey FOREIGN KEY (updated_by)
                       REFERENCES ruleform.resource (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_parent_relationship_fkey FOREIGN KEY (parent_transitive_relationship)
+                  CONSTRAINT access_authorization_parent_relationship_fkey FOREIGN KEY (parent_transitive_relationship)
                       REFERENCES ruleform.relationship (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_child_relationship_fkey FOREIGN KEY (child_transitive_relationship)
+                  CONSTRAINT access_authorization_child_relationship_fkey FOREIGN KEY (child_transitive_relationship)
                       REFERENCES ruleform.relationship (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_research_fkey FOREIGN KEY (research)
+                  CONSTRAINT access_authorization_research_fkey FOREIGN KEY (research)
                       REFERENCES ruleform.research (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorizations_parent_not_null CHECK (ruleform.null_zero(product1) + ruleform.null_zero(resource1) + ruleform.null_zero(location1) = 1),
-                  CONSTRAINT access_authorizations_child_not_null CHECK (ruleform.null_zero(product2) + ruleform.null_zero(resource2) + ruleform.null_zero(location2) = 1)
+                  CONSTRAINT access_authorization_parent_not_null CHECK (ruleform.null_zero(product1) + ruleform.null_zero(resource1) + ruleform.null_zero(location1) = 1),
+                  CONSTRAINT access_authorization_child_not_null CHECK (ruleform.null_zero(product2) + ruleform.null_zero(resource2) + ruleform.null_zero(location2) = 1)
                 )
                 WITH (
                   OIDS=FALSE
                 );
-                COMMENT ON TABLE ruleform.access_authorizations
+                COMMENT ON TABLE ruleform.access_authorization
                       IS 'Authorizations to join networks of ruleforms';
             ]]>
         </sql>
         <rollback>
-            <dropTable tableName="ruleform.access_authorizations"/>
+            <dropTable tableName="ruleform.access_authorization"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

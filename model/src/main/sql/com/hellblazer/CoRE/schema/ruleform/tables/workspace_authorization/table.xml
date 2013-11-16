@@ -5,9 +5,9 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1" author="hparry">
+    <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
-            CREATE TABLE ruleform.workspace_authorizations
+            CREATE TABLE ruleform.workspace_authorization
                 (
                   id bigserial NOT NULL,
                   product bigint NOT NULL, 
@@ -40,12 +40,12 @@
                 WITH (
                   OIDS=FALSE
                 );
-                COMMENT ON TABLE ruleform.workspace_authorizations
+                COMMENT ON TABLE ruleform.workspace_authorization
                       IS 'Authorizations to join networks of ruleforms';
             ]]>
         </sql>
         <rollback>
-            <dropTable tableName="ruleform.workspace_authorizations"/>
+            <dropTable tableName="ruleform.workspace_authorization"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

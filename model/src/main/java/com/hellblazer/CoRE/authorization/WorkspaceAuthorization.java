@@ -40,8 +40,8 @@ import com.hellblazer.CoRE.resource.Resource;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "workspace_authorizations", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "workspace_authorizations_id_seq", sequenceName = "workspace_authorizations_id_seq")
+@Table(name = "workspace_authorization", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "workspace_authorization_id_seq", sequenceName = "workspace_authorization_id_seq")
 @DiscriminatorColumn(name = "authorization_type")
 abstract public class WorkspaceAuthorization extends Ruleform {
 
@@ -55,7 +55,7 @@ abstract public class WorkspaceAuthorization extends Ruleform {
     private String             authorizationType;
 
     @Id
-    @GeneratedValue(generator = "workspace_authorizations_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "workspace_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
     @ManyToOne

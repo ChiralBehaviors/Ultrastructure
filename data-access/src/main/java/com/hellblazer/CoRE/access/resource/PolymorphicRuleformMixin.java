@@ -71,9 +71,6 @@ import com.hellblazer.CoRE.resource.ResourceAttribute;
 import com.hellblazer.CoRE.resource.ResourceAttributeAuthorization;
 import com.hellblazer.CoRE.resource.ResourceNetwork;
 import com.hellblazer.CoRE.resource.ResourceNetworkAuthorization;
-import com.hellblazer.CoRE.resource.ResourceRelationshipAttributeAuthorization;
-import com.hellblazer.CoRE.resource.ResourceRelationshipLocationAuthorization;
-import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
 
 /**
  * A class for deserializing ruleforms. If you want your ruleform deserialized
@@ -145,10 +142,9 @@ import com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization;
                @Type(value = ResourceAttribute.class, name = "resourceAttribute"),
                @Type(value = ResourceAttributeAuthorization.class, name = "resourceAttributeAuthorization"),
                @Type(value = ResourceNetwork.class, name = "resourceNetwork"),
-               @Type(value = ResourceNetworkAuthorization.class, name = "resourceNetworkAuthorization"),
-               @Type(value = ResourceRelationshipAttributeAuthorization.class, name = "resourceRelationshipAttributeAuthorization"),
-               @Type(value = ResourceRelationshipLocationAuthorization.class, name = "resourceRelationshipLocationAuthorization"),
-               @Type(value = ResourceRelationshipProductAuthorization.class, name = "resourceRelationshipProductAuthorization") })
+               @Type(value = ResourceNetworkAuthorization.class, name = "resourceNetworkAuthorization")
+})
+               
 public abstract class PolymorphicRuleformMixin {
 
 }

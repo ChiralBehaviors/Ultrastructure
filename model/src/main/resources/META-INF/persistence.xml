@@ -61,12 +61,8 @@
 		<class>com.hellblazer.CoRE.resource.Resource</class>
 		<class>com.hellblazer.CoRE.resource.ResourceAttribute</class>
 		<class>com.hellblazer.CoRE.resource.ResourceAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.resource.ResourceAuthorization</class>
 		<class>com.hellblazer.CoRE.resource.ResourceAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.resource.ResourceProductAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.resource.ResourceRelationshipAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.resource.ResourceRelationshipLocationAuthorization</class>
-		<class>com.hellblazer.CoRE.resource.ResourceRelationshipProductAuthorization</class>
 		<class>com.hellblazer.CoRE.resource.ResourceNetwork</class>
 		<class>com.hellblazer.CoRE.resource.ResourceNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.ExistentialRuleform</class>

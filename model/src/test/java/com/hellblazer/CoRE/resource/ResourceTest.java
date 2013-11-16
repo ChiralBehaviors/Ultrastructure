@@ -23,8 +23,6 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**

@@ -71,5 +71,12 @@
 		<class>com.hellblazer.CoRE.resource.ResourceNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.ExistentialRuleform</class>
 		<class>com.hellblazer.CoRE.Ruleform</class>
+		<class>com.hellblazer.CoRE.resource.ResourceLocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductLocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductResourceAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.location.LocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.location.LocationProductAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.location.LocationResourceAccessAuthorization</class>
 	</persistence-unit>
 </persistence>

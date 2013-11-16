@@ -14,24 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE.resource;
+package com.hellblazer.CoRE.location;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hparry
  * 
  */
-@javax.persistence.Entity
-@DiscriminatorValue(AccessAuthorization.RESOURCE_PRODUCT)
-public class ResourceProductAccessAuthorization extends
-		ResourceAccessAuthorization {
+@Entity
+@DiscriminatorValue(AccessAuthorization.LOCATION_PRODUCT)
+public class LocationProductAccessAuthorization extends
+		LocationAccessAuthorization {
 
 	@ManyToOne
 	@JoinColumn(name = "product2")
@@ -39,9 +41,9 @@ public class ResourceProductAccessAuthorization extends
 
 	private static final long serialVersionUID = 1L;
 
-	public ResourceProductAccessAuthorization() {
+	public LocationProductAccessAuthorization() {
 		super();
-		setAuthorizationType(AccessAuthorization.RESOURCE_PRODUCT);
+		setAuthorizationType(AccessAuthorization.LOCATION_PRODUCT);
 	}
 
 	/**
@@ -50,7 +52,7 @@ public class ResourceProductAccessAuthorization extends
 	 * @param Product
 	 * @param updatedBy
 	 */
-	public ResourceProductAccessAuthorization(Resource parent,
+	public LocationProductAccessAuthorization(Location parent,
 			Relationship relationship, Product child, Resource updatedBy) {
 		this();
 		setParent(parent);
@@ -73,5 +75,4 @@ public class ResourceProductAccessAuthorization extends
 	public void setChild(Product child) {
 		this.child = child;
 	}
-
 }

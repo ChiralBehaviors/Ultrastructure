@@ -14,34 +14,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE.resource;
+package com.hellblazer.CoRE.product;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hparry
- * 
+ *
  */
-@javax.persistence.Entity
-@DiscriminatorValue(AccessAuthorization.RESOURCE_PRODUCT)
-public class ResourceProductAccessAuthorization extends
-		ResourceAccessAuthorization {
-
-	@ManyToOne
-	@JoinColumn(name = "product2")
-	private Product child;
+@Entity
+@DiscriminatorValue(AccessAuthorization.PRODUCT_RESOURCE)
+public class ProductResourceAccessAuthorization extends ProductAccessAuthorization{
 
 	private static final long serialVersionUID = 1L;
 
-	public ResourceProductAccessAuthorization() {
+	@ManyToOne
+	@JoinColumn(name = "resource2")
+	private Resource child;
+
+	public ProductResourceAccessAuthorization() {
 		super();
-		setAuthorizationType(AccessAuthorization.RESOURCE_PRODUCT);
+		setAuthorizationType(AccessAuthorization.PRODUCT_LOCATION);
 	}
 
 	/**
@@ -50,8 +50,8 @@ public class ResourceProductAccessAuthorization extends
 	 * @param Product
 	 * @param updatedBy
 	 */
-	public ResourceProductAccessAuthorization(Resource parent,
-			Relationship relationship, Product child, Resource updatedBy) {
+	public ProductResourceAccessAuthorization(Product parent,
+			Relationship relationship, Resource child, Resource updatedBy) {
 		this();
 		setParent(parent);
 		setRelationship(relationship);
@@ -62,7 +62,7 @@ public class ResourceProductAccessAuthorization extends
 	/**
 	 * @return the child
 	 */
-	public Product getChild() {
+	public Resource getChild() {
 		return child;
 	}
 
@@ -70,8 +70,7 @@ public class ResourceProductAccessAuthorization extends
 	 * @param child
 	 *            the child to set
 	 */
-	public void setChild(Product child) {
+	public void setChild(Resource child) {
 		this.child = child;
 	}
-
 }

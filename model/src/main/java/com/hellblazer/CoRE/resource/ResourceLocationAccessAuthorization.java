@@ -21,27 +21,27 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
+import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry
  * 
  */
 @javax.persistence.Entity
-@DiscriminatorValue(AccessAuthorization.RESOURCE_PRODUCT)
-public class ResourceProductAccessAuthorization extends
+@DiscriminatorValue(AccessAuthorization.RESOURCE_LOCATION)
+public class ResourceLocationAccessAuthorization extends
 		ResourceAccessAuthorization {
-
-	@ManyToOne
-	@JoinColumn(name = "product2")
-	private Product child;
 
 	private static final long serialVersionUID = 1L;
 
-	public ResourceProductAccessAuthorization() {
+	@ManyToOne
+	@JoinColumn(name = "location2")
+	private Location child;
+
+	public ResourceLocationAccessAuthorization() {
 		super();
-		setAuthorizationType(AccessAuthorization.RESOURCE_PRODUCT);
+		setAuthorizationType(AccessAuthorization.RESOURCE_LOCATION);
 	}
 
 	/**
@@ -50,8 +50,8 @@ public class ResourceProductAccessAuthorization extends
 	 * @param Product
 	 * @param updatedBy
 	 */
-	public ResourceProductAccessAuthorization(Resource parent,
-			Relationship relationship, Product child, Resource updatedBy) {
+	public ResourceLocationAccessAuthorization(Resource parent,
+			Relationship relationship, Location child, Resource updatedBy) {
 		this();
 		setParent(parent);
 		setRelationship(relationship);
@@ -62,7 +62,7 @@ public class ResourceProductAccessAuthorization extends
 	/**
 	 * @return the child
 	 */
-	public Product getChild() {
+	public Location getChild() {
 		return child;
 	}
 
@@ -70,8 +70,7 @@ public class ResourceProductAccessAuthorization extends
 	 * @param child
 	 *            the child to set
 	 */
-	public void setChild(Product child) {
+	public void setChild(Location child) {
 		this.child = child;
 	}
-
 }

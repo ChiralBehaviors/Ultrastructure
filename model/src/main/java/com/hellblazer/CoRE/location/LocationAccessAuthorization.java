@@ -16,10 +16,14 @@
  */
 package com.hellblazer.CoRE.location;
 
+import java.util.Map;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 
 /**
@@ -47,5 +51,20 @@ public class LocationAccessAuthorization extends AccessAuthorization {
 	 */
 	public void setParent(Location parent) {
 		this.parent = parent;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (parent != null) {
+			this.parent = (Location) parent.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 	}
 }

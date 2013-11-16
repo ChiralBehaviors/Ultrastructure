@@ -16,10 +16,14 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import java.util.Map;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 
 /**
@@ -48,4 +52,21 @@ public abstract class ResourceAccessAuthorization extends AccessAuthorization{
 	public void setParent(Resource parent) {
 		this.parent = parent;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (parent != null) {
+			this.parent = (Resource) parent.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
+	}
+	
+	
 }

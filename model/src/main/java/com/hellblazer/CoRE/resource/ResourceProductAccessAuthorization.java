@@ -16,10 +16,14 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -72,6 +76,21 @@ public class ResourceProductAccessAuthorization extends
 	 */
 	public void setChild(Product child) {
 		this.child = child;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (child != null) {
+			this.child = (Product) child.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 	}
 
 }

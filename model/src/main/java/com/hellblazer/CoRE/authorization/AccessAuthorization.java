@@ -16,8 +16,11 @@
  */
 package com.hellblazer.CoRE.authorization;
 
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,15 +44,14 @@ import com.hellblazer.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "access_authorizations_id_seq", sequenceName = "access_authorizations_id_seq")
 @DiscriminatorColumn(name = "authorization_type")
 public abstract class AccessAuthorization extends Ruleform {
-	
-	//IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
+
+	// IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
 	public static final String RESOURCE_PRODUCT = "0";
 	public static final String RESOURCE_LOCATION = "1";
 	public static final String PRODUCT_RESOURCE = "2";
 	public static final String PRODUCT_LOCATION = "3";
 	public static final String LOCATION_RESOURCE = "4";
 	public static final String LOCATION_PRODUCT = "5";
-	
 
 	private static final long serialVersionUID = 1L;
 
@@ -138,4 +140,31 @@ public abstract class AccessAuthorization extends Ruleform {
 	protected void setAuthorizationType(String type) {
 		this.authorizationType = type;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+
+		if (relationship != null) {
+			relationship = (Relationship) relationship.manageEntity(em,
+					knownObjects);
+		}
+		if (parentTransitiveRelationship != null) {
+			parentTransitiveRelationship = (Relationship) parentTransitiveRelationship
+					.manageEntity(em, knownObjects);
+		}
+
+		if (childTransitiveRelationship != null) {
+			childTransitiveRelationship = (Relationship) childTransitiveRelationship
+					.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
+	}
+
 }

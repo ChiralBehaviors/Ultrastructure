@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.resource;
 import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,64 +33,66 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hparry
  * 
  */
-@javax.persistence.Entity
+@Entity
 @DiscriminatorValue(AccessAuthorization.RESOURCE_LOCATION)
 public class ResourceLocationAccessAuthorization extends
-		ResourceAccessAuthorization {
+        ResourceAccessAuthorization {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "location2")
-	private Location child;
+    @ManyToOne
+    @JoinColumn(name = "location2")
+    private Location          child;
 
-	public ResourceLocationAccessAuthorization() {
-		super();
-		setAuthorizationType(AccessAuthorization.RESOURCE_LOCATION);
-	}
+    public ResourceLocationAccessAuthorization() {
+        super();
+        setAuthorizationType(AccessAuthorization.RESOURCE_LOCATION);
+    }
 
-	/**
-	 * @param Resource
-	 * @param Relationship
-	 * @param Product
-	 * @param updatedBy
-	 */
-	public ResourceLocationAccessAuthorization(Resource parent,
-			Relationship relationship, Location child, Resource updatedBy) {
-		this();
-		setParent(parent);
-		setRelationship(relationship);
-		setChild(child);
-		setUpdatedBy(updatedBy);
-	}
+    /**
+     * @param Resource
+     * @param Relationship
+     * @param Product
+     * @param updatedBy
+     */
+    public ResourceLocationAccessAuthorization(Resource parent,
+                                               Relationship relationship,
+                                               Location child,
+                                               Resource updatedBy) {
+        this();
+        setParent(parent);
+        setRelationship(relationship);
+        setChild(child);
+        setUpdatedBy(updatedBy);
+    }
 
-	/**
-	 * @return the child
-	 */
-	public Location getChild() {
-		return child;
-	}
+    /**
+     * @return the child
+     */
+    public Location getChild() {
+        return child;
+    }
 
-	/**
-	 * @param child
-	 *            the child to set
-	 */
-	public void setChild(Location child) {
-		this.child = child;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-	 * EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (child != null) {
-			this.child = (Location) child.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
-	}
+    /**
+     * @param child
+     *            the child to set
+     */
+    public void setChild(Location child) {
+        this.child = child;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (child != null) {
+            child = (Location) child.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 }

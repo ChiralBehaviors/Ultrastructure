@@ -32,39 +32,39 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
  */
 @Entity
 public class LocationAccessAuthorization extends AccessAuthorization {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "location1")
-	private Location parent;
+    @ManyToOne
+    @JoinColumn(name = "location1")
+    private Location          parent;
 
-	/**
-	 * @return the parent
-	 */
-	public Location getParent() {
-		return parent;
-	}
+    /**
+     * @return the parent
+     */
+    public Location getParent() {
+        return parent;
+    }
 
-	/**
-	 * @param parent
-	 *            the parent to set
-	 */
-	public void setParent(Location parent) {
-		this.parent = parent;
-	}
+    /**
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(Location parent) {
+        this.parent = parent;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-	 * EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (parent != null) {
-			this.parent = (Location) parent.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (parent != null) {
+            parent = (Location) parent.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 }

@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.attribute;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +34,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "unit", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "unit_id_seq", sequenceName = "unit_id_seq")
 public class Unit extends ExistentialRuleform {

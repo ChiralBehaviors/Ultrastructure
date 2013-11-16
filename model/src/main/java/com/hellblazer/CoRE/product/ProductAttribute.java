@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.product.ProductAttribute.FIND_ATTRIBUTE_VALUE_
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -48,7 +49,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_RESOURCE, query = "SELECT ea FROM ProductAttribute ea"
                                                                                + "   WHERE ea.product = :product "
                                                                                + "   AND ea.attribute = :attribute") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "product_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_attribute_id_seq", sequenceName = "product_attribute_id_seq")
 public class ProductAttribute extends AttributeValue<Product> {
@@ -177,14 +178,16 @@ public class ProductAttribute extends AttributeValue<Product> {
         product = product2;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

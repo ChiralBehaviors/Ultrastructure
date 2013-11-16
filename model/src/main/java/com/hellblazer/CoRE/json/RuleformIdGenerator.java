@@ -25,7 +25,7 @@ import com.hellblazer.CoRE.Ruleform;
  */
 public class RuleformIdGenerator extends ObjectIdGenerator<String> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long               serialVersionUID = 1L;
     private final Class<? extends Ruleform> scope;
 
     public RuleformIdGenerator() {

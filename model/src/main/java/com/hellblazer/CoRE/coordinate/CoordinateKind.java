@@ -23,6 +23,7 @@ import static com.hellblazer.CoRE.coordinate.CoordinateKind.TOP_LEVEL_KIND;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,7 +45,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the coordinate_kind database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "coordinate_kind", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_kind_id_seq", sequenceName = "coordinate_kind_id_seq")
 @NamedQueries({
@@ -107,7 +108,6 @@ public class CoordinateKind extends ExistentialRuleform {
     @OneToMany(mappedBy = "kind")
     @JsonIgnore
     private Set<CoordinateNesting>        nestingRules;
-
 
     public CoordinateKind() {
     }
@@ -192,6 +192,5 @@ public class CoordinateKind extends ExistentialRuleform {
     public void setNestingRules(Set<CoordinateNesting> coordinateNestings) {
         nestingRules = coordinateNestings;
     }
-
 
 }

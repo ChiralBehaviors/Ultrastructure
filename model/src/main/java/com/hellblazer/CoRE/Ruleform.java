@@ -57,14 +57,14 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "research")
-	protected Research           research;
+    protected Research         research;
 
     @Column(name = "update_date")
     private Timestamp          updateDate;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-	protected Resource           updatedBy;
+    protected Resource         updatedBy;
 
     public Ruleform() {
     }
@@ -176,6 +176,29 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return getId().hashCode();
     }
 
+    public Ruleform manageEntity(EntityManager em,
+                                 Map<Ruleform, Ruleform> knownObjects) {
+        if (knownObjects.containsKey(this)) {
+            return knownObjects.get(this);
+        }
+
+        //need to traverse leaf nodes first, before persisting this entity.
+        knownObjects.put(this, this);
+        traverseForeignKeys(em, knownObjects);
+
+        if (getId() != null
+            && em.getReference(this.getClass(), getId()) != null) {
+            em.detach(this);
+            knownObjects.put(this, em.merge(this));
+        } else {
+            em.persist(this);
+            em.refresh(this);
+            knownObjects.put(this, this);
+        }
+
+        return knownObjects.get(this);
+    }
+
     abstract public void setId(Long id);
 
     /**
@@ -215,45 +238,24 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return String.format("%s[%s]", getClass(), getId());
     }
 
-	public Ruleform manageEntity(EntityManager em, Map<Ruleform, Ruleform> knownObjects) {
-    	if (knownObjects.containsKey(this)) {
-            return knownObjects.get(this);
-    	}
-    	
-    	//need to traverse leaf nodes first, before persisting this entity.
-    	knownObjects.put(this,  this);
-    	this.traverseForeignKeys(em, knownObjects);
-    	
-    	if (this.getId() != null && em.getReference(this.getClass(), this.getId()) != null) {
-    		em.detach(this);
-    		knownObjects.put(this, em.merge(this));
-    	} else {
-    		em.persist(this);
-    		em.refresh(this);
-    		knownObjects.put(this, this);
-    	}
-    	
-	    
-	    return knownObjects.get(this);
+    //am I traversing the merged entity or the non-merged uploaded state?
+    //might as well make it merged
+    /**
+     * Calls manageEntity on each foreign key and replaces non-managed foreign
+     * key objects with managed objects
+     * 
+     * @param em
+     * @param knownObjects
+     */
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+
+        //TODO either fix this or get rid of it
+        //research.manageEntity(em, knownObjects);
+        if (updatedBy != null) {
+            updatedBy = (Resource) updatedBy.manageEntity(em, knownObjects);
+        }
+
     }
 
-	//am I traversing the merged entity or the non-merged uploaded state?
-	//might as well make it merged
-	/**
-	 * Calls manageEntity on each foreign key and replaces non-managed foreign key objects
-	 * with managed objects
-	 * @param em
-	 * @param knownObjects
-	 */
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		
-		//TODO either fix this or get rid of it
-		//research.manageEntity(em, knownObjects);
-		if (updatedBy != null) {
-			updatedBy = (Resource) updatedBy.manageEntity(em, knownObjects);
-		}
-		
-	}
-    
 }

@@ -89,39 +89,6 @@ public class ProductTest extends DatabaseTest {
         assertEquals(b, b2);
     }
 
-    @SuppressWarnings("boxing")
-    @Test
-    public void testAttributes() {
-        TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
-                                                              Product.class).setParameter("name",
-                                                                                          "Peptide Foo");
-        Product b = findProduct.getSingleResult();
-        assertNotNull(b);
-        assertEquals(b.getName(), "Peptide Foo");
-        LOG.debug(String.format("Product is: %s", b));
-
-        TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
-                                                                  Attribute.class).setParameter("name",
-                                                                                                "Length");
-
-        Attribute a = findAttribute.getSingleResult();
-        assertNotNull(a);
-        assertEquals(a.getName(), "Length");
-        LOG.debug(String.format("Attribute is: %s", a));
-
-        Set<ProductAttribute> productAttributes = b.getAttributes();
-        assertNotNull(productAttributes);
-        assertEquals(1, productAttributes.size());
-
-        Iterator<ProductAttribute> iter = productAttributes.iterator();
-        ProductAttribute bea = iter.next();
-        assertNotNull(bea);
-        assertEquals(b, bea.getProduct());
-        assertEquals(a, bea.getAttribute());
-
-        assertEquals(new BigDecimal("123"), bea.getNumericValue());
-    }
-
     @Before
     public void initData() {
         beginTransaction();
@@ -196,5 +163,38 @@ public class ProductTest extends DatabaseTest {
 
         commitTransaction();
         em.clear();
+    }
+
+    @SuppressWarnings("boxing")
+    @Test
+    public void testAttributes() {
+        TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
+                                                              Product.class).setParameter("name",
+                                                                                          "Peptide Foo");
+        Product b = findProduct.getSingleResult();
+        assertNotNull(b);
+        assertEquals(b.getName(), "Peptide Foo");
+        LOG.debug(String.format("Product is: %s", b));
+
+        TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
+                                                                  Attribute.class).setParameter("name",
+                                                                                                "Length");
+
+        Attribute a = findAttribute.getSingleResult();
+        assertNotNull(a);
+        assertEquals(a.getName(), "Length");
+        LOG.debug(String.format("Attribute is: %s", a));
+
+        Set<ProductAttribute> productAttributes = b.getAttributes();
+        assertNotNull(productAttributes);
+        assertEquals(1, productAttributes.size());
+
+        Iterator<ProductAttribute> iter = productAttributes.iterator();
+        ProductAttribute bea = iter.next();
+        assertNotNull(bea);
+        assertEquals(b, bea.getProduct());
+        assertEquals(a, bea.getAttribute());
+
+        assertEquals(new BigDecimal("123"), bea.getNumericValue());
     }
 }

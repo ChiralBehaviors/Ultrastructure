@@ -21,6 +21,7 @@ package com.hellblazer.CoRE.location;
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,7 +39,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "location_network_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_network_authorization_id_seq", sequenceName = "location_network_authorization_id_seq")
 public class LocationNetworkAuthorization extends
@@ -128,15 +129,20 @@ public class LocationNetworkAuthorization extends
         this.id = id;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (authorizedParent != null) authorizedParent = (Location) authorizedParent.manageEntity(em, knownObjects);
-		if (classifier != null) classifier = (Location) classifier.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (authorizedParent != null) {
+            authorizedParent = (Location) authorizedParent.manageEntity(em,
+                                                                        knownObjects);
+        }
+        if (classifier != null) {
+            classifier = (Location) classifier.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

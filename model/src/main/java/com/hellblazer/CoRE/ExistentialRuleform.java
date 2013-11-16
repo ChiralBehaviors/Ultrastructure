@@ -44,6 +44,10 @@ abstract public class ExistentialRuleform extends Ruleform {
         super(id);
     }
 
+    public ExistentialRuleform(Long id, Resource updatedBy) {
+        super(id, updatedBy);
+    }
+
     /**
      * @param updatedBy
      */
@@ -53,10 +57,6 @@ abstract public class ExistentialRuleform extends Ruleform {
 
     public ExistentialRuleform(String name) {
         this.name = name;
-    }
-    
-    public ExistentialRuleform(Long id, Resource updatedBy) {
-        super(id, updatedBy);
     }
 
     public ExistentialRuleform(String name, Resource updatedBy) {

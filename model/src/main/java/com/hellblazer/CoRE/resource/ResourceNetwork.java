@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.hellblazer.CoRE.resource;
- 
+
 import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
@@ -34,6 +34,7 @@ import static com.hellblazer.CoRE.resource.ResourceNetwork.INSERT_NEW_NETWORK_RU
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -57,7 +58,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "resource_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "resource_network_id_seq", sequenceName = "resource_network_id_seq")
 @NamedQueries({
@@ -167,7 +168,8 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES         = "resourceNetwork"
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "resourceNetwork" + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS    = "resourceNetwork"
+                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 
     //bi-directional many-to-one association to Resource
     @ManyToOne
@@ -259,10 +261,12 @@ public class ResourceNetwork extends NetworkRuleform<Resource> {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null)
+        if (child != null) {
             child = (Resource) child.manageEntity(em, knownObjects);
-        if (parent != null)
+        }
+        if (parent != null) {
             parent = (Resource) parent.manageEntity(em, knownObjects);
+        }
         super.traverseForeignKeys(em, knownObjects);
 
     }

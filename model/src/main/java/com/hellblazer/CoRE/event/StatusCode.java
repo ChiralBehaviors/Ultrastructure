@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.event.StatusCode.FIND_BY_NAME;
 import static com.hellblazer.CoRE.event.StatusCode.IS_TERMINAL_STATE;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +41,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 
-@javax.persistence.Entity
+@Entity
 @Table(name = "status_code", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "status_code_id_seq", sequenceName = "status_code_id_seq")
 @NamedQueries({ @NamedQuery(name = FIND_BY_NAME, query = "select sc from StatusCode sc where sc.name = :name"), })

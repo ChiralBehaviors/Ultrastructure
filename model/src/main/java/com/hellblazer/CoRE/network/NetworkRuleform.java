@@ -138,23 +138,25 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
         this.relationship = relationship;
     }
 
+    @Override
+    public String toString() {
+        return String.format("LocationNetwork[%s] %s >> %s >> %s: %s", getId(),
+                             getParent().getName(),
+                             getRelationship().getName(), getChild().getName(),
+                             isInferred());
+    }
+
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (relationship != null)
+        if (relationship != null) {
             relationship = (Relationship) relationship.manageEntity(em,
                                                                     knownObjects);
+        }
         super.traverseForeignKeys(em, knownObjects);
 
-    }
-
-    public String toString() {
-        return String.format("LocationNetwork[%s] %s >> %s >> %s: %s", getId(),
-                             getParent().getName(),
-                             getRelationship().getName(), getChild().getName(),
-                             isInferred());
     }
 }

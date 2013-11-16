@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.resource;
 import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,7 +32,7 @@ import com.hellblazer.CoRE.location.Location;
  * @author Halloran Parry
  * 
  */
-@javax.persistence.Entity
+@Entity
 @DiscriminatorValue("location")
 public class ResourceRelationshipLocationAuthorization extends
         ResourceAuthorization {
@@ -61,15 +62,17 @@ public class ResourceRelationshipLocationAuthorization extends
         this.location = location;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (location != null) location = (Location) location.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (location != null) {
+            location = (Location) location.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

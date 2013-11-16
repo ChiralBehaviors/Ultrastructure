@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -64,7 +65,7 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = GET_CHILD_STATUS_CODES, query = "SELECT DISTINCT(scs.childCode) "
                                                                   + " FROM StatusCodeSequencing scs "
                                                                   + " WHERE scs.service = :service") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "status_code_sequencing", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "status_code_sequencing_id_seq", sequenceName = "status_code_sequencing_id_seq")
 public class StatusCodeSequencing extends Ruleform {
@@ -241,16 +242,22 @@ public class StatusCodeSequencing extends Ruleform {
         this.statusCodeByParent = statusCodeByParent;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (childCode != null) childCode = (StatusCode) childCode.manageEntity(em, knownObjects);
-		if (parentCode != null) parentCode = (StatusCode) parentCode.manageEntity(em, knownObjects);
-		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (childCode != null) {
+            childCode = (StatusCode) childCode.manageEntity(em, knownObjects);
+        }
+        if (parentCode != null) {
+            parentCode = (StatusCode) parentCode.manageEntity(em, knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

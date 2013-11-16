@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.network;
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "network_inference", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "network_inference_id_seq", sequenceName = "network_inference_id_seq")
 public class NetworkInference extends Ruleform {
@@ -80,7 +81,7 @@ public class NetworkInference extends Ruleform {
     }
 
     public NetworkInference(Relationship premise1, Relationship premise2,
-                             Relationship inference) {
+                            Relationship inference) {
         super();
         this.premise1 = premise1;
         this.premise2 = premise2;
@@ -88,7 +89,7 @@ public class NetworkInference extends Ruleform {
     }
 
     public NetworkInference(Relationship premise1, Relationship premise2,
-                             Relationship inference, Resource updatedBy) {
+                            Relationship inference, Resource updatedBy) {
         super(updatedBy);
         this.premise1 = premise1;
         this.premise2 = premise2;
@@ -151,16 +152,22 @@ public class NetworkInference extends Ruleform {
         this.premise2 = premise2;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (inference != null) inference = (Relationship) inference.manageEntity(em, knownObjects);
-		if (premise1 != null) premise1 = (Relationship) premise1.manageEntity(em, knownObjects);
-		if (premise2 != null) premise2 = (Relationship) premise2.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (inference != null) {
+            inference = (Relationship) inference.manageEntity(em, knownObjects);
+        }
+        if (premise1 != null) {
+            premise1 = (Relationship) premise1.manageEntity(em, knownObjects);
+        }
+        if (premise2 != null) {
+            premise2 = (Relationship) premise2.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

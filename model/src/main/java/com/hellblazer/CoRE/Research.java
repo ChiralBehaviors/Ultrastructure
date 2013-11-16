@@ -18,6 +18,7 @@ package com.hellblazer.CoRE;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,7 +31,7 @@ import javax.persistence.Table;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "research", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "research_id_seq", sequenceName = "research_id_seq")
 public class Research implements Serializable {

@@ -23,14 +23,15 @@ import static com.hellblazer.CoRE.resource.Resource.FIND_CLASSIFIED_ATTRIBUTE_VA
 import static com.hellblazer.CoRE.resource.Resource.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.resource.Resource.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.resource.Resource.GET_CHILD;
+import static com.hellblazer.CoRE.resource.Resource.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.resource.Resource.UNLINKED;
 import static com.hellblazer.CoRE.resource.ResourceAttribute.GET_ATTRIBUTE;
-import static com.hellblazer.CoRE.resource.Resource.GET_CHILD_RULES_BY_RELATIONSHIP;
 
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -88,10 +89,10 @@ import com.hellblazer.CoRE.product.ProductNetwork;
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM ResourceNetwork n "
                                                                         + "WHERE n.child = :c"),
-				@NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ResourceNetwork n "
-						+ "WHERE n.parent = :resource "
-						+ "AND n.relationship IN :relationships "
-						+ "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ResourceNetwork n "
+                                                                           + "WHERE n.parent = :resource "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM resource AS unlinked "
@@ -108,7 +109,7 @@ import com.hellblazer.CoRE.product.ProductNetwork;
                                                                 + "WHERE unlinked.id != resource_id('Resource');", resultClass = Resource.class),
                      // ?1 = :queryString, ?2 = :numberOfMatches                                                                       
                      @NamedNativeQuery(name = "resource" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('resource', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
-@javax.persistence.Entity
+@Entity
 @Table(name = "resource", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "resource_id_seq", sequenceName = "resource_id_seq")
 public class Resource extends ExistentialRuleform implements
@@ -132,7 +133,7 @@ public class Resource extends ExistentialRuleform implements
     public static final String     RESOURCE_ATTRIBUTES_BY_CLASSIFICATION    = "resource.resourceAttributesByClassification";
     public static final String     UNLINKED                                 = "resource"
                                                                               + UNLINKED_SUFFIX;
-    public static final String	   GET_CHILD_RULES_BY_RELATIONSHIP 			= "resource" 
+    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "resource"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 

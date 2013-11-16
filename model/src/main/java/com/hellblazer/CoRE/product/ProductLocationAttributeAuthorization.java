@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product;
 
 import java.util.Map;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,23 +39,22 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "product_location_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_location_attribute_authorization_id_seq", sequenceName = "product_location_attribute_authorization_id_seq")
 public class ProductLocationAttributeAuthorization extends
         AttributeAuthorization {
     private static final long serialVersionUID = 1L;
-    
+
     //TODO hhildebrand this should probably have an FK to product or productlocation or something
-    
+
     @ManyToOne
     @JoinColumn(name = "classifier")
-    private Product classifier;
-    
+    private Product           classifier;
+
     @ManyToOne
     @JoinColumn(name = "classification")
-    private Relationship classification;
-    
+    private Relationship      classification;
 
     @Id
     @GeneratedValue(generator = "product_location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
@@ -77,9 +77,39 @@ public class ProductLocationAttributeAuthorization extends
         super(updatedBy);
     }
 
+    /**
+     * @return the classification
+     */
+    public Relationship getClassification() {
+        return classification;
+    }
+
+    /**
+     * @return the classifier
+     */
+    public Product getClassifier() {
+        return classifier;
+    }
+
     @Override
     public Long getId() {
         return id;
+    }
+
+    /**
+     * @param classification
+     *            the classification to set
+     */
+    public void setClassification(Relationship classification) {
+        this.classification = classification;
+    }
+
+    /**
+     * @param classifier
+     *            the classifier to set
+     */
+    public void setClassifier(Product classifier) {
+        this.classifier = classifier;
     }
 
     @Override
@@ -87,43 +117,20 @@ public class ProductLocationAttributeAuthorization extends
         this.id = id;
     }
 
-	/**
-	 * @return the classifier
-	 */
-	public Product getClassifier() {
-		return classifier;
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (classifier != null) {
+            classifier = (Product) classifier.manageEntity(em, knownObjects);
+        }
+        if (classification != null) {
+            classification = (Relationship) classification.manageEntity(em,
+                                                                        knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	/**
-	 * @return the classification
-	 */
-	public Relationship getClassification() {
-		return classification;
-	}
-
-	/**
-	 * @param classifier the classifier to set
-	 */
-	public void setClassifier(Product classifier) {
-		this.classifier = classifier;
-	}
-
-	/**
-	 * @param classification the classification to set
-	 */
-	public void setClassification(Relationship classification) {
-		this.classification = classification;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (classifier != null) classifier = (Product) classifier.manageEntity(em, knownObjects);
-		if (classification != null) classification = (Relationship) classification.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    }
 }

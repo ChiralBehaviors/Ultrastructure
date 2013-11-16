@@ -32,9 +32,9 @@ public interface Kernel {
 
     Attribute getAnyAttribute();
 
-    Product getAnyProduct();
-
     Location getAnyLocation();
+
+    Product getAnyProduct();
 
     Relationship getAnyRelationship();
 
@@ -55,8 +55,6 @@ public interface Kernel {
     Relationship getDeveloped();
 
     Relationship getDevelopedBy();
-
-    Product getProduct();
 
     Relationship getEquals();
 
@@ -104,9 +102,9 @@ public interface Kernel {
 
     Attribute getNotApplicableAttribute();
 
-    Product getNotApplicableProduct();
-
     Location getNotApplicableLocation();
+
+    Product getNotApplicableProduct();
 
     Relationship getNotApplicableRelationship();
 
@@ -114,11 +112,9 @@ public interface Kernel {
 
     Attribute getOriginalAttribute();
 
-    Product getOriginalProduct();
-
     Location getOriginalLocation();
 
-    Location getSameLocation();
+    Product getOriginalProduct();
 
     Resource getOriginalResource();
 
@@ -128,6 +124,8 @@ public interface Kernel {
 
     Attribute getPasswordHashAttribute();
 
+    Product getProduct();
+
     Resource getPropagationSoftware();
 
     Relationship getPrototype();
@@ -135,6 +133,8 @@ public interface Kernel {
     Relationship getPrototypeOf();
 
     Resource getResource();
+
+    Location getSameLocation();
 
     Product getSameProduct();
 

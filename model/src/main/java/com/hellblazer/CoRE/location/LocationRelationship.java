@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.location.LocationRelationship.RULES;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,7 +43,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the location_relationship database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "location_relationship", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_relationship_id_seq", sequenceName = "location_relationship_id_seq")
 @NamedQueries({ @NamedQuery(name = RULES, query = "select lr FROM LocationRelationship AS lr "
@@ -169,21 +170,26 @@ public class LocationRelationship extends Ruleform {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (attributeRelationship != null)
+        if (attributeRelationship != null) {
             attributeRelationship = (Relationship) attributeRelationship.manageEntity(em,
                                                                                       knownObjects);
-        if (productMappedValue != null)
+        }
+        if (productMappedValue != null) {
             productMappedValue = (Product) productMappedValue.manageEntity(em,
                                                                            knownObjects);
-        if (location1Attribute != null)
+        }
+        if (location1Attribute != null) {
             location1Attribute = (Attribute) location1Attribute.manageEntity(em,
                                                                              knownObjects);
-        if (location2Attribute != null)
+        }
+        if (location2Attribute != null) {
             location2Attribute = (Attribute) location2Attribute.manageEntity(em,
                                                                              knownObjects);
-        if (relationship != null)
+        }
+        if (relationship != null) {
             relationship = (Relationship) relationship.manageEntity(em,
                                                                     knownObjects);
+        }
         super.traverseForeignKeys(em, knownObjects);
 
     }

@@ -49,7 +49,7 @@ public class Bootstrap {
         alterTriggers(false);
         for (WellKnownObject wko : WellKnownResource.values()) {
             insert(wko);
-        } 
+        }
         for (WellKnownAttribute wko : WellKnownAttribute.values()) {
             insert(wko);
         }
@@ -74,15 +74,15 @@ public class Bootstrap {
         alterTriggers(true);
     }
 
-    public void clear() throws SQLException { 
-        alterTriggers(false); 
+    public void clear() throws SQLException {
+        alterTriggers(false);
         ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
-        while (r.next()) { 
+        while (r.next()) {
             String table = r.getString("name");
             String query = String.format("DELETE FROM %s", table);
             connection.createStatement().execute(query);
         }
-        r.close(); 
+        r.close();
         alterTriggers(true);
     }
 

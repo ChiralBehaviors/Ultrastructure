@@ -39,6 +39,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -159,7 +160,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                      + "    AND child_code = seq.parent_code "
                                                                      + ") "
                                                                      + " AND seq.service = ?") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "job", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "job_id_seq", sequenceName = "job_id_seq")
 public class Job extends Ruleform implements Attributable<JobAttribute> {

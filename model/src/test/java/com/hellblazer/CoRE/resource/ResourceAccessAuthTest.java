@@ -32,27 +32,29 @@ import com.hellblazer.CoRE.test.DatabaseTest;
  */
 public class ResourceAccessAuthTest extends DatabaseTest {
 
-	private static Kernel kernel;
+    private static Kernel kernel;
 
-	@Before
-	public void initKernel() throws SQLException {
-		beginTransaction();
-		Bootstrap bt = new Bootstrap(connection);
-		bt.clear();
-		bt.bootstrap();
-		commitTransaction();
-		kernel = new KernelImpl(em);
-	}
+    @Before
+    public void initKernel() throws SQLException {
+        beginTransaction();
+        Bootstrap bt = new Bootstrap(connection);
+        bt.clear();
+        bt.bootstrap();
+        commitTransaction();
+        kernel = new KernelImpl(em);
+    }
 
-	@Test
-	public void testClassHierarchy() {
-		beginTransaction();
-		ResourceProductAccessAuthorization auth = new ResourceProductAccessAuthorization(
-				kernel.getAnyResource(), kernel.getAnyRelationship(),
-				kernel.getAnyProduct(), kernel.getCoreUser());
-		em.persist(auth);
-		commitTransaction();
-		
-	}
+    @Test
+    public void testClassHierarchy() {
+        beginTransaction();
+        ResourceProductAccessAuthorization auth = new ResourceProductAccessAuthorization(
+                                                                                         kernel.getAnyResource(),
+                                                                                         kernel.getAnyRelationship(),
+                                                                                         kernel.getAnyProduct(),
+                                                                                         kernel.getCoreUser());
+        em.persist(auth);
+        commitTransaction();
+
+    }
 
 }

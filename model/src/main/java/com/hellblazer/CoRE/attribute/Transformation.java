@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -47,7 +48,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                 + "AND t.product = :product "
                                                 + "AND t.resource = :resource "
                                                 + "ORDER BY t.sequenceNumber") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "transformation", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "transformation_id_seq", sequenceName = "transformation_id_seq")
 public class Transformation extends Ruleform implements Serializable {
@@ -206,23 +207,43 @@ public class Transformation extends Ruleform implements Serializable {
         this.service = service;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (assignTo != null) assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
-		if (attribute != null) attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-		if (product != null) product = (Product) product.manageEntity(em, knownObjects);
-		if (productAttributeResource != null) productAttributeResource = (Resource) productAttributeResource.manageEntity(em, knownObjects);
-		if (productKey != null) productKey = (Product) productKey.manageEntity(em, knownObjects);
-		if (relationshipKey != null) relationshipKey = (Relationship) relationshipKey.manageEntity(em, knownObjects);
-		if (resource != null) resource = (Resource) resource.manageEntity(em, knownObjects);
-		if (resourceKey != null) resourceKey = (Resource) resourceKey.manageEntity(em, knownObjects);
-		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (assignTo != null) {
+            assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+        }
+        if (attribute != null) {
+            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+        }
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        if (productAttributeResource != null) {
+            productAttributeResource = (Resource) productAttributeResource.manageEntity(em,
+                                                                                        knownObjects);
+        }
+        if (productKey != null) {
+            productKey = (Product) productKey.manageEntity(em, knownObjects);
+        }
+        if (relationshipKey != null) {
+            relationshipKey = (Relationship) relationshipKey.manageEntity(em,
+                                                                          knownObjects);
+        }
+        if (resource != null) {
+            resource = (Resource) resource.manageEntity(em, knownObjects);
+        }
+        if (resourceKey != null) {
+            resourceKey = (Resource) resourceKey.manageEntity(em, knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

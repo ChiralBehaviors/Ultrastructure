@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.event.ProductParentSequencingAuthorization.GET
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,7 +45,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                + " WHERE seq.parent = :service"
                                                                + "   AND seq.statusCode = :status "
                                                                + "ORDER BY seq.myParent") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "product_parent_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_parent_sequencing_authorization_id_seq", sequenceName = "product_parent_sequencing_authorization_id_seq")
 public class ProductParentSequencingAuthorization extends Ruleform {
@@ -197,18 +198,27 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         this.statusCode = statusCode;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (myParent != null) myParent = (Product) myParent.manageEntity(em, knownObjects);
-		if (parent != null) parent = (Product) parent.manageEntity(em, knownObjects);
-		if (parentStatusToSet != null) parentStatusToSet = (StatusCode) parentStatusToSet.manageEntity(em, knownObjects);
-		if (statusCode != null) statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (myParent != null) {
+            myParent = (Product) myParent.manageEntity(em, knownObjects);
+        }
+        if (parent != null) {
+            parent = (Product) parent.manageEntity(em, knownObjects);
+        }
+        if (parentStatusToSet != null) {
+            parentStatusToSet = (StatusCode) parentStatusToSet.manageEntity(em,
+                                                                            knownObjects);
+        }
+        if (statusCode != null) {
+            statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

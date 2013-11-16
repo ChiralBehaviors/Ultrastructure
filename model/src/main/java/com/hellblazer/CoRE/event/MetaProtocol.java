@@ -21,6 +21,7 @@ import static com.hellblazer.CoRE.event.MetaProtocol.FOR_JOB;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,7 +42,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * The persistent class for the meta_protocol database table.
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "meta_protocol", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "meta_protocol_id_seq", sequenceName = "meta_protocol_id_seq")
 @NamedQueries({ @NamedQuery(name = FOR_JOB, query = "SELECT mp from MetaProtocol mp "
@@ -268,19 +269,35 @@ public class MetaProtocol extends Ruleform {
         this.stopOnMatch = stopOnMatch;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (deliverFrom != null) deliverFrom = (Relationship) deliverFrom.manageEntity(em, knownObjects);
-		if (deliverTo != null) deliverTo = (Relationship) deliverTo.manageEntity(em, knownObjects);
-		if (productOrdered != null) productOrdered = (Relationship) productOrdered.manageEntity(em, knownObjects);
-		if (requestingResource != null) requestingResource = (Relationship) requestingResource.manageEntity(em, knownObjects);
-		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
-		if (serviceType != null) serviceType = (Relationship) serviceType.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (deliverFrom != null) {
+            deliverFrom = (Relationship) deliverFrom.manageEntity(em,
+                                                                  knownObjects);
+        }
+        if (deliverTo != null) {
+            deliverTo = (Relationship) deliverTo.manageEntity(em, knownObjects);
+        }
+        if (productOrdered != null) {
+            productOrdered = (Relationship) productOrdered.manageEntity(em,
+                                                                        knownObjects);
+        }
+        if (requestingResource != null) {
+            requestingResource = (Relationship) requestingResource.manageEntity(em,
+                                                                                knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        if (serviceType != null) {
+            serviceType = (Relationship) serviceType.manageEntity(em,
+                                                                  knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 }

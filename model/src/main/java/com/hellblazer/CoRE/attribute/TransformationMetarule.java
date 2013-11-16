@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,7 +46,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @NamedQueries({ @NamedQuery(name = GET_BY_EVENT, query = "SELECT tm FROM TransformationMetarule tm "
                                                          + "WHERE tm.service = :service "
                                                          + "ORDER BY tm.sequenceNumber") })
-@javax.persistence.Entity
+@Entity
 @Table(name = "transformation_metarule", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "transformation_metarule_id_seq", sequenceName = "transformation_metarule_id_seq")
 public class TransformationMetarule extends Ruleform implements Serializable {
@@ -152,18 +153,29 @@ public class TransformationMetarule extends Ruleform implements Serializable {
         this.stopOnMatch = stopOnMatch;
     }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (productMap != null) productMap = (Relationship) productMap.manageEntity(em, knownObjects);
-		if (productNetworkResource != null) productNetworkResource = (Resource) productNetworkResource.manageEntity(em, knownObjects);
-		if (relationshipMap != null) relationshipMap = (Relationship) relationshipMap.manageEntity(em, knownObjects);
-		if (service != null) service = (Product) service.manageEntity(em, knownObjects);
-		super.traverseForeignKeys(em, knownObjects);
-		
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (productMap != null) {
+            productMap = (Relationship) productMap.manageEntity(em,
+                                                                knownObjects);
+        }
+        if (productNetworkResource != null) {
+            productNetworkResource = (Resource) productNetworkResource.manageEntity(em,
+                                                                                    knownObjects);
+        }
+        if (relationshipMap != null) {
+            relationshipMap = (Relationship) relationshipMap.manageEntity(em,
+                                                                          knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
+    }
 
 }

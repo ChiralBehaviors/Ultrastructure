@@ -24,13 +24,14 @@ import static com.hellblazer.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_VA
 import static com.hellblazer.CoRE.location.Location.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.location.Location.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.location.Location.GET_CHILD;
-import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
 import static com.hellblazer.CoRE.location.Location.GET_CHILD_RULES_BY_RELATIONSHIP;
+import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
 
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -57,7 +58,7 @@ import com.hellblazer.CoRE.resource.Resource;
  * can be found in a variety of spaces
  * 
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "location", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_id_seq", sequenceName = "location_id_seq")
 @NamedQueries({
@@ -93,9 +94,9 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                         + "FROM LocationNetwork n "
                                                                         + "WHERE n.child = :c"),
                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM LocationNetwork n "
-																		+ "WHERE n.parent = :location "
-																		+ "AND n.relationship IN :relationships "
-																		+ "ORDER by n.parent.name, n.relationship.name, n.child.name")})
+                                                                           + "WHERE n.parent = :location "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
@@ -115,8 +116,8 @@ public class Location extends ExistentialRuleform implements
                                                                               + NAME_SEARCH_SUFFIX;
     public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "location"
                                                                               + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String	   GET_CHILD_RULES_BY_RELATIONSHIP			= "location"
-    																		  + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "location"
+                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 
     //bi-directional many-to-one association to LocationAttribute

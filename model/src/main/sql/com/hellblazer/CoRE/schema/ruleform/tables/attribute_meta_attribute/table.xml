@@ -17,12 +17,14 @@
               text_value character varying,
               binary_value bytea,
               attribute_value bigint,
+              integer_value integer,
+              timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
               unit_value bigint,
+              unit bigint,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              integer_value integer,
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
               CONSTRAINT attribute_attribute_pkey PRIMARY KEY (id ),
               CONSTRAINT attribute_attribute_attribute_fkey FOREIGN KEY (meta_attribute)
@@ -37,7 +39,10 @@
               CONSTRAINT attribute_attribute_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT attribute_attribute_unit_fkey FOREIGN KEY (unit_value)
+              CONSTRAINT attribute_attribute_unit_value_fkey FOREIGN KEY (unit_value)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT attribute_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT attribute_attribute_updated_by_fkey FOREIGN KEY (updated_by)

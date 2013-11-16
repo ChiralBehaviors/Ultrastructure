@@ -16,6 +16,7 @@
               product_map bigint NOT NULL,
               product_network_resource bigint,
               stop_on_match boolean DEFAULT false,
+              notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,

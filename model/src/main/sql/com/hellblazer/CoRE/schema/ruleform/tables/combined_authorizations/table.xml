@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hparry">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.combined_authorizations
+                (
+                  id bigserial NOT NULL,
+                  product1 bigint,
+                  resource1 bigint,
+                  location1 bigint,
+                  relationship bigint NOT NULL,
+                  product2 bigint,
+                  resource2 bigint,
+                  location2 bigint,
+                  parent_transitive_relationship bigint,
+                  child_transitive_relationship bigint,
+                  description character varying,
+                  notes character varying,
+                  updated_by bigint NOT NULL,
+                  update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+                  
+                  CONSTRAINT authorization_pkey PRIMARY KEY (id ),
+                  CONSTRAINT authorization_updated_by_fkey FOREIGN KEY (updated_by)
+                      REFERENCES ruleform.resource (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT parent_not_null CHECK (ruleform.null_zero(product1) + ruleform.null_zero(resource1) + ruleform.null_zero(location1) = 1),
+                  CONSTRAINT child_not_null CHECK (ruleform.null_zero(product2) + ruleform.null_zero(resource2) + ruleform.null_zero(location2) = 1)
+                )
+                WITH (
+                  OIDS=FALSE
+                );
+                COMMENT ON TABLE ruleform.combined_authorizations
+                      IS 'Authorizations to join networks of ruleforms';
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.attribute"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

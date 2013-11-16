@@ -43,10 +43,6 @@ public class Unit extends ExistentialRuleform {
 
     private String            datatype;
 
-    private String            description;
-
-    private String            name;
-
     private Boolean           enumerated       = false;
 
     @Id
@@ -102,10 +98,6 @@ public class Unit extends ExistentialRuleform {
         return datatype;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public Boolean getEnumerated() {
         return enumerated;
     }
@@ -123,20 +115,12 @@ public class Unit extends ExistentialRuleform {
         return min;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
     public void setDatatype(String datatype) {
         this.datatype = datatype;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void setEnumerated(Boolean enumerated) {
@@ -154,9 +138,5 @@ public class Unit extends ExistentialRuleform {
 
     public void setMin(BigDecimal min) {
         this.min = min;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

@@ -40,14 +40,17 @@ public class ProductLocationAccessAuthorization extends
         ProductAccessAuthorization {
 
     private static final long serialVersionUID = 1L;
+    
+    {
+        setAuthorizationType(AccessAuthorization.PRODUCT_LOCATION);
+    }
 
     @ManyToOne
     @JoinColumn(name = "location2")
     private Location          child;
 
     public ProductLocationAccessAuthorization() {
-        super();
-        setAuthorizationType(AccessAuthorization.PRODUCT_LOCATION);
+        super(); 
     }
 
     /**

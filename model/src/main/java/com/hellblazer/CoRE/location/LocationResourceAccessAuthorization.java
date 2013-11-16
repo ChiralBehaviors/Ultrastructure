@@ -42,10 +42,12 @@ public class LocationResourceAccessAuthorization extends
     @ManyToOne
     @JoinColumn(name = "resource2")
     private Resource          child;
+    {
+        setAuthorizationType(AccessAuthorization.LOCATION_RESOURCE);
+    }
 
     public LocationResourceAccessAuthorization() {
         super();
-        setAuthorizationType(AccessAuthorization.LOCATION_RESOURCE);
     }
 
     /**

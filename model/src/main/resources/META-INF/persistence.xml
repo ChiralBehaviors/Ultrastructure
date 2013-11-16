@@ -5,7 +5,7 @@
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0">
 	<persistence-unit name="CoRE" transaction-type="RESOURCE_LOCAL">
-	    <class>com.hellblazer.CoRE.authorization.AccessAuthorization</class>
+		<class>com.hellblazer.CoRE.authorization.AccessAuthorization</class>
 		<class>com.hellblazer.CoRE.attribute.Attribute</class>
 		<class>com.hellblazer.CoRE.attribute.AttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization</class>
@@ -74,5 +74,8 @@
 		<class>com.hellblazer.CoRE.location.LocationAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationProductAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationResourceAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.authorization.WorkspaceAuthorization</class>
+		<class>com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization</class>
+		<class>com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization</class>
 	</persistence-unit>
 </persistence>

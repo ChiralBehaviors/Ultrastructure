@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.location_resource_access_authorization AS 
+             SELECT a.id, l.name AS location, ptr.name AS location_relationship, r.name AS relationship,
+                    rsc.name AS resource, ctr.name AS resource_relationship
+               FROM ruleform.access_authorization a
+               JOIN ruleform.location l ON a.location1 = l.id
+               JOIN ruleform.relationship ptr ON a.parent_transitive_relationship = ptr.id
+               JOIN ruleform.relationship r ON a.relationship = r.id
+               JOIN ruleform.resource rsc ON a.resource2 = rsc.id
+               JOIN ruleform.relationship ctr ON a.child_transitive_relationship = ctr.id
+               WHERE a.authorization_type = '4';
+            
+            ALTER TABLE readable.location_resource_access_authorization
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="location_resource_access_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

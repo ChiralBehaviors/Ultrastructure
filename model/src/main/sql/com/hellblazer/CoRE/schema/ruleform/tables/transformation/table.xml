@@ -20,6 +20,7 @@
               relationship_key bigint NOT NULL,
               attribute bigint NOT NULL,
               product_attribute_resource bigint NOT NULL,
+              notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,

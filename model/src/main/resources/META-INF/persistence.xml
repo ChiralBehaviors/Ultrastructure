@@ -77,5 +77,6 @@
 		<class>com.hellblazer.CoRE.authorization.WorkspaceAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization</class>
+        <class>com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization</class>
 	</persistence-unit>
 </persistence>

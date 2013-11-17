@@ -6,9 +6,9 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="1"
-        author="hparry">
-        <sql> CREATE TRIGGER access_authorizations_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.access_authorizations FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER access_authorizations ON ruleform.access_authorizations; </rollback>
+        author="hhildebrand">
+        <sql> CREATE TRIGGER workspace_authorization_update_date BEFORE INSERT OR UPDATE ON
+            ruleform.workspace_authorization FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
+        <rollback> DROP TRIGGER workspace_authorization_update_date ON ruleform.workspace_authorization; </rollback>
     </changeSet>
 </databaseChangeLog>

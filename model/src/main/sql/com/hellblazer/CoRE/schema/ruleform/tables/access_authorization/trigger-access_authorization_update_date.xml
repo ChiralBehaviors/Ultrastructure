@@ -7,8 +7,8 @@
 
     <changeSet id="1"
         author="hparry">
-        <sql> CREATE TRIGGER workspace_authorizations_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.workspace_authorizations FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER workspace_authorizations ON ruleform.workspace_authorizations; </rollback>
+        <sql> CREATE TRIGGER access_authorization_update_date BEFORE INSERT OR UPDATE ON
+            ruleform.access_authorization FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
+        <rollback> DROP TRIGGER access_authorization_update_date ON ruleform.access_authorization; </rollback>
     </changeSet>
 </databaseChangeLog>

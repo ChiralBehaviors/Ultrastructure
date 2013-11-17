@@ -22,7 +22,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.resource.Resource;
 
 /**
@@ -30,49 +30,49 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 @Entity
-@DiscriminatorValue(WorkspaceAuthorization.PRODUCT_RESOURCE)
-public class WorkspaceRelationshipAuthorization extends WorkspaceAuthorization {
+@DiscriminatorValue(WorkspaceAuthorization.PRODUCT_UNIT)
+public class WorkspaceUnitAuthorization extends WorkspaceAuthorization {
 
     private static final long serialVersionUID = 1L;
 
     {
-        setAuthorizationType(WorkspaceAuthorization.PRODUCT_RESOURCE);
+        setAuthorizationType(WorkspaceAuthorization.PRODUCT_UNIT);
     }
 
     @ManyToOne
-    @JoinColumn(name = "relationship")
-    protected Relationship    relationship;
+    @JoinColumn(name = "unit")
+    protected Unit            unit;
 
-    public WorkspaceRelationshipAuthorization() {
+    public WorkspaceUnitAuthorization() {
         super();
     }
 
-    public WorkspaceRelationshipAuthorization(Long id) {
+    public WorkspaceUnitAuthorization(Long id) {
         super(id);
     }
 
-    public WorkspaceRelationshipAuthorization(Long id, Resource updatedBy) {
+    public WorkspaceUnitAuthorization(Long id, Resource updatedBy) {
         super(id, updatedBy);
     }
 
-    public WorkspaceRelationshipAuthorization(Resource updatedBy) {
+    public WorkspaceUnitAuthorization(Resource updatedBy) {
         super(updatedBy);
     }
 
-    public WorkspaceRelationshipAuthorization(String notes) {
+    public WorkspaceUnitAuthorization(String notes) {
         super(notes);
     }
 
-    public WorkspaceRelationshipAuthorization(String notes, Resource updatedBy) {
+    public WorkspaceUnitAuthorization(String notes, Resource updatedBy) {
         super(notes, updatedBy);
     }
 
-    public Relationship getRelationship() {
-        return relationship;
+    public Unit getUnit() {
+        return unit;
     }
 
-    public void setRelationship(Relationship relationship) {
-        this.relationship = relationship;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
 }

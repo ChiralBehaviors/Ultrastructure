@@ -17,6 +17,7 @@
 
 package com.hellblazer.CoRE.authorization;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,12 +30,13 @@ import com.hellblazer.CoRE.resource.Resource;
  * 
  */
 @Entity
+@DiscriminatorValue(WorkspaceAuthorization.PRODUCT_STATUS_CODE)
 public class WorkspaceStatusCodeAuthorization extends WorkspaceAuthorization {
 
     private static final long serialVersionUID = 1L;
 
     {
-        setAuthorizationType(WorkspaceAuthorization.PRODUCT_RESOURCE);
+        setAuthorizationType(WorkspaceAuthorization.PRODUCT_STATUS_CODE);
     }
 
     @ManyToOne

@@ -6,7 +6,12 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="1" author="hparry">
-        <sql> ALTER TABLE ruleform.access_authorizations OWNER TO core; </sql>
+        <sql><![CDATA[
+            GRANT ALL ON TABLE ruleform.access_authorization TO core;
+            GRANT SELECT ON TABLE ruleform.access_authorization TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.access_authorization TO core_read_write;
+            ]]>
+        </sql>
         <rollback/>
     </changeSet>
 </databaseChangeLog>

@@ -43,8 +43,8 @@ import com.hellblazer.CoRE.network.Relationship;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "access_authorizations", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "access_authorizations_id_seq", sequenceName = "access_authorizations_id_seq")
+@Table(name = "access_authorization", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "access_authorization_id_seq", sequenceName = "access_authorization_id_seq")
 @DiscriminatorColumn(name = "authorization_type")
 public abstract class AccessAuthorization extends Ruleform {
 
@@ -64,7 +64,7 @@ public abstract class AccessAuthorization extends Ruleform {
     private String             authorizationType;
 
     @Id
-    @GeneratedValue(generator = "access_authorizations_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "access_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
     // bi-directional many-to-one association to Relationship

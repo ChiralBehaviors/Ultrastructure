@@ -58,6 +58,8 @@ public class WorkspaceLoader {
     public Relationship         storageTypeOf;
     public Relationship         street;
     public Relationship         streetOf;
+    public Relationship			inWorkspace;
+    public Relationship			workspaceOf;
     private Relationship        notApplicableRelationship;
     private Relationship        sameRelationship;
     private Relationship        anyRelationship;
@@ -140,6 +142,8 @@ public class WorkspaceLoader {
         anyRelationship = kernel.getAnyRelationship();
         notApplicableRelationship = kernel.getNotApplicableRelationship();
         workspace = kernel.getWorkspace();
+        inWorkspace = kernel.getInWorkspace();
+        workspaceOf = kernel.getWorkspaceOf();
         unset = kernel.getUnset();
     }
 

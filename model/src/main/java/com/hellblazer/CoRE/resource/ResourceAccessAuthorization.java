@@ -16,12 +16,16 @@
  */
 package com.hellblazer.CoRE.resource;
 
+import static com.hellblazer.CoRE.resource.ResourceAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP;
+
 import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
@@ -30,43 +34,52 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
  * @author hparry
  * 
  */
+@NamedQueries({
+
+	@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+			+ "FROM ResourceAccessAuthorization auth "
+			+ "WHERE auth.relationship = :r " + "AND auth.parent = :rf ") })
 @Entity
 public abstract class ResourceAccessAuthorization extends AccessAuthorization {
 
-    private static final long serialVersionUID = 1L;
+	public static final String RESOURCE_ACCESS_AUTHORIZATION_PREFIX = "resourceAccessAuthorization";
+	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = RESOURCE_ACCESS_AUTHORIZATION_PREFIX
+			+ GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
-    @ManyToOne
-    @JoinColumn(name = "resource1")
-    private Resource          parent;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * @return the parent
-     */
-    public Resource getParent() {
-        return parent;
-    }
+	@ManyToOne
+	@JoinColumn(name = "resource1")
+	private Resource parent;
 
-    /**
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(Resource parent) {
-        this.parent = parent;
-    }
+	/**
+	 * @return the parent
+	 */
+	public Resource getParent() {
+		return parent;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (parent != null) {
-            parent = (Resource) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-    }
+	/**
+	 * @param parent
+	 *            the parent to set
+	 */
+	public void setParent(Resource parent) {
+		this.parent = parent;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (parent != null) {
+			parent = (Resource) parent.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
+	}
 
 }

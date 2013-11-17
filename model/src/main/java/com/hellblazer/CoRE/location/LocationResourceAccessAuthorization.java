@@ -70,6 +70,7 @@ public class LocationResourceAccessAuthorization extends
     /**
      * @return the child
      */
+    @Override
     public Resource getChild() {
         return child;
     }

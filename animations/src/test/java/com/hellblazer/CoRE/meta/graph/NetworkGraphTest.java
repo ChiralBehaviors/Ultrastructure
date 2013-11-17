@@ -17,8 +17,8 @@
 
 package com.hellblazer.CoRE.meta.graph;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +26,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.meta.graph.impl.GraphImpl;
+import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry
@@ -212,6 +214,16 @@ public class NetworkGraphTest {
 			michaelsNodes.add(node);
 		}
 
+	}
+	
+	@Test 
+	public void testClass() {
+		Product p = new Product("myProd");
+		printClass(p);
+	}
+	
+	private void printClass(Ruleform r) {
+		assertEquals(Product.class, r.getClass());
 	}
 
 }

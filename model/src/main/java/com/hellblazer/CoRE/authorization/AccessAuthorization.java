@@ -33,12 +33,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hparry
  * 
  */
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "access_authorizations", schema = "ruleform")
@@ -53,6 +55,8 @@ public abstract class AccessAuthorization extends Ruleform {
     public static final String PRODUCT_LOCATION  = "3";
     public static final String LOCATION_RESOURCE = "4";
     public static final String LOCATION_PRODUCT  = "5";
+    
+    public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX = ".getAllAuthorizationsForParentAndRelationship";
 
     private static final long  serialVersionUID  = 1L;
 
@@ -75,6 +79,7 @@ public abstract class AccessAuthorization extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "child_transitive_relationship")
     protected Relationship     childTransitiveRelationship;
+    
 
     /**
      * @return the childTransitiveRelationship
@@ -161,6 +166,10 @@ public abstract class AccessAuthorization extends Ruleform {
         }
         super.traverseForeignKeys(em, knownObjects);
     }
+    
+    abstract public Networked<?, ?> getParent();
+    abstract public Networked<?, ?> getChild();
+    
 
     protected void setAuthorizationType(String type) {
         authorizationType = type;

@@ -377,6 +377,8 @@ public interface WellKnownObject {
         }
     }
 
+	
+
     public static enum WellKnownRelationship implements WellKnownObject {
         ANY() {
 
@@ -760,6 +762,32 @@ public interface WellKnownObject {
             @Override
             public String productName() {
                 return WellKnownObject.INCLUDES;
+            }
+
+            @Override
+            boolean preferred() {
+                return false;
+            }
+
+        },
+        IN_WORKSPACE() {
+
+            @Override
+            public String description() {
+                return "A is in workspace B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.WORKSPACE_OF;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.IN_WORKSPACE;
             }
 
             @Override
@@ -1153,6 +1181,32 @@ public interface WellKnownObject {
                 return false;
             }
 
+        },
+        WORKSPACE_OF() {
+
+            @Override
+            public String description() {
+                return "A is a workspace containing B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IN_WORKSPACE;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.WORKSPACE_OF;
+            }
+
+            @Override
+            boolean preferred() {
+                return true;
+            }
+
         };
 
         /* (non-Javadoc)
@@ -1459,6 +1513,7 @@ public interface WellKnownObject {
     String HEAD_OF                   = "head-of";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";
+    String IN_WORKSPACE 			 = "in-workspace";
     String IS_A                      = "is-a";
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";
@@ -1489,6 +1544,7 @@ public interface WellKnownObject {
     String UNSET                     = "(UNSET)";
     String VERSION_OF                = "version-of";
     String WORKSPACE 				 = "Workspace";
+    String WORKSPACE_OF				 = "workspace-of";
 
     /**
      * @return the descriptions of the wko

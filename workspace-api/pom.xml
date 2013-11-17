@@ -16,6 +16,11 @@
 			<artifactId>model</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.hellblazer.CoRE</groupId>
+			<artifactId>animations</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>

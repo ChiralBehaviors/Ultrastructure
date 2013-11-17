@@ -16,12 +16,16 @@
  */
 package com.hellblazer.CoRE.location;
 
+import static com.hellblazer.CoRE.location.LocationAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP;
+
 import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
@@ -30,9 +34,18 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
  * @author hparry
  * 
  */
+@NamedQueries({
+
+	@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+			+ "FROM LocationAccessAuthorization auth "
+			+ "WHERE auth.relationship = :r " + "AND auth.parent = :rf ") })
 @Entity
-public class LocationAccessAuthorization extends AccessAuthorization {
+public abstract class LocationAccessAuthorization extends AccessAuthorization {
     private static final long serialVersionUID = 1L;
+    
+    public static final String LOCATION_ACCESS_AUTHORIZATION_PREFIX = "locationAccessAuthorization";
+	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = LOCATION_ACCESS_AUTHORIZATION_PREFIX
+			+ GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
     @ManyToOne
     @JoinColumn(name = "location1")
@@ -41,6 +54,7 @@ public class LocationAccessAuthorization extends AccessAuthorization {
     /**
      * @return the parent
      */
+    @Override
     public Location getParent() {
         return parent;
     }

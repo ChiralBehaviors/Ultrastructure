@@ -79,6 +79,8 @@ public interface Kernel {
     Relationship getIncludes();
 
     Resource getInverseSoftware();
+    
+    Relationship getInWorkspace();
 
     Relationship getIsA();
 
@@ -151,5 +153,7 @@ public interface Kernel {
     Relationship getVersionOf();
 
 	Product getWorkspace();
+	
+	Relationship getWorkspaceOf();
 
 }

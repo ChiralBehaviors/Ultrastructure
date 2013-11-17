@@ -104,8 +104,11 @@ public class KernelImpl implements Kernel {
     private final Relationship prototypeOf;
     private final Relationship sameRelationship;
     private final Relationship versionOf;
+    private final Relationship inWorkspace;
+	private final Relationship workspaceOf;
 
     private final StatusCode   unset;
+	
 
     public KernelImpl(EntityManager em) {
 
@@ -177,6 +180,8 @@ public class KernelImpl implements Kernel {
                                          WellKnownRelationship.NOT_APPLICABLE);
         ownedBy = find(em, WellKnownRelationship.OWNED_BY);
         owns = find(em, WellKnownRelationship.OWNS);
+        inWorkspace = find(em, WellKnownRelationship.IN_WORKSPACE);
+        workspaceOf = find(em, WellKnownRelationship.WORKSPACE_OF);
 
         unset = find(em, WellKnownStatusCode.UNSET);
 
@@ -654,6 +659,22 @@ public class KernelImpl implements Kernel {
     public Product getWorkspace() {
     	return workspace;
     }
+    
+    /* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.kernel.Kernel#getInWorkspace()
+	 */
+	@Override
+	public Relationship getInWorkspace() {
+		return inWorkspace;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.kernel.Kernel#getWorkspaceOf()
+	 */
+	@Override
+	public Relationship getWorkspaceOf() {
+		return workspaceOf;
+	}
 
     /**
      * 
@@ -708,4 +729,6 @@ public class KernelImpl implements Kernel {
     StatusCode find(EntityManager em, WellKnownStatusCode wko) {
         return em.find(StatusCode.class, wko.id());
     }
+
+	
 }

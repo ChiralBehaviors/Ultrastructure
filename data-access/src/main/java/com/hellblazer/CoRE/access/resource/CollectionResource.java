@@ -17,27 +17,18 @@
 package com.hellblazer.CoRE.access.resource;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.meta.graph.SerializableGraph;
-import com.hellblazer.CoRE.meta.graph.impl.GraphQuery;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * A REST resource for processing atomic transactions full of multiple objects

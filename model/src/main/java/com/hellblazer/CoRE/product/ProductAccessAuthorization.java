@@ -16,12 +16,16 @@
  */
 package com.hellblazer.CoRE.product;
 
+import static com.hellblazer.CoRE.product.ProductAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP;
+
 import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
@@ -30,43 +34,52 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
  * @author hparry
  * 
  */
+@NamedQueries({
+
+	@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+			+ "FROM ProductAccessAuthorization auth "
+			+ "WHERE auth.relationship = :r " + "AND auth.parent = :rf ") })
 @Entity
 public abstract class ProductAccessAuthorization extends AccessAuthorization {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @ManyToOne
-    @JoinColumn(name = "product1")
-    private Product           parent;
+	public static final String PRODUCT_ACCESS_AUTHORIZATION_PREFIX = "productAccessAuthorization";
+	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
+			+ GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
-    /**
-     * @return the parent
-     */
-    public Product getParent() {
-        return parent;
-    }
+	@ManyToOne
+	@JoinColumn(name = "product1")
+	private Product parent;
 
-    /**
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(Product parent) {
-        this.parent = parent;
-    }
+	/**
+	 * @return the parent
+	 */
+	public Product getParent() {
+		return parent;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (parent != null) {
-            parent = (Product) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-    }
+	/**
+	 * @param parent
+	 *            the parent to set
+	 */
+	public void setParent(Product parent) {
+		this.parent = parent;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (parent != null) {
+			parent = (Product) parent.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
+	}
 
 }

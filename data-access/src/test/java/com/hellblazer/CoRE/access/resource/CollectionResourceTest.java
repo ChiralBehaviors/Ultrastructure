@@ -21,17 +21,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.meta.graph.impl.GraphQuery;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 

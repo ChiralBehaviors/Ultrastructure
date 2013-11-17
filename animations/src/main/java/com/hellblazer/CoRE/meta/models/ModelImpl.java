@@ -301,4 +301,5 @@ public class ModelImpl implements Model {
     public ResourceModel getResourceModel() {
         return resourceModel;
     }
+   
 }

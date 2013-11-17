@@ -72,6 +72,7 @@ public class LocationProductAccessAuthorization extends
     /**
      * @return the child
      */
+    @Override
     public Product getChild() {
         return child;
     }

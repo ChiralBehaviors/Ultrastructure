@@ -60,8 +60,8 @@
                   CONSTRAINT access_authorization_research_fkey FOREIGN KEY (research)
                       REFERENCES ruleform.research (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorization_parent_not_null CHECK (ruleform.null_zero(product1) + ruleform.null_zero(resource1) + ruleform.null_zero(location1) = 1),
-                  CONSTRAINT access_authorization_child_not_null CHECK (ruleform.null_zero(product2) + ruleform.null_zero(resource2) + ruleform.null_zero(location2) = 1)
+                  CONSTRAINT access_authorization_one_parent CHECK (ruleform.null_zero(product1) + ruleform.null_zero(resource1) + ruleform.null_zero(location1) = 1),
+                  CONSTRAINT access_authorization_one_child CHECK (ruleform.null_zero(product2) + ruleform.null_zero(resource2) + ruleform.null_zero(location2) = 1)
                 )
                 WITH (
                   OIDS=FALSE

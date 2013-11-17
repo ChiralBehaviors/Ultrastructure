@@ -70,6 +70,7 @@
 	<include relativeToChangelogFile="true" file="/views/unit_values.xml" />
     <include relativeToChangelogFile="true" file="/views/workspace_relationship_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/workspace_status_code_authorization.xml" />
+    <include relativeToChangelogFile="true" file="/views/workspace_unit_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/product_resource_access_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/product_location_access_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/resource_location_access_authorization.xml" />

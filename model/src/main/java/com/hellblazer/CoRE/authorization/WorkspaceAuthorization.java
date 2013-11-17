@@ -46,8 +46,8 @@ import com.hellblazer.CoRE.resource.Resource;
 abstract public class WorkspaceAuthorization extends Ruleform {
 
     public static final String PRODUCT_RESOURCE    = "0";
-
     public static final String PRODUCT_STATUS_CODE = "1";
+    public static final String PRODUCT_UNIT        = "2";
 
     private static final long  serialVersionUID    = 1L;
 

@@ -152,9 +152,9 @@ import com.hellblazer.CoRE.product.ProductNetworkDeduction;
                @Type(value = ProductAgencyAccessAuthorization.class, name = "productAgencyAccessAuthorization"),
 
                @Type(value = Agency.class, name = "agency"),
-               @Type(value = AgencyAttribute.class, name = "resourceAttribute"),
+               @Type(value = AgencyAttribute.class, name = "agencyAttribute"),
                @Type(value = AgencyAttributeAuthorization.class, name = "agencyAttributeAuthorization"),
-               @Type(value = AgencyNetwork.class, name = "resourceNetwork"),
+               @Type(value = AgencyNetwork.class, name = "agencyNetwork"),
                @Type(value = AgencyNetworkAuthorization.class, name = "agencyNetworkAuthorization"),
                @Type(value = AgencyProductAccessAuthorization.class, name = "agencyProductAccessAuthorization"),
                @Type(value = AgencyLocationAccessAuthorization.class, name = "agencyLocationAccessAuthorization"),

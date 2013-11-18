@@ -37,26 +37,48 @@ public class Workspace {
 	private Product workspace;
 	private Relationship workspaceOf;
 	private EntityManager em;
+	private List<Product> products;
+	private List<AccessAuthorization> auths;
 
 	public Workspace(Product workspace, Relationship workspaceOf,
 			EntityManager em) {
 		this.workspace = workspace;
 		this.workspaceOf = workspaceOf;
 		this.em = em;
+		products = loadWorkspaceProducts();
+		auths = loadWorkspaceAccessAuthorizations();
 	}
 
 
-	public List<Product> getWorkspaceProducts() {
+	private List<Product> loadWorkspaceProducts() {
 		NetworkGraphQuery<Product> queryResource = new NetworkGraphQuery<Product>(
 				workspace, workspaceOf, em);
 		return queryResource.getNodes();
 
 	}
 
-	public List<AccessAuthorization> getWorkspaceAccessAuthorizations() {
+	private List<AccessAuthorization> loadWorkspaceAccessAuthorizations() {
 		AccessAuthorizationGraphQuery query = 
 				new AccessAuthorizationGraphQuery(workspace, workspaceOf, em);
 		return query.getResults();
 	}
+
+
+	/**
+	 * @return the products
+	 */
+	public List<Product> getProducts() {
+		return products;
+	}
+
+
+	/**
+	 * @return the auths
+	 */
+	public List<AccessAuthorization> getAuths() {
+		return auths;
+	}
+	
+	
 
 }

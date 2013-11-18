@@ -73,6 +73,7 @@ public final class NetworkGraphQuery<RuleForm extends Networked<RuleForm, ?>> {
 		this.nodes = nodes;
 		this.relationships = relationships;
 		this.em = em;
+		this.origin = node;
 		findNeighbors();
 	}
 

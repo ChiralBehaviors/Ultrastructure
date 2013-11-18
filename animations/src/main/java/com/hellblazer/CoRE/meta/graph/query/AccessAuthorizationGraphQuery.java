@@ -67,37 +67,8 @@ public class AccessAuthorizationGraphQuery {
 
 	private void findAuthorizations() {
 		findProductAuthorizations();
-		findResourceAuthorizations();
-		findLocationAuthorizations();
 	}
 
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	private void findLocationAuthorizations() {
-		Query q = em
-				.createNamedQuery(
-						LocationAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP,
-						LocationAccessAuthorization.class);
-		q.setParameter(0, parent);
-		q.setParameter(1, relationship);
-		auths.addAll(q.getResultList());
-	}
-
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	private void findResourceAuthorizations() {
-		Query q = em
-				.createNamedQuery(
-						ResourceAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP,
-						ResourceAccessAuthorization.class);
-		q.setParameter(0, parent);
-		q.setParameter(1, relationship);
-		auths.addAll(q.getResultList());
-	}
 
 	/**
 	 * 
@@ -108,8 +79,8 @@ public class AccessAuthorizationGraphQuery {
 				.createNamedQuery(
 						ProductAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP,
 						ProductAccessAuthorization.class);
-		q.setParameter(0, parent);
-		q.setParameter(1, relationship);
+		q.setParameter("rf", parent);
+		q.setParameter("r", relationship);
 		auths.addAll(q.getResultList());
 
 	}

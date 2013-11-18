@@ -23,11 +23,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
-import com.hellblazer.CoRE.location.LocationAccessAuthorization;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.ProductAccessAuthorization;
-import com.hellblazer.CoRE.resource.ResourceAccessAuthorization;
 
 /**
  * @author hparry

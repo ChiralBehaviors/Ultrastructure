@@ -48,6 +48,10 @@ public class Workspace {
 		products = loadWorkspaceProducts();
 		auths = loadWorkspaceAccessAuthorizations();
 	}
+	
+	public Workspace() {
+		//empty constructor for JSON
+	}
 
 
 	private List<Product> loadWorkspaceProducts() {
@@ -77,6 +81,56 @@ public class Workspace {
 	 */
 	public List<AccessAuthorization> getAuths() {
 		return auths;
+	}
+
+
+	/**
+	 * @return
+	 */
+	public Product getParentProduct() {
+		return workspace;
+	}
+
+	/**
+	 * @return the workspace
+	 */
+	public Product getWorkspace() {
+		return workspace;
+	}
+
+	/**
+	 * @param workspace the workspace to set
+	 */
+	public void setWorkspace(Product workspace) {
+		this.workspace = workspace;
+	}
+
+	/**
+	 * @return the workspaceOf
+	 */
+	public Relationship getWorkspaceOf() {
+		return workspaceOf;
+	}
+
+	/**
+	 * @param workspaceOf the workspaceOf to set
+	 */
+	public void setWorkspaceOf(Relationship workspaceOf) {
+		this.workspaceOf = workspaceOf;
+	}
+
+	/**
+	 * @param products the products to set
+	 */
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+
+	/**
+	 * @param auths the auths to set
+	 */
+	public void setAuths(List<AccessAuthorization> auths) {
+		this.auths = auths;
 	}
 	
 	

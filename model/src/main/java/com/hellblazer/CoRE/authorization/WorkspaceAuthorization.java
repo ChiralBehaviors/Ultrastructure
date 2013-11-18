@@ -17,9 +17,12 @@
 
 package com.hellblazer.CoRE.authorization;
 
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -114,4 +117,20 @@ abstract public class WorkspaceAuthorization extends Ruleform {
         this.authorizationType = authorizationType;
     }
 
+    /*
+      * (non-Javadoc)
+      * 
+      * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+      * EntityManager, java.util.Map)
+      */
+
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 }

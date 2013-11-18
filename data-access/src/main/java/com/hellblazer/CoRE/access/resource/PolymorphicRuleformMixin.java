@@ -28,6 +28,9 @@ import com.hellblazer.CoRE.attribute.TransformationMetarule;
 import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.attribute.UnitValue;
 import com.hellblazer.CoRE.attribute.ValueType;
+import com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization;
+import com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization;
+import com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization;
 import com.hellblazer.CoRE.coordinate.Coordinate;
 import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
 import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
@@ -130,7 +133,6 @@ import com.hellblazer.CoRE.resource.ResourceProductAccessAuthorization;
                @Type(value = LocationRelationship.class, name = "locationRelationship"),
                @Type(value = LocationProductAccessAuthorization.class, name = "locationProductAccessAuthorization"),
                @Type(value = LocationResourceAccessAuthorization.class, name = "locationResourceAccessAuthorization"),
-               
 
                @Type(value = NetworkInference.class, name = "networkInference"),
                @Type(value = Relationship.class, name = "relationship"),
@@ -155,9 +157,11 @@ import com.hellblazer.CoRE.resource.ResourceProductAccessAuthorization;
                @Type(value = ResourceNetwork.class, name = "resourceNetwork"),
                @Type(value = ResourceNetworkAuthorization.class, name = "resourceNetworkAuthorization"),
                @Type(value = ResourceProductAccessAuthorization.class, name = "resourceProductAccessAuthorization"),
-               @Type(value = ResourceLocationAccessAuthorization.class, name = "resourceLocationAccessAuthorization")
-})
-               
+               @Type(value = ResourceLocationAccessAuthorization.class, name = "resourceLocationAccessAuthorization"),
+
+               @Type(value = WorkspaceRelationshipAuthorization.class, name = "workspaceRelationshipAuthorization"),
+               @Type(value = WorkspaceStatusCodeAuthorization.class, name = "workspaceStatusCodeAuthorization"),
+               @Type(value = WorkspaceUnitAuthorization.class, name = "workspaceUnitAuthorization") })
 public abstract class PolymorphicRuleformMixin {
 
 }

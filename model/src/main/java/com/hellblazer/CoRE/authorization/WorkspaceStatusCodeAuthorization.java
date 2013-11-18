@@ -17,11 +17,15 @@
 
 package com.hellblazer.CoRE.authorization;
 
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.resource.Resource;
 
@@ -73,6 +77,22 @@ public class WorkspaceStatusCodeAuthorization extends WorkspaceAuthorization {
 
     public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+
+        if (statusCode != null) {
+            statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
     }
 
 }

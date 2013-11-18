@@ -59,7 +59,7 @@ public class WorkspaceResource {
 	public Workspace get(@PathParam("id") long productId, @QueryParam("relId") long relId) {
 		Product p = em.find(Product.class, productId);
 		Relationship r = em.find(Relationship.class, relId);
-		Workspace w = new Workspace(p, r, em);
+		Workspace w = Workspace.loadWorkspace(p, r, em);
 		
 		return w;
 	}

@@ -40,15 +40,28 @@ public class Workspace {
 	private List<Product> products;
 	private List<AccessAuthorization> auths;
 
-	public Workspace(Product workspace, Relationship workspaceOf,
+	/**
+	 * Use this to create a workspace object in memory and load relevant
+	 * components from the db.
+	 * @param workspace
+	 * @param workspaceOf
+	 * @param em
+	 */
+	public static Workspace loadWorkspace(Product workspace, Relationship workspaceOf,
 			EntityManager em) {
-		this.workspace = workspace;
-		this.workspaceOf = workspaceOf;
-		this.em = em;
-		products = loadWorkspaceProducts();
-		auths = loadWorkspaceAccessAuthorizations();
+		Workspace ws = new Workspace();
+		
+		ws.workspace = workspace;
+		ws.workspaceOf = workspaceOf;
+		ws.em = em;
+		ws.products = ws.loadWorkspaceProducts();
+		ws.auths = ws.loadWorkspaceAccessAuthorizations();
+		return ws;
 	}
 	
+	/**
+	 * An empty constructor for JSON serialization. 
+	 */
 	public Workspace() {
 		//empty constructor for JSON
 	}

@@ -54,9 +54,31 @@ import com.yammer.metrics.annotation.Timed;
  */
 @Path("/v{version : \\d+}/services/data/meta/")
 public class DomainResource {
+    /**
+     * Private class for serializing a ruleform into a JSON object. It's so
+     * awesome that this works.
+     * 
+     * @author hparry
+     * 
+     */
+    private class DomainObject {
+
+        @JsonProperty("objectName")
+        private String   name;
+
+        @JsonProperty("objectFields")
+        private String[] fields;
+
+        DomainObject(String name, String[] fields) {
+            this.name = name;
+            this.fields = fields;
+        }
+    }
+
     private static final char                   DOT = '.';
     private static Localizer                    loc = Localizer.forPackage(CrudResource.class);
     protected final OpenJPAEntityManagerFactory emf;
+
     protected final String                      unitName;
 
     /**
@@ -144,27 +166,6 @@ public class DomainResource {
             if (keys.next().indexOf(DOT) == -1) {
                 keys.remove();
             }
-        }
-    }
-
-    /**
-     * Private class for serializing a ruleform into a JSON object. It's so
-     * awesome that this works.
-     * 
-     * @author hparry
-     * 
-     */
-    private class DomainObject {
-
-        @JsonProperty("objectName")
-        private String   name;
-
-        @JsonProperty("objectFields")
-        private String[] fields;
-
-        DomainObject(String name, String[] fields) {
-            this.name = name;
-            this.fields = fields;
         }
     }
 

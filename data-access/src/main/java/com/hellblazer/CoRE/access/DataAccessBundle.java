@@ -43,6 +43,12 @@ import com.yammer.dropwizard.config.Environment;
 public class DataAccessBundle implements
         ConfiguredBundle<CoREServiceConfiguration> {
 
+    @Override
+    public void initialize(Bootstrap<?> bootstrap) {
+        // TODO Auto-generated method stub
+
+    }
+
     /* (non-Javadoc)
      * @see com.yammer.dropwizard.ConfiguredBundle#initialize(java.lang.Object, com.yammer.dropwizard.config.Environment)
      */
@@ -69,12 +75,6 @@ public class DataAccessBundle implements
         environment.addHealthCheck(new JpaHealthCheck(emf));
         environment.addResource(new CollectionResource(emf));
         environment.addResource(new WorkspaceResource(emf));
-        
-    }
-
-    @Override
-    public void initialize(Bootstrap<?> bootstrap) {
-        // TODO Auto-generated method stub
 
     }
 }

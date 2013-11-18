@@ -19,20 +19,20 @@ package com.hellblazer.CoRE.access.api;
 
 /**
  * @author hparry
- *
+ * 
  */
 public class ExistentialRuleformApi {
-	
-	//create
-	
-	//take individual args, create ruleform, persist or not as necessary
-//	public static ExistentialRuleform create(Map<String, Object> params) {
-//		
-//	}
-	//read
-	
-	//update
-	
-	//delete
+
+    //create
+
+    //take individual args, create ruleform, persist or not as necessary
+    //	public static ExistentialRuleform create(Map<String, Object> params) {
+    //		
+    //	}
+    //read
+
+    //update
+
+    //delete
 
 }

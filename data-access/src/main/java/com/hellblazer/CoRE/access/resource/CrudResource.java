@@ -19,7 +19,6 @@ package com.hellblazer.CoRE.access.resource;
 import static com.hellblazer.CoRE.access.resource.Constants.QUALIFIER_PLAN;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,18 +47,14 @@ import org.apache.openjpa.persistence.FetchPlan;
 import org.apache.openjpa.persistence.JPAFacadeHelper;
 import org.apache.openjpa.persistence.OpenJPAEntityManager;
 import org.apache.openjpa.persistence.OpenJPAEntityManagerFactory;
+import org.apache.openjpa.persistence.OpenJPAEntityManagerFactorySPI;
 import org.apache.openjpa.persistence.OpenJPAQuery;
 import org.apache.openjpa.util.ApplicationIds;
 import org.w3c.dom.Document;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.hellblazer.CoRE.access.formatting.ExceptionFormatter;
-import com.hellblazer.CoRE.json.AttributeValueSerializer;
-import com.hellblazer.CoRE.resource.ResourceAttribute;
 import com.yammer.metrics.annotation.Timed;
 
 /**
@@ -135,13 +130,13 @@ public class CrudResource {
     @Path("/find/{qualifiers : .+}")
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     @Timed
-    public Response find(@PathParam("version") int version,
-                         @PathParam("qualifiers") String qualifiers,
-                         @Context UriInfo uriInfo, @Context HttpHeaders headers)
-                                                                                throws JsonGenerationException,
-                                                                                JsonMappingException,
-                                                                                IOException,
-                                                                                JAXBException {
+    public Object find(@PathParam("version") int version,
+                       @PathParam("qualifiers") String qualifiers,
+                       @Context UriInfo uriInfo, @Context HttpHeaders headers)
+                                                                              throws JsonGenerationException,
+                                                                              JsonMappingException,
+                                                                              IOException,
+                                                                              JAXBException {
         OpenJPAEntityManager em = getPersistenceContext();
         Parse parse = new Parse(qualifiers, uriInfo, mandatoryFindArgs,
                                 validFindQualifiers, 1, Integer.MAX_VALUE);
@@ -158,28 +153,7 @@ public class CrudResource {
         try {
             Object pc = em.find(meta.getDescribedType(), oid);
             if (pc != null) {
-                ObjectMapper mapper;
-                if (meta.getDescribedType().equals(ResourceAttribute.class)) {
-                    mapper = new ObjectMapper();
-                    SimpleModule testModule = new SimpleModule(
-                                                               "MyModule",
-                                                               new Version(
-                                                                           1,
-                                                                           0,
-                                                                           0,
-                                                                           null,
-                                                                           null,
-                                                                           null));
-                    testModule.addSerializer(new AttributeValueSerializer<ResourceAttribute>(
-                                                                                             ResourceAttribute.class,
-                                                                                             true)); // assuming serializer declares correct class to bind to
-                    mapper.registerModule(testModule);
-                } else {
-                    mapper = new ObjectMapper();
-                    mapper.enableDefaultTyping();
-                }
-                return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(pc),
-                                   "text/json").build();
+                return pc;
             } else {
                 return Response.status(Status.NOT_FOUND).entity(loc.get("product-not-found",
                                                                         type,
@@ -190,18 +164,13 @@ public class CrudResource {
         }
     }
 
-    public OpenJPAEntityManager getPersistenceContext() {
-        return emf.createEntityManager();
-    }
-
-    @SuppressWarnings("unchecked")
     @GET
     @Path("/query/{qualifiers : .+}")
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     @Timed
-    public Response query(@PathParam("version") int version,
-                          @PathParam("qualifiers") String qualifiers,
-                          @Context UriInfo uriInfo, @Context HttpHeaders headers) {
+    public Object query(@PathParam("version") int version,
+                        @PathParam("qualifiers") String qualifiers,
+                        @Context UriInfo uriInfo, @Context HttpHeaders headers) {
         OpenJPAEntityManager em = getPersistenceContext();
         Parse parse = new Parse(qualifiers, uriInfo, mandatoryQueryArgs,
                                 validQueryQualifiers, 1, Integer.MAX_VALUE);
@@ -222,16 +191,10 @@ public class CrudResource {
             for (Map.Entry<String, String> entry : args.entrySet()) {
                 query.setParameter(entry.getKey(), entry.getValue());
             }
-            Object result;
-            //TODO HPARRY can we build a typed object list out of the results here
-            //and serialize to json?
             if (parse.isBooleanQualifier(QUALIFIER_SINGLE)) {
-                result = query.getSingleResult();
+                return query.getSingleResult();
             } else {
-                result = new ArrayList<Object>(query.getResultList());
-                ObjectMapper mapper = new ObjectMapper();
-                return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(result),
-                                   "text/json").build();
+                return query.getResultList();
             }
 
         } catch (ArgumentException e) {
@@ -249,15 +212,10 @@ public class CrudResource {
         } finally {
             popFetchPlan(false, parse);
         }
-        return null;
     }
 
-    @SuppressWarnings("deprecation")
-    public ClassMetaData resolve(String alias) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        return emf.getConfiguration().getMetaDataRepositoryInstance().getMetaData(alias,
-                                                                                  loader,
-                                                                                  true);
+    protected OpenJPAEntityManager getPersistenceContext() {
+        return emf.createEntityManager();
     }
 
     protected void popFetchPlan(boolean finder, Parse parse) {
@@ -295,6 +253,13 @@ public class CrudResource {
                 plan.addFetchGroup(p);
             }
         }
+    }
+
+    protected ClassMetaData resolve(String alias) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        return ((OpenJPAEntityManagerFactorySPI) emf).getConfiguration().getMetaDataRepositoryInstance().getMetaData(alias,
+                                                                                                                     loader,
+                                                                                                                     true);
     }
 
 }

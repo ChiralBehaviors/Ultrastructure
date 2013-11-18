@@ -22,21 +22,23 @@ import com.hellblazer.CoRE.access.resource.PolymorphicRuleformMixin;
 
 /**
  * A jackson module for registering serializers and deserializers.
+ * 
  * @author hparry
- *
+ * 
  */
 public class CoREModule extends SimpleModule {
 
-	private static final long serialVersionUID = 1L;
-	
-	public CoREModule() {
-		super("CoREModule");
-	}
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public void setupModule(SetupContext context) {
-		
-		context.setMixInAnnotations(Ruleform.class, PolymorphicRuleformMixin.class);
-		super.setupModule(context);
-	}
+    public CoREModule() {
+        super("CoREModule");
+    }
+
+    @Override
+    public void setupModule(SetupContext context) {
+
+        context.setMixInAnnotations(Ruleform.class,
+                                    PolymorphicRuleformMixin.class);
+        super.setupModule(context);
+    }
 }

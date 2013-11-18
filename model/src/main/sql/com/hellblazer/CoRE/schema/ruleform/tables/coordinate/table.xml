@@ -16,7 +16,7 @@
               notes character varying, -- Usage notes for the coordinate
               pinned boolean NOT NULL DEFAULT false, -- Indicates that a coordinate rule has been pinned, restricting changes to the rule
               research bigint, -- A research flag that has been set on an individual rule
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT coordinate_pkey PRIMARY KEY (id ),
               CONSTRAINT coordinate_kind_fkey FOREIGN KEY (kind)
@@ -26,7 +26,7 @@
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
             )
             WITH (
@@ -41,7 +41,7 @@
             COMMENT ON COLUMN ruleform.coordinate.notes IS 'Usage notes for the coordinate';
             COMMENT ON COLUMN ruleform.coordinate.pinned IS 'Indicates that a coordinate rule has been pinned, restricting changes to the rule';
             COMMENT ON COLUMN ruleform.coordinate.research IS 'A research flag that has been set on an individual rule';
-            COMMENT ON COLUMN ruleform.coordinate.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.coordinate.update_date IS 'The time at which this rule was last updated';
             ]]>
         </sql>

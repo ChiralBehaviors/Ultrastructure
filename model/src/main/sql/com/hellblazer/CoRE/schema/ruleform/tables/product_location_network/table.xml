@@ -15,9 +15,9 @@
               coordinate bigint NOT NULL, -- The address of 'product' relative to 'contextual_product'.
               notes character varying, -- Usage notes for this rule
               research bigint, -- A research flag that has been set on an individual rule
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
-              resource bigint NOT NULL,
+              agency bigint NOT NULL,
               CONSTRAINT product_location_network_pkey PRIMARY KEY (id ),
               CONSTRAINT product_location_network_contextual_product_fkey FOREIGN KEY (contextual_product)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
@@ -31,13 +31,13 @@
               CONSTRAINT product_location_network_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_location_network_resource_fkey FOREIGN KEY (resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT product_location_network_agency_fkey FOREIGN KEY (agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_location_network_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_location_network_product_key UNIQUE (resource , product , contextual_product , coordinate )
+              CONSTRAINT product_location_network_product_key UNIQUE (agency , product , contextual_product , coordinate )
             )
             WITH (
               OIDS=FALSE
@@ -50,7 +50,7 @@
             COMMENT ON COLUMN ruleform.product_location_network.coordinate IS 'The address of ''product'' relative to ''contextual_product''.';
             COMMENT ON COLUMN ruleform.product_location_network.notes IS 'Usage notes for this rule';
             COMMENT ON COLUMN ruleform.product_location_network.research IS 'A research flag that has been set on an individual rule';
-            COMMENT ON COLUMN ruleform.product_location_network.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.product_location_network.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.product_location_network.update_date IS 'The time at which this rule was last updated';
             ]]>
         </sql>

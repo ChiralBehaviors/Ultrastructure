@@ -19,7 +19,7 @@
 			   LEFT JOIN ruleform.product mp ON base_table.my_parent = mp.id
 			   LEFT JOIN ruleform.status_code mps ON base_table.parent_status_to_set = mps.id
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id
-			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.product_parent_sequencing_authorization
 			  OWNER TO core;

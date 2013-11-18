@@ -16,7 +16,7 @@
               subordinate_coordinate_kind bigint, -- Another kind of coordinate defined as part of the internal structure of this kind of coordinate
               notes character varying, -- Usage notes for this definition rule
               research bigint, -- A research flag that has been set on an individual rule
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT coordinate_kind_definition_pkey PRIMARY KEY (id ),
               CONSTRAINT coordinate_kind_definition_attribute_fkey FOREIGN KEY (attribute)
@@ -32,7 +32,7 @@
                   REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_kind_definition_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_kind_definition_kind_key UNIQUE (kind , sequence_number ),
               CONSTRAINT valid_definition CHECK ((ruleform.null_zero(attribute) + ruleform.null_zero(subordinate_coordinate_kind)) = 1)
@@ -49,7 +49,7 @@
             COMMENT ON COLUMN ruleform.coordinate_kind_definition.subordinate_coordinate_kind IS 'Another kind of coordinate defined as part of the internal structure of this kind of coordinate';
             COMMENT ON COLUMN ruleform.coordinate_kind_definition.notes IS 'Usage notes for this definition rule';
             COMMENT ON COLUMN ruleform.coordinate_kind_definition.research IS 'A research flag that has been set on an individual rule';
-            COMMENT ON COLUMN ruleform.coordinate_kind_definition.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate_kind_definition.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.coordinate_kind_definition.update_date IS 'The time at which this rule was last updated';
             ]]>
         </sql>

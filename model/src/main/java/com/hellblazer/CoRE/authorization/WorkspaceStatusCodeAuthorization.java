@@ -26,8 +26,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.StatusCode;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -55,11 +55,11 @@ public class WorkspaceStatusCodeAuthorization extends WorkspaceAuthorization {
         super(id);
     }
 
-    public WorkspaceStatusCodeAuthorization(Long id, Resource updatedBy) {
+    public WorkspaceStatusCodeAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
-    public WorkspaceStatusCodeAuthorization(Resource updatedBy) {
+    public WorkspaceStatusCodeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -67,7 +67,7 @@ public class WorkspaceStatusCodeAuthorization extends WorkspaceAuthorization {
         super(notes);
     }
 
-    public WorkspaceStatusCodeAuthorization(String notes, Resource updatedBy) {
+    public WorkspaceStatusCodeAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 

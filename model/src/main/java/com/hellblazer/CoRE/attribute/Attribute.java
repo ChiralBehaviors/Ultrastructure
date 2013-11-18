@@ -47,9 +47,9 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * Existential ruleform for all attributes in the CoRE database. This table
@@ -158,7 +158,7 @@ public class Attribute extends ExistentialRuleform implements
     /**
      * @param updatedBy
      */
-    public Attribute(Resource updatedBy) {
+    public Attribute(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -173,7 +173,7 @@ public class Attribute extends ExistentialRuleform implements
      * @param name
      * @param updatedBy
      */
-    public Attribute(String name, Resource updatedBy) {
+    public Attribute(String name, Agency updatedBy) {
         super(name, updatedBy);
     }
 
@@ -190,7 +190,7 @@ public class Attribute extends ExistentialRuleform implements
      * @param description
      * @param updatedBy
      */
-    public Attribute(String name, String description, Resource updatedBy) {
+    public Attribute(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
     }
 
@@ -200,7 +200,7 @@ public class Attribute extends ExistentialRuleform implements
      * @param updatedBy
      * @param valueType
      */
-    public Attribute(String name, String description, Resource updatedBy,
+    public Attribute(String name, String description, Agency updatedBy,
                      ValueType valueType) {
         super(name, description, updatedBy);
         setValueType(valueType);
@@ -212,7 +212,7 @@ public class Attribute extends ExistentialRuleform implements
      * @param updatedBy
      */
     public Attribute(String name, String description, ValueType valueType,
-                     Resource updatedBy) {
+                     Agency updatedBy) {
         this(name, description, updatedBy);
         this.valueType = valueType;
     }
@@ -314,11 +314,11 @@ public class Attribute extends ExistentialRuleform implements
      * @see
      * com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network
      * .Relationship, com.hellblazer.CoRE.network.Networked,
-     * com.hellblazer.CoRE.resource.Resource, javax.persistence.EntityManager)
+     * com.hellblazer.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public void link(Relationship r, Attribute child, Resource updatedBy,
-                     Resource inverseSoftware, EntityManager em) {
+    public void link(Relationship r, Attribute child, Agency updatedBy,
+                     Agency inverseSoftware, EntityManager em) {
         AttributeNetwork link = new AttributeNetwork(this, r, child, updatedBy);
         em.persist(link);
         AttributeNetwork inverse = new AttributeNetwork(child, r.getInverse(),

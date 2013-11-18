@@ -8,14 +8,14 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.product_location AS 
-			 SELECT bl.id, res.name AS resource, b.name AS product, rel.name AS relationship, l.name AS location, bl.notes, r.name AS research, up.name AS updated_by, bl.update_date
+			 SELECT bl.id, res.name AS agency, b.name AS product, rel.name AS relationship, l.name AS location, bl.notes, r.name AS research, up.name AS updated_by, bl.update_date
 			   FROM ruleform.product_location bl
-			   JOIN ruleform.resource res ON bl.resource = res.id
+			   JOIN ruleform.agency res ON bl.agency = res.id
 			   JOIN ruleform.product b ON bl.product = b.id
 			   JOIN ruleform.relationship rel ON bl.relationship = rel.id
 			   JOIN ruleform.location l ON bl.location = l.id
 			   LEFT JOIN ruleform.research r ON bl.research = r.id
-			   JOIN ruleform.resource up ON bl.updated_by = up.id;
+			   JOIN ruleform.agency up ON bl.updated_by = up.id;
 			
 			ALTER TABLE readable.product_location
 			  OWNER TO core;

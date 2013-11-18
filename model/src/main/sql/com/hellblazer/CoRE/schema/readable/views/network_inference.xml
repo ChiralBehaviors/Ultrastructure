@@ -14,7 +14,7 @@
 			   JOIN ruleform.relationship r2 ON c.premise2 = r2.id
 			   JOIN ruleform.relationship r3 ON c.inference = r3.id
 			   LEFT JOIN ruleform.research res ON c.research = res.id
-			   JOIN ruleform.resource up ON c.updated_by = up.id;
+			   JOIN ruleform.agency up ON c.updated_by = up.id;
 			
 			ALTER TABLE readable.network_inference
 			  OWNER TO core;

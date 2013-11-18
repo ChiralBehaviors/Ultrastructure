@@ -25,7 +25,7 @@
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               notes character varying,
               research bigint,
-              resource_value bigint,
+              agency_value bigint,
               CONSTRAINT location_attribute_pkey PRIMARY KEY (id ),
               CONSTRAINT location_attribute_attribute_fkey FOREIGN KEY (attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
@@ -39,18 +39,18 @@
               CONSTRAINT location_attribute_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_attribute_resource_value_fkey FOREIGN KEY (resource_value)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT location_attribute_agency_value_fkey FOREIGN KEY (agency_value)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_attribute_location_key UNIQUE (location , attribute, sequence_number ),
               CONSTRAINT location_attribute_sequence_number_check CHECK (sequence_number > 0),
-              CONSTRAINT location_attribute_valid_value CHECK ((ruleform.null_zero(product_value) + ruleform.null_zero(text_value) + ruleform.null_zero(resource_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+              CONSTRAINT location_attribute_valid_value CHECK ((ruleform.null_zero(product_value) + ruleform.null_zero(text_value) + ruleform.null_zero(agency_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
             )
             WITH (
               OIDS=FALSE

@@ -34,8 +34,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -48,7 +48,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @DiscriminatorColumn(name = "authorization_type")
 abstract public class WorkspaceAuthorization extends Ruleform {
 
-    public static final String PRODUCT_RESOURCE    = "0";
+    public static final String PRODUCT_AGENCY    = "0";
     public static final String PRODUCT_STATUS_CODE = "1";
     public static final String PRODUCT_UNIT        = "2";
 
@@ -73,11 +73,11 @@ abstract public class WorkspaceAuthorization extends Ruleform {
         super(id);
     }
 
-    public WorkspaceAuthorization(Long id, Resource updatedBy) {
+    public WorkspaceAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
-    public WorkspaceAuthorization(Resource updatedBy) {
+    public WorkspaceAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -85,7 +85,7 @@ abstract public class WorkspaceAuthorization extends Ruleform {
         super(notes);
     }
 
-    public WorkspaceAuthorization(String notes, Resource updatedBy) {
+    public WorkspaceAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 

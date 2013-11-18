@@ -13,7 +13,7 @@
 			   JOIN ruleform.unit u ON u.id = uv.unit
 			   LEFT JOIN ruleform.product bv ON bv.id = uv.product_value
 			   LEFT JOIN ruleform.research r ON r.id = uv.research
-			   JOIN ruleform.resource up ON up.id = uv.updated_by;
+			   JOIN ruleform.agency up ON up.id = uv.updated_by;
 			
 			ALTER TABLE readable.unit_values
 			  OWNER TO core;

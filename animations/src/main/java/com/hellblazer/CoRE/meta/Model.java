@@ -23,9 +23,9 @@ import javax.persistence.EntityManager;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The meta model for the CoRE
@@ -75,14 +75,14 @@ public interface Model {
 
 	/**
 	 * Find all the instances of the RuleForm that have been updated by the
-	 * resource
+	 * agency
 	 * 
 	 * @param updatedBy
 	 * @param ruleform
 	 * @return
 	 */
 	<RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(
-			Resource updatedBy, Class<Ruleform> ruleform);
+			Agency updatedBy, Class<Ruleform> ruleform);
 
 	/**
 	 * @return the Attribute model
@@ -119,8 +119,8 @@ public interface Model {
 	LocationModel getLocationModel();
 
 	/**
-	 * @return the Resource model
+	 * @return the Agency model
 	 */
-	ResourceModel getResourceModel();
+	AgencyModel getAgencyModel();
 
 }

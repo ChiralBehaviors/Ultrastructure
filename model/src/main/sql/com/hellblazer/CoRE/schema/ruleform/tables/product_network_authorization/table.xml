@@ -10,15 +10,15 @@
             CREATE TABLE ruleform.product_network_authorization
             (
               id bigserial NOT NULL, -- Unique identifier
-              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the resource that determines the classification criteria for selecting network relationships a certain Product must have
+              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the agency that determines the classification criteria for selecting network relationships a certain Product must have
               classifier bigint NOT NULL, -- In conjunction with the 'classification_attribute' column, determines the classification criteria for selecting network relationships a certain Product must have
               authorized_parent bigint NOT NULL, -- A network parent an Product is expected to have
               authorized_relationship bigint NOT NULL, -- A network relationship an Product is expected to have
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when an relationship can have multiple acceptable parent values
-              grouping_resource bigint, -- If present, used to select an entire grouping of Entities for this relationship
+              grouping_agency bigint, -- If present, used to select an entire grouping of Entities for this relationship
               notes character varying, -- Additional notes regarding this rule
               research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT product_network_authorization_pkey PRIMARY KEY (id ),
               CONSTRAINT product_network_authorization_authorized_parent_fkey FOREIGN KEY (authorized_parent)
@@ -33,16 +33,16 @@
               CONSTRAINT product_network_authorization_classifier_fkey FOREIGN KEY (classifier)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT product_network_authorization_grouping_resource_fkey FOREIGN KEY (grouping_resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT product_network_authorization_grouping_agency_fkey FOREIGN KEY (grouping_agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT product_network_authorization_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT product_network_authorization_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT product_attribute_authorizatio_resource_classification_attri_key UNIQUE (classification , classifier, authorized_parent, authorized_relationship , sequence_number )
+              CONSTRAINT product_attribute_authorizatio_agency_classification_attri_key UNIQUE (classification , classifier, authorized_parent, authorized_relationship , sequence_number )
             )
             WITH (
               OIDS=FALSE
@@ -55,10 +55,10 @@
             COMMENT ON COLUMN ruleform.product_network_authorization.authorized_relationship IS 'A network relationship a Product is expected to have';
             COMMENT ON COLUMN ruleform.product_network_authorization.authorized_parent IS 'A network parent a Product is expected to have';
             COMMENT ON COLUMN ruleform.product_network_authorization.sequence_number IS 'Ordering and uniqueness, for when an Attribute can have multiple acceptable values';
-            COMMENT ON COLUMN ruleform.product_network_authorization.grouping_resource IS 'A network parent an Product is expected to have';
+            COMMENT ON COLUMN ruleform.product_network_authorization.grouping_agency IS 'A network parent an Product is expected to have';
             COMMENT ON COLUMN ruleform.product_network_authorization.notes IS 'Additional notes regarding this rule';
             COMMENT ON COLUMN ruleform.product_network_authorization.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
-            COMMENT ON COLUMN ruleform.product_network_authorization.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.product_network_authorization.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.product_network_authorization.update_date IS 'The date this rule was last changed';
             ]]>
 		</sql>

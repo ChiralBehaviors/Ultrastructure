@@ -11,7 +11,7 @@
 			 SELECT k.id, k.name, k.description, k.notes, k.pinned, k.nestable, r.name AS research, up.name AS updated_by, k.update_date
 			   FROM ruleform.coordinate_kind k
 			   LEFT JOIN ruleform.research r ON r.id = k.research
-			   JOIN ruleform.resource up ON up.id = k.updated_by;
+			   JOIN ruleform.agency up ON up.id = k.updated_by;
 			
 			ALTER TABLE readable.coordinate_kind
 			  OWNER TO core;

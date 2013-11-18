@@ -20,42 +20,42 @@ package com.hellblazer.CoRE.security;
 import java.util.Collections;
 import java.util.List;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * Represents the authenticated Resource and the authorized active aspects the
+ * Represents the authenticated Agency and the authorized active aspects the
  * principal has enabled
  * 
  * @author hhildebrand
  * 
  */
 public class AuthenticatedPrincipal {
-    private final Resource               principal;
-    private final List<Aspect<Resource>> activeRoles;
+    private final Agency               principal;
+    private final List<Aspect<Agency>> activeRoles;
 
     /**
      * @param principal
      */
-    public AuthenticatedPrincipal(Resource principal) {
-        this(principal, Collections.<Aspect<Resource>> emptyList());
+    public AuthenticatedPrincipal(Agency principal) {
+        this(principal, Collections.<Aspect<Agency>> emptyList());
     }
 
     /**
      * @param principal
      * @param activeRoles
      */
-    public AuthenticatedPrincipal(Resource principal,
-                                  List<Aspect<Resource>> activeRoles) {
+    public AuthenticatedPrincipal(Agency principal,
+                                  List<Aspect<Agency>> activeRoles) {
         this.principal = principal;
         this.activeRoles = Collections.unmodifiableList(activeRoles);
     }
 
-    public List<Aspect<Resource>> getActiveRoles() {
+    public List<Aspect<Agency>> getActiveRoles() {
         return activeRoles;
     }
 
-    public Resource getPrincipal() {
+    public Agency getPrincipal() {
         return principal;
     }
 }

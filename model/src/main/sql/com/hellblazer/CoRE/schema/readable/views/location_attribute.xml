@@ -13,7 +13,7 @@
 			   JOIN ruleform.location l ON la.location = l.id
 			   JOIN ruleform.attribute a ON la.attribute = a.id
 			   LEFT JOIN ruleform.product b ON la.product_value = b.id
-			   JOIN ruleform.resource r ON la.updated_by = r.id;
+			   JOIN ruleform.agency r ON la.updated_by = r.id;
 			
 			ALTER TABLE readable.location_attribute
 			  OWNER TO core;

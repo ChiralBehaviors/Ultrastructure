@@ -29,8 +29,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.AttributeAuthorization;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * 
@@ -55,10 +55,10 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     @GeneratedValue(generator = "coordinate_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "resource")
-    private Resource          resource;
+    @JoinColumn(name = "agency")
+    private Agency          agency;
 
     /**
      * 
@@ -77,7 +77,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     /**
      * @param updatedBy
      */
-    public CoordinateAttributeAuthorization(Resource updatedBy) {
+    public CoordinateAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -93,8 +93,8 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
         return id;
     }
 
-    public Resource getResource() {
-        return resource;
+    public Agency getAgency() {
+        return agency;
     }
 
     public void setClassificationCoordinate(Coordinate classificationCoordinate) {
@@ -109,8 +109,8 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
         this.id = id;
     }
 
-    public void setResource(Resource resource) {
-        this.resource = resource;
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
     /* (non-Javadoc)
@@ -123,8 +123,8 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
             classificationCoordinate = (Coordinate) classificationCoordinate.manageEntity(em,
                                                                                           knownObjects);
         }
-        if (resource != null) {
-            resource = (Resource) resource.manageEntity(em, knownObjects);
+        if (agency != null) {
+            agency = (Agency) agency.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

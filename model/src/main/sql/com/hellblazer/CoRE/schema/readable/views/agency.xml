@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.agency AS 
+			 SELECT r.id, r.name, r.description, r.notes, r.pinned, res.name AS research, up.name AS updated_by, r.update_date
+			   FROM ruleform.agency r
+			   LEFT JOIN ruleform.research res ON r.research = res.id
+			   JOIN ruleform.agency up ON r.updated_by = up.id;
+			
+			ALTER TABLE readable.agency
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.agency" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

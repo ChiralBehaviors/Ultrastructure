@@ -7,7 +7,7 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.translation(event character varying, resource character varying, seq character varying)
+            CREATE OR REPLACE FUNCTION ruleform.translation(event character varying, agency character varying, seq character varying)
               RETURNS character varying AS
             $BODY$
             DECLARE
@@ -20,7 +20,7 @@
                 FOR i IN 1..length(seq) BY size LOOP
                     product := substring(seq, i, size);
                     RAISE NOTICE 'Product = %', product;
-                    chunk := ruleform.transform(event, resource, product);
+                    chunk := ruleform.transform(event, agency, product);
                     RAISE NOTICE 'Chunk is ''%''', chunk;
                     IF chunk IS NULL THEN
                         RAISE EXCEPTION 'Given sequence contains Product ''%'' which returned null!', product;

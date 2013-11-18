@@ -23,12 +23,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -38,7 +38,7 @@ public class AttributeModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() {
-        Resource core = model.getKernel().getCore();
+        Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
 
         em.getTransaction().begin();

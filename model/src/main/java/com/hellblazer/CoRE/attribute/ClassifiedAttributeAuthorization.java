@@ -26,9 +26,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * Attribute authorization that can be classified in a network. The network
@@ -67,7 +67,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
      */
     public ClassifiedAttributeAuthorization(Relationship classification,
                                             Attribute authorized,
-                                            Resource updatedBy) {
+                                            Agency updatedBy) {
         super(authorized, updatedBy);
         this.classification = classification;
     }
@@ -77,7 +77,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
      * @param updatedBy
      */
     public ClassifiedAttributeAuthorization(Relationship classification,
-                                            Resource updatedBy) {
+                                            Agency updatedBy) {
         this.classification = classification;
         setUpdatedBy(updatedBy);
     }
@@ -85,7 +85,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
     /**
      * @param updatedBy
      */
-    public ClassifiedAttributeAuthorization(Resource updatedBy) {
+    public ClassifiedAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 

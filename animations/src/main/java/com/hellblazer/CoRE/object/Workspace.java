@@ -55,9 +55,9 @@ public class Workspace {
 
 
 	private List<Product> loadWorkspaceProducts() {
-		NetworkGraphQuery<Product> queryResource = new NetworkGraphQuery<Product>(
+		NetworkGraphQuery<Product> queryAgency = new NetworkGraphQuery<Product>(
 				workspace, workspaceOf, em);
-		return queryResource.getNodes();
+		return queryAgency.getNodes();
 
 	}
 

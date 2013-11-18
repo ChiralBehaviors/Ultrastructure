@@ -10,18 +10,18 @@
             CREATE TABLE ruleform.product_location_attribute_authorization
             (
               id bigserial NOT NULL, -- Unique identifier
-              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the resource that determines the classification criteria for selecting attributes a certain ProductLocation must have
+              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the agency that determines the classification criteria for selecting attributes a certain ProductLocation must have
               classifier bigint NOT NULL, -- In conjunction with the 'classification_attribute' column, determines the classification criteria for selecting attributes a certain ProductLocation must have
               authorized_attribute bigint NOT NULL, -- An Attribute a ProductLocation is expected to have
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when an Attribute can have multiple acceptable values
-              grouping_resource bigint, -- If present, along with 'product_location_attribute' and 'product_value', used to select an entire grouping of Entities that can be acceptable values
+              grouping_agency bigint, -- If present, along with 'product_location_attribute' and 'product_value', used to select an entire grouping of Entities that can be acceptable values
               text_value character varying, -- Contains a single acceptable text-value if 'attribute' has a data type of 'text'
               integer_value integer, -- Contains a single acceptable integer-value if 'attribute' has a data type of 'integer'
               numeric_value numeric, -- Contains a single acceptable numeric-value if 'attribute' has a data type of 'numeric'
               timestamp_value timestamp with time zone,
               notes character varying, -- Additional notes regarding this rule
               research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT product_location_attribute_authorization_pkey PRIMARY KEY (id ),
               CONSTRAINT product_location_attribute_authorization_authorized_attribute_fkey FOREIGN KEY (authorized_attribute)
@@ -33,16 +33,16 @@
               CONSTRAINT product_location_attribute_authorization_classifier_fkey FOREIGN KEY (classifier)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT product_location_attribute_authorization_grouping_resource_fkey FOREIGN KEY (grouping_resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT product_location_attribute_authorization_grouping_agency_fkey FOREIGN KEY (grouping_agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT product_location_attribute_authorization_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT product_location_attribute_authorization_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT product_location_attribute_auth_classification_attri_key UNIQUE (grouping_resource, classification , classifier , authorized_attribute , sequence_number )
+              CONSTRAINT product_location_attribute_auth_classification_attri_key UNIQUE (grouping_agency, classification , classifier , authorized_attribute , sequence_number )
             )
             WITH (
               OIDS=FALSE
@@ -54,13 +54,13 @@
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.classifier IS 'In conjunction with the ''classification'' column, determines the classification criteria for selecting attributes a certain ProductLocation must have';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.authorized_attribute IS 'An Attribute a ProductLocation is expected to have';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.sequence_number IS 'Ordering and uniqueness, for when an Attribute can have multiple acceptable values';
-            COMMENT ON COLUMN ruleform.product_location_attribute_authorization.grouping_resource IS 'If present, along with ''product_location_attribute'' and ''product_value'', used to select an entire grouping of Entities that can be acceptable values';
+            COMMENT ON COLUMN ruleform.product_location_attribute_authorization.grouping_agency IS 'If present, along with ''product_location_attribute'' and ''product_value'', used to select an entire grouping of Entities that can be acceptable values';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.text_value IS 'Contains a single acceptable text-value if ''attribute'' has a data type of ''text''';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.integer_value IS 'Contains a single acceptable integer-value if ''attribute'' has a data type of ''integer''';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.numeric_value IS 'Contains a single acceptable numeric-value if ''attribute'' has a data type of ''numeric''';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.notes IS 'Additional notes regarding this rule';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
-            COMMENT ON COLUMN ruleform.product_location_attribute_authorization.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.product_location_attribute_authorization.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.product_location_attribute_authorization.update_date IS 'The date this rule was last changed';
             ]]>
 		</sql>

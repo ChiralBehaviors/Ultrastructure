@@ -11,12 +11,12 @@
                 (
                   id bigserial NOT NULL,
                   product1 bigint,
-                  resource1 bigint,
+                  agency1 bigint,
                   location1 bigint,
                   authorization_type character varying NOT NULL,
                   relationship bigint NOT NULL,
                   product2 bigint,
-                  resource2 bigint,
+                  agency2 bigint,
                   location2 bigint,
                   parent_transitive_relationship bigint,
                   child_transitive_relationship bigint,
@@ -30,8 +30,8 @@
                   CONSTRAINT access_authorization_product1_fkey FOREIGN KEY (product1)
                       REFERENCES ruleform.product (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorization_resource1_fkey FOREIGN KEY (resource1)
-                      REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  CONSTRAINT access_authorization_agency1_fkey FOREIGN KEY (agency1)
+                      REFERENCES ruleform.agency (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_location1_fkey FOREIGN KEY (location1)
                       REFERENCES ruleform.location (id) MATCH SIMPLE
@@ -42,14 +42,14 @@
                   CONSTRAINT access_authorization_product2_fkey FOREIGN KEY (product2)
                       REFERENCES ruleform.product (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorization_resource2_fkey FOREIGN KEY (resource2)
-                      REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  CONSTRAINT access_authorization_agency2_fkey FOREIGN KEY (agency2)
+                      REFERENCES ruleform.agency (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_location2_fkey FOREIGN KEY (location2)
                       REFERENCES ruleform.location (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_updated_by_fkey FOREIGN KEY (updated_by)
-                      REFERENCES ruleform.resource (id) MATCH SIMPLE
+                      REFERENCES ruleform.agency (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_parent_relationship_fkey FOREIGN KEY (parent_transitive_relationship)
                       REFERENCES ruleform.relationship (id) MATCH SIMPLE
@@ -60,8 +60,8 @@
                   CONSTRAINT access_authorization_research_fkey FOREIGN KEY (research)
                       REFERENCES ruleform.research (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorization_one_parent CHECK (ruleform.null_zero(product1) + ruleform.null_zero(resource1) + ruleform.null_zero(location1) = 1),
-                  CONSTRAINT access_authorization_one_child CHECK (ruleform.null_zero(product2) + ruleform.null_zero(resource2) + ruleform.null_zero(location2) = 1)
+                  CONSTRAINT access_authorization_one_parent CHECK (ruleform.null_zero(product1) + ruleform.null_zero(agency1) + ruleform.null_zero(location1) = 1),
+                  CONSTRAINT access_authorization_one_child CHECK (ruleform.null_zero(product2) + ruleform.null_zero(agency2) + ruleform.null_zero(location2) = 1)
                 )
                 WITH (
                   OIDS=FALSE

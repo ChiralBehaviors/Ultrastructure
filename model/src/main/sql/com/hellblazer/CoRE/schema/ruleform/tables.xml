@@ -7,7 +7,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
     
     <include relativeToChangelogFile="true" file="tables/research-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship-0.0.1.xml"/>
@@ -29,8 +29,8 @@
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_kind_definition-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/network_inference.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_network-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_product-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_network-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_product-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_nesting-0.0.1.xml"/>
@@ -39,12 +39,12 @@
     <include relativeToChangelogFile="true" file="tables/location_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_network_authorization-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_attribute-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_relationship-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_attribute-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_network_attribute-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_attribute_authorization-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_network_authorization-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_attribute_authorization-0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_network_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_location_attribute_authorization-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_network_authorization-0.0.1.xml"/>

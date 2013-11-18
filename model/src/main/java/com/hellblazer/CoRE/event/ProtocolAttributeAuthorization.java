@@ -43,12 +43,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeAuthorization;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -72,11 +72,11 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                          + "attr.product = :ruleform "
                                                                          + "AND attr.id IN ("
                                                                          + "select ea.authorizedAttribute from ProductAttributeAuthorization ea "
-                                                                         + "WHERE ea.groupingResource = :resource)"),
+                                                                         + "WHERE ea.groupingAgency = :agency)"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
-                                                                                 + "WHERE ea.groupingResource = :groupingResource"),
+                                                                                 + "WHERE ea.groupingAgency = :groupingAgency"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProtocolAttributeAuthorization ea "
-                                                                                               + "WHERE ea.groupingResource = :groupingResource AND ea.authorizedAttribute = :attribute") })
+                                                                                               + "WHERE ea.groupingAgency = :groupingAgency AND ea.authorizedAttribute = :attribute") })
 @Entity
 @Table(name = "protocol_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_attribute_authorization_id_seq", sequenceName = "protocol_attribute_authorization_id_seq")
@@ -127,7 +127,7 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
 
     @ManyToOne
     @JoinColumn(name = "requester")
-    private Resource           requester;
+    private Agency           requester;
 
     @ManyToOne
     @JoinColumn(name = "requester_classification")
@@ -153,7 +153,7 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
      * @param updatedBy
      */
     public ProtocolAttributeAuthorization(Attribute authorized,
-                                          Resource updatedBy) {
+                                          Agency updatedBy) {
         super(authorized, updatedBy);
     }
 
@@ -168,14 +168,14 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
      * @param id
      * @param updatedBy
      */
-    public ProtocolAttributeAuthorization(Long id, Resource updatedBy) {
+    public ProtocolAttributeAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public ProtocolAttributeAuthorization(Resource updatedBy) {
+    public ProtocolAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -211,7 +211,7 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
         return productClassification;
     }
 
-    public Resource getRequester() {
+    public Agency getRequester() {
         return requester;
     }
 
@@ -259,7 +259,7 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
         productClassification = procuctClassification;
     }
 
-    public void setRequester(Resource requester) {
+    public void setRequester(Agency requester) {
         this.requester = requester;
     }
 
@@ -303,7 +303,7 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
             product = (Product) product.manageEntity(em, knownObjects);
         }
         if (requester != null) {
-            requester = (Resource) requester.manageEntity(em, knownObjects);
+            requester = (Agency) requester.manageEntity(em, knownObjects);
         }
         if (requesterClassification != null) {
             requesterClassification = (Relationship) requesterClassification.manageEntity(em,

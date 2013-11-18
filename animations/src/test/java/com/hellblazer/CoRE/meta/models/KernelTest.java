@@ -61,7 +61,7 @@ public class KernelTest {
         assertNotNull(kernel.getAnyProduct());
         assertNotNull(kernel.getAnyLocation());
         assertNotNull(kernel.getAnyRelationship());
-        assertNotNull(kernel.getAnyResource());
+        assertNotNull(kernel.getAnyAgency());
         assertNotNull(kernel.getAttribute());
         assertNotNull(kernel.getContains());
         assertNotNull(kernel.getCore());
@@ -92,13 +92,13 @@ public class KernelTest {
         assertNotNull(kernel.getOriginalAttribute());
         assertNotNull(kernel.getOriginalProduct());
         assertNotNull(kernel.getOriginalLocation());
-        assertNotNull(kernel.getOriginalResource());
+        assertNotNull(kernel.getOriginalAgency());
         assertNotNull(kernel.getPropagationSoftware());
         assertNotNull(kernel.getPrototype());
         assertNotNull(kernel.getPrototypeOf());
-        assertNotNull(kernel.getResource());
+        assertNotNull(kernel.getAgency());
         assertNotNull(kernel.getSameRelationship());
-        assertNotNull(kernel.getSpecialSystemResource());
+        assertNotNull(kernel.getSpecialSystemAgency());
         assertNotNull(kernel.getVersionOf());
         assertNotNull(kernel.getCoreModel());
         assertNotNull(kernel.getCoreUser());

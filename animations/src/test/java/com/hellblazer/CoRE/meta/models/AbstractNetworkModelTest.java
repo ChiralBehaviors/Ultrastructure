@@ -24,9 +24,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -47,22 +47,22 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(inverse);
         classification.setInverse(inverse);
         inverse.setInverse(classification);
-        Resource classifier = new Resource("test in group resource classifier",
+        Agency classifier = new Agency("test in group agency classifier",
                                            kernel.getCore());
         em.persist(classifier);
-        Aspect<Resource> myAspect = new Aspect<Resource>(classification,
+        Aspect<Agency> myAspect = new Aspect<Agency>(classification,
                                                          classifier);
         @SuppressWarnings("unchecked")
-        Resource testResource = model.getResourceModel().create("test resource in group",
+        Agency testAgency = model.getAgencyModel().create("test agency in group",
                                                                 "test",
                                                                 myAspect);
-        em.persist(testResource);
+        em.persist(testAgency);
         em.getTransaction().commit();
-        List<Resource> inGroup = model.getResourceModel().getInGroup(classifier,
+        List<Agency> inGroup = model.getAgencyModel().getInGroup(classifier,
                                                                      inverse);
         assertNotNull(inGroup);
         assertEquals(1, inGroup.size());
-        assertEquals(testResource, inGroup.get(0));
+        assertEquals(testAgency, inGroup.get(0));
     }
 
     // @Test TODO not currently working ;)
@@ -78,12 +78,12 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(inverse);
         classification.setInverse(inverse);
         inverse.setInverse(classification);
-        Resource classifier = new Resource(
-                                           "test not in group resource classifier",
+        Agency classifier = new Agency(
+                                           "test not in group agency classifier",
                                            kernel.getCore());
         em.persist(classifier);
         em.getTransaction().commit();
-        List<Resource> notInGroup = model.getResourceModel().getNotInGroup(classifier,
+        List<Agency> notInGroup = model.getAgencyModel().getNotInGroup(classifier,
                                                                            inverse);
         assertNotNull(notInGroup);
         assertEquals(1, notInGroup.size());

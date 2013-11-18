@@ -47,14 +47,14 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.ProductLocation;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
- * General idea of a location or address; where some resource, product or event
+ * General idea of a location or address; where some agency, product or event
  * can be found in a variety of spaces
  * 
  */
@@ -80,11 +80,11 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                     + "WHERE la.classification = :classification "
                                                                                     + "AND la.classifier = :classifier"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
-                                                                                 + "WHERE la.groupingResource = :groupingResource"),
+                                                                                 + "WHERE la.groupingAgency = :groupingAgency"),
                @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
                                                                          + "WHERE la.classification = :classification "
                                                                          + "AND la.classifier = :classifier "
-                                                                         + "AND la.groupingResource = :groupingResource"),
+                                                                         + "AND la.groupingAgency = :groupingAgency"),
                @NamedQuery(name = LOCATION_NAME, query = "SELECT la.name FROM Location la WHERE la.id = :id"),
                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
                                                      + "FROM LocationNetwork n "
@@ -157,7 +157,7 @@ public class Location extends ExistentialRuleform implements
     /**
      * @param updatedBy
      */
-    public Location(Resource updatedBy) {
+    public Location(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -172,7 +172,7 @@ public class Location extends ExistentialRuleform implements
      * @param name
      * @param updatedBy
      */
-    public Location(String name, Resource updatedBy) {
+    public Location(String name, Agency updatedBy) {
         super(name, updatedBy);
     }
 
@@ -189,7 +189,7 @@ public class Location extends ExistentialRuleform implements
      * @param description
      * @param updatedBy
      */
-    public Location(String name, String description, Resource updatedBy) {
+    public Location(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
     }
 
@@ -269,11 +269,11 @@ public class Location extends ExistentialRuleform implements
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.resource.Resource, javax.persistence.EntityManager)
+     * @see com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public void link(Relationship r, Location child, Resource updatedBy,
-                     Resource inverseSoftware, EntityManager em) {
+    public void link(Relationship r, Location child, Agency updatedBy,
+                     Agency inverseSoftware, EntityManager em) {
         LocationNetwork link = new LocationNetwork(this, r, child, updatedBy);
         em.persist(link);
         LocationNetwork inverse = new LocationNetwork(child, r.getInverse(),

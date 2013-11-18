@@ -46,7 +46,7 @@
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT attribute_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT attribute_attribute_base_attribute_key UNIQUE (attribute , meta_attribute , sequence_number ),
               CONSTRAINT valid_value CHECK ((ruleform.null_zero(binary_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(attribute_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(unit_value)) = 1)

@@ -58,22 +58,22 @@
 		<class>com.hellblazer.CoRE.network.NetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.network.NetworkRuleform</class>
 		<class>com.hellblazer.CoRE.Research</class>
-		<class>com.hellblazer.CoRE.resource.Resource</class>
-		<class>com.hellblazer.CoRE.resource.ResourceAttribute</class>
-		<class>com.hellblazer.CoRE.resource.ResourceAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.resource.ResourceAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.resource.ResourceProductAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.resource.ResourceNetwork</class>
-		<class>com.hellblazer.CoRE.resource.ResourceNetworkAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.Agency</class>
+		<class>com.hellblazer.CoRE.agency.AgencyAttribute</class>
+		<class>com.hellblazer.CoRE.agency.AgencyAttributeAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.AgencyAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.AgencyProductAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.AgencyNetwork</class>
+		<class>com.hellblazer.CoRE.agency.AgencyNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.ExistentialRuleform</class>
 		<class>com.hellblazer.CoRE.Ruleform</class>
-		<class>com.hellblazer.CoRE.resource.ResourceLocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.AgencyLocationAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.product.ProductAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.product.ProductLocationAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductResourceAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationProductAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.location.LocationResourceAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.location.LocationAgencyAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization</class>

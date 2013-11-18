@@ -15,7 +15,7 @@
 			   JOIN ruleform.attribute la1 ON lr.location_1_attribute = la1.id
 			   JOIN ruleform.relationship att_rel ON lr.attribute_relationship = att_rel.id
 			   JOIN ruleform.attribute la2 ON lr.location_2_attribute = la2.id
-			   JOIN ruleform.resource res ON lr.updated_by = res.id;
+			   JOIN ruleform.agency res ON lr.updated_by = res.id;
 			
 			ALTER TABLE readable.location_relationship
 			  OWNER TO core;

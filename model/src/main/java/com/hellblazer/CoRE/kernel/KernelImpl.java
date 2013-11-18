@@ -19,18 +19,18 @@ package com.hellblazer.CoRE.kernel;
 
 import javax.persistence.EntityManager;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownResource;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * Repository of immutable kernal rules
@@ -52,7 +52,7 @@ public class KernelImpl implements Kernel {
     private final Product      notApplicableProduct;
     private final Product      originalProduct;
     private final Product      sameProduct;
-    private final Product	   workspace;
+    private final Product      workspace;
 
     private final Location     anyLocation;
     private final Location     location;
@@ -60,19 +60,19 @@ public class KernelImpl implements Kernel {
     private final Location     originalLocation;
     private final Location     sameLocation;
 
-    private final Resource     anyResource;
-    private final Resource     core;
-    private final Resource     coreAnimationSoftware;
-    private final Resource     coreModel;
-    private final Resource     coreUser;
-    private final Resource     inverseSoftware;
-    private final Resource     notApplicableResource;
-    private final Resource     originalResource;
-    private final Resource     propagationSoftware;
-    private final Resource     resource;
-    private final Resource     sameResource;
-    private final Resource     specialSystemResource;
-    private final Resource     superUser;
+    private final Agency       anyAgency;
+    private final Agency       core;
+    private final Agency       coreAnimationSoftware;
+    private final Agency       coreModel;
+    private final Agency       coreUser;
+    private final Agency       inverseSoftware;
+    private final Agency       notApplicableAgency;
+    private final Agency       originalAgency;
+    private final Agency       propagationSoftware;
+    private final Agency       agency;
+    private final Agency       sameAgency;
+    private final Agency       specialSystemAgency;
+    private final Agency       superUser;
 
     private final Relationship contains;
     private final Relationship developed;
@@ -105,10 +105,9 @@ public class KernelImpl implements Kernel {
     private final Relationship sameRelationship;
     private final Relationship versionOf;
     private final Relationship inWorkspace;
-	private final Relationship workspaceOf;
+    private final Relationship workspaceOf;
 
     private final StatusCode   unset;
-	
 
     public KernelImpl(EntityManager em) {
 
@@ -132,21 +131,20 @@ public class KernelImpl implements Kernel {
         notApplicableLocation = find(em, WellKnownLocation.NOT_APPLICABLE);
         sameLocation = find(em, WellKnownLocation.SAME);
 
-        coreUser = find(em, WellKnownResource.CORE_USER);
-        resource = find(em, WellKnownResource.RESOURCE);
-        anyResource = find(em, WellKnownResource.ANY);
-        originalResource = find(em, WellKnownResource.ORIGINAL);
-        core = find(em, WellKnownResource.CORE);
+        coreUser = find(em, WellKnownAgency.CORE_USER);
+        agency = find(em, WellKnownAgency.AGENCY);
+        anyAgency = find(em, WellKnownAgency.ANY);
+        originalAgency = find(em, WellKnownAgency.ORIGINAL);
+        core = find(em, WellKnownAgency.CORE);
         coreAnimationSoftware = find(em,
-                                     WellKnownResource.CORE_ANIMATION_SOFTWARE);
-        propagationSoftware = find(em, WellKnownResource.PROPAGATION_SOFTWARE);
-        specialSystemResource = find(em,
-                                     WellKnownResource.SPECIAL_SYSTEM_RESOURCE);
-        coreModel = find(em, WellKnownResource.CORE_MODEL);
-        superUser = find(em, WellKnownResource.SUPER_USER);
-        inverseSoftware = find(em, WellKnownResource.INVERSE_SOFTWARE);
-        sameResource = find(em, WellKnownResource.SAME);
-        notApplicableResource = find(em, WellKnownResource.NOT_APPLICABLE);
+                                     WellKnownAgency.CORE_ANIMATION_SOFTWARE);
+        propagationSoftware = find(em, WellKnownAgency.PROPAGATION_SOFTWARE);
+        specialSystemAgency = find(em, WellKnownAgency.SPECIAL_SYSTEM_AGENCY);
+        coreModel = find(em, WellKnownAgency.CORE_MODEL);
+        superUser = find(em, WellKnownAgency.SUPER_USER);
+        inverseSoftware = find(em, WellKnownAgency.INVERSE_SOFTWARE);
+        sameAgency = find(em, WellKnownAgency.SAME);
+        notApplicableAgency = find(em, WellKnownAgency.NOT_APPLICABLE);
 
         anyRelationship = find(em, WellKnownRelationship.ANY);
         sameRelationship = find(em, WellKnownRelationship.SAME);
@@ -220,11 +218,11 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyResource()
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyAgency()
      */
     @Override
-    public Resource getAnyResource() {
-        return anyResource;
+    public Agency getAnyAgency() {
+        return anyAgency;
     }
 
     /* (non-Javadoc)
@@ -247,7 +245,7 @@ public class KernelImpl implements Kernel {
      * @see com.hellblazer.CoRE.meta.models.Kernel#getCore()
      */
     @Override
-    public Resource getCore() {
+    public Agency getCore() {
         return core;
     }
 
@@ -255,12 +253,12 @@ public class KernelImpl implements Kernel {
      * @see com.hellblazer.CoRE.meta.models.Kernel#getCoreAnimationProcedure()
      */
     @Override
-    public Resource getCoreAnimationSoftware() {
+    public Agency getCoreAnimationSoftware() {
         return coreAnimationSoftware;
     }
 
     @Override
-    public Resource getCoreModel() {
+    public Agency getCoreModel() {
         return coreModel;
     }
 
@@ -268,7 +266,7 @@ public class KernelImpl implements Kernel {
      * @see com.hellblazer.CoRE.meta.models.Kernel#getCoreUser()
      */
     @Override
-    public Resource getCoreUser() {
+    public Agency getCoreUser() {
         return coreUser;
     }
 
@@ -377,7 +375,7 @@ public class KernelImpl implements Kernel {
     }
 
     @Override
-    public Resource getInverseSoftware() {
+    public Agency getInverseSoftware() {
         return inverseSoftware;
     }
 
@@ -491,11 +489,11 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * @return the notApplicableResource
+     * @return the notApplicableAgency
      */
     @Override
-    public Resource getNotApplicableResource() {
-        return notApplicableResource;
+    public Agency getNotApplicableAgency() {
+        return notApplicableAgency;
     }
 
     /* (non-Javadoc)
@@ -523,11 +521,11 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalResource()
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalAgency()
      */
     @Override
-    public Resource getOriginalResource() {
-        return originalResource;
+    public Agency getOriginalAgency() {
+        return originalAgency;
     }
 
     /**
@@ -563,7 +561,7 @@ public class KernelImpl implements Kernel {
      * @see com.hellblazer.CoRE.meta.models.Kernel#getPropagationSoftware()
      */
     @Override
-    public Resource getPropagationSoftware() {
+    public Agency getPropagationSoftware() {
         return propagationSoftware;
     }
 
@@ -584,11 +582,11 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getResource()
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getAgency()
      */
     @Override
-    public Resource getResource() {
-        return resource;
+    public Agency getAgency() {
+        return agency;
     }
 
     /* (non-Javadoc)
@@ -616,26 +614,26 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * @return the sameResource
+     * @return the sameAgency
      */
     @Override
-    public Resource getSameResource() {
-        return sameResource;
+    public Agency getSameAgency() {
+        return sameAgency;
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getSpecialSystemResource()
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getSpecialSystemAgency()
      */
     @Override
-    public Resource getSpecialSystemResource() {
-        return specialSystemResource;
+    public Agency getSpecialSystemAgency() {
+        return specialSystemAgency;
     }
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.Kernel#getSuperUser()
      */
     @Override
-    public Resource getSuperUser() {
+    public Agency getSuperUser() {
         return superUser;
     }
 
@@ -654,27 +652,27 @@ public class KernelImpl implements Kernel {
     public Relationship getVersionOf() {
         return versionOf;
     }
-    
+
     @Override
     public Product getWorkspace() {
-    	return workspace;
+        return workspace;
     }
-    
-    /* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.kernel.Kernel#getInWorkspace()
-	 */
-	@Override
-	public Relationship getInWorkspace() {
-		return inWorkspace;
-	}
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.kernel.Kernel#getWorkspaceOf()
-	 */
-	@Override
-	public Relationship getWorkspaceOf() {
-		return workspaceOf;
-	}
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.kernel.Kernel#getInWorkspace()
+     */
+    @Override
+    public Relationship getInWorkspace() {
+        return inWorkspace;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.kernel.Kernel#getWorkspaceOf()
+     */
+    @Override
+    public Relationship getWorkspaceOf() {
+        return workspaceOf;
+    }
 
     /**
      * 
@@ -715,10 +713,10 @@ public class KernelImpl implements Kernel {
     /**
      * 
      * @param wko
-     * @return the {@link Resource} corresponding to the well known object
+     * @return the {@link Agency} corresponding to the well known object
      */
-    Resource find(EntityManager em, WellKnownResource wko) {
-        return em.find(Resource.class, wko.id());
+    Agency find(EntityManager em, WellKnownAgency wko) {
+        return em.find(Agency.class, wko.id());
     }
 
     /**
@@ -730,5 +728,4 @@ public class KernelImpl implements Kernel {
         return em.find(StatusCode.class, wko.id());
     }
 
-	
 }

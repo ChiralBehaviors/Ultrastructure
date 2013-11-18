@@ -32,7 +32,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * An attribute value on an attribute
@@ -74,30 +74,30 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     }
 
     public AttributeMetaAttribute(Attribute attribute, BigDecimal value,
-                                  Resource updatedBy) {
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
     public AttributeMetaAttribute(Attribute attribute, boolean value,
-                                  Resource updatedBy) {
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
     public AttributeMetaAttribute(Attribute attribute, int value,
-                                  Resource updatedBy) {
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public AttributeMetaAttribute(Attribute attribute, Resource updatedBy) {
+    public AttributeMetaAttribute(Attribute attribute, Agency updatedBy) {
         super(updatedBy);
         this.attribute = attribute;
     }
 
     public AttributeMetaAttribute(Attribute attribute, String value,
-                                  Resource updatedBy) {
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -115,7 +115,7 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     /**
      * @param updatedBy
      */
-    public AttributeMetaAttribute(Resource updatedBy) {
+    public AttributeMetaAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 

@@ -15,7 +15,7 @@
 			   LEFT JOIN ruleform.attribute av ON aa.attribute_value = av.id
 			   LEFT JOIN ruleform.unit u ON aa.unit_value = u.id
 			   LEFT JOIN ruleform.research res ON aa.research = res.id
-			   JOIN ruleform.resource up ON aa.updated_by = up.id;
+			   JOIN ruleform.agency up ON aa.updated_by = up.id;
 			
 			ALTER TABLE readable.attribute_meta_attribute
 			  OWNER TO core;

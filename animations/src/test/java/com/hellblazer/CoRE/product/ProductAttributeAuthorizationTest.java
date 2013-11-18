@@ -26,14 +26,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -63,36 +62,36 @@ public class ProductAttributeAuthorizationTest {
 
         em.getTransaction().begin();
 
-        Resource resource = new Resource();
-        resource.setName("Primordial Resource");
-        resource.setDescription("Just ye olde time resource");
-        resource.setUpdatedBy(resource);
-        em.persist(resource);
+        Agency agency = new Agency();
+        agency.setName("Primordial Agency");
+        agency.setDescription("Just ye olde time agency");
+        agency.setUpdatedBy(agency);
+        em.persist(agency);
 
         Relationship classification = new Relationship("My classification",
                                                        "A classification",
-                                                       resource, true);
+                                                       agency, true);
         em.persist(classification);
         Relationship inverse = new Relationship("inverse classification",
                                                 "The inverse classification",
-                                                resource, classification);
+                                                agency, classification);
         em.persist(inverse);
 
         Product classificationProduct = new Product();
         classificationProduct.setName("Classification Product");
-        classificationProduct.setUpdatedBy(resource);
+        classificationProduct.setUpdatedBy(agency);
         em.persist(classificationProduct);
 
         Attribute authorizedAttribute = new Attribute();
         authorizedAttribute.setName("My classification");
-        authorizedAttribute.setUpdatedBy(resource);
+        authorizedAttribute.setUpdatedBy(agency);
         authorizedAttribute.setValueType(ValueType.NUMERIC);
         em.persist(authorizedAttribute);
 
         model.getProductModel().getAllowedValues(authorizedAttribute,
-                                                new Aspect<Product>(
-                                                                   classification,
-                                                                   classificationProduct));
+                                                 new Aspect<Product>(
+                                                                     classification,
+                                                                     classificationProduct));
         em.getTransaction().rollback();
     }
 }

@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.workspace.api;
 
 import javax.persistence.EntityManager;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.event.MetaProtocol;
@@ -34,7 +35,6 @@ import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -108,19 +108,19 @@ public class WorkspaceLoader {
     public Location             us;
     private Location            anyLocation;
 
-    public Resource             billingComputer;
-    public Resource             core;
-    public Resource             cpu;
-    public Resource             creditDept;
-    public Resource             exempt;
-    public Resource             externalCust;
-    public Resource             factory1Resource;
-    public Resource             georgeTownUniversity;
-    public Resource             manufacturer;
-    public Resource             nonExemptResource;
-    public Resource             orderFullfillment;
-    public Resource             orgA;
-    private Resource            anyResource;
+    public Agency             billingComputer;
+    public Agency             core;
+    public Agency             cpu;
+    public Agency             creditDept;
+    public Agency             exempt;
+    public Agency             externalCust;
+    public Agency             factory1Agency;
+    public Agency             georgeTownUniversity;
+    public Agency             manufacturer;
+    public Agency             nonExemptAgency;
+    public Agency             orderFullfillment;
+    public Agency             orgA;
+    private Agency            anyAgency;
 
     public Attribute            priceAttribute;
     public Attribute            taxRateAttribute;
@@ -136,7 +136,7 @@ public class WorkspaceLoader {
         core = kernel.getCore();
         sameProduct = kernel.getSameProduct();
         anyProduct = kernel.getAnyProduct();
-        anyResource = kernel.getAnyResource();
+        anyAgency = kernel.getAnyAgency();
         anyLocation = kernel.getAnyLocation();
         sameRelationship = kernel.getSameRelationship();
         anyRelationship = kernel.getAnyRelationship();
@@ -333,9 +333,9 @@ public class WorkspaceLoader {
 
     public void createProtocols() {
 
-        Protocol pickProtocol = new Protocol(deliver, anyResource, anyProduct,
+        Protocol pickProtocol = new Protocol(deliver, anyAgency, anyProduct,
                                              anyLocation, anyLocation,
-                                             factory1Resource, pick,
+                                             factory1Agency, pick,
                                              sameProduct, core);
         em.persist(pickProtocol);
 
@@ -352,9 +352,9 @@ public class WorkspaceLoader {
                                                    sameProduct, core);
         em.persist(chkLtrCrdtProtocol);
 
-        Protocol shipProtocol = new Protocol(deliver, anyResource, anyProduct,
+        Protocol shipProtocol = new Protocol(deliver, anyAgency, anyProduct,
                                              anyLocation, anyLocation,
-                                             factory1Resource, ship,
+                                             factory1Agency, ship,
                                              sameProduct, true, core);
         em.persist(shipProtocol);
 
@@ -381,7 +381,7 @@ public class WorkspaceLoader {
         price.setProtocol(feeProtocol);
         em.persist(price);
 
-        Protocol salesTaxProtocol = new Protocol(fee, nonExemptResource,
+        Protocol salesTaxProtocol = new Protocol(fee, nonExemptAgency,
                                                  nonExempt, dc, anyLocation,
                                                  billingComputer, salesTax,
                                                  sameProduct, core);
@@ -492,41 +492,41 @@ public class WorkspaceLoader {
         em.persist(streetOf);
     }
 
-    public void createResources() {
-        billingComputer = new Resource("Billing CPU", "The Billing Computer",
+    public void createAgencys() {
+        billingComputer = new Agency("Billing CPU", "The Billing Computer",
                                        core);
         em.persist(billingComputer);
 
-        cpu = new Resource("CPU", "Computer", core);
+        cpu = new Agency("CPU", "Computer", core);
         em.persist(cpu);
 
-        creditDept = new Resource("Credit", "Credit Department", core);
+        creditDept = new Agency("Credit", "Credit Department", core);
         em.persist(creditDept);
 
-        exempt = new Resource("Exempt", "Exempt from sales taxes", core);
+        exempt = new Agency("Exempt", "Exempt from sales taxes", core);
         em.persist(exempt);
 
-        externalCust = new Resource("Ext Customer",
+        externalCust = new Agency("Ext Customer",
                                     "External (Paying) Customer", core);
         em.persist(externalCust);
 
-        factory1Resource = new Resource("Factory1", "Factory #1", core);
-        em.persist(factory1Resource);
+        factory1Agency = new Agency("Factory1", "Factory #1", core);
+        em.persist(factory1Agency);
 
-        georgeTownUniversity = new Resource("GU", "Georgetown University", core);
+        georgeTownUniversity = new Agency("GU", "Georgetown University", core);
         em.persist(georgeTownUniversity);
 
-        manufacturer = new Resource("MNFR", "Manufacturer", core);
+        manufacturer = new Agency("MNFR", "Manufacturer", core);
         em.persist(manufacturer);
 
-        nonExemptResource = new Resource("NonExempt", "Subject to sales taxes",
+        nonExemptAgency = new Agency("NonExempt", "Subject to sales taxes",
                                          core);
-        em.persist(nonExemptResource);
+        em.persist(nonExemptAgency);
 
-        orgA = new Resource("OrgA", "Organization A", core);
+        orgA = new Agency("OrgA", "Organization A", core);
         em.persist(orgA);
 
-        orderFullfillment = new Resource("Order Fullfillment",
+        orderFullfillment = new Agency("Order Fullfillment",
                                          "Order Fullfillment", core);
         em.persist(orderFullfillment);
     }
@@ -621,7 +621,7 @@ public class WorkspaceLoader {
     }
 
     public void load() {
-        createResources();
+        createAgencys();
         createAttributes();
         createProducts();
         createServices();

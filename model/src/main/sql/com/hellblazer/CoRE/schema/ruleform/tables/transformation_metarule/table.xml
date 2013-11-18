@@ -12,9 +12,9 @@
               id bigserial NOT NULL,
               service bigint NOT NULL,
               sequence_number ruleform.sequence_number NOT NULL,
-              resource_map bigint NOT NULL,
+              agency_map bigint NOT NULL,
               product_map bigint NOT NULL,
-              product_network_resource bigint,
+              product_network_agency bigint,
               stop_on_match boolean DEFAULT false,
               notes character varying,
               research bigint,
@@ -24,13 +24,13 @@
               CONSTRAINT transformation_metarule_product_map_fkey FOREIGN KEY (product_map)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_metarule_product_network_resource_fkey FOREIGN KEY (product_network_resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT transformation_metarule_product_network_agency_fkey FOREIGN KEY (product_network_agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT transformation_metarule_service_fkey FOREIGN KEY (service)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_metarule_resource_map_fkey FOREIGN KEY (resource_map)
+              CONSTRAINT transformation_metarule_agency_map_fkey FOREIGN KEY (agency_map)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT transformation_metarule_service_key UNIQUE (service , sequence_number )

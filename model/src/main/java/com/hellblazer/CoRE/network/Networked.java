@@ -21,7 +21,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * The common interface for all networked entities.
@@ -60,8 +60,8 @@ public interface Networked<E extends Networked<E, N>, N extends NetworkRuleform<
 
     Set<N> getNetworkByParent();
 
-    void link(Relationship r, E child, Resource updatedBy,
-              Resource inverseSoftware, EntityManager em);
+    void link(Relationship r, E child, Agency updatedBy,
+              Agency inverseSoftware, EntityManager em);
 
     void setNetworkByChild(Set<N> theNetworkByChild);
 

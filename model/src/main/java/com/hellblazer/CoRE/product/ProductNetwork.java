@@ -54,10 +54,10 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The network relationships of products.
@@ -230,7 +230,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      * @param updatedBy
      */
     public ProductNetwork(Product parent, Relationship relationship,
-                          Product child, Resource updatedBy) {
+                          Product child, Agency updatedBy) {
         super(relationship, updatedBy);
         setRelationship(relationship);
         this.parent = parent;
@@ -241,14 +241,14 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      * @param relationship
      * @param updatedBy
      */
-    public ProductNetwork(Relationship relationship, Resource updatedBy) {
+    public ProductNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public ProductNetwork(Resource updatedBy) {
+    public ProductNetwork(Agency updatedBy) {
         super(updatedBy);
     }
 

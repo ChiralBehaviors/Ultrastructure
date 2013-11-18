@@ -14,7 +14,7 @@
 			   JOIN ruleform.status_code pc ON base_table.parent_code = pc.id
 			   JOIN ruleform.status_code cc ON base_table.child_code = cc.id
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id
-			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.status_code_sequencing
 			  OWNER TO core;

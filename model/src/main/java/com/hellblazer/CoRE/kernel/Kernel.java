@@ -17,12 +17,12 @@
 
 package com.hellblazer.CoRE.kernel;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -38,19 +38,19 @@ public interface Kernel {
 
     Relationship getAnyRelationship();
 
-    Resource getAnyResource();
+    Agency getAnyAgency();
 
     Attribute getAttribute();
 
     Relationship getContains();
 
-    Resource getCore();
+    Agency getCore();
 
-    Resource getCoreAnimationSoftware();
+    Agency getCoreAnimationSoftware();
 
-    Resource getCoreModel();
+    Agency getCoreModel();
 
-    Resource getCoreUser();
+    Agency getCoreUser();
 
     Relationship getDeveloped();
 
@@ -78,7 +78,7 @@ public interface Kernel {
 
     Relationship getIncludes();
 
-    Resource getInverseSoftware();
+    Agency getInverseSoftware();
     
     Relationship getInWorkspace();
 
@@ -110,7 +110,7 @@ public interface Kernel {
 
     Relationship getNotApplicableRelationship();
 
-    Resource getNotApplicableResource();
+    Agency getNotApplicableAgency();
 
     Attribute getOriginalAttribute();
 
@@ -118,7 +118,7 @@ public interface Kernel {
 
     Product getOriginalProduct();
 
-    Resource getOriginalResource();
+    Agency getOriginalAgency();
 
     Relationship getOwnedBy();
 
@@ -128,13 +128,13 @@ public interface Kernel {
 
     Product getProduct();
 
-    Resource getPropagationSoftware();
+    Agency getPropagationSoftware();
 
     Relationship getPrototype();
 
     Relationship getPrototypeOf();
 
-    Resource getResource();
+    Agency getAgency();
 
     Location getSameLocation();
 
@@ -142,11 +142,11 @@ public interface Kernel {
 
     Relationship getSameRelationship();
 
-    Resource getSameResource();
+    Agency getSameAgency();
 
-    Resource getSpecialSystemResource();
+    Agency getSpecialSystemAgency();
 
-    Resource getSuperUser();
+    Agency getSuperUser();
 
     StatusCode getUnset();
 

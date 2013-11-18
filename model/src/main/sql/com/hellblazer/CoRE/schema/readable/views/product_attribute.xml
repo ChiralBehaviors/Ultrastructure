@@ -18,7 +18,7 @@
 			   JOIN ruleform.attribute a ON ba.attribute = a.id
 			   LEFT JOIN ruleform.unit u ON ba.unit = u.id
 			   LEFT JOIN ruleform.research res ON ba.research = res.id
-			   JOIN ruleform.resource up ON ba.updated_by = up.id;
+			   JOIN ruleform.agency up ON ba.updated_by = up.id;
 			
 			ALTER TABLE readable.product_attribute
 			  OWNER TO core;

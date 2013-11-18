@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
@@ -32,7 +33,6 @@ import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -111,12 +111,12 @@ public interface JobModel {
     List<Job> getActiveExplicitJobs();
 
     /**
-     * Answer the list of active jobs that are assigned to a resource
+     * Answer the list of active jobs that are assigned to a agency
      * 
-     * @param resource
-     * @return the list of active jobs assigned to the resource
+     * @param agency
+     * @return the list of active jobs assigned to the agency
      */
-    List<Job> getActiveJobsFor(Resource resource);
+    List<Job> getActiveJobsFor(Agency agency);
 
     List<Job> getActiveSubJobsForService(Job job, Product service);
 
@@ -150,11 +150,11 @@ public interface JobModel {
 
     Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
 
-    List<Job> getAllActiveSubJobsOfJobAssignedToResource(Job parent,
-                                                         Resource resource);
+    List<Job> getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
+                                                         Agency agency);
 
-    void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
-                                                    Resource resource,
+    void getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
+                                                    Agency agency,
                                                     List<Job> jobs);
 
     /**
@@ -262,7 +262,7 @@ public interface JobModel {
      */
     List<Protocol> getProtocols(Job job, MetaProtocol metaprotocol);
 
-    List<Protocol> getProtocols(Product service, Resource requester,
+    List<Protocol> getProtocols(Product service, Agency requester,
                                 Product product, Location deliverTo,
                                 Location deliverFrom);
 
@@ -289,7 +289,7 @@ public interface JobModel {
      */
     List<Job> getTopLevelJobs();
 
-    List<Job> getTopLevelJobsWithSubJobsAssignedToResource(Resource resource);
+    List<Job> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency);
 
     /**
      * Answer the list of siblings of a service that have the unset status

@@ -18,13 +18,13 @@
 			   FROM ruleform.job base_table
 			   JOIN ruleform.product s ON base_table.service = s.id
                JOIN ruleform.product p ON base_table.product = p.id
-			   JOIN ruleform.resource at ON base_table.assign_to = at.id
-               JOIN ruleform.resource r ON base_table.requester = r.id
+			   JOIN ruleform.agency at ON base_table.assign_to = at.id
+               JOIN ruleform.agency r ON base_table.requester = r.id
                JOIN ruleform.location dt ON base_table.deliver_to = dt.id
                JOIN ruleform.location df ON base_table.deliver_from = df.id
 			   JOIN ruleform.status_code sc ON base_table.status = sc.id
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id
-			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.job
 			  OWNER TO core;

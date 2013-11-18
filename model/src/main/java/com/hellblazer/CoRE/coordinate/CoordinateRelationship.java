@@ -30,9 +30,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the coordinate_relationship database table.
@@ -89,7 +89,7 @@ public class CoordinateRelationship extends Ruleform {
     /**
      * @param updatedBy
      */
-    public CoordinateRelationship(Resource updatedBy) {
+    public CoordinateRelationship(Agency updatedBy) {
         super(updatedBy);
     }
 

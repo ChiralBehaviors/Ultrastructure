@@ -11,28 +11,28 @@
             (
               id bigserial NOT NULL,
               service bigint NOT NULL,
-              resource bigint NOT NULL,
+              agency bigint NOT NULL,
               product bigint NOT NULL,
               sequence_number ruleform.sequence_number NOT NULL,
               assign_to bigint NOT NULL,
-              resource_key bigint NOT NULL,
+              agency_key bigint NOT NULL,
               product_key bigint NOT NULL,
               relationship_key bigint NOT NULL,
               attribute bigint NOT NULL,
-              product_attribute_resource bigint NOT NULL,
+              product_attribute_agency bigint NOT NULL,
               notes character varying,
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               CONSTRAINT transformation_pkey PRIMARY KEY (id ),
               CONSTRAINT transformation_assign_to_fkey FOREIGN KEY (assign_to)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT transformation_attribute_fkey FOREIGN KEY (attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_product_attribute_resource_fkey FOREIGN KEY (product_attribute_resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT transformation_product_attribute_agency_fkey FOREIGN KEY (product_attribute_agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT transformation_product_fkey FOREIGN KEY (product)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
@@ -46,13 +46,13 @@
               CONSTRAINT transformation_relationship_key_fkey FOREIGN KEY (relationship_key)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_resource_fkey FOREIGN KEY (resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT transformation_agency_fkey FOREIGN KEY (agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_resource_key_fkey FOREIGN KEY (resource_key)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT transformation_agency_key_fkey FOREIGN KEY (agency_key)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_service_key UNIQUE (service , resource , product , sequence_number )
+              CONSTRAINT transformation_service_key UNIQUE (service , agency , product , sequence_number )
             )
             WITH (
               OIDS=FALSE

@@ -31,10 +31,10 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the protocol_attribute database table.
@@ -71,7 +71,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
      * @param updatedBy
      */
     public ProtocolAttribute(Attribute attribute, BigDecimal value,
-                             Resource updatedBy) {
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -81,7 +81,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
      * @param updatedBy
      */
     public ProtocolAttribute(Attribute attribute, boolean value,
-                             Resource updatedBy) {
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -90,7 +90,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
      * @param value
      * @param updatedBy
      */
-    public ProtocolAttribute(Attribute attribute, int value, Resource updatedBy) {
+    public ProtocolAttribute(Attribute attribute, int value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -98,7 +98,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
      * @param attribute
      * @param updatedBy
      */
-    public ProtocolAttribute(Attribute attribute, Resource updatedBy) {
+    public ProtocolAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
     }
 
@@ -108,7 +108,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
      * @param updatedBy
      */
     public ProtocolAttribute(Attribute attribute, String value,
-                             Resource updatedBy) {
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -130,7 +130,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     /**
      * @param updatedBy
      */
-    public ProtocolAttribute(Resource updatedBy) {
+    public ProtocolAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 

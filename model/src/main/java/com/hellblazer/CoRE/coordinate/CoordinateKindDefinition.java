@@ -30,8 +30,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the coordinate_kind_definition database table.
@@ -78,7 +78,7 @@ public class CoordinateKindDefinition extends Ruleform {
     /**
      * @param updatedBy
      */
-    public CoordinateKindDefinition(Resource updatedBy) {
+    public CoordinateKindDefinition(Agency updatedBy) {
         super(updatedBy);
     }
 

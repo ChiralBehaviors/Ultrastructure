@@ -44,13 +44,13 @@
     <include relativeToChangelogFile="true" file="tables/network_inference/trigger-network_inference_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_attribute_authorization/trigger-resource_attribute_authorization_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_network_authorization/trigger-resource_network_authorization_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_attribute/trigger-resource_attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_network/trigger-resource_network_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource_product/trigger-resource_product_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_restrict_pinnned.xml"/>
-    <include relativeToChangelogFile="true" file="tables/resource/trigger-resource_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_attribute_authorization/trigger-agency_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_network_authorization/trigger-agency_network_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_attribute/trigger-agency_attribute_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_network/trigger-agency_network_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency_product/trigger-agency_product_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency/trigger-agency_restrict_pinnned.xml"/>
+    <include relativeToChangelogFile="true" file="tables/agency/trigger-agency_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization/trigger-product_child_sequencing_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization/trigger-product_parent_sequencing_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization/trigger-product_sibling_sequencing_authorization_update_date.xml"/>

@@ -23,13 +23,13 @@
                 
                 _prototype_relationship CONSTANT ruleform.relationship.id%TYPE NOT NULL := relationship_id('prototype');
                 
-                _executable ruleform.resource%ROWTYPE;
+                _executable ruleform.agency%ROWTYPE;
                 
             BEGIN
             
                 SELECT r.* INTO _executable
                 FROM ruleform.event_attribute AS ea
-                    JOIN resource AS r ON r.id = ea.resource_value
+                    JOIN agency AS r ON r.id = ea.agency_value
                 WHERE ea.event = p_event_rule
                   AND ea.attribute = attribute_id('Executable');
             

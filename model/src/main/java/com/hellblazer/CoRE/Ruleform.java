@@ -31,8 +31,8 @@ import javax.persistence.MappedSuperclass;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.json.RuleformIdGenerator;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The superclass of all rule forms.
@@ -64,7 +64,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    protected Resource         updatedBy;
+    protected Agency         updatedBy;
 
     public Ruleform() {
     }
@@ -74,12 +74,12 @@ abstract public class Ruleform implements Serializable, Cloneable {
         setId(id);
     }
 
-    public Ruleform(Long id, Resource updatedBy) {
+    public Ruleform(Long id, Agency updatedBy) {
         this(id);
         this.updatedBy = updatedBy;
     }
 
-    public Ruleform(Resource updatedBy) {
+    public Ruleform(Agency updatedBy) {
         this();
         this.updatedBy = updatedBy;
     }
@@ -88,7 +88,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         this.notes = notes;
     }
 
-    public Ruleform(String notes, Resource updatedBy) {
+    public Ruleform(String notes, Agency updatedBy) {
         this.notes = notes;
         this.updatedBy = updatedBy;
     }
@@ -159,7 +159,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the updatedBy
      */
-    public Resource getUpdatedBy() {
+    public Agency getUpdatedBy() {
         return updatedBy;
     }
 
@@ -229,7 +229,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
      * @param updatedBy
      *            the updatedBy to set
      */
-    public void setUpdatedBy(Resource updatedBy) {
+    public void setUpdatedBy(Agency updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -253,7 +253,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         //TODO either fix this or get rid of it
         //research.manageEntity(em, knownObjects);
         if (updatedBy != null) {
-            updatedBy = (Resource) updatedBy.manageEntity(em, knownObjects);
+            updatedBy = (Agency) updatedBy.manageEntity(em, knownObjects);
         }
 
     }

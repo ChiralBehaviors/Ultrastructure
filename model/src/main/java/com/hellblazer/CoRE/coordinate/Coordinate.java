@@ -44,8 +44,8 @@ import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The location coordinate.
@@ -95,7 +95,7 @@ public class Coordinate extends ExistentialRuleform implements
     /**
      * @param updatedBy
      */
-    public Coordinate(Resource updatedBy) {
+    public Coordinate(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -110,7 +110,7 @@ public class Coordinate extends ExistentialRuleform implements
      * @param name
      * @param updatedBy
      */
-    public Coordinate(String name, Resource updatedBy) {
+    public Coordinate(String name, Agency updatedBy) {
         super(name, updatedBy);
     }
 
@@ -127,7 +127,7 @@ public class Coordinate extends ExistentialRuleform implements
      * @param description
      * @param updatedBy
      */
-    public Coordinate(String name, String description, Resource updatedBy) {
+    public Coordinate(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
     }
 
@@ -188,7 +188,7 @@ public class Coordinate extends ExistentialRuleform implements
      * @return the updatedBy
      */
     @Override
-    public Resource getUpdatedBy() {
+    public Agency getUpdatedBy() {
         return updatedBy;
     }
 
@@ -242,7 +242,7 @@ public class Coordinate extends ExistentialRuleform implements
      *            the updatedBy to set
      */
     @Override
-    public void setUpdatedBy(Resource updatedBy) {
+    public void setUpdatedBy(Agency updatedBy) {
         this.updatedBy = updatedBy;
     }
 

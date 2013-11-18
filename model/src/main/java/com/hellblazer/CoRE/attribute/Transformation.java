@@ -35,9 +35,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the transformation database table.
@@ -46,7 +46,7 @@ import com.hellblazer.CoRE.resource.Resource;
 @NamedQueries({ @NamedQuery(name = GET, query = "SELECT t FROM Transformation t "
                                                 + "WHERE t.service = :service "
                                                 + "AND t.product = :product "
-                                                + "AND t.resource = :resource "
+                                                + "AND t.agency = :agency "
                                                 + "ORDER BY t.sequenceNumber") })
 @Entity
 @Table(name = "transformation", schema = "ruleform")
@@ -55,10 +55,10 @@ public class Transformation extends Ruleform implements Serializable {
     public final static String GET              = "transformation.get";
     private static final long  serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "assign_to")
-    private Resource           assignTo;
+    private Agency           assignTo;
 
     //bi-directional many-to-one association to Attribute
     @ManyToOne
@@ -70,10 +70,10 @@ public class Transformation extends Ruleform implements Serializable {
     @JoinColumn(name = "product")
     private Product            product;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "product_attribute_resource")
-    private Resource           productAttributeResource;
+    @JoinColumn(name = "product_attribute_agency")
+    private Agency           productAttributeAgency;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
@@ -89,15 +89,15 @@ public class Transformation extends Ruleform implements Serializable {
     @JoinColumn(name = "relationship_key")
     private Relationship       relationshipKey;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "resource")
-    private Resource           resource;
+    @JoinColumn(name = "agency")
+    private Agency           agency;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "resource_key")
-    private Resource           resourceKey;
+    @JoinColumn(name = "agency_key")
+    private Agency           agencyKey;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber;
@@ -110,7 +110,7 @@ public class Transformation extends Ruleform implements Serializable {
     public Transformation() {
     }
 
-    public Resource getAssignTo() {
+    public Agency getAssignTo() {
         return assignTo;
     }
 
@@ -127,8 +127,8 @@ public class Transformation extends Ruleform implements Serializable {
         return id;
     }
 
-    public Resource getProductAttributeResource() {
-        return productAttributeResource;
+    public Agency getProductAttributeAgency() {
+        return productAttributeAgency;
     }
 
     public Product getProductKey() {
@@ -139,12 +139,12 @@ public class Transformation extends Ruleform implements Serializable {
         return relationshipKey;
     }
 
-    public Resource getResource() {
-        return resource;
+    public Agency getAgency() {
+        return agency;
     }
 
-    public Resource getResourceKey() {
-        return resourceKey;
+    public Agency getAgencyKey() {
+        return agencyKey;
     }
 
     public Integer getSequenceNumber() {
@@ -158,8 +158,8 @@ public class Transformation extends Ruleform implements Serializable {
         return service;
     }
 
-    public void setAssignTo(Resource resource1) {
-        assignTo = resource1;
+    public void setAssignTo(Agency agency1) {
+        assignTo = agency1;
     }
 
     public void setAttribute(Attribute attribute) {
@@ -170,8 +170,8 @@ public class Transformation extends Ruleform implements Serializable {
         this.product = product;
     }
 
-    public void setEntityAttributeResource(Resource resource3) {
-        productAttributeResource = resource3;
+    public void setEntityAttributeAgency(Agency agency3) {
+        productAttributeAgency = agency3;
     }
 
     public void setEntityKey(Product productKey) {
@@ -187,12 +187,12 @@ public class Transformation extends Ruleform implements Serializable {
         relationshipKey = relationship;
     }
 
-    public void setResource(Resource resource2) {
-        resource = resource2;
+    public void setAgency(Agency agency2) {
+        agency = agency2;
     }
 
-    public void setResourceKey(Resource resource4) {
-        resourceKey = resource4;
+    public void setAgencyKey(Agency agency4) {
+        agencyKey = agency4;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -214,7 +214,7 @@ public class Transformation extends Ruleform implements Serializable {
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (assignTo != null) {
-            assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+            assignTo = (Agency) assignTo.manageEntity(em, knownObjects);
         }
         if (attribute != null) {
             attribute = (Attribute) attribute.manageEntity(em, knownObjects);
@@ -222,8 +222,8 @@ public class Transformation extends Ruleform implements Serializable {
         if (product != null) {
             product = (Product) product.manageEntity(em, knownObjects);
         }
-        if (productAttributeResource != null) {
-            productAttributeResource = (Resource) productAttributeResource.manageEntity(em,
+        if (productAttributeAgency != null) {
+            productAttributeAgency = (Agency) productAttributeAgency.manageEntity(em,
                                                                                         knownObjects);
         }
         if (productKey != null) {
@@ -233,11 +233,11 @@ public class Transformation extends Ruleform implements Serializable {
             relationshipKey = (Relationship) relationshipKey.manageEntity(em,
                                                                           knownObjects);
         }
-        if (resource != null) {
-            resource = (Resource) resource.manageEntity(em, knownObjects);
+        if (agency != null) {
+            agency = (Agency) agency.manageEntity(em, knownObjects);
         }
-        if (resourceKey != null) {
-            resourceKey = (Resource) resourceKey.manageEntity(em, knownObjects);
+        if (agencyKey != null) {
+            agencyKey = (Agency) agencyKey.manageEntity(em, knownObjects);
         }
         if (service != null) {
             service = (Product) service.manageEntity(em, knownObjects);

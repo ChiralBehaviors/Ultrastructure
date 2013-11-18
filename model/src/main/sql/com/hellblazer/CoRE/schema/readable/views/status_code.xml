@@ -11,7 +11,7 @@
 			 SELECT base_table.id, base_table.name, base_table.description, base_table.notes, base_table.pinned, base_table.fail_parent, base_table.propagate_children, res.name AS research, up.name AS updated_by, base_table.update_date
 			   FROM ruleform.status_code base_table
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id
-			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.status_code
 			  OWNER TO core;

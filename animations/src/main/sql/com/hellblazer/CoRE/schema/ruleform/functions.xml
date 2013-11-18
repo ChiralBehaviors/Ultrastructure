@@ -28,7 +28,7 @@
 	<include relativeToChangelogFile="true"
 		file="functions/nest_coordinates.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/resource_get_allowed_text_values.xml" />
+		file="functions/agency_get_allowed_text_values.xml" />
 	<include relativeToChangelogFile="true" file="functions/transform.xml" />
 	<include relativeToChangelogFile="true" file="functions/translation.xml" />
 	<include relativeToChangelogFile="true"
@@ -50,7 +50,7 @@
 	<include relativeToChangelogFile="true"
 		file="functions/process_job_change.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/valid_resource_attribute.xml" />
+		file="functions/valid_agency_attribute.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/validate_state_graph.xml" />
 	<include relativeToChangelogFile="true"
@@ -60,7 +60,7 @@
 	<include relativeToChangelogFile="true"
 		file="functions/propagate_product_network_deductions.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/propagate_resource_network_deductions.xml" />
+		file="functions/propagate_agency_network_deductions.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/if_table_exists.xml" />
 </databaseChangeLog>

@@ -65,7 +65,7 @@ public interface WellKnownObject {
 
             @Override
             public String description() {
-                return "The Attribute that contains the CoRE login name of the resource";
+                return "The Attribute that contains the CoRE login name of the agency";
             }
 
             /* (non-Javadoc)
@@ -1230,12 +1230,12 @@ public interface WellKnownObject {
         abstract boolean preferred();
     }
 
-    public static enum WellKnownResource implements WellKnownObject {
+    public static enum WellKnownAgency implements WellKnownObject {
         ANY() {
 
             @Override
             public String description() {
-                return "A special Resource that stands for any resource";
+                return "A special Agency that stands for any agency";
             }
 
             /* (non-Javadoc)
@@ -1331,7 +1331,7 @@ public interface WellKnownObject {
 
             @Override
             public String description() {
-                return "A special Resource that stands for 'not applicable'";
+                return "A special Agency that stands for 'not applicable'";
             }
 
             /* (non-Javadoc)
@@ -1347,7 +1347,7 @@ public interface WellKnownObject {
 
             @Override
             public String description() {
-                return "A special Resource that stands for the originally supplied resource";
+                return "A special Agency that stands for the originally supplied agency";
             }
 
             /* (non-Javadoc)
@@ -1375,11 +1375,11 @@ public interface WellKnownObject {
             }
 
         },
-        RESOURCE() {
+        AGENCY() {
 
             @Override
             public String description() {
-                return "The abstract notion of a resource. All existential entities defined in the Resource ruleform are instances of 'Resource'";
+                return "The abstract notion of a agency. All existential entities defined in the Agency ruleform are instances of 'Agency'";
             }
 
             /* (non-Javadoc)
@@ -1387,7 +1387,7 @@ public interface WellKnownObject {
              */
             @Override
             public String productName() {
-                return WellKnownObject.RESOURCE;
+                return WellKnownObject.agency;
             }
 
         },
@@ -1407,11 +1407,11 @@ public interface WellKnownObject {
             }
 
         },
-        SPECIAL_SYSTEM_RESOURCE() {
+        SPECIAL_SYSTEM_AGENCY() {
 
             @Override
             public String description() {
-                return "Privileged Resources that have special meaning in the CoRE System";
+                return "Privileged agencys that have special meaning in the CoRE System";
             }
 
             /* (non-Javadoc)
@@ -1419,7 +1419,7 @@ public interface WellKnownObject {
              */
             @Override
             public String productName() {
-                return WellKnownObject.SPECIAL_SYSTEM_RESOURCE;
+                return WellKnownObject.SPECIAL_SYSTEM_AGENCY;
             }
 
         },
@@ -1453,7 +1453,7 @@ public interface WellKnownObject {
          */
         @Override
         public String tableName() {
-            return "ruleform.resource";
+            return "ruleform.agency";
         }
     }
 
@@ -1536,10 +1536,10 @@ public interface WellKnownObject {
     String PROTOTYPE                 = "prototype";
     String PROTOTYPE_OF              = "prototype-of";
     String RELATIONSHIP              = "Relationship";
-    String RESOURCE                  = "Resource";
+    String agency                  = "Agency";
     String SAME                      = "(SAME)";
     String SPECIAL_SYSTEM_EVENT      = "Special System Event";
-    String SPECIAL_SYSTEM_RESOURCE   = "Special System Resource";
+    String SPECIAL_SYSTEM_AGENCY   = "Special System Agency";
     String SUPER_USER                = "CoRE Super User";
     String UNSET                     = "(UNSET)";
     String VERSION_OF                = "version-of";

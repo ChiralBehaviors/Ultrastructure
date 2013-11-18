@@ -40,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * The existential rule form that defines relationships between existential rule
@@ -86,7 +86,7 @@ public class Relationship extends ExistentialRuleform {
     /**
      * @param updatedBy
      */
-    public Relationship(Resource updatedBy) {
+    public Relationship(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -101,7 +101,7 @@ public class Relationship extends ExistentialRuleform {
      * @param name
      * @param updatedBy
      */
-    public Relationship(String name, Resource updatedBy) {
+    public Relationship(String name, Agency updatedBy) {
         super(name, updatedBy);
     }
 
@@ -118,7 +118,7 @@ public class Relationship extends ExistentialRuleform {
      * @param description
      * @param updatedBy
      */
-    public Relationship(String name, String description, Resource updatedBy) {
+    public Relationship(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
     }
 
@@ -128,7 +128,7 @@ public class Relationship extends ExistentialRuleform {
      * @param updatedBy
      * @param preferred
      */
-    public Relationship(String name, String description, Resource updatedBy,
+    public Relationship(String name, String description, Agency updatedBy,
                         boolean preferred) {
         super(name, description, updatedBy);
         setPreferred(preferred);
@@ -140,7 +140,7 @@ public class Relationship extends ExistentialRuleform {
      * @param updatedBy
      * @param inverse
      */
-    public Relationship(String name, String description, Resource updatedBy,
+    public Relationship(String name, String description, Agency updatedBy,
                         Relationship inverse) {
         super(name, description, updatedBy);
         setInverse(inverse);

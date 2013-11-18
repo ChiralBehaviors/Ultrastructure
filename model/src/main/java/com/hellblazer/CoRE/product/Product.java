@@ -56,13 +56,13 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.coordinate.CoordinateBundle;
 import com.hellblazer.CoRE.coordinate.CoordinateKind;
 import com.hellblazer.CoRE.location.LocationCalculator;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * A Thing. A product, or an artifact.
@@ -75,7 +75,7 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = FIND_BY_ID, query = "select e from Product e where e.id = :id"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Product e where e.name = :name"),
                @NamedQuery(name = FIND_ALL, query = "select e from Product e"),
-               @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy= :resource"),
+               @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy= :agency"),
                @NamedQuery(name = UPDATED_BY_NAME, query = "select e from Product e where e.updatedBy.name= :name"),
                @NamedQuery(name = SUBSUMING_ENTITIES, query = "SELECT distinct(bn.child) "
                                                               + "FROM ProductNetwork AS bn "
@@ -98,7 +98,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                          + "attr.product = :ruleform "
                                                                          + "AND attr.id IN ("
                                                                          + "select ea.authorizedAttribute from ProductAttributeAuthorization ea "
-                                                                         + "WHERE ea.groupingResource = :resource)"),
+                                                                         + "WHERE ea.groupingAgency = :agency)"),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
                                                                                     + "WHERE ea.classification = :classification "
                                                                                     + "AND ea.classifier = :classifier"),
@@ -106,13 +106,13 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                                   + "WHERE ea.classification = :classification "
                                                                                                   + "AND ea.classifier = :classifier AND ea.authorizedAttribute = :attribute"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
-                                                                                 + "WHERE ea.groupingResource = :groupingResource"),
+                                                                                 + "WHERE ea.groupingAgency = :groupingAgency"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProductAttributeAuthorization ea "
-                                                                                               + "WHERE ea.groupingResource = :groupingResource AND ea.authorizedAttribute = :attribute"),
+                                                                                               + "WHERE ea.groupingAgency = :groupingAgency AND ea.authorizedAttribute = :attribute"),
                @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
                                                                          + "WHERE ea.classification = :classification "
                                                                          + "AND ea.classifier = :classifier "
-                                                                         + "AND ea.groupingResource = :groupingResource"),
+                                                                         + "AND ea.groupingAgency = :groupingAgency"),
                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
                                                      + "FROM ProductNetwork n "
                                                      + "WHERE n.parent = :p "
@@ -215,7 +215,7 @@ public class Product extends ExistentialRuleform implements
     /**
      * @param updatedBy
      */
-    public Product(Resource updatedBy) {
+    public Product(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -230,7 +230,7 @@ public class Product extends ExistentialRuleform implements
      * @param name
      * @param updatedBy
      */
-    public Product(String name, Resource updatedBy) {
+    public Product(String name, Agency updatedBy) {
         super(name, updatedBy);
     }
 
@@ -247,7 +247,7 @@ public class Product extends ExistentialRuleform implements
      * @param description
      * @param updatedBy
      */
-    public Product(String name, String description, Resource updatedBy) {
+    public Product(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
     }
 
@@ -356,8 +356,8 @@ public class Product extends ExistentialRuleform implements
     }
 
     @Override
-    public void link(Relationship r, Product child, Resource updatedBy,
-                     Resource inverseSoftware, EntityManager em) {
+    public void link(Relationship r, Product child, Agency updatedBy,
+                     Agency inverseSoftware, EntityManager em) {
         ProductNetwork link = new ProductNetwork(this, r, child, updatedBy);
         em.persist(link);
         ProductNetwork inverse = new ProductNetwork(child, r.getInverse(),

@@ -19,7 +19,7 @@ package com.hellblazer.CoRE.event;
 import static com.hellblazer.CoRE.event.Job.ACTIVE_JOBS;
 import static com.hellblazer.CoRE.event.Job.FIND_ALL;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_EXPLICIT_JOBS;
-import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_RESOURCE;
+import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
@@ -56,10 +56,10 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * An instantiation of a service; something actually done
@@ -86,7 +86,7 @@ import com.hellblazer.CoRE.resource.Resource;
                @NamedQuery(name = GET_SUB_JOBS_ASSIGNED_TO, query = "SELECT j "
                                                                     + "FROM Job AS j "
                                                                     + "WHERE j.parent = :job "
-                                                                    + "  AND j.assignTo = :resource") })
+                                                                    + "  AND j.assignTo = :agency") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = GET_TERMINAL_STATES, query = "SELECT DISTINCT(sc.*) "
                                                                            + "FROM ruleform.status_code_sequencing AS seq "
@@ -122,7 +122,7 @@ import com.hellblazer.CoRE.resource.Resource;
                                                                                 + "FROM ruleform.job AS j "
                                                                                 + "WHERE j.parent IS NULL "
                                                                                 + "  AND ruleform.is_job_active( j.id )"),
-                     @NamedNativeQuery(name = GET_ACTIVE_JOBS_FOR_RESOURCE, query = "SELECT j.* "
+                     @NamedNativeQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY, query = "SELECT j.* "
                                                                                     + "FROM ruleform.job_chronology AS jc "
                                                                                     + "JOIN ruleform.job AS j ON jc.job = j.id "
                                                                                     + "WHERE j.assign_to = ? "
@@ -170,7 +170,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String CLASSIFIED                        = "event.classified";
     public static final String FIND_ALL                          = "job.findAll";
     public static final String GET_ACTIVE_EXPLICIT_JOBS          = "job.getActiveExplicitJobs";
-    public static final String GET_ACTIVE_JOBS_FOR_RESOURCE      = "job.getActiveJobsForResource";
+    public static final String GET_ACTIVE_JOBS_FOR_AGENCY      = "job.getActiveJobsForAgency";
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS = "job.getActiveOrTerminatedSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS               = "job.getActiveSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE   = "job.getActiveSubJobsForService";
@@ -189,11 +189,11 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     private static final long  serialVersionUID                  = 1L;
 
     /**
-     * The resource assigned to this job
+     * The agency assigned to this job
      */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "assign_to")
-    private Resource           assignTo;
+    private Agency           assignTo;
 
     /**
      * The attributes of this job
@@ -253,7 +253,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "requester")
-    private Resource           requester;
+    private Agency           requester;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber                    = 1;
@@ -275,9 +275,9 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public Job() {
     }
 
-    public Job(Job parent, Resource assignTo, Product service, Product product,
-               Location deliverTo, Location deliverFrom, Resource requester,
-               Resource updatedBy) {
+    public Job(Job parent, Agency assignTo, Product service, Product product,
+               Location deliverTo, Location deliverFrom, Agency requester,
+               Agency updatedBy) {
         this(updatedBy);
         setParent(parent);
         setAssignTo(assignTo);
@@ -298,18 +298,18 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * @param updatedBy
      */
-    public Job(Resource updatedBy) {
+    public Job(Agency updatedBy) {
         super(updatedBy);
     }
 
-    public Job(Resource assignTo, Resource requester, Product service,
+    public Job(Agency assignTo, Agency requester, Product service,
                Product product, Location deliverTo, Location deliverFrom,
-               Resource updatedBy) {
+               Agency updatedBy) {
         this(null, assignTo, service, product, deliverTo, deliverFrom,
              requester, updatedBy);
     }
 
-    public Resource getAssignTo() {
+    public Agency getAssignTo() {
         return assignTo;
     }
 
@@ -367,7 +367,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * @return the requester
      */
-    public Resource getRequester() {
+    public Agency getRequester() {
         return requester;
     }
 
@@ -389,8 +389,8 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         return status;
     }
 
-    public void setAssignTo(Resource resource2) {
-        assignTo = resource2;
+    public void setAssignTo(Agency agency2) {
+        assignTo = agency2;
     }
 
     @Override
@@ -443,7 +443,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      * @param requester
      *            the requester to set
      */
-    public void setRequester(Resource requester) {
+    public void setRequester(Agency requester) {
         this.requester = requester;
     }
 
@@ -484,7 +484,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (assignTo != null) {
-            assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+            assignTo = (Agency) assignTo.manageEntity(em, knownObjects);
         }
         if (deliverFrom != null) {
             deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
@@ -499,7 +499,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
             product = (Product) product.manageEntity(em, knownObjects);
         }
         if (requester != null) {
-            requester = (Resource) requester.manageEntity(em, knownObjects);
+            requester = (Agency) requester.manageEntity(em, knownObjects);
         }
         if (service != null) {
             service = (Product) service.manageEntity(em, knownObjects);

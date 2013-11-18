@@ -23,12 +23,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.Research;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
@@ -67,14 +67,14 @@ public class ProductSearchTest extends DatabaseTest {
                                                 "A flag indicating that this rule is currently being used for importing HumanProt data into Ultra-Structure.");
         em.persist(humanProtImport);
 
-        Resource core = new Resource("CoRE");
+        Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
 
-        Resource pklFile1 = new Resource("PKL File 1", core);
+        Agency pklFile1 = new Agency("PKL File 1", core);
         em.persist(pklFile1);
 
-        Resource pklFile2 = new Resource("PKL File 2", core);
+        Agency pklFile2 = new Agency("PKL File 2", core);
         em.persist(pklFile2);
 
         Relationship isA = new Relationship(

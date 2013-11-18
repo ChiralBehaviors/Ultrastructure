@@ -14,7 +14,7 @@
 			   JOIN ruleform.attribute a ON a.id = ca.attribute
 			   LEFT JOIN ruleform.product bv ON bv.id = ca.product_value
 			   LEFT JOIN ruleform.research r ON r.id = ca.research
-			   JOIN ruleform.resource up ON up.id = ca.updated_by;
+			   JOIN ruleform.agency up ON up.id = ca.updated_by;
 			
 			ALTER TABLE readable.coordinate_attribute
 			  OWNER TO core;

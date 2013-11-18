@@ -38,9 +38,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The Protocol ruleform.
@@ -64,11 +64,11 @@ public class Protocol extends Ruleform {
     private static final long      serialVersionUID = 1L;
 
     /**
-     * The resource to assign to the job represented by this instance
+     * The agency to assign to the job represented by this instance
      */
     @ManyToOne
     @JoinColumn(name = "assign_to")
-    private Resource               assignTo;
+    private Agency               assignTo;
 
     /**
      * The attributes of this protocol
@@ -120,11 +120,11 @@ public class Protocol extends Ruleform {
     private Product                requestedService;
 
     /**
-     * The resource that requested the product of this service
+     * The agency that requested the product of this service
      */
     @ManyToOne
     @JoinColumn(name = "requester")
-    private Resource               requester;
+    private Agency               requester;
 
     @Column(name = "sequence_number")
     private Integer                sequenceNumber   = 1;
@@ -146,19 +146,19 @@ public class Protocol extends Ruleform {
         super(id);
     }
 
-    public Protocol(Product requestedService, Resource requester,
+    public Protocol(Product requestedService, Agency requester,
                     Product requestedProduct, Location deliverTo,
-                    Location deliverFrom, Resource assignTo, Product service,
-                    Product product, boolean copyAttributes, Resource updatedBy) {
+                    Location deliverFrom, Agency assignTo, Product service,
+                    Product product, boolean copyAttributes, Agency updatedBy) {
         this(requestedService, requester, requestedProduct, deliverTo,
              deliverFrom, assignTo, service, product, updatedBy);
         setCopyAttributes(copyAttributes);
     }
 
-    public Protocol(Product requestedService, Resource requester,
+    public Protocol(Product requestedService, Agency requester,
                     Product requestedProduct, Location deliverTo,
-                    Location deliverFrom, Resource assignTo, Product service,
-                    Product product, Resource updatedBy) {
+                    Location deliverFrom, Agency assignTo, Product service,
+                    Product product, Agency updatedBy) {
         super(updatedBy);
         assert requestedProduct != null;
         assert requester != null;
@@ -182,11 +182,11 @@ public class Protocol extends Ruleform {
     /**
      * @param updatedBy
      */
-    public Protocol(Resource updatedBy) {
+    public Protocol(Agency updatedBy) {
         super(updatedBy);
     }
 
-    public Resource getAssignTo() {
+    public Agency getAssignTo() {
         return assignTo;
     }
 
@@ -237,7 +237,7 @@ public class Protocol extends Ruleform {
     /**
      * @return the requester
      */
-    public Resource getRequester() {
+    public Agency getRequester() {
         return requester;
     }
 
@@ -256,7 +256,7 @@ public class Protocol extends Ruleform {
         return copyAttributes;
     }
 
-    public void setAssignTo(Resource assignTo) {
+    public void setAssignTo(Agency assignTo) {
         this.assignTo = assignTo;
     }
 
@@ -311,9 +311,9 @@ public class Protocol extends Ruleform {
 
     /**
      * @param requester
-     *            the resource requesting the service
+     *            the agency requesting the service
      */
-    public void setRequester(Resource requester) {
+    public void setRequester(Agency requester) {
         this.requester = requester;
     }
 
@@ -336,7 +336,7 @@ public class Protocol extends Ruleform {
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (assignTo != null) {
-            assignTo = (Resource) assignTo.manageEntity(em, knownObjects);
+            assignTo = (Agency) assignTo.manageEntity(em, knownObjects);
         }
         if (deliverFrom != null) {
             deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
@@ -356,7 +356,7 @@ public class Protocol extends Ruleform {
                                                                        knownObjects);
         }
         if (requester != null) {
-            requester = (Resource) requester.manageEntity(em, knownObjects);
+            requester = (Agency) requester.manageEntity(em, knownObjects);
         }
         if (service != null) {
             service = (Product) service.manageEntity(em, knownObjects);

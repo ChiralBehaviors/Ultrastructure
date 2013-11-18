@@ -18,7 +18,7 @@
 			   LEFT JOIN ruleform.product ns ON base_table.next_sibling = ns.id
 			   LEFT JOIN ruleform.status_code nss ON base_table.next_sibling_status = nss.id
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id
-			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.product_sibling_sequencing_authorization
 			  OWNER TO core;

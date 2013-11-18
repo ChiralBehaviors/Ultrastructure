@@ -32,10 +32,10 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The authorization rule form that defines rules for relating products to
@@ -75,10 +75,10 @@ public class ProductLocation extends Ruleform implements
     @JoinColumn(name = "relationship")
     private Relationship                  relationship;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "resource")
-    private Resource                      resource;
+    @JoinColumn(name = "agency")
+    private Agency                      agency;
 
     public ProductLocation() {
     }
@@ -93,7 +93,7 @@ public class ProductLocation extends Ruleform implements
     /**
      * @param updatedBy
      */
-    public ProductLocation(Resource updatedBy) {
+    public ProductLocation(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -127,8 +127,8 @@ public class ProductLocation extends Ruleform implements
         return relationship;
     }
 
-    public Resource getResource() {
-        return resource;
+    public Agency getAgency() {
+        return agency;
     }
 
     @Override
@@ -153,8 +153,8 @@ public class ProductLocation extends Ruleform implements
         this.relationship = relationship;
     }
 
-    public void setResource(Resource resource2) {
-        resource = resource2;
+    public void setAgency(Agency agency2) {
+        agency = agency2;
     }
 
     /* (non-Javadoc)
@@ -173,8 +173,8 @@ public class ProductLocation extends Ruleform implements
             relationship = (Relationship) relationship.manageEntity(em,
                                                                     knownObjects);
         }
-        if (resource != null) {
-            resource = (Resource) resource.manageEntity(em, knownObjects);
+        if (agency != null) {
+            agency = (Agency) agency.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

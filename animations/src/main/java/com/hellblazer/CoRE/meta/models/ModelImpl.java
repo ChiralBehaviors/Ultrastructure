@@ -33,17 +33,17 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.AttributeValue_;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
+import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
-import com.hellblazer.CoRE.meta.ResourceModel;
-import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
@@ -70,42 +70,42 @@ public class ModelImpl implements Model {
      * context. Will throw all sorts of errors if used outside of the context of
      * a Java stored proceedure.
      * 
-     * @param resource
-     *            - the id of the resource corresponding to the principal
+     * @param agency
+     *            - the id of the agency corresponding to the principal
      * @param activeRoleRelationships
      *            - the ids of the relationships of the active role aspects. If
      *            null, then no active role aspects are set.
-     * @param activeRoleResources
-     *            - the ids of the resources of the active role aspects. If
-     *            null, then no active role aspects are set.
+     * @param activeRoleAgencys
+     *            - the ids of the agencys of the active role aspects. If null,
+     *            then no active role aspects are set.
      * 
      * @throws IllegalArgumentException
      *             if the activeRoleRelationships.length !=
-     *             activeRoleResources.length
+     *             activeRoleAgencys.length
      */
-    public static void setPrincipal(Long resource,
+    public static void setPrincipal(Long agency,
                                     Long[] activeRoleRelationships,
-                                    Long[] activeRoleResources) {
+                                    Long[] activeRoleAgencys) {
         /*
         EntityManager em = JSP.getEm();
-        if (activeRoleRelationships == null || activeRoleResources == null) {
-            principal = new AuthenticatedPrincipal(em.find(Resource.class,
-                                                           resource));
+        if (activeRoleRelationships == null || activeRoleAgencys == null) {
+            principal = new AuthenticatedPrincipal(em.find(Agency.class,
+                                                           agency));
         } else {
-            if (activeRoleRelationships.length != activeRoleResources.length) {
+            if (activeRoleRelationships.length != activeRoleAgencys.length) {
                 throw new IllegalArgumentException(
-                                                   "active role relationships and resources must be of the same length");
+                                                   "active role relationships and agencys must be of the same length");
             }
-            List<Aspect<Resource>> aspects = new ArrayList<Aspect<Resource>>();
+            List<Aspect<Agency>> aspects = new ArrayList<Aspect<Agency>>();
             for (int i = 0; i < activeRoleRelationships.length; i++) {
-                aspects.add(new Aspect<Resource>(
+                aspects.add(new Aspect<Agency>(
                                                  em.find(Relationship.class,
                                                          activeRoleRelationships[i]),
-                                                 em.find(Resource.class,
-                                                         activeRoleResources[i])));
+                                                 em.find(Agency.class,
+                                                         activeRoleAgencys[i])));
             }
-            principal = new AuthenticatedPrincipal(em.find(Resource.class,
-                                                           resource), aspects);
+            principal = new AuthenticatedPrincipal(em.find(Agency.class,
+                                                           agency), aspects);
         }
         */
     }
@@ -115,7 +115,7 @@ public class ModelImpl implements Model {
     private final ProductModel   productModel;
     private final Kernel         kernel;
     private final LocationModel  locationModel;
-    private final ResourceModel  resourceModel;
+    private final AgencyModel    agencyModel;
     private final JobModel       jobModel;
 
     public ModelImpl(EntityManager entityManager) {
@@ -128,7 +128,7 @@ public class ModelImpl implements Model {
         attributeModel = new AttributeModelImpl(em, kernel);
         productModel = new ProductModelImpl(em, kernel);
         locationModel = new LocationModelImpl(em, kernel);
-        resourceModel = new ResourceModelImpl(em, kernel);
+        agencyModel = new AgencyModelImpl(em, kernel);
         jobModel = new JobModelImpl(this);
     }
 
@@ -236,13 +236,13 @@ public class ModelImpl implements Model {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#findUpdatedBy(com.hellblazer.CoRE.resource.Resource, java.lang.Class)
+     * @see com.hellblazer.CoRE.meta.Model#findUpdatedBy(com.hellblazer.CoRE.agency.Agency, java.lang.Class)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Resource updatedBy,
+    public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Agency updatedBy,
                                                                     Class<Ruleform> ruleform) {
-        return em.createNamedQuery(prefixFor(ruleform) + FIND_BY_NAME_SUFFIX).setParameter("resource",
+        return em.createNamedQuery(prefixFor(ruleform) + FIND_BY_NAME_SUFFIX).setParameter("agency",
                                                                                            updatedBy).getResultList();
     }
 
@@ -295,11 +295,11 @@ public class ModelImpl implements Model {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#getResourceModel()
+     * @see com.hellblazer.CoRE.meta.Model#getAgencyModel()
      */
     @Override
-    public ResourceModel getResourceModel() {
-        return resourceModel;
+    public AgencyModel getAgencyModel() {
+        return agencyModel;
     }
-   
+
 }

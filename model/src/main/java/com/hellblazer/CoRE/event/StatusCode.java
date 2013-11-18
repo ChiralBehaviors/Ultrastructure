@@ -34,7 +34,7 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * The persistent class for the status_code database table.
@@ -95,7 +95,7 @@ public class StatusCode extends ExistentialRuleform {
     /**
      * @param updatedBy
      */
-    public StatusCode(Resource updatedBy) {
+    public StatusCode(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -110,7 +110,7 @@ public class StatusCode extends ExistentialRuleform {
      * @param name
      * @param updatedBy
      */
-    public StatusCode(String name, Resource updatedBy) {
+    public StatusCode(String name, Agency updatedBy) {
         super(name, updatedBy);
     }
 
@@ -127,7 +127,7 @@ public class StatusCode extends ExistentialRuleform {
      * @param description
      * @param updatedBy
      */
-    public StatusCode(String name, String description, Resource updatedBy) {
+    public StatusCode(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
     }
 

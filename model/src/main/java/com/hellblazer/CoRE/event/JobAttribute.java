@@ -31,10 +31,10 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the job_attribute database table.
@@ -71,7 +71,7 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param updatedBy
      */
     public JobAttribute(Attribute attribute, BigDecimal value,
-                        Resource updatedBy) {
+                        Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -80,7 +80,7 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, boolean value, Resource updatedBy) {
+    public JobAttribute(Attribute attribute, boolean value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -89,7 +89,7 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, int value, Resource updatedBy) {
+    public JobAttribute(Attribute attribute, int value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -97,7 +97,7 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param attribute
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, Resource updatedBy) {
+    public JobAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
     }
 
@@ -106,7 +106,7 @@ public class JobAttribute extends AttributeValue<Job> {
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, String value, Resource updatedBy) {
+    public JobAttribute(Attribute attribute, String value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -128,7 +128,7 @@ public class JobAttribute extends AttributeValue<Job> {
     /**
      * @param updatedBy
      */
-    public JobAttribute(Resource updatedBy) {
+    public JobAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 

@@ -31,7 +31,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -68,7 +68,7 @@ public class JobChronology extends Ruleform {
     }
 
     public JobChronology(Job job, StatusCode status, Timestamp timeStamp,
-                         String notes, Resource updatedBy) {
+                         String notes, Agency updatedBy) {
         super(notes, updatedBy);
         this.job = job;
         statusCode = status;
@@ -85,7 +85,7 @@ public class JobChronology extends Ruleform {
     /**
      * @param updatedBy
      */
-    public JobChronology(Resource updatedBy) {
+    public JobChronology(Agency updatedBy) {
         super(updatedBy);
     }
 

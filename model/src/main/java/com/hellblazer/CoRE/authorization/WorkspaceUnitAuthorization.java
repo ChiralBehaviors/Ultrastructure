@@ -26,8 +26,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -55,11 +55,11 @@ public class WorkspaceUnitAuthorization extends WorkspaceAuthorization {
         super(id);
     }
 
-    public WorkspaceUnitAuthorization(Long id, Resource updatedBy) {
+    public WorkspaceUnitAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
-    public WorkspaceUnitAuthorization(Resource updatedBy) {
+    public WorkspaceUnitAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -67,7 +67,7 @@ public class WorkspaceUnitAuthorization extends WorkspaceAuthorization {
         super(notes);
     }
 
-    public WorkspaceUnitAuthorization(String notes, Resource updatedBy) {
+    public WorkspaceUnitAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 

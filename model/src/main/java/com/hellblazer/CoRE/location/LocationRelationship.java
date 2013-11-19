@@ -34,10 +34,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the location_relationship database table.
@@ -102,7 +102,7 @@ public class LocationRelationship extends Ruleform {
     /**
      * @param updatedBy
      */
-    public LocationRelationship(Resource updatedBy) {
+    public LocationRelationship(Agency updatedBy) {
         super(updatedBy);
     }
 

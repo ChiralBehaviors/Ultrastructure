@@ -13,7 +13,7 @@
 			   JOIN ruleform.attribute p ON n.parent = p.id
 			   JOIN ruleform.relationship rel ON n.relationship = rel.id
 			   JOIN ruleform.attribute c ON n.child = c.id
-			   JOIN ruleform.resource u ON n.updated_by = u.id
+			   JOIN ruleform.agency u ON n.updated_by = u.id
 			   LEFT JOIN ruleform.research res ON n.research = res.id;
 			
 			ALTER TABLE readable.attribute_network

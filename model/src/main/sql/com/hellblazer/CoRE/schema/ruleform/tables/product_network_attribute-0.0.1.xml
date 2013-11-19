@@ -12,7 +12,7 @@
     <include relativeToChangelogFile="true" file="product_network_attribute/index-product_network_attribute_product_value.xml"/>
     <include relativeToChangelogFile="true" file="product_network_attribute/index-product_network_attribute_network_rule.xml"/>
     <include relativeToChangelogFile="true" file="product_network_attribute/index-product_network_attribute_research.xml"/>
-    <include relativeToChangelogFile="true" file="product_network_attribute/index-product_network_attribute_resource.xml"/>
+    <include relativeToChangelogFile="true" file="product_network_attribute/index-product_network_attribute_agency.xml"/>
     <include relativeToChangelogFile="true" file="product_network_attribute/index-product_network_attribute_unit.xml"/>
     <include relativeToChangelogFile="true" file="product_network_attribute/index-product_network_attribute_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="product_network_attribute/owner.xml"/>

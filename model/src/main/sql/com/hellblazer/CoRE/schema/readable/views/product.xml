@@ -11,7 +11,7 @@
 			 SELECT b.id, b.name, b.description, b.notes, b.pinned, res.name AS research, up.name AS updated_by, b.update_date
 			   FROM ruleform.product b
 			   LEFT JOIN ruleform.research res ON b.research = res.id
-			   JOIN ruleform.resource up ON b.updated_by = up.id;
+			   JOIN ruleform.agency up ON b.updated_by = up.id;
 			
 			ALTER TABLE readable.product
 			  OWNER TO core;

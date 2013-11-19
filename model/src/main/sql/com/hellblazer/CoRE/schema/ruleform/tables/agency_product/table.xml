@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hparry">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.agency_product
+            (
+              id bigserial NOT NULL,
+              agency bigint NOT NULL,
+              relationship bigint NOT NULL,
+              product bigint NOT NULL,
+              notes character varying,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('NOW'::text)::timestamp(6) with time zone,
+              CONSTRAINT agency_product_pkey PRIMARY KEY (id ),
+              CONSTRAINT agency_product_product_fkey FOREIGN KEY (product)
+                  REFERENCES ruleform.product (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT agency_product_relationship_fkey FOREIGN KEY (relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT agency_product_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON	 DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT agency_product_agency_fkey FOREIGN KEY (agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT agency_product_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT agency_product_agency_key UNIQUE (agency , relationship , product )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.agency_product"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

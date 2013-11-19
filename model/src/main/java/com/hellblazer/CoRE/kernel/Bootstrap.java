@@ -26,7 +26,7 @@ import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownResource;
+import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 
 /**
@@ -47,7 +47,7 @@ public class Bootstrap {
 
     public void bootstrap() throws SQLException {
         alterTriggers(false);
-        for (WellKnownObject wko : WellKnownResource.values()) {
+        for (WellKnownObject wko : WellKnownAgency.values()) {
             insert(wko);
         }
         for (WellKnownAttribute wko : WellKnownAttribute.values()) {
@@ -65,7 +65,7 @@ public class Bootstrap {
         for (WellKnownObject wko : WellKnownStatusCode.values()) {
             insert(wko);
         }
-        adjustIdSeq(WellKnownResource.ANY);
+        adjustIdSeq(WellKnownAgency.ANY);
         adjustIdSeq(WellKnownAttribute.ANY);
         adjustIdSeq(WellKnownProduct.ANY);
         adjustIdSeq(WellKnownLocation.ANY);
@@ -94,7 +94,7 @@ public class Bootstrap {
             s.setString(2, wko.productName());
             s.setString(3, wko.description());
             s.setBoolean(4, true);
-            s.setLong(5, WellKnownResource.CORE.id());
+            s.setLong(5, WellKnownAgency.CORE.id());
             s.setInt(6, wko.valueType().ordinal());
             s.execute();
         } catch (SQLException e) {
@@ -110,7 +110,7 @@ public class Bootstrap {
             s.setString(2, wkl.productName());
             s.setString(3, wkl.description());
             s.setBoolean(4, true);
-            s.setLong(5, WellKnownResource.CORE.id());
+            s.setLong(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert  %s", wkl),
@@ -126,7 +126,7 @@ public class Bootstrap {
             s.setString(2, wko.productName());
             s.setString(3, wko.description());
             s.setBoolean(4, true);
-            s.setLong(5, WellKnownResource.CORE.id());
+            s.setLong(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko), e);
@@ -141,7 +141,7 @@ public class Bootstrap {
             s.setString(2, wko.productName());
             s.setString(3, wko.description());
             s.setBoolean(4, true);
-            s.setLong(5, WellKnownResource.CORE.id());
+            s.setLong(5, WellKnownAgency.CORE.id());
             s.setLong(6, wko.inverse().id());
             s.setBoolean(7, wko.preferred());
             s.execute();
@@ -159,7 +159,7 @@ public class Bootstrap {
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {
-        for (String table : new String[] { "ruleform.resource",
+        for (String table : new String[] { "ruleform.agency",
                 "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
                                          table, enable ? "ENABLE" : "DISABLE");

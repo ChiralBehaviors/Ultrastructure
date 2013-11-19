@@ -33,7 +33,6 @@ import javax.ws.rs.MatrixParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -43,7 +42,6 @@ import org.apache.openjpa.enhance.PersistenceCapable;
 import org.apache.openjpa.kernel.OpenJPAStateManager;
 import org.reflections.Reflections;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.CoRE.Ruleform;
 import com.yammer.metrics.annotation.Timed;
 
@@ -70,30 +68,30 @@ public class TraversalResource {
         this.emf = emf;
     }
 
-    @SuppressWarnings("unchecked")
     @GET
     @Timed
     @Produces({ "text/json" })
-    public Response getEntity(@PathParam("version") int version,
-                              @PathParam("entity") PathSegment entity,
-                              @MatrixParam("fields") List<String> fields,
-                              @MatrixParam("format") String format)
-                                                                   throws IOException,
-                                                                   JAXBException {
-        return traverse(entity, Collections.EMPTY_LIST, fields, format);
+    public Object getEntity(@PathParam("version") int version,
+                            @PathParam("entity") PathSegment entity,
+                            @MatrixParam("fields") List<String> fields,
+                            @MatrixParam("format") String format)
+                                                                 throws IOException,
+                                                                 JAXBException {
+        return traverse(entity, Collections.<PathSegment> emptyList(), fields,
+                        format);
     }
 
     @GET
     @Path("{traversal : .+}")
     @Timed
     @Produces({ "text/json" })
-    public Response traverseEntity(@PathParam("version") int version,
-                                   @PathParam("entity") PathSegment entity,
-                                   @PathParam("traversal") List<PathSegment> traversal,
-                                   @MatrixParam("fields") List<String> fields,
-                                   @MatrixParam("format") String format)
-                                                                        throws IOException,
-                                                                        JAXBException {
+    public Object traverseEntity(@PathParam("version") int version,
+                                 @PathParam("entity") PathSegment entity,
+                                 @PathParam("traversal") List<PathSegment> traversal,
+                                 @MatrixParam("fields") List<String> fields,
+                                 @MatrixParam("format") String format)
+                                                                      throws IOException,
+                                                                      JAXBException {
         return traverse(entity, traversal, fields, format);
     }
 
@@ -127,42 +125,6 @@ public class TraversalResource {
         throw new NoSuchFieldException(fieldName);
     }
 
-    /**
-     * @param instance
-     * @param em
-     * @return
-     * @throws IOException
-     * @throws JAXBException
-     */
-    protected Response result(Object instance, List<String> fields,
-                              EntityManager em) throws IOException,
-                                               JAXBException {
-        Collection<?> collection;
-
-        if (fields.isEmpty()) {
-            collection = Collections.singleton(instance);
-        } else {
-            collection = fieldsOf(instance, fields);
-        }
-
-        return resultJSon(collection, em);
-    }
-
-    /**
-     * @param em
-     * @param jsonFormat
-     * @param rootInstance
-     * @return
-     * @throws IOException
-     */
-    protected Response resultJSon(Collection<?> collection, EntityManager em)
-                                                                             throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enableDefaultTyping();
-        return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(collection),
-                           MediaType.APPLICATION_JSON).build();
-    }
-
     protected List<OpenJPAStateManager> toStateManager(Collection<?> objects) {
         List<OpenJPAStateManager> sms = new ArrayList<OpenJPAStateManager>();
         for (Object o : objects) {
@@ -184,11 +146,10 @@ public class TraversalResource {
         return null;
     }
 
-    protected Response traverse(PathSegment entity,
-                                List<PathSegment> traversal,
-                                List<String> fields, String format)
-                                                                   throws IOException,
-                                                                   JAXBException {
+    protected Object traverse(PathSegment entity, List<PathSegment> traversal,
+                              List<String> fields, String format)
+                                                                 throws IOException,
+                                                                 JAXBException {
 
         if (entity == null) {
             return Response.status(Status.NOT_FOUND).entity("No root entity specified").build();
@@ -225,7 +186,11 @@ public class TraversalResource {
         }
 
         if (traversal.isEmpty()) {
-            return result(rootInstance, fields, em);
+            if (fields.isEmpty()) {
+                return Collections.singleton(rootInstance);
+            } else {
+                return fieldsOf(rootInstance, fields);
+            }
         } else {
             return traverse(rootInstance, traversal, fields, em);
         }
@@ -238,10 +203,10 @@ public class TraversalResource {
      * @throws IOException
      * @throws JAXBException
      */
-    protected Response traverse(Ruleform root, List<PathSegment> traversal,
-                                List<String> fields, EntityManager em)
-                                                                      throws IOException,
-                                                                      JAXBException {
+    protected Object traverse(Ruleform root, List<PathSegment> traversal,
+                              List<String> fields, EntityManager em)
+                                                                    throws IOException,
+                                                                    JAXBException {
         Object current = root;
         for (PathSegment segment : traversal) {
             String fieldName = segment.getPath();
@@ -264,8 +229,6 @@ public class TraversalResource {
                 return Response.status(Status.FORBIDDEN).build();
             }
         }
-        Collection<?> collection = fieldsOf(current, fields);
-
-        return resultJSon(collection, em);
+        return fieldsOf(current, fields);
     }
 }

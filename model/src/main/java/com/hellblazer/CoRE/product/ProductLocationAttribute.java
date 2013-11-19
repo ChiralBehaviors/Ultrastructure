@@ -31,10 +31,10 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The attribute value for product location attributes
@@ -62,10 +62,10 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     @GeneratedValue(generator = "product_location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "resource")
-    private Resource          resource;
+    @JoinColumn(name = "agency")
+    private Agency          agency;
 
     public ProductLocationAttribute() {
     }
@@ -83,7 +83,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, BigDecimal value,
-                                    Resource updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -93,7 +93,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, boolean value,
-                                    Resource updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -103,7 +103,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, int value,
-                                    Resource updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -111,7 +111,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param attribute
      * @param updatedBy
      */
-    public ProductLocationAttribute(Attribute attribute, Resource updatedBy) {
+    public ProductLocationAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
     }
 
@@ -121,7 +121,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      * @param updatedBy
      */
     public ProductLocationAttribute(Attribute attribute, String value,
-                                    Resource updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -143,7 +143,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     /**
      * @param updatedBy
      */
-    public ProductLocationAttribute(Resource updatedBy) {
+    public ProductLocationAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -160,8 +160,8 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         return id;
     }
 
-    public Resource getResource() {
-        return resource;
+    public Agency getAgency() {
+        return agency;
     }
 
     /* (non-Javadoc)
@@ -193,8 +193,8 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         this.id = id;
     }
 
-    public void setResource(Resource resource2) {
-        resource = resource2;
+    public void setAgency(Agency agency2) {
+        agency = agency2;
     }
 
     /* (non-Javadoc)
@@ -210,8 +210,8 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         if (productValue != null) {
             productValue = (Product) productValue.manageEntity(em, knownObjects);
         }
-        if (resource != null) {
-            resource = (Resource) resource.manageEntity(em, knownObjects);
+        if (agency != null) {
+            agency = (Agency) agency.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

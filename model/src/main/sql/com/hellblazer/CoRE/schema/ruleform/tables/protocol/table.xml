@@ -18,18 +18,18 @@
               product bigint NOT NULL,
               copy_attributes boolean DEFAULT FALSE,
               sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an service / key combination can have multiple protocol rules
-              assign_to bigint NOT NULL, -- The Resource that should perform the service
-              requester bigint NOT NULL, -- The Resource that requested the service
+              assign_to bigint NOT NULL, -- The agency that should perform the service
+              requester bigint NOT NULL, -- The agency that requested the service
               notes character varying, -- Additional notes regarding usage of the attribute
               research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT protocol_pkey PRIMARY KEY (id ),
               CONSTRAINT protocol_assign_to_fkey FOREIGN KEY (assign_to)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_requester_fkey FOREIGN KEY (requester)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_requested_service_fkey FOREIGN KEY (requested_service)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
@@ -53,7 +53,7 @@
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT protocol_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
             )
             WITH (
@@ -64,10 +64,10 @@
             COMMENT ON COLUMN ruleform.protocol.id IS 'Unique identifier';
             COMMENT ON COLUMN ruleform.protocol.service IS 'The service whose steps are being specified';
             COMMENT ON COLUMN ruleform.protocol.sequence_number IS 'Ordering and uniqueness, for when an service / key combination can have multiple protocol rules';
-            COMMENT ON COLUMN ruleform.protocol.assign_to IS 'The Resource that should perform the task';
+            COMMENT ON COLUMN ruleform.protocol.assign_to IS 'The agency that should perform the task';
             COMMENT ON COLUMN ruleform.protocol.notes IS 'Additional notes regarding usage of the attribute';
             COMMENT ON COLUMN ruleform.protocol.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
-            COMMENT ON COLUMN ruleform.protocol.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.protocol.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.protocol.update_date IS 'The date this rule was last changed';
             ]]>
 		</sql>

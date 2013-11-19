@@ -20,7 +20,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * A ruleform that declares existence.
@@ -44,14 +44,14 @@ abstract public class ExistentialRuleform extends Ruleform {
         super(id);
     }
 
-    public ExistentialRuleform(Long id, Resource updatedBy) {
+    public ExistentialRuleform(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public ExistentialRuleform(Resource updatedBy) {
+    public ExistentialRuleform(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -59,7 +59,7 @@ abstract public class ExistentialRuleform extends Ruleform {
         this.name = name;
     }
 
-    public ExistentialRuleform(String name, Resource updatedBy) {
+    public ExistentialRuleform(String name, Agency updatedBy) {
         super(updatedBy);
         this.name = name;
     }
@@ -70,7 +70,7 @@ abstract public class ExistentialRuleform extends Ruleform {
     }
 
     public ExistentialRuleform(String name, String description,
-                               Resource updatedBy) {
+                               Agency updatedBy) {
         this(name, updatedBy);
         this.description = description;
     }

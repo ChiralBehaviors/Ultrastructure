@@ -32,6 +32,6 @@
 	<include relativeToChangelogFile="true"
 		file="tables/product_network/trigger_propagate_deductions.xml" />
 	<include relativeToChangelogFile="true"
-		file="tables/resource_network/trigger_propagate_deductions.xml" />
+		file="tables/agency_network/trigger_propagate_deductions.xml" />
 
 </databaseChangeLog>

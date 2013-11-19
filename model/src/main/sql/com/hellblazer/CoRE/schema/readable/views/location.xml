@@ -11,7 +11,7 @@
 			 SELECT l.id, l.name, l.description, l.notes, res.name AS research, l.pinned, r.name AS updated_by, l.update_date
 			   FROM ruleform.location l
 			   LEFT JOIN ruleform.research res ON l.research = res.id
-			   JOIN ruleform.resource r ON l.updated_by = r.id;
+			   JOIN ruleform.agency r ON l.updated_by = r.id;
 			
 			ALTER TABLE readable.location
 			  OWNER TO core;

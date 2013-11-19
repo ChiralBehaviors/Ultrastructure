@@ -31,11 +31,11 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the location_attribute database table.
@@ -60,10 +60,10 @@ public class LocationAttribute extends AttributeValue<Location> {
     @JoinColumn(name = "location")
     private Location          location;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "resource_value")
-    private Resource          resourceValue;
+    @JoinColumn(name = "agency_value")
+    private Agency          agencyValue;
 
     public LocationAttribute() {
     }
@@ -81,7 +81,7 @@ public class LocationAttribute extends AttributeValue<Location> {
      * @param updatedBy
      */
     public LocationAttribute(Attribute attribute, BigDecimal value,
-                             Resource updatedBy) {
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -91,7 +91,7 @@ public class LocationAttribute extends AttributeValue<Location> {
      * @param updatedBy
      */
     public LocationAttribute(Attribute attribute, boolean value,
-                             Resource updatedBy) {
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -100,7 +100,7 @@ public class LocationAttribute extends AttributeValue<Location> {
      * @param value
      * @param updatedBy
      */
-    public LocationAttribute(Attribute attribute, int value, Resource updatedBy) {
+    public LocationAttribute(Attribute attribute, int value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -108,7 +108,7 @@ public class LocationAttribute extends AttributeValue<Location> {
      * @param attribute
      * @param updatedBy
      */
-    public LocationAttribute(Attribute attribute, Resource updatedBy) {
+    public LocationAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
     }
 
@@ -118,7 +118,7 @@ public class LocationAttribute extends AttributeValue<Location> {
      * @param updatedBy
      */
     public LocationAttribute(Attribute attribute, String value,
-                             Resource updatedBy) {
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -140,7 +140,7 @@ public class LocationAttribute extends AttributeValue<Location> {
     /**
      * @param updatedBy
      */
-    public LocationAttribute(Resource updatedBy) {
+    public LocationAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -157,8 +157,8 @@ public class LocationAttribute extends AttributeValue<Location> {
         return productValue;
     }
 
-    public Resource getResourceValue() {
-        return resourceValue;
+    public Agency getAgencyValue() {
+        return agencyValue;
     }
 
     /* (non-Javadoc)
@@ -190,8 +190,8 @@ public class LocationAttribute extends AttributeValue<Location> {
         this.location = location;
     }
 
-    public void setResourceValue(Resource resource2) {
-        resourceValue = resource2;
+    public void setAgencyValue(Agency agency2) {
+        agencyValue = agency2;
     }
 
     /* (non-Javadoc)
@@ -206,8 +206,8 @@ public class LocationAttribute extends AttributeValue<Location> {
         if (location != null) {
             location = (Location) location.manageEntity(em, knownObjects);
         }
-        if (resourceValue != null) {
-            resourceValue = (Resource) resourceValue.manageEntity(em,
+        if (agencyValue != null) {
+            agencyValue = (Agency) agencyValue.manageEntity(em,
                                                                   knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);

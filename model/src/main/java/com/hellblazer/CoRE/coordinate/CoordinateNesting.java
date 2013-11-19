@@ -30,8 +30,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the coordinate_nesting database table.
@@ -85,7 +85,7 @@ public class CoordinateNesting extends Ruleform {
     /**
      * @param updatedBy
      */
-    public CoordinateNesting(Resource updatedBy) {
+    public CoordinateNesting(Agency updatedBy) {
         super(updatedBy);
     }
 

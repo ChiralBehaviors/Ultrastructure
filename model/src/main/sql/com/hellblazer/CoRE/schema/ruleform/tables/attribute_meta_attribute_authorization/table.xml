@@ -10,18 +10,18 @@
             CREATE TABLE ruleform.attr_meta_attr_auth
             (
               id bigserial NOT NULL, -- Unique identifier
-              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the resource that determines the classification criteria for selecting meta attributes a certain Attribute must have
+              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the agency that determines the classification criteria for selecting meta attributes a certain Attribute must have
               classifier bigint NOT NULL, -- In conjunction with the 'classification_attribute' column, determines the classification criteria for selecting meta attributes a certain Attribute must have
               authorized_attribute bigint NOT NULL, -- A meta Attribute a Attribute is expected to have
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when a meta Attribute can have multiple acceptable values
-              grouping_resource bigint,
+              grouping_agency bigint,
               text_value character varying, -- Contains a single acceptable text-value if 'attribute' has a data type of 'text'
               integer_value integer, -- Contains a single acceptable integer-value if 'attribute' has a data type of 'integer'
               numeric_value numeric, -- Contains a single acceptable numeric-value if 'attribute' has a data type of 'numeric'
               timestamp_value timestamp with time zone,
               notes character varying, -- Additional notes regarding this rule
               research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT attr_meta_attr_auth_pkey PRIMARY KEY (id ),
               CONSTRAINT attr_meta_attr_auth_authorized_attribute_fkey FOREIGN KEY (authorized_attribute)
@@ -33,16 +33,16 @@
               CONSTRAINT attr_meta_attr_auth_classifier_fkey FOREIGN KEY (classifier)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT attr_meta_attr_auth_grouping_resource_fkey FOREIGN KEY (grouping_resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT attr_meta_attr_auth_grouping_agency_fkey FOREIGN KEY (grouping_agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT attr_meta_attr_auth_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT attr_meta_attr_auth_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT attr_meta_attr_auth_classification_attri_key UNIQUE (grouping_resource, classification , classifier , authorized_attribute , sequence_number )
+              CONSTRAINT attr_meta_attr_auth_classification_attri_key UNIQUE (grouping_agency, classification , classifier , authorized_attribute , sequence_number )
             )
             WITH (
               OIDS=FALSE
@@ -54,13 +54,13 @@
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.classifier IS 'In conjunction with the ''classification'' column, determines the classification criteria for selecting metaattributes a certain Attribute must have';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.authorized_attribute IS 'A meta Attribute an Attribute is expected to have';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.sequence_number IS 'Ordering and uniqueness, for when a meta Attribute can have multiple acceptable values';
-            COMMENT ON COLUMN ruleform.attr_meta_attr_auth.grouping_resource IS 'If present, used to select an entire grouping of Attributes that can be acceptable values';
+            COMMENT ON COLUMN ruleform.attr_meta_attr_auth.grouping_agency IS 'If present, used to select an entire grouping of Attributes that can be acceptable values';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.text_value IS 'Contains a single acceptable text-value if ''attribute'' has a data type of ''text''';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.integer_value IS 'Contains a single acceptable integer-value if ''attribute'' has a data type of ''integer''';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.numeric_value IS 'Contains a single acceptable numeric-value if ''attribute'' has a data type of ''numeric''';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.notes IS 'Additional notes regarding this rule';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
-            COMMENT ON COLUMN ruleform.attr_meta_attr_auth.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.attr_meta_attr_auth.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.attr_meta_attr_auth.update_date IS 'The date this rule was last changed';
             ]]>
 		</sql>

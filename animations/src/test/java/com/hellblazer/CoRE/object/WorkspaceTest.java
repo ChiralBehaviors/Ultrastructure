@@ -16,30 +16,31 @@
  */
 package com.hellblazer.CoRE.object;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.kernel.Bootstrap;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductLocationAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductNetwork;
-import com.hellblazer.CoRE.product.ProductResourceAccessAuthorization;
-import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
  * @author hparry
- *
+ * 
  */
 public class WorkspaceTest extends DatabaseTest {
-	
+
     private static Kernel kernel;
 
     @Before
@@ -51,19 +52,18 @@ public class WorkspaceTest extends DatabaseTest {
         commitTransaction();
         kernel = new KernelImpl(em);
     }
-
 	
 	@Test
 	public void testLoadWorkspace() {
 		beginTransaction();
 		Product workspace = kernel.getWorkspace();
 		Relationship workspaceOf = kernel.getWorkspaceOf();
-		Resource core = kernel.getCore();
+		Agency core = kernel.getCore();
 		Product p1 = new Product("MyProduct", core);
 		em.persist(p1);
 		ProductNetwork net = new ProductNetwork(workspace, workspaceOf, p1, core);
 		em.persist(net);
-		ProductResourceAccessAuthorization coreAuth = new ProductResourceAccessAuthorization(workspace, workspaceOf, core, core);
+		ProductAgencyAccessAuthorization coreAuth = new ProductAgencyAccessAuthorization(workspace, workspaceOf, core, core);
 		ProductLocationAccessAuthorization locAuth = new ProductLocationAccessAuthorization(workspace, workspaceOf, kernel.getAnyLocation(), core);
 		em.persist(coreAuth);
 		em.persist(locAuth);
@@ -75,5 +75,7 @@ public class WorkspaceTest extends DatabaseTest {
 		assertEquals(2, w.getAuths().size());
 		assertTrue(w.getAuths().contains(coreAuth));
 	}
+
+
 
 }

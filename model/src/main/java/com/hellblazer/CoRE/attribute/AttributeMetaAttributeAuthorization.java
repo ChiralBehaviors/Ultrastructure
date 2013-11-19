@@ -30,8 +30,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The authorization for attributes on attributes
@@ -71,7 +71,7 @@ public class AttributeMetaAttributeAuthorization extends
     public AttributeMetaAttributeAuthorization(Attribute classifier,
                                                Relationship classification,
                                                Attribute authorizedAttribute,
-                                               Resource updatedBy) {
+                                               Agency updatedBy) {
         super(classification, authorizedAttribute, updatedBy);
         this.classifier = classifier;
     }
@@ -90,7 +90,7 @@ public class AttributeMetaAttributeAuthorization extends
      */
     public AttributeMetaAttributeAuthorization(Relationship classification,
                                                Attribute authorized,
-                                               Resource updatedBy) {
+                                               Agency updatedBy) {
         super(classification, authorized, updatedBy);
     }
 
@@ -99,14 +99,14 @@ public class AttributeMetaAttributeAuthorization extends
      * @param updatedBy
      */
     public AttributeMetaAttributeAuthorization(Relationship classification,
-                                               Resource updatedBy) {
+                                               Agency updatedBy) {
         super(classification, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public AttributeMetaAttributeAuthorization(Resource updatedBy) {
+    public AttributeMetaAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 

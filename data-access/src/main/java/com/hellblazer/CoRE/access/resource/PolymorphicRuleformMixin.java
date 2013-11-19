@@ -19,6 +19,13 @@ package com.hellblazer.CoRE.access.resource;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.agency.AgencyAttribute;
+import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
+import com.hellblazer.CoRE.agency.AgencyLocationAccessAuthorization;
+import com.hellblazer.CoRE.agency.AgencyNetwork;
+import com.hellblazer.CoRE.agency.AgencyNetworkAuthorization;
+import com.hellblazer.CoRE.agency.AgencyProductAccessAuthorization;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -28,6 +35,9 @@ import com.hellblazer.CoRE.attribute.TransformationMetarule;
 import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.attribute.UnitValue;
 import com.hellblazer.CoRE.attribute.ValueType;
+import com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization;
+import com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization;
+import com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization;
 import com.hellblazer.CoRE.coordinate.Coordinate;
 import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
 import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
@@ -48,16 +58,17 @@ import com.hellblazer.CoRE.event.ProtocolAttributeAuthorization;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.location.LocationAgencyAccessAuthorization;
 import com.hellblazer.CoRE.location.LocationAttribute;
 import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.location.LocationNetworkAuthorization;
 import com.hellblazer.CoRE.location.LocationProductAccessAuthorization;
 import com.hellblazer.CoRE.location.LocationRelationship;
-import com.hellblazer.CoRE.location.LocationResourceAccessAuthorization;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
 import com.hellblazer.CoRE.product.ProductLocation;
@@ -69,14 +80,6 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.product.ProductNetworkAttribute;
 import com.hellblazer.CoRE.product.ProductNetworkAuthorization;
 import com.hellblazer.CoRE.product.ProductNetworkDeduction;
-import com.hellblazer.CoRE.product.ProductResourceAccessAuthorization;
-import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceAttribute;
-import com.hellblazer.CoRE.resource.ResourceAttributeAuthorization;
-import com.hellblazer.CoRE.resource.ResourceLocationAccessAuthorization;
-import com.hellblazer.CoRE.resource.ResourceNetwork;
-import com.hellblazer.CoRE.resource.ResourceNetworkAuthorization;
-import com.hellblazer.CoRE.resource.ResourceProductAccessAuthorization;
 
 /**
  * A class for deserializing ruleforms. If you want your ruleform deserialized
@@ -129,8 +132,7 @@ import com.hellblazer.CoRE.resource.ResourceProductAccessAuthorization;
                @Type(value = LocationNetworkAuthorization.class, name = "locationNetworkAuthorization"),
                @Type(value = LocationRelationship.class, name = "locationRelationship"),
                @Type(value = LocationProductAccessAuthorization.class, name = "locationProductAccessAuthorization"),
-               @Type(value = LocationResourceAccessAuthorization.class, name = "locationResourceAccessAuthorization"),
-               
+               @Type(value = LocationAgencyAccessAuthorization.class, name = "locationAgencyAccessAuthorization"),
 
                @Type(value = NetworkInference.class, name = "networkInference"),
                @Type(value = Relationship.class, name = "relationship"),
@@ -147,17 +149,19 @@ import com.hellblazer.CoRE.resource.ResourceProductAccessAuthorization;
                @Type(value = ProductNetworkAuthorization.class, name = "productNetworkAuthorization"),
                @Type(value = ProductNetworkDeduction.class, name = "productNetworkDeduction"),
                @Type(value = ProductLocationAccessAuthorization.class, name = "productLocationAccessAuthorization"),
-               @Type(value = ProductResourceAccessAuthorization.class, name = "productResourceAccessAuthorization"),
+               @Type(value = ProductAgencyAccessAuthorization.class, name = "productAgencyAccessAuthorization"),
 
-               @Type(value = Resource.class, name = "resource"),
-               @Type(value = ResourceAttribute.class, name = "resourceAttribute"),
-               @Type(value = ResourceAttributeAuthorization.class, name = "resourceAttributeAuthorization"),
-               @Type(value = ResourceNetwork.class, name = "resourceNetwork"),
-               @Type(value = ResourceNetworkAuthorization.class, name = "resourceNetworkAuthorization"),
-               @Type(value = ResourceProductAccessAuthorization.class, name = "resourceProductAccessAuthorization"),
-               @Type(value = ResourceLocationAccessAuthorization.class, name = "resourceLocationAccessAuthorization")
-})
-               
+               @Type(value = Agency.class, name = "agency"),
+               @Type(value = AgencyAttribute.class, name = "agencyAttribute"),
+               @Type(value = AgencyAttributeAuthorization.class, name = "agencyAttributeAuthorization"),
+               @Type(value = AgencyNetwork.class, name = "agencyNetwork"),
+               @Type(value = AgencyNetworkAuthorization.class, name = "agencyNetworkAuthorization"),
+               @Type(value = AgencyProductAccessAuthorization.class, name = "agencyProductAccessAuthorization"),
+               @Type(value = AgencyLocationAccessAuthorization.class, name = "agencyLocationAccessAuthorization"),
+
+               @Type(value = WorkspaceRelationshipAuthorization.class, name = "workspaceRelationshipAuthorization"),
+               @Type(value = WorkspaceStatusCodeAuthorization.class, name = "workspaceStatusCodeAuthorization"),
+               @Type(value = WorkspaceUnitAuthorization.class, name = "workspaceUnitAuthorization") })
 public abstract class PolymorphicRuleformMixin {
 
 }

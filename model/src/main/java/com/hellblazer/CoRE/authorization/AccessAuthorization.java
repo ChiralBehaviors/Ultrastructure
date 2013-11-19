@@ -49,11 +49,11 @@ import com.hellblazer.CoRE.network.Relationship;
 public abstract class AccessAuthorization extends Ruleform {
 
     // IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
-    public static final String RESOURCE_PRODUCT  = "0";
-    public static final String RESOURCE_LOCATION = "1";
-    public static final String PRODUCT_RESOURCE  = "2";
+    public static final String agency_PRODUCT  = "0";
+    public static final String agency_LOCATION = "1";
+    public static final String PRODUCT_AGENCY  = "2";
     public static final String PRODUCT_LOCATION  = "3";
-    public static final String LOCATION_RESOURCE = "4";
+    public static final String LOCATION_AGENCY = "4";
     public static final String LOCATION_PRODUCT  = "5";
     
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX = ".getAllAuthorizationsForParentAndRelationship";

@@ -32,8 +32,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.NetworkAuthorization;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -77,7 +77,7 @@ public class LocationNetworkAuthorization extends
     /**
      * @param updatedBy
      */
-    public LocationNetworkAuthorization(Resource updatedBy) {
+    public LocationNetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 

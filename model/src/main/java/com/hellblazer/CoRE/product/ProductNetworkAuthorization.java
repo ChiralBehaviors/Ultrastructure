@@ -32,8 +32,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.NetworkAuthorization;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The authorization for product networks
@@ -78,7 +78,7 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     /**
      * @param updatedBy
      */
-    public ProductNetworkAuthorization(Resource updatedBy) {
+    public ProductNetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 

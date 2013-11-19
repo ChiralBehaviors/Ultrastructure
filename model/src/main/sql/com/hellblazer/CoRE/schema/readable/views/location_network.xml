@@ -13,7 +13,7 @@
 			   JOIN ruleform.location p ON n.parent = p.id
 			   JOIN ruleform.relationship rel ON n.relationship = rel.id
 			   JOIN ruleform.location c ON n.child = c.id
-			   JOIN ruleform.resource u ON n.updated_by = u.id
+			   JOIN ruleform.agency u ON n.updated_by = u.id
 			   LEFT JOIN ruleform.research r ON n.research = r.id;
 			
 			ALTER TABLE readable.location_network

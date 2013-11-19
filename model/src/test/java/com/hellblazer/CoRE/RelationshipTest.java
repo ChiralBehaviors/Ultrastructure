@@ -24,8 +24,8 @@ import javax.persistence.TypedQuery;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
@@ -38,7 +38,7 @@ public class RelationshipTest extends DatabaseTest {
     @Before
     public void initData() {
         beginTransaction();
-        Resource core = new Resource("CoRE");
+        Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
 
@@ -79,10 +79,10 @@ public class RelationshipTest extends DatabaseTest {
     public void testInverseMerge() {
         beginTransaction();
 
-        TypedQuery<Resource> query = em.createNamedQuery("resource.findByName",
-                                                         Resource.class);
+        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+                                                         Agency.class);
         query.setParameter("name", "CoRE");
-        Resource core = query.getSingleResult();
+        Agency core = query.getSingleResult();
 
         Relationship relationship = new Relationship();
         relationship.setName("Foo");

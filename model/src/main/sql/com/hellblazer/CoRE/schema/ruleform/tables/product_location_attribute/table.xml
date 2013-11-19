@@ -10,7 +10,7 @@
             CREATE TABLE ruleform.product_location_attribute
             (
               id bigserial NOT NULL,
-              resource bigint NOT NULL,
+              agency bigint NOT NULL,
               product_location bigint NOT NULL,
               attribute bigint NOT NULL, 
               product_value bigint,
@@ -39,16 +39,16 @@
               CONSTRAINT product_location_attribute_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_location_attribute_resource_fkey FOREIGN KEY (resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT product_location_attribute_agency_fkey FOREIGN KEY (agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_location_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_location_attribute_resource_key UNIQUE (resource , product_location , attribute , sequence_number ),
+              CONSTRAINT product_location_attribute_agency_key UNIQUE (agency , product_location , attribute , sequence_number ),
               CONSTRAINT product_lctn_attribute_sequence_number_check CHECK (sequence_number > 0),
               CONSTRAINT product_location_valid_value CHECK ((ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(integer_value)  + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value) + ruleform.null_zero(product_value)) = 1)
             )

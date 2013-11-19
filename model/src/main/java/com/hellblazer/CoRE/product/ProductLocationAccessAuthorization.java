@@ -25,10 +25,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hparry
@@ -54,14 +54,14 @@ public class ProductLocationAccessAuthorization extends
     }
 
     /**
-     * @param Resource
+     * @param Agency
      * @param Relationship
      * @param Product
      * @param updatedBy
      */
     public ProductLocationAccessAuthorization(Product parent,
                                               Relationship relationship,
-                                              Location child, Resource updatedBy) {
+                                              Location child, Agency updatedBy) {
         this();
         setParent(parent);
         setRelationship(relationship);

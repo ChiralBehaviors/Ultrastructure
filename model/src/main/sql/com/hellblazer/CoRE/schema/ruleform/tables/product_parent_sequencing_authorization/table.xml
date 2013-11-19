@@ -22,7 +22,7 @@
                                               -- those sibling jobs might have.
               notes character varying, -- Additional notes regarding usage of this particular rule
               research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT product_parent_sequencing_authorization_pkey PRIMARY KEY (id ),
               CONSTRAINT product_parent_sequencing_authorization_my_parent_fkey FOREIGN KEY (my_parent)
@@ -41,7 +41,7 @@
                   REFERENCES ruleform.status_code (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_parent_sequencing_authorization_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_parent_sequencing_authorization_parent_status_code_sequ_key UNIQUE (parent , status_code , sequence_number )
             )
@@ -56,7 +56,7 @@
             COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.sequence_number IS 'Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products';
             COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.notes IS 'Additional notes regarding usage of this particular rule';
             COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
-            COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.update_date IS 'The date this rule was last changed';
             COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.my_parent IS 'If this is the current job''s parent''s product, then we should set the parent job''s status.  If this is NULL, then it can apply to any parent job that has an product equal to the current job''s';
             COMMENT ON COLUMN ruleform.product_parent_sequencing_authorization.parent_status_to_set IS 'The status to set for the parent job, provided it has an product equal to "my_parent"';

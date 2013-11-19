@@ -57,6 +57,8 @@ import org.postgresql.pljava.TransactionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.AttributeValue;
@@ -72,8 +74,6 @@ import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductNetwork;
-import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceNetwork;
 
 /**
  * @author hhildebrand
@@ -194,7 +194,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     public void createInverseRelationship(RuleForm parent, Relationship r,
-                                          RuleForm child, Resource updatedBy) {
+                                          RuleForm child, Agency updatedBy) {
         child.link(r.getInverse(), parent, updatedBy,
                    kernel.getInverseSoftware(), em);
     }
@@ -221,9 +221,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
 
     @Override
     public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                        Resource groupingResource) {
+                                                        Agency groupingAgency) {
         return getAllowedValues(attribute,
-                                getAttributeAuthorizations(groupingResource,
+                                getAttributeAuthorizations(groupingAgency,
                                                            attribute));
     }
 
@@ -253,27 +253,27 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.resource.Resource)
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.agency.Agency)
      */
     @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Resource groupingResource) {
+    public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency) {
         TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
                                                                                + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
                                                                        authorization);
-        query.setParameter("groupingResource", groupingResource);
+        query.setParameter("groupingAgency", groupingAgency);
         return query.getResultList();
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.resource.Resource, com.hellblazer.CoRE.attribute.Attribute)
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.attribute.Attribute)
      */
     @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Resource groupingResource,
+    public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
                                                                    Attribute attribute) {
         TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
                                                                                + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
                                                                        authorization);
-        query.setParameter("groupingResource", groupingResource);
+        query.setParameter("groupingAgency", groupingAgency);
         query.setParameter("attribute", attribute);
         return query.getResultList();
     }
@@ -295,26 +295,26 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
 
     @Override
     public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                         Resource groupingResource) {
+                                                         Agency groupingAgency) {
         TypedQuery<AttributeType> query = em.createNamedQuery(prefix
                                                                       + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
                                                               attribute);
         query.setParameter("ruleform", ruleform);
-        query.setParameter("resource", groupingResource);
+        query.setParameter("agency", groupingAgency);
         return query.getResultList();
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.resource.Resource)
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.agency.Agency)
      */
     @Override
     public List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
-                                                      Resource groupingResource) {
+                                                      Agency groupingAgency) {
         TypedQuery<AttributeType> query = em.createNamedQuery(prefix
                                                                       + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
                                                               attribute);
         query.setParameter("ruleform", ruleform);
-        query.setParameter("resource", groupingResource);
+        query.setParameter("agency", groupingAgency);
         return query.getResultList();
     }
 
@@ -377,8 +377,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         if (networked == Location.class) {
             return LocationNetwork.class;
         }
-        if (networked == Resource.class) {
-            return ResourceNetwork.class;
+        if (networked == Agency.class) {
+            return AgencyNetwork.class;
         }
         throw new IllegalArgumentException(
                                            String.format("Class %s is not a subclass of %s",
@@ -426,7 +426,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
 
     @Override
     public void link(RuleForm parent, Relationship r, RuleForm child,
-                     Resource updatedBy) {
+                     Agency updatedBy) {
         parent.link(r, child, updatedBy, kernel.getInverseSoftware(), em);
     }
 

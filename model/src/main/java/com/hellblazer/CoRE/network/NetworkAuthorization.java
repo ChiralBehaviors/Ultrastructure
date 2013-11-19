@@ -27,7 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * 
@@ -51,10 +51,10 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "grouping_resource")
-    private Resource          groupingResource;
+    @JoinColumn(name = "grouping_agency")
+    private Agency          groupingAgency;
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
@@ -73,7 +73,7 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
     /**
      * @param updatedBy
      */
-    public NetworkAuthorization(Resource updatedBy) {
+    public NetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -89,8 +89,8 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
 
     abstract public RuleForm getClassifier();
 
-    public Resource getGroupingResource() {
-        return groupingResource;
+    public Agency getGroupingAgency() {
+        return groupingAgency;
     }
 
     public Integer getSequenceNumber() {
@@ -109,8 +109,8 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
 
     abstract public void setClassifier(RuleForm classifier);
 
-    public void setGroupingResource(Resource groupingResource) {
-        this.groupingResource = groupingResource;
+    public void setGroupingAgency(Agency groupingAgency) {
+        this.groupingAgency = groupingAgency;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -131,8 +131,8 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
             classification = (Relationship) classification.manageEntity(em,
                                                                         knownObjects);
         }
-        if (groupingResource != null) {
-            groupingResource = (Resource) groupingResource.manageEntity(em,
+        if (groupingAgency != null) {
+            groupingAgency = (Agency) groupingAgency.manageEntity(em,
                                                                         knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);

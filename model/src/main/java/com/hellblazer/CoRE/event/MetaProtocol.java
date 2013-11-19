@@ -34,9 +34,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the meta_protocol database table.
@@ -74,11 +74,11 @@ public class MetaProtocol extends Ruleform {
     private Relationship       productOrdered;
 
     /**
-     * the relationship that transforms the requesting resource
+     * the relationship that transforms the requesting agency
      */
     @ManyToOne
-    @JoinColumn(name = "requesting_resource")
-    private Relationship       requestingResource;
+    @JoinColumn(name = "requesting_agency")
+    private Relationship       requestingAgency;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber   = 1;
@@ -115,25 +115,25 @@ public class MetaProtocol extends Ruleform {
 
     public MetaProtocol(Product service, int sequenceNumber,
                         Relationship productOrdered,
-                        Relationship requestingResource,
+                        Relationship requestingAgency,
                         Relationship serviceType, Relationship deliverTo,
-                        Relationship deliverFrom, Resource updatedBy) {
+                        Relationship deliverFrom, Agency updatedBy) {
         super(updatedBy);
         setService(service);
         setSequenceNumber(sequenceNumber);
         setProductOrdered(productOrdered);
-        setRequestingResource(requestingResource);
+        setRequestingAgency(requestingAgency);
         setServiceType(serviceType);
         setDeliverTo(deliverTo);
         setDeliverFrom(deliverFrom);
     }
 
-    public MetaProtocol(Product service, Relationship requestingResource,
+    public MetaProtocol(Product service, Relationship requestingAgency,
                         Relationship serviceType, Relationship deliverTo,
-                        Relationship deliverFrom, Resource updatedBy) {
+                        Relationship deliverFrom, Agency updatedBy) {
         super(updatedBy);
         setService(service);
-        setRequestingResource(requestingResource);
+        setRequestingAgency(requestingAgency);
         setServiceType(serviceType);
         setDeliverTo(deliverTo);
         setDeliverFrom(deliverFrom);
@@ -142,7 +142,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * @param updatedBy
      */
-    public MetaProtocol(Resource updatedBy) {
+    public MetaProtocol(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -173,10 +173,10 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @return the requestingResource
+     * @return the requestingAgency
      */
-    public Relationship getRequestingResource() {
-        return requestingResource;
+    public Relationship getRequestingAgency() {
+        return requestingAgency;
     }
 
     public Integer getSequenceNumber() {
@@ -234,11 +234,11 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param requestingResource
-     *            the requestingResource to set
+     * @param requestingAgency
+     *            the requesting agency to set
      */
-    public void setRequestingResource(Relationship requestingResource) {
-        this.requestingResource = requestingResource;
+    public void setRequestingAgency(Relationship requestingAgency) {
+        this.requestingAgency = requestingAgency;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -286,8 +286,8 @@ public class MetaProtocol extends Ruleform {
             productOrdered = (Relationship) productOrdered.manageEntity(em,
                                                                         knownObjects);
         }
-        if (requestingResource != null) {
-            requestingResource = (Relationship) requestingResource.manageEntity(em,
+        if (requestingAgency != null) {
+            requestingAgency = (Relationship) requestingAgency.manageEntity(em,
                                                                                 knownObjects);
         }
         if (service != null) {

@@ -12,8 +12,8 @@
               id bigserial NOT NULL, -- Unique identifier
               service bigint NOT NULL, -- the service this job is performing
               product bigint NOT NULL, -- the product of this service
-              assign_to bigint NOT NULL, -- The Resource doing this Job
-              requester bigint NOT NULL, -- The Resource requesting the service of this job
+              assign_to bigint NOT NULL, -- The agency doing this Job
+              requester bigint NOT NULL, -- The agency requesting the service of this job
               deliver_to bigint NOT NULL, -- The location to deliver the product of this job
               deliver_from bigint NOT NULL, -- The location where the product of this job is delivered from
               status bigint NOT NULL, -- The current status of this Job
@@ -21,14 +21,14 @@
               sequence_number integer NOT NULL DEFAULT 0, -- The sibling sequence of this job
               notes character varying, -- Additional notes regarding usage of this particular rule
               research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT job_pkey PRIMARY KEY (id ),
               CONSTRAINT job_assign_to_fkey FOREIGN KEY (assign_to)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_requester_fkey FOREIGN KEY (requester)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_deliver_to_fkey FOREIGN KEY (deliver_to)
                   REFERENCES ruleform.location (id) MATCH SIMPLE
@@ -52,7 +52,7 @@
                   REFERENCES ruleform.status_code (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
               -- CONSTRAINT job_unique UNIQUE (parent, sequence_number )
             )
@@ -68,7 +68,7 @@
             COMMENT ON COLUMN ruleform.job.product
                 IS 'The product produced this Job';
             COMMENT ON COLUMN ruleform.job.assign_to 
-                IS 'The Resource doing this Job';
+                IS 'The agency doing this Job';
             COMMENT ON COLUMN ruleform.job.status 
                 IS 'The current status of this Job';
             COMMENT ON COLUMN ruleform.job.parent
@@ -78,7 +78,7 @@
             COMMENT ON COLUMN ruleform.job.research 
                 IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.job.updated_by 
-                IS 'The Resource that last updated this rule';
+                IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.job.update_date 
                 IS 'The date this rule was last changed';
             ]]>

@@ -7,7 +7,7 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.get_attribute(the_resource bigint, the_product bigint, the_attribute bigint)
+            CREATE OR REPLACE FUNCTION ruleform.get_attribute(the_agency bigint, the_product bigint, the_attribute bigint)
               RETURNS SETOF ruleform.product_attribute AS
             $BODY$
             DECLARE
@@ -19,7 +19,7 @@
                 -- see if the attribute exists already
                 SELECT * INTO row 
                 FROM product_attribute AS ba 
-                WHERE ba.resource = the_resource 
+                WHERE ba.agency = the_agency 
                   AND ba.product = the_product 
                   AND ba.attribute = the_attribute;
                 
@@ -68,7 +68,7 @@
                             JOIN product_attribute AS ba ON n.child = ba.product
                         WHERE n.parent = the_product
                           --AND r.preferred IS FALSE -- go up toward the top (is this really needed?)
-                          AND ba.resource = the_resource -- the resource passed in ???
+                          AND ba.agency = the_agency -- the agency passed in ???
                           AND ba.attribute = the_attribute -- the attribute passed in (attribute_id('Direction') )
                           AND n.distance = index -- the current level in the network
                     ;
@@ -80,7 +80,7 @@
                    END IF;
                    -- if we got here, we didn't find anything, so we need to continue examining
                    -- the network further out
-                   RAISE NOTICE 'Didn''t find an attribute for resource=''%'', product=''%'', and attribute=''%''', resource_name(the_resource), product_name(the_product), attribute_name(the_attribute);
+                   RAISE NOTICE 'Didn''t find an attribute for agency=''%'', product=''%'', and attribute=''%''', agency_name(the_agency), product_name(the_product), attribute_name(the_attribute);
                 END LOOP;
                 
                 -- if you can't find anything, return the null row

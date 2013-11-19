@@ -21,10 +21,14 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.hellblazer.CoRE.access.DataAccessBundle;
-import com.hellblazer.CoRE.authentication.ResourceAuthenticator;
+import com.hellblazer.CoRE.agency.AgencyAttribute;
+import com.hellblazer.CoRE.authentication.AgencyAuthenticator;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;
+import com.hellblazer.CoRE.json.AttributeValueSerializer;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 import com.yammer.dropwizard.Service;
@@ -61,9 +65,9 @@ public class CoREService extends Service<CoREServiceConfiguration> {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
                                                                           properties);
         environment.addProvider(new BasicAuthProvider<AuthenticatedPrincipal>(
-                                                                              new ResourceAuthenticator(
-                                                                                                        new ModelImpl(
-                                                                                                                      emf.createEntityManager())),
+                                                                              new AgencyAuthenticator(
+                                                                                                      new ModelImpl(
+                                                                                                                    emf.createEntityManager())),
                                                                               "CoRE"));
     }
 
@@ -73,5 +77,12 @@ public class CoREService extends Service<CoREServiceConfiguration> {
 
         //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
         bootstrap.addBundle(new AssetsBundle("/ui/", "/ui/"));
+        SimpleModule testModule = new SimpleModule("MyModule",
+                                                   new Version(1, 0, 0, null,
+                                                               null, null));
+        testModule.addSerializer(new AttributeValueSerializer<AgencyAttribute>(
+                                                                               AgencyAttribute.class,
+                                                                               true)); // assuming serializer declares correct class to bind to
+        bootstrap.getObjectMapperFactory().registerModule(testModule);
     }
 }

@@ -53,12 +53,12 @@
 	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/network_inference.xml" />
-	<include relativeToChangelogFile="true" file="/views/resource.xml" />
+	<include relativeToChangelogFile="true" file="/views/agency.xml" />
 	<include relativeToChangelogFile="true"
-		file="/views/resource_attribute.xml" />
+		file="/views/agency_attribute.xml" />
 	<include relativeToChangelogFile="true"
-		file="/views/resource_attribute_authorization.xml" />
-	<include relativeToChangelogFile="true" file="/views/resource_network.xml" />
+		file="/views/agency_attribute_authorization.xml" />
+	<include relativeToChangelogFile="true" file="/views/agency_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/status_code.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/status_code_sequencing.xml" />
@@ -71,11 +71,11 @@
     <include relativeToChangelogFile="true" file="/views/workspace_relationship_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/workspace_status_code_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/workspace_unit_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/product_resource_access_authorization.xml" />
+    <include relativeToChangelogFile="true" file="/views/product_agency_access_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/product_location_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/resource_location_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/resource_product_access_authorization.xml" />
+    <include relativeToChangelogFile="true" file="/views/agency_location_access_authorization.xml" />
+    <include relativeToChangelogFile="true" file="/views/agency_product_access_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/location_product_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/location_resource_access_authorization.xml" />
+    <include relativeToChangelogFile="true" file="/views/location_agency_access_authorization.xml" />
 
 </databaseChangeLog>

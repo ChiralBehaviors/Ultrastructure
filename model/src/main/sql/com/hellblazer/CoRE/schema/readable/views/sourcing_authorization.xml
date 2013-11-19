@@ -12,11 +12,11 @@
                     sa.notes, res.name AS research, 
                     up.name AS updated_by, sa.update_date
                FROM ruleform.sourcing_authorization sa
-               JOIN ruleform.resource owner ON sa.owner = owner.id
+               JOIN ruleform.agency owner ON sa.owner = owner.id
                JOIN ruleform.product product ON sa.product = product.id
                JOIN ruleform.location location ON sa.location = location.id
                LEFT JOIN ruleform.research res ON sa.research = res.id
-               JOIN ruleform.resource up ON sa.updated_by = up.id;
+               JOIN ruleform.agency up ON sa.updated_by = up.id;
             
             ALTER TABLE readable.sourcing_authorization
               OWNER TO core;

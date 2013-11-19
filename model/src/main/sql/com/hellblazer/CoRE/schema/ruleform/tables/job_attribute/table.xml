@@ -22,7 +22,7 @@
               unit bigint, -- The unit of measure (if any) associated with the given value
               notes character varying, -- Additional notes regarding this rule
               research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT job_attribute_pkey PRIMARY KEY (id ),
               CONSTRAINT job_attribute_attribute_fkey FOREIGN KEY (attribute)
@@ -38,7 +38,7 @@
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_attribute_sequence_number_key UNIQUE (job , attribute , sequence_number ),
               CONSTRAINT job_attribute_sequence_number_check CHECK (sequence_number > 0),
@@ -59,7 +59,7 @@
             COMMENT ON COLUMN ruleform.job_attribute.unit IS 'The unit of measure (if any) associated with the given value';
             COMMENT ON COLUMN ruleform.job_attribute.notes IS 'Additional notes regarding this rule';
             COMMENT ON COLUMN ruleform.job_attribute.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
-            COMMENT ON COLUMN ruleform.job_attribute.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.job_attribute.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.job_attribute.update_date IS 'The date this rule was last changed';
             ]]>
 		</sql>

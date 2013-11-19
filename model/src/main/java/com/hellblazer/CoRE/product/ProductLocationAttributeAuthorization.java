@@ -29,9 +29,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.AttributeAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The authorization for product location attributes
@@ -73,7 +73,7 @@ public class ProductLocationAttributeAuthorization extends
     /**
      * @param updatedBy
      */
-    public ProductLocationAttributeAuthorization(Resource updatedBy) {
+    public ProductLocationAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 

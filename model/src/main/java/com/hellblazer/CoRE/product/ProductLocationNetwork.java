@@ -33,8 +33,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.coordinate.Coordinate;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The network relationships of product locations
@@ -69,10 +69,10 @@ public class ProductLocationNetwork extends Ruleform {
     @GeneratedValue(generator = "product_location_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "resource")
-    private Resource           resource;
+    @JoinColumn(name = "agency")
+    private Agency           agency;
 
     public ProductLocationNetwork() {
     }
@@ -87,7 +87,7 @@ public class ProductLocationNetwork extends Ruleform {
     /**
      * @param updatedBy
      */
-    public ProductLocationNetwork(Resource updatedBy) {
+    public ProductLocationNetwork(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -108,8 +108,8 @@ public class ProductLocationNetwork extends Ruleform {
         return product;
     }
 
-    public Resource getResource() {
-        return resource;
+    public Agency getAgency() {
+        return agency;
     }
 
     public void setContextualProduct(Product product1) {
@@ -129,8 +129,8 @@ public class ProductLocationNetwork extends Ruleform {
         product = product2;
     }
 
-    public void setResource(Resource resource2) {
-        resource = resource2;
+    public void setAgency(Agency agency2) {
+        agency = agency2;
     }
 
     /* (non-Javadoc)
@@ -149,8 +149,8 @@ public class ProductLocationNetwork extends Ruleform {
         if (product != null) {
             product = (Product) product.manageEntity(em, knownObjects);
         }
-        if (resource != null) {
-            resource = (Resource) resource.manageEntity(em, knownObjects);
+        if (agency != null) {
+            agency = (Agency) agency.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

@@ -11,7 +11,7 @@
 			 SELECT c.id, c.name, k.name AS kind, c.description, c.notes, c.pinned, r.name AS research, up.name AS updated_by, c.update_date
 			   FROM ruleform.coordinate c
 			   LEFT JOIN ruleform.research r ON r.id = c.research
-			   JOIN ruleform.resource up ON up.id = c.updated_by
+			   JOIN ruleform.agency up ON up.id = c.updated_by
 			   JOIN ruleform.coordinate_kind k ON k.id = c.kind;
 			
 			ALTER TABLE readable.coordinate

@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.meta;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
@@ -27,7 +28,6 @@ import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * 
@@ -103,12 +103,12 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * 
      * @param attribute
      *            - the Attribute
-     * @param groupingResource
-     *            - the grouping Resource
+     * @param groupingAgency
+     *            - the grouping Agency
      * @return the List of allowed values for this attribute
      */
     <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                 Resource groupingResource);
+                                                 Agency groupingAgency);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -134,22 +134,22 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
 
     /**
      * Answer the list of attribute authorizations that are classified by the
-     * grouping resource
+     * grouping agency
      * 
-     * @param groupingResource
+     * @param groupingAgency
      * @return
      */
-    List<AttributeAuthorization> getAttributeAuthorizations(Resource groupingResource);
+    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency);
 
     /**
      * Answer the list of attribute authorizations that are classified by the
-     * grouping resource, defined for the particular attribute
+     * grouping agency, defined for the particular attribute
      * 
-     * @param groupingResource
+     * @param groupingAgency
      * @param attribute
      * @return
      */
-    List<AttributeAuthorization> getAttributeAuthorizations(Resource groupingResource,
+    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
                                                             Attribute attribute);
 
     /**
@@ -167,30 +167,30 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
-     * authorized by the groupingResource
+     * authorized by the groupingAgency
      * 
      * @param ruleform
      *            - the instance
-     * @param groupingResource
-     *            - the classifying resource
+     * @param groupingAgency
+     *            - the classifying agency
      * @return the list of existing attributes authorized by this classification
      */
     List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                  Resource groupingResource);
+                                                  Agency groupingAgency);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
-     * grouped by the given resource
+     * grouped by the given agency
      * 
      * @param ruleform
      *            - the instance
-     * @param groupingResource
-     *            - the resource
+     * @param groupingAgency
+     *            - the agency
      * @return the list of existing attributes for this instance that are
-     *         grouped by the given resource
+     *         grouped by the given agency
      */
     List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
-                                               Resource groupingResource);
+                                               Agency groupingAgency);
 
     /**
      * 
@@ -238,7 +238,7 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * @param updatedBy
      */
     void link(RuleForm parent, Relationship r, RuleForm child,
-              Resource updatedBy);
+              Agency updatedBy);
 
     /**
      * Propagate the network inferences based on the tracked additions,

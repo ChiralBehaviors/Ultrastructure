@@ -39,59 +39,60 @@ import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry
- *
+ * 
  */
 @Path("/v{version : \\d+}/services/data/workspace")
 public class WorkspaceResource {
-	
-	EntityManager em;
-	
-	/**
-	 * @param emf
-	 */
-	public WorkspaceResource(EntityManagerFactory emf) {
-		this.em = emf.createEntityManager();
-	}
 
-	@GET
-	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Workspace get(@PathParam("id") long productId, @QueryParam("relId") long relId) {
-		Product p = em.find(Product.class, productId);
-		Relationship r = em.find(Relationship.class, relId);
-		Workspace w = Workspace.loadWorkspace(p, r, em);
-		
-		return w;
-	}
-	
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public Product insertWorkspace(Workspace w) {
-		em.getTransaction().begin();
-		try {
-			Product origin = w.getProducts().get(0);
-			List<Product> nets = w.getProducts();
-			Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
-			for (Product p : nets) {
-				p.manageEntity(em, knownObjects);
-			}
-			List<AccessAuthorization> auths = w.getAuths();
-			for (AccessAuthorization auth : auths) {
-				auth.manageEntity(em, knownObjects);
-			}
+    EntityManager em;
 
-			em.getTransaction().commit();
-			em.refresh(origin);
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.enableDefaultTyping();
-			return origin;
-		} catch (Exception e) {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-			throw e;
-		}
+    /**
+     * @param emf
+     */
+    public WorkspaceResource(EntityManagerFactory emf) {
+        em = emf.createEntityManager();
+    }
 
-	}
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Workspace get(@PathParam("id") long productId,
+                         @QueryParam("relId") long relId) {
+        Product p = em.find(Product.class, productId);
+        Relationship r = em.find(Relationship.class, relId);
+        Workspace w = Workspace.loadWorkspace(p, r, em);
+
+        return w;
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Product insertWorkspace(Workspace w) {
+        em.getTransaction().begin();
+        try {
+            Product origin = w.getProducts().get(0);
+            List<Product> nets = w.getProducts();
+            Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
+            for (Product p : nets) {
+                p.manageEntity(em, knownObjects);
+            }
+            List<AccessAuthorization> auths = w.getAuths();
+            for (AccessAuthorization auth : auths) {
+                auth.manageEntity(em, knownObjects);
+            }
+
+            em.getTransaction().commit();
+            em.refresh(origin);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enableDefaultTyping();
+            return origin;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        }
+
+    }
 
 }

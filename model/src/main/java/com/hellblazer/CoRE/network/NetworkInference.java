@@ -29,7 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * A chain of relationships.
@@ -76,7 +76,7 @@ public class NetworkInference extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public NetworkInference(Long id, Resource updatedBy) {
+    public NetworkInference(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -89,7 +89,7 @@ public class NetworkInference extends Ruleform {
     }
 
     public NetworkInference(Relationship premise1, Relationship premise2,
-                            Relationship inference, Resource updatedBy) {
+                            Relationship inference, Agency updatedBy) {
         super(updatedBy);
         this.premise1 = premise1;
         this.premise2 = premise2;
@@ -99,7 +99,7 @@ public class NetworkInference extends Ruleform {
     /**
      * @param updatedBy
      */
-    public NetworkInference(Resource updatedBy) {
+    public NetworkInference(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -114,7 +114,7 @@ public class NetworkInference extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public NetworkInference(String notes, Resource updatedBy) {
+    public NetworkInference(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 

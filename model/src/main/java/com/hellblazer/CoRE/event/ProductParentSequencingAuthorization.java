@@ -34,8 +34,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -96,7 +96,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public ProductParentSequencingAuthorization(Long id, Resource updatedBy) {
+    public ProductParentSequencingAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -104,7 +104,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
                                                 StatusCode statusCode,
                                                 Product myParent,
                                                 StatusCode parentStatusToSet,
-                                                Resource updatedBy) {
+                                                Agency updatedBy) {
         super(updatedBy);
         setParent(parent);
         setStatusCode(statusCode);
@@ -115,7 +115,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     /**
      * @param updatedBy
      */
-    public ProductParentSequencingAuthorization(Resource updatedBy) {
+    public ProductParentSequencingAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -130,7 +130,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public ProductParentSequencingAuthorization(String notes, Resource updatedBy) {
+    public ProductParentSequencingAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 

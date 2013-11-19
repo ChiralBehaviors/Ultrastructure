@@ -24,13 +24,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.agency.AgencyAttribute;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
-import com.hellblazer.CoRE.resource.ResourceAttribute;
 
 /**
  * @author hhildebrand
@@ -41,7 +41,7 @@ public class ModelTest extends AbstractModelTest {
     public void testCreateFromAspects() {
         em.getTransaction().begin();
 
-        Resource classifier = new Resource("aspect classifer", kernel.getCore());
+        Agency classifier = new Agency("aspect classifer", kernel.getCore());
         em.persist(classifier);
         Relationship classification = new Relationship("aspect classification",
                                                        kernel.getCore());
@@ -53,24 +53,23 @@ public class ModelTest extends AbstractModelTest {
         attribute.setValueType(ValueType.TEXT);
         em.persist(attribute);
 
-        Aspect<Resource> aspect = new Aspect<Resource>(classification,
-                                                       classifier);
+        Aspect<Agency> aspect = new Aspect<Agency>(classification, classifier);
 
-        model.getResourceModel().authorize(aspect, attribute);
+        model.getAgencyModel().authorize(aspect, attribute);
         em.getTransaction().commit();
 
         em.getTransaction().begin();
 
         @SuppressWarnings("unchecked")
-        Resource resource = model.getResourceModel().create("aspect test",
-                                                            "testy", aspect);
+        Agency agency = model.getAgencyModel().create("aspect test", "testy",
+                                                      aspect);
 
         em.getTransaction().commit();
 
-        assertNotNull(resource);
+        assertNotNull(agency);
 
-        Facet<Resource, ResourceAttribute> facet = model.getResourceModel().getFacet(resource,
-                                                                                     aspect);
+        Facet<Agency, AgencyAttribute> facet = model.getAgencyModel().getFacet(agency,
+                                                                               aspect);
 
         assertEquals(1, facet.getAttributes().size());
 
@@ -80,28 +79,27 @@ public class ModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testFindResourceViaAttribute() {
+    public void testFindAgencyViaAttribute() {
         em.getTransaction().begin();
 
-        Resource resource = new Resource("Test Resource", kernel.getCore());
-        em.persist(resource);
+        Agency agency = new Agency("Test Agency", kernel.getCore());
+        em.persist(agency);
         Attribute attribute = new Attribute("Test Attribute", kernel.getCore());
         attribute.setValueType(ValueType.TEXT);
         em.persist(attribute);
-        ResourceAttribute resourceAttribute = new ResourceAttribute(
-                                                                    kernel.getCore());
-        resourceAttribute.setResource(resource);
-        resourceAttribute.setAttribute(attribute);
-        resourceAttribute.setTextValue("Hello World");
-        em.persist(resourceAttribute);
+        AgencyAttribute agencyAttribute = new AgencyAttribute(kernel.getCore());
+        agencyAttribute.setAgency(agency);
+        agencyAttribute.setAttribute(attribute);
+        agencyAttribute.setTextValue("Hello World");
+        em.persist(agencyAttribute);
 
         em.getTransaction().commit();
 
-        ResourceAttribute queryAttribute = new ResourceAttribute(attribute);
+        AgencyAttribute queryAttribute = new AgencyAttribute(attribute);
         queryAttribute.setTextValue("Hello World");
-        List<Resource> foundResources = model.find(queryAttribute);
-        assertNotNull(foundResources);
-        assertEquals(1, foundResources.size());
-        assertEquals(resource, foundResources.get(0));
+        List<Agency> foundAgencies = model.find(queryAttribute);
+        assertNotNull(foundAgencies);
+        assertEquals(1, foundAgencies.size());
+        assertEquals(agency, foundAgencies.get(0));
     }
 }

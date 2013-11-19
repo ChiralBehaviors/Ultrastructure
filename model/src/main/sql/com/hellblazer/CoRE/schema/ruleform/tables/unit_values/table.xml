@@ -19,7 +19,7 @@
               product_value bigint, -- A permitted Product value for this unit
               notes character varying, -- Usage notes for this rule
               research bigint, -- A research flag that has been set on an individual rule
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT unit_values_pkey PRIMARY KEY (id ),
               CONSTRAINT unit_values_product_value_fkey FOREIGN KEY (product_value)
@@ -32,7 +32,7 @@
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT unit_values_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT unit_values_unit_key UNIQUE (unit , sequence_number ),
               CONSTRAINT valid_value CHECK ((ruleform.null_zero(integer_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(text_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(product_value)) = 1)
@@ -50,7 +50,7 @@
             COMMENT ON COLUMN ruleform.unit_values.product_value IS 'A permitted Product value for this unit';
             COMMENT ON COLUMN ruleform.unit_values.notes IS 'Usage notes for this rule';
             COMMENT ON COLUMN ruleform.unit_values.research IS 'A research flag that has been set on an individual rule';
-            COMMENT ON COLUMN ruleform.unit_values.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.unit_values.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.unit_values.update_date IS 'The time at which this rule was last updated';
             ]]>
         </sql>

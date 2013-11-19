@@ -23,7 +23,7 @@
               unit bigint,
               notes character varying, -- Usage notes for this rule
               research bigint, -- A research flag that has been set on an individual rule
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT coordinate_attribute_pkey PRIMARY KEY (id ),
               CONSTRAINT coordinate_attribute_attribute_fkey FOREIGN KEY (attribute)
@@ -42,7 +42,7 @@
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_attribute_coordinate_key UNIQUE (coordinate , attribute ),
               CONSTRAINT valid_attribute CHECK ((ruleform.null_zero(product_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
@@ -62,7 +62,7 @@
             COMMENT ON COLUMN ruleform.coordinate_attribute.text_value IS 'If the Attribute is text-valued, the value is stored in this column';
             COMMENT ON COLUMN ruleform.coordinate_attribute.notes IS 'Usage notes for this rule';
             COMMENT ON COLUMN ruleform.coordinate_attribute.research IS 'A research flag that has been set on an individual rule';
-            COMMENT ON COLUMN ruleform.coordinate_attribute.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate_attribute.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.coordinate_attribute.update_date IS 'The time at which this rule was last updated';
             ]]>
         </sql>

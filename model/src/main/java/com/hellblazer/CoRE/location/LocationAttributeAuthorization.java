@@ -29,10 +29,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * 
@@ -79,14 +79,14 @@ public class LocationAttributeAuthorization extends
      */
     public LocationAttributeAuthorization(Relationship classification,
                                           Attribute authorized,
-                                          Resource updatedBy) {
+                                          Agency updatedBy) {
         super(classification, authorized, updatedBy);
     }
 
     public LocationAttributeAuthorization(Relationship classification,
                                           Location classifier,
                                           Attribute authorized,
-                                          Resource updatedBy) {
+                                          Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
     }
@@ -96,14 +96,14 @@ public class LocationAttributeAuthorization extends
      * @param updatedBy
      */
     public LocationAttributeAuthorization(Relationship classification,
-                                          Resource updatedBy) {
+                                          Agency updatedBy) {
         super(classification, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public LocationAttributeAuthorization(Resource updatedBy) {
+    public LocationAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 

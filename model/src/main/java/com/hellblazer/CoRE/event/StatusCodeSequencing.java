@@ -40,9 +40,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductNetwork;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the status_code_sequencing database table.
@@ -122,19 +122,19 @@ public class StatusCodeSequencing extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public StatusCodeSequencing(Long id, Resource updatedBy) {
+    public StatusCodeSequencing(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
     public StatusCodeSequencing(Product service, StatusCode parent,
                                 StatusCode child, int sequenceNumber,
-                                Resource updatedBy) {
+                                Agency updatedBy) {
         this(service, parent, child, updatedBy);
         this.sequenceNumber = sequenceNumber;
     }
 
     public StatusCodeSequencing(Product service, StatusCode parent,
-                                StatusCode child, Resource updatedBy) {
+                                StatusCode child, Agency updatedBy) {
         super(updatedBy);
         this.service = service;
         parentCode = parent;
@@ -144,7 +144,7 @@ public class StatusCodeSequencing extends Ruleform {
     /**
      * @param updatedBy
      */
-    public StatusCodeSequencing(Resource updatedBy) {
+    public StatusCodeSequencing(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -159,7 +159,7 @@ public class StatusCodeSequencing extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public StatusCodeSequencing(String notes, Resource updatedBy) {
+    public StatusCodeSequencing(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 

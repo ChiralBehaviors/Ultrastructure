@@ -23,9 +23,9 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
@@ -58,7 +58,7 @@ public class AttributeSearchTest extends DatabaseTest {
     public void initData() {
         beginTransaction();
 
-        Resource core = new Resource("core");
+        Agency core = new Agency("core");
         core.setUpdatedBy(core);
         em.persist(core);
         

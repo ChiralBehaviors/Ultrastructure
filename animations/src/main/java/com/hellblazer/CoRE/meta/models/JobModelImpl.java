@@ -46,6 +46,7 @@ import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
@@ -62,14 +63,13 @@ import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
-import com.hellblazer.CoRE.meta.ResourceModel;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * 
@@ -301,14 +301,14 @@ public class JobModelImpl implements JobModel {
     private final Kernel        kernel;
     private final LocationModel locationModel;
     private final ProductModel  productModel;
-    private final ResourceModel resourceModel;
+    private final AgencyModel agencyModel;
 
     public JobModelImpl(Model model) {
         em = model.getEntityManager();
         kernel = model.getKernel();
         productModel = model.getProductModel();
         locationModel = model.getLocationModel();
-        resourceModel = model.getResourceModel();
+        agencyModel = model.getAgencyModel();
     }
 
     @Override
@@ -430,10 +430,10 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Job> getActiveJobsFor(Resource resource) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_JOBS_FOR_RESOURCE,
+    public List<Job> getActiveJobsFor(Agency agency) {
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_JOBS_FOR_AGENCY,
                                                     Job.class);
-        query.setParameter(1, resource.getId());
+        query.setParameter(1, agency.getId());
         return query.getResultList();
     }
 
@@ -483,17 +483,17 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Job> getAllActiveSubJobsOfJobAssignedToResource(Job parent,
-                                                                Resource resource) {
+    public List<Job> getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
+                                                                Agency agency) {
         List<Job> jobs = new ArrayList<Job>();
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
                                                     Job.class);
         query.setParameter("parent", parent);
-        query.setParameter("resource", resource);
+        query.setParameter("agency", agency);
         for (Job subJob : query.getResultList()) {
             if (isActive(subJob)) {
                 jobs.add(subJob);
-                getAllActiveSubJobsOfJobAssignedToResource(parent, resource,
+                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency,
                                                            jobs);
             }
         }
@@ -501,17 +501,17 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void getAllActiveSubJobsOfJobAssignedToResource(Job parent,
-                                                           Resource resource,
+    public void getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
+                                                           Agency agency,
                                                            List<Job> jobs) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
                                                     Job.class);
         query.setParameter("parent", parent);
-        query.setParameter("resource", resource);
+        query.setParameter("agency", agency);
         for (Job subJob : query.getResultList()) {
             if (isActive(subJob)) {
                 jobs.add(subJob);
-                getAllActiveSubJobsOfJobAssignedToResource(parent, resource,
+                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency,
                                                            jobs);
             }
         }
@@ -665,7 +665,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Protocol> getProtocols(Product requestedService,
-                                       Resource requester, Product product,
+                                       Agency requester, Product product,
                                        Location deliverTo, Location deliverFrom) {
         TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET,
                                                          Protocol.class);
@@ -719,13 +719,13 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Job> getTopLevelJobsWithSubJobsAssignedToResource(Resource resource) {
+    public List<Job> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency) {
         List<Job> jobs = new ArrayList<Job>();
         for (Job job : getActiveExplicitJobs()) {
             TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
                                                         Job.class);
             query.setParameter("parent", job);
-            query.setParameter("resource", resource);
+            query.setParameter("agency", agency);
             for (Job subJob : query.getResultList()) {
                 if (isActive(subJob)) {
                     jobs.add(job);
@@ -973,9 +973,9 @@ public class JobModelImpl implements JobModel {
                                        transform(job.getDeliverTo(),
                                                  metaProtocol.getDeliverTo(),
                                                  "deliver to", job));
-        Resource requester = transform(job.getRequester(),
+        Agency requester = transform(job.getRequester(),
                                        transform(job.getRequester(),
-                                                 metaProtocol.getRequestingResource(),
+                                                 metaProtocol.getRequestingAgency(),
                                                  "requester", job));
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -984,7 +984,7 @@ public class JobModelImpl implements JobModel {
         cQuery.select(root);
         Parameter<Product> requestedServiceParameter = cb.parameter(Product.class);
         Parameter<Product> productParameter = cb.parameter(Product.class);
-        Parameter<Resource> requesterParameter = cb.parameter(Resource.class);
+        Parameter<Agency> requesterParameter = cb.parameter(Agency.class);
         Parameter<Location> deliverFromParameter = cb.parameter(Location.class);
         Parameter<Location> deliverToParameter = cb.parameter(Location.class);
 
@@ -1004,9 +1004,9 @@ public class JobModelImpl implements JobModel {
                                cb.or(cb.equal(root.get(Protocol_.requester),
                                               requesterParameter),
                                      cb.equal(root.get(Protocol_.requester),
-                                              kernel.getAnyResource()),
+                                              kernel.getAnyAgency()),
                                      cb.equal(root.get(Protocol_.requester),
-                                              kernel.getSameResource())));
+                                              kernel.getSameAgency())));
         }
         if (deliverFrom != null) {
             predicate = cb.and(predicate,
@@ -1168,16 +1168,16 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * Resolve the value of a resource, using the original and supplied values
+     * Resolve the value of a agency, using the original and supplied values
      */
-    private Resource resolve(Resource original, Resource supplied) {
-        if (kernel.getSameResource().equals(supplied)) {
+    private Agency resolve(Agency original, Agency supplied) {
+        if (kernel.getSameAgency().equals(supplied)) {
             return original;
-        } else if (kernel.getNotApplicableResource().equals(supplied)) {
-            return kernel.getNotApplicableResource();
-        } else if (kernel.getAnyResource().equals(supplied)) {
+        } else if (kernel.getNotApplicableAgency().equals(supplied)) {
+            return kernel.getNotApplicableAgency();
+        } else if (kernel.getAnyAgency().equals(supplied)) {
             return original;
-        } else if (kernel.getOriginalResource().equals(supplied)) {
+        } else if (kernel.getOriginalAgency().equals(supplied)) {
             return original;
         }
         return supplied;
@@ -1284,45 +1284,45 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    private Resource transform(Resource resource, Relationship relationship,
+    private Agency transform(Agency agency, Relationship relationship,
                                String type, Job job) {
         if (kernel.getNotApplicableRelationship().equals(relationship)) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Using (Not Appplicable) for %s for job %s",
                                         type, job));
             }
-            return kernel.getNotApplicableResource();
+            return kernel.getNotApplicableAgency();
         } else if (kernel.getAnyRelationship().equals(relationship)) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Using (ANY) for %s for job %s", type,
                                         job));
             }
-            return kernel.getAnyResource();
+            return kernel.getAnyAgency();
         } else if (kernel.getSameRelationship().equals(relationship)) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Using (SAME) for %s for job %s", type,
                                         job));
             }
-            return kernel.getSameResource();
+            return kernel.getSameAgency();
         } else {
-            return resourceModel.getChild(resource, relationship);
+            return agencyModel.getChild(agency, relationship);
         }
     }
 
-    private Resource transform(Resource original, Resource transformed) {
-        if (original.equals(kernel.getAnyResource())
-            || original.equals(kernel.getSameResource())
-            || original.equals(kernel.getNotApplicableResource())) {
+    private Agency transform(Agency original, Agency transformed) {
+        if (original.equals(kernel.getAnyAgency())
+            || original.equals(kernel.getSameAgency())
+            || original.equals(kernel.getNotApplicableAgency())) {
             return null;
         }
         if (transformed == null) {
             return original;
         }
-        if (transformed.equals(kernel.getSameResource())) {
+        if (transformed.equals(kernel.getSameAgency())) {
             return original;
         }
-        if (transformed.equals(kernel.getNotApplicableResource())
-            || transformed.equals(kernel.getAnyResource())) {
+        if (transformed.equals(kernel.getNotApplicableAgency())
+            || transformed.equals(kernel.getAnyAgency())) {
             return null;
         }
         return transformed;

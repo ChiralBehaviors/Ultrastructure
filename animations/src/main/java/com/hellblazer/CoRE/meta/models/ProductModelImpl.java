@@ -152,29 +152,29 @@ public class ProductModelImpl
     final public Product create(String name, String description,
                                 Aspect<Product> aspect,
                                 Aspect<Product>... aspects) {
-        Product resource = new Product(name, description, kernel.getCoreModel());
-        em.persist(resource);
-        initialize(resource, aspect);
+        Product agency = new Product(name, description, kernel.getCoreModel());
+        em.persist(agency);
+        initialize(agency, aspect);
         if (aspects != null) {
             for (Aspect<Product> a : aspects) {
-                initialize(resource, a);
+                initialize(agency, a);
             }
         }
-        return resource;
+        return agency;
     }
 
     /**
-     * @param resource
+     * @param product
      * @param aspect
      */
-    protected void initialize(Product resource, Aspect<Product> aspect) {
-        resource.link(aspect.getClassification(), aspect.getClassifier(),
+    protected void initialize(Product product, Aspect<Product> aspect) {
+        product.link(aspect.getClassification(), aspect.getClassifier(),
                       kernel.getCoreModel(), kernel.getInverseSoftware(), em);
         for (ProductAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             ProductAttribute attribute = new ProductAttribute(
                                                               authorization.getAuthorizedAttribute(),
                                                               kernel.getCoreModel());
-            attribute.setProduct(resource);
+            attribute.setProduct(product);
             defaultValue(attribute);
             em.persist(attribute);
         }

@@ -35,9 +35,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the transformation_metarule database table.
@@ -58,10 +58,10 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     @JoinColumn(name = "product_map")
     private Relationship       productMap;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "product_network_resource")
-    private Resource           productNetworkResource;
+    @JoinColumn(name = "product_network_agency")
+    private Agency           productNetworkAgency;
 
     @Id
     @GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
@@ -69,7 +69,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
-    @JoinColumn(name = "resource_map")
+    @JoinColumn(name = "agency_map")
     private Relationship       relationshipMap;
 
     @Column(name = "sequence_number")
@@ -88,8 +88,8 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     public TransformationMetarule() {
     }
 
-    public Resource getEntityNetworkResource() {
-        return productNetworkResource;
+    public Agency getEntityNetworkAgency() {
+        return productNetworkAgency;
     }
 
     @Override
@@ -124,8 +124,8 @@ public class TransformationMetarule extends Ruleform implements Serializable {
         productMap = relationship2;
     }
 
-    public void setEntityNetworkResource(Resource resource) {
-        productNetworkResource = resource;
+    public void setEntityNetworkAgency(Agency agency) {
+        productNetworkAgency = agency;
     }
 
     @Override
@@ -163,8 +163,8 @@ public class TransformationMetarule extends Ruleform implements Serializable {
             productMap = (Relationship) productMap.manageEntity(em,
                                                                 knownObjects);
         }
-        if (productNetworkResource != null) {
-            productNetworkResource = (Resource) productNetworkResource.manageEntity(em,
+        if (productNetworkAgency != null) {
+            productNetworkAgency = (Agency) productNetworkAgency.manageEntity(em,
                                                                                     knownObjects);
         }
         if (relationshipMap != null) {

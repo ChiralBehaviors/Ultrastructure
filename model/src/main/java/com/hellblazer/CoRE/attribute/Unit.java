@@ -26,7 +26,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * The attribute unit.
@@ -61,11 +61,11 @@ public class Unit extends ExistentialRuleform {
         super(id);
     }
 
-    public Unit(Long id, Resource updatedBy) {
+    public Unit(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
-    public Unit(Resource updatedBy) {
+    public Unit(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -73,19 +73,19 @@ public class Unit extends ExistentialRuleform {
         setName(name);
     }
 
-    public Unit(String name, Resource updatedBy) {
+    public Unit(String name, Agency updatedBy) {
         super(updatedBy);
         setName(name);
     }
 
-    public Unit(String name, String description, Resource updatedBy) {
+    public Unit(String name, String description, Agency updatedBy) {
         super(updatedBy);
         setName(name);
         setDescription(description);
     }
 
     public Unit(String name, String description, String notes,
-                Resource updatedBy) {
+                Agency updatedBy) {
         super(notes, updatedBy);
         setName(name);
         setDescription(description);

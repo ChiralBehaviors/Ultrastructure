@@ -33,12 +33,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.JobModelImpl;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
@@ -91,7 +91,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     public void testHasSccs() throws SQLException {
         em.getTransaction().begin();
 
-        Resource core = new Resource("CoRE");
+        Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
 

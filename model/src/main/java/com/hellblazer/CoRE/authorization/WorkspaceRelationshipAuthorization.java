@@ -17,26 +17,30 @@
 
 package com.hellblazer.CoRE.authorization;
 
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
  * 
  */
 @Entity
-@DiscriminatorValue(WorkspaceAuthorization.PRODUCT_RESOURCE)
+@DiscriminatorValue(WorkspaceAuthorization.PRODUCT_AGENCY)
 public class WorkspaceRelationshipAuthorization extends WorkspaceAuthorization {
 
     private static final long serialVersionUID = 1L;
 
     {
-        setAuthorizationType(WorkspaceAuthorization.PRODUCT_RESOURCE);
+        setAuthorizationType(WorkspaceAuthorization.PRODUCT_AGENCY);
     }
 
     @ManyToOne
@@ -51,11 +55,11 @@ public class WorkspaceRelationshipAuthorization extends WorkspaceAuthorization {
         super(id);
     }
 
-    public WorkspaceRelationshipAuthorization(Long id, Resource updatedBy) {
+    public WorkspaceRelationshipAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
-    public WorkspaceRelationshipAuthorization(Resource updatedBy) {
+    public WorkspaceRelationshipAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -63,7 +67,7 @@ public class WorkspaceRelationshipAuthorization extends WorkspaceAuthorization {
         super(notes);
     }
 
-    public WorkspaceRelationshipAuthorization(String notes, Resource updatedBy) {
+    public WorkspaceRelationshipAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 
@@ -75,4 +79,20 @@ public class WorkspaceRelationshipAuthorization extends WorkspaceAuthorization {
         this.relationship = relationship;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+
+        if (relationship != null) {
+            relationship = (Relationship) relationship.manageEntity(em,
+                                                                    knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 }

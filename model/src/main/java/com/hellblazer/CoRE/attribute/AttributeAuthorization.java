@@ -29,7 +29,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * 
@@ -48,10 +48,10 @@ abstract public class AttributeAuthorization extends Ruleform {
     @JoinColumn(name = "authorized_attribute")
     private Attribute         authorizedAttribute;
 
-    // bi-directional many-to-one association to Resource
+    // bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "grouping_resource")
-    private Resource          groupingResource;
+    @JoinColumn(name = "grouping_agency")
+    private Agency          groupingAgency;
 
     @Column(name = "integer_value")
     private Integer           integerValue;
@@ -72,7 +72,7 @@ abstract public class AttributeAuthorization extends Ruleform {
         super();
     }
 
-    public AttributeAuthorization(Attribute authorized, Resource updatedBy) {
+    public AttributeAuthorization(Attribute authorized, Agency updatedBy) {
         super(updatedBy);
         authorizedAttribute = authorized;
     }
@@ -87,14 +87,14 @@ abstract public class AttributeAuthorization extends Ruleform {
     /**
      * @param updatedBy
      */
-    public AttributeAuthorization(Long id, Resource updatedBy) {
+    public AttributeAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public AttributeAuthorization(Resource updatedBy) {
+    public AttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -102,8 +102,8 @@ abstract public class AttributeAuthorization extends Ruleform {
         return authorizedAttribute;
     }
 
-    public Resource getGroupingResource() {
-        return groupingResource;
+    public Agency getGroupingAgency() {
+        return groupingAgency;
     }
 
     public Integer getIntegerValue() {
@@ -130,8 +130,8 @@ abstract public class AttributeAuthorization extends Ruleform {
         authorizedAttribute = productAttributeType3;
     }
 
-    public void setGroupingResource(Resource resource) {
-        groupingResource = resource;
+    public void setGroupingAgency(Agency agency) {
+        groupingAgency = agency;
     }
 
     public void setIntegerValue(Integer integerValue) {
@@ -171,8 +171,8 @@ abstract public class AttributeAuthorization extends Ruleform {
             authorizedAttribute = (Attribute) authorizedAttribute.manageEntity(em,
                                                                                knownObjects);
         }
-        if (groupingResource != null) {
-            groupingResource = (Resource) groupingResource.manageEntity(em,
+        if (groupingAgency != null) {
+            groupingAgency = (Agency) groupingAgency.manageEntity(em,
                                                                         knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);

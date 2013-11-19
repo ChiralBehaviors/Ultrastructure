@@ -49,9 +49,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The persistent class for the location_network database table.
@@ -187,7 +187,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @param updatedBy
      */
     public LocationNetwork(Location parent, Relationship relationship,
-                           Location child, Resource updatedBy) {
+                           Location child, Agency updatedBy) {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;
@@ -204,14 +204,14 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @param relationship
      * @param updatedBy
      */
-    public LocationNetwork(Relationship relationship, Resource updatedBy) {
+    public LocationNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public LocationNetwork(Resource updatedBy) {
+    public LocationNetwork(Agency updatedBy) {
         super(updatedBy);
     }
 

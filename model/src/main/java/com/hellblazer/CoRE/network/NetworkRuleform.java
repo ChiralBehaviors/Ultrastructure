@@ -28,7 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * An existential ruleform that can form directed graphs.
@@ -64,7 +64,7 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
      * @param relationship
      * @param updatedBy
      */
-    public NetworkRuleform(Relationship relationship, Resource updatedBy) {
+    public NetworkRuleform(Relationship relationship, Agency updatedBy) {
         super(updatedBy);
         this.relationship = relationship;
     }
@@ -72,7 +72,7 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
     /**
      * @param updatedBy
      */
-    public NetworkRuleform(Resource updatedBy) {
+    public NetworkRuleform(Agency updatedBy) {
         super(updatedBy);
     }
 

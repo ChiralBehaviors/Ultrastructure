@@ -7,29 +7,29 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.transform(p_event_name character varying, p_resource_name character varying, p_product_name character varying)
+            CREATE OR REPLACE FUNCTION ruleform.transform(p_event_name character varying, p_agency_name character varying, p_product_name character varying)
               RETURNS character varying AS
             $BODY$
             DECLARE
                 _event_id ruleform.product.id%TYPE;
              
-                _resource_id ruleform.resource.id%TYPE;
+                _agency_id ruleform.agency.id%TYPE;
                 _product_id ruleform.product.id%TYPE;
                 
                 _metarules_cursor CURSOR (e ruleform.product.id%TYPE) FOR SELECT * FROM transformation_metarule WHERE service = e ORDER BY sequence_number;
                 _metarule ruleform.transformation_metarule%ROWTYPE;
                 
-                _protocol_cursor CURSOR (e ruleform.product.id%TYPE, b ruleform.product.id%TYPE, r ruleform.resource.id%TYPE) FOR SELECT * FROM transformation WHERE service = e AND product = b AND resource = r ORDER BY sequence_number;
+                _protocol_cursor CURSOR (e ruleform.product.id%TYPE, b ruleform.product.id%TYPE, r ruleform.agency.id%TYPE) FOR SELECT * FROM transformation WHERE service = e AND product = b AND agency = r ORDER BY sequence_number;
                 _protocol ruleform.transformation%ROWTYPE;
                 
                 _SAME_ CONSTANT ruleform.relationship.id%TYPE NOT NULL := relationship_id('(SAME)');
-                _ORIGINAL_RESOURCE_ CONSTANT ruleform.resource.id%TYPE NOT NULL := resource_id('(ORIGINAL)');
+                _ORIGINAL_agency_ CONSTANT ruleform.agency.id%TYPE NOT NULL := agency_id('(ORIGINAL)');
                 _ORIGINAL_ENTITY_ CONSTANT ruleform.product.id%TYPE NOT NULL := product_id('(ORIGINAL)');
                  
-                _mapped_resource_id ruleform.resource.id%TYPE;
+                _mapped_agency_id ruleform.agency.id%TYPE;
                 _mapped_product_id ruleform.product.id%TYPE;
                 
-                _protocol_resource_id ruleform.resource.id%TYPE;
+                _protocol_agency_id ruleform.agency.id%TYPE;
                 _protocol_product_id ruleform.product.id%TYPE;
                 
                 _found_product ruleform.product.id%TYPE;
@@ -43,7 +43,7 @@
             BEGIN
                 SELECT event_id(p_event_name) INTO STRICT _event_id;
                 --SELECT event_id(p_event_2_name) INTO STRICT _event_2_id;
-                SELECT resource_id(p_resource_name) INTO STRICT _resource_id;
+                SELECT agency_id(p_agency_name) INTO STRICT _agency_id;
                 SELECT product_id(p_product_name) INTO STRICT _product_id;
                 
                 OPEN _metarules_cursor(_event_id);
@@ -57,63 +57,63 @@
                     RAISE NOTICE 'Processing metarule %', _metarule.sequence_number;
                     
                     BEGIN
-                        IF _metarule.resource_map = _SAME_ THEN
-                            _mapped_resource_id := _resource_id; -- No mapping; use original
+                        IF _metarule.agency_map = _SAME_ THEN
+                            _mapped_agency_id := _agency_id; -- No mapping; use original
                         ELSE
-                            SELECT child INTO STRICT _mapped_resource_id 
-                            FROM resource_network 
-                            WHERE parent = _resource_id 
-                              AND relationship = _metarule.resource_map;
+                            SELECT child INTO STRICT _mapped_agency_id 
+                            FROM agency_network 
+                            WHERE parent = _agency_id 
+                              AND relationship = _metarule.agency_map;
                         END IF;
                         EXCEPTION
                             WHEN NO_DATA_FOUND THEN
-                                RAISE NOTICE 'No mapped resource found for mapping ''%'' using relationship ''%'' in metarule #%', p_resource_name, relationship_name(_metarule.resource_map), _metarule.id;
+                                RAISE NOTICE 'No mapped agency found for mapping ''%'' using relationship ''%'' in metarule #%', p_agency_name, relationship_name(_metarule.agency_map), _metarule.id;
                                 CONTINUE;
                             WHEN TOO_MANY_ROWS THEN
-                                RAISE EXCEPTION 'Mapping event ''%'' using relationship ''%'' returns more than one event in metarule #%', p_event_2_name, relationship_name(_metarule.resource_map), _metarule.id;
+                                RAISE EXCEPTION 'Mapping event ''%'' using relationship ''%'' returns more than one event in metarule #%', p_event_2_name, relationship_name(_metarule.agency_map), _metarule.id;
                     END;
-                    RAISE NOTICE 'Mapped Resource is %', resource_name(_mapped_resource_id);
+                    RAISE NOTICE 'Mapped agency is %', agency_name(_mapped_agency_id);
                     
                     BEGIN
                         IF _metarule.product_map = _SAME_ THEN
                             _mapped_product_id := _product_id; -- No mapping; use original
                         ELSE
-                            IF _metarule.product_network_resource IS NULL THEN
-                                RAISE EXCEPTION 'Transformation Metarule Rule #% is incorrect, in that it has a NULL value for product_network_resource when its product_map is set to ''(SAME)''', _metarule.id;
+                            IF _metarule.product_network_agency IS NULL THEN
+                                RAISE EXCEPTION 'Transformation Metarule Rule #% is incorrect, in that it has a NULL value for product_network_agency when its product_map is set to ''(SAME)''', _metarule.id;
                             END IF;
                         
                             SELECT child INTO STRICT _mapped_product_id
                             FROM product_network 
                             WHERE parent = _product_id 
                               AND relationship = _metarule.product_map
-                              AND resource = _metarule.product_network_resource;
+                              AND agency = _metarule.product_network_agency;
                         END IF;
                         EXCEPTION
                             WHEN NO_DATA_FOUND THEN
-                                RAISE EXCEPTION 'No mapped product found for mapping ''%'' using relationship ''%'' and resource ''%'' in metarule #%', p_product_name, relationship_name(_metarule.product_map), resource_name(_metarule.product_network_resource), _metarule.id;
+                                RAISE EXCEPTION 'No mapped product found for mapping ''%'' using relationship ''%'' and agency ''%'' in metarule #%', p_product_name, relationship_name(_metarule.product_map), agency_name(_metarule.product_network_agency), _metarule.id;
                             WHEN TOO_MANY_ROWS THEN
-                                RAISE EXCEPTION 'Mapping product ''%'' using relationship ''%'' and resource ''%'' returns more than one event in metarule #%', p_product_name, relationship_name(_metarule.product_map), resource_name(_metarule.product_network_resource), _metarule.id;
+                                RAISE EXCEPTION 'Mapping product ''%'' using relationship ''%'' and agency ''%'' returns more than one event in metarule #%', p_product_name, relationship_name(_metarule.product_map), agency_name(_metarule.product_network_agency), _metarule.id;
                     END;
                     RAISE NOTICE 'Mapped Product is %', product_name(_mapped_product_id);
                     
                     RAISE NOTICE 'Examining Protocol rules now...';
-                    OPEN _protocol_cursor(_event_id, _mapped_product_id, _mapped_resource_id);
+                    OPEN _protocol_cursor(_event_id, _mapped_product_id, _mapped_agency_id);
                     
                     <<protocol_loop>>
                     LOOP FETCH _protocol_cursor INTO _protocol;
                         EXIT WHEN NOT FOUND;
             
                         RAISE NOTICE 'Processing protocol rule #%', _protocol.id;
-                        RAISE NOTICE 'Assign to ''%''', resource_name(_protocol.assign_to);
+                        RAISE NOTICE 'Assign to ''%''', agency_name(_protocol.assign_to);
             
                         _matched_protocol := TRUE;
             
-                        IF _protocol.resource_key = _ORIGINAL_RESOURCE_ THEN
-                            _protocol_resource_id := _resource_id;
+                        IF _protocol.agency_key = _ORIGINAL_agency_ THEN
+                            _protocol_agency_id := _agency_id;
                         ELSE
-                            _protocol_resource_id := _protocol.resource_key;
+                            _protocol_agency_id := _protocol.agency_key;
                         END IF;
-                        RAISE NOTICE 'Resource: ''%''', resource_name(_protocol_resource_id);
+                        RAISE NOTICE 'agency: ''%''', agency_name(_protocol_agency_id);
             
                         IF _protocol.product_key = _ORIGINAL_ENTITY_ THEN
                             _protocol_product_id := _product_id;
@@ -124,13 +124,13 @@
             
                         RAISE NOTICE 'Relationship: ''%''', relationship_name(_protocol.relationship_key);
                         RAISE NOTICE 'Attribute: ''%''', attribute_name(_protocol.attribute);
-                        RAISE NOTICE 'Product Attribute Resource: ''%''', resource_name(_protocol.product_attribute_resource);
+                        RAISE NOTICE 'Product Attribute agency: ''%''', agency_name(_protocol.product_attribute_agency);
             
                         SELECT child INTO _found_product
                         FROM product_network
                         WHERE parent = _protocol_product_id
                           AND relationship = _protocol.relationship_key
-                          AND resource = _protocol_resource_id;
+                          AND agency = _protocol_agency_id;
             
                         IF NOT FOUND THEN
                             RAISE NOTICE 'Didn''t find anything using these keys; on to the next rule';
@@ -142,7 +142,7 @@
             
                         SELECT * INTO _product_attribute_rule
                         FROM product_attribute
-                        WHERE resource = _protocol.product_attribute_resource
+                        WHERE agency = _protocol.product_attribute_agency
                           AND product = _found_product
                           AND attribute = _protocol.attribute;
                         

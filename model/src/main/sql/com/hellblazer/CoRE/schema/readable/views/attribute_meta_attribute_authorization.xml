@@ -10,7 +10,7 @@
             CREATE OR REPLACE VIEW readable.attribute_meta_attribute_authorization AS 
              SELECT
                 base_table.id ,
-                res.name AS grouping_resource, 
+                res.name AS grouping_agency, 
                 cls.name AS classification, 
                 b.name AS classifier, 
                 att.name AS authorized_attribute, 
@@ -23,12 +23,12 @@
                 up.name AS updated_by, 
                 base_table.update_date
              FROM ruleform.attr_meta_attr_auth base_table
-             LEFT JOIN ruleform.resource res ON base_table.grouping_resource = res.id
+             LEFT JOIN ruleform.agency res ON base_table.grouping_agency = res.id
              JOIN ruleform.relationship cls ON base_table.classification = cls.id
              JOIN ruleform.product b ON base_table.classifier = b.id
              JOIN ruleform.attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN ruleform.research r ON base_table.research = r.id
-             JOIN ruleform.resource up ON base_table.updated_by = up.id;
+             JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.product_attribute_authorization
 			  OWNER TO core;

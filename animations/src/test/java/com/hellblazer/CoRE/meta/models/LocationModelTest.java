@@ -23,11 +23,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -37,7 +37,7 @@ public class LocationModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() {
-        Resource core = model.getKernel().getCore();
+        Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
 
         em.getTransaction().begin();

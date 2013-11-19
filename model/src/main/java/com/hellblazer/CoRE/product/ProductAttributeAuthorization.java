@@ -29,10 +29,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The authorizations relating products and their attributes
@@ -73,14 +73,14 @@ public class ProductAttributeAuthorization extends
      */
     public ProductAttributeAuthorization(Relationship classification,
                                          Attribute authorized,
-                                         Resource updatedBy) {
+                                         Agency updatedBy) {
         super(classification, authorized, updatedBy);
     }
 
     public ProductAttributeAuthorization(Relationship classification,
                                          Product classifier,
                                          Attribute authorized,
-                                         Resource updatedBy) {
+                                         Agency updatedBy) {
         super(classification, authorized, updatedBy);
         this.classifier = classifier;
     }
@@ -90,14 +90,14 @@ public class ProductAttributeAuthorization extends
      * @param updatedBy
      */
     public ProductAttributeAuthorization(Relationship classification,
-                                         Resource updatedBy) {
+                                         Agency updatedBy) {
         super(classification, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public ProductAttributeAuthorization(Resource updatedBy) {
+    public ProductAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 

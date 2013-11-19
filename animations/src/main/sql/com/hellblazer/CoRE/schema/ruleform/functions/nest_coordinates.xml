@@ -50,8 +50,8 @@
                 -- Flag used for basic error-checking
                 _valid BOOLEAN := FALSE;
                 
-                -- Reference to the Resource that represents this function
-                _this_function CONSTANT ruleform.resource.id%TYPE NOT NULL := resource_id('Coordinate Nesting Function');
+                -- Reference to the agency that represents this function
+                _this_function CONSTANT ruleform.agency.id%TYPE NOT NULL := agency_id('Coordinate Nesting Function');
             
             BEGIN
             

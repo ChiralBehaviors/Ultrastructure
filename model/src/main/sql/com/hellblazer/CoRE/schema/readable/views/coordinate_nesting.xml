@@ -15,7 +15,7 @@
 			   JOIN ruleform.attribute ia ON ia.id = n.inner_attribute
 			   JOIN ruleform.attribute oa ON oa.id = n.outer_attribute
 			   LEFT JOIN ruleform.research res ON res.id = n.research
-			   JOIN ruleform.resource up ON up.id = n.updated_by;
+			   JOIN ruleform.agency up ON up.id = n.updated_by;
 			
 			ALTER TABLE readable.coordinate_nesting
 			  OWNER TO core;

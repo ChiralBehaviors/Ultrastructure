@@ -12,7 +12,7 @@
 			   FROM ruleform.job_chronology base
 			   JOIN ruleform.status_code s ON base.status = s.id
 			   LEFT JOIN ruleform.research res ON base.research = res.id
-			   JOIN ruleform.resource up ON base.updated_by = up.id;
+			   JOIN ruleform.agency up ON base.updated_by = up.id;
 			
 			ALTER TABLE readable.job_chronology
 			  OWNER TO core;

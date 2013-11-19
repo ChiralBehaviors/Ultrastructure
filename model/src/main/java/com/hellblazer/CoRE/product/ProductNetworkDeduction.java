@@ -30,7 +30,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * The persistent class for the product_network_deduction database table.
@@ -64,10 +64,10 @@ public class ProductNetworkDeduction implements Serializable {
     @Column(name = "update_date")
     private Timestamp         updateDate;
 
-    //bi-directional many-to-one association to Resource
+    //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private Resource          updatedBy;
+    private Agency          updatedBy;
 
     public ProductNetworkDeduction() {
     }
@@ -118,7 +118,7 @@ public class ProductNetworkDeduction implements Serializable {
         return updateDate;
     }
 
-    public Resource getUpdatedBy() {
+    public Agency getUpdatedBy() {
         return updatedBy;
     }
 
@@ -153,7 +153,7 @@ public class ProductNetworkDeduction implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public void setUpdatedBy(Resource resource) {
-        updatedBy = resource;
+    public void setUpdatedBy(Agency agency) {
+        updatedBy = agency;
     }
 }

@@ -18,7 +18,7 @@
 			   JOIN ruleform.attribute at ON base_table.attribute = at.id
 			   LEFT JOIN ruleform.unit u ON base_table.unit = u.id
 			   LEFT JOIN ruleform.research res ON base_table.research = res.id
-			   JOIN ruleform.resource up ON base_table.updated_by = up.id;
+			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.protocol_attribute
 			  OWNER TO core;

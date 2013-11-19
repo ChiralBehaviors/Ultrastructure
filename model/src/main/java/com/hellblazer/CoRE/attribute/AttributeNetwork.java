@@ -47,9 +47,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The network relationships of attributes.
@@ -188,7 +188,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      * @param updatedBy
      */
     public AttributeNetwork(Attribute parent, Relationship relationship,
-                            Attribute child, Resource updatedBy) {
+                            Attribute child, Agency updatedBy) {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;
@@ -205,14 +205,14 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      * @param relationship
      * @param updatedBy
      */
-    public AttributeNetwork(Relationship relationship, Resource updatedBy) {
+    public AttributeNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
     }
 
     /**
      * @param updatedBy
      */
-    public AttributeNetwork(Resource updatedBy) {
+    public AttributeNetwork(Agency updatedBy) {
         super(updatedBy);
     }
 

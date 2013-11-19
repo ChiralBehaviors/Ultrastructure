@@ -33,8 +33,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.JobAttribute;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The abstract attribute value.
@@ -91,27 +91,27 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     }
 
     public AttributeValue(Attribute attribute, BigDecimal value,
-                          Resource updatedBy) {
+                          Agency updatedBy) {
         this(attribute, updatedBy);
         numericValue = value;
     }
 
-    public AttributeValue(Attribute attribute, boolean value, Resource updatedBy) {
+    public AttributeValue(Attribute attribute, boolean value, Agency updatedBy) {
         this(attribute, updatedBy);
         booleanValue = value;
     }
 
-    public AttributeValue(Attribute attribute, int value, Resource updatedBy) {
+    public AttributeValue(Attribute attribute, int value, Agency updatedBy) {
         this(attribute, updatedBy);
         integerValue = value;
     }
 
-    public AttributeValue(Attribute attribute, Resource updatedBy) {
+    public AttributeValue(Attribute attribute, Agency updatedBy) {
         this(updatedBy);
         this.attribute = attribute;
     }
 
-    public AttributeValue(Attribute attribute, String value, Resource updatedBy) {
+    public AttributeValue(Attribute attribute, String value, Agency updatedBy) {
         this(attribute, updatedBy);
         textValue = value;
     }
@@ -131,7 +131,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     /**
      * @param updatedBy
      */
-    public AttributeValue(Resource updatedBy) {
+    public AttributeValue(Agency updatedBy) {
         super(updatedBy);
     }
 

@@ -16,7 +16,7 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.ProductAttribute.FIND_ATTRIBUTE_VALUE_FROM_RESOURCE;
+import static com.hellblazer.CoRE.product.ProductAttribute.FIND_ATTRIBUTE_VALUE_FROM_AGENCY;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -35,10 +35,10 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The attribute values of product attributes
@@ -46,14 +46,14 @@ import com.hellblazer.CoRE.resource.Resource;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_RESOURCE, query = "SELECT ea FROM ProductAttribute ea"
+@NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_AGENCY, query = "SELECT ea FROM ProductAttribute ea"
                                                                                + "   WHERE ea.product = :product "
                                                                                + "   AND ea.attribute = :attribute") })
 @Entity
 @Table(name = "product_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_attribute_id_seq", sequenceName = "product_attribute_id_seq")
 public class ProductAttribute extends AttributeValue<Product> {
-    public final static String FIND_ATTRIBUTE_VALUE_FROM_RESOURCE = "productAttribute.findAttributeValueFromResource";
+    public final static String FIND_ATTRIBUTE_VALUE_FROM_AGENCY = "productAttribute.findAttributeValueFromAgency";
     private static final long  serialVersionUID                   = 1L;
 
     //bi-directional many-to-one association to Product
@@ -81,7 +81,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param updatedBy
      */
     public ProductAttribute(Attribute attribute, BigDecimal value,
-                            Resource updatedBy) {
+                            Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -91,7 +91,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param updatedBy
      */
     public ProductAttribute(Attribute attribute, boolean value,
-                            Resource updatedBy) {
+                            Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -100,7 +100,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param value
      * @param updatedBy
      */
-    public ProductAttribute(Attribute attribute, int value, Resource updatedBy) {
+    public ProductAttribute(Attribute attribute, int value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -108,7 +108,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param attribute
      * @param updatedBy
      */
-    public ProductAttribute(Attribute attribute, Resource updatedBy) {
+    public ProductAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
     }
 
@@ -118,7 +118,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param updatedBy
      */
     public ProductAttribute(Attribute attribute, String value,
-                            Resource updatedBy) {
+                            Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -140,7 +140,7 @@ public class ProductAttribute extends AttributeValue<Product> {
     /**
      * @param updatedBy
      */
-    public ProductAttribute(Resource updatedBy) {
+    public ProductAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 

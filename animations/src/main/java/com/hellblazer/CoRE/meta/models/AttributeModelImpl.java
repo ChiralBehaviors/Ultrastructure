@@ -25,6 +25,7 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -39,7 +40,6 @@ import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * @author hhildebrand
@@ -168,17 +168,17 @@ public class AttributeModelImpl
         return attribute;
     }
 
-    public Attribute transform(Product service, Resource resource,
+    public Attribute transform(Product service, Agency agency,
                                Product product) {
 
         Attribute txfmd = null;
         for (TransformationMetarule transfromationMetarule : getTransformationMetarules(service)) {
-            Resource mappedResource;
-            if (kernel.getSameResource().equals(transfromationMetarule.getRelationshipMap())) {
-                mappedResource = kernel.getSameResource();
+            Agency mappedAgency;
+            if (kernel.getSameAgency().equals(transfromationMetarule.getRelationshipMap())) {
+                mappedAgency = kernel.getSameAgency();
             } else {
-                mappedResource = getMappedResource(transfromationMetarule,
-                                                   resource);
+                mappedAgency = getMappedAgency(transfromationMetarule,
+                                                   agency);
             }
             Product mappedProduct;
             if (kernel.getSameProduct().equals(transfromationMetarule.getProductMap())) {
@@ -188,14 +188,14 @@ public class AttributeModelImpl
                                                  product);
             }
             for (Transformation transformation : getTransformations(service,
-                                                                    mappedResource,
+                                                                    mappedAgency,
                                                                     mappedProduct)) {
                 txfmd = null;
-                Resource txfmResource;
-                if (kernel.getOriginalResource().equals(transformation.getResourceKey())) {
-                    txfmResource = resource;
+                Agency txfmAgency;
+                if (kernel.getOriginalAgency().equals(transformation.getAgencyKey())) {
+                    txfmAgency = agency;
                 } else {
-                    txfmResource = transformation.getResourceKey();
+                    txfmAgency = transformation.getAgencyKey();
                 }
                 Product txfmProduct;
                 if (kernel.getOriginalProduct().equals(transformation.getProductKey())) {
@@ -204,7 +204,7 @@ public class AttributeModelImpl
                     txfmProduct = transformation.getProductKey();
                 }
                 Product foundProduct = findProduct(transformation,
-                                                   txfmResource, txfmProduct);
+                                                   txfmAgency, txfmProduct);
 
                 txfmd = findAttribute(transformation, foundProduct);
                 if (txfmd != null) {
@@ -225,10 +225,10 @@ public class AttributeModelImpl
      */
     private Attribute findAttribute(Transformation transformation,
                                     Product product) {
-        TypedQuery<Attribute> attrQuery = em.createNamedQuery(ProductAttribute.FIND_ATTRIBUTE_VALUE_FROM_RESOURCE,
+        TypedQuery<Attribute> attrQuery = em.createNamedQuery(ProductAttribute.FIND_ATTRIBUTE_VALUE_FROM_AGENCY,
                                                               Attribute.class);
-        attrQuery.setParameter("resource",
-                               transformation.getProductAttributeResource());
+        attrQuery.setParameter("agency",
+                               transformation.getProductAttributeAgency());
         attrQuery.setParameter("product", product);
         attrQuery.setParameter("attribute", transformation.getAttribute());
         return attrQuery.getSingleResult();
@@ -236,18 +236,18 @@ public class AttributeModelImpl
 
     /**
      * @param transformation
-     * @param resource
+     * @param agency
      * @param product
      * @return
      */
     private Product findProduct(Transformation transformation,
-                                Resource resource, Product product) {
+                                Agency agency, Product product) {
         TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILD,
                                                                  Product.class);
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
                                          transformation.getRelationshipKey());
-        // productNetworkQuery.setParameter("resource", resource);
+        // productNetworkQuery.setParameter("agency", agency);
         return productNetworkQuery.getSingleResult();
     }
 
@@ -263,23 +263,23 @@ public class AttributeModelImpl
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
                                          transfromationMetarule.getRelationshipMap());
-        // productNetworkQuery.setParameter("resource", transfromationMetarule.getProductNetworkResource());
+        // productNetworkQuery.setParameter("agency", transfromationMetarule.getProductNetworkAgency());
         return productNetworkQuery.getSingleResult();
     }
 
     /**
      * @param transfromationMetarule
-     * @param resource
+     * @param agency
      * @return
      */
-    private Resource getMappedResource(TransformationMetarule transfromationMetarule,
-                                       Resource resource) {
-        TypedQuery<Resource> resourceNetworkQuery = em.createQuery(Resource.GET_CHILD,
-                                                                   Resource.class);
-        resourceNetworkQuery.setParameter("parent", resource);
-        resourceNetworkQuery.setParameter("relationship",
+    private Agency getMappedAgency(TransformationMetarule transfromationMetarule,
+                                       Agency agency) {
+        TypedQuery<Agency> agencyNetworkQuery = em.createQuery(Agency.GET_CHILD,
+                                                                   Agency.class);
+        agencyNetworkQuery.setParameter("parent", agency);
+        agencyNetworkQuery.setParameter("relationship",
                                           transfromationMetarule.getRelationshipMap());
-        return resourceNetworkQuery.getSingleResult();
+        return agencyNetworkQuery.getSingleResult();
     }
 
     /**
@@ -295,18 +295,18 @@ public class AttributeModelImpl
 
     /**
      * @param service
-     * @param mappedResource
+     * @param mappedAgency
      * @param mappedProduct
      * @return
      */
     private List<Transformation> getTransformations(Product service,
-                                                    Resource mappedResource,
+                                                    Agency mappedAgency,
                                                     Product mappedProduct) {
         TypedQuery<Transformation> txfmQuery = em.createQuery(Transformation.GET,
                                                               Transformation.class);
         txfmQuery.setParameter("event", service);
         txfmQuery.setParameter("product", mappedProduct);
-        txfmQuery.setParameter("resource", mappedResource);
+        txfmQuery.setParameter("agency", mappedAgency);
 
         return txfmQuery.getResultList();
     }

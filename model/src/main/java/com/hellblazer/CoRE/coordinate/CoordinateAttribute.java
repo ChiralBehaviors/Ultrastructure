@@ -31,11 +31,11 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.resource.Resource;
 
 /**
  * The attribute value of a location.
@@ -79,7 +79,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
      * @param updatedBy
      */
     public CoordinateAttribute(Attribute attribute, BigDecimal value,
-                               Resource updatedBy) {
+                               Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -89,7 +89,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
      * @param updatedBy
      */
     public CoordinateAttribute(Attribute attribute, boolean value,
-                               Resource updatedBy) {
+                               Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -99,7 +99,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
      * @param updatedBy
      */
     public CoordinateAttribute(Attribute attribute, int value,
-                               Resource updatedBy) {
+                               Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -107,7 +107,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
      * @param attribute
      * @param updatedBy
      */
-    public CoordinateAttribute(Attribute attribute, Resource updatedBy) {
+    public CoordinateAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
     }
 
@@ -117,7 +117,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
      * @param updatedBy
      */
     public CoordinateAttribute(Attribute attribute, String value,
-                               Resource updatedBy) {
+                               Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -139,7 +139,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     /**
      * @param updatedBy
      */
-    public CoordinateAttribute(Resource updatedBy) {
+    public CoordinateAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 

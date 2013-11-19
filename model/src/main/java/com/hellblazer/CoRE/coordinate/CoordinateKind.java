@@ -39,7 +39,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.resource.Resource;
+import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * The persistent class for the coordinate_kind database table.
@@ -123,7 +123,7 @@ public class CoordinateKind extends ExistentialRuleform {
     /**
      * @param updatedBy
      */
-    public CoordinateKind(Resource updatedBy) {
+    public CoordinateKind(Agency updatedBy) {
         super(updatedBy);
     }
 
@@ -138,7 +138,7 @@ public class CoordinateKind extends ExistentialRuleform {
      * @param name
      * @param updatedBy
      */
-    public CoordinateKind(String name, Resource updatedBy) {
+    public CoordinateKind(String name, Agency updatedBy) {
         super(name, updatedBy);
     }
 
@@ -155,7 +155,7 @@ public class CoordinateKind extends ExistentialRuleform {
      * @param description
      * @param updatedBy
      */
-    public CoordinateKind(String name, String description, Resource updatedBy) {
+    public CoordinateKind(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
     }
 

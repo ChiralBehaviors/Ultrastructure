@@ -10,7 +10,7 @@
             CREATE TABLE ruleform.product_network_attribute
             (
               id bigserial NOT NULL, -- Unique identifier for a Product Network Attribute rule
-              resource bigint NOT NULL, -- The Resource that the information in this rule comes from
+              agency bigint NOT NULL, -- The agency that the information in this rule comes from
               network_rule bigint NOT NULL, -- The Product Network rule whose attribute is being defined
               attribute bigint NOT NULL, -- The Attribute of the Product Network rule being defined
               text_value character varying, -- If the Attribute has a text value, it is stored in this column
@@ -23,7 +23,7 @@
               unit bigint, -- The unit of measurement the Attribute value is measured in, if any
               notes character varying, -- Miscellaneous notes about this rule
               research bigint, -- A research flag
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time of the last update to this rule
               sequence_number integer NOT NULL DEFAULT 1,
               CONSTRAINT product_network_attribute_pkey PRIMARY KEY (id ),
@@ -39,16 +39,16 @@
               CONSTRAINT product_network_attribute_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_resource_fkey FOREIGN KEY (resource)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+              CONSTRAINT product_network_attribute_agency_fkey FOREIGN KEY (agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_network_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_network_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_key UNIQUE (resource , network_rule , attribute , sequence_number ),
+              CONSTRAINT product_network_attribute_key UNIQUE (agency , network_rule , attribute , sequence_number ),
               CONSTRAINT valid_sequence_number CHECK (sequence_number > 0),
               CONSTRAINT valid_value CHECK ((ruleform.null_zero(text_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value) + ruleform.null_zero(product_value)) = 1)
             )
@@ -58,7 +58,7 @@
             COMMENT ON TABLE ruleform.product_network_attribute
               IS 'Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves';
             COMMENT ON COLUMN ruleform.product_network_attribute.id IS 'Unique identifier for a Product Network Attribute rule';
-            COMMENT ON COLUMN ruleform.product_network_attribute.resource IS 'The Resource that the information in this rule comes from';
+            COMMENT ON COLUMN ruleform.product_network_attribute.agency IS 'The agency that the information in this rule comes from';
             COMMENT ON COLUMN ruleform.product_network_attribute.network_rule IS 'The Product Network rule whose attribute is being defined';
             COMMENT ON COLUMN ruleform.product_network_attribute.attribute IS 'The Attribute of the Product Network rule being defined';
             COMMENT ON COLUMN ruleform.product_network_attribute.text_value IS 'If the Attribute has a text value, it is stored in this column';
@@ -69,7 +69,7 @@
             COMMENT ON COLUMN ruleform.product_network_attribute.unit IS 'The unit of measurement the Attribute value is measured in, if any';
             COMMENT ON COLUMN ruleform.product_network_attribute.notes IS 'Miscellaneous notes about this rule';
             COMMENT ON COLUMN ruleform.product_network_attribute.research IS 'A research flag';
-            COMMENT ON COLUMN ruleform.product_network_attribute.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.product_network_attribute.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.product_network_attribute.update_date IS 'The time of the last update to this rule';
             ]]>
         </sql>

@@ -32,11 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.Research;
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.resource.Resource;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**
@@ -52,14 +52,14 @@ public class ProductTest extends DatabaseTest {
     public void createEntity() {
         beginTransaction();
 
-        TypedQuery<Resource> query = em.createNamedQuery("resource.findByName",
-                                                         Resource.class).setParameter("name",
+        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+                                                         Agency.class).setParameter("name",
                                                                                       "CoRE");
-        Resource r = query.getSingleResult();
+        Agency r = query.getSingleResult();
 
-        LOG.debug(String.format("Resource: %s", r));
+        LOG.debug(String.format("Agency: %s", r));
 
-        assertNotNull("Resource was null!", r);
+        assertNotNull("Agency was null!", r);
         assertEquals("CoRE", r.getName());
 
         Product b = new Product();
@@ -114,7 +114,7 @@ public class ProductTest extends DatabaseTest {
 
         em.persist(considerDelition);
 
-        Resource core = new Resource("CoRE");
+        Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
 

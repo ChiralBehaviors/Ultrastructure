@@ -32,10 +32,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.hellblazer.CoRE.Util;
+import com.hellblazer.CoRE.agency.AgencyAttribute;
+import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
 import com.hellblazer.CoRE.kernel.Bootstrap;
 import com.hellblazer.CoRE.kernel.KernelImpl;
-import com.hellblazer.CoRE.resource.ResourceAttribute;
-import com.hellblazer.CoRE.resource.ResourceAttributeAuthorization;
 
 /**
  * The bootstrap loader of the kernel rules for the CoRE
@@ -90,25 +90,25 @@ public class BootstrapLoader extends Bootstrap {
         super.bootstrap();
         kernel = new KernelImpl(em);
         constructProductNetworks();
-        constructResourceNetworks();
+        constructAgencyNetworks();
         constructLocationNetworks();
         constructAttributeNetworks();
         constructAspects();
-        constructResourceAttributes();
+        constructAgencyAttributes();
     }
 
     public void constructAspects() {
-        ResourceAttributeAuthorization loginAuth = new ResourceAttributeAuthorization(
-                                                                                      kernel.getIsA(),
-                                                                                      kernel.getCoreUser(),
-                                                                                      kernel.getLoginAttribute(),
-                                                                                      kernel.getCore());
+        AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
+                                                                                  kernel.getIsA(),
+                                                                                  kernel.getCoreUser(),
+                                                                                  kernel.getLoginAttribute(),
+                                                                                  kernel.getCore());
         em.persist(loginAuth);
-        ResourceAttributeAuthorization passwordHashAuth = new ResourceAttributeAuthorization(
-                                                                                             kernel.getIsA(),
-                                                                                             kernel.getCoreUser(),
-                                                                                             kernel.getPasswordHashAttribute(),
-                                                                                             kernel.getCore());
+        AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
+                                                                                         kernel.getIsA(),
+                                                                                         kernel.getCoreUser(),
+                                                                                         kernel.getPasswordHashAttribute(),
+                                                                                         kernel.getCore());
         em.persist(passwordHashAuth);
 
     }
@@ -150,19 +150,19 @@ public class BootstrapLoader extends Bootstrap {
                                           em);
     }
 
-    public void constructResourceAttributes() {
-        ResourceAttribute userName = new ResourceAttribute(
-                                                           kernel.getLoginAttribute(),
-                                                           kernel.getCore());
-        userName.setResource(kernel.getSuperUser());
+    public void constructAgencyAttributes() {
+        AgencyAttribute userName = new AgencyAttribute(
+                                                       kernel.getLoginAttribute(),
+                                                       kernel.getCore());
+        userName.setAgency(kernel.getSuperUser());
         userName.setTextValue("superUser@example.com");
         em.persist(userName);
 
-        ResourceAttribute passwordHash = new ResourceAttribute(
-                                                               kernel.getPasswordHashAttribute(),
-                                                               kernel.getCore());
+        AgencyAttribute passwordHash = new AgencyAttribute(
+                                                           kernel.getPasswordHashAttribute(),
+                                                           kernel.getCore());
 
-        passwordHash.setResource(kernel.getSuperUser());
+        passwordHash.setAgency(kernel.getSuperUser());
         try {
             passwordHash.setTextValue(Util.md5Hash("password"));
         } catch (IOException e) {
@@ -171,34 +171,32 @@ public class BootstrapLoader extends Bootstrap {
         em.persist(passwordHash);
     }
 
-    public void constructResourceNetworks() {
-        kernel.getResource().link(kernel.getIsA(), kernel.getResource(),
-                                  kernel.getCore(), kernel.getCore(), em);
-        kernel.getCore().link(kernel.getIsA(), kernel.getResource(),
+    public void constructAgencyNetworks() {
+        kernel.getAgency().link(kernel.getIsA(), kernel.getAgency(),
+                                kernel.getCore(), kernel.getCore(), em);
+        kernel.getCore().link(kernel.getIsA(), kernel.getAgency(),
                               kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyResource().link(kernel.getIsA(), kernel.getResource(),
-                                     kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalResource().link(kernel.getIsA(),
-                                          kernel.getResource(),
-                                          kernel.getCore(), kernel.getCore(),
-                                          em);
+        kernel.getAnyAgency().link(kernel.getIsA(), kernel.getAgency(),
+                                   kernel.getCore(), kernel.getCore(), em);
+        kernel.getOriginalAgency().link(kernel.getIsA(), kernel.getAgency(),
+                                        kernel.getCore(), kernel.getCore(), em);
         kernel.getCoreAnimationSoftware().link(kernel.getIsA(),
-                                               kernel.getResource(),
+                                               kernel.getAgency(),
                                                kernel.getCore(),
                                                kernel.getCore(), em);
         kernel.getPropagationSoftware().link(kernel.getIsA(),
-                                             kernel.getResource(),
+                                             kernel.getAgency(),
                                              kernel.getCore(),
                                              kernel.getCore(), em);
-        kernel.getSpecialSystemResource().link(kernel.getIsA(),
-                                               kernel.getResource(),
-                                               kernel.getCore(),
-                                               kernel.getCore(), em);
-        kernel.getCoreUser().link(kernel.getIsA(), kernel.getResource(),
+        kernel.getSpecialSystemAgency().link(kernel.getIsA(),
+                                             kernel.getAgency(),
+                                             kernel.getCore(),
+                                             kernel.getCore(), em);
+        kernel.getCoreUser().link(kernel.getIsA(), kernel.getAgency(),
                                   kernel.getCore(), kernel.getCore(), em);
         kernel.getSuperUser().link(kernel.getIsA(), kernel.getCoreUser(),
                                    kernel.getCore(), kernel.getCore(), em);
-        kernel.getInverseSoftware().link(kernel.getIsA(), kernel.getResource(),
+        kernel.getInverseSoftware().link(kernel.getIsA(), kernel.getAgency(),
                                          kernel.getCore(), kernel.getCore(), em);
     }
 }

@@ -12,7 +12,7 @@
               id bigserial NOT NULL, -- Unique identifier
               service bigint NOT NULL, -- The Event we are creating a mask for
               sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an Event can have multiple meta-protocol rules
-              requesting_resource bigint NOT NULL, -- Used to select a mapped value for the requesting resource
+              requesting_agency bigint NOT NULL, -- Used to select a mapped value for the requesting agency
               service_type bigint NOT NULL, -- Used to select a mapped value for the service type
               product_ordered bigint NOT NULL, -- Used to select a mapped value for the product ordered
               deliver_to bigint NOT NULL, -- Used to select a mapped value for the location to deliver to
@@ -20,13 +20,13 @@
               stop_on_match boolean DEFAULT FALSE, -- Indicates no further meta protocol transformations should be processed
               notes character varying, -- Additional notes regarding usage of the meta protocol
               research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
-              updated_by bigint NOT NULL, -- The Resource that last updated this rule
+              updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT meta_protocol_pkey PRIMARY KEY (id ),
               CONSTRAINT meta_protocol_service_type_fkey FOREIGN KEY (service_type)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_requesting_resource_fkey FOREIGN KEY (requesting_resource)
+              CONSTRAINT meta_protocol_requesting_agency_fkey FOREIGN KEY (requesting_agency)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT meta_protocol_product_ordered_fkey FOREIGN KEY (product_ordered)
@@ -45,7 +45,7 @@
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT meta_protocol_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.resource (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT meta_protocol_service_sequence_number_key UNIQUE (service , sequence_number )
             )
@@ -61,7 +61,7 @@
             COMMENT ON COLUMN ruleform.meta_protocol.product_ordered IS 'Used to select a mapped value from a Product';
             COMMENT ON COLUMN ruleform.meta_protocol.notes IS 'Additional notes regarding usage of the attribute';
             COMMENT ON COLUMN ruleform.meta_protocol.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
-            COMMENT ON COLUMN ruleform.meta_protocol.updated_by IS 'The Resource that last updated this rule';
+            COMMENT ON COLUMN ruleform.meta_protocol.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.meta_protocol.update_date IS 'The date this rule was last changed';
             ]]>
 		</sql>

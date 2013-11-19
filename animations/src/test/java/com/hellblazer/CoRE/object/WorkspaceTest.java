@@ -72,8 +72,8 @@ public class WorkspaceTest extends DatabaseTest {
 		Workspace w = Workspace.loadWorkspace(workspace, workspaceOf, em);
 		assertEquals(2, w.getProducts().size());
 		assertTrue(w.getProducts().contains(p1));
-		assertEquals(2, w.getAuths().size());
-		assertTrue(w.getAuths().contains(coreAuth));
+		assertEquals(2, w.getAccessAuths().size());
+		assertTrue(w.getAccessAuths().contains(coreAuth));
 	}
 
 

@@ -76,7 +76,7 @@ public class WorkspaceResource {
             for (Product p : nets) {
                 p.manageEntity(em, knownObjects);
             }
-            List<AccessAuthorization> auths = w.getAuths();
+            List<AccessAuthorization> auths = w.getAccessAuths();
             for (AccessAuthorization auth : auths) {
                 auth.manageEntity(em, knownObjects);
             }

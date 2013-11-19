@@ -17,6 +17,8 @@
 
 package com.hellblazer.CoRE.authorization;
 
+import static com.hellblazer.CoRE.authorization.WorkspaceAuthorization.GET_AUTHORIZATIONS_FOR_WORKSPACE;
+
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -30,6 +32,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -41,6 +45,11 @@ import com.hellblazer.CoRE.product.Product;
  * @author hhildebrand
  * 
  */
+@NamedQueries({
+	@NamedQuery(name=GET_AUTHORIZATIONS_FOR_WORKSPACE, query="SELECT auth "
+			+ "FROM WorkspaceAuthorization auth "
+			+ "WHERE auth.product = :product")
+})
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "workspace_authorization", schema = "ruleform")
@@ -48,6 +57,8 @@ import com.hellblazer.CoRE.product.Product;
 @DiscriminatorColumn(name = "authorization_type")
 abstract public class WorkspaceAuthorization extends Ruleform {
 
+	public static final String GET_AUTHORIZATIONS_FOR_WORKSPACE = "getAuthorizationsForWorkspace";
+	
     public static final String PRODUCT_AGENCY    = "0";
     public static final String PRODUCT_STATUS_CODE = "1";
     public static final String PRODUCT_UNIT        = "2";

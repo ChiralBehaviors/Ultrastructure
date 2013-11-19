@@ -18,9 +18,10 @@
 package com.hellblazer.CoRE.meta.graph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -60,19 +61,19 @@ public class NetworkGraphTest {
 	private static final String contains = "contains";
 	private static final String owns = "owns";
 
-	private LinkedList<Node<?>> erisNodes;
-	private LinkedList<Edge<?>> erisEdges;
+	private ArrayList<Node<?>> erisNodes;
+	private ArrayList<Edge<?>> erisEdges;
 
-	private LinkedList<Node<?>> michaelsNodes;
-	private LinkedList<Edge<?>> michaelsEdges;
+	private ArrayList<Node<?>> michaelsNodes;
+	private ArrayList<Edge<?>> michaelsEdges;
 
 	@Test
 	public void testUnion() throws CloneNotSupportedException {
-		GraphImpl erisGraph = new GraphImpl(new LinkedList<Node<?>>(erisNodes),
-				new LinkedList<Edge<?>>(erisEdges));
+		GraphImpl erisGraph = new GraphImpl(new ArrayList<Node<?>>(erisNodes),
+				new ArrayList<Edge<?>>(erisEdges));
 		GraphImpl michaelsGraph = new GraphImpl(
-				new LinkedList<Node<?>>(michaelsNodes),
-				new LinkedList<Edge<?>>(michaelsEdges));
+				new ArrayList<Node<?>>(michaelsNodes),
+				new ArrayList<Edge<?>>(michaelsEdges));
 		erisGraph.union(michaelsGraph);
 		assertTrue(erisGraph.getNodes().contains(CouldItBeMagic));
 		assertTrue(erisGraph.getNodes().contains(Parabola));
@@ -85,24 +86,24 @@ public class NetworkGraphTest {
 		TestNodeImpl magic2 = new TestNodeImpl("Could It Be Magic");
 		assertEquals(CouldItBeMagic, magic2);
 
-		List<Node<?>> list = new LinkedList<Node<?>>();
+		List<Node<?>> list = new ArrayList<Node<?>>();
 		list.add(CouldItBeMagic);
 		assertTrue(list.contains(CouldItBeMagic));
 		assertTrue(list.contains(magic2));
 	}
 
-//	@Test
-//	public void testIntersection() throws CloneNotSupportedException {
-//		Graph erisGraph = new Graph(new LinkedList<INode<?>>(erisNodes),
-//				new LinkedList<IEdge<?>>(erisEdges));
-//		Graph michaelsGraph = new Graph(
-//				new LinkedList<INode<?>>(michaelsNodes),
-//				new LinkedList<IEdge<?>>(michaelsEdges));
-//		erisGraph.intersection(michaelsGraph);
-//		assertTrue(erisGraph.getNodes().contains(CouldItBeMagic));
-//		assertFalse(erisGraph.getNodes().contains(Parabola));
-//		assertFalse(erisGraph.getNodes().contains(Alan_Parsons_Project));
-//	}
+	@Test
+	public void testIntersection() throws CloneNotSupportedException {
+		GraphImpl erisGraph = new GraphImpl(new ArrayList<Node<?>>(erisNodes),
+				new ArrayList<Edge<?>>(erisEdges));
+		GraphImpl michaelsGraph = new GraphImpl(
+				new ArrayList<Node<?>>(michaelsNodes),
+				new ArrayList<Edge<?>>(michaelsEdges));
+		erisGraph.intersection(michaelsGraph);
+		assertTrue(erisGraph.getNodes().contains(CouldItBeMagic));
+		assertFalse(erisGraph.getNodes().contains(Parabola));
+		assertFalse(erisGraph.getNodes().contains(Alan_Parsons_Project));
+	}
 
 	@Before
 	public void setup() {
@@ -149,7 +150,7 @@ public class NetworkGraphTest {
 	 * double bass pedals.
 	 */
 	private void createErisGraph() {
-		erisEdges = new LinkedList<Edge<?>>();
+		erisEdges = new ArrayList<Edge<?>>();
 
 		erisEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Tool, isA));
 		erisEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Disturbed, isA));
@@ -179,7 +180,7 @@ public class NetworkGraphTest {
 		Node<?>[] tempNodes = new Node<?>[] { SONG_TYPE, CHANNEL_TYPE,
 				USER_TYPE, Tool, Disturbed, Barry_Manilow, Pushit,
 				FortySixAndTwo, Parabola, Mistress, Hell, CouldItBeMagic, Eris };
-		erisNodes = new LinkedList<Node<?>>();
+		erisNodes = new ArrayList<Node<?>>();
 		for (Node<?> node : tempNodes) {
 			erisNodes.add(node);
 		}
@@ -190,7 +191,7 @@ public class NetworkGraphTest {
 	 * 
 	 */
 	private void createMichaelsGraph() {
-		michaelsEdges = new LinkedList<Edge<?>>();
+		michaelsEdges = new ArrayList<Edge<?>>();
 
 		michaelsEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Alan_Parsons_Project,
 				isA));
@@ -209,7 +210,7 @@ public class NetworkGraphTest {
 				USER_TYPE, Alan_Parsons_Project, Barry_Manilow, CouldItBeMagic,
 				Michael };
 
-		michaelsNodes = new LinkedList<Node<?>>();
+		michaelsNodes = new ArrayList<Node<?>>();
 		for (Node<?> node : tempNodes) {
 			michaelsNodes.add(node);
 		}

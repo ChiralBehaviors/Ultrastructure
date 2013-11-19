@@ -26,15 +26,15 @@ import com.hellblazer.CoRE.meta.graph.Node;
 
 /**
  * A graph of nodes and edges
+ * 
  * @author hparry
- *
+ * 
  */
 public class GraphImpl implements Graph {
-	
 
 	private List<Node<?>> nodes;
 	private List<Edge<?>> edges;
-	
+
 	public GraphImpl(List<Node<?>> nodes, List<Edge<?>> edges) {
 		this.nodes = nodes;
 		this.edges = edges;
@@ -45,8 +45,7 @@ public class GraphImpl implements Graph {
 			this.edges = new LinkedList<Edge<?>>();
 		}
 	}
-	
-	
+
 	/**
 	 * @param erisNodes
 	 * @param edges2
@@ -62,18 +61,18 @@ public class GraphImpl implements Graph {
 	public List<Node<?>> getNodes() {
 		return nodes;
 	}
-	
+
 	public List<Edge<?>> getEdges() {
 		return edges;
 	}
-	
+
 	@Override
 	public GraphImpl union(Graph g) {
 		this.nodes.addAll(g.getNodes());
 		this.edges.addAll(g.getEdges());
 		return this;
 	}
-	
+
 	@Override
 	public GraphImpl intersection(Graph g) {
 		List<Node<?>> nodesToRemove = new LinkedList<Node<?>>();
@@ -82,21 +81,29 @@ public class GraphImpl implements Graph {
 				nodesToRemove.add(n);
 			}
 		}
-		nodes.remove(nodesToRemove);
-		
+		for (Node<?> n : nodesToRemove) {
+			nodes.remove(n);
+		}
+
 		List<Edge<?>> edgesToRemove = new LinkedList<Edge<?>>();
 		for (Edge<?> e : edges) {
 			if (!g.getEdges().contains(e)) {
 				edgesToRemove.add(e);
 			}
 		}
-		
-		edges.remove(edgesToRemove);
+
+		for (Edge<?> e : edgesToRemove) {
+			edges.remove(e);
+		}
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.IGraph#addNode(com.hellblazer.CoRE.meta.graph.INode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.hellblazer.CoRE.meta.graph.IGraph#addNode(com.hellblazer.CoRE.meta
+	 * .graph.INode)
 	 */
 	@Override
 	public Graph addNode(Node<?> n) {
@@ -104,8 +111,12 @@ public class GraphImpl implements Graph {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.IGraph#addEdge(com.hellblazer.CoRE.meta.graph.IEdge)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.hellblazer.CoRE.meta.graph.IGraph#addEdge(com.hellblazer.CoRE.meta
+	 * .graph.IEdge)
 	 */
 	@Override
 	public Graph addEdge(Edge<?> e) {

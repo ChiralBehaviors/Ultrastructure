@@ -41,29 +41,7 @@ public final class NetworkGraphQuery<RuleForm extends Networked<RuleForm, ?>> {
 	private List<NetworkRuleform<RuleForm>> edges;
 	private List<RuleForm> nodes;
 	private EntityManager em;
-//	private Class<?> nodeclz;
-//	private Class<?> edgeclz;
-	
-//	
-//	private void constructGraph() {
-//		Reflections reflections = new Reflections(Ruleform.class.getPackage()
-//				.getName());
-//		for (Class<? extends Ruleform> form : reflections
-//				.getSubTypesOf(Ruleform.class)) {
-//			if (!Modifier.isAbstract(form.getModifiers()) && form.getName().equalsIgnoreCase(origin.getClass().getName())) {
-//				nodeclz = form;
-//			}
-//		}
-//		for (Class<? extends NetworkRuleform> form : reflections.getSubTypesOf(NetworkRuleform.class)) {
-//			if (!Modifier.isAbstract(form.getModifiers()) && form.getName().equalsIgnoreCase(origin.getClass().getName() + "network")) {
-//				edgeclz = form;
-//			}
-//		}
-//		assert nodeclz != null;
-//		assert edgeclz != null;
-//
-//		findNeighbors();
-//	}
+
 	
 	public NetworkGraphQuery(RuleForm node, Relationship r, EntityManager em) {
 		List<RuleForm> nodes = new LinkedList<RuleForm>();

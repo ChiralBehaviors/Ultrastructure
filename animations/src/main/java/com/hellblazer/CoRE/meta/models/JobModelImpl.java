@@ -54,6 +54,7 @@ import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
+import com.hellblazer.CoRE.event.Protocol_;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.jsp.JSP;

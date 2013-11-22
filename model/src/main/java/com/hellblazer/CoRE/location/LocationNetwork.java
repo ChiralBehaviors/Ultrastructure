@@ -183,6 +183,13 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     }
 
     /**
+     * @param updatedBy
+     */
+    public LocationNetwork(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param relationship
      * @param updatedBy
      */
@@ -206,13 +213,6 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      */
     public LocationNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public LocationNetwork(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

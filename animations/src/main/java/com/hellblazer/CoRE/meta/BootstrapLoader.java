@@ -97,59 +97,6 @@ public class BootstrapLoader extends Bootstrap {
         constructAgencyAttributes();
     }
 
-    public void constructAspects() {
-        AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
-                                                                                  kernel.getIsA(),
-                                                                                  kernel.getCoreUser(),
-                                                                                  kernel.getLoginAttribute(),
-                                                                                  kernel.getCore());
-        em.persist(loginAuth);
-        AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
-                                                                                         kernel.getIsA(),
-                                                                                         kernel.getCoreUser(),
-                                                                                         kernel.getPasswordHashAttribute(),
-                                                                                         kernel.getCore());
-        em.persist(passwordHashAuth);
-
-    }
-
-    public void constructAttributeNetworks() {
-        kernel.getAttribute().link(kernel.getIsA(), kernel.getAttribute(),
-                                   kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyAttribute().link(kernel.getIsA(), kernel.getAttribute(),
-                                      kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalAttribute().link(kernel.getIsA(),
-                                           kernel.getAttribute(),
-                                           kernel.getCore(), kernel.getCore(),
-                                           em);
-        kernel.getLoginAttribute().link(kernel.getIsA(), kernel.getAttribute(),
-                                        kernel.getCore(), kernel.getCore(), em);
-        kernel.getPasswordHashAttribute().link(kernel.getIsA(),
-                                               kernel.getAttribute(),
-                                               kernel.getCore(),
-                                               kernel.getCore(), em);
-    }
-
-    public void constructProductNetworks() {
-        kernel.getProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                 kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                    kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                         kernel.getCore(), kernel.getCore(), em);
-    }
-
-    public void constructLocationNetworks() {
-        kernel.getLocation().link(kernel.getIsA(), kernel.getLocation(),
-                                  kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyLocation().link(kernel.getIsA(), kernel.getLocation(),
-                                     kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalLocation().link(kernel.getIsA(),
-                                          kernel.getLocation(),
-                                          kernel.getCore(), kernel.getCore(),
-                                          em);
-    }
-
     public void constructAgencyAttributes() {
         AgencyAttribute userName = new AgencyAttribute(
                                                        kernel.getLoginAttribute(),
@@ -197,6 +144,59 @@ public class BootstrapLoader extends Bootstrap {
         kernel.getSuperUser().link(kernel.getIsA(), kernel.getCoreUser(),
                                    kernel.getCore(), kernel.getCore(), em);
         kernel.getInverseSoftware().link(kernel.getIsA(), kernel.getAgency(),
+                                         kernel.getCore(), kernel.getCore(), em);
+    }
+
+    public void constructAspects() {
+        AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
+                                                                                  kernel.getIsA(),
+                                                                                  kernel.getCoreUser(),
+                                                                                  kernel.getLoginAttribute(),
+                                                                                  kernel.getCore());
+        em.persist(loginAuth);
+        AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
+                                                                                         kernel.getIsA(),
+                                                                                         kernel.getCoreUser(),
+                                                                                         kernel.getPasswordHashAttribute(),
+                                                                                         kernel.getCore());
+        em.persist(passwordHashAuth);
+
+    }
+
+    public void constructAttributeNetworks() {
+        kernel.getAttribute().link(kernel.getIsA(), kernel.getAttribute(),
+                                   kernel.getCore(), kernel.getCore(), em);
+        kernel.getAnyAttribute().link(kernel.getIsA(), kernel.getAttribute(),
+                                      kernel.getCore(), kernel.getCore(), em);
+        kernel.getOriginalAttribute().link(kernel.getIsA(),
+                                           kernel.getAttribute(),
+                                           kernel.getCore(), kernel.getCore(),
+                                           em);
+        kernel.getLoginAttribute().link(kernel.getIsA(), kernel.getAttribute(),
+                                        kernel.getCore(), kernel.getCore(), em);
+        kernel.getPasswordHashAttribute().link(kernel.getIsA(),
+                                               kernel.getAttribute(),
+                                               kernel.getCore(),
+                                               kernel.getCore(), em);
+    }
+
+    public void constructLocationNetworks() {
+        kernel.getLocation().link(kernel.getIsA(), kernel.getLocation(),
+                                  kernel.getCore(), kernel.getCore(), em);
+        kernel.getAnyLocation().link(kernel.getIsA(), kernel.getLocation(),
+                                     kernel.getCore(), kernel.getCore(), em);
+        kernel.getOriginalLocation().link(kernel.getIsA(),
+                                          kernel.getLocation(),
+                                          kernel.getCore(), kernel.getCore(),
+                                          em);
+    }
+
+    public void constructProductNetworks() {
+        kernel.getProduct().link(kernel.getIsA(), kernel.getProduct(),
+                                 kernel.getCore(), kernel.getCore(), em);
+        kernel.getAnyProduct().link(kernel.getIsA(), kernel.getProduct(),
+                                    kernel.getCore(), kernel.getCore(), em);
+        kernel.getOriginalProduct().link(kernel.getIsA(), kernel.getProduct(),
                                          kernel.getCore(), kernel.getCore(), em);
     }
 }

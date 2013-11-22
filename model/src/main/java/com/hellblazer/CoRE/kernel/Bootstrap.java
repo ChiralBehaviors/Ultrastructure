@@ -22,11 +22,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownRelationship;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 
 /**

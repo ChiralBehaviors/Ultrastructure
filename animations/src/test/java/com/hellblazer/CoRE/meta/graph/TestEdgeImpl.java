@@ -18,50 +18,49 @@ package com.hellblazer.CoRE.meta.graph;
 
 /**
  * @author hparry
- *
+ * 
  */
 
 public class TestEdgeImpl implements Edge<String> {
-	
-	private TestNodeImpl parent;
-	private TestNodeImpl child;
-	private String edge;
-	
-	public TestEdgeImpl(String parent, String child, String edge) {
-		this.parent = new TestNodeImpl(parent);
-		this.child = new TestNodeImpl(child);
-		this.edge = edge;
-	}
-	
-	public TestEdgeImpl(TestNodeImpl parent, TestNodeImpl child, String edge) {
-		this.parent = parent;
-		this.child = child;
-		this.edge = edge;
-	}
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getParent()
-	 */
-	@Override
-	public Node<String> getParent() {
-		return this.parent;
-	}
+    private TestNodeImpl parent;
+    private TestNodeImpl child;
+    private String       edge;
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getChild()
-	 */
-	@Override
-	public Node<String> getChild() {
-		return this.child;
-	}
+    public TestEdgeImpl(String parent, String child, String edge) {
+        this.parent = new TestNodeImpl(parent);
+        this.child = new TestNodeImpl(child);
+        this.edge = edge;
+    }
 
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.meta.graph.IEdge#getEdgeObject()
-	 */
-	@Override
-	public String getEdgeObject() {
-		return this.edge;
-	}
-	
+    public TestEdgeImpl(TestNodeImpl parent, TestNodeImpl child, String edge) {
+        this.parent = parent;
+        this.child = child;
+        this.edge = edge;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.graph.IEdge#getChild()
+     */
+    @Override
+    public Node<String> getChild() {
+        return child;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.graph.IEdge#getEdgeObject()
+     */
+    @Override
+    public String getEdgeObject() {
+        return edge;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.graph.IEdge#getParent()
+     */
+    @Override
+    public Node<String> getParent() {
+        return parent;
+    }
 
 }

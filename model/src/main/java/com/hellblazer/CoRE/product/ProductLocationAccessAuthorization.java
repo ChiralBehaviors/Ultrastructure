@@ -40,7 +40,7 @@ public class ProductLocationAccessAuthorization extends
         ProductAccessAuthorization {
 
     private static final long serialVersionUID = 1L;
-    
+
     {
         setAuthorizationType(AccessAuthorization.PRODUCT_LOCATION);
     }
@@ -50,7 +50,7 @@ public class ProductLocationAccessAuthorization extends
     private Location          child;
 
     public ProductLocationAccessAuthorization() {
-        super(); 
+        super();
     }
 
     /**
@@ -72,6 +72,7 @@ public class ProductLocationAccessAuthorization extends
     /**
      * @return the child
      */
+    @Override
     public Location getChild() {
         return child;
     }

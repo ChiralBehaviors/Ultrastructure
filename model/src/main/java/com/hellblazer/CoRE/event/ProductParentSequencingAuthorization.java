@@ -86,6 +86,13 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     }
 
     /**
+     * @param updatedBy
+     */
+    public ProductParentSequencingAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public ProductParentSequencingAuthorization(Long id) {
@@ -110,13 +117,6 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         setStatusCode(statusCode);
         setMyParent(myParent);
         setParentStatusToSet(parentStatusToSet);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public ProductParentSequencingAuthorization(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**

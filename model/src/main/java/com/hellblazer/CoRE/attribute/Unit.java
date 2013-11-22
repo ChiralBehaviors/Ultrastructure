@@ -57,16 +57,16 @@ public class Unit extends ExistentialRuleform {
     public Unit() {
     }
 
+    public Unit(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public Unit(Long id) {
         super(id);
     }
 
     public Unit(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    public Unit(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public Unit(String name) {
@@ -84,8 +84,7 @@ public class Unit extends ExistentialRuleform {
         setDescription(description);
     }
 
-    public Unit(String name, String description, String notes,
-                Agency updatedBy) {
+    public Unit(String name, String description, String notes, Agency updatedBy) {
         super(notes, updatedBy);
         setName(name);
         setDescription(description);

@@ -49,16 +49,16 @@ import com.hellblazer.CoRE.network.Relationship;
 public abstract class AccessAuthorization extends Ruleform {
 
     // IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
-    public static final String agency_PRODUCT  = "0";
-    public static final String agency_LOCATION = "1";
-    public static final String PRODUCT_AGENCY  = "2";
-    public static final String PRODUCT_LOCATION  = "3";
-    public static final String LOCATION_AGENCY = "4";
-    public static final String LOCATION_PRODUCT  = "5";
-    
+    public static final String agency_PRODUCT                                            = "0";
+    public static final String agency_LOCATION                                           = "1";
+    public static final String PRODUCT_AGENCY                                            = "2";
+    public static final String PRODUCT_LOCATION                                          = "3";
+    public static final String LOCATION_AGENCY                                           = "4";
+    public static final String LOCATION_PRODUCT                                          = "5";
+
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX = ".getAllAuthorizationsForParentAndRelationship";
 
-    private static final long  serialVersionUID  = 1L;
+    private static final long  serialVersionUID                                          = 1L;
 
     @Column(name = "authorization_type")
     private String             authorizationType;
@@ -79,7 +79,8 @@ public abstract class AccessAuthorization extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "child_transitive_relationship")
     protected Relationship     childTransitiveRelationship;
-    
+
+    abstract public Networked<?, ?> getChild();
 
     /**
      * @return the childTransitiveRelationship
@@ -92,6 +93,8 @@ public abstract class AccessAuthorization extends Ruleform {
     public Long getId() {
         return id;
     }
+
+    abstract public Networked<?, ?> getParent();
 
     /**
      * @return the parentTransitiveRelationship
@@ -166,10 +169,6 @@ public abstract class AccessAuthorization extends Ruleform {
         }
         super.traverseForeignKeys(em, knownObjects);
     }
-    
-    abstract public Networked<?, ?> getParent();
-    abstract public Networked<?, ?> getChild();
-    
 
     protected void setAuthorizationType(String type) {
         authorizationType = type;

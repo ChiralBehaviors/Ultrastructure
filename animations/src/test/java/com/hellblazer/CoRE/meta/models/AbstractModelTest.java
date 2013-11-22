@@ -45,6 +45,10 @@ public class AbstractModelTest {
     protected Kernel        kernel;
     protected EntityManager em;
 
+    public AbstractModelTest() {
+        super();
+    }
+
     @Before
     public void initialize() throws Exception {
         InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
@@ -64,10 +68,6 @@ public class AbstractModelTest {
 
         model = new ModelImpl(em);
         kernel = model.getKernel();
-    }
-
-    public AbstractModelTest() {
-        super();
     }
 
 }

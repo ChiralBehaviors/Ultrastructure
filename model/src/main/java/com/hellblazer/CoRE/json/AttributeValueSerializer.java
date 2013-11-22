@@ -29,7 +29,7 @@ import com.hellblazer.CoRE.attribute.AttributeValue;
 /**
  * 
  * @author hhildebrand
- *
+ * 
  * @param <T>
  */
 public class AttributeValueSerializer<T extends AttributeValue<? extends Ruleform>>

@@ -21,20 +21,20 @@ import java.util.List;
 
 /**
  * @author hparry
- *
+ * 
  */
 public interface Graph {
-	
-	public List<Node<?>> getNodes();
-	
-	public List<Edge<?>> getEdges();
-	
-	public Graph union(Graph g);
-	
-	public Graph intersection(Graph g);
-	
-	public Graph addNode(Node<?> n);
-	
-	public Graph addEdge(Edge<?> e);
+
+    public Graph addEdge(Edge<?> e);
+
+    public Graph addNode(Node<?> n);
+
+    public List<Edge<?>> getEdges();
+
+    public List<Node<?>> getNodes();
+
+    public Graph intersection(Graph g);
+
+    public Graph union(Graph g);
 
 }

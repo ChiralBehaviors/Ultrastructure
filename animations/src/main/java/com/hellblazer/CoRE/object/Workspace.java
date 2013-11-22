@@ -156,8 +156,9 @@ public class Workspace {
 
 	@SuppressWarnings("unchecked")
 	private void loadWorkspaceAuthorizations() {
-		Query q = em
-				.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATIONS_FOR_WORKSPACE, WorkspaceAuthorization.class);
+		Query q = em.createNamedQuery(
+				WorkspaceAuthorization.GET_AUTHORIZATIONS_FOR_WORKSPACE,
+				WorkspaceAuthorization.class);
 		q.setParameter("product", workspace);
 		workspaceAuths = q.getResultList();
 

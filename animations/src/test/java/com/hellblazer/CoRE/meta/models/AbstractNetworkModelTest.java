@@ -48,18 +48,16 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         classification.setInverse(inverse);
         inverse.setInverse(classification);
         Agency classifier = new Agency("test in group agency classifier",
-                                           kernel.getCore());
+                                       kernel.getCore());
         em.persist(classifier);
-        Aspect<Agency> myAspect = new Aspect<Agency>(classification,
-                                                         classifier);
+        Aspect<Agency> myAspect = new Aspect<Agency>(classification, classifier);
         @SuppressWarnings("unchecked")
         Agency testAgency = model.getAgencyModel().create("test agency in group",
-                                                                "test",
-                                                                myAspect);
+                                                          "test", myAspect);
         em.persist(testAgency);
         em.getTransaction().commit();
         List<Agency> inGroup = model.getAgencyModel().getInGroup(classifier,
-                                                                     inverse);
+                                                                 inverse);
         assertNotNull(inGroup);
         assertEquals(1, inGroup.size());
         assertEquals(testAgency, inGroup.get(0));
@@ -78,13 +76,12 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(inverse);
         classification.setInverse(inverse);
         inverse.setInverse(classification);
-        Agency classifier = new Agency(
-                                           "test not in group agency classifier",
-                                           kernel.getCore());
+        Agency classifier = new Agency("test not in group agency classifier",
+                                       kernel.getCore());
         em.persist(classifier);
         em.getTransaction().commit();
         List<Agency> notInGroup = model.getAgencyModel().getNotInGroup(classifier,
-                                                                           inverse);
+                                                                       inverse);
         assertNotNull(notInGroup);
         assertEquals(1, notInGroup.size());
     }

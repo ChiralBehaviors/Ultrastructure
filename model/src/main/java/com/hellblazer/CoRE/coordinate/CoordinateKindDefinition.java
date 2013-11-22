@@ -69,17 +69,17 @@ public class CoordinateKindDefinition extends Ruleform {
     }
 
     /**
-     * @param id
-     */
-    public CoordinateKindDefinition(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public CoordinateKindDefinition(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public CoordinateKindDefinition(Long id) {
+        super(id);
     }
 
     public Attribute getAttribute() {

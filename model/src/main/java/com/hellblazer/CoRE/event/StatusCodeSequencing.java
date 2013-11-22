@@ -112,6 +112,13 @@ public class StatusCodeSequencing extends Ruleform {
     }
 
     /**
+     * @param updatedBy
+     */
+    public StatusCodeSequencing(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public StatusCodeSequencing(Long id) {
@@ -127,13 +134,6 @@ public class StatusCodeSequencing extends Ruleform {
     }
 
     public StatusCodeSequencing(Product service, StatusCode parent,
-                                StatusCode child, int sequenceNumber,
-                                Agency updatedBy) {
-        this(service, parent, child, updatedBy);
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    public StatusCodeSequencing(Product service, StatusCode parent,
                                 StatusCode child, Agency updatedBy) {
         super(updatedBy);
         this.service = service;
@@ -141,11 +141,11 @@ public class StatusCodeSequencing extends Ruleform {
         childCode = child;
     }
 
-    /**
-     * @param updatedBy
-     */
-    public StatusCodeSequencing(Agency updatedBy) {
-        super(updatedBy);
+    public StatusCodeSequencing(Product service, StatusCode parent,
+                                StatusCode child, int sequenceNumber,
+                                Agency updatedBy) {
+        this(service, parent, child, updatedBy);
+        this.sequenceNumber = sequenceNumber;
     }
 
     /**

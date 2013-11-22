@@ -64,9 +64,14 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    protected Agency         updatedBy;
+    protected Agency           updatedBy;
 
     public Ruleform() {
+    }
+
+    public Ruleform(Agency updatedBy) {
+        this();
+        this.updatedBy = updatedBy;
     }
 
     public Ruleform(Long id) {
@@ -76,11 +81,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     public Ruleform(Long id, Agency updatedBy) {
         this(id);
-        this.updatedBy = updatedBy;
-    }
-
-    public Ruleform(Agency updatedBy) {
-        this();
         this.updatedBy = updatedBy;
     }
 

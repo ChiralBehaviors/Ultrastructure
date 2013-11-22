@@ -65,17 +65,17 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     }
 
     /**
-     * @param id
-     */
-    public AgencyNetworkAuthorization(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public AgencyNetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public AgencyNetworkAuthorization(Long id) {
+        super(id);
     }
 
     /* (non-Javadoc)

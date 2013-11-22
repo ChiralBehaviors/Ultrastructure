@@ -148,17 +148,17 @@ public class Location extends ExistentialRuleform implements
     }
 
     /**
-     * @param id
-     */
-    public Location(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public Location(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Location(Long id) {
+        super(id);
     }
 
     /**

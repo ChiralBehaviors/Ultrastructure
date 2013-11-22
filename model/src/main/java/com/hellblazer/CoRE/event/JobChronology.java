@@ -67,6 +67,13 @@ public class JobChronology extends Ruleform {
     public JobChronology() {
     }
 
+    /**
+     * @param updatedBy
+     */
+    public JobChronology(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public JobChronology(Job job, StatusCode status, Timestamp timeStamp,
                          String notes, Agency updatedBy) {
         super(notes, updatedBy);
@@ -80,13 +87,6 @@ public class JobChronology extends Ruleform {
      */
     public JobChronology(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public JobChronology(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

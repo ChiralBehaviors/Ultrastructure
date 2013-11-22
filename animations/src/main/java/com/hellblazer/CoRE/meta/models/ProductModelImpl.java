@@ -44,10 +44,6 @@ public class ProductModelImpl
         AbstractNetworkedModel<Product, ProductAttributeAuthorization, ProductAttribute>
         implements ProductModel {
 
-    private static interface Procedure<T> {
-        T call(ProductModelImpl productModel) throws Exception;
-    }
-
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -61,8 +57,8 @@ public class ProductModelImpl
         }
     }
 
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
+    private static interface Procedure<T> {
+        T call(ProductModelImpl productModel) throws Exception;
     }
 
     private static final String PRODUCT_NETWORK_PROPAGATE = "ProductNetwork.propagate";
@@ -86,10 +82,14 @@ public class ProductModelImpl
             @Override
             public Void call(ProductModelImpl productModel) throws Exception {
                 productModel.networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                    data.getOld().getLong("relationship"));
+                                                data.getOld().getLong("relationship"));
                 return null;
             }
         });
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     /**
@@ -169,7 +169,7 @@ public class ProductModelImpl
      */
     protected void initialize(Product product, Aspect<Product> aspect) {
         product.link(aspect.getClassification(), aspect.getClassifier(),
-                      kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
         for (ProductAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             ProductAttribute attribute = new ProductAttribute(
                                                               authorization.getAuthorizedAttribute(),

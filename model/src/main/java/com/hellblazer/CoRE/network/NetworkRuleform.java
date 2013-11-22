@@ -54,6 +54,13 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
     }
 
     /**
+     * @param updatedBy
+     */
+    public NetworkRuleform(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public NetworkRuleform(Long id) {
@@ -67,13 +74,6 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
     public NetworkRuleform(Relationship relationship, Agency updatedBy) {
         super(updatedBy);
         this.relationship = relationship;
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public NetworkRuleform(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

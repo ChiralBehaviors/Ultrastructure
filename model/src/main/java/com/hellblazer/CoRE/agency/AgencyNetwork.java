@@ -174,7 +174,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "child")
-    private Agency           child;
+    private Agency             child;
 
     @Id
     @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
@@ -183,9 +183,27 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Agency           parent;
+    private Agency             parent;
 
     public AgencyNetwork() {
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public AgencyNetwork(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
+     * @param relationship
+     * @param updatedBy
+     */
+    public AgencyNetwork(Agency parent, Relationship relationship,
+                         Agency child, Agency updatedBy) {
+        super(relationship, updatedBy);
+        this.parent = parent;
+        this.child = child;
     }
 
     /**
@@ -201,24 +219,6 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      */
     public AgencyNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public AgencyNetwork(Agency updatedBy) {
-        super(updatedBy);
-    }
-
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public AgencyNetwork(Agency parent, Relationship relationship,
-                           Agency child, Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
     }
 
     @Override

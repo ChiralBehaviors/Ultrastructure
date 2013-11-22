@@ -105,19 +105,19 @@ public class OrderProcessingLoader {
     public Location             us;
     private Location            anyLocation;
 
-    public Agency             billingComputer;
-    public Agency             core;
-    public Agency             cpu;
-    public Agency             creditDept;
-    public Agency             exempt;
-    public Agency             externalCust;
-    public Agency             factory1Agency;
-    public Agency             georgeTownUniversity;
-    public Agency             manufacturer;
-    public Agency             nonExemptAgency;
-    public Agency             orderFullfillment;
-    public Agency             orgA;
-    private Agency            anyAgency;
+    public Agency               billingComputer;
+    public Agency               core;
+    public Agency               cpu;
+    public Agency               creditDept;
+    public Agency               exempt;
+    public Agency               externalCust;
+    public Agency               factory1Agency;
+    public Agency               georgeTownUniversity;
+    public Agency               manufacturer;
+    public Agency               nonExemptAgency;
+    public Agency               orderFullfillment;
+    public Agency               orgA;
+    private Agency              anyAgency;
 
     public Attribute            priceAttribute;
     public Attribute            taxRateAttribute;
@@ -126,7 +126,7 @@ public class OrderProcessingLoader {
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
-    public ProtocolAttribute price;
+    public ProtocolAttribute    price;
 
     public OrderProcessingLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -141,6 +141,54 @@ public class OrderProcessingLoader {
         anyRelationship = kernel.getAnyRelationship();
         notApplicableRelationship = kernel.getNotApplicableRelationship();
         unset = kernel.getUnset();
+    }
+
+    public void createAgencyNetworks() {
+        model.getAgencyModel().link(georgeTownUniversity, customerType,
+                                    externalCust, core);
+        model.getAgencyModel().link(georgeTownUniversity, salesTaxStatus,
+                                    exempt, core);
+        model.getAgencyModel().link(orgA, customerType, externalCust, core);
+        model.getAgencyModel().link(orgA, salesTaxStatus, nonExemptAgency, core);
+    }
+
+    public void createAgencys() {
+        billingComputer = new Agency("Billing CPU", "The Billing Computer",
+                                     core);
+        em.persist(billingComputer);
+
+        cpu = new Agency("CPU", "Computer", core);
+        em.persist(cpu);
+
+        creditDept = new Agency("Credit", "Credit Department", core);
+        em.persist(creditDept);
+
+        exempt = new Agency("Exempt", "Exempt from sales taxes", core);
+        em.persist(exempt);
+
+        externalCust = new Agency("Ext Customer", "External (Paying) Customer",
+                                  core);
+        em.persist(externalCust);
+
+        factory1Agency = new Agency("Factory1", "Factory #1", core);
+        em.persist(factory1Agency);
+
+        georgeTownUniversity = new Agency("GU", "Georgetown University", core);
+        em.persist(georgeTownUniversity);
+
+        manufacturer = new Agency("MNFR", "Manufacturer", core);
+        em.persist(manufacturer);
+
+        nonExemptAgency = new Agency("NonExempt", "Subject to sales taxes",
+                                     core);
+        em.persist(nonExemptAgency);
+
+        orgA = new Agency("OrgA", "Organization A", core);
+        em.persist(orgA);
+
+        orderFullfillment = new Agency("Order Fullfillment",
+                                       "Order Fullfillment", core);
+        em.persist(orderFullfillment);
     }
 
     public void createAttributes() {
@@ -220,6 +268,51 @@ public class OrderProcessingLoader {
                                            anyRelationship, anyRelationship,
                                            core);
         em.persist(m6);
+    }
+
+    public void createNetworkInferences() {
+        NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
+                                                             areaOf, core);
+        em.persist(areaToRegion);
+
+        NetworkInference areaToState = new NetworkInference(areaOf, stateOf,
+                                                            areaOf, core);
+        em.persist(areaToState);
+
+        NetworkInference areaToCity = new NetworkInference(areaOf, cityOf,
+                                                           areaOf, core);
+        em.persist(areaToCity);
+
+        NetworkInference areaToStreet = new NetworkInference(areaOf, streetOf,
+                                                             areaOf, core);
+        em.persist(areaToStreet);
+
+        NetworkInference regionToState = new NetworkInference(regionOf,
+                                                              stateOf,
+                                                              regionOf, core);
+        em.persist(regionToState);
+
+        NetworkInference regionToCity = new NetworkInference(regionOf, cityOf,
+                                                             regionOf, core);
+        em.persist(regionToCity);
+
+        NetworkInference regionToStreet = new NetworkInference(regionOf,
+                                                               streetOf,
+                                                               regionOf, core);
+        em.persist(regionToStreet);
+
+        NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
+                                                            stateOf, core);
+        em.persist(stateToCity);
+
+        NetworkInference stateToStreet = new NetworkInference(stateOf,
+                                                              streetOf,
+                                                              stateOf, core);
+        em.persist(stateToStreet);
+
+        NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
+                                                             cityOf, core);
+        em.persist(cityToStreet);
     }
 
     public void createProductNetworks() {
@@ -349,8 +442,8 @@ public class OrderProcessingLoader {
 
         Protocol pickProtocol = new Protocol(deliver, anyAgency, anyProduct,
                                              anyLocation, anyLocation,
-                                             factory1Agency, pick,
-                                             sameProduct, core);
+                                             factory1Agency, pick, sameProduct,
+                                             core);
         em.persist(pickProtocol);
 
         Protocol chkCreditProtocol = new Protocol(pick, externalCust,
@@ -368,8 +461,8 @@ public class OrderProcessingLoader {
 
         Protocol shipProtocol = new Protocol(deliver, anyAgency, anyProduct,
                                              anyLocation, anyLocation,
-                                             factory1Agency, ship,
-                                             sameProduct, true, core);
+                                             factory1Agency, ship, sameProduct,
+                                             true, core);
         em.persist(shipProtocol);
 
         Protocol printCustDeclProtocol = new Protocol(ship, externalCust,
@@ -506,55 +599,6 @@ public class OrderProcessingLoader {
         em.persist(streetOf);
     }
 
-    public void createAgencyNetworks() {
-        model.getAgencyModel().link(georgeTownUniversity, customerType,
-                                      externalCust, core);
-        model.getAgencyModel().link(georgeTownUniversity, salesTaxStatus,
-                                      exempt, core);
-        model.getAgencyModel().link(orgA, customerType, externalCust, core);
-        model.getAgencyModel().link(orgA, salesTaxStatus, nonExemptAgency,
-                                      core);
-    }
-
-    public void createAgencys() {
-        billingComputer = new Agency("Billing CPU", "The Billing Computer",
-                                       core);
-        em.persist(billingComputer);
-
-        cpu = new Agency("CPU", "Computer", core);
-        em.persist(cpu);
-
-        creditDept = new Agency("Credit", "Credit Department", core);
-        em.persist(creditDept);
-
-        exempt = new Agency("Exempt", "Exempt from sales taxes", core);
-        em.persist(exempt);
-
-        externalCust = new Agency("Ext Customer",
-                                    "External (Paying) Customer", core);
-        em.persist(externalCust);
-
-        factory1Agency = new Agency("Factory1", "Factory #1", core);
-        em.persist(factory1Agency);
-
-        georgeTownUniversity = new Agency("GU", "Georgetown University", core);
-        em.persist(georgeTownUniversity);
-
-        manufacturer = new Agency("MNFR", "Manufacturer", core);
-        em.persist(manufacturer);
-
-        nonExemptAgency = new Agency("NonExempt", "Subject to sales taxes",
-                                         core);
-        em.persist(nonExemptAgency);
-
-        orgA = new Agency("OrgA", "Organization A", core);
-        em.persist(orgA);
-
-        orderFullfillment = new Agency("Order Fullfillment",
-                                         "Order Fullfillment", core);
-        em.persist(orderFullfillment);
-    }
-
     public void createServices() {
         deliver = new Product("Deliver", "Deliver product", core);
         em.persist(deliver);
@@ -644,69 +688,6 @@ public class OrderProcessingLoader {
         em.persist(abandoned);
     }
 
-    public void load() {
-        createAgencys();
-        createAttributes();
-        createProducts();
-        createServices();
-        createLocations();
-        createRelationships();
-        createNetworkInferences();
-        createProductNetworks();
-        createAgencyNetworks();
-        createLocationNetworks();
-        createProtocols();
-        createMetaProtocols();
-        createStatusCodes();
-        createStatusCodeSequencing();
-        createProductSequencingAuthorizations();
-    }
-
-    public void createNetworkInferences() {
-        NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
-                                                             areaOf, core);
-        em.persist(areaToRegion);
-
-        NetworkInference areaToState = new NetworkInference(areaOf, stateOf,
-                                                            areaOf, core);
-        em.persist(areaToState);
-
-        NetworkInference areaToCity = new NetworkInference(areaOf, cityOf,
-                                                           areaOf, core);
-        em.persist(areaToCity);
-
-        NetworkInference areaToStreet = new NetworkInference(areaOf, streetOf,
-                                                             areaOf, core);
-        em.persist(areaToStreet);
-
-        NetworkInference regionToState = new NetworkInference(regionOf,
-                                                              stateOf,
-                                                              regionOf, core);
-        em.persist(regionToState);
-
-        NetworkInference regionToCity = new NetworkInference(regionOf, cityOf,
-                                                             regionOf, core);
-        em.persist(regionToCity);
-
-        NetworkInference regionToStreet = new NetworkInference(regionOf,
-                                                               streetOf,
-                                                               regionOf, core);
-        em.persist(regionToStreet);
-
-        NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
-                                                            stateOf, core);
-        em.persist(stateToCity);
-
-        NetworkInference stateToStreet = new NetworkInference(stateOf,
-                                                              streetOf,
-                                                              stateOf, core);
-        em.persist(stateToStreet);
-
-        NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
-                                                             cityOf, core);
-        em.persist(cityToStreet);
-    }
-
     public void createStatusCodeSequencing() {
         StatusCodeSequencing s = new StatusCodeSequencing(pick,
                                                           waitingOnCreditCheck,
@@ -793,5 +774,23 @@ public class OrderProcessingLoader {
 
         s = new StatusCodeSequencing(salesTax, active, completed, core);
         em.persist(s);
+    }
+
+    public void load() {
+        createAgencys();
+        createAttributes();
+        createProducts();
+        createServices();
+        createLocations();
+        createRelationships();
+        createNetworkInferences();
+        createProductNetworks();
+        createAgencyNetworks();
+        createLocationNetworks();
+        createProtocols();
+        createMetaProtocols();
+        createStatusCodes();
+        createStatusCodeSequencing();
+        createProductSequencingAuthorizations();
     }
 }

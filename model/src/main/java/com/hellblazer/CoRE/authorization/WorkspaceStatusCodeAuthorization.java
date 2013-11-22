@@ -51,16 +51,16 @@ public class WorkspaceStatusCodeAuthorization extends WorkspaceAuthorization {
         super();
     }
 
+    public WorkspaceStatusCodeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public WorkspaceStatusCodeAuthorization(Long id) {
         super(id);
     }
 
     public WorkspaceStatusCodeAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    public WorkspaceStatusCodeAuthorization(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public WorkspaceStatusCodeAuthorization(String notes) {

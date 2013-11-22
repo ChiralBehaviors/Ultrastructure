@@ -52,30 +52,37 @@ public class WorkspaceTest extends DatabaseTest {
         commitTransaction();
         kernel = new KernelImpl(em);
     }
-	
-	@Test
-	public void testLoadWorkspace() {
-		beginTransaction();
-		Product workspace = kernel.getWorkspace();
-		Relationship workspaceOf = kernel.getWorkspaceOf();
-		Agency core = kernel.getCore();
-		Product p1 = new Product("MyProduct", core);
-		em.persist(p1);
-		ProductNetwork net = new ProductNetwork(workspace, workspaceOf, p1, core);
-		em.persist(net);
-		ProductAgencyAccessAuthorization coreAuth = new ProductAgencyAccessAuthorization(workspace, workspaceOf, core, core);
-		ProductLocationAccessAuthorization locAuth = new ProductLocationAccessAuthorization(workspace, workspaceOf, kernel.getAnyLocation(), core);
-		em.persist(coreAuth);
-		em.persist(locAuth);
-		commitTransaction();
-		
-		Workspace w = Workspace.loadWorkspace(workspace, workspaceOf, em);
-		assertEquals(2, w.getProducts().size());
-		assertTrue(w.getProducts().contains(p1));
-		assertEquals(2, w.getAccessAuths().size());
-		assertTrue(w.getAccessAuths().contains(coreAuth));
-	}
 
+    @Test
+    public void testLoadWorkspace() {
+        beginTransaction();
+        Product workspace = kernel.getWorkspace();
+        Relationship workspaceOf = kernel.getWorkspaceOf();
+        Agency core = kernel.getCore();
+        Product p1 = new Product("MyProduct", core);
+        em.persist(p1);
+        ProductNetwork net = new ProductNetwork(workspace, workspaceOf, p1,
+                                                core);
+        em.persist(net);
+        ProductAgencyAccessAuthorization coreAuth = new ProductAgencyAccessAuthorization(
+                                                                                         workspace,
+                                                                                         workspaceOf,
+                                                                                         core,
+                                                                                         core);
+        ProductLocationAccessAuthorization locAuth = new ProductLocationAccessAuthorization(
+                                                                                            workspace,
+                                                                                            workspaceOf,
+                                                                                            kernel.getAnyLocation(),
+                                                                                            core);
+        em.persist(coreAuth);
+        em.persist(locAuth);
+        commitTransaction();
 
+        Workspace w = Workspace.loadWorkspace(workspace, workspaceOf, em);
+        assertEquals(2, w.getProducts().size());
+        assertTrue(w.getProducts().contains(p1));
+        assertEquals(2, w.getAccessAuths().size());
+        assertTrue(w.getAccessAuths().contains(coreAuth));
+    }
 
 }

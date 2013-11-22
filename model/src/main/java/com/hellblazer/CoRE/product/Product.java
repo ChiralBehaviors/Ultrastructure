@@ -197,6 +197,13 @@ public class Product extends ExistentialRuleform implements
     }
 
     /**
+     * @param updatedBy
+     */
+    public Product(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param i
      * @param string
      */
@@ -210,13 +217,6 @@ public class Product extends ExistentialRuleform implements
      */
     public Product(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public Product(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**

@@ -60,6 +60,7 @@ public abstract class AgencyAccessAuthorization extends AccessAuthorization {
     /**
      * @return the parent
      */
+    @Override
     public Agency getParent() {
         return parent;
     }

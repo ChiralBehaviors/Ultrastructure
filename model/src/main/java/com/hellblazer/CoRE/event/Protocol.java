@@ -68,7 +68,7 @@ public class Protocol extends Ruleform {
      */
     @ManyToOne
     @JoinColumn(name = "assign_to")
-    private Agency               assignTo;
+    private Agency                 assignTo;
 
     /**
      * The attributes of this protocol
@@ -124,7 +124,7 @@ public class Protocol extends Ruleform {
      */
     @ManyToOne
     @JoinColumn(name = "requester")
-    private Agency               requester;
+    private Agency                 requester;
 
     @Column(name = "sequence_number")
     private Integer                sequenceNumber   = 1;
@@ -140,19 +140,17 @@ public class Protocol extends Ruleform {
     }
 
     /**
+     * @param updatedBy
+     */
+    public Protocol(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public Protocol(Long id) {
         super(id);
-    }
-
-    public Protocol(Product requestedService, Agency requester,
-                    Product requestedProduct, Location deliverTo,
-                    Location deliverFrom, Agency assignTo, Product service,
-                    Product product, boolean copyAttributes, Agency updatedBy) {
-        this(requestedService, requester, requestedProduct, deliverTo,
-             deliverFrom, assignTo, service, product, updatedBy);
-        setCopyAttributes(copyAttributes);
     }
 
     public Protocol(Product requestedService, Agency requester,
@@ -179,11 +177,13 @@ public class Protocol extends Ruleform {
         setProduct(product);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public Protocol(Agency updatedBy) {
-        super(updatedBy);
+    public Protocol(Product requestedService, Agency requester,
+                    Product requestedProduct, Location deliverTo,
+                    Location deliverFrom, Agency assignTo, Product service,
+                    Product product, boolean copyAttributes, Agency updatedBy) {
+        this(requestedService, requester, requestedProduct, deliverTo,
+             deliverFrom, assignTo, service, product, updatedBy);
+        setCopyAttributes(copyAttributes);
     }
 
     public Agency getAssignTo() {

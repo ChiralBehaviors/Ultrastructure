@@ -64,17 +64,17 @@ public class ProductLocationAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public ProductLocationAttributeAuthorization(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public ProductLocationAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public ProductLocationAttributeAuthorization(Long id) {
+        super(id);
     }
 
     /**

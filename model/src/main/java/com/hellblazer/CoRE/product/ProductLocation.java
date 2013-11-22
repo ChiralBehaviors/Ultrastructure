@@ -78,9 +78,16 @@ public class ProductLocation extends Ruleform implements
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
-    private Agency                      agency;
+    private Agency                        agency;
 
     public ProductLocation() {
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public ProductLocation(Agency updatedBy) {
+        super(updatedBy);
     }
 
     /**
@@ -90,11 +97,8 @@ public class ProductLocation extends Ruleform implements
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public ProductLocation(Agency updatedBy) {
-        super(updatedBy);
+    public Agency getAgency() {
+        return agency;
     }
 
     @Override
@@ -127,8 +131,8 @@ public class ProductLocation extends Ruleform implements
         return relationship;
     }
 
-    public Agency getAgency() {
-        return agency;
+    public void setAgency(Agency agency2) {
+        agency = agency2;
     }
 
     @Override
@@ -151,10 +155,6 @@ public class ProductLocation extends Ruleform implements
 
     public void setRelationship(Relationship relationship) {
         this.relationship = relationship;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 
     /* (non-Javadoc)

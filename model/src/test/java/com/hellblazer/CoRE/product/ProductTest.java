@@ -53,8 +53,8 @@ public class ProductTest extends DatabaseTest {
         beginTransaction();
 
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-                                                         Agency.class).setParameter("name",
-                                                                                      "CoRE");
+                                                       Agency.class).setParameter("name",
+                                                                                  "CoRE");
         Agency r = query.getSingleResult();
 
         LOG.debug(String.format("Agency: %s", r));

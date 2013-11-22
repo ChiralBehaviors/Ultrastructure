@@ -71,26 +71,24 @@ public class CollectionResourceTest extends DatabaseTest {
     }
 
     @Test
-    public void testInsertSingleRuleform() throws JsonProcessingException {
+    public void testInsertAndUpdate() throws JsonProcessingException {
         resource = new CollectionResource(emf);
         Agency core = new Agency("hparry", "test resource");
         core.setUpdatedBy(core);
 
         core = (Agency) resource.post(core);
-        assertNotNull(core.getId());
+        long id = core.getId();
+        core.setName("new name");
+        Relationship owns = new Relationship("owns", null, core);
+        Relationship ownedBy = new Relationship("ownedBy", null, core);
+        owns.setInverse(ownedBy);
+        ownedBy.setInverse(owns);
 
-    }
-
-    @Test
-    public void testInsertSimpleGraph() throws IOException {
-        resource = new CollectionResource(emf);
-        Agency core = new Agency("insertSimpleGraph", "test resource");
-        core.setUpdatedBy(core);
-
-        Product prod = new Product("myProd", null, core);
-        Product res = (Product) resource.post(prod);
-        assertNotNull(res.getId());
-        assertEquals("myProd", res.getName());
+        Relationship graph = (Relationship) resource.post(owns);
+        assertNotNull(graph.getId());
+        assertNotNull(graph.getInverse().getId());
+        assertEquals("new name", graph.getUpdatedBy().getName());
+        assertTrue(id == graph.getUpdatedBy().getId());
     }
 
     /**
@@ -116,24 +114,26 @@ public class CollectionResourceTest extends DatabaseTest {
     }
 
     @Test
-    public void testInsertAndUpdate() throws JsonProcessingException {
+    public void testInsertSimpleGraph() throws IOException {
+        resource = new CollectionResource(emf);
+        Agency core = new Agency("insertSimpleGraph", "test resource");
+        core.setUpdatedBy(core);
+
+        Product prod = new Product("myProd", null, core);
+        Product res = (Product) resource.post(prod);
+        assertNotNull(res.getId());
+        assertEquals("myProd", res.getName());
+    }
+
+    @Test
+    public void testInsertSingleRuleform() throws JsonProcessingException {
         resource = new CollectionResource(emf);
         Agency core = new Agency("hparry", "test resource");
         core.setUpdatedBy(core);
 
         core = (Agency) resource.post(core);
-        long id = core.getId();
-        core.setName("new name");
-        Relationship owns = new Relationship("owns", null, core);
-        Relationship ownedBy = new Relationship("ownedBy", null, core);
-        owns.setInverse(ownedBy);
-        ownedBy.setInverse(owns);
+        assertNotNull(core.getId());
 
-        Relationship graph = (Relationship) resource.post(owns);
-        assertNotNull(graph.getId());
-        assertNotNull(graph.getInverse().getId());
-        assertEquals("new name", graph.getUpdatedBy().getName());
-        assertTrue(id == graph.getUpdatedBy().getId());
     }
 
     //    @Test

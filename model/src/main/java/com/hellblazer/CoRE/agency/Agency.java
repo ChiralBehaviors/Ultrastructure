@@ -160,17 +160,17 @@ public class Agency extends ExistentialRuleform implements
     }
 
     /**
-     * @param id
-     */
-    public Agency(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public Agency(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Agency(Long id) {
+        super(id);
     }
 
     /**

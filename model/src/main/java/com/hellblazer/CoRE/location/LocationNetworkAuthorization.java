@@ -68,17 +68,17 @@ public class LocationNetworkAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public LocationNetworkAuthorization(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public LocationNetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public LocationNetworkAuthorization(Long id) {
+        super(id);
     }
 
     /* (non-Javadoc)

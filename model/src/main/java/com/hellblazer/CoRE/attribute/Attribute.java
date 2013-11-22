@@ -149,17 +149,17 @@ public class Attribute extends ExistentialRuleform implements
     }
 
     /**
-     * @param id
-     */
-    public Attribute(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public Attribute(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Attribute(Long id) {
+        super(id);
     }
 
     /**

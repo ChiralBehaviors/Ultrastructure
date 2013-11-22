@@ -23,12 +23,10 @@ import com.hellblazer.CoRE.Ruleform;
 
 /**
  * @author hparry
- *
+ * 
  */
 public interface Web {
-	
-	List<Ruleform> getAuthorizations(ExistentialRuleform er);
-	
-	
+
+    List<Ruleform> getAuthorizations(ExistentialRuleform er);
 
 }

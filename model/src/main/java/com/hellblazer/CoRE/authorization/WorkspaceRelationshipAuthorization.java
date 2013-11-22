@@ -51,16 +51,16 @@ public class WorkspaceRelationshipAuthorization extends WorkspaceAuthorization {
         super();
     }
 
+    public WorkspaceRelationshipAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public WorkspaceRelationshipAuthorization(Long id) {
         super(id);
     }
 
     public WorkspaceRelationshipAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    public WorkspaceRelationshipAuthorization(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public WorkspaceRelationshipAuthorization(String notes) {

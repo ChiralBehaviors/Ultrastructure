@@ -44,10 +44,6 @@ public class LocationModelImpl
         AbstractNetworkedModel<Location, LocationAttributeAuthorization, LocationAttribute>
         implements LocationModel {
 
-    private static interface Procedure<T> {
-        T call(LocationModelImpl locationModel) throws Exception;
-    }
-
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -61,8 +57,8 @@ public class LocationModelImpl
         }
     }
 
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
+    private static interface Procedure<T> {
+        T call(LocationModelImpl locationModel) throws Exception;
     }
 
     private static final String LOCATION_NETWORK_PROPAGATE = "LocationNetwork.propagate";
@@ -91,6 +87,10 @@ public class LocationModelImpl
                 return null;
             }
         });
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     /**

@@ -35,7 +35,6 @@ import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.attribute.AttributeValue_;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AgencyModel;
@@ -247,6 +246,14 @@ public class ModelImpl implements Model {
     }
 
     /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.Model#getAgencyModel()
+     */
+    @Override
+    public AgencyModel getAgencyModel() {
+        return agencyModel;
+    }
+
+    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.Model#getAttributeModel()
      */
     @Override
@@ -260,14 +267,6 @@ public class ModelImpl implements Model {
     @Override
     public EntityManager getEntityManager() {
         return em;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#getProductModel()
-     */
-    @Override
-    public ProductModel getProductModel() {
-        return productModel;
     }
 
     /* (non-Javadoc)
@@ -295,11 +294,11 @@ public class ModelImpl implements Model {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#getAgencyModel()
+     * @see com.hellblazer.CoRE.meta.Model#getProductModel()
      */
     @Override
-    public AgencyModel getAgencyModel() {
-        return agencyModel;
+    public ProductModel getProductModel() {
+        return productModel;
     }
 
 }

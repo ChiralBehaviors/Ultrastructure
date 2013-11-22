@@ -93,17 +93,17 @@ public class LocationRelationship extends Ruleform {
     }
 
     /**
-     * @param id
-     */
-    public LocationRelationship(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public LocationRelationship(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public LocationRelationship(Long id) {
+        super(id);
     }
 
     public Relationship getAttributeRelationship() {

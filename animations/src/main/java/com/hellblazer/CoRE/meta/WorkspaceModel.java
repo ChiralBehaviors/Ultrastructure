@@ -18,13 +18,12 @@ package com.hellblazer.CoRE.meta;
 
 import com.hellblazer.CoRE.object.Workspace;
 
-
 /**
  * @author hparry
- *
+ * 
  */
 public interface WorkspaceModel {
 
-	Workspace getWorkspace();
-	
+    Workspace getWorkspace();
+
 }

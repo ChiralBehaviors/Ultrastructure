@@ -214,13 +214,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
 
     @Override
     public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                        Aspect<RuleForm> aspect) {
-        return getAllowedValues(attribute,
-                                getAttributeAuthorizations(aspect, attribute));
-    }
-
-    @Override
-    public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
                                                         Agency groupingAgency) {
         return getAllowedValues(attribute,
                                 getAttributeAuthorizations(groupingAgency,
@@ -228,28 +221,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     }
 
     @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect) {
-        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
-                                                                       authorization);
-        query.setParameter("classification", aspect.getClassification());
-        query.setParameter("classifier", aspect.getClassifier());
-        return query.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.meta.Aspect, com.hellblazer.CoRE.attribute.Attribute)
-     */
-    @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect,
-                                                                   Attribute attribute) {
-        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
-                                                                       authorization);
-        query.setParameter("classification", aspect.getClassification());
-        query.setParameter("classifier", aspect.getClassifier());
-        query.setParameter("attribute", attribute);
-        return query.getResultList();
+    public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
+                                                        Aspect<RuleForm> aspect) {
+        return getAllowedValues(attribute,
+                                getAttributeAuthorizations(aspect, attribute));
     }
 
     /* (non-Javadoc)
@@ -278,6 +253,42 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return query.getResultList();
     }
 
+    @Override
+    public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect) {
+        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
+                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
+                                                                       authorization);
+        query.setParameter("classification", aspect.getClassification());
+        query.setParameter("classifier", aspect.getClassifier());
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.meta.Aspect, com.hellblazer.CoRE.attribute.Attribute)
+     */
+    @Override
+    public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                                   Attribute attribute) {
+        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
+                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
+                                                                       authorization);
+        query.setParameter("classification", aspect.getClassification());
+        query.setParameter("classifier", aspect.getClassifier());
+        query.setParameter("attribute", attribute);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
+                                                         Agency groupingAgency) {
+        TypedQuery<AttributeType> query = em.createNamedQuery(prefix
+                                                                      + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
+                                                              attribute);
+        query.setParameter("ruleform", ruleform);
+        query.setParameter("agency", groupingAgency);
+        return query.getResultList();
+    }
+
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributesClassifiedBy(com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.meta.Aspect)
      */
@@ -290,17 +301,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         query.setParameter("ruleform", ruleform);
         query.setParameter("classifier", aspect.getClassifier());
         query.setParameter("classification", aspect.getClassification());
-        return query.getResultList();
-    }
-
-    @Override
-    public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                         Agency groupingAgency) {
-        TypedQuery<AttributeType> query = em.createNamedQuery(prefix
-                                                                      + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
-                                                              attribute);
-        query.setParameter("ruleform", ruleform);
-        query.setParameter("agency", groupingAgency);
         return query.getResultList();
     }
 
@@ -450,7 +450,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                 firstPass = false;
             } else {
                 newRules = em.createNamedQuery(networkPrefix
-                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
+                                                       + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
             }
             if (log.isTraceEnabled()) {
                 log.trace(String.format("inferred %s new rules", newRules));

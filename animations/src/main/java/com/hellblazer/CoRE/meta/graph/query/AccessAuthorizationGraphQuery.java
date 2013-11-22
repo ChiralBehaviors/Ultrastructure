@@ -33,58 +33,55 @@ import com.hellblazer.CoRE.product.ProductAccessAuthorization;
  */
 public class AccessAuthorizationGraphQuery {
 
-	private EntityManager em;
-	private AccessAuthorization authorization;
-	private List<AccessAuthorization> auths;
-	private Networked<?, ?> parent;
-	private Relationship relationship;
+    private EntityManager             em;
+    private AccessAuthorization       authorization;
+    private List<AccessAuthorization> auths;
+    private Networked<?, ?>           parent;
+    private Relationship              relationship;
 
-	public AccessAuthorizationGraphQuery(Networked<?, ?> parent,
-			Relationship rel, EntityManager em) {
-		this.parent = parent;
-		this.relationship = rel;
-		this.em = em;
-		this.auths = new LinkedList<AccessAuthorization>();
-		findAuthorizations();
-	}
+    public AccessAuthorizationGraphQuery(Networked<?, ?> parent,
+                                         Relationship rel, EntityManager em) {
+        this.parent = parent;
+        relationship = rel;
+        this.em = em;
+        auths = new LinkedList<AccessAuthorization>();
+        findAuthorizations();
+    }
 
-	/**
-	 * @return the authorization
-	 */
-	public AccessAuthorization getAuthorization() {
-		return authorization;
-	}
+    /**
+     * @return the authorization
+     */
+    public AccessAuthorization getAuthorization() {
+        return authorization;
+    }
 
-	/**
-	 * @param authorization
-	 *            the authorization to set
-	 */
-	public void setAuthorization(AccessAuthorization authorization) {
-		this.authorization = authorization;
-	}
+    public List<AccessAuthorization> getResults() {
+        return auths;
+    }
 
-	private void findAuthorizations() {
-		findProductAuthorizations();
-	}
+    /**
+     * @param authorization
+     *            the authorization to set
+     */
+    public void setAuthorization(AccessAuthorization authorization) {
+        this.authorization = authorization;
+    }
 
+    private void findAuthorizations() {
+        findProductAuthorizations();
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
-	private void findProductAuthorizations() {
-		Query q = em
-				.createNamedQuery(
-						ProductAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP,
-						ProductAccessAuthorization.class);
-		q.setParameter("rf", parent);
-		q.setParameter("r", relationship);
-		auths.addAll(q.getResultList());
+    @SuppressWarnings("unchecked")
+    private void findProductAuthorizations() {
+        Query q = em.createNamedQuery(ProductAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP,
+                                      ProductAccessAuthorization.class);
+        q.setParameter("rf", parent);
+        q.setParameter("r", relationship);
+        auths.addAll(q.getResultList());
 
-	}
-
-	public List<AccessAuthorization> getResults() {
-		return auths;
-	}
+    }
 
 }

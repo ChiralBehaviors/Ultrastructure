@@ -86,17 +86,17 @@ public class Coordinate extends ExistentialRuleform implements
     }
 
     /**
-     * @param id
-     */
-    public Coordinate(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public Coordinate(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Coordinate(Long id) {
+        super(id);
     }
 
     /**

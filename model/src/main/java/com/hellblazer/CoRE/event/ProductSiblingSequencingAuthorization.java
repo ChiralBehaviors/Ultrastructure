@@ -83,6 +83,13 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
     }
 
     /**
+     * @param updatedBy
+     */
+    public ProductSiblingSequencingAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public ProductSiblingSequencingAuthorization(Long id) {
@@ -110,13 +117,6 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
     }
 
     /**
-     * @param updatedBy
-     */
-    public ProductSiblingSequencingAuthorization(Agency updatedBy) {
-        super(updatedBy);
-    }
-
-    /**
      * @param notes
      */
     public ProductSiblingSequencingAuthorization(String notes) {
@@ -127,8 +127,7 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public ProductSiblingSequencingAuthorization(String notes,
-                                                 Agency updatedBy) {
+    public ProductSiblingSequencingAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 

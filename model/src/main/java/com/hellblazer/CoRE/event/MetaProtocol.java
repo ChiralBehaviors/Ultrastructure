@@ -107,6 +107,13 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
+     * @param updatedBy
+     */
+    public MetaProtocol(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public MetaProtocol(Long id) {
@@ -137,13 +144,6 @@ public class MetaProtocol extends Ruleform {
         setServiceType(serviceType);
         setDeliverTo(deliverTo);
         setDeliverFrom(deliverFrom);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public MetaProtocol(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**
@@ -288,7 +288,7 @@ public class MetaProtocol extends Ruleform {
         }
         if (requestingAgency != null) {
             requestingAgency = (Relationship) requestingAgency.manageEntity(em,
-                                                                                knownObjects);
+                                                                            knownObjects);
         }
         if (service != null) {
             service = (Product) service.manageEntity(em, knownObjects);

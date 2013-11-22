@@ -123,12 +123,12 @@ import com.hellblazer.CoRE.product.Product;
                                                                                 + "WHERE j.parent IS NULL "
                                                                                 + "  AND ruleform.is_job_active( j.id )"),
                      @NamedNativeQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY, query = "SELECT j.* "
-                                                                                    + "FROM ruleform.job_chronology AS jc "
-                                                                                    + "JOIN ruleform.job AS j ON jc.job = j.id "
-                                                                                    + "WHERE j.assign_to = ? "
-                                                                                    + "  AND NOT ruleform.is_terminal_state(j.service, jc.status) "
-                                                                                    + "  AND jc.time_stamp = "
-                                                                                    + "    (SELECT max(time_stamp) FROM ruleform.job_chronology WHERE job = jc.job)"),
+                                                                                  + "FROM ruleform.job_chronology AS jc "
+                                                                                  + "JOIN ruleform.job AS j ON jc.job = j.id "
+                                                                                  + "WHERE j.assign_to = ? "
+                                                                                  + "  AND NOT ruleform.is_terminal_state(j.service, jc.status) "
+                                                                                  + "  AND jc.time_stamp = "
+                                                                                  + "    (SELECT max(time_stamp) FROM ruleform.job_chronology WHERE job = jc.job)"),
                      //Probably a candidate for 8.4 WITH query...
                      @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.id  FROM ruleform.job AS j "
                                                                             + "JOIN ruleform.product_sibling_sequencing_authorization AS seq "
@@ -170,7 +170,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String CLASSIFIED                        = "event.classified";
     public static final String FIND_ALL                          = "job.findAll";
     public static final String GET_ACTIVE_EXPLICIT_JOBS          = "job.getActiveExplicitJobs";
-    public static final String GET_ACTIVE_JOBS_FOR_AGENCY      = "job.getActiveJobsForAgency";
+    public static final String GET_ACTIVE_JOBS_FOR_AGENCY        = "job.getActiveJobsForAgency";
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS = "job.getActiveOrTerminatedSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS               = "job.getActiveSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE   = "job.getActiveSubJobsForService";
@@ -193,7 +193,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "assign_to")
-    private Agency           assignTo;
+    private Agency             assignTo;
 
     /**
      * The attributes of this job
@@ -253,7 +253,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "requester")
-    private Agency           requester;
+    private Agency             requester;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber                    = 1;
@@ -275,6 +275,20 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public Job() {
     }
 
+    /**
+     * @param updatedBy
+     */
+    public Job(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public Job(Agency assignTo, Agency requester, Product service,
+               Product product, Location deliverTo, Location deliverFrom,
+               Agency updatedBy) {
+        this(null, assignTo, service, product, deliverTo, deliverFrom,
+             requester, updatedBy);
+    }
+
     public Job(Job parent, Agency assignTo, Product service, Product product,
                Location deliverTo, Location deliverFrom, Agency requester,
                Agency updatedBy) {
@@ -293,20 +307,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     public Job(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public Job(Agency updatedBy) {
-        super(updatedBy);
-    }
-
-    public Job(Agency assignTo, Agency requester, Product service,
-               Product product, Location deliverTo, Location deliverFrom,
-               Agency updatedBy) {
-        this(null, assignTo, service, product, deliverTo, deliverFrom,
-             requester, updatedBy);
     }
 
     public Agency getAssignTo() {

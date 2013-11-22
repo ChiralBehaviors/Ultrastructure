@@ -69,8 +69,23 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     public AttributeMetaAttribute() {
     }
 
+    /**
+     * @param updatedBy
+     */
+    public AttributeMetaAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public AttributeMetaAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public AttributeMetaAttribute(Attribute attribute, Agency updatedBy) {
+        super(updatedBy);
+        this.attribute = attribute;
     }
 
     public AttributeMetaAttribute(Attribute attribute, BigDecimal value,
@@ -88,14 +103,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
         super(attribute, value, updatedBy);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public AttributeMetaAttribute(Attribute attribute, Agency updatedBy) {
-        super(updatedBy);
-        this.attribute = attribute;
-    }
-
     public AttributeMetaAttribute(Attribute attribute, String value,
                                   Agency updatedBy) {
         super(attribute, value, updatedBy);
@@ -110,13 +117,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
      */
     public AttributeMetaAttribute(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public AttributeMetaAttribute(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

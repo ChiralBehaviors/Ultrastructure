@@ -49,13 +49,20 @@ public class AgencyAttributeAuthorization extends
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "classifier")
-    private Agency          classifier;
+    private Agency            classifier;
 
     @Id
     @GeneratedValue(generator = "agency_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
     public AgencyAttributeAuthorization() {
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public AgencyAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
     }
 
     /**
@@ -68,38 +75,29 @@ public class AgencyAttributeAuthorization extends
     /**
      * @param id
      * @param classification
-     * @param authorized
      * @param updatedBy
      */
     public AgencyAttributeAuthorization(Relationship classification,
-                                          Attribute authorized,
-                                          Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-    }
-
-    /**
-     * @param id
-     * @param classification
-     * @param updatedBy
-     */
-    public AgencyAttributeAuthorization(Relationship classification,
-                                          Agency updatedBy) {
+                                        Agency updatedBy) {
         super(classification, updatedBy);
     }
 
     public AgencyAttributeAuthorization(Relationship classification,
-                                          Agency classifier,
-                                          Attribute authorized,
-                                          Agency updatedBy) {
+                                        Agency classifier,
+                                        Attribute authorized, Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
     }
 
     /**
+     * @param id
+     * @param classification
+     * @param authorized
      * @param updatedBy
      */
-    public AgencyAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
+    public AgencyAttributeAuthorization(Relationship classification,
+                                        Attribute authorized, Agency updatedBy) {
+        super(classification, authorized, updatedBy);
     }
 
     /* (non-Javadoc)

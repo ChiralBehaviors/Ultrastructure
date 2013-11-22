@@ -66,29 +66,17 @@ public class LocationAttributeAuthorization extends
     }
 
     /**
+     * @param updatedBy
+     */
+    public LocationAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public LocationAttributeAuthorization(Long id) {
         super(id);
-    }
-
-    /**
-     * @param classification
-     * @param authorized
-     * @param updatedBy
-     */
-    public LocationAttributeAuthorization(Relationship classification,
-                                          Attribute authorized,
-                                          Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-    }
-
-    public LocationAttributeAuthorization(Relationship classification,
-                                          Location classifier,
-                                          Attribute authorized,
-                                          Agency updatedBy) {
-        this(classification, authorized, updatedBy);
-        this.classifier = classifier;
     }
 
     /**
@@ -101,10 +89,20 @@ public class LocationAttributeAuthorization extends
     }
 
     /**
+     * @param classification
+     * @param authorized
      * @param updatedBy
      */
-    public LocationAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
+    public LocationAttributeAuthorization(Relationship classification,
+                                          Attribute authorized, Agency updatedBy) {
+        super(classification, authorized, updatedBy);
+    }
+
+    public LocationAttributeAuthorization(Relationship classification,
+                                          Location classifier,
+                                          Attribute authorized, Agency updatedBy) {
+        this(classification, authorized, updatedBy);
+        this.classifier = classifier;
     }
 
     /* (non-Javadoc)

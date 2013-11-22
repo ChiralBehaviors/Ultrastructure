@@ -54,7 +54,7 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "grouping_agency")
-    private Agency          groupingAgency;
+    private Agency            groupingAgency;
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
@@ -64,17 +64,17 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
     }
 
     /**
-     * @param id
-     */
-    public NetworkAuthorization(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public NetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public NetworkAuthorization(Long id) {
+        super(id);
     }
 
     abstract public RuleForm getAuthorizedParent();
@@ -133,7 +133,7 @@ abstract public class NetworkAuthorization<RuleForm extends Networked<RuleForm, 
         }
         if (groupingAgency != null) {
             groupingAgency = (Agency) groupingAgency.manageEntity(em,
-                                                                        knownObjects);
+                                                                  knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

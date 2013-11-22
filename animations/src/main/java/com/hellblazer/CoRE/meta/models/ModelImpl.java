@@ -87,27 +87,19 @@ public class ModelImpl implements Model {
                                     Long[] activeRoleRelationships,
                                     Long[] activeRoleAgencys) {
         /*
-        EntityManager em = JSP.getEm();
-        if (activeRoleRelationships == null || activeRoleAgencys == null) {
-            principal = new AuthenticatedPrincipal(em.find(Agency.class,
-                                                           agency));
-        } else {
-            if (activeRoleRelationships.length != activeRoleAgencys.length) {
-                throw new IllegalArgumentException(
-                                                   "active role relationships and agencys must be of the same length");
-            }
-            List<Aspect<Agency>> aspects = new ArrayList<Aspect<Agency>>();
-            for (int i = 0; i < activeRoleRelationships.length; i++) {
-                aspects.add(new Aspect<Agency>(
-                                                 em.find(Relationship.class,
-                                                         activeRoleRelationships[i]),
-                                                 em.find(Agency.class,
-                                                         activeRoleAgencys[i])));
-            }
-            principal = new AuthenticatedPrincipal(em.find(Agency.class,
-                                                           agency), aspects);
-        }
-        */
+         * EntityManager em = JSP.getEm(); if (activeRoleRelationships == null
+         * || activeRoleAgencys == null) { principal = new
+         * AuthenticatedPrincipal(em.find(Agency.class, agency)); } else { if
+         * (activeRoleRelationships.length != activeRoleAgencys.length) { throw
+         * new IllegalArgumentException(
+         * "active role relationships and agencys must be of the same length");
+         * } List<Aspect<Agency>> aspects = new ArrayList<Aspect<Agency>>(); for
+         * (int i = 0; i < activeRoleRelationships.length; i++) {
+         * aspects.add(new Aspect<Agency>( em.find(Relationship.class,
+         * activeRoleRelationships[i]), em.find(Agency.class,
+         * activeRoleAgencys[i]))); } principal = new
+         * AuthenticatedPrincipal(em.find(Agency.class, agency), aspects); }
+         */
     }
 
     private final AttributeModel attributeModel;
@@ -132,13 +124,17 @@ public class ModelImpl implements Model {
         jobModel = new JobModelImpl(this);
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#find(com.hellblazer.CoRE.attribute.AttributeValue)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.meta.Model#find(com.hellblazer.CoRE.attribute.
+     * AttributeValue)
      */
     @Override
     public <AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(AttributeType attributeValue) {
         /*
-         * SELECT e FROM Product e, ProductAttribute ea, Attribute a WHERE ea.product = e, ea.value = :value, a = :attribute;
+         * SELECT e FROM Product e, ProductAttribute ea, Attribute a WHERE
+         * ea.product = e, ea.value = :value, a = :attribute;
          */
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -201,7 +197,9 @@ public class ModelImpl implements Model {
         return em.createQuery(query).getResultList();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#find(java.lang.Long, java.lang.Class)
      */
     @Override
@@ -210,8 +208,11 @@ public class ModelImpl implements Model {
         return em.find(clazz, id);
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#find(java.lang.String, java.lang.Class)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.meta.Model#find(java.lang.String,
+     * java.lang.Class)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -226,7 +227,9 @@ public class ModelImpl implements Model {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#findFlagged(java.lang.Class)
      */
     @Override
@@ -235,8 +238,12 @@ public class ModelImpl implements Model {
                                    ruleform).getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.Model#findUpdatedBy(com.hellblazer.CoRE.agency.Agency, java.lang.Class)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.Model#findUpdatedBy(com.hellblazer.CoRE.agency
+     * .Agency, java.lang.Class)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -246,7 +253,9 @@ public class ModelImpl implements Model {
                                                                                            updatedBy).getResultList();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#getAgencyModel()
      */
     @Override
@@ -254,7 +263,9 @@ public class ModelImpl implements Model {
         return agencyModel;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#getAttributeModel()
      */
     @Override
@@ -262,7 +273,9 @@ public class ModelImpl implements Model {
         return attributeModel;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#getEntityManager()
      */
     @Override
@@ -270,7 +283,9 @@ public class ModelImpl implements Model {
         return em;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#getJobModel()
      */
     @Override
@@ -278,7 +293,9 @@ public class ModelImpl implements Model {
         return jobModel;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#getKernel()
      */
     @Override
@@ -286,7 +303,9 @@ public class ModelImpl implements Model {
         return kernel;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#getLocationModel()
      */
     @Override
@@ -294,7 +313,9 @@ public class ModelImpl implements Model {
         return locationModel;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.Model#getProductModel()
      */
     @Override

@@ -36,139 +36,143 @@ import com.hellblazer.CoRE.product.Product;
  */
 public class Workspace {
 
-	/**
-	 * Use this to create a workspace object in memory and load relevant
-	 * components from the db.
-	 * 
-	 * @param workspace
-	 * @param workspaceOf
-	 * @param em
-	 */
-	public static Workspace loadWorkspace(Product workspace,
-			Relationship workspaceOf, EntityManager em) {
-		Workspace ws = new Workspace();
+    /**
+     * Use this to create a workspace object in memory and load relevant
+     * components from the db.
+     * 
+     * @param workspace
+     * @param workspaceOf
+     * @param em
+     */
+    public static Workspace loadWorkspace(Product workspace,
+                                          Relationship workspaceOf,
+                                          EntityManager em) {
+        Workspace ws = new Workspace();
 
-		ws.workspace = workspace;
-		ws.workspaceOf = workspaceOf;
-		ws.em = em;
-		ws.products = ws.loadWorkspaceProducts();
-		ws.accessAuths = ws.loadWorkspaceAccessAuthorizations();
-		ws.loadWorkspaceAuthorizations();
+        ws.workspace = workspace;
+        ws.workspaceOf = workspaceOf;
+        ws.em = em;
+        ws.products = ws.loadWorkspaceProducts();
+        ws.accessAuths = ws.loadWorkspaceAccessAuthorizations();
+        ws.loadWorkspaceAuthorizations();
 
-		return ws;
-	}
+        return ws;
+    }
 
-	private Product workspace;
-	private Relationship workspaceOf;
-	private EntityManager em;
-	private List<Product> products;
-	private List<AccessAuthorization> accessAuths;
+    private Product                      workspace;
+    private Relationship                 workspaceOf;
+    private EntityManager                em;
+    private List<Product>                products;
+    private List<AccessAuthorization>    accessAuths;
 
-	private List<WorkspaceAuthorization> workspaceAuths;
+    private List<WorkspaceAuthorization> workspaceAuths;
 
-	/**
-	 * An empty constructor for JSON serialization.
-	 */
-	public Workspace() {
-		// empty constructor for JSON
-	}
+    /**
+     * An empty constructor for JSON serialization.
+     */
+    public Workspace() {
+        // empty constructor for JSON
+    }
 
-	/**
-	 * @return the auths
-	 */
-	public List<AccessAuthorization> getAccessAuths() {
-		return accessAuths;
-	}
+    /**
+     * @return the auths
+     */
+    public List<AccessAuthorization> getAccessAuths() {
+        return accessAuths;
+    }
 
-	/**
-	 * @return
-	 */
-	public Product getParentProduct() {
-		return workspace;
-	}
+    /**
+     * @return
+     */
+    public Product getParentProduct() {
+        return workspace;
+    }
 
-	/**
-	 * @return the products
-	 */
-	public List<Product> getProducts() {
-		return products;
-	}
+    /**
+     * @return the products
+     */
+    public List<Product> getProducts() {
+        return products;
+    }
 
-	/**
-	 * @return the workspace
-	 */
-	public Product getWorkspace() {
-		return workspace;
-	}
+    /**
+     * @return the workspace
+     */
+    public Product getWorkspace() {
+        return workspace;
+    }
 
-	/**
-	 * 
-	 * @return workspace authorizations
-	 */
-	public List<WorkspaceAuthorization> getWorkspaceAuths() {
-		return workspaceAuths;
-	}
+    /**
+     * 
+     * @return workspace authorizations
+     */
+    public List<WorkspaceAuthorization> getWorkspaceAuths() {
+        return workspaceAuths;
+    }
 
-	/**
-	 * @return the workspaceOf
-	 */
-	public Relationship getWorkspaceOf() {
-		return workspaceOf;
-	}
+    /**
+     * @return the workspaceOf
+     */
+    public Relationship getWorkspaceOf() {
+        return workspaceOf;
+    }
 
-	/**
-	 * @param auths
-	 *            the auths to set
-	 */
-	public void setAuths(List<AccessAuthorization> auths) {
-		accessAuths = auths;
-	}
+    /**
+     * @param auths
+     *            the auths to set
+     */
+    public void setAuths(List<AccessAuthorization> auths) {
+        accessAuths = auths;
+    }
 
-	/**
-	 * @param products
-	 *            the products to set
-	 */
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
+    /**
+     * @param products
+     *            the products to set
+     */
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
-	/**
-	 * @param workspace
-	 *            the workspace to set
-	 */
-	public void setWorkspace(Product workspace) {
-		this.workspace = workspace;
-	}
+    /**
+     * @param workspace
+     *            the workspace to set
+     */
+    public void setWorkspace(Product workspace) {
+        this.workspace = workspace;
+    }
 
-	/**
-	 * @param workspaceOf
-	 *            the workspaceOf to set
-	 */
-	public void setWorkspaceOf(Relationship workspaceOf) {
-		this.workspaceOf = workspaceOf;
-	}
+    /**
+     * @param workspaceOf
+     *            the workspaceOf to set
+     */
+    public void setWorkspaceOf(Relationship workspaceOf) {
+        this.workspaceOf = workspaceOf;
+    }
 
-	private List<AccessAuthorization> loadWorkspaceAccessAuthorizations() {
-		AccessAuthorizationGraphQuery query = new AccessAuthorizationGraphQuery(
-				workspace, workspaceOf, em);
-		return query.getResults();
-	}
+    private List<AccessAuthorization> loadWorkspaceAccessAuthorizations() {
+        AccessAuthorizationGraphQuery query = new AccessAuthorizationGraphQuery(
+                                                                                workspace,
+                                                                                workspaceOf,
+                                                                                em);
+        return query.getResults();
+    }
 
-	@SuppressWarnings("unchecked")
-	private void loadWorkspaceAuthorizations() {
-		Query q = em.createNamedQuery(
-				WorkspaceAuthorization.GET_AUTHORIZATIONS_FOR_WORKSPACE,
-				WorkspaceAuthorization.class);
-		q.setParameter("product", workspace);
-		workspaceAuths = q.getResultList();
+    @SuppressWarnings("unchecked")
+    private void loadWorkspaceAuthorizations() {
+        Query q = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATIONS_FOR_WORKSPACE,
+                                      WorkspaceAuthorization.class);
+        q.setParameter("product", workspace);
+        workspaceAuths = q.getResultList();
 
-	}
+    }
 
-	private List<Product> loadWorkspaceProducts() {
-		NetworkGraphQuery<Product> queryAgency = new NetworkGraphQuery<Product>(
-				workspace, workspaceOf, em);
-		return queryAgency.getNodes();
+    private List<Product> loadWorkspaceProducts() {
+        NetworkGraphQuery<Product> queryAgency = new NetworkGraphQuery<Product>(
+                                                                                workspace,
+                                                                                workspaceOf,
+                                                                                em);
+        return queryAgency.getNodes();
 
-	}
+    }
 
 }

@@ -227,8 +227,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
                                 getAttributeAuthorizations(aspect, attribute));
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.agency.Agency)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com
+     * .hellblazer.CoRE.agency.Agency)
      */
     @Override
     public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency) {
@@ -239,8 +243,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return query.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.attribute.Attribute)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com
+     * .hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.attribute.Attribute)
      */
     @Override
     public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
@@ -263,8 +271,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return query.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com.hellblazer.CoRE.meta.Aspect, com.hellblazer.CoRE.attribute.Attribute)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com
+     * .hellblazer.CoRE.meta.Aspect, com.hellblazer.CoRE.attribute.Attribute)
      */
     @Override
     public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect,
@@ -289,8 +301,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return query.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributesClassifiedBy(com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.meta.Aspect)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getAttributesClassifiedBy(com
+     * .hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.meta.Aspect)
      */
     @Override
     public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
@@ -304,8 +320,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return query.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.agency.Agency)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.hellblazer
+     * .CoRE.network.Networked, com.hellblazer.CoRE.agency.Agency)
      */
     @Override
     public List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
@@ -318,8 +338,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return query.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getChild(com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.network.Relationship)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getChild(com.hellblazer.CoRE.
+     * network.Networked, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
     public RuleForm getChild(RuleForm parent, Relationship r) {
@@ -335,8 +359,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#getFacet(com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.meta.Aspect)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getFacet(com.hellblazer.CoRE.
+     * network.Networked, com.hellblazer.CoRE.meta.Aspect)
      */
     @Override
     public Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,
@@ -353,10 +381,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     @Override
     public List<RuleForm> getInGroup(RuleForm parent, Relationship relationship) {
         /*
-         *  select n.child from <networkTable> n 
-         *      where n.parent = :parent 
-         *              and n.relationship = :relationship 
-         *              and n.child <> :parent
+         * select n.child from <networkTable> n where n.parent = :parent and
+         * n.relationship = :relationship and n.child <> :parent
          */
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
@@ -390,14 +416,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
     public List<RuleForm> getNotInGroup(RuleForm parent,
                                         Relationship relationship) {
         /*
-         * SELECT e 
-         *      FROM 
-         *        productTable AS e, 
-         *        ProductNetwork AS n
-         *      WHERE 
-         *          n.parent = :parent 
-         *          AND n.relationship = :relationship
-         *          AND n.child <> e;
+         * SELECT e FROM productTable AS e, ProductNetwork AS n WHERE n.parent =
+         * :parent AND n.relationship = :relationship AND n.child <> e;
          */
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
@@ -410,7 +430,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
         return em.createQuery(query).getResultList();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.NetworkedModel#getUnlinked()
      */
     @Override

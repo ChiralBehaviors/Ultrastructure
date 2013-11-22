@@ -17,6 +17,11 @@
 
 package com.hellblazer.CoRE.meta;
 
+import java.util.List;
+
+import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.event.StatusCodeSequencing;
+import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
@@ -28,5 +33,21 @@ import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
 public interface ProductModel
         extends
         NetworkedModel<Product, ProductAttributeAuthorization, ProductAttribute> {
+
+    /**
+     * 
+     * @param parent
+     * @return
+     */
+    List<StatusCode> findStatusCodes(Product parent);
+
+    /**
+     * 
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    List<StatusCodeSequencing> findStatusCodeSequences(Product parent,
+                                                       Relationship relationship);
 
 }

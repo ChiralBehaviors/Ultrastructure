@@ -24,6 +24,7 @@ import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
+import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.network.Networked;
@@ -83,6 +84,12 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * @return the new instance
      */
     RuleForm create(RuleForm prototype);
+
+    /**
+     * 
+     * @return
+     */
+    List<RuleForm> findUnlinkedNodes();
 
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
@@ -216,6 +223,13 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
                                             Aspect<RuleForm> aspect);
 
     /**
+     * 
+     * @param parent
+     * @return
+     */
+    List<Relationship> getImmediateRelationships(RuleForm parent);
+
+    /**
      * @param parent
      * @param relationship
      * @return
@@ -228,7 +242,34 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * @param relationship
      * @return
      */
+    Graph getNetwork(RuleForm parent, Relationship relationship);
+
+    /**
+     * 
+     * @param parent
+     * @param relationship
+     * @return
+     */
     List<RuleForm> getNotInGroup(RuleForm parent, Relationship relationship);
+
+    /**
+     * 
+     * @param parent
+     * @return
+     */
+    List<Relationship> getTransitiveRelationships(RuleForm parent);
+
+    /**
+     * 
+     * @param parent
+     * @param parentRelationship
+     * @param authorizingRelationship
+     * @param child
+     * @return
+     */
+    boolean isAccessible(RuleForm parent, Relationship parentRelationship,
+                         Relationship authorizingRelationship,
+                         Networked<?, ?> child, Relationship childRelationship);
 
     /**
      * 

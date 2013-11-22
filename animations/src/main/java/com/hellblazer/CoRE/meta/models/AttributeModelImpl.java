@@ -37,7 +37,10 @@ import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AttributeModel;
+import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.network.Networked;
+import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
 
@@ -115,8 +118,12 @@ public class AttributeModelImpl
         super(em, kernel);
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#authorize(com.hellblazer.CoRE.meta.Aspect, com.hellblazer.CoRE.attribute.Attribute[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#authorize(com.hellblazer.CoRE
+     * .meta.Aspect, com.hellblazer.CoRE.attribute.Attribute[])
      */
     @Override
     public void authorize(Aspect<Attribute> aspect, Attribute... attributes) {
@@ -130,8 +137,12 @@ public class AttributeModelImpl
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.network
+     * .Networked)
      */
     @Override
     public Attribute create(Attribute prototype) {
@@ -168,6 +179,76 @@ public class AttributeModelImpl
             }
         }
         return attribute;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#findUnlinkedNodes()
+     */
+    @Override
+    public List<Attribute> findUnlinkedNodes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
+     * .hellblazer.CoRE.network.Networked)
+     */
+    @Override
+    public List<Relationship> getImmediateRelationships(Attribute parent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
+     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public Graph getNetwork(Attribute parent, Relationship relationship) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
+     * .hellblazer.CoRE.network.Networked)
+     */
+    @Override
+    public List<Relationship> getTransitiveRelationships(Attribute parent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#isAccessible(com.hellblazer.CoRE
+     * .network.Networked, com.hellblazer.CoRE.network.Relationship,
+     * com.hellblazer.CoRE.network.Relationship,
+     * com.hellblazer.CoRE.network.Networked,
+     * com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public boolean isAccessible(Attribute parent,
+                                Relationship parentRelationship,
+                                Relationship authorizingRelationship,
+                                Networked<?, ?> child,
+                                Relationship childRelationship) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     public Attribute transform(Product service, Agency agency, Product product) {
@@ -278,7 +359,8 @@ public class AttributeModelImpl
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
                                          transfromationMetarule.getRelationshipMap());
-        // productNetworkQuery.setParameter("agency", transfromationMetarule.getProductNetworkAgency());
+        // productNetworkQuery.setParameter("agency",
+        // transfromationMetarule.getProductNetworkAgency());
         return productNetworkQuery.getSingleResult();
     }
 

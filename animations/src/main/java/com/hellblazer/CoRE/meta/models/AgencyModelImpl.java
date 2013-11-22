@@ -18,6 +18,7 @@
 package com.hellblazer.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -33,7 +34,10 @@ import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AgencyModel;
+import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.network.Networked;
+import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -107,8 +111,12 @@ public class AgencyModelImpl
         super(em, kernel);
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#authorize(com.hellblazer.CoRE.meta.Aspect, com.hellblazer.CoRE.attribute.Attribute[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#authorize(com.hellblazer.CoRE
+     * .meta.Aspect, com.hellblazer.CoRE.attribute.Attribute[])
      */
     @Override
     public void authorize(Aspect<Agency> aspect, Attribute... attributes) {
@@ -122,8 +130,12 @@ public class AgencyModelImpl
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.network
+     * .Networked)
      */
     @Override
     public Agency create(Agency prototype) {
@@ -146,8 +158,12 @@ public class AgencyModelImpl
         return copy;
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta.Aspect<RuleForm>[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
+     * .Aspect<RuleForm>[])
      */
     @Override
     public final Agency create(String name, String description,
@@ -161,6 +177,75 @@ public class AgencyModelImpl
             }
         }
         return agency;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#findUnlinkedNodes()
+     */
+    @Override
+    public List<Agency> findUnlinkedNodes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
+     * .hellblazer.CoRE.network.Networked)
+     */
+    @Override
+    public List<Relationship> getImmediateRelationships(Agency parent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
+     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public Graph getNetwork(Agency parent, Relationship relationship) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
+     * .hellblazer.CoRE.network.Networked)
+     */
+    @Override
+    public List<Relationship> getTransitiveRelationships(Agency parent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#isAccessible(com.hellblazer.CoRE
+     * .network.Networked, com.hellblazer.CoRE.network.Relationship,
+     * com.hellblazer.CoRE.network.Relationship,
+     * com.hellblazer.CoRE.network.Networked,
+     * com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public boolean isAccessible(Agency parent, Relationship parentRelationship,
+                                Relationship authorizingRelationship,
+                                Networked<?, ?> child,
+                                Relationship childRelationship) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     /**

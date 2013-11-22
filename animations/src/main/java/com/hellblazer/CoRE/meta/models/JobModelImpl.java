@@ -226,7 +226,8 @@ public class JobModelImpl implements JobModel {
             for (StatusCode n : scc) {
                 outgoing.remove(n);
             }
-            // If you can't get to any other nodes outside the SCC, then it's terminal 
+            // If you can't get to any other nodes outside the SCC, then it's
+            // terminal
             if (outgoing.size() == 0) {
                 return true;
             }
@@ -512,8 +513,12 @@ public class JobModelImpl implements JobModel {
         return childActions;
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.JobModel#getChronologyForJob(com.hellblazer.CoRE.jsp.Job)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.JobModel#getChronologyForJob(com.hellblazer.
+     * CoRE.jsp.Job)
      */
     @Override
     public List<JobChronology> getChronologyForJob(Job job) {
@@ -588,8 +593,12 @@ public class JobModelImpl implements JobModel {
                                                                                           job.getService()).getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.JobModel#getMostRecentChronologyEntry(com.hellblazer.CoRE.jsp.Job)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.JobModel#getMostRecentChronologyEntry(com.hellblazer
+     * .CoRE.jsp.Job)
      */
     @Override
     public JobChronology getMostRecentChronologyEntry(Job job) {
@@ -657,7 +666,8 @@ public class JobModelImpl implements JobModel {
             return exactMatches;
         }
 
-        // Find protocols which match transformations specified by the meta protocol
+        // Find protocols which match transformations specified by the meta
+        // protocol
 
         return createQuery(metaProtocol, job).getResultList();
     }
@@ -813,13 +823,11 @@ public class JobModelImpl implements JobModel {
         job.setService(protocol.getService());
         job.setStatus(kernel.getUnset());
         /*
-        for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
-            JobAttribute attribute = pAttribute.createJobAttribute();
-            attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
-            attribute.setJob(job);
-            em.persist(attribute);
-        }
-        */
+         * for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
+         * JobAttribute attribute = pAttribute.createJobAttribute();
+         * attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
+         * attribute.setJob(job); em.persist(attribute); }
+         */
         em.persist(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s from protocol %s", job,
@@ -834,8 +842,12 @@ public class JobModelImpl implements JobModel {
                && !isTerminalState(job.getStatus(), job.getService());
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.JobModel#isTerminalState(com.hellblazer.CoRE.jsp.StatusCode, com.hellblazer.CoRE.jsp.Event)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.JobModel#isTerminalState(com.hellblazer.CoRE
+     * .jsp.StatusCode, com.hellblazer.CoRE.jsp.Event)
      */
     @Override
     public boolean isTerminalState(StatusCode sc, Product service) {
@@ -858,7 +870,9 @@ public class JobModelImpl implements JobModel {
         return query.getSingleResult() > 0;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
      */
     @Override
@@ -873,11 +887,15 @@ public class JobModelImpl implements JobModel {
         }
         List<ProductChildSequencingAuthorization> childActions = getChildActions(job);
         for (ProductChildSequencingAuthorization seq : childActions) {
-            // This can be merged into the same outer query... just doing quick and dirty now
+            // This can be merged into the same outer query... just doing quick
+            // and dirty now
 
-            // for each child job that is active (not UNSET or terminal) update their status to this one
-            // Should probably have a constraint that the given status should be terminal for the event,
-            // and that it can be transitioned to from any non-terminal state for that event 
+            // for each child job that is active (not UNSET or terminal) update
+            // their status to this one
+            // Should probably have a constraint that the given status should be
+            // terminal for the event,
+            // and that it can be transitioned to from any non-terminal state
+            // for that event
             for (Job child : getActiveSubJobsOf(job)) {
                 changeStatus(child,
                              seq.getNextChildStatus(),
@@ -906,7 +924,8 @@ public class JobModelImpl implements JobModel {
 
         for (ProductParentSequencingAuthorization seq : getParentActions(job)) {
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
-                // If the parent job has the specified event then, make the change
+                // If the parent job has the specified event then, make the
+                // change
                 // if the specified event is NULL then set it
                 if (seq.getParent() == null
                     || seq.getParent().equals(job.getParent())) {

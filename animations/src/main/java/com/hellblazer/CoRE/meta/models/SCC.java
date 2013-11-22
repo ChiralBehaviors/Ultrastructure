@@ -66,7 +66,8 @@ public class SCC {
             List<StatusCode> component = stack.subList(stackPos, stack.size());
             stack = stack.subList(0, stackPos);
 
-            if (component.size() > 1) {//ignore trivial SCCs of a single StatusCode  
+            if (component.size() > 1) {// ignore trivial SCCs of a single
+                                       // StatusCode
                 StatusCode[] array = component.toArray(new StatusCode[component.size()]);
                 result.add(array);
             }

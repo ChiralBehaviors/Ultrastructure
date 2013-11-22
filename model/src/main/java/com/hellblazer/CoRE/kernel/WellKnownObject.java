@@ -28,6 +28,233 @@ import com.hellblazer.CoRE.attribute.ValueType;
  */
 public interface WellKnownObject {
 
+    public static enum WellKnownAgency implements WellKnownObject {
+        ANY() {
+
+            @Override
+            public String description() {
+                return "A special Agency that stands for any agency";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.ANY;
+            }
+
+        },
+        CORE() {
+
+            @Override
+            public String description() {
+                return "The CoRE Ultra-Structure system";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.CORE;
+            }
+
+        },
+        CORE_ANIMATION_SOFTWARE() {
+
+            @Override
+            public String description() {
+                return "General software component of the CoRE Ultra-Structure system";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.CORE_ANIMATION_SOFTWARE;
+            }
+
+        },
+        CORE_MODEL() {
+
+            @Override
+            public String description() {
+                return "The animation proceedure that implements the CoRE meta model behavior";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.CORE_MODEL;
+            }
+
+        },
+        CORE_USER() {
+
+            @Override
+            public String description() {
+                return "Users allowed to log into the CoRE system";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.CORE_USER;
+            }
+
+        },
+        INVERSE_SOFTWARE() {
+
+            @Override
+            public String description() {
+                return "The process that creates inverse network relationships";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.INVERSE_SOFTWARE;
+            }
+
+        },
+        NOT_APPLICABLE() {
+
+            @Override
+            public String description() {
+                return "A special Agency that stands for 'not applicable'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.NOT_APPLICABLE;
+            }
+
+        },
+        ORIGINAL() {
+
+            @Override
+            public String description() {
+                return "A special Agency that stands for the originally supplied agency";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.ORIGINAL;
+            }
+
+        },
+        PROPAGATION_SOFTWARE() {
+
+            @Override
+            public String description() {
+                return "Animation procedure that performs logical deduction on network ruleforms";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.PROPAGATION_SOFTWARE;
+            }
+
+        },
+        AGENCY() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of a agency. All existential entities defined in the Agency ruleform are instances of 'Agency'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.agency;
+            }
+
+        },
+        SAME() {
+
+            @Override
+            public String description() {
+                return "Special relationship used in metarule tables to indicate that no network transformation should be performed";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.SAME;
+            }
+
+        },
+        SPECIAL_SYSTEM_AGENCY() {
+
+            @Override
+            public String description() {
+                return "Privileged agencys that have special meaning in the CoRE System";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.SPECIAL_SYSTEM_AGENCY;
+            }
+
+        },
+        SUPER_USER() {
+
+            @Override
+            public String description() {
+                return "The god user that we can actually use to authenticate and log into the system";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.SUPER_USER;
+            }
+
+        };
+
+        /* (non-Javadoc)
+         * @see com.hellblazer.CoRE.kernel.WellKnownObject#id()
+         */
+        @Override
+        public Long id() {
+            return Long.valueOf(ordinal() + 1);
+        }
+
+        /* (non-Javadoc)
+         * @see com.hellblazer.CoRE.kernel.WellKnownObject#tableName()
+         */
+        @Override
+        public String tableName() {
+            return "ruleform.agency";
+        }
+    }
+
     public static enum WellKnownAttribute implements WellKnownObject {
         ANY() {
 
@@ -262,8 +489,6 @@ public interface WellKnownObject {
         }
     }
 
-	
-
     public static enum WellKnownProduct implements WellKnownObject {
         ANY() {
 
@@ -346,7 +571,7 @@ public interface WellKnownObject {
 
         },
         WORKSPACE() {
-        	@Override
+            @Override
             public String description() {
                 return "Special product that parents the network of objects that make a workspace";
             }
@@ -376,8 +601,6 @@ public interface WellKnownObject {
             return "ruleform.product";
         }
     }
-
-	
 
     public static enum WellKnownRelationship implements WellKnownObject {
         ANY() {
@@ -1230,233 +1453,6 @@ public interface WellKnownObject {
         abstract boolean preferred();
     }
 
-    public static enum WellKnownAgency implements WellKnownObject {
-        ANY() {
-
-            @Override
-            public String description() {
-                return "A special Agency that stands for any agency";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ANY;
-            }
-
-        },
-        CORE() {
-
-            @Override
-            public String description() {
-                return "The CoRE Ultra-Structure system";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.CORE;
-            }
-
-        },
-        CORE_ANIMATION_SOFTWARE() {
-
-            @Override
-            public String description() {
-                return "General software component of the CoRE Ultra-Structure system";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.CORE_ANIMATION_SOFTWARE;
-            }
-
-        },
-        CORE_MODEL() {
-
-            @Override
-            public String description() {
-                return "The animation proceedure that implements the CoRE meta model behavior";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.CORE_MODEL;
-            }
-
-        },
-        CORE_USER() {
-
-            @Override
-            public String description() {
-                return "Users allowed to log into the CoRE system";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.CORE_USER;
-            }
-
-        },
-        INVERSE_SOFTWARE() {
-
-            @Override
-            public String description() {
-                return "The process that creates inverse network relationships";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.INVERSE_SOFTWARE;
-            }
-
-        },
-        NOT_APPLICABLE() {
-
-            @Override
-            public String description() {
-                return "A special Agency that stands for 'not applicable'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
-        ORIGINAL() {
-
-            @Override
-            public String description() {
-                return "A special Agency that stands for the originally supplied agency";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.ORIGINAL;
-            }
-
-        },
-        PROPAGATION_SOFTWARE() {
-
-            @Override
-            public String description() {
-                return "Animation procedure that performs logical deduction on network ruleforms";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.PROPAGATION_SOFTWARE;
-            }
-
-        },
-        AGENCY() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a agency. All existential entities defined in the Agency ruleform are instances of 'Agency'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.agency;
-            }
-
-        },
-        SAME() {
-
-            @Override
-            public String description() {
-                return "Special relationship used in metarule tables to indicate that no network transformation should be performed";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.SAME;
-            }
-
-        },
-        SPECIAL_SYSTEM_AGENCY() {
-
-            @Override
-            public String description() {
-                return "Privileged agencys that have special meaning in the CoRE System";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.SPECIAL_SYSTEM_AGENCY;
-            }
-
-        },
-        SUPER_USER() {
-
-            @Override
-            public String description() {
-                return "The god user that we can actually use to authenticate and log into the system";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.SUPER_USER;
-            }
-
-        };
-
-        /* (non-Javadoc)
-         * @see com.hellblazer.CoRE.kernel.WellKnownObject#id()
-         */
-        @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.hellblazer.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.agency";
-        }
-    }
-
     public static enum WellKnownStatusCode implements WellKnownObject {
         UNSET() {
 
@@ -1513,7 +1509,7 @@ public interface WellKnownObject {
     String HEAD_OF                   = "head-of";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";
-    String IN_WORKSPACE 			 = "in-workspace";
+    String IN_WORKSPACE              = "in-workspace";
     String IS_A                      = "is-a";
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";
@@ -1536,15 +1532,15 @@ public interface WellKnownObject {
     String PROTOTYPE                 = "prototype";
     String PROTOTYPE_OF              = "prototype-of";
     String RELATIONSHIP              = "Relationship";
-    String agency                  = "Agency";
+    String agency                    = "Agency";
     String SAME                      = "(SAME)";
     String SPECIAL_SYSTEM_EVENT      = "Special System Event";
-    String SPECIAL_SYSTEM_AGENCY   = "Special System Agency";
+    String SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
     String SUPER_USER                = "CoRE Super User";
     String UNSET                     = "(UNSET)";
     String VERSION_OF                = "version-of";
-    String WORKSPACE 				 = "Workspace";
-    String WORKSPACE_OF				 = "workspace-of";
+    String WORKSPACE                 = "Workspace";
+    String WORKSPACE_OF              = "workspace-of";
 
     /**
      * @return the descriptions of the wko

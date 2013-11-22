@@ -80,7 +80,7 @@ public class RelationshipTest extends DatabaseTest {
         beginTransaction();
 
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-                                                         Agency.class);
+                                                       Agency.class);
         query.setParameter("name", "CoRE");
         Agency core = query.getSingleResult();
 

@@ -51,16 +51,16 @@ public class WorkspaceUnitAuthorization extends WorkspaceAuthorization {
         super();
     }
 
+    public WorkspaceUnitAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public WorkspaceUnitAuthorization(Long id) {
         super(id);
     }
 
     public WorkspaceUnitAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    public WorkspaceUnitAuthorization(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public WorkspaceUnitAuthorization(String notes) {

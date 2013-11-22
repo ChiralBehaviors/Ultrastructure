@@ -41,7 +41,7 @@ public class LocationAgencyAccessAuthorization extends
 
     @ManyToOne
     @JoinColumn(name = "agency2")
-    private Agency          child;
+    private Agency            child;
     {
         setAuthorizationType(AccessAuthorization.LOCATION_AGENCY);
     }
@@ -57,9 +57,8 @@ public class LocationAgencyAccessAuthorization extends
      * @param updatedBy
      */
     public LocationAgencyAccessAuthorization(Location parent,
-                                               Relationship relationship,
-                                               Agency child,
-                                               Agency updatedBy) {
+                                             Relationship relationship,
+                                             Agency child, Agency updatedBy) {
         this();
         setParent(parent);
         setRelationship(relationship);

@@ -60,29 +60,17 @@ public class ProductAttributeAuthorization extends
     }
 
     /**
+     * @param updatedBy
+     */
+    public ProductAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public ProductAttributeAuthorization(Long id) {
         super(id);
-    }
-
-    /**
-     * @param classification
-     * @param authorized
-     * @param updatedBy
-     */
-    public ProductAttributeAuthorization(Relationship classification,
-                                         Attribute authorized,
-                                         Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-    }
-
-    public ProductAttributeAuthorization(Relationship classification,
-                                         Product classifier,
-                                         Attribute authorized,
-                                         Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-        this.classifier = classifier;
     }
 
     /**
@@ -95,10 +83,20 @@ public class ProductAttributeAuthorization extends
     }
 
     /**
+     * @param classification
+     * @param authorized
      * @param updatedBy
      */
-    public ProductAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
+    public ProductAttributeAuthorization(Relationship classification,
+                                         Attribute authorized, Agency updatedBy) {
+        super(classification, authorized, updatedBy);
+    }
+
+    public ProductAttributeAuthorization(Relationship classification,
+                                         Product classifier,
+                                         Attribute authorized, Agency updatedBy) {
+        super(classification, authorized, updatedBy);
+        this.classifier = classifier;
     }
 
     /* (non-Javadoc)

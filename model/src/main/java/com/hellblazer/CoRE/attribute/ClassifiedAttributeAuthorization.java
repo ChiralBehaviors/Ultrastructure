@@ -54,22 +54,17 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
     }
 
     /**
+     * @param updatedBy
+     */
+    public ClassifiedAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public ClassifiedAttributeAuthorization(Long id) {
         super(id);
-    }
-
-    /**
-     * @param classification
-     * @param authorized
-     * @param updatedBy
-     */
-    public ClassifiedAttributeAuthorization(Relationship classification,
-                                            Attribute authorized,
-                                            Agency updatedBy) {
-        super(authorized, updatedBy);
-        this.classification = classification;
     }
 
     /**
@@ -83,10 +78,15 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networke
     }
 
     /**
+     * @param classification
+     * @param authorized
      * @param updatedBy
      */
-    public ClassifiedAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
+    public ClassifiedAttributeAuthorization(Relationship classification,
+                                            Attribute authorized,
+                                            Agency updatedBy) {
+        super(authorized, updatedBy);
+        this.classification = classification;
     }
 
     public Relationship getClassification() {

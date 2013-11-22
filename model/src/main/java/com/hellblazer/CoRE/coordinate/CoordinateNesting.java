@@ -76,17 +76,17 @@ public class CoordinateNesting extends Ruleform {
     }
 
     /**
-     * @param id
-     */
-    public CoordinateNesting(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public CoordinateNesting(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public CoordinateNesting(Long id) {
+        super(id);
     }
 
     public Attribute getAttribute() {

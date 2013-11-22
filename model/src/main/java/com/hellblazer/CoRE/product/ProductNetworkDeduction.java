@@ -67,7 +67,7 @@ public class ProductNetworkDeduction implements Serializable {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private Agency          updatedBy;
+    private Agency            updatedBy;
 
     public ProductNetworkDeduction() {
     }

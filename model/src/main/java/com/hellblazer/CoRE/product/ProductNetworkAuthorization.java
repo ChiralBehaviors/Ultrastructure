@@ -69,17 +69,17 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     }
 
     /**
-     * @param id
-     */
-    public ProductNetworkAuthorization(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public ProductNetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public ProductNetworkAuthorization(Long id) {
+        super(id);
     }
 
     /* (non-Javadoc)

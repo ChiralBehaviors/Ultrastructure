@@ -186,6 +186,22 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getAgency()
+     */
+    @Override
+    public Agency getAgency() {
+        return agency;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyAgency()
+     */
+    @Override
+    public Agency getAnyAgency() {
+        return anyAgency;
+    }
+
+    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyAttribute()
      */
     @Override
@@ -215,14 +231,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getAnyRelationship() {
         return anyRelationship;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAnyAgency()
-     */
-    @Override
-    public Agency getAnyAgency() {
-        return anyAgency;
     }
 
     /* (non-Javadoc)
@@ -380,6 +388,14 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.kernel.Kernel#getInWorkspace()
+     */
+    @Override
+    public Relationship getInWorkspace() {
+        return inWorkspace;
+    }
+
+    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.models.Kernel#getIsA()
      */
     @Override
@@ -457,6 +473,14 @@ public class KernelImpl implements Kernel {
     }
 
     /**
+     * @return the notApplicableAgency
+     */
+    @Override
+    public Agency getNotApplicableAgency() {
+        return notApplicableAgency;
+    }
+
+    /**
      * @return the notApplicableAttribute
      */
     @Override
@@ -488,12 +512,12 @@ public class KernelImpl implements Kernel {
         return notApplicableRelationship;
     }
 
-    /**
-     * @return the notApplicableAgency
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalAgency()
      */
     @Override
-    public Agency getNotApplicableAgency() {
-        return notApplicableAgency;
+    public Agency getOriginalAgency() {
+        return originalAgency;
     }
 
     /* (non-Javadoc)
@@ -518,14 +542,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Product getOriginalProduct() {
         return originalProduct;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getOriginalAgency()
-     */
-    @Override
-    public Agency getOriginalAgency() {
-        return originalAgency;
     }
 
     /**
@@ -581,12 +597,12 @@ public class KernelImpl implements Kernel {
         return prototypeOf;
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.models.Kernel#getAgency()
+    /**
+     * @return the sameAgency
      */
     @Override
-    public Agency getAgency() {
-        return agency;
+    public Agency getSameAgency() {
+        return sameAgency;
     }
 
     /* (non-Javadoc)
@@ -611,14 +627,6 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getSameRelationship() {
         return sameRelationship;
-    }
-
-    /**
-     * @return the sameAgency
-     */
-    @Override
-    public Agency getSameAgency() {
-        return sameAgency;
     }
 
     /* (non-Javadoc)
@@ -659,19 +667,20 @@ public class KernelImpl implements Kernel {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.kernel.Kernel#getInWorkspace()
-     */
-    @Override
-    public Relationship getInWorkspace() {
-        return inWorkspace;
-    }
-
-    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.kernel.Kernel#getWorkspaceOf()
      */
     @Override
     public Relationship getWorkspaceOf() {
         return workspaceOf;
+    }
+
+    /**
+     * 
+     * @param wko
+     * @return the {@link Agency} corresponding to the well known object
+     */
+    Agency find(EntityManager em, WellKnownAgency wko) {
+        return em.find(Agency.class, wko.id());
     }
 
     /**
@@ -708,15 +717,6 @@ public class KernelImpl implements Kernel {
      */
     Relationship find(EntityManager em, WellKnownRelationship wko) {
         return em.find(Relationship.class, wko.id());
-    }
-
-    /**
-     * 
-     * @param wko
-     * @return the {@link Agency} corresponding to the well known object
-     */
-    Agency find(EntityManager em, WellKnownAgency wko) {
-        return em.find(Agency.class, wko.id());
     }
 
     /**

@@ -30,6 +30,10 @@ import com.hellblazer.CoRE.product.Product;
  */
 public interface Kernel {
 
+    Agency getAgency();
+
+    Agency getAnyAgency();
+
     Attribute getAnyAttribute();
 
     Location getAnyLocation();
@@ -37,8 +41,6 @@ public interface Kernel {
     Product getAnyProduct();
 
     Relationship getAnyRelationship();
-
-    Agency getAnyAgency();
 
     Attribute getAttribute();
 
@@ -79,7 +81,7 @@ public interface Kernel {
     Relationship getIncludes();
 
     Agency getInverseSoftware();
-    
+
     Relationship getInWorkspace();
 
     Relationship getIsA();
@@ -102,6 +104,8 @@ public interface Kernel {
 
     Relationship getMemberOf();
 
+    Agency getNotApplicableAgency();
+
     Attribute getNotApplicableAttribute();
 
     Location getNotApplicableLocation();
@@ -110,15 +114,13 @@ public interface Kernel {
 
     Relationship getNotApplicableRelationship();
 
-    Agency getNotApplicableAgency();
+    Agency getOriginalAgency();
 
     Attribute getOriginalAttribute();
 
     Location getOriginalLocation();
 
     Product getOriginalProduct();
-
-    Agency getOriginalAgency();
 
     Relationship getOwnedBy();
 
@@ -134,15 +136,13 @@ public interface Kernel {
 
     Relationship getPrototypeOf();
 
-    Agency getAgency();
+    Agency getSameAgency();
 
     Location getSameLocation();
 
     Product getSameProduct();
 
     Relationship getSameRelationship();
-
-    Agency getSameAgency();
 
     Agency getSpecialSystemAgency();
 
@@ -152,8 +152,8 @@ public interface Kernel {
 
     Relationship getVersionOf();
 
-	Product getWorkspace();
-	
-	Relationship getWorkspaceOf();
+    Product getWorkspace();
+
+    Relationship getWorkspaceOf();
 
 }

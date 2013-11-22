@@ -80,17 +80,17 @@ public class CoordinateRelationship extends Ruleform {
     }
 
     /**
-     * @param id
-     */
-    public CoordinateRelationship(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public CoordinateRelationship(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public CoordinateRelationship(Long id) {
+        super(id);
     }
 
     public Attribute getAttribute() {

@@ -44,10 +44,6 @@ public class AgencyModelImpl
         AbstractNetworkedModel<Agency, AgencyAttributeAuthorization, AgencyAttribute>
         implements AgencyModel {
 
-    private static interface Procedure<T> {
-        T call(AgencyModelImpl productModel) throws Exception;
-    }
-
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -61,8 +57,8 @@ public class AgencyModelImpl
         }
     }
 
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
+    private static interface Procedure<T> {
+        T call(AgencyModelImpl productModel) throws Exception;
     }
 
     private static final String AGENCY_NETWORK_PROPAGATE = "agencyNetwork.propagate";
@@ -91,6 +87,10 @@ public class AgencyModelImpl
                 return null;
             }
         });
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     /**

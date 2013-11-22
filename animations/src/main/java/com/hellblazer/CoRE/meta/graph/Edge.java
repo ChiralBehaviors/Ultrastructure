@@ -17,17 +17,16 @@
 
 package com.hellblazer.CoRE.meta.graph;
 
-
 /**
  * @author hparry
- *
+ * 
  */
 public interface Edge<T> {
-	
-	public Node<?> getParent();
-	
-	public Node<?> getChild();
-	
-	public T getEdgeObject();
+
+    public Node<?> getChild();
+
+    public T getEdgeObject();
+
+    public Node<?> getParent();
 
 }

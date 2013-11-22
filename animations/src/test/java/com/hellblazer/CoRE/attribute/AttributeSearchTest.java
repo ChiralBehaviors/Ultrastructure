@@ -34,6 +34,25 @@ import com.hellblazer.CoRE.test.DatabaseTest;
  */
 public class AttributeSearchTest extends DatabaseTest {
 
+    @Before
+    public void initData() {
+        beginTransaction();
+
+        Agency core = new Agency("core");
+        core.setUpdatedBy(core);
+        em.persist(core);
+
+        Attribute a1 = new Attribute("Attribute", core);
+        a1.setValueType(ValueType.INTEGER);
+        em.persist(a1);
+
+        Attribute a2 = new Attribute("Wooziness", core);
+        a2.setValueType(ValueType.INTEGER);
+        em.persist(a2);
+
+        commitTransaction();
+    }
+
     @Test
     public void searchByName() throws Exception {
         searchByName("Attribute", true);
@@ -52,24 +71,5 @@ public class AttributeSearchTest extends DatabaseTest {
             // we weren't expecting to find anything
             assertNull(a);
         }
-    }
-    
-    @Before
-    public void initData() {
-        beginTransaction();
-
-        Agency core = new Agency("core");
-        core.setUpdatedBy(core);
-        em.persist(core);
-        
-        Attribute a1 = new Attribute("Attribute", core);
-        a1.setValueType(ValueType.INTEGER);
-        em.persist(a1);
-        
-        Attribute a2 = new Attribute("Wooziness", core);
-        a2.setValueType(ValueType.INTEGER);
-        em.persist(a2);  
-
-        commitTransaction();
     }
 }

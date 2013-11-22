@@ -47,14 +47,14 @@ import com.hellblazer.CoRE.attribute.Unit;
  * 
  */
 @NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_AGENCY, query = "SELECT ea FROM ProductAttribute ea"
-                                                                               + "   WHERE ea.product = :product "
-                                                                               + "   AND ea.attribute = :attribute") })
+                                                                             + "   WHERE ea.product = :product "
+                                                                             + "   AND ea.attribute = :attribute") })
 @Entity
 @Table(name = "product_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_attribute_id_seq", sequenceName = "product_attribute_id_seq")
 public class ProductAttribute extends AttributeValue<Product> {
     public final static String FIND_ATTRIBUTE_VALUE_FROM_AGENCY = "productAttribute.findAttributeValueFromAgency";
-    private static final long  serialVersionUID                   = 1L;
+    private static final long  serialVersionUID                 = 1L;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
@@ -69,10 +69,25 @@ public class ProductAttribute extends AttributeValue<Product> {
     }
 
     /**
+     * @param updatedBy
+     */
+    public ProductAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param attribute
      */
     public ProductAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public ProductAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
     }
 
     /**
@@ -90,8 +105,7 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param value
      * @param updatedBy
      */
-    public ProductAttribute(Attribute attribute, boolean value,
-                            Agency updatedBy) {
+    public ProductAttribute(Attribute attribute, boolean value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -106,19 +120,10 @@ public class ProductAttribute extends AttributeValue<Product> {
 
     /**
      * @param attribute
-     * @param updatedBy
-     */
-    public ProductAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-    }
-
-    /**
-     * @param attribute
      * @param value
      * @param updatedBy
      */
-    public ProductAttribute(Attribute attribute, String value,
-                            Agency updatedBy) {
+    public ProductAttribute(Attribute attribute, String value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -135,13 +140,6 @@ public class ProductAttribute extends AttributeValue<Product> {
      */
     public ProductAttribute(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public ProductAttribute(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

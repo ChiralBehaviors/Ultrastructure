@@ -40,19 +40,19 @@ abstract public class ExistentialRuleform extends Ruleform {
     public ExistentialRuleform() {
     }
 
+    /**
+     * @param updatedBy
+     */
+    public ExistentialRuleform(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public ExistentialRuleform(Long id) {
         super(id);
     }
 
     public ExistentialRuleform(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public ExistentialRuleform(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public ExistentialRuleform(String name) {
@@ -69,8 +69,7 @@ abstract public class ExistentialRuleform extends Ruleform {
         this.description = description;
     }
 
-    public ExistentialRuleform(String name, String description,
-                               Agency updatedBy) {
+    public ExistentialRuleform(String name, String description, Agency updatedBy) {
         this(name, updatedBy);
         this.description = description;
     }

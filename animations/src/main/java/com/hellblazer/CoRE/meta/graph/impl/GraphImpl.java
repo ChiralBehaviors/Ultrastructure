@@ -32,96 +32,98 @@ import com.hellblazer.CoRE.meta.graph.Node;
  */
 public class GraphImpl implements Graph {
 
-	private List<Node<?>> nodes;
-	private List<Edge<?>> edges;
+    private List<Node<?>> nodes;
+    private List<Edge<?>> edges;
 
-	public GraphImpl(List<Node<?>> nodes, List<Edge<?>> edges) {
-		this.nodes = nodes;
-		this.edges = edges;
-		if (this.nodes == null) {
-			this.nodes = new LinkedList<Node<?>>();
-		}
-		if (this.edges == null) {
-			this.edges = new LinkedList<Edge<?>>();
-		}
-	}
+    public GraphImpl(List<Node<?>> nodes, List<Edge<?>> edges) {
+        this.nodes = nodes;
+        this.edges = edges;
+        if (this.nodes == null) {
+            this.nodes = new LinkedList<Node<?>>();
+        }
+        if (this.edges == null) {
+            this.edges = new LinkedList<Edge<?>>();
+        }
+    }
 
-	/**
-	 * @param erisNodes
-	 * @param edges2
-	 */
-	public GraphImpl(Node<?>[] nodes, List<Edge<?>> edges) {
-		this.nodes = new LinkedList<Node<?>>();
-		for (Node<?> node : nodes) {
-			this.nodes.add(node);
-		}
-		this.edges = edges;
-	}
+    /**
+     * @param erisNodes
+     * @param edges2
+     */
+    public GraphImpl(Node<?>[] nodes, List<Edge<?>> edges) {
+        this.nodes = new LinkedList<Node<?>>();
+        for (Node<?> node : nodes) {
+            this.nodes.add(node);
+        }
+        this.edges = edges;
+    }
 
-	public List<Node<?>> getNodes() {
-		return nodes;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.graph.IGraph#addEdge(com.hellblazer.CoRE.meta
+     * .graph.IEdge)
+     */
+    @Override
+    public Graph addEdge(Edge<?> e) {
+        edges.add(e);
+        return this;
+    }
 
-	public List<Edge<?>> getEdges() {
-		return edges;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.graph.IGraph#addNode(com.hellblazer.CoRE.meta
+     * .graph.INode)
+     */
+    @Override
+    public Graph addNode(Node<?> n) {
+        nodes.add(n);
+        return this;
+    }
 
-	@Override
-	public GraphImpl union(Graph g) {
-		this.nodes.addAll(g.getNodes());
-		this.edges.addAll(g.getEdges());
-		return this;
-	}
+    @Override
+    public List<Edge<?>> getEdges() {
+        return edges;
+    }
 
-	@Override
-	public GraphImpl intersection(Graph g) {
-		List<Node<?>> nodesToRemove = new LinkedList<Node<?>>();
-		for (Node<?> n : nodes) {
-			if (!g.getNodes().contains(n)) {
-				nodesToRemove.add(n);
-			}
-		}
-		for (Node<?> n : nodesToRemove) {
-			nodes.remove(n);
-		}
+    @Override
+    public List<Node<?>> getNodes() {
+        return nodes;
+    }
 
-		List<Edge<?>> edgesToRemove = new LinkedList<Edge<?>>();
-		for (Edge<?> e : edges) {
-			if (!g.getEdges().contains(e)) {
-				edgesToRemove.add(e);
-			}
-		}
+    @Override
+    public GraphImpl intersection(Graph g) {
+        List<Node<?>> nodesToRemove = new LinkedList<Node<?>>();
+        for (Node<?> n : nodes) {
+            if (!g.getNodes().contains(n)) {
+                nodesToRemove.add(n);
+            }
+        }
+        for (Node<?> n : nodesToRemove) {
+            nodes.remove(n);
+        }
 
-		for (Edge<?> e : edgesToRemove) {
-			edges.remove(e);
-		}
-		return this;
-	}
+        List<Edge<?>> edgesToRemove = new LinkedList<Edge<?>>();
+        for (Edge<?> e : edges) {
+            if (!g.getEdges().contains(e)) {
+                edgesToRemove.add(e);
+            }
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hellblazer.CoRE.meta.graph.IGraph#addNode(com.hellblazer.CoRE.meta
-	 * .graph.INode)
-	 */
-	@Override
-	public Graph addNode(Node<?> n) {
-		this.nodes.add(n);
-		return this;
-	}
+        for (Edge<?> e : edgesToRemove) {
+            edges.remove(e);
+        }
+        return this;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hellblazer.CoRE.meta.graph.IGraph#addEdge(com.hellblazer.CoRE.meta
-	 * .graph.IEdge)
-	 */
-	@Override
-	public Graph addEdge(Edge<?> e) {
-		this.edges.add(e);
-		return this;
-	}
+    @Override
+    public GraphImpl union(Graph g) {
+        nodes.addAll(g.getNodes());
+        edges.addAll(g.getEdges());
+        return this;
+    }
 
 }

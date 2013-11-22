@@ -80,6 +80,13 @@ public class StatusCode extends ExistentialRuleform {
     public StatusCode() {
     }
 
+    /**
+     * @param updatedBy
+     */
+    public StatusCode(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public StatusCode(long l, String name) {
         super(name);
         id = l;
@@ -90,13 +97,6 @@ public class StatusCode extends ExistentialRuleform {
      */
     public StatusCode(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public StatusCode(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**

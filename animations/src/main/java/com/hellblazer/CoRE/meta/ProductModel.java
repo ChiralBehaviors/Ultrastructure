@@ -25,7 +25,8 @@ import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
  * @author hhildebrand
  * 
  */
-public interface ProductModel extends
+public interface ProductModel
+        extends
         NetworkedModel<Product, ProductAttributeAuthorization, ProductAttribute> {
 
 }

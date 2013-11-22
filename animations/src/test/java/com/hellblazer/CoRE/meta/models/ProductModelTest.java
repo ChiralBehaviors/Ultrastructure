@@ -47,7 +47,7 @@ public class ProductModelTest extends AbstractModelTest {
         equals2.setInverse(equals2);
         em.persist(equals2);
         NetworkInference aEqualsA = new NetworkInference(equals, equals2,
-                                                           equals, core);
+                                                         equals, core);
         em.persist(aEqualsA);
         Product a = new Product("A", "A", core);
         em.persist(a);

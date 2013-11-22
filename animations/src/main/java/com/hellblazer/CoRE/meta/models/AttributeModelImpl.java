@@ -50,10 +50,6 @@ public class AttributeModelImpl
         AbstractNetworkedModel<Attribute, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
 
-    private static interface Procedure<T> {
-        T call(AttributeModelImpl attributeModel) throws Exception;
-    }
-
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -67,8 +63,8 @@ public class AttributeModelImpl
         }
     }
 
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
+    private static interface Procedure<T> {
+        T call(AttributeModelImpl attributeModel) throws Exception;
     }
 
     private static final String ATTRIBUTE_NETWORK_PROPAGATE = "AttributeNetwork.propagate";
@@ -77,9 +73,10 @@ public class AttributeModelImpl
                                                                    throws Exception {
         execute(new Procedure<Void>() {
             @Override
-            public Void call(AttributeModelImpl attributeModel) throws Exception {
+            public Void call(AttributeModelImpl attributeModel)
+                                                               throws Exception {
                 attributeModel.networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                 data.getOld().getLong("relationship"));
+                                                  data.getOld().getLong("relationship"));
                 return null;
             }
         });
@@ -92,11 +89,16 @@ public class AttributeModelImpl
         }
         execute(new Procedure<Void>() {
             @Override
-            public Void call(AttributeModelImpl attributrModel) throws Exception {
+            public Void call(AttributeModelImpl attributrModel)
+                                                               throws Exception {
                 attributrModel.propagate();
                 return null;
             }
         });
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     /**
@@ -168,8 +170,7 @@ public class AttributeModelImpl
         return attribute;
     }
 
-    public Attribute transform(Product service, Agency agency,
-                               Product product) {
+    public Attribute transform(Product service, Agency agency, Product product) {
 
         Attribute txfmd = null;
         for (TransformationMetarule transfromationMetarule : getTransformationMetarules(service)) {
@@ -177,8 +178,7 @@ public class AttributeModelImpl
             if (kernel.getSameAgency().equals(transfromationMetarule.getRelationshipMap())) {
                 mappedAgency = kernel.getSameAgency();
             } else {
-                mappedAgency = getMappedAgency(transfromationMetarule,
-                                                   agency);
+                mappedAgency = getMappedAgency(transfromationMetarule, agency);
             }
             Product mappedProduct;
             if (kernel.getSameProduct().equals(transfromationMetarule.getProductMap())) {
@@ -203,8 +203,8 @@ public class AttributeModelImpl
                 } else {
                     txfmProduct = transformation.getProductKey();
                 }
-                Product foundProduct = findProduct(transformation,
-                                                   txfmAgency, txfmProduct);
+                Product foundProduct = findProduct(transformation, txfmAgency,
+                                                   txfmProduct);
 
                 txfmd = findAttribute(transformation, foundProduct);
                 if (txfmd != null) {
@@ -240,8 +240,8 @@ public class AttributeModelImpl
      * @param product
      * @return
      */
-    private Product findProduct(Transformation transformation,
-                                Agency agency, Product product) {
+    private Product findProduct(Transformation transformation, Agency agency,
+                                Product product) {
         TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILD,
                                                                  Product.class);
         productNetworkQuery.setParameter("parent", product);
@@ -249,6 +249,21 @@ public class AttributeModelImpl
                                          transformation.getRelationshipKey());
         // productNetworkQuery.setParameter("agency", agency);
         return productNetworkQuery.getSingleResult();
+    }
+
+    /**
+     * @param transfromationMetarule
+     * @param agency
+     * @return
+     */
+    private Agency getMappedAgency(TransformationMetarule transfromationMetarule,
+                                   Agency agency) {
+        TypedQuery<Agency> agencyNetworkQuery = em.createQuery(Agency.GET_CHILD,
+                                                               Agency.class);
+        agencyNetworkQuery.setParameter("parent", agency);
+        agencyNetworkQuery.setParameter("relationship",
+                                        transfromationMetarule.getRelationshipMap());
+        return agencyNetworkQuery.getSingleResult();
     }
 
     /**
@@ -265,21 +280,6 @@ public class AttributeModelImpl
                                          transfromationMetarule.getRelationshipMap());
         // productNetworkQuery.setParameter("agency", transfromationMetarule.getProductNetworkAgency());
         return productNetworkQuery.getSingleResult();
-    }
-
-    /**
-     * @param transfromationMetarule
-     * @param agency
-     * @return
-     */
-    private Agency getMappedAgency(TransformationMetarule transfromationMetarule,
-                                       Agency agency) {
-        TypedQuery<Agency> agencyNetworkQuery = em.createQuery(Agency.GET_CHILD,
-                                                                   Agency.class);
-        agencyNetworkQuery.setParameter("parent", agency);
-        agencyNetworkQuery.setParameter("relationship",
-                                          transfromationMetarule.getRelationshipMap());
-        return agencyNetworkQuery.getSingleResult();
     }
 
     /**

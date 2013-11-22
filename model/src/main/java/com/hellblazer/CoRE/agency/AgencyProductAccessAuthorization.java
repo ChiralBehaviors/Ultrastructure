@@ -70,6 +70,7 @@ public class AgencyProductAccessAuthorization extends AgencyAccessAuthorization 
     /**
      * @return the child
      */
+    @Override
     public Product getChild() {
         return child;
     }

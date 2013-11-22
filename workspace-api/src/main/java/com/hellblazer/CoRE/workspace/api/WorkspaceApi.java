@@ -22,12 +22,10 @@ import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry
- *
+ * 
  */
 public interface WorkspaceApi {
-	
-	public List<Product> getProducts();
-	
-	
+
+    public List<Product> getProducts();
 
 }

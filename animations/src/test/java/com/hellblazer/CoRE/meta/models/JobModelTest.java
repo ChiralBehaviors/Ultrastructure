@@ -49,6 +49,7 @@ public class JobModelTest extends AbstractModelTest {
     private JobModel              jobModel;
     private OrderProcessingLoader scenario;
 
+    @Override
     @Before
     public void initialize() throws Exception {
         super.initialize();

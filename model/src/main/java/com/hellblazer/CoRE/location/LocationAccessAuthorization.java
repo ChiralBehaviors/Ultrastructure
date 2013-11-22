@@ -36,20 +36,21 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
  */
 @NamedQueries({
 
-	@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
-			+ "FROM LocationAccessAuthorization auth "
-			+ "WHERE auth.relationship = :r " + "AND auth.parent = :rf ") })
+@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+                                                                               + "FROM LocationAccessAuthorization auth "
+                                                                               + "WHERE auth.relationship = :r "
+                                                                               + "AND auth.parent = :rf ") })
 @Entity
 public abstract class LocationAccessAuthorization extends AccessAuthorization {
-    private static final long serialVersionUID = 1L;
-    
-    public static final String LOCATION_ACCESS_AUTHORIZATION_PREFIX = "locationAccessAuthorization";
-	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = LOCATION_ACCESS_AUTHORIZATION_PREFIX
-			+ GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+    private static final long  serialVersionUID                                   = 1L;
+
+    public static final String LOCATION_ACCESS_AUTHORIZATION_PREFIX               = "locationAccessAuthorization";
+    public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = LOCATION_ACCESS_AUTHORIZATION_PREFIX
+                                                                                    + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
     @ManyToOne
     @JoinColumn(name = "location1")
-    private Location          parent;
+    private Location           parent;
 
     /**
      * @return the parent

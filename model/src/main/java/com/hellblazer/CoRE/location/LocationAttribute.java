@@ -63,9 +63,16 @@ public class LocationAttribute extends AttributeValue<Location> {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency_value")
-    private Agency          agencyValue;
+    private Agency            agencyValue;
 
     public LocationAttribute() {
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public LocationAttribute(Agency updatedBy) {
+        super(updatedBy);
     }
 
     /**
@@ -73,6 +80,14 @@ public class LocationAttribute extends AttributeValue<Location> {
      */
     public LocationAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public LocationAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
     }
 
     /**
@@ -106,19 +121,10 @@ public class LocationAttribute extends AttributeValue<Location> {
 
     /**
      * @param attribute
-     * @param updatedBy
-     */
-    public LocationAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-    }
-
-    /**
-     * @param attribute
      * @param value
      * @param updatedBy
      */
-    public LocationAttribute(Attribute attribute, String value,
-                             Agency updatedBy) {
+    public LocationAttribute(Attribute attribute, String value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -137,11 +143,8 @@ public class LocationAttribute extends AttributeValue<Location> {
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public LocationAttribute(Agency updatedBy) {
-        super(updatedBy);
+    public Agency getAgencyValue() {
+        return agencyValue;
     }
 
     @Override
@@ -155,10 +158,6 @@ public class LocationAttribute extends AttributeValue<Location> {
 
     public Product getProductValue() {
         return productValue;
-    }
-
-    public Agency getAgencyValue() {
-        return agencyValue;
     }
 
     /* (non-Javadoc)
@@ -177,6 +176,10 @@ public class LocationAttribute extends AttributeValue<Location> {
         return Location.class;
     }
 
+    public void setAgencyValue(Agency agency2) {
+        agencyValue = agency2;
+    }
+
     public void setEntityValue(Product product) {
         productValue = product;
     }
@@ -188,10 +191,6 @@ public class LocationAttribute extends AttributeValue<Location> {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public void setAgencyValue(Agency agency2) {
-        agencyValue = agency2;
     }
 
     /* (non-Javadoc)
@@ -207,8 +206,7 @@ public class LocationAttribute extends AttributeValue<Location> {
             location = (Location) location.manageEntity(em, knownObjects);
         }
         if (agencyValue != null) {
-            agencyValue = (Agency) agencyValue.manageEntity(em,
-                                                                  knownObjects);
+            agencyValue = (Agency) agencyValue.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

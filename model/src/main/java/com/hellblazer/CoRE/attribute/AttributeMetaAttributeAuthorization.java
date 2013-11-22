@@ -63,6 +63,13 @@ public class AttributeMetaAttributeAuthorization extends
     }
 
     /**
+     * @param updatedBy
+     */
+    public AttributeMetaAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param classifier
      * @param classification
      * @param attribute
@@ -85,17 +92,6 @@ public class AttributeMetaAttributeAuthorization extends
 
     /**
      * @param classification
-     * @param authorized
-     * @param updatedBy
-     */
-    public AttributeMetaAttributeAuthorization(Relationship classification,
-                                               Attribute authorized,
-                                               Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-    }
-
-    /**
-     * @param classification
      * @param updatedBy
      */
     public AttributeMetaAttributeAuthorization(Relationship classification,
@@ -104,10 +100,14 @@ public class AttributeMetaAttributeAuthorization extends
     }
 
     /**
+     * @param classification
+     * @param authorized
      * @param updatedBy
      */
-    public AttributeMetaAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
+    public AttributeMetaAttributeAuthorization(Relationship classification,
+                                               Attribute authorized,
+                                               Agency updatedBy) {
+        super(classification, authorized, updatedBy);
     }
 
     /* (non-Javadoc)

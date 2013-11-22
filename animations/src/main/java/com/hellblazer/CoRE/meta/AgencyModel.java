@@ -25,8 +25,7 @@ import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
  * @author hhildebrand
  * 
  */
-public interface AgencyModel
-        extends
+public interface AgencyModel extends
         NetworkedModel<Agency, AgencyAttributeAuthorization, AgencyAttribute> {
 
 }

@@ -127,7 +127,7 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
 
     @ManyToOne
     @JoinColumn(name = "requester")
-    private Agency           requester;
+    private Agency             requester;
 
     @ManyToOne
     @JoinColumn(name = "requester_classification")
@@ -149,11 +149,17 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     }
 
     /**
+     * @param updatedBy
+     */
+    public ProtocolAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param authorized
      * @param updatedBy
      */
-    public ProtocolAttributeAuthorization(Attribute authorized,
-                                          Agency updatedBy) {
+    public ProtocolAttributeAuthorization(Attribute authorized, Agency updatedBy) {
         super(authorized, updatedBy);
     }
 
@@ -170,13 +176,6 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
      */
     public ProtocolAttributeAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public ProtocolAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public Location getDeliverFrom() {

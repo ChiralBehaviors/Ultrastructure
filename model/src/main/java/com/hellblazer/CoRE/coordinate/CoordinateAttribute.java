@@ -67,10 +67,25 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     }
 
     /**
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param attribute
      */
     public CoordinateAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
     }
 
     /**
@@ -98,17 +113,8 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
      * @param value
      * @param updatedBy
      */
-    public CoordinateAttribute(Attribute attribute, int value,
-                               Agency updatedBy) {
+    public CoordinateAttribute(Attribute attribute, int value, Agency updatedBy) {
         super(attribute, value, updatedBy);
-    }
-
-    /**
-     * @param attribute
-     * @param updatedBy
-     */
-    public CoordinateAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
     }
 
     /**
@@ -134,13 +140,6 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
      */
     public CoordinateAttribute(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public CoordinateAttribute(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public Coordinate getCoordinate() {

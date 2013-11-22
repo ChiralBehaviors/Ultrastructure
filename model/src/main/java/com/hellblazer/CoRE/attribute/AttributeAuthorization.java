@@ -51,7 +51,7 @@ abstract public class AttributeAuthorization extends Ruleform {
     // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "grouping_agency")
-    private Agency          groupingAgency;
+    private Agency            groupingAgency;
 
     @Column(name = "integer_value")
     private Integer           integerValue;
@@ -72,6 +72,13 @@ abstract public class AttributeAuthorization extends Ruleform {
         super();
     }
 
+    /**
+     * @param updatedBy
+     */
+    public AttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public AttributeAuthorization(Attribute authorized, Agency updatedBy) {
         super(updatedBy);
         authorizedAttribute = authorized;
@@ -89,13 +96,6 @@ abstract public class AttributeAuthorization extends Ruleform {
      */
     public AttributeAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public AttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public Attribute getAuthorizedAttribute() {
@@ -173,7 +173,7 @@ abstract public class AttributeAuthorization extends Ruleform {
         }
         if (groupingAgency != null) {
             groupingAgency = (Agency) groupingAgency.manageEntity(em,
-                                                                        knownObjects);
+                                                                  knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

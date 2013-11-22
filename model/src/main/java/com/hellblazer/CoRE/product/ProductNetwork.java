@@ -207,6 +207,13 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     /**
+     * @param updatedBy
+     */
+    public ProductNetwork(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public ProductNetwork(Long id) {
@@ -243,13 +250,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      */
     public ProductNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public ProductNetwork(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

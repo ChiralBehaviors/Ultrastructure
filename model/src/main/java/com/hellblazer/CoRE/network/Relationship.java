@@ -77,17 +77,17 @@ public class Relationship extends ExistentialRuleform {
     }
 
     /**
-     * @param id
-     */
-    public Relationship(Long id) {
-        super(id);
-    }
-
-    /**
      * @param updatedBy
      */
     public Relationship(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Relationship(Long id) {
+        super(id);
     }
 
     /**

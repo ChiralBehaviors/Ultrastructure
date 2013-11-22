@@ -38,7 +38,6 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.agency.AgencyAttribute_;
 
 /**
  * The attribute value of an agency attribute
@@ -61,10 +60,17 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
-    private Agency           agency;
+    private Agency             agency;
 
     public AgencyAttribute() {
         super();
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public AgencyAttribute(Agency updatedBy) {
+        super(updatedBy);
     }
 
     /**
@@ -72,35 +78,6 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      */
     public AgencyAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public AgencyAttribute(Attribute attribute, BigDecimal value,
-                             Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
-
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public AgencyAttribute(Attribute attribute, boolean value,
-                             Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
-
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public AgencyAttribute(Attribute attribute, int value, Agency updatedBy) {
-        super(attribute, value, updatedBy);
     }
 
     /**
@@ -116,8 +93,35 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param value
      * @param updatedBy
      */
-    public AgencyAttribute(Attribute attribute, String value,
-                             Agency updatedBy) {
+    public AgencyAttribute(Attribute attribute, BigDecimal value,
+                           Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
+
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public AgencyAttribute(Attribute attribute, boolean value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
+
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public AgencyAttribute(Attribute attribute, int value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
+
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public AgencyAttribute(Attribute attribute, String value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -136,20 +140,13 @@ public class AgencyAttribute extends AttributeValue<Agency> {
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public AgencyAttribute(Agency updatedBy) {
-        super(updatedBy);
+    public Agency getAgency() {
+        return agency;
     }
 
     @Override
     public Long getId() {
         return id;
-    }
-
-    public Agency getAgency() {
-        return agency;
     }
 
     /* (non-Javadoc)
@@ -168,13 +165,13 @@ public class AgencyAttribute extends AttributeValue<Agency> {
         return Agency.class;
     }
 
+    public void setAgency(Agency agency2) {
+        agency = agency2;
+    }
+
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 
     /* (non-Javadoc)

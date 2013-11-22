@@ -65,9 +65,16 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
-    private Agency          agency;
+    private Agency            agency;
 
     public ProductLocationAttribute() {
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public ProductLocationAttribute(Agency updatedBy) {
+        super(updatedBy);
     }
 
     /**
@@ -75,6 +82,14 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      */
     public ProductLocationAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public ProductLocationAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
     }
 
     /**
@@ -109,14 +124,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
 
     /**
      * @param attribute
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-    }
-
-    /**
-     * @param attribute
      * @param value
      * @param updatedBy
      */
@@ -140,11 +147,8 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Agency updatedBy) {
-        super(updatedBy);
+    public Agency getAgency() {
+        return agency;
     }
 
     public ProductLocation getEntityLocation() {
@@ -158,10 +162,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     @Override
     public Long getId() {
         return id;
-    }
-
-    public Agency getAgency() {
-        return agency;
     }
 
     /* (non-Javadoc)
@@ -180,6 +180,10 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         return ProductLocation.class;
     }
 
+    public void setAgency(Agency agency2) {
+        agency = agency2;
+    }
+
     public void setEntityLocation(ProductLocation productLocation) {
         this.productLocation = productLocation;
     }
@@ -191,10 +195,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 
     /* (non-Javadoc)

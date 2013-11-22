@@ -59,6 +59,13 @@ public class JobAttribute extends AttributeValue<Job> {
     }
 
     /**
+     * @param updatedBy
+     */
+    public JobAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param attribute
      */
     public JobAttribute(Attribute attribute) {
@@ -67,11 +74,18 @@ public class JobAttribute extends AttributeValue<Job> {
 
     /**
      * @param attribute
+     * @param updatedBy
+     */
+    public JobAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
+
+    /**
+     * @param attribute
      * @param value
      * @param updatedBy
      */
-    public JobAttribute(Attribute attribute, BigDecimal value,
-                        Agency updatedBy) {
+    public JobAttribute(Attribute attribute, BigDecimal value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -91,14 +105,6 @@ public class JobAttribute extends AttributeValue<Job> {
      */
     public JobAttribute(Attribute attribute, int value, Agency updatedBy) {
         super(attribute, value, updatedBy);
-    }
-
-    /**
-     * @param attribute
-     * @param updatedBy
-     */
-    public JobAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
     }
 
     /**
@@ -123,13 +129,6 @@ public class JobAttribute extends AttributeValue<Job> {
      */
     public JobAttribute(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public JobAttribute(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

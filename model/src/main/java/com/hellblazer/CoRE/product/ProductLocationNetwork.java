@@ -72,9 +72,16 @@ public class ProductLocationNetwork extends Ruleform {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
-    private Agency           agency;
+    private Agency             agency;
 
     public ProductLocationNetwork() {
+    }
+
+    /**
+     * @param updatedBy
+     */
+    public ProductLocationNetwork(Agency updatedBy) {
+        super(updatedBy);
     }
 
     /**
@@ -84,11 +91,8 @@ public class ProductLocationNetwork extends Ruleform {
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public ProductLocationNetwork(Agency updatedBy) {
-        super(updatedBy);
+    public Agency getAgency() {
+        return agency;
     }
 
     public Product getContextualEntity() {
@@ -108,8 +112,8 @@ public class ProductLocationNetwork extends Ruleform {
         return product;
     }
 
-    public Agency getAgency() {
-        return agency;
+    public void setAgency(Agency agency2) {
+        agency = agency2;
     }
 
     public void setContextualProduct(Product product1) {
@@ -127,10 +131,6 @@ public class ProductLocationNetwork extends Ruleform {
 
     public void setProduct(Product product2) {
         product = product2;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 
     /* (non-Javadoc)

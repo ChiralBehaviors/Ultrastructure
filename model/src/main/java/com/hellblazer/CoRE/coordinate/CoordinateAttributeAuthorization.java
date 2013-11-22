@@ -58,7 +58,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
-    private Agency          agency;
+    private Agency            agency;
 
     /**
      * 
@@ -68,17 +68,21 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     }
 
     /**
+     * @param updatedBy
+     */
+    public CoordinateAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public CoordinateAttributeAuthorization(Long id) {
         super(id);
     }
 
-    /**
-     * @param updatedBy
-     */
-    public CoordinateAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
+    public Agency getAgency() {
+        return agency;
     }
 
     public Coordinate getClassificationCoordinate() {
@@ -93,8 +97,8 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
         return id;
     }
 
-    public Agency getAgency() {
-        return agency;
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
     public void setClassificationCoordinate(Coordinate classificationCoordinate) {
@@ -107,10 +111,6 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setAgency(Agency agency) {
-        this.agency = agency;
     }
 
     /* (non-Javadoc)

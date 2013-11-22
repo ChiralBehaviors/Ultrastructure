@@ -90,6 +90,19 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * 
      * @param attribute
      *            - the Attribute
+     * @param groupingAgency
+     *            - the grouping Agency
+     * @return the List of allowed values for this attribute
+     */
+    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
+                                                 Agency groupingAgency);
+
+    /**
+     * Answer the allowed values for an Attribute, classified by the supplied
+     * aspect
+     * 
+     * @param attribute
+     *            - the Attribute
      * @param aspect
      *            - the classifying aspect
      * @return the List of allowed values for this attribute
@@ -98,17 +111,24 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
                                                  Aspect<RuleForm> aspect);
 
     /**
-     * Answer the allowed values for an Attribute, classified by the supplied
-     * aspect
+     * Answer the list of attribute authorizations that are classified by the
+     * grouping agency
      * 
-     * @param attribute
-     *            - the Attribute
      * @param groupingAgency
-     *            - the grouping Agency
-     * @return the List of allowed values for this attribute
+     * @return
      */
-    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                 Agency groupingAgency);
+    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency);
+
+    /**
+     * Answer the list of attribute authorizations that are classified by the
+     * grouping agency, defined for the particular attribute
+     * 
+     * @param groupingAgency
+     * @param attribute
+     * @return
+     */
+    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
+                                                            Attribute attribute);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -133,24 +153,17 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
                                                             Attribute attribute);
 
     /**
-     * Answer the list of attribute authorizations that are classified by the
-     * grouping agency
+     * Answer the list of existing attributes for the ruleform instance that are
+     * authorized by the groupingAgency
      * 
+     * @param ruleform
+     *            - the instance
      * @param groupingAgency
-     * @return
+     *            - the classifying agency
+     * @return the list of existing attributes authorized by this classification
      */
-    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency);
-
-    /**
-     * Answer the list of attribute authorizations that are classified by the
-     * grouping agency, defined for the particular attribute
-     * 
-     * @param groupingAgency
-     * @param attribute
-     * @return
-     */
-    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
-                                                            Attribute attribute);
+    List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
+                                                  Agency groupingAgency);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -164,19 +177,6 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      */
     List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
                                                   Aspect<RuleForm> aspect);
-
-    /**
-     * Answer the list of existing attributes for the ruleform instance that are
-     * authorized by the groupingAgency
-     * 
-     * @param ruleform
-     *            - the instance
-     * @param groupingAgency
-     *            - the classifying agency
-     * @return the list of existing attributes authorized by this classification
-     */
-    List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                  Agency groupingAgency);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -237,16 +237,7 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * @param child
      * @param updatedBy
      */
-    void link(RuleForm parent, Relationship r, RuleForm child,
-              Agency updatedBy);
-
-    /**
-     * Propagate the network inferences based on the tracked additions,
-     * deletions and modifications
-     * 
-     * @throws SQLException
-     */
-    void propagate();
+    void link(RuleForm parent, Relationship r, RuleForm child, Agency updatedBy);
 
     /**
      * Track the deleted network edge
@@ -255,4 +246,12 @@ public interface NetworkedModel<RuleForm extends Networked<RuleForm, ?>, Attribu
      * @param relationship
      */
     void networkEdgeDeleted(long parent, long relationship);
+
+    /**
+     * Propagate the network inferences based on the tracked additions,
+     * deletions and modifications
+     * 
+     * @throws SQLException
+     */
+    void propagate();
 }

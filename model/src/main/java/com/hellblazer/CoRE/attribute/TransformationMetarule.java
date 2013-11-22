@@ -61,7 +61,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "product_network_agency")
-    private Agency           productNetworkAgency;
+    private Agency             productNetworkAgency;
 
     @Id
     @GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
@@ -165,7 +165,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
         }
         if (productNetworkAgency != null) {
             productNetworkAgency = (Agency) productNetworkAgency.manageEntity(em,
-                                                                                    knownObjects);
+                                                                              knownObjects);
         }
         if (relationshipMap != null) {
             relationshipMap = (Relationship) relationshipMap.manageEntity(em,

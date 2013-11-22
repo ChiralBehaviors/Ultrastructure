@@ -66,6 +66,13 @@ public class NetworkInference extends Ruleform {
     }
 
     /**
+     * @param updatedBy
+     */
+    public NetworkInference(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public NetworkInference(Long id) {
@@ -94,13 +101,6 @@ public class NetworkInference extends Ruleform {
         this.premise1 = premise1;
         this.premise2 = premise2;
         this.inference = inference;
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public NetworkInference(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**

@@ -54,7 +54,6 @@ import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.Protocol_;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
 import com.hellblazer.CoRE.jsp.JSP;
@@ -77,10 +76,6 @@ import com.hellblazer.CoRE.product.Product;
  * 
  */
 public class JobModelImpl implements JobModel {
-    private static interface Procedure<T> {
-        T call(JobModelImpl jobModel) throws Exception;
-    }
-
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -94,11 +89,12 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
+    private static interface Procedure<T> {
+        T call(JobModelImpl jobModel) throws Exception;
     }
 
     private static final Logger     log               = LoggerFactory.getLogger(JobModelImpl.class);
+
     private static final List<Long> MODIFIED_SERVICES = new ArrayList<Long>();
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
@@ -257,12 +253,6 @@ public class JobModelImpl implements JobModel {
         });
     }
 
-    public static void log_modified_product_status_code_sequencing(final TriggerData triggerData)
-                                                                                                 throws SQLException {
-
-        MODIFIED_SERVICES.add(triggerData.getNew().getLong("service"));
-    }
-
     public static void log_inserts_in_job_chronology(final TriggerData triggerData)
                                                                                    throws SQLException {
         execute(new Procedure<Void>() {
@@ -273,6 +263,12 @@ public class JobModelImpl implements JobModel {
                 return null;
             }
         });
+    }
+
+    public static void log_modified_product_status_code_sequencing(final TriggerData triggerData)
+                                                                                                 throws SQLException {
+
+        MODIFIED_SERVICES.add(triggerData.getNew().getLong("service"));
     }
 
     public static void process_job_change(final TriggerData triggerData)
@@ -297,11 +293,15 @@ public class JobModelImpl implements JobModel {
         });
     }
 
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
+    }
+
     private final EntityManager em;
     private final Kernel        kernel;
     private final LocationModel locationModel;
     private final ProductModel  productModel;
-    private final AgencyModel agencyModel;
+    private final AgencyModel   agencyModel;
 
     public JobModelImpl(Model model) {
         em = model.getEntityManager();
@@ -405,24 +405,6 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Protocol> getProtocols(Job job) {
-        List<Protocol> protocols = new ArrayList<Protocol>();
-        if (job.getStatus().getPropagateChildren()) {
-            for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
-                for (Protocol protocol : getProtocols(job, metaProtocol)) {
-                    if (!protocols.contains(protocol)) {
-                        protocols.add(protocol);
-                    }
-                }
-                if (metaProtocol.getStopOnMatch()) {
-                    break;
-                }
-            }
-        }
-        return protocols;
-    }
-
-    @Override
     public List<Job> getActiveExplicitJobs() {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_EXPLICIT_JOBS,
                                                     Job.class);
@@ -484,7 +466,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
-                                                                Agency agency) {
+                                                              Agency agency) {
         List<Job> jobs = new ArrayList<Job>();
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
                                                     Job.class);
@@ -493,8 +475,7 @@ public class JobModelImpl implements JobModel {
         for (Job subJob : query.getResultList()) {
             if (isActive(subJob)) {
                 jobs.add(subJob);
-                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency,
-                                                           jobs);
+                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency, jobs);
             }
         }
         return jobs;
@@ -502,8 +483,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
-                                                           Agency agency,
-                                                           List<Job> jobs) {
+                                                         Agency agency,
+                                                         List<Job> jobs) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
                                                     Job.class);
         query.setParameter("parent", parent);
@@ -511,8 +492,7 @@ public class JobModelImpl implements JobModel {
         for (Job subJob : query.getResultList()) {
             if (isActive(subJob)) {
                 jobs.add(subJob);
-                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency,
-                                                           jobs);
+                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency, jobs);
             }
         }
     }
@@ -640,6 +620,24 @@ public class JobModelImpl implements JobModel {
                                    ProductParentSequencingAuthorization.class).setParameter("service",
                                                                                             job.getService()).setParameter("status",
                                                                                                                            job.getStatus()).getResultList();
+    }
+
+    @Override
+    public List<Protocol> getProtocols(Job job) {
+        List<Protocol> protocols = new ArrayList<Protocol>();
+        if (job.getStatus().getPropagateChildren()) {
+            for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
+                for (Protocol protocol : getProtocols(job, metaProtocol)) {
+                    if (!protocols.contains(protocol)) {
+                        protocols.add(protocol);
+                    }
+                }
+                if (metaProtocol.getStopOnMatch()) {
+                    break;
+                }
+            }
+        }
+        return protocols;
     }
 
     /**
@@ -859,14 +857,12 @@ public class JobModelImpl implements JobModel {
         return query.getSingleResult() > 0;
     }
 
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
+     */
     @Override
-    public void processJobChange(Job job) {
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing change in Job %s", job.getId()));
-        }
-        processChildChanges(job);
-        processParentChanges(job);
-        processSiblingChanges(job);
+    public void logModifiedService(Long scs) {
+        MODIFIED_SERVICES.add(scs);
     }
 
     @Override
@@ -889,6 +885,16 @@ public class JobModelImpl implements JobModel {
                                            job));
             }
         }
+    }
+
+    @Override
+    public void processJobChange(Job job) {
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing change in Job %s", job.getId()));
+        }
+        processChildChanges(job);
+        processParentChanges(job);
+        processSiblingChanges(job);
     }
 
     @Override
@@ -974,9 +980,9 @@ public class JobModelImpl implements JobModel {
                                                  metaProtocol.getDeliverTo(),
                                                  "deliver to", job));
         Agency requester = transform(job.getRequester(),
-                                       transform(job.getRequester(),
-                                                 metaProtocol.getRequestingAgency(),
-                                                 "requester", job));
+                                     transform(job.getRequester(),
+                                               metaProtocol.getRequestingAgency(),
+                                               "requester", job));
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Protocol> cQuery = cb.createQuery(Protocol.class);
@@ -1136,6 +1142,22 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
+     * Resolve the value of a agency, using the original and supplied values
+     */
+    private Agency resolve(Agency original, Agency supplied) {
+        if (kernel.getSameAgency().equals(supplied)) {
+            return original;
+        } else if (kernel.getNotApplicableAgency().equals(supplied)) {
+            return kernel.getNotApplicableAgency();
+        } else if (kernel.getAnyAgency().equals(supplied)) {
+            return original;
+        } else if (kernel.getOriginalAgency().equals(supplied)) {
+            return original;
+        }
+        return supplied;
+    }
+
+    /**
      * Resolve the value of a location, using the original and supplied values
      */
     private Location resolve(Location original, Location supplied) {
@@ -1167,20 +1189,48 @@ public class JobModelImpl implements JobModel {
         return supplied;
     }
 
-    /**
-     * Resolve the value of a agency, using the original and supplied values
-     */
-    private Agency resolve(Agency original, Agency supplied) {
-        if (kernel.getSameAgency().equals(supplied)) {
-            return original;
-        } else if (kernel.getNotApplicableAgency().equals(supplied)) {
-            return kernel.getNotApplicableAgency();
-        } else if (kernel.getAnyAgency().equals(supplied)) {
-            return original;
-        } else if (kernel.getOriginalAgency().equals(supplied)) {
+    private Agency transform(Agency original, Agency transformed) {
+        if (original.equals(kernel.getAnyAgency())
+            || original.equals(kernel.getSameAgency())
+            || original.equals(kernel.getNotApplicableAgency())) {
+            return null;
+        }
+        if (transformed == null) {
             return original;
         }
-        return supplied;
+        if (transformed.equals(kernel.getSameAgency())) {
+            return original;
+        }
+        if (transformed.equals(kernel.getNotApplicableAgency())
+            || transformed.equals(kernel.getAnyAgency())) {
+            return null;
+        }
+        return transformed;
+    }
+
+    private Agency transform(Agency agency, Relationship relationship,
+                             String type, Job job) {
+        if (kernel.getNotApplicableRelationship().equals(relationship)) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (Not Appplicable) for %s for job %s",
+                                        type, job));
+            }
+            return kernel.getNotApplicableAgency();
+        } else if (kernel.getAnyRelationship().equals(relationship)) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (ANY) for %s for job %s", type,
+                                        job));
+            }
+            return kernel.getAnyAgency();
+        } else if (kernel.getSameRelationship().equals(relationship)) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Using (SAME) for %s for job %s", type,
+                                        job));
+            }
+            return kernel.getSameAgency();
+        } else {
+            return agencyModel.getChild(agency, relationship);
+        }
     }
 
     private Location transform(Location original, Location transformed) {
@@ -1284,58 +1334,6 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    private Agency transform(Agency agency, Relationship relationship,
-                               String type, Job job) {
-        if (kernel.getNotApplicableRelationship().equals(relationship)) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Using (Not Appplicable) for %s for job %s",
-                                        type, job));
-            }
-            return kernel.getNotApplicableAgency();
-        } else if (kernel.getAnyRelationship().equals(relationship)) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Using (ANY) for %s for job %s", type,
-                                        job));
-            }
-            return kernel.getAnyAgency();
-        } else if (kernel.getSameRelationship().equals(relationship)) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Using (SAME) for %s for job %s", type,
-                                        job));
-            }
-            return kernel.getSameAgency();
-        } else {
-            return agencyModel.getChild(agency, relationship);
-        }
-    }
-
-    private Agency transform(Agency original, Agency transformed) {
-        if (original.equals(kernel.getAnyAgency())
-            || original.equals(kernel.getSameAgency())
-            || original.equals(kernel.getNotApplicableAgency())) {
-            return null;
-        }
-        if (transformed == null) {
-            return original;
-        }
-        if (transformed.equals(kernel.getSameAgency())) {
-            return original;
-        }
-        if (transformed.equals(kernel.getNotApplicableAgency())
-            || transformed.equals(kernel.getAnyAgency())) {
-            return null;
-        }
-        return transformed;
-    }
-
-    private void validateStateGraph() throws SQLException {
-        try {
-            validate_State_Graph(MODIFIED_SERVICES);
-        } finally {
-            MODIFIED_SERVICES.clear();
-        }
-    }
-
     /**
      * @param modifiedServices
      * @throws SQLException
@@ -1349,11 +1347,11 @@ public class JobModelImpl implements JobModel {
         validateStateGraph(modified);
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
-     */
-    @Override
-    public void logModifiedService(Long scs) {
-        MODIFIED_SERVICES.add(scs);
+    private void validateStateGraph() throws SQLException {
+        try {
+            validate_State_Graph(MODIFIED_SERVICES);
+        } finally {
+            MODIFIED_SERVICES.clear();
+        }
     }
 }

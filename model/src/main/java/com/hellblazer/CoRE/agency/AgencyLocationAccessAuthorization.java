@@ -59,9 +59,8 @@ public class AgencyLocationAccessAuthorization extends
      * @param updatedBy
      */
     public AgencyLocationAccessAuthorization(Agency parent,
-                                               Relationship relationship,
-                                               Location child,
-                                               Agency updatedBy) {
+                                             Relationship relationship,
+                                             Location child, Agency updatedBy) {
         this();
         setParent(parent);
         setRelationship(relationship);
@@ -72,6 +71,7 @@ public class AgencyLocationAccessAuthorization extends
     /**
      * @return the child
      */
+    @Override
     public Location getChild() {
         return child;
     }

@@ -184,6 +184,13 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     }
 
     /**
+     * @param updatedBy
+     */
+    public AttributeNetwork(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param relationship
      * @param updatedBy
      */
@@ -207,13 +214,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      */
     public AttributeNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public AttributeNetwork(Agency updatedBy) {
-        super(updatedBy);
     }
 
     @Override

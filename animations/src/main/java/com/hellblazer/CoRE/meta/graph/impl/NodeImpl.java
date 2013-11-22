@@ -20,22 +20,24 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.meta.graph.Node;
 
 /**
- * Wrapper class to turn a Ruleform into a node. Yes, it would be nice if the Ruleform
- * class just implemented the INode interface directly, but the dependency management 
- * doesn't work out.
+ * Wrapper class to turn a Ruleform into a node. Yes, it would be nice if the
+ * Ruleform class just implemented the INode interface directly, but the
+ * dependency management doesn't work out.
+ * 
  * @author hparry
- *
+ * 
  */
 public class NodeImpl implements Node<Ruleform> {
-	
-	private Ruleform node;
-	
-	public NodeImpl(Ruleform node) {
-		this.node = node;
-	}
-	
-	public Ruleform getNode() {
-		return this.node;
-	}
+
+    private Ruleform node;
+
+    public NodeImpl(Ruleform node) {
+        this.node = node;
+    }
+
+    @Override
+    public Ruleform getNode() {
+        return node;
+    }
 
 }

@@ -113,18 +113,18 @@ public class CoordinateKind extends ExistentialRuleform {
     }
 
     /**
+     * @param updatedBy
+     */
+    public CoordinateKind(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param id
      */
     public CoordinateKind(Long id) {
         super(id);
         // TODO Auto-generated constructor stub
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public CoordinateKind(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**

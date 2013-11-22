@@ -86,7 +86,19 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         super();
     }
 
+    /**
+     * @param updatedBy
+     */
+    public AttributeValue(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public AttributeValue(Attribute attribute) {
+        this.attribute = attribute;
+    }
+
+    public AttributeValue(Attribute attribute, Agency updatedBy) {
+        this(updatedBy);
         this.attribute = attribute;
     }
 
@@ -106,11 +118,6 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         integerValue = value;
     }
 
-    public AttributeValue(Attribute attribute, Agency updatedBy) {
-        this(updatedBy);
-        this.attribute = attribute;
-    }
-
     public AttributeValue(Attribute attribute, String value, Agency updatedBy) {
         this(attribute, updatedBy);
         textValue = value;
@@ -126,13 +133,6 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
      */
     public AttributeValue(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public AttributeValue(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**

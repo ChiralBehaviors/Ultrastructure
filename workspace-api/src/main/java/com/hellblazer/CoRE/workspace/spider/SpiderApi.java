@@ -24,12 +24,12 @@ import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry
- *
+ * 
  */
 public interface SpiderApi {
-	
-	List<Product> getProducts(Product p, Relationship r);
-	
-	List<Ruleform> getProductAuthorizations(Product p);
+
+    List<Ruleform> getProductAuthorizations(Product p);
+
+    List<Product> getProducts(Product p, Relationship r);
 
 }

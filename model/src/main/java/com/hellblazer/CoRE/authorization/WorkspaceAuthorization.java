@@ -45,11 +45,9 @@ import com.hellblazer.CoRE.product.Product;
  * @author hhildebrand
  * 
  */
-@NamedQueries({
-	@NamedQuery(name=GET_AUTHORIZATIONS_FOR_WORKSPACE, query="SELECT auth "
-			+ "FROM WorkspaceAuthorization auth "
-			+ "WHERE auth.product = :product")
-})
+@NamedQueries({ @NamedQuery(name = GET_AUTHORIZATIONS_FOR_WORKSPACE, query = "SELECT auth "
+                                                                             + "FROM WorkspaceAuthorization auth "
+                                                                             + "WHERE auth.product = :product") })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "workspace_authorization", schema = "ruleform")
@@ -57,13 +55,13 @@ import com.hellblazer.CoRE.product.Product;
 @DiscriminatorColumn(name = "authorization_type")
 abstract public class WorkspaceAuthorization extends Ruleform {
 
-	public static final String GET_AUTHORIZATIONS_FOR_WORKSPACE = "getAuthorizationsForWorkspace";
-	
-    public static final String PRODUCT_AGENCY    = "0";
-    public static final String PRODUCT_STATUS_CODE = "1";
-    public static final String PRODUCT_UNIT        = "2";
+    public static final String GET_AUTHORIZATIONS_FOR_WORKSPACE = "getAuthorizationsForWorkspace";
 
-    private static final long  serialVersionUID    = 1L;
+    public static final String PRODUCT_AGENCY                   = "0";
+    public static final String PRODUCT_STATUS_CODE              = "1";
+    public static final String PRODUCT_UNIT                     = "2";
+
+    private static final long  serialVersionUID                 = 1L;
 
     @Column(name = "authorization_type")
     private String             authorizationType;
@@ -80,16 +78,16 @@ abstract public class WorkspaceAuthorization extends Ruleform {
         super();
     }
 
+    public WorkspaceAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
     public WorkspaceAuthorization(Long id) {
         super(id);
     }
 
     public WorkspaceAuthorization(Long id, Agency updatedBy) {
         super(id, updatedBy);
-    }
-
-    public WorkspaceAuthorization(Agency updatedBy) {
-        super(updatedBy);
     }
 
     public WorkspaceAuthorization(String notes) {
@@ -124,8 +122,14 @@ abstract public class WorkspaceAuthorization extends Ruleform {
         this.product = product;
     }
 
-    protected void setAuthorizationType(String authorizationType) {
-        this.authorizationType = authorizationType;
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
     }
 
     /*
@@ -135,13 +139,7 @@ abstract public class WorkspaceAuthorization extends Ruleform {
       * EntityManager, java.util.Map)
       */
 
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+    protected void setAuthorizationType(String authorizationType) {
+        this.authorizationType = authorizationType;
     }
 }

@@ -59,10 +59,25 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     }
 
     /**
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    /**
      * @param attribute
      */
     public ProtocolAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
     }
 
     /**
@@ -96,19 +111,10 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
 
     /**
      * @param attribute
-     * @param updatedBy
-     */
-    public ProtocolAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-    }
-
-    /**
-     * @param attribute
      * @param value
      * @param updatedBy
      */
-    public ProtocolAttribute(Attribute attribute, String value,
-                             Agency updatedBy) {
+    public ProtocolAttribute(Attribute attribute, String value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -125,13 +131,6 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
      */
     public ProtocolAttribute(Long id) {
         super(id);
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public ProtocolAttribute(Agency updatedBy) {
-        super(updatedBy);
     }
 
     /**

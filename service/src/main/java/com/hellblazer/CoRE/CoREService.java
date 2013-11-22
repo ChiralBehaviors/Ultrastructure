@@ -51,6 +51,21 @@ public class CoREService extends Service<CoREServiceConfiguration> {
 
     }
 
+    @Override
+    public void initialize(Bootstrap<CoREServiceConfiguration> bootstrap) {
+        bootstrap.addBundle(new DataAccessBundle());
+
+        //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
+        bootstrap.addBundle(new AssetsBundle("/ui/", "/ui/"));
+        SimpleModule testModule = new SimpleModule("MyModule",
+                                                   new Version(1, 0, 0, null,
+                                                               null, null));
+        testModule.addSerializer(new AttributeValueSerializer<AgencyAttribute>(
+                                                                               AgencyAttribute.class,
+                                                                               true)); // assuming serializer declares correct class to bind to
+        bootstrap.getObjectMapperFactory().registerModule(testModule);
+    }
+
     /* (non-Javadoc)
      * @see com.yammer.dropwizard.AbstractService#initialize(com.yammer.dropwizard.config.Configuration, com.yammer.dropwizard.config.Environment)
      */
@@ -69,20 +84,5 @@ public class CoREService extends Service<CoREServiceConfiguration> {
                                                                                                       new ModelImpl(
                                                                                                                     emf.createEntityManager())),
                                                                               "CoRE"));
-    }
-
-    @Override
-    public void initialize(Bootstrap<CoREServiceConfiguration> bootstrap) {
-        bootstrap.addBundle(new DataAccessBundle());
-
-        //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
-        bootstrap.addBundle(new AssetsBundle("/ui/", "/ui/"));
-        SimpleModule testModule = new SimpleModule("MyModule",
-                                                   new Version(1, 0, 0, null,
-                                                               null, null));
-        testModule.addSerializer(new AttributeValueSerializer<AgencyAttribute>(
-                                                                               AgencyAttribute.class,
-                                                                               true)); // assuming serializer declares correct class to bind to
-        bootstrap.getObjectMapperFactory().registerModule(testModule);
     }
 }

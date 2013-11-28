@@ -272,6 +272,16 @@ public class Agency extends ExistentialRuleform implements
         return id;
     }
 
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
+     */
+    @Override
+    public List<AgencyNetwork> getImmediateChildren(EntityManager em) {
+        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
+                                   AgencyNetwork.class).setParameter("agency",
+                                                                     this).getResultList();
+    }
+
     @Override
     public Set<AgencyNetwork> getNetworkByChild() {
         return networkByChild;

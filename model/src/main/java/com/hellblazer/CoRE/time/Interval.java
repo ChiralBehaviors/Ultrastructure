@@ -17,6 +17,7 @@
 package com.hellblazer.CoRE.time;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -49,7 +50,9 @@ import com.hellblazer.CoRE.network.Relationship;
 public class Interval extends ExistentialRuleform implements
         Networked<Interval, IntervalNetwork>, Attributable<IntervalAttribute> {
 
-    private static final long      serialVersionUID = 1L;
+    public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES = "interval.immediateChildrenNetworkRules";
+
+    private static final long      serialVersionUID                 = 1L;
 
     //bi-directional many-to-one association to IntervalAttribute
     @OneToMany(mappedBy = "interval", cascade = CascadeType.ALL)
@@ -155,6 +158,16 @@ public class Interval extends ExistentialRuleform implements
     @Override
     public Long getId() {
         return id;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
+     */
+    @Override
+    public List<IntervalNetwork> getImmediateChildren(EntityManager em) {
+        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
+                                   IntervalNetwork.class).setParameter("interval",
+                                                                       this).getResultList();
     }
 
     /* (non-Javadoc)

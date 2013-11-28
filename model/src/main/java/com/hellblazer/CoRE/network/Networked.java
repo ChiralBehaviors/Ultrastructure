@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.network;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -50,6 +51,8 @@ public interface Networked<E extends Networked<E, N>, N extends NetworkRuleform<
     void addChildRelationship(N relationship);
 
     void addParentRelationship(N relationship);
+
+    List<N> getImmediateChildren(EntityManager em);
 
     String getName();
 

@@ -12,7 +12,7 @@
 	<logger name="com.hellblazer.CoRE">
 		<level value="${testing.logging.core}" />
 	</logger>
-  <logger name="openjpa>
+  <logger name="openjpa.Runtime>
     <level value="warn"/>
   </logger>
 

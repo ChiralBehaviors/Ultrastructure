@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.location.Location.GET_CHILD;
 import static com.hellblazer.CoRE.location.Location.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -240,6 +241,15 @@ public class Location extends ExistentialRuleform implements
     @Override
     public Long getId() {
         return id;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.network.Networked#getImmediateChildren()
+     */
+    @Override
+    public List<LocationNetwork> getImmediateChildren(EntityManager em) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /* (non-Javadoc)

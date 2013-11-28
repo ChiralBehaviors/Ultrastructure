@@ -12,9 +12,9 @@
 	<logger name="com.hellblazer.CoRE">
 		<level value="${testing.logging.core}" />
 	</logger>
-	<logger name="org.dbunit.dataset">
-		<level value="ERROR" />
-	</logger>
+  <logger name="openjpa>
+    <level value="warn"/>
+  </logger>
 
 	<root>
 		<level value="INFO" />

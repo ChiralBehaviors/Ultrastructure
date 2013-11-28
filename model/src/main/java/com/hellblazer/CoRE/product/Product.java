@@ -318,16 +318,6 @@ public class Product extends ExistentialRuleform implements
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
-     */
-    @Override
-    public List<ProductNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   ProductNetwork.class).setParameter("product",
-                                                                      this).getResultList();
-    }
-
     public List<ProductLocationNetwork> getLocationRules(EntityManager em,
                                                          CoordinateKind kind) {
         return em.createNamedQuery(LOCATION_RULES, ProductLocationNetwork.class).setParameter("product",

@@ -12,7 +12,7 @@
 	<include relativeToChangelogFile="true" file="/views/attribute.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/attribute_meta_attribute.xml" />
-	<include relativeToChangelogFile="true" file="/views/attribute_network.xml" /> 
+	<include relativeToChangelogFile="true" file="/views/attribute_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/coordinate.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/coordinate_attribute.xml" />
@@ -25,23 +25,24 @@
 		file="/views/coordinate_relationship.xml" />
 	<include relativeToChangelogFile="true" file="/views/product.xml" />
 	<include relativeToChangelogFile="true" file="/views/product_attribute.xml" />
-	
+
 	<include relativeToChangelogFile="true" file="/views/product_location.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/product_location_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/product_network.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/product_child_sequencing_authorization.xml" />
-    <include relativeToChangelogFile="true"
-        file="/views/product_parent_sequencing_authorization.xml" />
-    <include relativeToChangelogFile="true"
-        file="/views/product_sibling_sequencing_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/product_parent_sequencing_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/product_sibling_sequencing_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/job.xml" />
 	<include relativeToChangelogFile="true" file="/views/job_attribute.xml" />
-    <include relativeToChangelogFile="true" file="/views/protocol_attribute.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/protocol_attribute.xml" />
 	<include relativeToChangelogFile="true" file="/views/job_chronology.xml" />
 	<include relativeToChangelogFile="true" file="/views/location.xml" />
-    <include relativeToChangelogFile="true" file="/views/location_network.xml" />
+	<include relativeToChangelogFile="true" file="/views/location_network.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/location_attribute_authorization.xml" />
 	<include relativeToChangelogFile="true"
@@ -51,31 +52,44 @@
 	<include relativeToChangelogFile="true" file="/views/meta_protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
-	<include relativeToChangelogFile="true"
-		file="/views/network_inference.xml" />
+	<include relativeToChangelogFile="true" file="/views/network_inference.xml" />
 	<include relativeToChangelogFile="true" file="/views/agency.xml" />
-	<include relativeToChangelogFile="true"
-		file="/views/agency_attribute.xml" />
+	<include relativeToChangelogFile="true" file="/views/agency_attribute.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/agency_attribute_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/agency_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/status_code.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/status_code_sequencing.xml" />
-    <include relativeToChangelogFile="true"
-        file="/views/sourcing_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/sourcing_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/transformation.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/transformation_metarule.xml" />
 	<include relativeToChangelogFile="true" file="/views/unit_values.xml" />
-    <include relativeToChangelogFile="true" file="/views/workspace_relationship_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/workspace_status_code_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/workspace_unit_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/product_agency_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/product_location_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/agency_location_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/agency_product_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/location_product_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="/views/location_agency_access_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/workspace_relationship_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/workspace_status_code_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/workspace_unit_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/product_agency_access_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/product_location_access_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/agency_location_access_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/agency_product_access_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/location_product_access_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/location_agency_access_authorization.xml" />
+	<include relativeToChangelogFile="true" file="/views/interval.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/interval_attribute.xml" />
+	<include relativeToChangelogFile="true"
+		file="/views/interval_attribute_authorization.xml" />
+	<include relativeToChangelogFile="true" file="/views/interval_network.xml" />
 
 </databaseChangeLog>

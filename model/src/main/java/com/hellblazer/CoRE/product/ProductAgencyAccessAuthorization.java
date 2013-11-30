@@ -16,16 +16,26 @@
  */
 package com.hellblazer.CoRE.product;
 
-import java.util.Map;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
 
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.agency.AgencyAccessAuthorization;
+import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
 
@@ -33,12 +43,23 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hparry
  * 
  */
+@NamedQueries({ @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
+                                                                                         + "FROM ProductAgencyAccessAuthorization auth "
+                                                                                         + "WHERE auth.parent = :parent "
+                                                                                         + "AND auth.relationship = :relationship "
+                                                                                         + "AND auth.child = :child "
+                                                                                         + "AND auth.parentTransitiveRelationship = :parentRelationship "
+                                                                                         + "AND auth.childTransitiveRelationship = :childRelationship") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_AGENCY)
 public class ProductAgencyAccessAuthorization extends
         ProductAccessAuthorization {
 
-    private static final long serialVersionUID = 1L;
+    public static final String PRODUCT_AGENCY_ACCESS_AUTH_PREFIX            = "productAgencyAccessAuthorization";
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
+                                                                              + AgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+
+    private static final long  serialVersionUID                             = 1L;
 
     {
         setAuthorizationType(AccessAuthorization.PRODUCT_AGENCY);
@@ -46,7 +67,12 @@ public class ProductAgencyAccessAuthorization extends
 
     @ManyToOne
     @JoinColumn(name = "agency2")
-    private Agency            child;
+    private Agency             child;
+
+    //bi-directional many-to-one association to ProductNetwork
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<AgencyNetwork> networkByChild;
 
     public ProductAgencyAccessAuthorization() {
         super();
@@ -82,6 +108,21 @@ public class ProductAgencyAccessAuthorization extends
      */
     public void setChild(Agency child) {
         this.child = child;
+    }
+
+    /**
+     * @return the networkByChild
+     */
+    public Set<AgencyNetwork> getNetworkByChild() {
+        return networkByChild;
+    }
+
+    /**
+     * @param networkByChild
+     *            the networkByChild to set
+     */
+    public void setNetworkByChild(Set<AgencyNetwork> networkByChild) {
+        this.networkByChild = networkByChild;
     }
 
     /*

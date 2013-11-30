@@ -57,7 +57,9 @@ public abstract class AccessAuthorization extends Ruleform {
     public static final String LOCATION_PRODUCT                                          = "5";
 
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX = ".getAllAuthorizationsForParentAndRelationship";
-
+    public static final String FIND_AUTHORIZATION_SUFFIX = ".findAuthorization";
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX = ".findAllAuthsForParentRelationshipChild";
+    
     private static final long  serialVersionUID                                          = 1L;
 
     @Column(name = "authorization_type")

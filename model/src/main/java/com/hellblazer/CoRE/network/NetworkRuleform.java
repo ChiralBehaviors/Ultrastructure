@@ -140,7 +140,7 @@ abstract public class NetworkRuleform<E extends Networked<E, ?>> extends
 
     @Override
     public String toString() {
-        return String.format("LocationNetwork[%s] %s >> %s >> %s: %s", getId(),
+        return String.format("%s[%s] %s >> %s >> %s: %s", this.getClass().getSimpleName(), getId(),
                              getParent().getName(),
                              getRelationship().getName(), getChild().getName(),
                              isInferred());

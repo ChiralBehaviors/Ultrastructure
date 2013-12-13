@@ -78,5 +78,8 @@
 		<class>com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization</class>
         <class>com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization</class>
+        <class>com.hellblazer.CoRE.time.Interval</class>
+        <class>com.hellblazer.CoRE.time.IntervalAttribute</class>
+        <class>com.hellblazer.CoRE.time.IntervalNetwork</class>
 	</persistence-unit>
 </persistence>

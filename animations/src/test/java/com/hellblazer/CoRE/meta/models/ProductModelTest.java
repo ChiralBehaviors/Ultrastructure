@@ -17,7 +17,7 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -27,6 +27,7 @@ import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
@@ -66,6 +67,32 @@ public class ProductModelTest extends AbstractModelTest {
         List<ProductNetwork> edges = em.createQuery("SELECT edge FROM ProductNetwork edge WHERE edge.inferred = TRUE",
                                                     ProductNetwork.class).getResultList();
         assertEquals(2, edges.size());
+    }
+    
+    @Test
+    public void testIsAccessible() {
+        em.getTransaction().begin();
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
+        Relationship isA = model.getKernel().getIsA();
+        
+        Product a = new Product("A", "A", core);
+        em.persist(a);
+        Product b = new Product("B", "B", core);
+        em.persist(b);
+        ProductNetwork edgeA = new ProductNetwork(a, isA, b, core);
+        em.persist(edgeA);
+        Agency ag = new Agency("AG", "AG", core);
+        em.persist(ag);
+        
+        ProductAgencyAccessAuthorization auth = new ProductAgencyAccessAuthorization(a, equals, ag, core);
+        em.persist(auth);
+        em.getTransaction().commit();
+        
+        ProductModelImpl model = new ProductModelImpl(em);
+        //assertTrue(model.isAccessible(a, null, equals, ag, null));
+        assertTrue(model.isAccessible(b, isA, equals, ag, null));
+        
     }
 
 }

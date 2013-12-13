@@ -21,6 +21,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -37,6 +41,8 @@ import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
+import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization_;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
 import com.hellblazer.CoRE.product.ProductNetwork;
@@ -274,8 +280,84 @@ public class ProductModelImpl
                                 Relationship authorizingRelationship,
                                 Networked<?, ?> child,
                                 Relationship childRelationship) {
-        // TODO Auto-generated method stub
-        return false;
+
+        if (parent == null || child == null || authorizingRelationship == null) {
+            throw new IllegalArgumentException(
+                                               "parent, authorizingRelationship, and child cannot be null");
+        }
+
+        Query query;
+        if ("Agency".equals(child.getClass().getSimpleName())) {
+            query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
+        } else {
+            throw new IllegalArgumentException(
+                                               "child type is not supported for this query");
+        }
+
+        if (parentRelationship == null && childRelationship == null) {
+            //            query.setParameter("parent", parent);
+            //            query.setParameter("relationship", authorizingRelationship);
+            //            query.setParameter("child", child);
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            CriteriaQuery<ProductAgencyAccessAuthorization> q = builder.createQuery(ProductAgencyAccessAuthorization.class);
+            Root<ProductAgencyAccessAuthorization> auth = q.from(ProductAgencyAccessAuthorization.class);
+            q.select(auth);
+            q.where(builder.equal(auth.get(ProductAgencyAccessAuthorization_.parent),
+                                  parent));
+            q.where(builder.equal(auth.get(ProductAgencyAccessAuthorization_.relationship),
+                                  authorizingRelationship));
+            q.where(builder.equal(auth.get(ProductAgencyAccessAuthorization_.child),
+                                  child));
+
+            query = em.createQuery(q);
+            
+        } else if (childRelationship == null) {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            CriteriaQuery<ProductAgencyAccessAuthorization> q = builder.createQuery(ProductAgencyAccessAuthorization.class);
+            Root<ProductAgencyAccessAuthorization> auth = q.from(ProductAgencyAccessAuthorization.class);
+            q.select(auth);
+        //    Join<ProductAgencyAccessAuthorization, ProductNetwork> parentJoin = auth.join(ProductAgencyAccessAuthorization_.networkByParent);
+
+            q.where(builder.and(builder.equal(auth.get(ProductAgencyAccessAuthorization_.relationship),
+                                              authorizingRelationship),
+                                builder.equal(auth.get(ProductAgencyAccessAuthorization_.child),
+                                              child)));
+//                                builder.equal(parentJoin.get(ProductNetwork_.child),
+//                                              parent),
+//                                builder.equal(parentJoin.get(ProductNetwork_.relationship),
+//                                              parentRelationship),
+//                                builder.equal(auth.get(ProductAgencyAccessAuthorization_.parent),
+//                                              parentJoin.get(ProductNetwork_.parent))));
+            //q.where(builder.equal(parentJoin.get(ProductNetwork_.relationship),
+            //                      parentRelationship));
+            //            q.where(builder.equal(parentJoin.get(ProductNetwork_.child), parent));
+            //            q.where(builder.equal(auth.get(ProductAgencyAccessAuthorization_.parent), ProductNetwork_.parent));
+
+            query = em.createQuery(q);
+            Query netQuery = em.createQuery("select net FROM ProductNetwork net "
+                    + "WHERE net.relationship = :rel "
+                    + "AND net.child = :child");
+            netQuery.setParameter("rel", parentRelationship);
+            netQuery.setParameter("child", parent);
+            
+            List<ProductNetwork> net = netQuery.getResultList();
+            List<?> res = query.getResultList();
+            for (ProductNetwork n : net) {
+                System.out.println("n: " + n);
+                for (ProductAgencyAccessAuthorization p : (List<ProductAgencyAccessAuthorization>) res) {
+                    System.out.println("auth: " + p);
+                    if (n.getParent().equals(p.getParent())) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+
+        }
+
+        List<?> results = query.getResultList();
+
+        return results.size() > 0;
     }
 
     /**

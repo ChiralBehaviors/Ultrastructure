@@ -44,6 +44,7 @@
     <include relativeToChangelogFile="true" file="tables/network_inference/trigger-network_inference_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship_network/triggers.xml"/>
     <include relativeToChangelogFile="true" file="tables/agency_attribute_authorization/trigger-agency_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/agency_network_authorization/trigger-agency_network_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/agency_attribute/trigger-agency_attribute_update_date.xml"/>

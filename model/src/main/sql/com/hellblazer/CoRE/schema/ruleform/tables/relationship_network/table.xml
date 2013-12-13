@@ -18,7 +18,6 @@
               research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              ordering ruleform.ordinal_number,
               CONSTRAINT relationship_network_pkey PRIMARY KEY (id ),
               CONSTRAINT relationship_network_child_fkey FOREIGN KEY (child)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
@@ -59,16 +58,5 @@
         <sql> ALTER TABLE ruleform.relationship_network OWNER TO core; </sql>
         <rollback/>
     </changeSet>
-    <changeSet id="4"
-        author="hparry">
-        <sql> CREATE TRIGGER relationship_network_restrict_pinned BEFORE UPDATE OR DELETE ON
-            ruleform.relationship_network FOR EACH ROW EXECUTE PROCEDURE ruleform.restrict_pinned(); </sql>
-        <rollback> DROP TRIGGER relationship_network_restrict_pinned ON ruleform.relationship_network; </rollback>
-    </changeSet>
-    <changeSet id="5"
-        author="hparry">
-        <sql> CREATE TRIGGER relationship_network_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.relationship_network FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER relationship_network_update_date ON ruleform.relationship_network; </rollback>
-    </changeSet>
+    
 </databaseChangeLog>

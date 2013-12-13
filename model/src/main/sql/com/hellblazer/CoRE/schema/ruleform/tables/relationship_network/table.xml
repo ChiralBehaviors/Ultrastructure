@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hparry">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.relationship_network
+            (
+              id bigserial NOT NULL,
+              parent bigint NOT NULL,
+              relationship bigint NOT NULL,
+              child bigint NOT NULL,
+              inferred boolean NOT NULL DEFAULT FALSE,
+              notes character varying,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              ordering ruleform.ordinal_number,
+              CONSTRAINT relationship_network_pkey PRIMARY KEY (id ),
+              CONSTRAINT relationship_network_child_fkey FOREIGN KEY (child)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT relationship_network_parent_fkey FOREIGN KEY (parent)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT relationship_network_relationship_fkey FOREIGN KEY (relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT relationship_network_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT relationship_network_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT relationship_network_key UNIQUE (parent , relationship , child )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.relationship_network"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="hparry">
+        <sql><![CDATA[
+            GRANT ALL ON TABLE ruleform.relationship_network TO core;
+            GRANT SELECT ON TABLE ruleform.relationship_network TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.relationship_network TO core_read_write;
+            ]]>
+        </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet id="3" author="hparry">
+        <sql> ALTER TABLE ruleform.relationship_network OWNER TO core; </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet id="4"
+        author="hparry">
+        <sql> CREATE TRIGGER relationship_network_restrict_pinned BEFORE UPDATE OR DELETE ON
+            ruleform.relationship_network FOR EACH ROW EXECUTE PROCEDURE ruleform.restrict_pinned(); </sql>
+        <rollback> DROP TRIGGER relationship_network_restrict_pinned ON ruleform.relationship_network; </rollback>
+    </changeSet>
+    <changeSet id="5"
+        author="hparry">
+        <sql> CREATE TRIGGER relationship_network_update_date BEFORE INSERT OR UPDATE ON
+            ruleform.relationship_network FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
+        <rollback> DROP TRIGGER relationship_network_update_date ON ruleform.relationship_network; </rollback>
+    </changeSet>
+</databaseChangeLog>

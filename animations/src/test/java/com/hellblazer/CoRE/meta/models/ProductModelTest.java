@@ -17,13 +17,15 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Test;
 
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -84,14 +86,21 @@ public class ProductModelTest extends AbstractModelTest {
         em.persist(edgeA);
         Agency ag = new Agency("AG", "AG", core);
         em.persist(ag);
+        Agency ag2 = new Agency("AG2", "AG2", core);
+        em.persist(ag2);
+        
+        AgencyNetwork aNet = new AgencyNetwork(ag, isA, ag2, core);
+        em.persist(aNet);
         
         ProductAgencyAccessAuthorization auth = new ProductAgencyAccessAuthorization(a, equals, ag, core);
         em.persist(auth);
         em.getTransaction().commit();
         
         ProductModelImpl model = new ProductModelImpl(em);
-        //assertTrue(model.isAccessible(a, null, equals, ag, null));
+        assertTrue(model.isAccessible(a, null, equals, ag, null));
         assertTrue(model.isAccessible(b, isA, equals, ag, null));
+        assertTrue(model.isAccessible(a, null, equals, ag2, isA));
+        assertTrue(model.isAccessible(b, isA, equals, ag2, isA));
         
     }
 

@@ -274,7 +274,8 @@ public class ProductModelImpl
      * com.hellblazer.CoRE.network.Networked,
      * com.hellblazer.CoRE.network.Relationship)
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public boolean isAccessible(Product parent,
                                 Relationship parentRelationship,
                                 Relationship authorizingRelationship,
@@ -339,8 +340,8 @@ public class ProductModelImpl
                     + "AND net.child = :child");
             netQuery.setParameter("rel", parentRelationship);
             netQuery.setParameter("child", parent);
-            
-            List<ProductNetwork> net = netQuery.getResultList();
+             
+			List<ProductNetwork> net = netQuery.getResultList();
             List<?> res = query.getResultList();
             for (ProductNetwork n : net) {
                 System.out.println("n: " + n);

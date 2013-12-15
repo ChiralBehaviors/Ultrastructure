@@ -17,21 +17,21 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GET_CHILD_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.UNLINKED_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILD_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.UNLINKED_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
@@ -70,7 +70,7 @@ import com.hellblazer.CoRE.meta.NetworkedModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.network.NetworkRuleform;
-import com.hellblazer.CoRE.network.Networked;
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductNetwork;
@@ -79,7 +79,7 @@ import com.hellblazer.CoRE.product.ProductNetwork;
  * @author hhildebrand
  * 
  */
-abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm, ?>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<?>>
+abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<?>>
         implements
         NetworkedModel<RuleForm, AttributeAuthorization, AttributeType> {
 
@@ -306,7 +306,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getAttributesClassifiedBy(com
-     * .hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.meta.Aspect)
+     * .hellblazer.CoRE.ExistentialRuleform, com.hellblazer.CoRE.meta.Aspect)
      */
     @Override
     public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
@@ -325,7 +325,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.hellblazer
-     * .CoRE.network.Networked, com.hellblazer.CoRE.agency.Agency)
+     * .CoRE.ExistentialRuleform, com.hellblazer.CoRE.agency.Agency)
      */
     @Override
     public List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
@@ -343,7 +343,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getChild(com.hellblazer.CoRE.
-     * network.Networked, com.hellblazer.CoRE.network.Relationship)
+     * ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
     public RuleForm getChild(RuleForm parent, Relationship r) {
@@ -364,7 +364,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends Networked<RuleForm
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getFacet(com.hellblazer.CoRE.
-     * network.Networked, com.hellblazer.CoRE.meta.Aspect)
+     * ExistentialRuleform, com.hellblazer.CoRE.meta.Aspect)
      */
     @Override
     public Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,

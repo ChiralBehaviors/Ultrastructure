@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.meta.graph.query.NetworkGraphQuery;
 import com.hellblazer.CoRE.network.NetworkRuleform;
-import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -25,7 +25,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hparry
  * 
  */
-public class SerializableGraph<T extends Networked<T, ?>> {
+public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 
     public class GraphEdge {
         private long source;

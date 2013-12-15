@@ -29,6 +29,7 @@ import javax.persistence.criteria.Root;
 
 import org.postgresql.pljava.TriggerData;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.event.StatusCode;
@@ -40,7 +41,6 @@ import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
@@ -278,11 +278,11 @@ public class ProductModelImpl
      */
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public boolean isAccessible(Product parent,
                                 Relationship parentRelationship,
                                 Relationship authorizingRelationship,
-                                Networked<?, ?> child,
+                                ExistentialRuleform<?, ?> child,
                                 Relationship childRelationship) {
 
         if (parent == null || child == null || authorizingRelationship == null) {
@@ -354,8 +354,9 @@ public class ProductModelImpl
                                               parent)));
             query = em.createQuery(q);
             TypedQuery<AgencyNetwork> netQuery = em.createQuery("select net FROM AgencyNetwork net "
-                                            + "WHERE net.relationship = :rel "
-                                            + "AND net.child = :child", AgencyNetwork.class);
+                                                                        + "WHERE net.relationship = :rel "
+                                                                        + "AND net.child = :child",
+                                                                AgencyNetwork.class);
             netQuery.setParameter("rel", childRelationship);
             netQuery.setParameter("child", child);
 
@@ -376,10 +377,10 @@ public class ProductModelImpl
             Root<ProductAgencyAccessAuthorization> auth = q.from(ProductAgencyAccessAuthorization.class);
             q.select(auth);
             q.where(builder.equal(auth.get(ProductAgencyAccessAuthorization_.relationship),
-                                              authorizingRelationship));
+                                  authorizingRelationship));
             query = em.createQuery(q);
             Query parentNetQuery = em.createQuery("select net FROM ProductNetwork net "
-                                            + "WHERE net.relationship = :rel ");
+                                                  + "WHERE net.relationship = :rel ");
             parentNetQuery.setParameter("rel", parentRelationship);
 
             List<ProductNetwork> net = parentNetQuery.getResultList();
@@ -398,8 +399,8 @@ public class ProductModelImpl
                 return false;
             }
             Query childNetQuery = em.createQuery("select net FROM AgencyNetwork net "
-                                            + "WHERE net.relationship = :rel "
-                                            + "AND net.child = :child");
+                                                 + "WHERE net.relationship = :rel "
+                                                 + "AND net.child = :child");
             childNetQuery.setParameter("rel", childRelationship);
             childNetQuery.setParameter("child", child);
 

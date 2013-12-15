@@ -41,10 +41,7 @@ import com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization;
 import com.hellblazer.CoRE.coordinate.Coordinate;
 import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
 import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
-import com.hellblazer.CoRE.coordinate.CoordinateKind;
-import com.hellblazer.CoRE.coordinate.CoordinateKindDefinition;
 import com.hellblazer.CoRE.coordinate.CoordinateNesting;
-import com.hellblazer.CoRE.coordinate.CoordinateRelationship;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
@@ -107,10 +104,7 @@ import com.hellblazer.CoRE.product.ProductNetworkDeduction;
                @Type(value = Coordinate.class, name = "coordinate"),
                @Type(value = CoordinateAttribute.class, name = "coordinateAttribute"),
                @Type(value = CoordinateAttributeAuthorization.class, name = "coordinateAttributeAuthorization"),
-               @Type(value = CoordinateKind.class, name = "coordinateKind"),
-               @Type(value = CoordinateKindDefinition.class, name = "coordinateKindDefinition"),
-               @Type(value = CoordinateNesting.class, name = "coordinateNesting"),
-               @Type(value = CoordinateRelationship.class, name = "coordinateRelationship"),
+               @Type(value = CoordinateNesting.class, name = "coordinateNesting"), 
 
                @Type(value = Job.class, name = "job"),
                @Type(value = JobAttribute.class, name = "jobAttribute"),

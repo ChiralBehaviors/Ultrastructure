@@ -22,8 +22,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.network.NetworkRuleform;
-import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -34,7 +34,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hparry
  * 
  */
-public final class NetworkGraphQuery<RuleForm extends Networked<RuleForm, ?>> {
+public final class NetworkGraphQuery<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
 
     private RuleForm                        origin;
     private List<Relationship>              relationships;
@@ -100,14 +100,14 @@ public final class NetworkGraphQuery<RuleForm extends Networked<RuleForm, ?>> {
     @SuppressWarnings("unchecked")
     private void findNeighbors() {
         Query q = em.createNamedQuery(origin.getClass().getSimpleName().toLowerCase()
-                                      + Networked.GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX);
+                                      + ExistentialRuleform.GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX);
         q.setParameter(origin.getClass().getSimpleName().toLowerCase(), origin);
         q.setParameter("relationships", relationships);
         edges = q.getResultList();
 
         nodes = new LinkedList<RuleForm>();
         nodes.add(origin);
-        for (NetworkRuleform<?> n : edges) {
+        for (NetworkRuleform<RuleForm> n : edges) {
             if (!nodes.contains(n.getChild())) {
                 nodes.add((RuleForm) n.getChild());
             }

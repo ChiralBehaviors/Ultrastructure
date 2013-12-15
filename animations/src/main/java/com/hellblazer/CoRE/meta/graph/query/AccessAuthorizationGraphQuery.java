@@ -22,8 +22,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
-import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.ProductAccessAuthorization;
 
@@ -36,10 +36,10 @@ public class AccessAuthorizationGraphQuery {
     private EntityManager             em;
     private AccessAuthorization       authorization;
     private List<AccessAuthorization> auths;
-    private Networked<?, ?>           parent;
+    private ExistentialRuleform<?, ?> parent;
     private Relationship              relationship;
 
-    public AccessAuthorizationGraphQuery(Networked<?, ?> parent,
+    public AccessAuthorizationGraphQuery(ExistentialRuleform<?, ?> parent,
                                          Relationship rel, EntityManager em) {
         this.parent = parent;
         relationship = rel;

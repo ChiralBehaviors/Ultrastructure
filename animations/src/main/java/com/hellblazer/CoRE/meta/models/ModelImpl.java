@@ -216,8 +216,8 @@ public class ModelImpl implements Model {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <RuleForm extends ExistentialRuleform> RuleForm find(String name,
-                                                                Class<RuleForm> ruleform) {
+    public <RuleForm extends ExistentialRuleform<?, ?>> RuleForm find(String name,
+                                                                      Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
                                                           + FIND_BY_NAME_SUFFIX).setParameter("name",

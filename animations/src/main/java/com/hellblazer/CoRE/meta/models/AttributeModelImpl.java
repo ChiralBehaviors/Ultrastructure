@@ -25,6 +25,7 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
@@ -39,7 +40,6 @@ import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
@@ -245,7 +245,7 @@ public class AttributeModelImpl
     public boolean isAccessible(Attribute parent,
                                 Relationship parentRelationship,
                                 Relationship authorizingRelationship,
-                                Networked<?, ?> child,
+                                ExistentialRuleform<?, ?> child,
                                 Relationship childRelationship) {
         // TODO Auto-generated method stub
         return false;

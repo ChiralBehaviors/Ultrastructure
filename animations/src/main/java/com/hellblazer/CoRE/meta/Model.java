@@ -35,90 +35,92 @@ import com.hellblazer.CoRE.kernel.Kernel;
  */
 public interface Model {
 
-    /**
-     * Find the ruleform instances that match the supplied attribute
-     * 
-     * @param attributeValue
-     *            - the attribute value to match
-     * @return the collection of ruleform instances that match the attribute
-     */
-    <AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(AttributeType attributeValue);
+	/**
+	 * Find the ruleform instances that match the supplied attribute
+	 * 
+	 * @param attributeValue
+	 *            - the attribute value to match
+	 * @return the collection of ruleform instances that match the attribute
+	 */
+	<AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(
+			AttributeType attributeValue);
 
-    /**
-     * Find an instance using the id
-     * 
-     * @param id
-     * @return the instance corresponding to the supplied id, or null if the
-     *         instance does not exist
-     */
-    <RuleForm extends Ruleform> RuleForm find(Long id, Class<RuleForm> ruleform);
+	/**
+	 * Find an instance using the id
+	 * 
+	 * @param id
+	 * @return the instance corresponding to the supplied id, or null if the
+	 *         instance does not exist
+	 */
+	<RuleForm extends Ruleform> RuleForm find(Long id, Class<RuleForm> ruleform);
 
-    /**
-     * Find an instance of the ExistentialRuleform using the name
-     * 
-     * @param name
-     * @return the instance that has the supplied name, or null if the instance
-     *         does not exist
-     */
-    <RuleForm extends ExistentialRuleform> RuleForm find(String name,
-                                                         Class<RuleForm> ruleform);
+	/**
+	 * Find an instance of the ExistentialRuleform using the name
+	 * 
+	 * @param name
+	 * @return the instance that has the supplied name, or null if the instance
+	 *         does not exist
+	 */
+	<RuleForm extends ExistentialRuleform<?, ?>> RuleForm find(String name,
+			Class<RuleForm> ruleform);
 
-    /**
-     * Find the instances of the ruleform that are flagged for research
-     * 
-     * @param name
-     * @return the instances that have non null research values
-     */
-    <RuleForm extends Ruleform> List<RuleForm> findFlagged(Class<RuleForm> ruleform);
+	/**
+	 * Find the instances of the ruleform that are flagged for research
+	 * 
+	 * @param name
+	 * @return the instances that have non null research values
+	 */
+	<RuleForm extends Ruleform> List<RuleForm> findFlagged(
+			Class<RuleForm> ruleform);
 
-    /**
-     * Find all the instances of the RuleForm that have been updated by the
-     * agency
-     * 
-     * @param updatedBy
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Agency updatedBy,
-                                                             Class<Ruleform> ruleform);
+	/**
+	 * Find all the instances of the RuleForm that have been updated by the
+	 * agency
+	 * 
+	 * @param updatedBy
+	 * @param ruleform
+	 * @return
+	 */
+	<RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Agency updatedBy,
+			Class<Ruleform> ruleform);
 
-    /**
-     * @return the Agency model
-     */
-    AgencyModel getAgencyModel();
+	/**
+	 * @return the Agency model
+	 */
+	AgencyModel getAgencyModel();
 
-    /**
-     * @return the Attribute model
-     */
-    AttributeModel getAttributeModel();
+	/**
+	 * @return the Attribute model
+	 */
+	AttributeModel getAttributeModel();
 
-    /**
-     * Answer the product manager used for this model instance
-     * 
-     * @return
-     */
-    EntityManager getEntityManager();
+	/**
+	 * Answer the product manager used for this model instance
+	 * 
+	 * @return
+	 */
+	EntityManager getEntityManager();
 
-    /**
-     * @return the Job Model
-     */
-    JobModel getJobModel();
+	/**
+	 * @return the Job Model
+	 */
+	JobModel getJobModel();
 
-    /**
-     * Answer the access model for the kernel rules
-     * 
-     * @return the kernel definition
-     */
-    Kernel getKernel();
+	/**
+	 * Answer the access model for the kernel rules
+	 * 
+	 * @return the kernel definition
+	 */
+	Kernel getKernel();
 
-    /**
-     * @return the Location model
-     */
-    LocationModel getLocationModel();
+	/**
+	 * @return the Location model
+	 */
+	LocationModel getLocationModel();
 
-    /**
-     * @return the Product model
-     */
-    ProductModel getProductModel();
+	/**
+	 * @return the Product model
+	 */
+	ProductModel getProductModel();
 
 }

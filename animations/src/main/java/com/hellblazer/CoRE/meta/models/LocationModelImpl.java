@@ -36,7 +36,7 @@ import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Networked;
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -197,7 +197,7 @@ public class LocationModelImpl
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.network.Networked)
+     * .hellblazer.CoRE.ExistentialRuleform)
      */
     @Override
     public List<Relationship> getImmediateRelationships(Location parent) {
@@ -210,7 +210,7 @@ public class LocationModelImpl
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
-     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
+     * .ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
     public Graph getNetwork(Location parent, Relationship relationship) {
@@ -223,7 +223,7 @@ public class LocationModelImpl
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.network.Networked)
+     * .hellblazer.CoRE.ExistentialRuleform)
      */
     @Override
     public List<Relationship> getTransitiveRelationships(Location parent) {
@@ -236,16 +236,16 @@ public class LocationModelImpl
      * 
      * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#isAccessible(com.hellblazer.CoRE
-     * .network.Networked, com.hellblazer.CoRE.network.Relationship,
+     * .ExistentialRuleform, com.hellblazer.CoRE.network.Relationship,
      * com.hellblazer.CoRE.network.Relationship,
-     * com.hellblazer.CoRE.network.Networked,
+     * com.hellblazer.CoRE.ExistentialRuleform,
      * com.hellblazer.CoRE.network.Relationship)
      */
     @Override
     public boolean isAccessible(Location parent,
                                 Relationship parentRelationship,
                                 Relationship authorizingRelationship,
-                                Networked<?, ?> child,
+                                ExistentialRuleform<?, ?> child,
                                 Relationship childRelationship) {
         // TODO Auto-generated method stub
         return false;

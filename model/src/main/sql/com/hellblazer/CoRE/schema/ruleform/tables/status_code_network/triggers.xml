@@ -4,14 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-    <changeSet id="1"
+    <changeSet id="4"
         author="hhildebrand">
-        <sql> CREATE INDEX coordinate_relationship_updated_by_fkey_idx ON ruleform.coordinate_relationship USING btree
-            (updated_by ); </sql>
-        <rollback>
-            <dropIndex tableName="ruleform.coordinate_relationship"
-                indexName="coordinate_relationship_updated_by_fkey_idx"/>
-        </rollback>
+        <sql> CREATE TRIGGER status_code_network_update_date BEFORE INSERT OR UPDATE ON
+            ruleform.status_code_network FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
+        <rollback> DROP TRIGGER status_code_network_update_date ON ruleform.status_code_network; </rollback>
     </changeSet>
+    
 </databaseChangeLog>

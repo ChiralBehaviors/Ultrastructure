@@ -16,11 +16,17 @@
  */
 package com.hellblazer.CoRE;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.network.NetworkRuleform;
+import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * A ruleform that declares existence.
@@ -30,98 +36,134 @@ import com.hellblazer.CoRE.agency.Agency;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract public class ExistentialRuleform extends Ruleform {
-    private static final long serialVersionUID = 1L;
+abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
+		extends Ruleform {
+	public static final String DEDUCE_NEW_NETWORK_RULES_SUFFIX = ".deduceNewNetworkRules";
+	public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findClassifiedAttributeAuthorizationsForAttribute";
+	public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX = ".findClassifiedAttributeAuthorizations";
+	public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX = ".findClassifiedAttributes";
+	public static final String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findGroupedAttributeAuthorizationsForAttribute";
+	public static final String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX = ".findGroupedAttributeAuthorizations";
+	public static final String FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX = ".findGroupedAttributes";
+	public static final String GATHER_EXISTING_NETWORK_RULES_SUFFIX = ".gatherExistingNetworkRules";
+	public static final String GENERATE_NETWORK_INVERSES_SUFFIX = ".generateInverses";
+	public static final String GET_ALL_PARENT_RELATIONSHIPS_SUFFIX = ".getAllParentRelationships";
+	public static final String GET_CHILD_SUFFIX = ".getChild";
+	public static final String INFERENCE_STEP_SUFFIX = ".inference";
+	public static final String INSERT_NEW_NETWORK_RULES_SUFFIX = ".insertNewNetworkRules";
+	public static final String UNLINKED_SUFFIX = ".unlinked";
+	public static final String USED_RELATIONSHIPS_SUFFIX = ".getUsedRelationships";
+	public static final String INFERENCE_STEP_FROM_LAST_PASS_SUFFIX = ".inferenceStepFromLastPass";
+	public static final String GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX = ".getChildRulesByRelationship";
 
-    private String            description;
-    private String            name;
-    private Boolean           pinned           = Boolean.FALSE;
+	private static final long serialVersionUID = 1L;
 
-    public ExistentialRuleform() {
-    }
+	private String description;
+	private String name;
+	private Boolean pinned = Boolean.FALSE;
 
-    /**
-     * @param updatedBy
-     */
-    public ExistentialRuleform(Agency updatedBy) {
-        super(updatedBy);
-    }
+	public ExistentialRuleform() {
+	}
 
-    public ExistentialRuleform(Long id) {
-        super(id);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public ExistentialRuleform(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    public ExistentialRuleform(Long id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
+	public ExistentialRuleform(Long id) {
+		super(id);
+	}
 
-    public ExistentialRuleform(String name) {
-        this.name = name;
-    }
+	public ExistentialRuleform(Long id, Agency updatedBy) {
+		super(id, updatedBy);
+	}
 
-    public ExistentialRuleform(String name, Agency updatedBy) {
-        super(updatedBy);
-        this.name = name;
-    }
+	public ExistentialRuleform(String name) {
+		this.name = name;
+	}
 
-    public ExistentialRuleform(String name, String description) {
-        this(name);
-        this.description = description;
-    }
+	public ExistentialRuleform(String name, Agency updatedBy) {
+		super(updatedBy);
+		this.name = name;
+	}
 
-    public ExistentialRuleform(String name, String description, Agency updatedBy) {
-        this(name, updatedBy);
-        this.description = description;
-    }
+	public ExistentialRuleform(String name, String description) {
+		this(name);
+		this.description = description;
+	}
 
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
+	public ExistentialRuleform(String name, String description, Agency updatedBy) {
+		this(name, updatedBy);
+		this.description = description;
+	}
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    /**
-     * @return the pinned
-     */
-    public Boolean getPinned() {
-        return pinned;
-    }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * @return the pinned
+	 */
+	public Boolean getPinned() {
+		return pinned;
+	}
 
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    /**
-     * @param pinned
-     *            the pinned to set
-     */
-    public void setPinned(Boolean pinned) {
-        this.pinned = pinned;
-    }
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    @Override
-    public String toString() {
-        return String.format("%s [name=%s, id=%s]", getClass().getSimpleName(),
-                             name, getId());
-    }
+	/**
+	 * @param pinned
+	 *            the pinned to set
+	 */
+	public void setPinned(Boolean pinned) {
+		this.pinned = pinned;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s [name=%s, id=%s]", getClass().getSimpleName(),
+				name, getId());
+	}
+
+	abstract public void addChildRelationship(Network relationship);
+
+	abstract public void addParentRelationship(Network relationship);
+
+	abstract public List<Network> getImmediateChildren(EntityManager em);
+
+	abstract public Set<Network> getNetworkByChild();
+
+	abstract public Set<Network> getNetworkByParent();
+
+	abstract public void link(Relationship r, RuleForm child, Agency updatedBy,
+			Agency inverseSoftware, EntityManager em);
+
+	abstract public void setNetworkByChild(Set<Network> theNetworkByChild);
+
+	abstract public void setNetworkByParent(Set<Network> theNetworkByParent);
 }

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 
@@ -32,7 +33,7 @@ import com.hellblazer.CoRE.attribute.AttributeValue;
  * @author hhildebrand
  * 
  */
-abstract public class Facet<RuleForm extends Networked<RuleForm, ?>, AttributeType extends AttributeValue<?>> {
+abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeType extends AttributeValue<?>> {
     private final Aspect<RuleForm>              aspect;
     private final Map<Attribute, AttributeType> attributeMap;
     private final RuleForm                      instance;

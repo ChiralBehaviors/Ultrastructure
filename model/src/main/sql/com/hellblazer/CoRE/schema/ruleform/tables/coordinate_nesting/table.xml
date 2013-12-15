@@ -10,7 +10,6 @@
             CREATE TABLE ruleform.coordinate_nesting
             (
               id bigserial NOT NULL, -- Otherwise meaningless identifier for a rule
-              kind bigint NOT NULL, -- The kind of coordinate being nested
               attribute bigint NOT NULL, -- The attribute to be calculated
               sequence_number ruleform.sequence_number NOT NULL, -- The ordering of these nesting rules for a given CoordinateKind and Attribute
               inner_attribute bigint NOT NULL, -- The attribute of the "inner" Coordinate to manipulate
@@ -27,9 +26,6 @@
               CONSTRAINT coordinate_nesting_inner_attribute_fkey FOREIGN KEY (inner_attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT coordinate_nesting_kind_fkey FOREIGN KEY (kind)
-                  REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_nesting_outer_attribute_fkey FOREIGN KEY (outer_attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
@@ -39,7 +35,7 @@
               CONSTRAINT coordinate_nesting_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT coordinate_nesting_kind_key UNIQUE (kind , attribute , sequence_number ),
+              CONSTRAINT coordinate_nesting_kind_key UNIQUE (attribute , sequence_number ),
               CONSTRAINT valid_operation CHECK (operation::text = ANY (ARRAY['+'::character varying::text, '-'::character varying::text]))
             )
             WITH (
@@ -48,7 +44,6 @@
             COMMENT ON TABLE ruleform.coordinate_nesting
               IS 'Defines rules for navigating nested coordinates';
             COMMENT ON COLUMN ruleform.coordinate_nesting.id IS 'Otherwise meaningless identifier for a rule';
-            COMMENT ON COLUMN ruleform.coordinate_nesting.kind IS 'The kind of coordinate being nested';
             COMMENT ON COLUMN ruleform.coordinate_nesting.attribute IS 'The attribute to be calculated';
             COMMENT ON COLUMN ruleform.coordinate_nesting.sequence_number IS 'The ordering of these nesting rules for a given CoordinateKind and Attribute';
             COMMENT ON COLUMN ruleform.coordinate_nesting.inner_attribute IS 'The attribute of the "inner" Coordinate to manipulate';

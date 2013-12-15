@@ -4,9 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-    <changeSet id="1" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.coordinate_kind OWNER TO core; </sql>
-        <rollback/>
+    <changeSet id="4"
+        author="hhildebrand">
+        <sql> CREATE TRIGGER unit_network_update_date BEFORE INSERT OR UPDATE ON
+            ruleform.unit_network FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
+        <rollback> DROP TRIGGER unit_network_update_date ON ruleform.unit_network; </rollback>
     </changeSet>
+    
 </databaseChangeLog>

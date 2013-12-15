@@ -10,12 +10,7 @@
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml"/> 
     <include relativeToChangelogFile="true" file="tables/coordinate_attribute/trigger-coordinate_attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/coordinate_kind_definition/trigger-coordinate_kind_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/coordinate_kind/trigger-coordinate_kind_restrict_pinned.xml"/>
-    <include relativeToChangelogFile="true" file="tables/coordinate_kind/trigger-coordinate_kind_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_nesting/trigger-coordinate_nesting_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/coordinate_relationship/trigger-coordinate_relationship_restrict_pinned.xml"/>
-    <include relativeToChangelogFile="true" file="tables/coordinate_relationship/trigger-coordinate_relationship_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate/trigger-coordinate_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate/trigger-coordinate_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_attribute_authorization/trigger-product_attribute_authorization_update_date.xml"/>
@@ -76,5 +71,8 @@
     <include relativeToChangelogFile="true" file="tables/interval/trigger-interval_restrict_pinnned.xml"/>
     <include relativeToChangelogFile="true" file="tables/interval/trigger-interval_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/interval_attribute_authorization/trigger-interval_attribute_authorization_update_date.xml"/>
+    <include relativeToChangelogFile="true" file="tables/unit_network/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code_network/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/coordinate_network/triggers.xml"/>
     
 </databaseChangeLog>

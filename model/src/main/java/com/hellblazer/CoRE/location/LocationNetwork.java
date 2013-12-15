@@ -23,12 +23,12 @@ import static com.hellblazer.CoRE.location.LocationNetwork.GET_USED_RELATIONSHIP
 import static com.hellblazer.CoRE.location.LocationNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.location.LocationNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.location.LocationNetwork.INSERT_NEW_NETWORK_RULES;
-import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 
 import java.util.List;
 import java.util.Map;

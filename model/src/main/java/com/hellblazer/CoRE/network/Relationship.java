@@ -19,7 +19,9 @@ package com.hellblazer.CoRE.network;
 import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -193,5 +195,78 @@ public class Relationship extends ExistentialRuleform {
         super.traverseForeignKeys(em, knownObjects);
 
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#addChildRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
+	 */
+	@Override
+	public void addChildRelationship(NetworkRuleform relationship) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#addParentRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
+	 */
+	@Override
+	public void addParentRelationship(NetworkRuleform relationship) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.persistence.EntityManager)
+	 */
+	@Override
+	public List getImmediateChildren(EntityManager em) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByChild()
+	 */
+	@Override
+	public Set getNetworkByChild() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByParent()
+	 */
+	@Override
+	public Set getNetworkByParent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.ExistentialRuleform, com.hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.agency.Agency, javax.persistence.EntityManager)
+	 */
+	@Override
+	public void link(Relationship r, ExistentialRuleform child,
+			Agency updatedBy, Agency inverseSoftware, EntityManager em) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+	 */
+	@Override
+	public void setNetworkByChild(Set theNetworkByChild) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+	 */
+	@Override
+	public void setNetworkByParent(Set theNetworkByParent) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

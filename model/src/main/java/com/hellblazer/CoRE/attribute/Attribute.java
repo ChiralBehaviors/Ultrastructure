@@ -47,8 +47,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.network.Networked;
+import com.hellblazer.CoRE.agency.Agency; 
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -103,8 +102,7 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @Table(name = "attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_id_seq", sequenceName = "attribute_id_seq")
-public class Attribute extends ExistentialRuleform implements
-        Networked<Attribute, AttributeNetwork>,
+public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> implements 
         Attributable<AttributeMetaAttribute> {
     public static final String          FIND_BY_NAME                             = "attribute.findByName";
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "attribute"

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.status_code_network
+            (
+              id bigserial NOT NULL,
+              parent bigint NOT NULL,
+              relationship bigint NOT NULL,
+              child bigint NOT NULL,
+              inferred boolean NOT NULL DEFAULT FALSE,
+              notes character varying,
+              research bigint,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+              CONSTRAINT status_code_network_pkey PRIMARY KEY (id ),
+              CONSTRAINT status_code_network_child_fkey FOREIGN KEY (child)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT status_code_network_parent_fkey FOREIGN KEY (parent)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT status_code_network_relationship_fkey FOREIGN KEY (relationship)
+                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT status_code_network_research_fkey FOREIGN KEY (research)
+                  REFERENCES ruleform.research (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT status_code_network_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT status_code_network_key UNIQUE (parent , relationship , child )
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.status_code_network"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="hhildebrand">
+        <sql><![CDATA[
+            GRANT ALL ON TABLE ruleform.status_code_network TO core;
+            GRANT SELECT ON TABLE ruleform.status_code_network TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.status_code_network TO core_read_write;
+            ]]>
+        </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet id="3" author="hhildebrand">
+        <sql> ALTER TABLE ruleform.status_code_network OWNER TO core; </sql>
+        <rollback/>
+    </changeSet>
+    
+</databaseChangeLog>

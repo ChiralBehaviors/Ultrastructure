@@ -16,13 +16,13 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.network.Networked.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INFERENCE_STEP_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.INSERT_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.network.Networked.USED_RELATIONSHIPS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;

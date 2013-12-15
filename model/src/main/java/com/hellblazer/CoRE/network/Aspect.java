@@ -16,6 +16,8 @@
  */
 package com.hellblazer.CoRE.network;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
+
 /**
  * An Aspect is the classification of an networked ruleform within a network.
  * The network relation is A relationship B, where "relationship" is the
@@ -24,7 +26,7 @@ package com.hellblazer.CoRE.network;
  * @author hhildebrand
  * 
  */
-public class Aspect<RuleForm extends Networked<RuleForm, ?>> {
+public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
     private final Relationship classification;
     private final RuleForm     classifier;
 

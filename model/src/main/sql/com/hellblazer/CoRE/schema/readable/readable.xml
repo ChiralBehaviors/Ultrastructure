@@ -15,14 +15,9 @@
 	<include relativeToChangelogFile="true" file="/views/attribute_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/coordinate.xml" />
 	<include relativeToChangelogFile="true"
-		file="/views/coordinate_attribute.xml" />
-	<include relativeToChangelogFile="true" file="/views/coordinate_kind.xml" />
+		file="/views/coordinate_attribute.xml" />  
 	<include relativeToChangelogFile="true"
-		file="/views/coordinate_kind_definition.xml" />
-	<include relativeToChangelogFile="true"
-		file="/views/coordinate_nesting.xml" />
-	<include relativeToChangelogFile="true"
-		file="/views/coordinate_relationship.xml" />
+		file="/views/coordinate_nesting.xml" /> 
 	<include relativeToChangelogFile="true" file="/views/product.xml" />
 	<include relativeToChangelogFile="true" file="/views/product_attribute.xml" />
 

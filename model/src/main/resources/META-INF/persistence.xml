@@ -20,10 +20,7 @@
 		<class>com.hellblazer.CoRE.coordinate.Coordinate</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateAttribute</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.coordinate.CoordinateKind</class>
-		<class>com.hellblazer.CoRE.coordinate.CoordinateKindDefinition</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateNesting</class>
-		<class>com.hellblazer.CoRE.coordinate.CoordinateRelationship</class>
 		<class>com.hellblazer.CoRE.product.Product</class>
 		<class>com.hellblazer.CoRE.product.ProductAttribute</class>
 		<class>com.hellblazer.CoRE.product.ProductAttributeAuthorization</class>
@@ -77,9 +74,9 @@
 		<class>com.hellblazer.CoRE.authorization.WorkspaceAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization</class>
 		<class>com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization</class>
-        <class>com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization</class>
-        <class>com.hellblazer.CoRE.time.Interval</class>
-        <class>com.hellblazer.CoRE.time.IntervalAttribute</class>
-        <class>com.hellblazer.CoRE.time.IntervalNetwork</class>
+		<class>com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization</class>
+		<class>com.hellblazer.CoRE.time.Interval</class>
+		<class>com.hellblazer.CoRE.time.IntervalAttribute</class>
+		<class>com.hellblazer.CoRE.time.IntervalNetwork</class>
 	</persistence-unit>
 </persistence>

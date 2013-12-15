@@ -57,11 +57,6 @@ public class CoordinateNesting extends Ruleform {
     @JoinColumn(name = "inner_attribute")
     private Attribute         innerAttribute;
 
-    //bi-directional many-to-one association to CoordinateKind
-    @ManyToOne
-    @JoinColumn(name = "kind")
-    private CoordinateKind    kind;
-
     private String            operation;
 
     //bi-directional many-to-one association to Attribute
@@ -102,9 +97,6 @@ public class CoordinateNesting extends Ruleform {
         return innerAttribute;
     }
 
-    public CoordinateKind getKind() {
-        return kind;
-    }
 
     public String getOperation() {
         return operation;
@@ -131,10 +123,6 @@ public class CoordinateNesting extends Ruleform {
         innerAttribute = attribute2;
     }
 
-    public void setKind(CoordinateKind coordinateKind) {
-        kind = coordinateKind;
-    }
-
     public void setOperation(String operation) {
         this.operation = operation;
     }
@@ -159,9 +147,6 @@ public class CoordinateNesting extends Ruleform {
         if (innerAttribute != null) {
             innerAttribute = (Attribute) innerAttribute.manageEntity(em,
                                                                      knownObjects);
-        }
-        if (kind != null) {
-            kind = (CoordinateKind) kind.manageEntity(em, knownObjects);
         }
         if (outerAttribute != null) {
             outerAttribute = (Attribute) outerAttribute.manageEntity(em,

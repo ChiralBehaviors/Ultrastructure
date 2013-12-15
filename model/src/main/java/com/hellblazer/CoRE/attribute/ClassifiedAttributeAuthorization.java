@@ -25,9 +25,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -40,7 +40,7 @@ import com.hellblazer.CoRE.network.Relationship;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract public class ClassifiedAttributeAuthorization<RuleForm extends Networked<RuleForm, ?>>
+abstract public class ClassifiedAttributeAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>>
         extends AttributeAuthorization {
 
     private static final long serialVersionUID = 1L;

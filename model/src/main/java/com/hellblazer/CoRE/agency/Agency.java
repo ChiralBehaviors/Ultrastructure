@@ -49,7 +49,6 @@ import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.network.Networked;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.ProductNetwork;
 
@@ -112,8 +111,7 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 @Entity
 @Table(name = "agency", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "agency_id_seq", sequenceName = "agency_id_seq")
-public class Agency extends ExistentialRuleform implements
-        Networked<Agency, AgencyNetwork>, Attributable<AgencyAttribute> {
+public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> implements Attributable<AgencyAttribute> {
     public static final String   AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
 
     public static final String   FIND_BY_NAME                             = "agency"

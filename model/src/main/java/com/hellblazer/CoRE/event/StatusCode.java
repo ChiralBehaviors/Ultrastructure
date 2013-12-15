@@ -20,8 +20,12 @@ import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.hellblazer.CoRE.event.StatusCode.FIND_BY_NAME;
 import static com.hellblazer.CoRE.event.StatusCode.IS_TERMINAL_STATE;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,6 +39,8 @@ import javax.persistence.Table;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.network.NetworkRuleform;
+import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * The persistent class for the status_code database table.
@@ -156,4 +162,77 @@ public class StatusCode extends ExistentialRuleform {
     public void setPropagateChildren(Boolean propagateChildren) {
         this.propagateChildren = propagateChildren;
     }
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#addChildRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
+	 */
+	@Override
+	public void addChildRelationship(NetworkRuleform relationship) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#addParentRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
+	 */
+	@Override
+	public void addParentRelationship(NetworkRuleform relationship) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.persistence.EntityManager)
+	 */
+	@Override
+	public List getImmediateChildren(EntityManager em) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByChild()
+	 */
+	@Override
+	public Set getNetworkByChild() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByParent()
+	 */
+	@Override
+	public Set getNetworkByParent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.ExistentialRuleform, com.hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.agency.Agency, javax.persistence.EntityManager)
+	 */
+	@Override
+	public void link(Relationship r, ExistentialRuleform child,
+			Agency updatedBy, Agency inverseSoftware, EntityManager em) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+	 */
+	@Override
+	public void setNetworkByChild(Set theNetworkByChild) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+	 */
+	@Override
+	public void setNetworkByParent(Set theNetworkByParent) {
+		// TODO Auto-generated method stub
+		
+	}
 }

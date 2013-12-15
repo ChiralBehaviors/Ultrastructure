@@ -11,7 +11,6 @@
             (
               id bigserial NOT NULL, -- Otherwise meaningless identifier for a coordinate
               name character varying NOT NULL, -- The unique name of a coordinate
-              kind bigint NOT NULL, -- The kind of coordinate this coordinate is
               description character varying, -- Free-form description of the coordinate
               notes character varying, -- Usage notes for the coordinate
               pinned boolean NOT NULL DEFAULT false, -- Indicates that a coordinate rule has been pinned, restricting changes to the rule
@@ -19,9 +18,6 @@
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT coordinate_pkey PRIMARY KEY (id ),
-              CONSTRAINT coordinate_kind_fkey FOREIGN KEY (kind)
-                  REFERENCES ruleform.coordinate_kind (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_research_fkey FOREIGN KEY (research)
                   REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
@@ -35,8 +31,7 @@
             COMMENT ON TABLE ruleform.coordinate
               IS 'Specific location coordinates within the system';
             COMMENT ON COLUMN ruleform.coordinate.id IS 'Otherwise meaningless identifier for a coordinate';
-            COMMENT ON COLUMN ruleform.coordinate.name IS 'The unique name of a coordinate';
-            COMMENT ON COLUMN ruleform.coordinate.kind IS 'The kind of coordinate this coordinate is';
+            COMMENT ON COLUMN ruleform.coordinate.name IS 'The unique name of a coordinate'; 
             COMMENT ON COLUMN ruleform.coordinate.description IS 'Free-form description of the coordinate';
             COMMENT ON COLUMN ruleform.coordinate.notes IS 'Usage notes for the coordinate';
             COMMENT ON COLUMN ruleform.coordinate.pinned IS 'Indicates that a coordinate rule has been pinned, restricting changes to the rule';

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE.coordinate;
+package com.hellblazer.CoRE.network;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,16 +34,16 @@ import com.hellblazer.CoRE.network.Relationship;
  * 
  */
 @Entity
-@Table(name = "coordinate_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "coordinate_network_id_seq", sequenceName = "coordinate_network_id_seq")
-public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
+@Table(name = "relationship_network", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "relationship_network_id_seq", sequenceName = "relationship_network_id_seq")
+public class RelationshipNetwork extends NetworkRuleform<Relationship> {
 
     /**
      * @param relationship
      * @param updatedBy
      */
-    public CoordinateNetwork(Coordinate parent, Relationship relationship,
-                             Coordinate child, Agency updatedBy) {
+    public RelationshipNetwork(Relationship parent, Relationship relationship,
+                             Relationship child, Agency updatedBy) {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;
@@ -52,21 +52,21 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     /**
      * 
      */
-    public CoordinateNetwork() {
+    public RelationshipNetwork() {
         super();
     }
 
     /**
      * @param updatedBy
      */
-    public CoordinateNetwork(Agency updatedBy) {
+    public RelationshipNetwork(Agency updatedBy) {
         super(updatedBy);
     }
 
     /**
      * @param id
      */
-    public CoordinateNetwork(Long id) {
+    public RelationshipNetwork(Long id) {
         super(id);
     }
 
@@ -74,29 +74,29 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      * @param relationship
      * @param updatedBy
      */
-    public CoordinateNetwork(Relationship relationship, Agency updatedBy) {
+    public RelationshipNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
     }
 
     private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "child")
-    private Coordinate        child;
+    private Relationship        child;
 
     @Id
-    @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "relationship_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Coordinate        parent;
+    private Relationship        parent;
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
-    public Coordinate getChild() {
+    public Relationship getChild() {
         return child;
     }
 
@@ -104,7 +104,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      * @see com.hellblazer.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
-    public Coordinate getParent() {
+    public Relationship getParent() {
         return parent;
     }
 
@@ -112,7 +112,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      * @see com.hellblazer.CoRE.network.NetworkRuleform#setChild(com.hellblazer.CoRE.ExistentialRuleform)
      */
     @Override
-    public void setChild(Coordinate child) {
+    public void setChild(Relationship child) {
         this.child = child;
     }
 
@@ -120,7 +120,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      * @see com.hellblazer.CoRE.network.NetworkRuleform#setParent(com.hellblazer.CoRE.ExistentialRuleform)
      */
     @Override
-    public void setParent(Coordinate parent) {
+    public void setParent(Relationship parent) {
         this.parent = parent;
     }
 

@@ -16,11 +16,13 @@
 		<class>com.hellblazer.CoRE.attribute.Transformation</class>
 		<class>com.hellblazer.CoRE.attribute.TransformationMetarule</class>
 		<class>com.hellblazer.CoRE.attribute.Unit</class>
+		<class>com.hellblazer.CoRE.attribute.UnitNetwork</class>
 		<class>com.hellblazer.CoRE.attribute.UnitValue</class>
 		<class>com.hellblazer.CoRE.coordinate.Coordinate</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateAttribute</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateNesting</class>
+		<class>com.hellblazer.CoRE.coordinate.CoordinateNetwork</class>
 		<class>com.hellblazer.CoRE.product.Product</class>
 		<class>com.hellblazer.CoRE.product.ProductAttribute</class>
 		<class>com.hellblazer.CoRE.product.ProductAttributeAuthorization</class>
@@ -43,6 +45,7 @@
 		<class>com.hellblazer.CoRE.event.ProtocolAttribute</class>
 		<class>com.hellblazer.CoRE.event.ProtocolAttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.event.StatusCode</class>
+		<class>com.hellblazer.CoRE.event.StatusCodeNetwork</class>
 		<class>com.hellblazer.CoRE.event.StatusCodeSequencing</class>
 		<class>com.hellblazer.CoRE.location.Location</class>
 		<class>com.hellblazer.CoRE.location.LocationAttribute</class>
@@ -51,6 +54,7 @@
 		<class>com.hellblazer.CoRE.location.LocationNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationRelationship</class>
 		<class>com.hellblazer.CoRE.network.Relationship</class>
+		<class>com.hellblazer.CoRE.network.RelationshipNetwork</class>
 		<class>com.hellblazer.CoRE.network.NetworkInference</class>
 		<class>com.hellblazer.CoRE.network.NetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.network.NetworkRuleform</class>

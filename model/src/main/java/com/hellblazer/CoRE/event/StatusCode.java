@@ -23,6 +23,7 @@ import static com.hellblazer.CoRE.event.StatusCode.IS_TERMINAL_STATE;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -33,13 +34,14 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -67,21 +69,49 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                          + "  AND service = ? "
                                                                          + "  AND sc.id = ? "
                                                                          + " )") })
-public class StatusCode extends ExistentialRuleform {
-    private static final long  serialVersionUID  = 1L;
-    public static final String FIND_BY_NAME      = "statusCode"
-                                                   + FIND_BY_NAME_SUFFIX;
-    public static final String IS_TERMINAL_STATE = "statusCode.isTerminalState";
+public class StatusCode extends
+        ExistentialRuleform<StatusCode, StatusCodeNetwork> {
+    public static final String     AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "statusCode.AgencyAttributesByClassification";
+
+    public static final String     AUTHORIZED_AGENCY_ATTRIBUTES             = "statusCode.authorizedAttributes";
+    public static final String     FIND_BY_NAME                             = "statusCode"
+                                                                              + FIND_BY_NAME_SUFFIX;
+    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "statusCode"
+                                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "statusCode"
+                                                                              + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "statusCode"
+                                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "statusCode"
+                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String     GET_CHILD                                = "statusCode"
+                                                                              + GET_CHILD_SUFFIX;
+    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
+                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "statusCode.immediateChildrenNetworkRules";
+    public static final String     IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
+    public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
+    public static final String     UNLINKED                                 = "statusCode"
+                                                                              + UNLINKED_SUFFIX;
+    private static final long      serialVersionUID                         = 1L;
 
     @Column(name = "fail_parent")
-    private Boolean            failParent        = true;
+    private Boolean                failParent                               = true;
 
     @Id
     @GeneratedValue(generator = "status_code_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+    private Long                   id;
+
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<StatusCodeNetwork> networkByChild;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<StatusCodeNetwork> networkByParent;
 
     @Column(name = "propagate_children")
-    private Boolean            propagateChildren = true;
+    private Boolean                propagateChildren                        = true;
 
     public StatusCode() {
     }
@@ -137,6 +167,24 @@ public class StatusCode extends ExistentialRuleform {
         super(name, description, updatedBy);
     }
 
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Networked#addChildRelationship(com.hellblazer.CoRE.NetworkRuleform)
+     */
+    @Override
+    public void addChildRelationship(StatusCodeNetwork relationship) {
+        relationship.setChild(this);
+        networkByChild.add(relationship);
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Networked#addParentRelationship(com.hellblazer.CoRE.NetworkRuleform)
+     */
+    @Override
+    public void addParentRelationship(StatusCodeNetwork relationship) {
+        relationship.setParent(this);
+        networkByParent.add(relationship);
+    }
+
     public Boolean getFailParent() {
         return failParent;
     }
@@ -146,8 +194,54 @@ public class StatusCode extends ExistentialRuleform {
         return id;
     }
 
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.persistence.EntityManager)
+     */
+    @Override
+    public List<StatusCodeNetwork> getImmediateChildren(EntityManager em) {
+        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
+                                   StatusCodeNetwork.class).setParameter("statusCode",
+                                                                         this).getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByChild()
+     */
+    @Override
+    public Set<StatusCodeNetwork> getNetworkByChild() {
+        return networkByChild;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByParent()
+     */
+    @Override
+    public Set<StatusCodeNetwork> getNetworkByParent() {
+        return networkByParent;
+    }
+
     public Boolean getPropagateChildren() {
         return propagateChildren;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.network.Networked#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.network.Networked, com.hellblazer.CoRE.agency.Agency, javax.persistence.EntityManager)
+     */
+    @Override
+    public void link(Relationship r, StatusCode child, Agency updatedBy,
+                     Agency inverseSoftware, EntityManager em) {
+        assert r != null : "Relationship cannot be null";
+        assert child != null;
+        assert updatedBy != null;
+        assert em != null;
+
+        StatusCodeNetwork link = new StatusCodeNetwork(this, r, child,
+                                                       updatedBy);
+        em.persist(link);
+        StatusCodeNetwork inverse = new StatusCodeNetwork(child,
+                                                          r.getInverse(), this,
+                                                          inverseSoftware);
+        em.persist(inverse);
     }
 
     public void setFailParent(Boolean failParent) {
@@ -159,80 +253,23 @@ public class StatusCode extends ExistentialRuleform {
         this.id = id;
     }
 
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+     */
+    @Override
+    public void setNetworkByChild(Set<StatusCodeNetwork> theNetworkByChild) {
+        networkByChild = theNetworkByChild;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+     */
+    @Override
+    public void setNetworkByParent(Set<StatusCodeNetwork> theNetworkByParent) {
+        networkByParent = theNetworkByParent;
+    }
+
     public void setPropagateChildren(Boolean propagateChildren) {
         this.propagateChildren = propagateChildren;
     }
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#addChildRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
-	 */
-	@Override
-	public void addChildRelationship(NetworkRuleform relationship) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#addParentRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
-	 */
-	@Override
-	public void addParentRelationship(NetworkRuleform relationship) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.persistence.EntityManager)
-	 */
-	@Override
-	public List getImmediateChildren(EntityManager em) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByChild()
-	 */
-	@Override
-	public Set getNetworkByChild() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByParent()
-	 */
-	@Override
-	public Set getNetworkByParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#link(com.hellblazer.CoRE.network.Relationship, com.hellblazer.CoRE.ExistentialRuleform, com.hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.agency.Agency, javax.persistence.EntityManager)
-	 */
-	@Override
-	public void link(Relationship r, ExistentialRuleform child,
-			Agency updatedBy, Agency inverseSoftware, EntityManager em) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
-	 */
-	@Override
-	public void setNetworkByChild(Set theNetworkByChild) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
-	 */
-	@Override
-	public void setNetworkByParent(Set theNetworkByParent) {
-		// TODO Auto-generated method stub
-		
-	}
 }

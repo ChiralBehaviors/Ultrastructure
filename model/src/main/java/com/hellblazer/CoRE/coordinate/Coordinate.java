@@ -53,283 +53,283 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @Table(name = "coordinate", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_id_seq", sequenceName = "coordinate_id_seq")
-@NamedQueries({ @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from CoordinateAttribute as ca join ca.coordinate.kind.definitionRules as def where ca.coordinate = :coordinate and ca.attribute = def.attribute order by def.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from CoordinateAttribute as ca where ca.coordinate = :coordinate") })
 @NamedNativeQueries({
 // ?1 = #inner, ?2 = #outer
-		@NamedNativeQuery(name = NESTING_QUERY, query = "SELECT * FROM ruleform.nest_coordinates(?1, ?2)", resultClass = Coordinate.class),
-		// ?1 = :queryString, ?2 = :numberOfMatches
-		@NamedNativeQuery(name = "coordinate" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate', ?1, ?2)", resultClass = NameSearchResult.class) })
+                     @NamedNativeQuery(name = NESTING_QUERY, query = "SELECT * FROM ruleform.nest_coordinates(?1, ?2)", resultClass = Coordinate.class),
+                     // ?1 = :queryString, ?2 = :numberOfMatches
+                     @NamedNativeQuery(name = "coordinate" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Coordinate extends
-		ExistentialRuleform<Coordinate, CoordinateNetwork> implements
-		Attributable<CoordinateAttribute> {
-	private static final long serialVersionUID = 1L;
-	public static final String NESTING_QUERY = "coordinate.nestCoordinates";
-	public static final String ORDERED_ATTRIBUTES = "coordinate.orderedAttributes";
+        ExistentialRuleform<Coordinate, CoordinateNetwork> implements
+        Attributable<CoordinateAttribute> {
+    private static final long        serialVersionUID   = 1L;
+    public static final String       NESTING_QUERY      = "coordinate.nestCoordinates";
+    public static final String       ORDERED_ATTRIBUTES = "coordinate.orderedAttributes";
 
-	// bi-directional many-to-one association to CoordinateAttribute
-	@OneToMany(mappedBy = "coordinate")
-	@JsonIgnore
-	private Set<CoordinateAttribute> attributes;
+    // bi-directional many-to-one association to CoordinateAttribute
+    @OneToMany(mappedBy = "coordinate")
+    @JsonIgnore
+    private Set<CoordinateAttribute> attributes;
 
-	@Id
-	@GeneratedValue(generator = "coordinate_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "coordinate_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long                     id;
 
-	public Coordinate() {
-	}
+    public Coordinate() {
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public Coordinate(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public Coordinate(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param id
-	 */
-	public Coordinate(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public Coordinate(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @param name
-	 */
-	public Coordinate(String name) {
-		super(name);
-	}
+    /**
+     * @param name
+     */
+    public Coordinate(String name) {
+        super(name);
+    }
 
-	/**
-	 * @param name
-	 * @param updatedBy
-	 */
-	public Coordinate(String name, Agency updatedBy) {
-		super(name, updatedBy);
-	}
+    /**
+     * @param name
+     * @param updatedBy
+     */
+    public Coordinate(String name, Agency updatedBy) {
+        super(name, updatedBy);
+    }
 
-	/**
-	 * @param name
-	 * @param description
-	 */
-	public Coordinate(String name, String description) {
-		super(name, description);
-	}
+    /**
+     * @param name
+     * @param description
+     */
+    public Coordinate(String name, String description) {
+        super(name, description);
+    }
 
-	/**
-	 * @param name
-	 * @param description
-	 * @param updatedBy
-	 */
-	public Coordinate(String name, String description, Agency updatedBy) {
-		super(name, description, updatedBy);
-	}
+    /**
+     * @param name
+     * @param description
+     * @param updatedBy
+     */
+    public Coordinate(String name, String description, Agency updatedBy) {
+        super(name, description, updatedBy);
+    }
 
-	public void addAttribute(CoordinateAttribute attribute) {
-		attribute.setCoordinate(this);
-		attributes.add(attribute);
-	}
+    public void addAttribute(CoordinateAttribute attribute) {
+        attribute.setCoordinate(this);
+        attributes.add(attribute);
+    }
 
-	@Override
-	public Set<CoordinateAttribute> getAttributes() {
-		return attributes;
-	}
+    @Override
+    public Set<CoordinateAttribute> getAttributes() {
+        return attributes;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.attribute.Attributable#getAttributeType()
-	 */
-	@Override
-	public Class<CoordinateAttribute> getAttributeType() {
-		return CoordinateAttribute.class;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.attribute.Attributable#getAttributeType()
+     */
+    @Override
+    public Class<CoordinateAttribute> getAttributeType() {
+        return CoordinateAttribute.class;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * <p>
-	 * Returns a List of <code>coordinate</code>'s CoordinateAttributes (as
-	 * obtained from {@link Coordinate#getAttributes()}, but ordered according
-	 * to the declaration of this Coordinate's CoordinateKind definition rules
-	 * (e.g. {@link CoordinateKindDefinition})
-	 * </p>
-	 * 
-	 * @return a {@code List<CoordinateAttribute>} containing the attributes of
-	 *         the receiver, ordered according to the definition rules for this
-	 *         kind of Coordinate.
-	 */
-	public List<CoordinateAttribute> getOrderedAttributes(EntityManager em) {
-		return em
-				.createNamedQuery(ORDERED_ATTRIBUTES, CoordinateAttribute.class)
-				.setParameter("coordinate", this).getResultList();
-	}
+    /**
+     * <p>
+     * Returns a List of <code>coordinate</code>'s CoordinateAttributes (as
+     * obtained from {@link Coordinate#getAttributes()}, but ordered according
+     * to the declaration of this Coordinate's CoordinateKind definition rules
+     * (e.g. {@link CoordinateKindDefinition})
+     * </p>
+     * 
+     * @return a {@code List<CoordinateAttribute>} containing the attributes of
+     *         the receiver, ordered according to the definition rules for this
+     *         kind of Coordinate.
+     */
+    public List<CoordinateAttribute> getOrderedAttributes(EntityManager em) {
+        return em.createNamedQuery(ORDERED_ATTRIBUTES,
+                                   CoordinateAttribute.class).setParameter("coordinate",
+                                                                           this).getResultList();
+    }
 
-	/**
-	 * @return the research
-	 */
-	@Override
-	public Research getResearch() {
-		return research;
-	}
+    /**
+     * @return the research
+     */
+    @Override
+    public Research getResearch() {
+        return research;
+    }
 
-	/**
-	 * @return the updatedBy
-	 */
-	@Override
-	public Agency getUpdatedBy() {
-		return updatedBy;
-	}
+    /**
+     * @return the updatedBy
+     */
+    @Override
+    public Agency getUpdatedBy() {
+        return updatedBy;
+    }
 
-	/**
-	 * Computes a Coordinate that represents the inner coordinate relative to
-	 * this outer coordinate. For example if <code>outer</code> represents a
-	 * nucleotide region from bases 123&#8211;456 on some DNA molecule
-	 * <em>X</em>, and <code>inner</code> represents a region extending from
-	 * bases 20&#8211;30 of <code>outer</code>, then this method will return a
-	 * Coordinate representing the region from 143&#8211;153 of DNA molecule
-	 * <em>X</em>. If such a Coordinate already exists in the database, it is
-	 * returned, otherwise a new Coordinate is created and it is returned.
-	 * 
-	 * @param outer
-	 *            the second Coordinate. Can be relative to anything, but should
-	 *            contain the receiver coordinate
-	 * @return Coordinate representing the location of <code>inner</code>
-	 *         relative to the receiver coordinate
-	 */
-	public Coordinate nestCoordinates(EntityManager em, Coordinate outer) {
-		return em.createNamedQuery(NESTING_QUERY, Coordinate.class)
-				.setParameter("inner", this).setParameter("outer", outer)
-				.getSingleResult();
-	}
+    /**
+     * Computes a Coordinate that represents the inner coordinate relative to
+     * this outer coordinate. For example if <code>outer</code> represents a
+     * nucleotide region from bases 123&#8211;456 on some DNA molecule
+     * <em>X</em>, and <code>inner</code> represents a region extending from
+     * bases 20&#8211;30 of <code>outer</code>, then this method will return a
+     * Coordinate representing the region from 143&#8211;153 of DNA molecule
+     * <em>X</em>. If such a Coordinate already exists in the database, it is
+     * returned, otherwise a new Coordinate is created and it is returned.
+     * 
+     * @param outer
+     *            the second Coordinate. Can be relative to anything, but should
+     *            contain the receiver coordinate
+     * @return Coordinate representing the location of <code>inner</code>
+     *         relative to the receiver coordinate
+     */
+    public Coordinate nestCoordinates(EntityManager em, Coordinate outer) {
+        return em.createNamedQuery(NESTING_QUERY, Coordinate.class).setParameter("inner",
+                                                                                 this).setParameter("outer",
+                                                                                                    outer).getSingleResult();
+    }
 
-	@Override
-	public void setAttributes(Set<CoordinateAttribute> coordinateAttributes) {
-		attributes = coordinateAttributes;
-	}
+    @Override
+    public void setAttributes(Set<CoordinateAttribute> coordinateAttributes) {
+        attributes = coordinateAttributes;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param research
-	 *            the research to set
-	 */
-	@Override
-	public void setResearch(Research research) {
-		this.research = research;
-	}
+    /**
+     * @param research
+     *            the research to set
+     */
+    @Override
+    public void setResearch(Research research) {
+        this.research = research;
+    }
 
-	/**
-	 * @param updatedBy
-	 *            the updatedBy to set
-	 */
-	@Override
-	public void setUpdatedBy(Agency updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    /**
+     * @param updatedBy
+     *            the updatedBy to set
+     */
+    @Override
+    public void setUpdatedBy(Agency updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hellblazer.CoRE.ExistentialRuleform#addChildRelationship(com.hellblazer
-	 * .CoRE.network.NetworkRuleform)
-	 */
-	@Override
-	public void addChildRelationship(CoordinateNetwork relationship) {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.ExistentialRuleform#addChildRelationship(com.hellblazer
+     * .CoRE.network.NetworkRuleform)
+     */
+    @Override
+    public void addChildRelationship(CoordinateNetwork relationship) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hellblazer.CoRE.ExistentialRuleform#addParentRelationship(com.hellblazer
-	 * .CoRE.network.NetworkRuleform)
-	 */
-	@Override
-	public void addParentRelationship(CoordinateNetwork relationship) {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.ExistentialRuleform#addParentRelationship(com.hellblazer
+     * .CoRE.network.NetworkRuleform)
+     */
+    @Override
+    public void addParentRelationship(CoordinateNetwork relationship) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.
-	 * persistence.EntityManager)
-	 */
-	@Override
-	public List getImmediateChildren(EntityManager em) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.
+     * persistence.EntityManager)
+     */
+    @Override
+    public List<CoordinateNetwork> getImmediateChildren(EntityManager em) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByChild()
-	 */
-	@Override
-	public Set getNetworkByChild() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByChild()
+     */
+    @Override
+    public Set<CoordinateNetwork> getNetworkByChild() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByParent()
-	 */
-	@Override
-	public Set getNetworkByParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.ExistentialRuleform#getNetworkByParent()
+     */
+    @Override
+    public Set<CoordinateNetwork> getNetworkByParent() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hellblazer.CoRE.ExistentialRuleform#link(com.hellblazer.CoRE.network
-	 * .Relationship, com.hellblazer.CoRE.ExistentialRuleform,
-	 * com.hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.agency.Agency,
-	 * javax.persistence.EntityManager)
-	 */
-	@Override
-	public void link(Relationship r, Coordinate child, Agency updatedBy,
-			Agency inverseSoftware, EntityManager em) {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.ExistentialRuleform#link(com.hellblazer.CoRE.network
+     * .Relationship, com.hellblazer.CoRE.ExistentialRuleform,
+     * com.hellblazer.CoRE.agency.Agency, com.hellblazer.CoRE.agency.Agency,
+     * javax.persistence.EntityManager)
+     */
+    @Override
+    public void link(Relationship r, Coordinate child, Agency updatedBy,
+                     Agency inverseSoftware, EntityManager em) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hellblazer.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
-	 */
-	@Override
-	public void setNetworkByChild(Set theNetworkByChild) {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+     */
+    @Override
+    public void setNetworkByChild(Set<CoordinateNetwork> theNetworkByChild) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hellblazer.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
-	 */
-	@Override
-	public void setNetworkByParent(Set theNetworkByParent) {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+     */
+    @Override
+    public void setNetworkByParent(Set<CoordinateNetwork> theNetworkByParent) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

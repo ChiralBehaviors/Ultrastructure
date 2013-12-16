@@ -45,7 +45,7 @@ import com.hellblazer.CoRE.coordinate.Coordinate;
 @Entity
 @Table(name = "product_location_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_location_network_id_seq", sequenceName = "product_location_network_id_seq")
-@NamedQueries({ @NamedQuery(name = LOCATION_RULES, query = "select n from ProductLocationNetwork n where n.product = :product and n.coordinate.kind = :coordinateKind") })
+@NamedQueries({ @NamedQuery(name = LOCATION_RULES, query = "select n from ProductLocationNetwork n where n.product = :product") })
 public class ProductLocationNetwork extends Ruleform {
     private static final long  serialVersionUID = 1L;
     public static final String LOCATION_RULES   = "productLocationNetwork.locationRules";

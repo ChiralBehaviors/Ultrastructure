@@ -16,8 +16,11 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.*;
-import static com.hellblazer.CoRE.authorization.AccessAuthorization.*;
+import static com.hellblazer.CoRE.authorization.AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD;
 
 import java.util.Map;
 import java.util.Set;

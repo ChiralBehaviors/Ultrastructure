@@ -42,8 +42,8 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      * @param relationship
      * @param updatedBy
      */
-    public UnitNetwork(Unit parent, Relationship relationship,
-                             Unit child, Agency updatedBy) {
+    public UnitNetwork(Unit parent, Relationship relationship, Unit child,
+                       Agency updatedBy) {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;
@@ -81,7 +81,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "child")
-    private Unit        child;
+    private Unit              child;
 
     @Id
     @GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
@@ -90,7 +90,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Unit        parent;
+    private Unit              parent;
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.network.NetworkRuleform#getChild()

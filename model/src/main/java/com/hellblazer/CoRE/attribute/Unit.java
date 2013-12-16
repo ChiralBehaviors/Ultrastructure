@@ -20,14 +20,17 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
@@ -42,21 +45,30 @@ import com.hellblazer.CoRE.network.Relationship;
 @Table(name = "unit", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "unit_id_seq", sequenceName = "unit_id_seq")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
-    private static final long serialVersionUID = 1L;
+    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "unit.immediateChildrenNetworkRules";
+    private static final long  serialVersionUID                 = 1L;
 
-    private String            abbreviation;
+    private String             abbreviation;
 
-    private String            datatype;
+    private String             datatype;
 
-    private Boolean           enumerated       = false;
+    private Boolean            enumerated                       = false;
 
     @Id
     @GeneratedValue(generator = "unit_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+    private Long               id;
 
-    private BigDecimal        max;
+    private BigDecimal         max;
 
-    private BigDecimal        min;
+    private BigDecimal         min;
+
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<UnitNetwork>   networkByChild;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<UnitNetwork>   networkByParent;
 
     public Unit() {
     }
@@ -153,8 +165,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public void addChildRelationship(UnitNetwork relationship) {
-        // TODO Auto-generated method stub
-
+        relationship.setChild(this);
+        networkByChild.add(relationship);
     }
 
     /*
@@ -166,8 +178,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public void addParentRelationship(UnitNetwork relationship) {
-        // TODO Auto-generated method stub
-
+        relationship.setChild(this);
+        networkByParent.add(relationship);
     }
 
     /*
@@ -178,8 +190,9 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public List<UnitNetwork> getImmediateChildren(EntityManager em) {
-        // TODO Auto-generated method stub
-        return null;
+        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
+                                   UnitNetwork.class).setParameter("interval",
+                                                                   this).getResultList();
     }
 
     /*
@@ -189,8 +202,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public Set<UnitNetwork> getNetworkByChild() {
-        // TODO Auto-generated method stub
-        return null;
+        return networkByChild;
     }
 
     /*
@@ -200,8 +212,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public Set<UnitNetwork> getNetworkByParent() {
-        // TODO Auto-generated method stub
-        return null;
+        return networkByParent;
     }
 
     /*
@@ -216,8 +227,16 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     @Override
     public void link(Relationship r, Unit child, Agency updatedBy,
                      Agency inverseSoftware, EntityManager em) {
-        // TODO Auto-generated method stub
+        assert r != null : "Relationship cannot be null";
+        assert child != null;
+        assert updatedBy != null;
+        assert em != null;
 
+        UnitNetwork link = new UnitNetwork(this, r, child, updatedBy);
+        em.persist(link);
+        UnitNetwork inverse = new UnitNetwork(child, r.getInverse(), this,
+                                              inverseSoftware);
+        em.persist(inverse);
     }
 
     /*
@@ -228,8 +247,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public void setNetworkByChild(Set<UnitNetwork> theNetworkByChild) {
-        // TODO Auto-generated method stub
-
+        this.networkByChild = theNetworkByChild;
     }
 
     /*
@@ -240,7 +258,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public void setNetworkByParent(Set<UnitNetwork> theNetworkByParent) {
-        // TODO Auto-generated method stub
-
+        this.networkByParent = theNetworkByParent;
     }
 }

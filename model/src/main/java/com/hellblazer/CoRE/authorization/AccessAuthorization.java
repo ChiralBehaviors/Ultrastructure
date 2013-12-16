@@ -61,6 +61,7 @@ public abstract class AccessAuthorization extends Ruleform {
 	public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX = ".findAllAuthsForParentRelationshipChild";
 
 	private static final long serialVersionUID = 1L;
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX = ".findAllAuthsForParentRelationshipChildMatchOnAllRelationships";
 
 	@Column(name = "authorization_type")
 	private String authorizationType;

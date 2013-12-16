@@ -17,6 +17,7 @@
 package com.hellblazer.CoRE.product;
 
 import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.*;
+import static com.hellblazer.CoRE.authorization.AccessAuthorization.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -57,12 +58,28 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                         + "AND auth.relationship = :relationship "
                                                                                         + "AND auth.child = :child "),
                @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
-                                                  + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork net "
-                                                  + "WHERE auth.relationship = :relationship "
-                                                  + "AND auth.child = :child "
-                                                  + "AND net.relationship = :netRelationship "
-                                                  + "AND net.child = :netChild "
-                                                  + "AND auth.parent = net.parent ") })
+                                                                          + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork net "
+                                                                          + "WHERE auth.relationship = :relationship "
+                                                                          + "AND auth.child = :child "
+                                                                          + "AND net.relationship = :netRelationship "
+                                                                          + "AND net.child = :netChild "
+                                                                          + "AND auth.parent = net.parent "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
+                                                                         + "FROM ProductAgencyAccessAuthorization auth, AgencyNetwork net "
+                                                                         + "WHERE auth.relationship = :relationship "
+                                                                         + "AND auth.parent = :parent "
+                                                                         + "AND net.relationship = :netRelationship "
+                                                                         + "AND net.child = :netChild "
+                                                                         + "AND auth.child = net.parent "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
+                                                                                    + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork parentNet, AgencyNetwork childNet "
+                                                                                    + "WHERE auth.relationship = :relationship "
+                                                                                    + "AND parentNet.relationship = :parentNetRelationship "
+                                                                                    + "AND parentNet.child = :parentNetChild "
+                                                                                    + "AND childNet.relationship = :childNetRelationship "
+                                                                                    + "AND childNet.child = :childNetChild "
+                                                                                    + "AND auth.parent = parentNet.parent "
+                                                                                    + "AND auth.child = childNet.parent ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_AGENCY)
 public class ProductAgencyAccessAuthorization extends
@@ -74,7 +91,13 @@ public class ProductAgencyAccessAuthorization extends
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
 
-    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT = "test";
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+
     private static final long  serialVersionUID                                                        = 1L;
 
     {

@@ -295,7 +295,7 @@ public class ProductModelImpl
                                                "parent, authorizingRelationship, and child cannot be null");
         }
         if ("Agency".equals(child.getClass().getSimpleName())) {
-            
+
             return isAgencyAccessible(parent, parentRelationship,
                                       authorizingRelationship, (Agency) child,
                                       childRelationship);
@@ -308,9 +308,7 @@ public class ProductModelImpl
                                                "child type is not supported for this query");
         }
 
-
     }
-
 
     /**
      * @param parent
@@ -347,79 +345,26 @@ public class ProductModelImpl
             return results.size() > 0;
 
         } else if (parentRelationship == null) {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<ProductAgencyAccessAuthorization> q = builder.createQuery(ProductAgencyAccessAuthorization.class);
-            Root<ProductAgencyAccessAuthorization> auth = q.from(ProductAgencyAccessAuthorization.class);
-            q.select(auth);
-            q.where(builder.and(builder.equal(auth.get(ProductAgencyAccessAuthorization_.relationship),
-                                              authorizingRelationship),
-                                builder.equal(auth.get(ProductAgencyAccessAuthorization_.parent),
-                                              parent)));
-            query = em.createQuery(q);
-            TypedQuery<AgencyNetwork> netQuery = em.createQuery("select net FROM AgencyNetwork net "
-                                                                        + "WHERE net.relationship = :rel "
-                                                                        + "AND net.child = :child",
-                                                                AgencyNetwork.class);
-            netQuery.setParameter("rel", childRelationship);
-            netQuery.setParameter("child", child);
+            query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parent", parent);
+            query.setParameter("netRelationship", childRelationship);
+            query.setParameter("netChild", child);
+            List<?> results = query.getResultList();
 
-            List<AgencyNetwork> net = netQuery.getResultList();
-            List<?> res = query.getResultList();
-            for (AgencyNetwork n : net) {
-                System.out.println("n: " + n);
-                for (ProductAgencyAccessAuthorization p : (List<ProductAgencyAccessAuthorization>) res) {
-                    System.out.println("auth: " + p);
-                    if (n.getParent().equals(p.getChild())) {
-                        return true;
-                    }
-                }
-            }
+            return results.size() > 0;
         } else {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<ProductAgencyAccessAuthorization> q = builder.createQuery(ProductAgencyAccessAuthorization.class);
-            Root<ProductAgencyAccessAuthorization> auth = q.from(ProductAgencyAccessAuthorization.class);
-            q.select(auth);
-            q.where(builder.equal(auth.get(ProductAgencyAccessAuthorization_.relationship),
-                                  authorizingRelationship));
-            query = em.createQuery(q);
-            Query parentNetQuery = em.createQuery("select net FROM ProductNetwork net "
-                                                  + "WHERE net.relationship = :rel ");
-            parentNetQuery.setParameter("rel", parentRelationship);
+            query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parentNetRelationship", parentRelationship);
+            query.setParameter("parentNetChild", parent);
+            query.setParameter("childNetRelationship", childRelationship);
+            query.setParameter("childNetChild", child);
+            List<?> results = query.getResultList();
 
-            List<ProductNetwork> net = parentNetQuery.getResultList();
-            List<?> res = query.getResultList();
-            boolean foundParent = false;
-            for (ProductNetwork n : net) {
-                System.out.println("n: " + n);
-                for (ProductAgencyAccessAuthorization p : (List<ProductAgencyAccessAuthorization>) res) {
-                    System.out.println("auth: " + p);
-                    if (n.getParent().equals(p.getParent())) {
-                        foundParent = true;
-                    }
-                }
-            }
-            if (!foundParent) {
-                return false;
-            }
-            Query childNetQuery = em.createQuery("select net FROM AgencyNetwork net "
-                                                 + "WHERE net.relationship = :rel "
-                                                 + "AND net.child = :child");
-            childNetQuery.setParameter("rel", childRelationship);
-            childNetQuery.setParameter("child", child);
-
-            List<AgencyNetwork> anet = childNetQuery.getResultList();
-            res = query.getResultList();
-            for (AgencyNetwork n : anet) {
-                System.out.println("n: " + n);
-                for (ProductAgencyAccessAuthorization p : (List<ProductAgencyAccessAuthorization>) res) {
-                    System.out.println("auth: " + p);
-                    if (n.getParent().equals(p.getChild())) {
-                        return true;
-                    }
-                }
-            }
+            return results.size() > 0;
         }
-        return false;
+
     }
 
     /**

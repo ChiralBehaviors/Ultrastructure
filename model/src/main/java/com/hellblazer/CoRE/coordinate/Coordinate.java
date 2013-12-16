@@ -23,6 +23,7 @@ import static com.hellblazer.CoRE.coordinate.Coordinate.ORDERED_ATTRIBUTES;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
@@ -62,9 +63,11 @@ import com.hellblazer.CoRE.network.Relationship;
 public class Coordinate extends
         ExistentialRuleform<Coordinate, CoordinateNetwork> implements
         Attributable<CoordinateAttribute> {
-    private static final long        serialVersionUID   = 1L;
-    public static final String       NESTING_QUERY      = "coordinate.nestCoordinates";
-    public static final String       ORDERED_ATTRIBUTES = "coordinate.orderedAttributes";
+    private static final long        serialVersionUID                 = 1L;
+    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES = "interval.immediateChildrenNetworkRules";
+
+    public static final String       NESTING_QUERY                    = "coordinate.nestCoordinates";
+    public static final String       ORDERED_ATTRIBUTES               = "coordinate.orderedAttributes";
 
     // bi-directional many-to-one association to CoordinateAttribute
     @OneToMany(mappedBy = "coordinate")
@@ -74,6 +77,14 @@ public class Coordinate extends
     @Id
     @GeneratedValue(generator = "coordinate_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                     id;
+
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<CoordinateNetwork>   networkByChild;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<CoordinateNetwork>   networkByParent;
 
     public Coordinate() {
     }
@@ -242,8 +253,8 @@ public class Coordinate extends
      */
     @Override
     public void addChildRelationship(CoordinateNetwork relationship) {
-        // TODO Auto-generated method stub
-
+        relationship.setChild(this);
+        networkByChild.add(relationship);
     }
 
     /*
@@ -255,8 +266,8 @@ public class Coordinate extends
      */
     @Override
     public void addParentRelationship(CoordinateNetwork relationship) {
-        // TODO Auto-generated method stub
-
+        relationship.setParent(this);
+        networkByParent.add(relationship);
     }
 
     /*
@@ -267,8 +278,9 @@ public class Coordinate extends
      */
     @Override
     public List<CoordinateNetwork> getImmediateChildren(EntityManager em) {
-        // TODO Auto-generated method stub
-        return null;
+        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
+                                   CoordinateNetwork.class).setParameter("interval",
+                                                                         this).getResultList();
     }
 
     /*
@@ -278,8 +290,7 @@ public class Coordinate extends
      */
     @Override
     public Set<CoordinateNetwork> getNetworkByChild() {
-        // TODO Auto-generated method stub
-        return null;
+        return networkByChild;
     }
 
     /*
@@ -289,8 +300,7 @@ public class Coordinate extends
      */
     @Override
     public Set<CoordinateNetwork> getNetworkByParent() {
-        // TODO Auto-generated method stub
-        return null;
+        return networkByParent;
     }
 
     /*
@@ -305,8 +315,18 @@ public class Coordinate extends
     @Override
     public void link(Relationship r, Coordinate child, Agency updatedBy,
                      Agency inverseSoftware, EntityManager em) {
-        // TODO Auto-generated method stub
+        assert r != null : "Relationship cannot be null";
+        assert child != null;
+        assert updatedBy != null;
+        assert em != null;
 
+        CoordinateNetwork link = new CoordinateNetwork(this, r, child,
+                                                       updatedBy);
+        em.persist(link);
+        CoordinateNetwork inverse = new CoordinateNetwork(child,
+                                                          r.getInverse(), this,
+                                                          inverseSoftware);
+        em.persist(inverse);
     }
 
     /*
@@ -317,8 +337,7 @@ public class Coordinate extends
      */
     @Override
     public void setNetworkByChild(Set<CoordinateNetwork> theNetworkByChild) {
-        // TODO Auto-generated method stub
-
+        networkByChild = theNetworkByChild;
     }
 
     /*
@@ -329,7 +348,6 @@ public class Coordinate extends
      */
     @Override
     public void setNetworkByParent(Set<CoordinateNetwork> theNetworkByParent) {
-        // TODO Auto-generated method stub
-
+        networkByParent = theNetworkByParent;
     }
 }

@@ -178,7 +178,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public void addParentRelationship(UnitNetwork relationship) {
-        relationship.setChild(this);
+        relationship.setParent(this);
         networkByParent.add(relationship);
     }
 

@@ -16,7 +16,8 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.*;
+import static com.hellblazer.CoRE.authorization.AccessAuthorization.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -43,23 +44,61 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hparry
  * 
  */
-@NamedQueries({ @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
-                                                                                         + "FROM ProductAgencyAccessAuthorization auth "
-                                                                                         + "WHERE auth.parent = :parent "
-                                                                                         + "AND auth.relationship = :relationship "
-                                                                                         + "AND auth.child = :child "
-                                                                                         + "AND auth.parentTransitiveRelationship = :parentRelationship "
-                                                                                         + "AND auth.childTransitiveRelationship = :childRelationship") })
+@NamedQueries({
+               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX, query = "SELECT auth "
+                                                                                                                          + "FROM ProductAgencyAccessAuthorization auth "
+                                                                                                                          + "WHERE auth.parent = :parent "
+                                                                                                                          + "AND auth.relationship = :relationship "
+                                                                                                                          + "AND auth.child = :child "
+                                                                                                                          + "AND auth.parentTransitiveRelationship = :parentRelationship "
+                                                                                                                          + "AND auth.childTransitiveRelationship = :childRelationship"),
+               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
+                                                                                        + "FROM ProductAgencyAccessAuthorization auth "
+                                                                                        + "WHERE auth.parent = :parent "
+                                                                                        + "AND auth.relationship = :relationship "
+                                                                                        + "AND auth.child = :child "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
+                                                                          + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork net "
+                                                                          + "WHERE auth.relationship = :relationship "
+                                                                          + "AND auth.child = :child "
+                                                                          + "AND net.relationship = :netRelationship "
+                                                                          + "AND net.child = :netChild "
+                                                                          + "AND auth.parent = net.parent "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
+                                                                         + "FROM ProductAgencyAccessAuthorization auth, AgencyNetwork net "
+                                                                         + "WHERE auth.relationship = :relationship "
+                                                                         + "AND auth.parent = :parent "
+                                                                         + "AND net.relationship = :netRelationship "
+                                                                         + "AND net.child = :netChild "
+                                                                         + "AND auth.child = net.parent "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
+                                                                                    + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork parentNet, AgencyNetwork childNet "
+                                                                                    + "WHERE auth.relationship = :relationship "
+                                                                                    + "AND parentNet.relationship = :parentNetRelationship "
+                                                                                    + "AND parentNet.child = :parentNetChild "
+                                                                                    + "AND childNet.relationship = :childNetRelationship "
+                                                                                    + "AND childNet.child = :childNetChild "
+                                                                                    + "AND auth.parent = parentNet.parent "
+                                                                                    + "AND auth.child = childNet.parent ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_AGENCY)
 public class ProductAgencyAccessAuthorization extends
         ProductAccessAuthorization {
 
-    public static final String PRODUCT_AGENCY_ACCESS_AUTH_PREFIX            = "productAgencyAccessAuthorization";
-    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
-                                                                              + AgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+    public static final String PRODUCT_AGENCY_ACCESS_AUTH_PREFIX                                       = "productAgencyAccessAuthorization";
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + AgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
 
-    private static final long  serialVersionUID                             = 1L;
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+
+    private static final long  serialVersionUID                                                        = 1L;
 
     {
         setAuthorizationType(AccessAuthorization.PRODUCT_AGENCY);
@@ -91,6 +130,21 @@ public class ProductAgencyAccessAuthorization extends
         setParent(parent);
         setRelationship(relationship);
         setChild(child);
+        setUpdatedBy(updatedBy);
+    }
+
+    public ProductAgencyAccessAuthorization(Product parent,
+                                            Relationship parentRelationship,
+                                            Relationship relationship,
+                                            Agency child,
+                                            Relationship childRelationship,
+                                            Agency updatedBy) {
+        this();
+        setParent(parent);
+        setParentTransitiveRelationship(parentRelationship);
+        setRelationship(relationship);
+        setChild(child);
+        setChildTransitiveRelationship(childRelationship);
         setUpdatedBy(updatedBy);
     }
 

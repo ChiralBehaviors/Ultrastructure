@@ -16,6 +16,8 @@
  */
 package com.hellblazer.CoRE.product;
 
+import static com.hellblazer.CoRE.product.ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+
 import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
@@ -23,23 +25,37 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.location.LocationAccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hparry
  * 
  */
+@NamedQueries({ @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
+                                                                                         + "FROM ProductLocationAccessAuthorization auth "
+                                                                                         + "WHERE auth.parent = :parent "
+                                                                                         + "AND auth.relationship = :relationship "
+                                                                                         + "AND auth.child = :child "
+                                                                                         + "AND auth.parentTransitiveRelationship = :parentRelationship "
+                                                                                         + "AND auth.childTransitiveRelationship = :childRelationship") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_LOCATION)
 public class ProductLocationAccessAuthorization extends
         ProductAccessAuthorization {
 
-    private static final long serialVersionUID = 1L;
+    public static final String PRODUCT_LOCATION_ACCESS_AUTH_PREFIX          = "productLocationAccessAuthorization";
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
+                                                                              + LocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+
+    private static final long  serialVersionUID                             = 1L;
 
     {
         setAuthorizationType(AccessAuthorization.PRODUCT_LOCATION);
@@ -47,7 +63,7 @@ public class ProductLocationAccessAuthorization extends
 
     @ManyToOne
     @JoinColumn(name = "location2")
-    private Location          child;
+    private Location           child;
 
     public ProductLocationAccessAuthorization() {
         super();

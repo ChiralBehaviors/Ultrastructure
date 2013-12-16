@@ -56,7 +56,7 @@ public class ProductAgencyAccessAuthorization extends
         ProductAccessAuthorization {
 
     public static final String PRODUCT_AGENCY_ACCESS_AUTH_PREFIX            = "productAgencyAccessAuthorization";
-    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                               + AgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
 
     private static final long  serialVersionUID                             = 1L;

@@ -8,10 +8,9 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.relationship AS 
-			 SELECT rel.id, rel.name, rel.description, rel.preferred, inv.name AS inverse, rel.notes, rel.pinned, res.name AS research, up.name AS updated_by
+			 SELECT rel.id, rel.name, rel.description, rel.preferred, inv.name AS inverse, rel.notes, rel.pinned, up.name AS updated_by
 			   FROM ruleform.relationship rel
 			   JOIN ruleform.relationship inv ON rel.inverse = inv.id
-			   LEFT JOIN ruleform.research res ON rel.research = res.id
 			   JOIN ruleform.agency up ON rel.updated_by = up.id;
 			
 			ALTER TABLE readable.relationship

@@ -8,13 +8,23 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.attribute_meta_attribute AS 
-			 SELECT aa.id, ba.name AS base_attribute, a.name AS attribute, aa.integer_value, aa.numeric_value, aa.boolean_value, aa.text_value, av.name AS attribute_value, u.name AS unit, aa.notes, res.name AS research, up.name AS updated_by, aa.update_date
+			 SELECT aa.id, 
+			     ba.name AS base_attribute, 
+			     a.name AS attribute, 
+			     aa.integer_value, 
+			     aa.numeric_value, 
+			     aa.boolean_value, 
+			     aa.text_value, 
+			     av.name AS attribute_value, 
+			     u.name AS unit, 
+			     aa.notes, 
+			     up.name AS updated_by, 
+			     aa.update_date
 			   FROM ruleform.attribute_meta_attribute aa
 			   JOIN ruleform.attribute ba ON ba.id = aa.attribute
 			   JOIN ruleform.attribute a ON aa.meta_attribute = a.id
 			   LEFT JOIN ruleform.attribute av ON aa.attribute_value = av.id
 			   LEFT JOIN ruleform.unit u ON aa.unit_value = u.id
-			   LEFT JOIN ruleform.research res ON aa.research = res.id
 			   JOIN ruleform.agency up ON aa.updated_by = up.id;
 			
 			ALTER TABLE readable.attribute_meta_attribute

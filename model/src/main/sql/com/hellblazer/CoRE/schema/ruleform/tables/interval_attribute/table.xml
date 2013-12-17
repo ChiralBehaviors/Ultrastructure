@@ -21,16 +21,12 @@
               unit bigint,
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
               notes character varying,
-              research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
 
               CONSTRAINT interval_attribute_pkey PRIMARY KEY (id ),
               CONSTRAINT interval_attribute_attribute_fkey FOREIGN KEY (attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT interval_attribute_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT interval_attribute_interval_fkey FOREIGN KEY (interval)
                   REFERENCES ruleform.interval (id) MATCH SIMPLE

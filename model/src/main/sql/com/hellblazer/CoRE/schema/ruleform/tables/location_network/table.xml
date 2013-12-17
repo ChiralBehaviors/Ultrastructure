@@ -15,16 +15,12 @@
               child bigint NOT NULL,
               inferred boolean NOT NULL DEFAULT FALSE,
               notes character varying,
-              research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               ordering ruleform.ordinal_number,
               CONSTRAINT location_network_pkey PRIMARY KEY (id ),
               CONSTRAINT location_network_relationship_fkey FOREIGN KEY (relationship)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_network_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT location_network_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE

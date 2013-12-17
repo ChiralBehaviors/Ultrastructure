@@ -8,7 +8,6 @@
 
     <include relativeToChangelogFile="true" file="agency_network_authorization/table.xml"/>
     <include relativeToChangelogFile="true" file="agency_network_authorization/grants.xml"/>
-    <include relativeToChangelogFile="true" file="agency_network_authorization/index-agency_network_authorization_research.xml"/>
     <include relativeToChangelogFile="true" file="agency_network_authorization/index-agency_network_authorization_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="agency_network_authorization/owner.xml"/>
 

@@ -13,14 +13,10 @@
               name character varying NOT NULL,
               description character varying,
               notes character varying,
-              research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               pinned boolean NOT NULL DEFAULT false,
               CONSTRAINT interval_pkey PRIMARY KEY (id ),
-              CONSTRAINT interval_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT interval_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.interval (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE

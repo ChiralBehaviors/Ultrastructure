@@ -9,7 +9,6 @@
     <include relativeToChangelogFile="true" file="coordinate_attribute/table.xml"/>
     <include relativeToChangelogFile="true" file="coordinate_attribute/grants.xml"/>
     <include relativeToChangelogFile="true" file="coordinate_attribute/index-coordinate_attribute_product_value.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate_attribute/index-coordinate_attribute_research.xml"/>
     <include relativeToChangelogFile="true" file="coordinate_attribute/index-coordinate_attribute_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="coordinate_attribute/owner.xml"/>
 

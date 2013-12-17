@@ -8,7 +8,6 @@
 
     <include relativeToChangelogFile="true" file="interval_attribute/table.xml"/>
     <include relativeToChangelogFile="true" file="interval_attribute/grants.xml"/>
-    <include relativeToChangelogFile="true" file="interval_attribute/index-interval_attribute_research.xml"/>
     <include relativeToChangelogFile="true" file="interval_attribute/index-interval_attribute_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="interval_attribute/owner.xml"/>
 

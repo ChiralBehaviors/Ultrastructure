@@ -23,7 +23,6 @@
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
               unit bigint,
               notes character varying,
-              research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               CONSTRAINT product_location_attribute_pkey PRIMARY KEY (id ),
@@ -35,9 +34,6 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_location_attribute_product_value_fkey FOREIGN KEY (product_value)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_location_attribute_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_location_attribute_agency_fkey FOREIGN KEY (agency)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE

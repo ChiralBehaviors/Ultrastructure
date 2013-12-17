@@ -19,7 +19,6 @@
                 base_table.integer_value, 
                 base_table.numeric_value, 
                 base_table.notes, 
-                r.name AS research, 
                 up.name AS updated_by, 
                 base_table.update_date
              FROM ruleform.attr_meta_attr_auth base_table
@@ -27,7 +26,6 @@
              JOIN ruleform.relationship cls ON base_table.classification = cls.id
              JOIN ruleform.product b ON base_table.classifier = b.id
              JOIN ruleform.attribute att ON base_table.authorized_attribute = att.id
-             LEFT JOIN ruleform.research r ON base_table.research = r.id
              JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.product_attribute_authorization

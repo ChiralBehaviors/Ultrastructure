@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
@@ -56,16 +55,6 @@ public class ProductSearchTest extends DatabaseTest {
     @Before
     public void initData() {
         beginTransaction();
-        Research testingOnly = new Research("Testing Only",
-                                            "This rule is for testing purposes only.  It is not 'real'.");
-        em.persist(testingOnly);
-        Research improveDocumentation = new Research("Improve Documentation",
-                                                     "This rule needs better metadata.");
-        em.persist(improveDocumentation);
-        Research humanProtImport = new Research(
-                                                "HumanProt Import",
-                                                "A flag indicating that this rule is currently being used for importing HumanProt data into Ultra-Structure.");
-        em.persist(humanProtImport);
 
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);

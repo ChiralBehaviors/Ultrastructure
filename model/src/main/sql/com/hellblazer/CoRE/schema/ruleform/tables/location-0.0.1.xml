@@ -8,7 +8,6 @@
 
     <include relativeToChangelogFile="true" file="location/table.xml"/>
     <include relativeToChangelogFile="true" file="location/grants.xml"/>
-    <include relativeToChangelogFile="true" file="location/index-location_research.xml"/>
     <include relativeToChangelogFile="true" file="location/index-location_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="location/owner.xml"/>
 

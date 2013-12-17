@@ -13,7 +13,7 @@
                rp.name AS requested_product, dt.name AS deliver_to, df.name AS deliver_from,
                assign.name AS assign_to, s.name AS service, p.name AS product,
 			   base_table.copy_attributes, base_table.sequence_number, base_table.notes, 
-			   res.name AS research, up.name AS updated_by, base_table.update_date
+			   up.name AS updated_by, base_table.update_date
 			   FROM ruleform.protocol base_table
                JOIN ruleform.product rs ON base_table.requested_service = rs.id
 			   JOIN ruleform.product rp ON base_table.requested_product = rp.id
@@ -23,7 +23,6 @@
                JOIN ruleform.location df ON base_table.deliver_from = df.id
 			   JOIN ruleform.agency assign ON base_table.assign_to = assign.id
                JOIN ruleform.agency r ON base_table.requester = r.id
-			   LEFT JOIN ruleform.research res ON base_table.research = res.id
 			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.protocol

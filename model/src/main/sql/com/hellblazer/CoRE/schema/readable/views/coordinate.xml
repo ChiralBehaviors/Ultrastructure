@@ -8,9 +8,8 @@
 	<changeSet id="1" author="hhildebrand">
 		<sql><![CDATA[
             CREATE OR REPLACE VIEW readable.coordinate AS 
-			 SELECT c.id, c.name, c.description, c.notes, c.pinned, r.name AS research, up.name AS updated_by, c.update_date
+			 SELECT c.id, c.name, c.description, c.notes, c.pinned, up.name AS updated_by, c.update_date
 			   FROM ruleform.coordinate c
-			   LEFT JOIN ruleform.research r ON r.id = c.research
 			   JOIN ruleform.agency up ON up.id = c.updated_by;
 			
 			ALTER TABLE readable.coordinate

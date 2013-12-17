@@ -19,7 +19,6 @@
               deliver_from bigint NOT NULL, -- Used to select a mapped value for the location to deliver from
               stop_on_match boolean DEFAULT FALSE, -- Indicates no further meta protocol transformations should be processed
               notes character varying, -- Additional notes regarding usage of the meta protocol
-              research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT meta_protocol_pkey PRIMARY KEY (id ),
@@ -41,9 +40,6 @@
               CONSTRAINT meta_protocol_deliver_from_fkey FOREIGN KEY (deliver_from)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT meta_protocol_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
@@ -60,7 +56,6 @@
             COMMENT ON COLUMN ruleform.meta_protocol.service_type IS 'Used to select a mapped value from a Product';
             COMMENT ON COLUMN ruleform.meta_protocol.product_ordered IS 'Used to select a mapped value from a Product';
             COMMENT ON COLUMN ruleform.meta_protocol.notes IS 'Additional notes regarding usage of the attribute';
-            COMMENT ON COLUMN ruleform.meta_protocol.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.meta_protocol.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.meta_protocol.update_date IS 'The date this rule was last changed';
             ]]>

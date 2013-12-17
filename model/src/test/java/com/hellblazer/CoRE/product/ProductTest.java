@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.Unit;
@@ -92,27 +91,6 @@ public class ProductTest extends DatabaseTest {
     @Before
     public void initData() {
         beginTransaction();
-        Research testingOnly = new Research("Testing Only",
-                                            "This rule is for testing purposes only.  It is not 'real'.");
-        em.persist(testingOnly);
-        Research improveDocumentation = new Research("Improve Documentation",
-                                                     "This rule needs better metadata.");
-        em.persist(improveDocumentation);
-        Research humanProtImport = new Research(
-                                                "HumanProt Import",
-                                                "A flag indicating that this rule is currently being used for importing HumanProt data into Ultra-Structure.");
-        em.persist(humanProtImport);
-
-        Research considerDelition = new Research("Consider Deletion",
-                                                 "Consider deleting this rule");
-        em.persist(considerDelition);
-
-        Research investigateDataConsistency = new Research(
-                                                           "Investigate Data Consistency",
-                                                           "Consistency of this data is suspect.  Investigate further.");
-        em.persist(investigateDataConsistency);
-
-        em.persist(considerDelition);
 
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);

@@ -14,7 +14,6 @@
               description character varying,
               abbreviation character varying(10),
               notes character varying,
-              research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               pinned boolean NOT NULL DEFAULT false,
@@ -23,9 +22,6 @@
               max numeric, -- If the unit is integer or numeric and has a maximum value, it is stored here.
               enumerated boolean DEFAULT false, -- If the allowable values of the unit constitute an enumerated set, then this should be TRUE.
               CONSTRAINT unit_pkey PRIMARY KEY (id ),
-              CONSTRAINT unit_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT unit_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,

@@ -8,12 +8,11 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.network_inference AS 
-			 SELECT c.id, r1.name AS premise1, r2.name AS premise2, r3.name AS inference, c.notes, res.name AS research, up.name AS updated_by, c.update_date
+			 SELECT c.id, r1.name AS premise1, r2.name AS premise2, r3.name AS inference, c.notes, up.name AS updated_by, c.update_date
 			   FROM ruleform.network_inference c
 			   JOIN ruleform.relationship r1 ON c.premise1 = r1.id
 			   JOIN ruleform.relationship r2 ON c.premise2 = r2.id
 			   JOIN ruleform.relationship r3 ON c.inference = r3.id
-			   LEFT JOIN ruleform.research res ON c.research = res.id
 			   JOIN ruleform.agency up ON c.updated_by = up.id;
 			
 			ALTER TABLE readable.network_inference

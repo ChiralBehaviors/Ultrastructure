@@ -16,7 +16,6 @@
               operation character varying NOT NULL, -- The operation to perform on both attribute values
               outer_attribute bigint NOT NULL, -- The attribute of the "outer" Coordinate to manipulate
               notes character varying, -- Usage notes for this rule
-              research bigint, -- A research flag that has been set on an individual rule
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT coordinate_nesting_pkey PRIMARY KEY (id ),
@@ -28,9 +27,6 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_nesting_outer_attribute_fkey FOREIGN KEY (outer_attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT coordinate_nesting_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_nesting_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
@@ -50,7 +46,6 @@
             COMMENT ON COLUMN ruleform.coordinate_nesting.operation IS 'The operation to perform on both attribute values';
             COMMENT ON COLUMN ruleform.coordinate_nesting.outer_attribute IS 'The attribute of the "outer" Coordinate to manipulate';
             COMMENT ON COLUMN ruleform.coordinate_nesting.notes IS 'Usage notes for this rule';
-            COMMENT ON COLUMN ruleform.coordinate_nesting.research IS 'A research flag that has been set on an individual rule';
             COMMENT ON COLUMN ruleform.coordinate_nesting.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.coordinate_nesting.update_date IS 'The time at which this rule was last updated';
             ]]>

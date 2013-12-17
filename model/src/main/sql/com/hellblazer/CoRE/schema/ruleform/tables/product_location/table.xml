@@ -17,7 +17,6 @@
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               notes character varying,
-              research bigint,
               CONSTRAINT product_location_pkey PRIMARY KEY (id ),
               CONSTRAINT product_location_product_fkey FOREIGN KEY (product)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
@@ -27,9 +26,6 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_location_relationship_fkey FOREIGN KEY (relationship)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_location_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_location_agency_fkey FOREIGN KEY (agency)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE

@@ -16,13 +16,9 @@
               pinned boolean NOT NULL DEFAULT FALSE, -- Indicates that a rule has been pinned, restricting changes to the rule
               fail_parent boolean NOT NULL DEFAULT TRUE, -- Setting a job to this status code will trigger a cascading failure up to its parent
               propagate_children boolean NOT NULL DEFAULT TRUE, -- Setting a job to this status code will trigger the propagation of child (implicit) jobs
-              research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT status_code_pkey PRIMARY KEY (id ),
-              CONSTRAINT status_code_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT status_code_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
@@ -46,8 +42,6 @@
                     IS 'Setting a job to this status code will trigger a cascading failure up to its parent';
             COMMENT ON COLUMN ruleform.status_code.propagate_children 
                     IS 'Setting a job to this status code will trigger the propagation of child (implicit) jobs';
-            COMMENT ON COLUMN ruleform.status_code.research 
-                    IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.status_code.updated_by 
                     IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.status_code.update_date 

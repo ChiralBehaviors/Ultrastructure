@@ -6,7 +6,6 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
     
-    <include relativeToChangelogFile="true" file="tables/research-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/agency-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code-0.0.1.xml"/>

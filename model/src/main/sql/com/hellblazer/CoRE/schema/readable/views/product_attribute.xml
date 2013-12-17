@@ -11,13 +11,12 @@
 			 SELECT ba.id, b.name AS product, a.name AS attribute, 
 			        ba.numeric_value, ba.integer_value, ba.boolean_value, 
 			        ba.text_value, u.name AS unit, ba.notes, 
-			        res.name AS research, up.name AS updated_by, 
+			        up.name AS updated_by, 
 			        ba.update_date
 			   FROM ruleform.product_attribute ba
 			   JOIN ruleform.product b ON ba.product = b.id
 			   JOIN ruleform.attribute a ON ba.attribute = a.id
 			   LEFT JOIN ruleform.unit u ON ba.unit = u.id
-			   LEFT JOIN ruleform.research res ON ba.research = res.id
 			   JOIN ruleform.agency up ON ba.updated_by = up.id;
 			
 			ALTER TABLE readable.product_attribute

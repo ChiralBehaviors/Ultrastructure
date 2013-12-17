@@ -28,7 +28,6 @@
               numeric_value numeric, 
               timestamp_value timestamp with time zone,
               notes character varying,
-              research bigint,
               updated_by bigint NOT NULL, 
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               CONSTRAINT protocol_attribute_authorization_pkey PRIMARY KEY (id ),
@@ -67,9 +66,6 @@
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT protocol_attribute_authorization_grouping_agency_fkey FOREIGN KEY (grouping_agency)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT protocol_attribute_authorization_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT protocol_attribute_authorization_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE

@@ -20,7 +20,6 @@
               numeric_value numeric, -- Contains a single acceptable numeric-value if 'attribute' has a data type of 'numeric'
               timestamp_value timestamp with time zone,
               notes character varying, -- Additional notes regarding this rule
-              research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT product_attribute_authorization_pkey PRIMARY KEY (id ),
@@ -35,9 +34,6 @@
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT product_attribute_authorization_grouping_agency_fkey FOREIGN KEY (grouping_agency)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT product_attribute_authorization_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT product_attribute_authorization_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
@@ -59,7 +55,6 @@
             COMMENT ON COLUMN ruleform.product_attribute_authorization.integer_value IS 'Contains a single acceptable integer-value if ''attribute'' has a data type of ''integer''';
             COMMENT ON COLUMN ruleform.product_attribute_authorization.numeric_value IS 'Contains a single acceptable numeric-value if ''attribute'' has a data type of ''numeric''';
             COMMENT ON COLUMN ruleform.product_attribute_authorization.notes IS 'Additional notes regarding this rule';
-            COMMENT ON COLUMN ruleform.product_attribute_authorization.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.product_attribute_authorization.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.product_attribute_authorization.update_date IS 'The date this rule was last changed';
             ]]>

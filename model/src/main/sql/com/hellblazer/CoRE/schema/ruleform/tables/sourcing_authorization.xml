@@ -10,8 +10,6 @@
 	<include relativeToChangelogFile="true"
 		file="sourcing_authorization/grants.xml" />
 	<include relativeToChangelogFile="true"
-		file="sourcing_authorization/index-sourcing_authorization_research.xml" />
-	<include relativeToChangelogFile="true"
 		file="sourcing_authorization/index-sourcing_authorization_updated_by.xml" />
 	<include relativeToChangelogFile="true"
 		file="sourcing_authorization/owner.xml" />

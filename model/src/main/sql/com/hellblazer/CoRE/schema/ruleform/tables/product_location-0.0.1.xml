@@ -11,7 +11,6 @@
     <include relativeToChangelogFile="true" file="product_location/index-product_location_product.xml"/>
     <include relativeToChangelogFile="true" file="product_location/index-product_location_location.xml"/>
     <include relativeToChangelogFile="true" file="product_location/index-product_location_relationship.xml"/>
-    <include relativeToChangelogFile="true" file="product_location/index-product_location_research.xml"/>
     <include relativeToChangelogFile="true" file="product_location/index-product_location_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="product_location/owner.xml"/>
 

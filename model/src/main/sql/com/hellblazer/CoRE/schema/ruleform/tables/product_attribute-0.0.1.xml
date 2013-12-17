@@ -10,7 +10,6 @@
     <include relativeToChangelogFile="true" file="product_attribute/grants.xml"/>
     <include relativeToChangelogFile="true" file="product_attribute/index-product_attribute_attribute.xml"/>
     <include relativeToChangelogFile="true" file="product_attribute/index-product_attribute_product.xml"/>
-    <include relativeToChangelogFile="true" file="product_attribute/index-product_attribute_research.xml"/>
     <include relativeToChangelogFile="true" file="product_attribute/index-product_attribute_unit.xml"/>
     <include relativeToChangelogFile="true" file="product_attribute/index-product_attribute_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="product_attribute/owner.xml"/>

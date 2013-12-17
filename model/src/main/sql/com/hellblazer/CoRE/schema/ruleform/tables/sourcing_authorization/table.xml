@@ -17,7 +17,6 @@
               reorder_threshold numeric,
               id bigserial NOT NULL, -- Unique identifier
               notes character varying, -- Additional notes regarding this rule
-              research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
                
@@ -31,9 +30,6 @@
                   REFERENCES ruleform.location (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT sourcing_authorization_pkey PRIMARY KEY (id ),
-              CONSTRAINT sourcing_authorization_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT sourcing_authorization_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -46,7 +42,6 @@
               IS 'Defines rules stating what network relationships are authorized for particular agencys';
             COMMENT ON COLUMN ruleform.sourcing_authorization.id IS 'Unique identifier';
             COMMENT ON COLUMN ruleform.sourcing_authorization.notes IS 'Additional notes regarding this rule';
-            COMMENT ON COLUMN ruleform.sourcing_authorization.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.sourcing_authorization.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.sourcing_authorization.update_date IS 'The date this rule was last changed';
             ]]>

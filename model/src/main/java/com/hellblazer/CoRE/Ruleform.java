@@ -55,10 +55,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     private String             notes;
 
-    @ManyToOne
-    @JoinColumn(name = "research")
-    protected Research         research;
-
     @Column(name = "update_date")
     private Timestamp          updateDate;
 
@@ -143,13 +139,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     /**
-     * @return the research
-     */
-    public Research getResearch() {
-        return research;
-    }
-
-    /**
      * @return the updateDate
      */
     public Timestamp getUpdateDate() {
@@ -207,14 +196,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
      */
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    /**
-     * @param research
-     *            the research to set
-     */
-    public void setResearch(Research research) {
-        this.research = research;
     }
 
     /**

@@ -191,8 +191,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     @Override
     public List<UnitNetwork> getImmediateChildren(EntityManager em) {
         return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   UnitNetwork.class).setParameter("interval",
-                                                                   this).getResultList();
+                                   UnitNetwork.class).setParameter("unit", this).getResultList();
     }
 
     /*

@@ -10,7 +10,6 @@
     <include relativeToChangelogFile="true" file="product_location_network/grants.xml"/>
     <include relativeToChangelogFile="true" file="product_location_network/index-product_location_network_contextual_product.xml"/>
     <include relativeToChangelogFile="true" file="product_location_network/index-product_location_network_coordinate.xml"/>
-    <include relativeToChangelogFile="true" file="product_location_network/index-product_location_network_research.xml"/>
     <include relativeToChangelogFile="true" file="product_location_network/index-product_location_network_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="product_location_network/owner.xml"/>
 

@@ -9,13 +9,12 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.sourcing_authorization AS 
              SELECT sa.id, owner.name as owner, product.name as product, location.name as location,
-                    sa.notes, res.name AS research, 
+                    sa.notes,
                     up.name AS updated_by, sa.update_date
                FROM ruleform.sourcing_authorization sa
                JOIN ruleform.agency owner ON sa.owner = owner.id
                JOIN ruleform.product product ON sa.product = product.id
                JOIN ruleform.location location ON sa.location = location.id
-               LEFT JOIN ruleform.research res ON sa.research = res.id
                JOIN ruleform.agency up ON sa.updated_by = up.id;
             
             ALTER TABLE readable.sourcing_authorization

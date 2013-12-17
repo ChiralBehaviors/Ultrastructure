@@ -35,6 +35,7 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -60,21 +61,30 @@ import com.hellblazer.CoRE.agency.Agency;
                                                + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Relationship extends
         ExistentialRuleform<Relationship, RelationshipNetwork> {
-    private static final long serialVersionUID = 1L;
+    private static final long        serialVersionUID                 = 1L;
+    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES = "interval.immediateChildrenNetworkRules";
 
     @Id
     @GeneratedValue(generator = "relationship_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+    private Long                     id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "inverse")
     @JsonIgnore
-    private Relationship      inverse;
+    private Relationship             inverse;
 
-    private String            operator;
+    private String                   operator;
 
-    private Boolean           preferred        = Boolean.FALSE;
+    private Boolean                  preferred                        = Boolean.FALSE;
+
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<RelationshipNetwork> networkByChild;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<RelationshipNetwork> networkByParent;
 
     public Relationship() {
     }
@@ -202,8 +212,8 @@ public class Relationship extends
      */
     @Override
     public void addChildRelationship(RelationshipNetwork relationship) {
-        // TODO Auto-generated method stub
-
+        relationship.setChild(this);
+        networkByChild.add(relationship);
     }
 
     /* (non-Javadoc)
@@ -211,8 +221,8 @@ public class Relationship extends
      */
     @Override
     public void addParentRelationship(RelationshipNetwork relationship) {
-        // TODO Auto-generated method stub
-
+        relationship.setParent(this);
+        networkByChild.add(relationship);
     }
 
     /* (non-Javadoc)
@@ -220,8 +230,9 @@ public class Relationship extends
      */
     @Override
     public List<RelationshipNetwork> getImmediateChildren(EntityManager em) {
-        // TODO Auto-generated method stub
-        return null;
+        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
+                                   RelationshipNetwork.class).setParameter("relationship",
+                                                                           this).getResultList();
     }
 
     /* (non-Javadoc)
@@ -229,8 +240,7 @@ public class Relationship extends
      */
     @Override
     public Set<RelationshipNetwork> getNetworkByChild() {
-        // TODO Auto-generated method stub
-        return null;
+        return networkByChild;
     }
 
     /* (non-Javadoc)
@@ -238,8 +248,7 @@ public class Relationship extends
      */
     @Override
     public Set<RelationshipNetwork> getNetworkByParent() {
-        // TODO Auto-generated method stub
-        return null;
+        return networkByParent;
     }
 
     /* (non-Javadoc)
@@ -248,8 +257,19 @@ public class Relationship extends
     @Override
     public void link(Relationship r, Relationship child, Agency updatedBy,
                      Agency inverseSoftware, EntityManager em) {
-        // TODO Auto-generated method stub
+        assert r != null : "Relationship cannot be null";
+        assert child != null;
+        assert updatedBy != null;
+        assert em != null;
 
+        RelationshipNetwork link = new RelationshipNetwork(this, r, child,
+                                                           updatedBy);
+        em.persist(link);
+        RelationshipNetwork inverse = new RelationshipNetwork(child,
+                                                              r.getInverse(),
+                                                              this,
+                                                              inverseSoftware);
+        em.persist(inverse);
     }
 
     /* (non-Javadoc)
@@ -257,8 +277,7 @@ public class Relationship extends
      */
     @Override
     public void setNetworkByChild(Set<RelationshipNetwork> theNetworkByChild) {
-        // TODO Auto-generated method stub
-
+        networkByChild = theNetworkByChild;
     }
 
     /* (non-Javadoc)
@@ -266,8 +285,7 @@ public class Relationship extends
      */
     @Override
     public void setNetworkByParent(Set<RelationshipNetwork> theNetworkByParent) {
-        // TODO Auto-generated method stub
-
+        networkByParent = theNetworkByParent;
     }
 
 }

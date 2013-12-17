@@ -18,7 +18,6 @@
               next_child_status bigint, -- The status to set for the child job referred to by "next_child"
               parent_status_to_set bigint, -- The status to set for the parent job, provided it has an product equal to "my_parent"
               notes character varying, -- Additional notes regarding usage of this particular rule
-              research bigint, -- Indicates that a rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT product_child_sequencing_authorization_pkey PRIMARY KEY (id ),
@@ -30,9 +29,6 @@
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_child_sequencing_authorization_parent_fkey FOREIGN KEY (parent)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_child_sequencing_authorization_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_child_sequencing_authorization_status_code_fkey FOREIGN KEY (status_code)
                   REFERENCES ruleform.status_code (id) MATCH SIMPLE
@@ -54,7 +50,6 @@
             COMMENT ON COLUMN ruleform.product_child_sequencing_authorization.next_child IS 'A child job with an product equal to this can have its status changed';
             COMMENT ON COLUMN ruleform.product_child_sequencing_authorization.next_child_status IS 'The status to set for the child job referred to by "next_child"';
             COMMENT ON COLUMN ruleform.product_child_sequencing_authorization.notes IS 'Additional notes regarding usage of this particular rule';
-            COMMENT ON COLUMN ruleform.product_child_sequencing_authorization.research IS 'Indicates that a rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.product_child_sequencing_authorization.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.product_child_sequencing_authorization.update_date IS 'The date this rule was last changed';
             ]]>

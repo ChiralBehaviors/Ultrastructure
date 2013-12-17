@@ -21,7 +21,6 @@
                   parent_transitive_relationship bigint,
                   child_transitive_relationship bigint,
                   description character varying,
-                  research bigint,
                   notes character varying,
                   updated_by bigint NOT NULL,
                   update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
@@ -56,9 +55,6 @@
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_child_relationship_fkey FOREIGN KEY (child_transitive_relationship)
                       REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT access_authorization_research_fkey FOREIGN KEY (research)
-                      REFERENCES ruleform.research (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_one_parent CHECK (ruleform.null_zero(product1) + ruleform.null_zero(agency1) + ruleform.null_zero(location1) = 1),
                   CONSTRAINT access_authorization_one_child CHECK (ruleform.null_zero(product2) + ruleform.null_zero(agency2) + ruleform.null_zero(location2) = 1)

@@ -10,7 +10,6 @@
     <include relativeToChangelogFile="true" file="agency_product/grants.xml"/>
     <include relativeToChangelogFile="true" file="agency_product/index-agency_product_product.xml"/>
     <include relativeToChangelogFile="true" file="agency_product/index-agency_product_relationship.xml"/>
-    <include relativeToChangelogFile="true" file="agency_product/index-agency_product_research.xml"/>
     <include relativeToChangelogFile="true" file="agency_product/index-agency_product_agency.xml"/>
     <include relativeToChangelogFile="true" file="agency_product/index-agency_product_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="agency_product/owner.xml"/>

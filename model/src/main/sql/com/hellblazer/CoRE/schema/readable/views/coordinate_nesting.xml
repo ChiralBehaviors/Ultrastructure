@@ -8,12 +8,11 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.coordinate_nesting AS 
-			 SELECT n.id, a.name AS attribute, n.sequence_number, ia.name AS inner_attribute, n.operation, oa.name AS outer_attribute, n.notes, res.name AS research, up.name AS updated_by, n.update_date
+			 SELECT n.id, a.name AS attribute, n.sequence_number, ia.name AS inner_attribute, n.operation, oa.name AS outer_attribute, n.notes, up.name AS updated_by, n.update_date
 			   FROM ruleform.coordinate_nesting n
 			   JOIN ruleform.attribute a ON a.id = n.attribute
 			   JOIN ruleform.attribute ia ON ia.id = n.inner_attribute
 			   JOIN ruleform.attribute oa ON oa.id = n.outer_attribute
-			   LEFT JOIN ruleform.research res ON res.id = n.research
 			   JOIN ruleform.agency up ON up.id = n.updated_by;
 			
 			ALTER TABLE readable.coordinate_nesting

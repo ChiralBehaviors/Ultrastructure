@@ -8,12 +8,11 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.status_code_sequencing AS 
-			 SELECT base_table.id, s.name AS service, pc.name AS parent_code, base_table.sequence_number, cc.name AS child_code, base_table.notes, res.name AS research, up.name AS updated_by, base_table.update_date
+			 SELECT base_table.id, s.name AS service, pc.name AS parent_code, base_table.sequence_number, cc.name AS child_code, base_table.notes, up.name AS updated_by, base_table.update_date
 			   FROM ruleform.status_code_sequencing base_table
 			   JOIN ruleform.product s ON base_table.service = s.id
 			   JOIN ruleform.status_code pc ON base_table.parent_code = pc.id
 			   JOIN ruleform.status_code cc ON base_table.child_code = cc.id
-			   LEFT JOIN ruleform.research res ON base_table.research = res.id
 			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.status_code_sequencing

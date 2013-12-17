@@ -8,13 +8,12 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.location_network AS 
-			 SELECT n.id, p.name AS parent, rel.name AS relationship, c.name AS child, n.ordering, n.inferred, n.notes, r.name AS research, u.name AS updated_by, n.update_date
+			 SELECT n.id, p.name AS parent, rel.name AS relationship, c.name AS child, n.ordering, n.inferred, n.notes, u.name AS updated_by, n.update_date
 			   FROM ruleform.location_network n
 			   JOIN ruleform.location p ON n.parent = p.id
 			   JOIN ruleform.relationship rel ON n.relationship = rel.id
 			   JOIN ruleform.location c ON n.child = c.id
-			   JOIN ruleform.agency u ON n.updated_by = u.id
-			   LEFT JOIN ruleform.research r ON n.research = r.id;
+			   JOIN ruleform.agency u ON n.updated_by = u.id;
 			
 			ALTER TABLE readable.location_network
 			  OWNER TO core;

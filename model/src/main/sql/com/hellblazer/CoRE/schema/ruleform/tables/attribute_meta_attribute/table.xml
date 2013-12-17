@@ -22,7 +22,6 @@
               unit_value bigint,
               unit bigint,
               notes character varying,
-              research bigint,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
@@ -35,9 +34,6 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT attribute_attribute_base_attribute_fkey FOREIGN KEY (attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT attribute_attribute_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT attribute_attribute_unit_value_fkey FOREIGN KEY (unit_value)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE

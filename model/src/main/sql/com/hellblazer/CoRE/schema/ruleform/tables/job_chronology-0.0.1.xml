@@ -9,7 +9,6 @@
     <include relativeToChangelogFile="true" file="job_chronology/job_chronology_seq.xml"/>
     <include relativeToChangelogFile="true" file="job_chronology/table.xml"/>
     <include relativeToChangelogFile="true" file="job_chronology/grants.xml"/>
-    <include relativeToChangelogFile="true" file="job_chronology/index-job_chronology_research.xml"/>
     <include relativeToChangelogFile="true" file="job_chronology/index-job_chronology_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="job_chronology/owner.xml"/>
 

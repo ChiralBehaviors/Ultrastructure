@@ -11,7 +11,6 @@
     <include relativeToChangelogFile="true" file="product_network/index-product_network_child.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-product_network_parent.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-product_network_relationship.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/index-product_network_research.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-product_network_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="product_network/index-original_product_network.xml"/>
     <include relativeToChangelogFile="true" file="product_network/owner.xml"/>

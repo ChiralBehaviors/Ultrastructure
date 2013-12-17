@@ -40,7 +40,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.Research;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.network.Relationship;
@@ -179,22 +178,6 @@ public class Coordinate extends
     }
 
     /**
-     * @return the research
-     */
-    @Override
-    public Research getResearch() {
-        return research;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    @Override
-    public Agency getUpdatedBy() {
-        return updatedBy;
-    }
-
-    /**
      * Computes a Coordinate that represents the inner coordinate relative to
      * this outer coordinate. For example if <code>outer</code> represents a
      * nucleotide region from bases 123&#8211;456 on some DNA molecule
@@ -224,24 +207,6 @@ public class Coordinate extends
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @param research
-     *            the research to set
-     */
-    @Override
-    public void setResearch(Research research) {
-        this.research = research;
-    }
-
-    /**
-     * @param updatedBy
-     *            the updatedBy to set
-     */
-    @Override
-    public void setUpdatedBy(Agency updatedBy) {
-        this.updatedBy = updatedBy;
     }
 
     /*
@@ -279,7 +244,7 @@ public class Coordinate extends
     @Override
     public List<CoordinateNetwork> getImmediateChildren(EntityManager em) {
         return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   CoordinateNetwork.class).setParameter("interval",
+                                   CoordinateNetwork.class).setParameter("coordinate",
                                                                          this).getResultList();
     }
 

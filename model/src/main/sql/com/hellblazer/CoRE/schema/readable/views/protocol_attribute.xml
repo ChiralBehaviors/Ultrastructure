@@ -12,12 +12,11 @@
 			        base_table.sequence_number,
 			        base_table.text_value, base_table.numeric_value, 
 			        base_table.integer_value, u.name AS unit, 
-			        base_table.notes, res.name AS research, 
+			        base_table.notes,
 			        up.name AS updated_by, base_table.update_date
 			   FROM ruleform.protocol_attribute base_table
 			   JOIN ruleform.attribute at ON base_table.attribute = at.id
 			   LEFT JOIN ruleform.unit u ON base_table.unit = u.id
-			   LEFT JOIN ruleform.research res ON base_table.research = res.id
 			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.protocol_attribute

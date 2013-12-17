@@ -8,12 +8,11 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.interval_attribute AS 
-			 SELECT ra.id, r.name AS interval, a.name AS attribute, ra.numeric_value, ra.integer_value, ra.boolean_value, ra.text_value, u.name AS unit, ra.notes, res.name AS research, up.name AS updated_by, ra.update_date
+			 SELECT ra.id, r.name AS interval, a.name AS attribute, ra.numeric_value, ra.integer_value, ra.boolean_value, ra.text_value, u.name AS unit, ra.notes, up.name AS updated_by, ra.update_date
 			   FROM ruleform.interval_attribute ra
 			   JOIN ruleform.interval r ON ra.interval = r.id
 			   JOIN ruleform.attribute a ON ra.attribute = a.id
 			   LEFT JOIN ruleform.unit u ON ra.unit = u.id
-			   LEFT JOIN ruleform.research res ON ra.research = res.id
 			   JOIN ruleform.interval up ON ra.updated_by = up.id;
 			
 			ALTER TABLE readable.interval_attribute

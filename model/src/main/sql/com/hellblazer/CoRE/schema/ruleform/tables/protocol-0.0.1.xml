@@ -8,7 +8,6 @@
 
     <include relativeToChangelogFile="true" file="protocol/table.xml"/>
     <include relativeToChangelogFile="true" file="protocol/grants.xml"/>
-    <include relativeToChangelogFile="true" file="protocol/index-protocol_research.xml"/>
     <include relativeToChangelogFile="true" file="protocol/index-protocol_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="protocol/owner.xml"/>
 

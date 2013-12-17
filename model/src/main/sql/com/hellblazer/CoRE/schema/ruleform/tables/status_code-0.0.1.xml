@@ -8,7 +8,6 @@
 
     <include relativeToChangelogFile="true" file="status_code/table.xml"/>
     <include relativeToChangelogFile="true" file="status_code/grants.xml"/>
-    <include relativeToChangelogFile="true" file="status_code/index-status_code_research.xml"/>
     <include relativeToChangelogFile="true" file="status_code/index-status_code_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="status_code/owner.xml"/>
 

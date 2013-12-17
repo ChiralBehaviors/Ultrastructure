@@ -22,7 +22,6 @@
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
               unit bigint,
               notes character varying, -- Usage notes for this rule
-              research bigint, -- A research flag that has been set on an individual rule
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT coordinate_attribute_pkey PRIMARY KEY (id ),
@@ -34,9 +33,6 @@
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT coordinate_attribute_product_value_fkey FOREIGN KEY (product_value)
                   REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT coordinate_attribute_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT product_attribute_unit_fkey FOREIGN KEY (unit)
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
@@ -61,7 +57,6 @@
             COMMENT ON COLUMN ruleform.coordinate_attribute.boolean_value IS 'If the Attribute is boolean-valued, the value is stored in this column';
             COMMENT ON COLUMN ruleform.coordinate_attribute.text_value IS 'If the Attribute is text-valued, the value is stored in this column';
             COMMENT ON COLUMN ruleform.coordinate_attribute.notes IS 'Usage notes for this rule';
-            COMMENT ON COLUMN ruleform.coordinate_attribute.research IS 'A research flag that has been set on an individual rule';
             COMMENT ON COLUMN ruleform.coordinate_attribute.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.coordinate_attribute.update_date IS 'The time at which this rule was last updated';
             ]]>

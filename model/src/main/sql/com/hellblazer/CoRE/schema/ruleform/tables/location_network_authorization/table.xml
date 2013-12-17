@@ -17,7 +17,6 @@
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when an relationship can have multiple acceptable parent values
               grouping_agency bigint, -- If present, used to select an entire grouping of Locations for this relationship
               notes character varying, -- Additional notes regarding this rule
-              research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT location_network_authorization_pkey PRIMARY KEY (id ),
@@ -35,9 +34,6 @@
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT location_network_authorization_grouping_agency_fkey FOREIGN KEY (grouping_agency)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT location_network_authorization_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT location_network_authorization_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
@@ -57,7 +53,6 @@
             COMMENT ON COLUMN ruleform.location_network_authorization.sequence_number IS 'Ordering and uniqueness, for when an Attribute can have multiple acceptable values';
             COMMENT ON COLUMN ruleform.location_network_authorization.grouping_agency IS 'A network parent an Location is expected to have';
             COMMENT ON COLUMN ruleform.location_network_authorization.notes IS 'Additional notes regarding this rule';
-            COMMENT ON COLUMN ruleform.location_network_authorization.research IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.location_network_authorization.updated_by IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.location_network_authorization.update_date IS 'The date this rule was last changed';
             ]]>

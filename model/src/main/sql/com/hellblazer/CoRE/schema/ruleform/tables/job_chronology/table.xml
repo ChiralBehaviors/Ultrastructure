@@ -14,16 +14,12 @@
               time_stamp timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which a status change occurs
               status bigint NOT NULL, -- The status the job changed to at the specified time
               notes character varying NOT NULL, -- Indicates any additional information about the status change
-              research bigint, -- Indicates that this rule needs to be researched or investigated to resolve a potential problem
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               sequence bigint NOT NULL,
               CONSTRAINT job_chronology_pkey PRIMARY KEY (id ),
               CONSTRAINT job_chronology_job_fkey FOREIGN KEY (job)
                   REFERENCES ruleform.job (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_chronology_research_fkey FOREIGN KEY (research)
-                  REFERENCES ruleform.research (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT job_chronology_status_fkey FOREIGN KEY (status)
                   REFERENCES ruleform.status_code (id) MATCH SIMPLE
@@ -51,8 +47,6 @@
                 IS 'The status the job changed to at the specified time';
             COMMENT ON COLUMN ruleform.job_chronology.notes 
                 IS 'Indicates any additional information about the status change';
-            COMMENT ON COLUMN ruleform.job_chronology.research 
-                IS 'Indicates that this rule needs to be researched or investigated to resolve a potential problem';
             COMMENT ON COLUMN ruleform.job_chronology.updated_by 
                 IS 'The agency that last updated this rule';
             COMMENT ON COLUMN ruleform.job_chronology.update_date 

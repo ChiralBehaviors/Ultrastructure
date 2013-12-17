@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
             CREATE TABLE ruleform.interval
             (
               id bigserial NOT NULL,
               name character varying NOT NULL,
               description character varying,
               notes character varying,
+              start numeric,
+              duration numeric,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               pinned boolean NOT NULL DEFAULT false,
               CONSTRAINT interval_pkey PRIMARY KEY (id ),
               CONSTRAINT interval_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.interval (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
             )
             WITH (
               OIDS=FALSE
             );
             COMMENT ON TABLE ruleform.interval
-                IS 'A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and productsw';
+                IS 'A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and products in time';
             ]]>
-        </sql>
-        <rollback>
-            <dropTable tableName="ruleform.interval"/>
-        </rollback>
-    </changeSet>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.interval" />
+		</rollback>
+	</changeSet>
 </databaseChangeLog>

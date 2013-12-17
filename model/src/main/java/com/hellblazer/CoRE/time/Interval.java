@@ -34,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
-import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -75,8 +74,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     private Set<IntervalNetwork>   networkByParent;
 
     private BigInteger             start;
-
-    private Unit                   unit;
 
     public Interval() {
         super();
@@ -212,13 +209,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         return start;
     }
 
-    /**
-     * @return the unit
-     */
-    public Unit getUnit() {
-        return unit;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -301,13 +291,4 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     public void setStart(BigInteger start) {
         this.start = start;
     }
-
-    /**
-     * @param unit
-     *            the unit to set
-     */
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
-
 }

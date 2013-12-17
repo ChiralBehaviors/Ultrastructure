@@ -74,6 +74,8 @@ import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.time.Interval;
+import com.hellblazer.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
@@ -405,6 +407,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         if (networked == Agency.class) {
             return AgencyNetwork.class;
+        }
+        if (networked == Interval.class) {
+            return IntervalNetwork.class;
         }
         throw new IllegalArgumentException(
                                            String.format("Class %s is not a subclass of %s",

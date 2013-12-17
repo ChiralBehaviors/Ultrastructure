@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Halloran Parry. All rights reserved.
+ * Copyright (C) 2013 Hal Hildebrand. All rights reserved.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -14,19 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE.meta.spider;
+package com.hellblazer.CoRE.meta;
 
-import java.util.List;
-
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.time.Interval;
+import com.hellblazer.CoRE.time.IntervalAttribute;
+import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
 
 /**
- * @author hparry
+ * @author hhildebrand
  * 
  */
-public interface Web {
-
-    List<Ruleform> getAuthorizations(ExistentialRuleform<?,?> er);
+public interface IntervalModel
+        extends
+        NetworkedModel<Interval, IntervalAttributeAuthorization, IntervalAttribute> {
 
 }

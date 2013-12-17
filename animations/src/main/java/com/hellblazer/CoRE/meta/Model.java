@@ -112,6 +112,11 @@ public interface Model {
     Kernel getKernel();
 
     /**
+     * @return the Interval model
+     */
+    IntervalModel getIntervalModel();
+
+    /**
      * @return the Location model
      */
     LocationModel getLocationModel();

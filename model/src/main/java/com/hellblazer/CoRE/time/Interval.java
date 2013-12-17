@@ -133,6 +133,15 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         networkByParent.add(relationship);
     }
 
+    @Override
+    public Interval clone() {
+        Interval clone = (Interval) super.clone();
+        clone.networkByChild = null;
+        clone.networkByParent = null;
+        clone.attributes = null;
+        return clone;
+    }
+
     /*
      * (non-Javadoc)
      * 

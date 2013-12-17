@@ -51,15 +51,15 @@ public class ProductLocation extends Ruleform implements
         Attributable<ProductLocationAttribute> {
     private static final long             serialVersionUID = 1L;
 
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "agency")
+    private Agency                        agency;
+
     //bi-directional many-to-one association to ProductLocationAttribute
     @OneToMany(mappedBy = "productLocation")
     @JsonIgnore
     private Set<ProductLocationAttribute> attributes;
-
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private Product                       product;
 
     @Id
     @GeneratedValue(generator = "product_location_id_seq", strategy = GenerationType.SEQUENCE)
@@ -70,15 +70,15 @@ public class ProductLocation extends Ruleform implements
     @JoinColumn(name = "location")
     private Location                      location;
 
+    //bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "product")
+    private Product                       product;
+
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship                  relationship;
-
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency                        agency;
 
     public ProductLocation() {
     }

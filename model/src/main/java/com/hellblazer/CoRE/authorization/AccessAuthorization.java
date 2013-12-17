@@ -48,139 +48,137 @@ import com.hellblazer.CoRE.network.Relationship;
 @DiscriminatorColumn(name = "authorization_type")
 public abstract class AccessAuthorization extends Ruleform {
 
-	// IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
-	public static final String agency_PRODUCT = "0";
-	public static final String agency_LOCATION = "1";
-	public static final String PRODUCT_AGENCY = "2";
-	public static final String PRODUCT_LOCATION = "3";
-	public static final String LOCATION_AGENCY = "4";
-	public static final String LOCATION_PRODUCT = "5";
-
-	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX = ".getAllAuthorizationsForParentAndRelationship";
-    public static final String GET_ALL_AUTHORIZATIONS_FOR_RELATIONSHIP_AND_CHILD_SUFFIX = ".getAllAuthorizationsForRelationshipAndChild";
-	public static final String FIND_AUTHORIZATION_SUFFIX = ".findAuthorization";
-	public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX = ".findAllAuthsForParentRelationshipChild";
-	public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX = ".findAllAuthsForIndirectParent";
-	public static final String FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX = ".findAllAuthsForIndirectChild";
-    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX = ".findAllAuthsForIndirectParentAndChild";
-
-	private static final long serialVersionUID = 1L;
+    public static final String agency_LOCATION                                                                = "1";
+    // IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
+    public static final String agency_PRODUCT                                                                 = "0";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX = ".findAllAuthsForParentRelationshipChildMatchOnAllRelationships";
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX                            = ".findAllAuthsForParentRelationshipChild";
+    public static final String FIND_AUTHORIZATION_SUFFIX                                                      = ".findAuthorization";
+    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX                                           = ".findAllAuthsForIndirectChild";
 
-	@Column(name = "authorization_type")
-	private String authorizationType;
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX                                = ".findAllAuthsForIndirectParentAndChild";
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX                                          = ".findAllAuthsForIndirectParent";
+    public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX                      = ".getAllAuthorizationsForParentAndRelationship";
+    public static final String GET_ALL_AUTHORIZATIONS_FOR_RELATIONSHIP_AND_CHILD_SUFFIX                       = ".getAllAuthorizationsForRelationshipAndChild";
+    public static final String LOCATION_AGENCY                                                                = "4";
+    public static final String LOCATION_PRODUCT                                                               = "5";
+    public static final String PRODUCT_AGENCY                                                                 = "2";
 
-	@Id
-	@GeneratedValue(generator = "access_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    public static final String PRODUCT_LOCATION                                                               = "3";
+    private static final long  serialVersionUID                                                               = 1L;
 
-	// bi-directional many-to-one association to Relationship
-	@ManyToOne
-	@JoinColumn(name = "relationship")
-	protected Relationship relationship;
+    @Column(name = "authorization_type")
+    private String             authorizationType;
 
-	@ManyToOne
-	@JoinColumn(name = "parent_transitive_relationship")
-	protected Relationship parentTransitiveRelationship;
+    @Id
+    @GeneratedValue(generator = "access_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
 
-	@ManyToOne
-	@JoinColumn(name = "child_transitive_relationship")
-	protected Relationship childTransitiveRelationship;
+    @ManyToOne
+    @JoinColumn(name = "child_transitive_relationship")
+    protected Relationship     childTransitiveRelationship;
 
-	abstract public ExistentialRuleform<?, ?> getChild();
+    @ManyToOne
+    @JoinColumn(name = "parent_transitive_relationship")
+    protected Relationship     parentTransitiveRelationship;
 
-	/**
-	 * @return the childTransitiveRelationship
-	 */
-	public Relationship getChildTransitiveRelationship() {
-		return childTransitiveRelationship;
-	}
+    // bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "relationship")
+    protected Relationship     relationship;
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    abstract public ExistentialRuleform<?, ?> getChild();
 
-	abstract public ExistentialRuleform<?, ?> getParent();
+    /**
+     * @return the childTransitiveRelationship
+     */
+    public Relationship getChildTransitiveRelationship() {
+        return childTransitiveRelationship;
+    }
 
-	/**
-	 * @return the parentTransitiveRelationship
-	 */
-	public Relationship getParentTransitiveRelationship() {
-		return parentTransitiveRelationship;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @return the relationship
-	 */
-	public Relationship getRelationship() {
-		return relationship;
-	}
+    abstract public ExistentialRuleform<?, ?> getParent();
 
-	/**
-	 * @param childTransitiveRelationship
-	 *            the childTransitiveRelationship to set
-	 */
-	public void setChildTransitiveRelationship(
-			Relationship childTransitiveRelationship) {
-		this.childTransitiveRelationship = childTransitiveRelationship;
-	}
+    /**
+     * @return the parentTransitiveRelationship
+     */
+    public Relationship getParentTransitiveRelationship() {
+        return parentTransitiveRelationship;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.Ruleform#setId(java.lang.Long)
-	 */
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * @return the relationship
+     */
+    public Relationship getRelationship() {
+        return relationship;
+    }
 
-	/**
-	 * @param parentTransitiveRelationship
-	 *            the parentTransitiveRelationship to set
-	 */
-	public void setParentTransitiveRelationship(
-			Relationship parentTransitiveRelationship) {
-		this.parentTransitiveRelationship = parentTransitiveRelationship;
-	}
+    /**
+     * @param childTransitiveRelationship
+     *            the childTransitiveRelationship to set
+     */
+    public void setChildTransitiveRelationship(Relationship childTransitiveRelationship) {
+        this.childTransitiveRelationship = childTransitiveRelationship;
+    }
 
-	/**
-	 * @param relationship
-	 *            the relationship to set
-	 */
-	public void setRelationship(Relationship relationship) {
-		this.relationship = relationship;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#setId(java.lang.Long)
+     */
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-	 * EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
+    /**
+     * @param parentTransitiveRelationship
+     *            the parentTransitiveRelationship to set
+     */
+    public void setParentTransitiveRelationship(Relationship parentTransitiveRelationship) {
+        this.parentTransitiveRelationship = parentTransitiveRelationship;
+    }
 
-		if (relationship != null) {
-			relationship = (Relationship) relationship.manageEntity(em,
-					knownObjects);
-		}
-		if (parentTransitiveRelationship != null) {
-			parentTransitiveRelationship = (Relationship) parentTransitiveRelationship
-					.manageEntity(em, knownObjects);
-		}
+    /**
+     * @param relationship
+     *            the relationship to set
+     */
+    public void setRelationship(Relationship relationship) {
+        this.relationship = relationship;
+    }
 
-		if (childTransitiveRelationship != null) {
-			childTransitiveRelationship = (Relationship) childTransitiveRelationship
-					.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
 
-	protected void setAuthorizationType(String type) {
-		authorizationType = type;
-	}
+        if (relationship != null) {
+            relationship = (Relationship) relationship.manageEntity(em,
+                                                                    knownObjects);
+        }
+        if (parentTransitiveRelationship != null) {
+            parentTransitiveRelationship = (Relationship) parentTransitiveRelationship.manageEntity(em,
+                                                                                                    knownObjects);
+        }
+
+        if (childTransitiveRelationship != null) {
+            childTransitiveRelationship = (Relationship) childTransitiveRelationship.manageEntity(em,
+                                                                                                  knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
+
+    protected void setAuthorizationType(String type) {
+        authorizationType = type;
+    }
 
 }

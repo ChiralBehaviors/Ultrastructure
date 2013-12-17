@@ -16,6 +16,12 @@
  */
 package com.hellblazer.CoRE.attribute;
 
+import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.GENERATE_NETWORK_INVERSES;
@@ -23,12 +29,6 @@ import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.INSERT_NEW_NETWORK_RULES;
-import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 
 import java.util.Map;
 
@@ -150,21 +150,21 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                              + "WHERE n.parent = :attribute and n.inferred = FALSE and n.relationship.preferred = FALSE "
                                                                              + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
-    private static final long  serialVersionUID                 = 1L;
-    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "attribute.immediateChildrenNetworkRules";
-    public static final String GET_USED_RELATIONSHIPS           = "attributeNetwork.getUsedRelationships";
-    public static final String INFERENCE_STEP                   = "attributeNetwork"
-                                                                  + INFERENCE_STEP_SUFFIX;
+    public static final String DEDUCE_NEW_NETWORK_RULES         = "attributeNetwork"
+                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GATHER_EXISTING_NETWORK_RULES    = "attributeNetwork"
                                                                   + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES        = "attributeNetwork"
                                                                   + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String DEDUCE_NEW_NETWORK_RULES         = "attributeNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES         = "attributeNetwork"
-                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS           = "attributeNetwork.getUsedRelationships";
+    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "attribute.immediateChildrenNetworkRules";
+    public static final String INFERENCE_STEP                   = "attributeNetwork"
+                                                                  + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS    = "attributeNetwork"
                                                                   + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES         = "attributeNetwork"
+                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID                 = 1L;
 
     //bi-directional many-to-one association to Attribute
     @ManyToOne

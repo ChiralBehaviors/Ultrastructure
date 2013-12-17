@@ -149,9 +149,9 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
                                                                                            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String    GET_CHILD                                              = "product"
                                                                                            + GET_CHILD_SUFFIX;
-    public static final String    IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";
     public static final String    GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
                                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String    IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";
     public static final String    NAME_SEARCH                                            = "product"
                                                                                            + NAME_SEARCH_SUFFIX;
     public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";

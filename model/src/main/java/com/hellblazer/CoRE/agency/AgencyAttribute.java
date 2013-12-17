@@ -50,17 +50,17 @@ import com.hellblazer.CoRE.attribute.Unit;
 @SequenceGenerator(schema = "ruleform", name = "agency_attribute_id_seq", sequenceName = "agency_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from AgencyAttribute ra where ra.agency = :agency and ra.attribute = :attribute") })
 public class AgencyAttribute extends AttributeValue<Agency> {
-    private static final long  serialVersionUID = 1L;
     public static final String GET_ATTRIBUTE    = "agencyAttribute.getAttribute";
-
-    @Id
-    @GeneratedValue(generator = "agency_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+    private static final long  serialVersionUID = 1L;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
     private Agency             agency;
+
+    @Id
+    @GeneratedValue(generator = "agency_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
 
     public AgencyAttribute() {
         super();

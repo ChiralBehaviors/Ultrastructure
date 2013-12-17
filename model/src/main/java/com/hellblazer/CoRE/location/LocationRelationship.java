@@ -51,21 +51,16 @@ import com.hellblazer.CoRE.product.Product;
                                                   + "AND lr.productMappedValue = :mappedEntityValue "
                                                   + "ORDER BY lr.sequenceNumber") })
 public class LocationRelationship extends Ruleform {
-    private static final long  serialVersionUID        = 1L;
     public static final String AVAILABLE_RELATIONSHIPS = "locationRelationship.availableRelationships";
-    public static final String RULES                   = "locationRelationship.rules";
     public static final String FIND_BY_ID              = "locationRelationship.findById";
     public static final String FIND_BY_NAME            = "locationRelationship.findByName";
+    public static final String RULES                   = "locationRelationship.rules";
+    private static final long  serialVersionUID        = 1L;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "attribute_relationship")
     private Relationship       attributeRelationship;
-
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_mapped_value")
-    private Product            productMappedValue;
 
     @Id
     @GeneratedValue(generator = "location_relationship_id_seq", strategy = GenerationType.SEQUENCE)
@@ -80,6 +75,11 @@ public class LocationRelationship extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "location_2_attribute")
     private Attribute          location2Attribute;
+
+    //bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "product_mapped_value")
+    private Product            productMappedValue;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne

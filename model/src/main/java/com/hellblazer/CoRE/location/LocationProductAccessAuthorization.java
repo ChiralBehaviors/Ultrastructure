@@ -16,7 +16,11 @@
  */
 package com.hellblazer.CoRE.location;
 
-import static com.hellblazer.CoRE.location.LocationProductAccessAuthorization.*;
+import static com.hellblazer.CoRE.location.LocationProductAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+import static com.hellblazer.CoRE.location.LocationProductAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
+import static com.hellblazer.CoRE.location.LocationProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
+import static com.hellblazer.CoRE.location.LocationProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
+import static com.hellblazer.CoRE.location.LocationProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD;
 
 import java.util.Map;
 
@@ -78,29 +82,30 @@ import com.hellblazer.CoRE.product.Product;
 @DiscriminatorValue(AccessAuthorization.LOCATION_PRODUCT)
 public class LocationProductAccessAuthorization extends
         LocationAccessAuthorization {
-    
+
     public static final String LOCATION_PRODUCT_ACCESS_AUTH_PREFIX                                     = "locationProductAccessAuthorization";
+
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + LocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
 
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
-    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
 
+    private static final long  serialVersionUID                                                        = 1L;
+
     @ManyToOne
     @JoinColumn(name = "product2")
-    private Product           child;
+    private Product            child;
 
     {
         setAuthorizationType(AccessAuthorization.LOCATION_PRODUCT);
     }
-
-    private static final long serialVersionUID = 1L;
 
     public LocationProductAccessAuthorization() {
         super();

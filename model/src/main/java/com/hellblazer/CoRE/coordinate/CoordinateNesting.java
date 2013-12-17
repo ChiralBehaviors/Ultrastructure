@@ -97,7 +97,6 @@ public class CoordinateNesting extends Ruleform {
         return innerAttribute;
     }
 
-
     public String getOperation() {
         return operation;
     }

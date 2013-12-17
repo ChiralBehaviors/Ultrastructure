@@ -16,6 +16,12 @@
  */
 package com.hellblazer.CoRE.agency;
 
+import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.agency.AgencyNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.agency.AgencyNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.agency.AgencyNetwork.GENERATE_NETWORK_INVERSES;
@@ -24,12 +30,6 @@ import static com.hellblazer.CoRE.agency.AgencyNetwork.IMMEDIATE_CHILDREN_NETWOR
 import static com.hellblazer.CoRE.agency.AgencyNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.agency.AgencyNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.agency.AgencyNetwork.INSERT_NEW_NETWORK_RULES;
-import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 
 import java.util.List;
 import java.util.Map;
@@ -155,21 +155,21 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
 public class AgencyNetwork extends NetworkRuleform<Agency> {
-    private static final long  serialVersionUID                 = 1L;
-    public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
-    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
-    public static final String INFERENCE_STEP                   = "agencyNetwork"
-                                                                  + INFERENCE_STEP_SUFFIX;
+    public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
+                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GATHER_EXISTING_NETWORK_RULES    = "agencyNetwork"
                                                                   + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
                                                                   + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
+    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
+    public static final String INFERENCE_STEP                   = "agencyNetwork"
+                                                                  + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS    = "agencyNetwork"
                                                                   + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES         = "agencyNetwork"
+                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID                 = 1L;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne

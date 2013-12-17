@@ -39,13 +39,13 @@ public class WorkspaceUnitAuthorization extends WorkspaceAuthorization {
 
     private static final long serialVersionUID = 1L;
 
-    {
-        setAuthorizationType(WorkspaceAuthorization.PRODUCT_UNIT);
-    }
-
     @ManyToOne
     @JoinColumn(name = "unit")
     protected Unit            unit;
+
+    {
+        setAuthorizationType(WorkspaceAuthorization.PRODUCT_UNIT);
+    }
 
     public WorkspaceUnitAuthorization() {
         super();

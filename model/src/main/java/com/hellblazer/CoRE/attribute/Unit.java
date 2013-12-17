@@ -106,56 +106,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         setDescription(description);
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    public String getDatatype() {
-        return datatype;
-    }
-
-    public Boolean getEnumerated() {
-        return enumerated;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public BigDecimal getMax() {
-        return max;
-    }
-
-    public BigDecimal getMin() {
-        return min;
-    }
-
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
-    }
-
-    public void setDatatype(String datatype) {
-        this.datatype = datatype;
-    }
-
-    public void setEnumerated(Boolean enumerated) {
-        this.enumerated = enumerated;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setMax(BigDecimal max) {
-        this.max = max;
-    }
-
-    public void setMin(BigDecimal min) {
-        this.min = min;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -182,6 +132,23 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         networkByParent.add(relationship);
     }
 
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public String getDatatype() {
+        return datatype;
+    }
+
+    public Boolean getEnumerated() {
+        return enumerated;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -192,6 +159,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     public List<UnitNetwork> getImmediateChildren(EntityManager em) {
         return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
                                    UnitNetwork.class).setParameter("unit", this).getResultList();
+    }
+
+    public BigDecimal getMax() {
+        return max;
+    }
+
+    public BigDecimal getMin() {
+        return min;
     }
 
     /*
@@ -238,6 +213,31 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         em.persist(inverse);
     }
 
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
+    }
+
+    public void setEnumerated(Boolean enumerated) {
+        this.enumerated = enumerated;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setMax(BigDecimal max) {
+        this.max = max;
+    }
+
+    public void setMin(BigDecimal min) {
+        this.min = min;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -246,7 +246,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public void setNetworkByChild(Set<UnitNetwork> theNetworkByChild) {
-        this.networkByChild = theNetworkByChild;
+        networkByChild = theNetworkByChild;
     }
 
     /*
@@ -257,6 +257,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public void setNetworkByParent(Set<UnitNetwork> theNetworkByParent) {
-        this.networkByParent = theNetworkByParent;
+        networkByParent = theNetworkByParent;
     }
 }

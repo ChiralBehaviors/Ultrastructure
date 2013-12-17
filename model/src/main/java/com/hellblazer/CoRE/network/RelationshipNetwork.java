@@ -26,8 +26,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.network.NetworkRuleform;
-import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -38,16 +36,20 @@ import com.hellblazer.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "relationship_network_id_seq", sequenceName = "relationship_network_id_seq")
 public class RelationshipNetwork extends NetworkRuleform<Relationship> {
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public RelationshipNetwork(Relationship parent, Relationship relationship,
-                             Relationship child, Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+    private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
+
+    @ManyToOne
+    @JoinColumn(name = "child")
+    private Relationship      child;
+
+    @Id
+    @GeneratedValue(generator = "relationship_network_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
+
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "parent")
+    private Relationship      parent;
 
     /**
      * 
@@ -78,19 +80,16 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         super(relationship, updatedBy);
     }
 
-    private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "child")
-    private Relationship        child;
-
-    @Id
-    @GeneratedValue(generator = "relationship_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
-
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    private Relationship        parent;
+    /**
+     * @param relationship
+     * @param updatedBy
+     */
+    public RelationshipNetwork(Relationship parent, Relationship relationship,
+                               Relationship child, Agency updatedBy) {
+        super(relationship, updatedBy);
+        this.parent = parent;
+        this.child = child;
+    }
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.network.NetworkRuleform#getChild()
@@ -98,6 +97,14 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @Override
     public Relationship getChild() {
         return child;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#getId()
+     */
+    @Override
+    public Long getId() {
+        return id;
     }
 
     /* (non-Javadoc)
@@ -117,26 +124,18 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.network.NetworkRuleform#setParent(com.hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setParent(Relationship parent) {
-        this.parent = parent;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.network.NetworkRuleform#setParent(com.hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public void setParent(Relationship parent) {
+        this.parent = parent;
     }
 }

@@ -31,8 +31,8 @@ import com.hellblazer.CoRE.network.Aspect;
  * 
  */
 public class AuthenticatedPrincipal {
-    private final Agency               principal;
     private final List<Aspect<Agency>> activeRoles;
+    private final Agency               principal;
 
     /**
      * @param principal

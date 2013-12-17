@@ -53,6 +53,10 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     public static final String GET_BY_EVENT     = "tranformationMetarule.getByEvent";
     private static final long  serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
+
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "product_map")
@@ -62,10 +66,6 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_network_agency")
     private Agency             productNetworkAgency;
-
-    @Id
-    @GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     //bi-directional many-to-one association to Relationship
     @ManyToOne

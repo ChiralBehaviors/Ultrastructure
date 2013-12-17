@@ -38,16 +38,20 @@ import com.hellblazer.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "coordinate_network_id_seq", sequenceName = "coordinate_network_id_seq")
 public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public CoordinateNetwork(Coordinate parent, Relationship relationship,
-                             Coordinate child, Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+    private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
+
+    @ManyToOne
+    @JoinColumn(name = "child")
+    private Coordinate        child;
+
+    @Id
+    @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
+
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "parent")
+    private Coordinate        parent;
 
     /**
      * 
@@ -61,6 +65,17 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      */
     public CoordinateNetwork(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /**
+     * @param relationship
+     * @param updatedBy
+     */
+    public CoordinateNetwork(Coordinate parent, Relationship relationship,
+                             Coordinate child, Agency updatedBy) {
+        super(relationship, updatedBy);
+        this.parent = parent;
+        this.child = child;
     }
 
     /**
@@ -78,26 +93,20 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         super(relationship, updatedBy);
     }
 
-    private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "child")
-    private Coordinate        child;
-
-    @Id
-    @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
-
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    private Coordinate        parent;
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
     public Coordinate getChild() {
         return child;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#getId()
+     */
+    @Override
+    public Long getId() {
+        return id;
     }
 
     /* (non-Javadoc)
@@ -117,26 +126,18 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.network.NetworkRuleform#setParent(com.hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setParent(Coordinate parent) {
-        this.parent = parent;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.network.NetworkRuleform#setParent(com.hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public void setParent(Coordinate parent) {
+        this.parent = parent;
     }
 }

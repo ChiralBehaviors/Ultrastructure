@@ -57,6 +57,16 @@ public class Transformation extends Ruleform implements Serializable {
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
+    @JoinColumn(name = "agency")
+    private Agency             agency;
+
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "agency_key")
+    private Agency             agencyKey;
+
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
     @JoinColumn(name = "assign_to")
     private Agency             assignTo;
 
@@ -64,6 +74,10 @@ public class Transformation extends Ruleform implements Serializable {
     @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute          attribute;
+
+    @Id
+    @GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
@@ -80,24 +94,10 @@ public class Transformation extends Ruleform implements Serializable {
     @JoinColumn(name = "product_key")
     private Product            productKey;
 
-    @Id
-    @GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
-
     //bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship_key")
     private Relationship       relationshipKey;
-
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency             agency;
-
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency_key")
-    private Agency             agencyKey;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber;

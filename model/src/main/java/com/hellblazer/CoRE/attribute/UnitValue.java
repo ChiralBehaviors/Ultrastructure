@@ -48,11 +48,6 @@ public class UnitValue extends Ruleform {
     @Column(name = "boolean_value")
     private Boolean           booleanValue;
 
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           productValue;
-
     @Id
     @GeneratedValue(generator = "unit_value_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
@@ -64,6 +59,11 @@ public class UnitValue extends Ruleform {
 
     @Column(name = "numeric_value")
     private BigDecimal        numericValue;
+
+    //bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "product_value")
+    private Product           productValue;
 
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;

@@ -54,14 +54,14 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     @JoinColumn(name = "coordinate")
     private Coordinate        coordinate;
 
+    @Id
+    @GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
+
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
     private Product           productValue;
-
-    @Id
-    @GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public CoordinateAttribute() {
     }

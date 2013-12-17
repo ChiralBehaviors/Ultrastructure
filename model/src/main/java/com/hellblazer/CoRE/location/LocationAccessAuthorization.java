@@ -42,11 +42,11 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
                                                                                + "AND auth.parent = :rf ") })
 @Entity
 public abstract class LocationAccessAuthorization extends AccessAuthorization {
-    private static final long  serialVersionUID                                   = 1L;
-
     public static final String LOCATION_ACCESS_AUTHORIZATION_PREFIX               = "locationAccessAuthorization";
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = LOCATION_ACCESS_AUTHORIZATION_PREFIX
                                                                                     + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+
+    private static final long  serialVersionUID                                   = 1L;
 
     @ManyToOne
     @JoinColumn(name = "location1")

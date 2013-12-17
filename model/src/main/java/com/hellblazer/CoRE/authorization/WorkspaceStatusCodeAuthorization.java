@@ -39,13 +39,13 @@ public class WorkspaceStatusCodeAuthorization extends WorkspaceAuthorization {
 
     private static final long serialVersionUID = 1L;
 
-    {
-        setAuthorizationType(WorkspaceAuthorization.PRODUCT_STATUS_CODE);
-    }
-
     @ManyToOne
     @JoinColumn(name = "status_code")
     protected StatusCode      statusCode;
+
+    {
+        setAuthorizationType(WorkspaceAuthorization.PRODUCT_STATUS_CODE);
+    }
 
     public WorkspaceStatusCodeAuthorization() {
         super();

@@ -40,47 +40,26 @@ import com.hellblazer.CoRE.product.Product;
  */
 public class KernelImpl implements Kernel {
 
-    private final Attribute    anyAttribute;
-    private final Attribute    attribute;
-    private final Attribute    loginAttribute;
-    private final Attribute    notApplicableAttribute;
-    private final Attribute    originalAttribute;
-    private final Attribute    passwordHashAttribute;
-
-    private final Product      product;
-    private final Product      anyProduct;
-    private final Product      notApplicableProduct;
-    private final Product      originalProduct;
-    private final Product      sameProduct;
-    private final Product      workspace;
-
-    private final Location     anyLocation;
-    private final Location     location;
-    private final Location     notApplicableLocation;
-    private final Location     originalLocation;
-    private final Location     sameLocation;
-
+    private final Agency       agency;
     private final Agency       anyAgency;
+    private final Attribute    anyAttribute;
+    private final Location     anyLocation;
+    private final Product      anyProduct;
+    private final Relationship anyRelationship;
+
+    private final Attribute    attribute;
+    private final Relationship contains;
     private final Agency       core;
     private final Agency       coreAnimationSoftware;
     private final Agency       coreModel;
     private final Agency       coreUser;
-    private final Agency       inverseSoftware;
-    private final Agency       notApplicableAgency;
-    private final Agency       originalAgency;
-    private final Agency       propagationSoftware;
-    private final Agency       agency;
-    private final Agency       sameAgency;
-    private final Agency       specialSystemAgency;
-    private final Agency       superUser;
 
-    private final Relationship contains;
     private final Relationship developed;
-    private final Relationship anyRelationship;
     private final Relationship developedBy;
     private final Relationship equals;
     private final Relationship formerMemberOf;
     private final Relationship greaterThan;
+
     private final Relationship greaterThanOrEqual;
     private final Relationship hadMember;
     private final Relationship hasException;
@@ -89,25 +68,46 @@ public class KernelImpl implements Kernel {
     private final Relationship hasVersion;
     private final Relationship headOf;
     private final Relationship includes;
+    private final Agency       inverseSoftware;
+    private final Relationship inWorkspace;
     private final Relationship isA;
     private final Relationship isContainedIn;
     private final Relationship isExceptionTo;
+
     private final Relationship isLocationOf;
     private final Relationship lessThan;
     private final Relationship lessThanOrEqual;
+    private final Location     location;
+    private final Attribute    loginAttribute;
     private final Relationship mapsToLocation;
     private final Relationship memberOf;
+    private final Agency       notApplicableAgency;
+    private final Attribute    notApplicableAttribute;
+    private final Location     notApplicableLocation;
+    private final Product      notApplicableProduct;
     private final Relationship notApplicableRelationship;
+    private final Agency       originalAgency;
+    private final Attribute    originalAttribute;
+    private final Location     originalLocation;
+    private final Product      originalProduct;
     private final Relationship ownedBy;
     private final Relationship owns;
+    private final Attribute    passwordHashAttribute;
+    private final Product      product;
+    private final Agency       propagationSoftware;
     private final Relationship prototype;
     private final Relationship prototypeOf;
+    private final Agency       sameAgency;
+    private final Location     sameLocation;
+    private final Product      sameProduct;
     private final Relationship sameRelationship;
-    private final Relationship versionOf;
-    private final Relationship inWorkspace;
-    private final Relationship workspaceOf;
-
+    private final Agency       specialSystemAgency;
+    private final Agency       superUser;
     private final StatusCode   unset;
+    private final Relationship versionOf;
+    private final Product      workspace;
+
+    private final Relationship workspaceOf;
 
     public KernelImpl(EntityManager em) {
 

@@ -16,7 +16,8 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.ProductAccessAuthorization.*;
+import static com.hellblazer.CoRE.product.ProductAccessAuthorization.FIND_AUTHORIZATION;
+import static com.hellblazer.CoRE.product.ProductAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP;
 
 import java.util.Map;
 import java.util.Set;
@@ -51,23 +52,30 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
 @Entity
 public abstract class ProductAccessAuthorization extends AccessAuthorization {
 
-    private static final long   serialVersionUID                                   = 1L;
-
     public static final String  PRODUCT_ACCESS_AUTHORIZATION_PREFIX                = "productAccessAuthorization";
-    public static final String  GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
-                                                                                     + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
-    
     public static final String  FIND_AUTHORIZATION                                 = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
                                                                                      + FIND_AUTHORIZATION_SUFFIX;
 
-    @ManyToOne
-    @JoinColumn(name = "product1")
-    private Product             parent;
+    public static final String  GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
+                                                                                     + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+
+    private static final long   serialVersionUID                                   = 1L;
 
     //bi-directional many-to-one association to ProductNetwork
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetwork> networkByParent;
+
+    @ManyToOne
+    @JoinColumn(name = "product1")
+    private Product             parent;
+
+    /**
+     * @return the networkByParent
+     */
+    public Set<ProductNetwork> getNetworkByParent() {
+        return networkByParent;
+    }
 
     /**
      * @return the parent
@@ -78,26 +86,19 @@ public abstract class ProductAccessAuthorization extends AccessAuthorization {
     }
 
     /**
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(Product parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * @return the networkByParent
-     */
-    public Set<ProductNetwork> getNetworkByParent() {
-        return networkByParent;
-    }
-
-    /**
      * @param networkByParent
      *            the networkByParent to set
      */
     public void setNetworkByParent(Set<ProductNetwork> networkByParent) {
         this.networkByParent = networkByParent;
+    }
+
+    /**
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(Product parent) {
+        this.parent = parent;
     }
 
     /*

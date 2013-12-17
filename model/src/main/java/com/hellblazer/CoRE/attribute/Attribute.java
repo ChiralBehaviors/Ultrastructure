@@ -47,7 +47,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
-import com.hellblazer.CoRE.agency.Agency; 
+import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -102,8 +102,8 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @Table(name = "attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_id_seq", sequenceName = "attribute_id_seq")
-public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> implements 
-        Attributable<AttributeMetaAttribute> {
+public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
+        implements Attributable<AttributeMetaAttribute> {
     public static final String          FIND_BY_NAME                             = "attribute.findByName";
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "attribute"
                                                                                    + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
@@ -111,11 +111,11 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
                                                                                    + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String          GET_CHILD                                = "attribute"
                                                                                    + GET_CHILD_SUFFIX;
+    public static final String          GET_CHILD_RULES_BY_RELATIONSHIP          = "attribute"
+                                                                                   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String          NAME_SEARCH                              = "attribute"
                                                                                    + NAME_SEARCH_SUFFIX;
     public static final String          UNLINKED                                 = "attribute.unlinked";
-    public static final String          GET_CHILD_RULES_BY_RELATIONSHIP          = "attribute"
-                                                                                   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long           serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute

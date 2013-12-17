@@ -38,16 +38,20 @@ import com.hellblazer.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "unit_network_id_seq", sequenceName = "unit_network_id_seq")
 public class UnitNetwork extends NetworkRuleform<Unit> {
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public UnitNetwork(Unit parent, Relationship relationship, Unit child,
-                       Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+    private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
+
+    @ManyToOne
+    @JoinColumn(name = "child")
+    private Unit              child;
+
+    @Id
+    @GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
+
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "parent")
+    private Unit              parent;
 
     /**
      * 
@@ -78,19 +82,16 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         super(relationship, updatedBy);
     }
 
-    private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "child")
-    private Unit              child;
-
-    @Id
-    @GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
-
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    private Unit              parent;
+    /**
+     * @param relationship
+     * @param updatedBy
+     */
+    public UnitNetwork(Unit parent, Relationship relationship, Unit child,
+                       Agency updatedBy) {
+        super(relationship, updatedBy);
+        this.parent = parent;
+        this.child = child;
+    }
 
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.network.NetworkRuleform#getChild()
@@ -98,6 +99,14 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @Override
     public Unit getChild() {
         return child;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#getId()
+     */
+    @Override
+    public Long getId() {
+        return id;
     }
 
     /* (non-Javadoc)
@@ -117,26 +126,18 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     }
 
     /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.network.NetworkRuleform#setParent(com.hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setParent(Unit parent) {
-        this.parent = parent;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.network.NetworkRuleform#setParent(com.hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public void setParent(Unit parent) {
+        this.parent = parent;
     }
 }

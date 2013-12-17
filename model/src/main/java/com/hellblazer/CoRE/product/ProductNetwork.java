@@ -164,21 +164,21 @@ import com.hellblazer.CoRE.network.Relationship;
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n") })
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
-    private static final long  serialVersionUID              = 1L;
-    public static final String GET_USED_RELATIONSHIPS        = "productNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                = "productNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
+    public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GATHER_EXISTING_NETWORK_RULES = "productNetwork"
                                                                + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "productNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS        = "productNetwork"
+                                                               + USED_RELATIONSHIPS_SUFFIX;
+    public static final String INFERENCE_STEP                = "productNetwork"
+                                                               + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS = "productNetwork"
                                                                + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID              = 1L;
 
     public static List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();

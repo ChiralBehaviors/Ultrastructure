@@ -45,11 +45,11 @@ import com.hellblazer.CoRE.json.RuleformIdGenerator;
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 abstract public class Ruleform implements Serializable, Cloneable {
-    public static final String FIND_BY_NAME_SUFFIX   = ".findByName";
-    public static final String NAME_SEARCH_SUFFIX    = ".namesearch";
-    public static final String GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
     public static final String FIND_BY_ID_SUFFIX     = ".findById";
+    public static final String FIND_BY_NAME_SUFFIX   = ".findByName";
     public static final String FIND_FLAGGED_SUFFIX   = ".findFlagged";
+    public static final String GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+    public static final String NAME_SEARCH_SUFFIX    = ".namesearch";
 
     private static final long  serialVersionUID      = 1L;
 

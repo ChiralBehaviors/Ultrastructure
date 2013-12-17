@@ -62,11 +62,11 @@ import com.hellblazer.CoRE.network.Relationship;
 public class Coordinate extends
         ExistentialRuleform<Coordinate, CoordinateNetwork> implements
         Attributable<CoordinateAttribute> {
-    private static final long        serialVersionUID                 = 1L;
     public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES = "interval.immediateChildrenNetworkRules";
-
     public static final String       NESTING_QUERY                    = "coordinate.nestCoordinates";
+
     public static final String       ORDERED_ATTRIBUTES               = "coordinate.orderedAttributes";
+    private static final long        serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to CoordinateAttribute
     @OneToMany(mappedBy = "coordinate")
@@ -139,76 +139,6 @@ public class Coordinate extends
         attributes.add(attribute);
     }
 
-    @Override
-    public Set<CoordinateAttribute> getAttributes() {
-        return attributes;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<CoordinateAttribute> getAttributeType() {
-        return CoordinateAttribute.class;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * <p>
-     * Returns a List of <code>coordinate</code>'s CoordinateAttributes (as
-     * obtained from {@link Coordinate#getAttributes()}, but ordered according
-     * to the declaration of this Coordinate's CoordinateKind definition rules
-     * (e.g. {@link CoordinateKindDefinition})
-     * </p>
-     * 
-     * @return a {@code List<CoordinateAttribute>} containing the attributes of
-     *         the receiver, ordered according to the definition rules for this
-     *         kind of Coordinate.
-     */
-    public List<CoordinateAttribute> getOrderedAttributes(EntityManager em) {
-        return em.createNamedQuery(ORDERED_ATTRIBUTES,
-                                   CoordinateAttribute.class).setParameter("coordinate",
-                                                                           this).getResultList();
-    }
-
-    /**
-     * Computes a Coordinate that represents the inner coordinate relative to
-     * this outer coordinate. For example if <code>outer</code> represents a
-     * nucleotide region from bases 123&#8211;456 on some DNA molecule
-     * <em>X</em>, and <code>inner</code> represents a region extending from
-     * bases 20&#8211;30 of <code>outer</code>, then this method will return a
-     * Coordinate representing the region from 143&#8211;153 of DNA molecule
-     * <em>X</em>. If such a Coordinate already exists in the database, it is
-     * returned, otherwise a new Coordinate is created and it is returned.
-     * 
-     * @param outer
-     *            the second Coordinate. Can be relative to anything, but should
-     *            contain the receiver coordinate
-     * @return Coordinate representing the location of <code>inner</code>
-     *         relative to the receiver coordinate
-     */
-    public Coordinate nestCoordinates(EntityManager em, Coordinate outer) {
-        return em.createNamedQuery(NESTING_QUERY, Coordinate.class).setParameter("inner",
-                                                                                 this).setParameter("outer",
-                                                                                                    outer).getSingleResult();
-    }
-
-    @Override
-    public void setAttributes(Set<CoordinateAttribute> coordinateAttributes) {
-        attributes = coordinateAttributes;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -233,6 +163,26 @@ public class Coordinate extends
     public void addParentRelationship(CoordinateNetwork relationship) {
         relationship.setParent(this);
         networkByParent.add(relationship);
+    }
+
+    @Override
+    public Set<CoordinateAttribute> getAttributes() {
+        return attributes;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.hellblazer.CoRE.attribute.Attributable#getAttributeType()
+     */
+    @Override
+    public Class<CoordinateAttribute> getAttributeType() {
+        return CoordinateAttribute.class;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
     }
 
     /*
@@ -268,6 +218,24 @@ public class Coordinate extends
         return networkByParent;
     }
 
+    /**
+     * <p>
+     * Returns a List of <code>coordinate</code>'s CoordinateAttributes (as
+     * obtained from {@link Coordinate#getAttributes()}, but ordered according
+     * to the declaration of this Coordinate's CoordinateKind definition rules
+     * (e.g. {@link CoordinateKindDefinition})
+     * </p>
+     * 
+     * @return a {@code List<CoordinateAttribute>} containing the attributes of
+     *         the receiver, ordered according to the definition rules for this
+     *         kind of Coordinate.
+     */
+    public List<CoordinateAttribute> getOrderedAttributes(EntityManager em) {
+        return em.createNamedQuery(ORDERED_ATTRIBUTES,
+                                   CoordinateAttribute.class).setParameter("coordinate",
+                                                                           this).getResultList();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -292,6 +260,38 @@ public class Coordinate extends
                                                           r.getInverse(), this,
                                                           inverseSoftware);
         em.persist(inverse);
+    }
+
+    /**
+     * Computes a Coordinate that represents the inner coordinate relative to
+     * this outer coordinate. For example if <code>outer</code> represents a
+     * nucleotide region from bases 123&#8211;456 on some DNA molecule
+     * <em>X</em>, and <code>inner</code> represents a region extending from
+     * bases 20&#8211;30 of <code>outer</code>, then this method will return a
+     * Coordinate representing the region from 143&#8211;153 of DNA molecule
+     * <em>X</em>. If such a Coordinate already exists in the database, it is
+     * returned, otherwise a new Coordinate is created and it is returned.
+     * 
+     * @param outer
+     *            the second Coordinate. Can be relative to anything, but should
+     *            contain the receiver coordinate
+     * @return Coordinate representing the location of <code>inner</code>
+     *         relative to the receiver coordinate
+     */
+    public Coordinate nestCoordinates(EntityManager em, Coordinate outer) {
+        return em.createNamedQuery(NESTING_QUERY, Coordinate.class).setParameter("inner",
+                                                                                 this).setParameter("outer",
+                                                                                                    outer).getSingleResult();
+    }
+
+    @Override
+    public void setAttributes(Set<CoordinateAttribute> coordinateAttributes) {
+        attributes = coordinateAttributes;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /*

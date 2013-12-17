@@ -69,10 +69,10 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 @Table(name = "status_code_sequencing", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "status_code_sequencing_id_seq", sequenceName = "status_code_sequencing_id_seq")
 public class StatusCodeSequencing extends Ruleform {
+    public static final String  ENSURE_VALID_SERVICE_STATUS = "statusCodeSequencing.ensureValidServiceAndStatus";
     public static final String  GET_CHILD_STATUS_CODES      = "statusCodeSequencing.getChildStatusCodes";
     public static final String  GET_PARENT_STATUS_CODES     = "statusCodeSequencing.getParentStatusCodes";
     public static final String  IS_VALID_NEXT_STATUS        = "statusCodeSequencing.isValidNextStatus";
-    public static final String  ENSURE_VALID_SERVICE_STATUS = "statusCodeSequencing.ensureValidServiceAndStatus";
 
     private static final long   serialVersionUID            = 1L;
 

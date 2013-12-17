@@ -29,6 +29,22 @@ import com.hellblazer.CoRE.attribute.ValueType;
 public interface WellKnownObject {
 
     public static enum WellKnownAgency implements WellKnownObject {
+        AGENCY() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of a agency. All existential entities defined in the Agency ruleform are instances of 'Agency'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.agency;
+            }
+
+        },
         ANY() {
 
             @Override
@@ -170,22 +186,6 @@ public interface WellKnownObject {
             @Override
             public String productName() {
                 return WellKnownObject.PROPAGATION_SOFTWARE;
-            }
-
-        },
-        AGENCY() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a agency. All existential entities defined in the Agency ruleform are instances of 'Agency'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.agency;
             }
 
         },
@@ -967,32 +967,6 @@ public interface WellKnownObject {
             }
 
         },
-        INCLUDES() {
-
-            @Override
-            public String description() {
-                return "A includes B";
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.IS_A;
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.INCLUDES;
-            }
-
-            @Override
-            boolean preferred() {
-                return false;
-            }
-
-        },
         IN_WORKSPACE() {
 
             @Override
@@ -1011,6 +985,32 @@ public interface WellKnownObject {
             @Override
             public String productName() {
                 return WellKnownObject.IN_WORKSPACE;
+            }
+
+            @Override
+            boolean preferred() {
+                return false;
+            }
+
+        },
+        INCLUDES() {
+
+            @Override
+            public String description() {
+                return "A includes B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IS_A;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.INCLUDES;
             }
 
             @Override
@@ -1227,54 +1227,6 @@ public interface WellKnownObject {
             }
 
         },
-        OWNS() {
-            @Override
-            public String description() {
-                return "A owns B";
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.OWNED_BY;
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.OWNS;
-            }
-
-            @Override
-            boolean preferred() {
-                return true;
-            }
-        },
-        OWNED_BY() {
-            @Override
-            public String description() {
-                return "A is owned by B";
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.OWNS;
-            }
-
-            /* (non-Javadoc)
-             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.OWNED_BY;
-            }
-
-            @Override
-            boolean preferred() {
-                return false;
-            }
-        },
         NOT_APPLICABLE() {
 
             @Override
@@ -1300,6 +1252,54 @@ public interface WellKnownObject {
                 return false;
             }
 
+        },
+        OWNED_BY() {
+            @Override
+            public String description() {
+                return "A is owned by B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.OWNS;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.OWNED_BY;
+            }
+
+            @Override
+            boolean preferred() {
+                return false;
+            }
+        },
+        OWNS() {
+            @Override
+            public String description() {
+                return "A owns B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.OWNED_BY;
+            }
+
+            /* (non-Javadoc)
+             * @see com.hellblazer.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String productName() {
+                return WellKnownObject.OWNS;
+            }
+
+            @Override
+            boolean preferred() {
+                return true;
+            }
         },
         PROTOTYPE() {
 
@@ -1485,6 +1485,7 @@ public interface WellKnownObject {
         }
     }
 
+    String agency                    = "Agency";
     String ANY                       = "(ANY)";
     String ANYTHING                  = "anything";
     String ATTRIBUTE                 = "Attribute";
@@ -1507,9 +1508,9 @@ public interface WellKnownObject {
     String HAS_MEMBER                = "has-member";
     String HAS_VERSION               = "has-version";
     String HEAD_OF                   = "head-of";
+    String IN_WORKSPACE              = "in-workspace";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";
-    String IN_WORKSPACE              = "in-workspace";
     String IS_A                      = "is-a";
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";
@@ -1532,10 +1533,9 @@ public interface WellKnownObject {
     String PROTOTYPE                 = "prototype";
     String PROTOTYPE_OF              = "prototype-of";
     String RELATIONSHIP              = "Relationship";
-    String agency                    = "Agency";
     String SAME                      = "(SAME)";
-    String SPECIAL_SYSTEM_EVENT      = "Special System Event";
     String SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
+    String SPECIAL_SYSTEM_EVENT      = "Special System Event";
     String SUPER_USER                = "CoRE Super User";
     String UNSET                     = "(UNSET)";
     String VERSION_OF                = "version-of";

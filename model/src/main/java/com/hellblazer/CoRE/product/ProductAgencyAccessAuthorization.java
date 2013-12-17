@@ -16,8 +16,8 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
 import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
 import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
 import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
 import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD;
@@ -49,12 +49,12 @@ import com.hellblazer.CoRE.network.Relationship;
  */
 @NamedQueries({
                @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
-                                                                                                                          + "FROM ProductAgencyAccessAuthorization auth "
-                                                                                                                          + "WHERE auth.parent = :parent "
-                                                                                                                          + "AND auth.relationship = :relationship "
-                                                                                                                          + "AND auth.child = :child "
-                                                                                                                          + "AND auth.parentTransitiveRelationship = :parentRelationship "
-                                                                                                                          + "AND auth.childTransitiveRelationship = :childRelationship"),
+                                                                                                                   + "FROM ProductAgencyAccessAuthorization auth "
+                                                                                                                   + "WHERE auth.parent = :parent "
+                                                                                                                   + "AND auth.relationship = :relationship "
+                                                                                                                   + "AND auth.child = :child "
+                                                                                                                   + "AND auth.parentTransitiveRelationship = :parentRelationship "
+                                                                                                                   + "AND auth.childTransitiveRelationship = :childRelationship"),
                @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
                                                                                         + "FROM ProductAgencyAccessAuthorization auth "
                                                                                         + "WHERE auth.parent = :parent "
@@ -93,19 +93,15 @@ public class ProductAgencyAccessAuthorization extends
                                                                                                          + AgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
 
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
-    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
 
     private static final long  serialVersionUID                                                        = 1L;
-
-    {
-        setAuthorizationType(AccessAuthorization.PRODUCT_AGENCY);
-    }
 
     @ManyToOne
     @JoinColumn(name = "agency2")
@@ -115,6 +111,10 @@ public class ProductAgencyAccessAuthorization extends
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<AgencyNetwork> networkByChild;
+
+    {
+        setAuthorizationType(AccessAuthorization.PRODUCT_AGENCY);
+    }
 
     public ProductAgencyAccessAuthorization() {
         super();
@@ -160,18 +160,18 @@ public class ProductAgencyAccessAuthorization extends
     }
 
     /**
+     * @return the networkByChild
+     */
+    public Set<AgencyNetwork> getNetworkByChild() {
+        return networkByChild;
+    }
+
+    /**
      * @param child
      *            the child to set
      */
     public void setChild(Agency child) {
         this.child = child;
-    }
-
-    /**
-     * @return the networkByChild
-     */
-    public Set<AgencyNetwork> getNetworkByChild() {
-        return networkByChild;
     }
 
     /**

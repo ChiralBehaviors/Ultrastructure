@@ -39,13 +39,13 @@ public class WorkspaceRelationshipAuthorization extends WorkspaceAuthorization {
 
     private static final long serialVersionUID = 1L;
 
-    {
-        setAuthorizationType(WorkspaceAuthorization.PRODUCT_AGENCY);
-    }
-
     @ManyToOne
     @JoinColumn(name = "relationship")
     protected Relationship    relationship;
+
+    {
+        setAuthorizationType(WorkspaceAuthorization.PRODUCT_AGENCY);
+    }
 
     public WorkspaceRelationshipAuthorization() {
         super();

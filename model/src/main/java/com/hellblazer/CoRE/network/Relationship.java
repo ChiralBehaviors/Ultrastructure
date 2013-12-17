@@ -61,8 +61,8 @@ import com.hellblazer.CoRE.agency.Agency;
                                                + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Relationship extends
         ExistentialRuleform<Relationship, RelationshipNetwork> {
-    private static final long        serialVersionUID                 = 1L;
     public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES = "interval.immediateChildrenNetworkRules";
+    private static final long        serialVersionUID                 = 1L;
 
     @Id
     @GeneratedValue(generator = "relationship_id_seq", strategy = GenerationType.SEQUENCE)
@@ -74,10 +74,6 @@ public class Relationship extends
     @JsonIgnore
     private Relationship             inverse;
 
-    private String                   operator;
-
-    private Boolean                  preferred                        = Boolean.FALSE;
-
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<RelationshipNetwork> networkByChild;
@@ -85,6 +81,10 @@ public class Relationship extends
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<RelationshipNetwork> networkByParent;
+
+    private String                   operator;
+
+    private Boolean                  preferred                        = Boolean.FALSE;
 
     public Relationship() {
     }
@@ -159,54 +159,6 @@ public class Relationship extends
         setInverse(inverse);
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public Relationship getInverse() {
-        return inverse;
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public Boolean getPreferred() {
-        return preferred;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setInverse(Relationship relationship) {
-        inverse = relationship;
-        relationship.inverse = this;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    public void setPreferred(Boolean preferred) {
-        this.preferred = preferred;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (inverse != null) {
-            inverse = (Relationship) inverse.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
-    }
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.ExistentialRuleform#addChildRelationship(com.hellblazer.CoRE.network.NetworkRuleform)
      */
@@ -225,6 +177,11 @@ public class Relationship extends
         networkByChild.add(relationship);
     }
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.persistence.EntityManager)
      */
@@ -233,6 +190,10 @@ public class Relationship extends
         return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
                                    RelationshipNetwork.class).setParameter("relationship",
                                                                            this).getResultList();
+    }
+
+    public Relationship getInverse() {
+        return inverse;
     }
 
     /* (non-Javadoc)
@@ -249,6 +210,14 @@ public class Relationship extends
     @Override
     public Set<RelationshipNetwork> getNetworkByParent() {
         return networkByParent;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public Boolean getPreferred() {
+        return preferred;
     }
 
     /* (non-Javadoc)
@@ -272,6 +241,16 @@ public class Relationship extends
         em.persist(inverse);
     }
 
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setInverse(Relationship relationship) {
+        inverse = relationship;
+        relationship.inverse = this;
+    }
+
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
      */
@@ -286,6 +265,27 @@ public class Relationship extends
     @Override
     public void setNetworkByParent(Set<RelationshipNetwork> theNetworkByParent) {
         networkByParent = theNetworkByParent;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public void setPreferred(Boolean preferred) {
+        this.preferred = preferred;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (inverse != null) {
+            inverse = (Relationship) inverse.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
     }
 
 }

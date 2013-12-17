@@ -17,16 +17,16 @@
 
 package com.hellblazer.CoRE.event;
 
-import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
-import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
-import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
-import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_VALUES;
 import static com.hellblazer.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
+import static com.hellblazer.CoRE.event.ProtocolAttributeAuthorization.FIND_GROUPED_ATTRIBUTE_VALUES;
 
 import java.util.Map;
 
@@ -118,12 +118,12 @@ public class ProtocolAttributeAuthorization extends AttributeAuthorization {
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "product_classification")
-    private Relationship       productClassification;
-
-    @ManyToOne
     @JoinColumn(name = "product")
     private Product            product;
+
+    @ManyToOne
+    @JoinColumn(name = "product_classification")
+    private Relationship       productClassification;
 
     @ManyToOne
     @JoinColumn(name = "requester")

@@ -49,12 +49,12 @@ public class ProductLocationAttributeAuthorization extends
     //TODO hhildebrand this should probably have an FK to product or productlocation or something
 
     @ManyToOne
-    @JoinColumn(name = "classifier")
-    private Product           classifier;
-
-    @ManyToOne
     @JoinColumn(name = "classification")
     private Relationship      classification;
+
+    @ManyToOne
+    @JoinColumn(name = "classifier")
+    private Product           classifier;
 
     @Id
     @GeneratedValue(generator = "product_location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)

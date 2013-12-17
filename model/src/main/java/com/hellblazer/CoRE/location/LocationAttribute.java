@@ -47,10 +47,10 @@ import com.hellblazer.CoRE.product.Product;
 public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Product
+    //bi-directional many-to-one association to Agency
     @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           productValue;
+    @JoinColumn(name = "agency_value")
+    private Agency            agencyValue;
 
     @Id
     @GeneratedValue(generator = "location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
@@ -60,10 +60,10 @@ public class LocationAttribute extends AttributeValue<Location> {
     @JoinColumn(name = "location")
     private Location          location;
 
-    //bi-directional many-to-one association to Agency
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "agency_value")
-    private Agency            agencyValue;
+    @JoinColumn(name = "product_value")
+    private Product           productValue;
 
     public LocationAttribute() {
     }

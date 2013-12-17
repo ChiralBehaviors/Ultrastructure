@@ -56,14 +56,14 @@ public class ProductAttribute extends AttributeValue<Product> {
     public final static String FIND_ATTRIBUTE_VALUE_FROM_AGENCY = "productAttribute.findAttributeValueFromAgency";
     private static final long  serialVersionUID                 = 1L;
 
+    @Id
+    @GeneratedValue(generator = "product_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
+
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product")
     private Product            product;
-
-    @Id
-    @GeneratedValue(generator = "product_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     public ProductAttribute() {
     }

@@ -27,6 +27,12 @@ import java.sql.Timestamp;
  * 
  */
 public enum ValueType {
+    BINARY {
+        @Override
+        public Class<?> valueClass() {
+            return byte[].class;
+        }
+    },
     BOOLEAN {
         @Override
         public Class<?> valueClass() {
@@ -55,12 +61,6 @@ public enum ValueType {
         @Override
         public Class<?> valueClass() {
             return Timestamp.class;
-        }
-    },
-    BINARY {
-        @Override
-        public Class<?> valueClass() {
-            return byte[].class;
         }
     };
 

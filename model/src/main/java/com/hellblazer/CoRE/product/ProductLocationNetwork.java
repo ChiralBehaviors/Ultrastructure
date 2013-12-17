@@ -47,32 +47,32 @@ import com.hellblazer.CoRE.coordinate.Coordinate;
 @SequenceGenerator(schema = "ruleform", name = "product_location_network_id_seq", sequenceName = "product_location_network_id_seq")
 @NamedQueries({ @NamedQuery(name = LOCATION_RULES, query = "select n from ProductLocationNetwork n where n.product = :product") })
 public class ProductLocationNetwork extends Ruleform {
-    private static final long  serialVersionUID = 1L;
     public static final String LOCATION_RULES   = "productLocationNetwork.locationRules";
+    private static final long  serialVersionUID = 1L;
+
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "agency")
+    private Agency             agency;                                                    ;
 
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "contextual_product")
-    private Product            contextualProduct;                                         ;
+    private Product            contextualProduct;
 
     //bi-directional many-to-one association to Coordinate
     @ManyToOne
     @JoinColumn(name = "coordinate")
     private Coordinate         coordinate;
 
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private Product            product;
-
     @Id
     @GeneratedValue(generator = "product_location_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Agency
+    //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency             agency;
+    @JoinColumn(name = "product")
+    private Product            product;
 
     public ProductLocationNetwork() {
     }

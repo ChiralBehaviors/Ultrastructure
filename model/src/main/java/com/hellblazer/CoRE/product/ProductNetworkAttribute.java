@@ -48,6 +48,15 @@ import com.hellblazer.CoRE.attribute.Unit;
 public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     private static final long serialVersionUID = 1L;
 
+    //bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "agency")
+    private Agency            agency;
+
+    @Id
+    @GeneratedValue(generator = "product_network_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
+
     //bi-directional many-to-one association to ProductNetwork
     @ManyToOne
     @JoinColumn(name = "network_rule")
@@ -57,15 +66,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     @ManyToOne
     @JoinColumn(name = "product_value")
     private Product           productValue;
-
-    @Id
-    @GeneratedValue(generator = "product_network_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
-
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency            agency;
 
     public ProductNetworkAttribute() {
     }

@@ -109,7 +109,7 @@ public final class NetworkGraphQuery<RuleForm extends ExistentialRuleform<RuleFo
         nodes.add(origin);
         for (NetworkRuleform<RuleForm> n : edges) {
             if (!nodes.contains(n.getChild())) {
-                nodes.add((RuleForm) n.getChild());
+                nodes.add(n.getChild());
             }
         }
 

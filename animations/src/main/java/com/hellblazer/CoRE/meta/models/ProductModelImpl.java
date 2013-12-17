@@ -22,16 +22,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
@@ -40,18 +35,15 @@ import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
-import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization_;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
 import com.hellblazer.CoRE.product.ProductLocationAccessAuthorization;
-import com.hellblazer.CoRE.product.ProductLocationAccessAuthorization_;
 import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
@@ -330,19 +322,12 @@ public class ProductModelImpl
             query.setParameter("parent", parent);
             query.setParameter("relationship", authorizingRelationship);
             query.setParameter("child", child);
-            List<?> results = query.getResultList();
-
-            return results.size() > 0;
-
         } else if (childRelationship == null) {
             query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
             query.setParameter("relationship", authorizingRelationship);
             query.setParameter("child", child);
             query.setParameter("netRelationship", parentRelationship);
             query.setParameter("netChild", parent);
-            List<?> results = query.getResultList();
-
-            return results.size() > 0;
 
         } else if (parentRelationship == null) {
             query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
@@ -350,9 +335,7 @@ public class ProductModelImpl
             query.setParameter("parent", parent);
             query.setParameter("netRelationship", childRelationship);
             query.setParameter("netChild", child);
-            List<?> results = query.getResultList();
 
-            return results.size() > 0;
         } else {
             query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
             query.setParameter("relationship", authorizingRelationship);
@@ -360,10 +343,11 @@ public class ProductModelImpl
             query.setParameter("parentNetChild", parent);
             query.setParameter("childNetRelationship", childRelationship);
             query.setParameter("childNetChild", child);
-            List<?> results = query.getResultList();
 
-            return results.size() > 0;
         }
+        List<?> results = query.getResultList();
+
+        return results.size() > 0;
 
     }
 
@@ -380,127 +364,40 @@ public class ProductModelImpl
                                          Relationship authorizingRelationship,
                                          Location child,
                                          Relationship childRelationship) {
-        Query query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
+        Query query;
 
         if (parentRelationship == null && childRelationship == null) {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<ProductLocationAccessAuthorization> q = builder.createQuery(ProductLocationAccessAuthorization.class);
-            Root<ProductLocationAccessAuthorization> auth = q.from(ProductLocationAccessAuthorization.class);
-            q.select(auth);
-            q.where(builder.equal(auth.get(ProductLocationAccessAuthorization_.parent),
-                                  parent));
-            q.where(builder.equal(auth.get(ProductLocationAccessAuthorization_.relationship),
-                                  authorizingRelationship));
-            q.where(builder.equal(auth.get(ProductLocationAccessAuthorization_.child),
-                                  child));
-
-            query = em.createQuery(q);
-            List<?> results = query.getResultList();
-
-            return results.size() > 0;
-
+            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
+            query.setParameter("parent", parent);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
         } else if (childRelationship == null) {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<ProductLocationAccessAuthorization> q = builder.createQuery(ProductLocationAccessAuthorization.class);
-            Root<ProductLocationAccessAuthorization> auth = q.from(ProductLocationAccessAuthorization.class);
-            q.select(auth);
-            q.where(builder.and(builder.equal(auth.get(ProductLocationAccessAuthorization_.relationship),
-                                              authorizingRelationship),
-                                builder.equal(auth.get(ProductLocationAccessAuthorization_.child),
-                                              child)));
-            query = em.createQuery(q);
-            Query netQuery = em.createQuery("select net FROM ProductNetwork net "
-                                            + "WHERE net.relationship = :rel "
-                                            + "AND net.child = :child");
-            netQuery.setParameter("rel", parentRelationship);
-            netQuery.setParameter("child", parent);
-
-            List<ProductNetwork> net = netQuery.getResultList();
-            List<?> res = query.getResultList();
-            for (ProductNetwork n : net) {
-                System.out.println("n: " + n);
-                for (ProductLocationAccessAuthorization p : (List<ProductLocationAccessAuthorization>) res) {
-                    System.out.println("auth: " + p);
-                    if (n.getParent().equals(p.getParent())) {
-                        return true;
-                    }
-                }
-            }
+            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
+            query.setParameter("netRelationship", parentRelationship);
+            query.setParameter("netChild", parent);
 
         } else if (parentRelationship == null) {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<ProductLocationAccessAuthorization> q = builder.createQuery(ProductLocationAccessAuthorization.class);
-            Root<ProductLocationAccessAuthorization> auth = q.from(ProductLocationAccessAuthorization.class);
-            q.select(auth);
-            q.where(builder.and(builder.equal(auth.get(ProductLocationAccessAuthorization_.relationship),
-                                              authorizingRelationship),
-                                builder.equal(auth.get(ProductLocationAccessAuthorization_.parent),
-                                              parent)));
-            query = em.createQuery(q);
-            TypedQuery<LocationNetwork> netQuery = em.createQuery("select net FROM LocationNetwork net "
-                                                                          + "WHERE net.relationship = :rel "
-                                                                          + "AND net.child = :child",
-                                                                  LocationNetwork.class);
-            netQuery.setParameter("rel", childRelationship);
-            netQuery.setParameter("child", child);
+            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parent", parent);
+            query.setParameter("netRelationship", childRelationship);
+            query.setParameter("netChild", child);
 
-            List<LocationNetwork> net = netQuery.getResultList();
-            List<?> res = query.getResultList();
-            for (LocationNetwork n : net) {
-                System.out.println("n: " + n);
-                for (ProductLocationAccessAuthorization p : (List<ProductLocationAccessAuthorization>) res) {
-                    System.out.println("auth: " + p);
-                    if (n.getParent().equals(p.getChild())) {
-                        return true;
-                    }
-                }
-            }
         } else {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<ProductLocationAccessAuthorization> q = builder.createQuery(ProductLocationAccessAuthorization.class);
-            Root<ProductLocationAccessAuthorization> auth = q.from(ProductLocationAccessAuthorization.class);
-            q.select(auth);
-            q.where(builder.equal(auth.get(ProductLocationAccessAuthorization_.relationship),
-                                  authorizingRelationship));
-            query = em.createQuery(q);
-            Query parentNetQuery = em.createQuery("select net FROM ProductNetwork net "
-                                                  + "WHERE net.relationship = :rel ");
-            parentNetQuery.setParameter("rel", parentRelationship);
+            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parentNetRelationship", parentRelationship);
+            query.setParameter("parentNetChild", parent);
+            query.setParameter("childNetRelationship", childRelationship);
+            query.setParameter("childNetChild", child);
 
-            List<ProductNetwork> net = parentNetQuery.getResultList();
-            List<?> res = query.getResultList();
-            boolean foundParent = false;
-            for (ProductNetwork n : net) {
-                System.out.println("n: " + n);
-                for (ProductLocationAccessAuthorization p : (List<ProductLocationAccessAuthorization>) res) {
-                    System.out.println("auth: " + p);
-                    if (n.getParent().equals(p.getParent())) {
-                        foundParent = true;
-                    }
-                }
-            }
-            if (!foundParent) {
-                return false;
-            }
-            Query childNetQuery = em.createQuery("select net FROM LocationNetwork net "
-                                                 + "WHERE net.relationship = :rel "
-                                                 + "AND net.child = :child");
-            childNetQuery.setParameter("rel", childRelationship);
-            childNetQuery.setParameter("child", child);
-
-            List<LocationNetwork> anet = childNetQuery.getResultList();
-            res = query.getResultList();
-            for (LocationNetwork n : anet) {
-                System.out.println("n: " + n);
-                for (ProductLocationAccessAuthorization p : (List<ProductLocationAccessAuthorization>) res) {
-                    System.out.println("auth: " + p);
-                    if (n.getParent().equals(p.getChild())) {
-                        return true;
-                    }
-                }
-            }
         }
-        return false;
+        List<?> results = query.getResultList();
+
+        return results.size() > 0;
+
     }
 
     /**

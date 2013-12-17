@@ -147,4 +147,53 @@ public class ProductModelTest extends AbstractModelTest {
                                                     ProductNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }
+    
+    @Test
+    public void testLeaves() {
+        em.getTransaction().begin();
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
+        Relationship isA = model.getKernel().getIsA();
+
+        Product a = new Product("A", "A", core);
+        em.persist(a);
+        Product b = new Product("B", "B", core);
+        em.persist(b);
+        Product c = new Product("c", "c", core);
+        em.persist(c);
+        ProductNetwork edgeA = new ProductNetwork(a, isA, b, core);
+        em.persist(edgeA);
+        ProductNetwork edgeB = new ProductNetwork(b, isA, c, core);
+        em.persist(edgeB);
+        
+        
+        Agency ag = new Agency("AG", "AG", core);
+        em.persist(ag);
+        Agency ag2 = new Agency("AG2", "AG2", core);
+        em.persist(ag2);
+
+        AgencyNetwork aNet = new AgencyNetwork(ag, isA, ag2, core);
+        em.persist(aNet);
+
+        ProductAgencyAccessAuthorization auth = new ProductAgencyAccessAuthorization(
+                                                                                     a,isA,
+                                                                                     equals,
+                                                                                     ag,
+                                                                                     isA,
+                                                                                     core);
+        em.persist(auth);
+        em.getTransaction().commit();
+
+        ProductModelImpl model = new ProductModelImpl(em);
+       // assertTrue(model.isAccessible(a, null, equals, ag, null));
+        //bug here. this should be false since the access auth doesn't have
+        //authorizing relationships
+//        assertTrue(model.isAccessible(b, isA, equals, ag, null));
+//        assertTrue(model.isAccessible(a, null, equals, ag2, isA));
+//        assertTrue(model.isAccessible(b, isA, equals, ag2, isA));
+        
+        List<?> stuff = model.getNetworks(a, equals);
+        System.out.println(stuff);
+
+    }
 }

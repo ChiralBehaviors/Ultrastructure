@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.agency;
 
+import static com.hellblazer.CoRE.agency.AgencyLocationAccessAuthorization.*;
 import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
@@ -23,20 +24,72 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.location.LocationAccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hparry
  * 
  */
+@NamedQueries({
+    @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
+                                                                                                               + "FROM AgencyLocationAccessAuthorization auth "
+                                                                                                               + "WHERE auth.parent = :parent "
+                                                                                                               + "AND auth.relationship = :relationship "
+                                                                                                               + "AND auth.child = :child "
+                                                                                                               + "AND auth.parentTransitiveRelationship = :parentRelationship "
+                                                                                                               + "AND auth.childTransitiveRelationship = :childRelationship"),
+    @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
+                                                                             + "FROM AgencyLocationAccessAuthorization auth "
+                                                                             + "WHERE auth.parent = :parent "
+                                                                             + "AND auth.relationship = :relationship "
+                                                                             + "AND auth.child = :child "),
+    @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
+                                                               + "FROM AgencyLocationAccessAuthorization auth, AgencyNetwork net "
+                                                               + "WHERE auth.relationship = :relationship "
+                                                               + "AND auth.child = :child "
+                                                               + "AND net.relationship = :netRelationship "
+                                                               + "AND net.child = :netChild "
+                                                               + "AND auth.parent = net.parent "),
+    @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
+                                                              + "FROM AgencyLocationAccessAuthorization auth, LocationNetwork net "
+                                                              + "WHERE auth.relationship = :relationship "
+                                                              + "AND auth.parent = :parent "
+                                                              + "AND net.relationship = :netRelationship "
+                                                              + "AND net.child = :netChild "
+                                                              + "AND auth.child = net.parent "),
+    @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
+                                                                         + "FROM AgencyLocationAccessAuthorization auth, AgencyNetwork parentNet, LocationNetwork childNet "
+                                                                         + "WHERE auth.relationship = :relationship "
+                                                                         + "AND parentNet.relationship = :parentNetRelationship "
+                                                                         + "AND parentNet.child = :parentNetChild "
+                                                                         + "AND childNet.relationship = :childNetRelationship "
+                                                                         + "AND childNet.child = :childNetChild "
+                                                                         + "AND auth.parent = parentNet.parent "
+                                                                         + "AND auth.child = childNet.parent ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.agency_LOCATION)
 public class AgencyLocationAccessAuthorization extends
         AgencyAccessAuthorization {
+    
+    public static final String AGENCY_LOCATION_ACCESS_AUTH_PREFIX                                     = "AgencyLocationAccessAuthorization";
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+                                                                                                         + LocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+                                                                                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
+    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
 
     private static final long serialVersionUID = 1L;
 

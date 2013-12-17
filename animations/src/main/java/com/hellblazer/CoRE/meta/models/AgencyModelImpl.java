@@ -21,23 +21,29 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.postgresql.pljava.TriggerData;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.agency.AgencyAttribute;
 import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
+import com.hellblazer.CoRE.agency.AgencyLocationAccessAuthorization;
 import com.hellblazer.CoRE.agency.AgencyNetwork;
+import com.hellblazer.CoRE.agency.AgencyProductAccessAuthorization;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
+import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.location.LocationProductAccessAuthorization;
 import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand
@@ -240,12 +246,127 @@ public class AgencyModelImpl
      * com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public boolean isAccessible(Agency parent, Relationship parentRelationship,
+    public boolean isAccessible(Agency parent,
+                                Relationship parentRelationship,
                                 Relationship authorizingRelationship,
                                 ExistentialRuleform<?, ?> child,
                                 Relationship childRelationship) {
-        // TODO Auto-generated method stub
-        return false;
+        if (parent == null || child == null || authorizingRelationship == null) {
+            throw new IllegalArgumentException(
+                                               "parent, authorizingRelationship, and child cannot be null");
+        }
+        if (child instanceof Location) {
+
+            return isLocationAccessible(parent, parentRelationship,
+                                      authorizingRelationship, (Location) child,
+                                      childRelationship);
+        } else if (child instanceof Product) {
+            return isProductAccessible(parent, parentRelationship,
+                                       authorizingRelationship,
+                                       (Product) child, childRelationship);
+        } else {
+            throw new IllegalArgumentException(
+                                               "child type is not supported for this query");
+        }
+
+    }
+
+    /**
+     * @param parent
+     * @param parentRelationship
+     * @param authorizingRelationship
+     * @param child
+     * @param childRelationship
+     * @return
+     */
+    private boolean isLocationAccessible(Agency parent,
+                                       Relationship parentRelationship,
+                                       Relationship authorizingRelationship,
+                                       Location child,
+                                       Relationship childRelationship) {
+        Query query;
+
+        if (parentRelationship == null && childRelationship == null) {
+            query = em.createNamedQuery(AgencyLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
+            query.setParameter("parent", parent);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
+        } else if (childRelationship == null) {
+            query = em.createNamedQuery(AgencyLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
+            query.setParameter("netRelationship", parentRelationship);
+            query.setParameter("netChild", parent);
+
+        } else if (parentRelationship == null) {
+            query = em.createNamedQuery(AgencyLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parent", parent);
+            query.setParameter("netRelationship", childRelationship);
+            query.setParameter("netChild", child);
+
+        } else {
+            query = em.createNamedQuery(AgencyLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parentNetRelationship", parentRelationship);
+            query.setParameter("parentNetChild", parent);
+            query.setParameter("childNetRelationship", childRelationship);
+            query.setParameter("childNetChild", child);
+
+        }
+        List<?> results = query.getResultList();
+
+        return results.size() > 0;
+
+    }
+
+    /**
+     * @param parent
+     * @param parentRelationship
+     * @param authorizingRelationship
+     * @param child
+     * @param childRelationship
+     * @return
+     */
+    private boolean isProductAccessible(Agency parent,
+                                         Relationship parentRelationship,
+                                         Relationship authorizingRelationship,
+                                         Product child,
+                                         Relationship childRelationship) {
+        Query query;
+
+        if (parentRelationship == null && childRelationship == null) {
+            query = em.createNamedQuery(AgencyProductAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
+            query.setParameter("parent", parent);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
+        } else if (childRelationship == null) {
+            query = em.createNamedQuery(AgencyProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
+            query.setParameter("netRelationship", parentRelationship);
+            query.setParameter("netChild", parent);
+
+        } else if (parentRelationship == null) {
+            query = em.createNamedQuery(AgencyProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parent", parent);
+            query.setParameter("netRelationship", childRelationship);
+            query.setParameter("netChild", child);
+
+        } else {
+            query = em.createNamedQuery(AgencyProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parentNetRelationship", parentRelationship);
+            query.setParameter("parentNetChild", parent);
+            query.setParameter("childNetRelationship", childRelationship);
+            query.setParameter("childNetChild", child);
+
+        }
+        List<?> results = query.getResultList();
+
+        return results.size() > 0;
+
     }
 
     /**

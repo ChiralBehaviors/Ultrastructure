@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.unit AS 
+			 SELECT b.id, 
+			     b.name, 
+                 b.description, 
+			     b.abbreviation,
+			     b.datatype,
+			     b.min,
+			     b.max,
+			     b.enumerated,
+			     b.notes, 
+			     b.pinned, 
+			     up.name AS updated_by,
+			     b.update_date
+			   FROM ruleform.unit b
+			   JOIN ruleform.agency up ON b.updated_by = up.id;
+			
+			ALTER TABLE readable.unit
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.unit" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

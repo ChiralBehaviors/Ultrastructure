@@ -16,6 +16,8 @@
 	<include relativeToChangelogFile="true" file="/views/coordinate.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/coordinate_attribute.xml" />  
+    <include relativeToChangelogFile="true"
+        file="/views/coordinate_network.xml" />  
 	<include relativeToChangelogFile="true"
 		file="/views/coordinate_nesting.xml" /> 
 	<include relativeToChangelogFile="true" file="/views/product.xml" />
@@ -47,6 +49,7 @@
 	<include relativeToChangelogFile="true" file="/views/meta_protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
+    <include relativeToChangelogFile="true" file="/views/relationship_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/network_inference.xml" />
 	<include relativeToChangelogFile="true" file="/views/agency.xml" />
 	<include relativeToChangelogFile="true" file="/views/agency_attribute.xml" />
@@ -54,6 +57,7 @@
 		file="/views/agency_attribute_authorization.xml" />
 	<include relativeToChangelogFile="true" file="/views/agency_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/status_code.xml" />
+    <include relativeToChangelogFile="true" file="/views/status_code_network.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/status_code_sequencing.xml" />
 	<include relativeToChangelogFile="true"
@@ -66,6 +70,10 @@
 		file="/views/workspace_relationship_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/workspace_status_code_authorization.xml" />
+    <include relativeToChangelogFile="true"
+        file="/views/unit.xml" />
+    <include relativeToChangelogFile="true"
+        file="/views/unit_network.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/workspace_unit_authorization.xml" />
 	<include relativeToChangelogFile="true"

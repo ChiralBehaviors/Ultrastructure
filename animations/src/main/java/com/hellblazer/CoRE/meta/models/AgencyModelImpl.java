@@ -38,7 +38,6 @@ import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationProductAccessAuthorization;
 import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
@@ -246,8 +245,7 @@ public class AgencyModelImpl
      * com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public boolean isAccessible(Agency parent,
-                                Relationship parentRelationship,
+    public boolean isAccessible(Agency parent, Relationship parentRelationship,
                                 Relationship authorizingRelationship,
                                 ExistentialRuleform<?, ?> child,
                                 Relationship childRelationship) {
@@ -258,8 +256,8 @@ public class AgencyModelImpl
         if (child instanceof Location) {
 
             return isLocationAccessible(parent, parentRelationship,
-                                      authorizingRelationship, (Location) child,
-                                      childRelationship);
+                                        authorizingRelationship,
+                                        (Location) child, childRelationship);
         } else if (child instanceof Product) {
             return isProductAccessible(parent, parentRelationship,
                                        authorizingRelationship,
@@ -280,10 +278,10 @@ public class AgencyModelImpl
      * @return
      */
     private boolean isLocationAccessible(Agency parent,
-                                       Relationship parentRelationship,
-                                       Relationship authorizingRelationship,
-                                       Location child,
-                                       Relationship childRelationship) {
+                                         Relationship parentRelationship,
+                                         Relationship authorizingRelationship,
+                                         Location child,
+                                         Relationship childRelationship) {
         Query query;
 
         if (parentRelationship == null && childRelationship == null) {
@@ -329,10 +327,10 @@ public class AgencyModelImpl
      * @return
      */
     private boolean isProductAccessible(Agency parent,
-                                         Relationship parentRelationship,
-                                         Relationship authorizingRelationship,
-                                         Product child,
-                                         Relationship childRelationship) {
+                                        Relationship parentRelationship,
+                                        Relationship authorizingRelationship,
+                                        Product child,
+                                        Relationship childRelationship) {
         Query query;
 
         if (parentRelationship == null && childRelationship == null) {

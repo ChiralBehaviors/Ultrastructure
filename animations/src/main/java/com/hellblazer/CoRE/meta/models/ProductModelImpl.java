@@ -22,16 +22,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
@@ -40,18 +35,15 @@ import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
-import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization_;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
 import com.hellblazer.CoRE.product.ProductLocationAccessAuthorization;
-import com.hellblazer.CoRE.product.ProductLocationAccessAuthorization_;
 import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
@@ -368,10 +360,10 @@ public class ProductModelImpl
      * @return
      */
     private boolean isLocationAccessible(Product parent,
-                                       Relationship parentRelationship,
-                                       Relationship authorizingRelationship,
-                                       Location child,
-                                       Relationship childRelationship) {
+                                         Relationship parentRelationship,
+                                         Relationship authorizingRelationship,
+                                         Location child,
+                                         Relationship childRelationship) {
         Query query;
 
         if (parentRelationship == null && childRelationship == null) {

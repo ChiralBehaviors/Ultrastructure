@@ -43,6 +43,80 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 public class AgencyModelTest extends AbstractModelTest {
 
     @Test
+    public void testIsLocationAccessible() {
+        em.getTransaction().begin();
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
+        Relationship isA = model.getKernel().getIsA();
+
+        Agency a = new Agency("A", "A", core);
+        em.persist(a);
+        Agency b = new Agency("B", "B", core);
+        em.persist(b);
+        AgencyNetwork edgeA = new AgencyNetwork(a, isA, b, core);
+        em.persist(edgeA);
+        Location ag = new Location("AG", "AG", core);
+        em.persist(ag);
+        Location ag2 = new Location("AG2", "AG2", core);
+        em.persist(ag2);
+
+        LocationNetwork aNet = new LocationNetwork(ag, isA, ag2, core);
+        em.persist(aNet);
+
+        AgencyLocationAccessAuthorization auth = new AgencyLocationAccessAuthorization(
+                                                                                       a,
+                                                                                       equals,
+                                                                                       ag,
+                                                                                       core);
+        em.persist(auth);
+        em.getTransaction().commit();
+
+        AgencyModelImpl model = new AgencyModelImpl(em);
+        assertTrue(model.isAccessible(a, null, equals, ag, null));
+        assertTrue(model.isAccessible(b, isA, equals, ag, null));
+        assertTrue(model.isAccessible(a, null, equals, ag2, isA));
+        assertTrue(model.isAccessible(b, isA, equals, ag2, isA));
+
+    }
+
+    @Test
+    public void testIsProductAccessible() {
+        em.getTransaction().begin();
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
+        Relationship isA = model.getKernel().getIsA();
+
+        Agency a = new Agency("A", "A", core);
+        em.persist(a);
+        Agency b = new Agency("B", "B", core);
+        em.persist(b);
+        AgencyNetwork edgeA = new AgencyNetwork(a, isA, b, core);
+        em.persist(edgeA);
+        Product ag = new Product("AG", "AG", core);
+        em.persist(ag);
+        Product ag2 = new Product("AG2", "AG2", core);
+        em.persist(ag2);
+
+        ProductNetwork aNet = new ProductNetwork(ag, isA, ag2, core);
+        em.persist(aNet);
+
+        AgencyProductAccessAuthorization auth = new AgencyProductAccessAuthorization(
+                                                                                     a,
+                                                                                     equals,
+                                                                                     ag,
+                                                                                     core);
+        em.persist(auth);
+        em.getTransaction().commit();
+
+        AgencyModelImpl model = new AgencyModelImpl(em);
+        assertTrue(model.isAccessible(a, null, equals, ag, null));
+        assertTrue(model.isAccessible(b, isA, equals, ag, null));
+        assertTrue(model.isAccessible(a, null, equals, ag2, isA));
+        assertTrue(model.isAccessible(b, isA, equals, ag2, isA));
+
+    }
+
+    @Test
     public void testSimpleNetworkPropagation() throws SQLException {
         Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
@@ -73,72 +147,6 @@ public class AgencyModelTest extends AbstractModelTest {
         List<AgencyNetwork> edges = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inferred = TRUE",
                                                    AgencyNetwork.class).getResultList();
         assertEquals(2, edges.size());
-    }
-    
-    @Test
-    public void testIsProductAccessible() {
-        em.getTransaction().begin();
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
-        Relationship isA = model.getKernel().getIsA();
-        
-        Agency a = new Agency("A", "A", core);
-        em.persist(a);
-        Agency b = new Agency("B", "B", core);
-        em.persist(b);
-        AgencyNetwork edgeA = new AgencyNetwork(a, isA, b, core);
-        em.persist(edgeA);
-        Product ag = new Product("AG", "AG", core);
-        em.persist(ag);
-        Product ag2 = new Product("AG2", "AG2", core);
-        em.persist(ag2);
-        
-        ProductNetwork aNet = new ProductNetwork(ag, isA, ag2, core);
-        em.persist(aNet);
-        
-        AgencyProductAccessAuthorization auth = new AgencyProductAccessAuthorization(a, equals, ag, core);
-        em.persist(auth);
-        em.getTransaction().commit();
-        
-        AgencyModelImpl model = new AgencyModelImpl(em);
-        assertTrue(model.isAccessible(a, null, equals, ag, null));
-        assertTrue(model.isAccessible(b, isA, equals, ag, null));
-        assertTrue(model.isAccessible(a, null, equals, ag2, isA));
-        assertTrue(model.isAccessible(b, isA, equals, ag2, isA));
-        
-    }
-
-    @Test
-    public void testIsLocationAccessible() {
-        em.getTransaction().begin();
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
-        Relationship isA = model.getKernel().getIsA();
-        
-        Agency a = new Agency("A", "A", core);
-        em.persist(a);
-        Agency b = new Agency("B", "B", core);
-        em.persist(b);
-        AgencyNetwork edgeA = new AgencyNetwork(a, isA, b, core);
-        em.persist(edgeA);
-        Location ag = new Location("AG", "AG", core);
-        em.persist(ag);
-        Location ag2 = new Location("AG2", "AG2", core);
-        em.persist(ag2);
-        
-        LocationNetwork aNet = new LocationNetwork(ag, isA, ag2, core);
-        em.persist(aNet);
-        
-        AgencyLocationAccessAuthorization auth = new AgencyLocationAccessAuthorization(a, equals, ag, core);
-        em.persist(auth);
-        em.getTransaction().commit();
-        
-        AgencyModelImpl model = new AgencyModelImpl(em);
-        assertTrue(model.isAccessible(a, null, equals, ag, null));
-        assertTrue(model.isAccessible(b, isA, equals, ag, null));
-        assertTrue(model.isAccessible(a, null, equals, ag2, isA));
-        assertTrue(model.isAccessible(b, isA, equals, ag2, isA));
-        
     }
 
 }

@@ -330,10 +330,10 @@ public class LocationModelImpl
      * @return
      */
     private boolean isProductAccessible(Location parent,
-                                         Relationship parentRelationship,
-                                         Relationship authorizingRelationship,
-                                         Product child,
-                                         Relationship childRelationship) {
+                                        Relationship parentRelationship,
+                                        Relationship authorizingRelationship,
+                                        Product child,
+                                        Relationship childRelationship) {
         Query query;
 
         if (parentRelationship == null && childRelationship == null) {

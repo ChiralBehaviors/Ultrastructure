@@ -18,6 +18,8 @@ package com.hellblazer.CoRE.time;
 
 import static com.hellblazer.CoRE.time.IntervalAttribute.GET_ATTRIBUTE;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,7 +32,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
+import com.hellblazer.CoRE.attribute.Unit;
 
 /**
  * @author hhildebrand
@@ -53,12 +58,58 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     @JoinColumn(name = "interval")
     private Interval           interval;
 
+    public IntervalAttribute() {
+        super();
+    }
+
+    public IntervalAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public IntervalAttribute(Attribute attribute) {
+        super(attribute);
+    }
+
+    public IntervalAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
+
+    public IntervalAttribute(Attribute attribute, BigDecimal value,
+                             Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
+
+    public IntervalAttribute(Attribute attribute, boolean value,
+                             Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
+
+    public IntervalAttribute(Attribute attribute, int value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
+
+    public IntervalAttribute(Attribute attribute, String value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
+
+    public IntervalAttribute(Attribute attribute, Unit unit) {
+        super(attribute, unit);
+    }
+
+    public IntervalAttribute(Long id) {
+        super(id);
+    }
+
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.Ruleform#getId()
      */
     @Override
     public Long getId() {
         return id;
+    }
+
+    public Interval getInterval() {
+        return interval;
     }
 
     /* (non-Javadoc)
@@ -86,11 +137,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         this.id = id;
     }
 
-    protected Interval getInterval() {
-        return interval;
-    }
-
-    protected void setInterval(Interval interval) {
+    public void setInterval(Interval interval) {
         this.interval = interval;
     }
 }

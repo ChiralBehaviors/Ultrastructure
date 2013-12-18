@@ -40,6 +40,7 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.AttributeModel;
+import com.hellblazer.CoRE.meta.IntervalModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
@@ -106,7 +107,9 @@ public class ModelImpl implements Model {
     private final EntityManager  em;
     private final ProductModel   productModel;
     private final Kernel         kernel;
+    private final IntervalModel  intervalModel;
     private final LocationModel  locationModel;
+
     private final AgencyModel    agencyModel;
     private final JobModel       jobModel;
 
@@ -119,6 +122,7 @@ public class ModelImpl implements Model {
         kernel = k;
         attributeModel = new AttributeModelImpl(em, kernel);
         productModel = new ProductModelImpl(em, kernel);
+        intervalModel = new IntervalModelImpl(em, kernel);
         locationModel = new LocationModelImpl(em, kernel);
         agencyModel = new AgencyModelImpl(em, kernel);
         jobModel = new JobModelImpl(this);
@@ -281,6 +285,11 @@ public class ModelImpl implements Model {
     @Override
     public EntityManager getEntityManager() {
         return em;
+    }
+
+    @Override
+    public IntervalModel getIntervalModel() {
+        return intervalModel;
     }
 
     /*

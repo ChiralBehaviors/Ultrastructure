@@ -274,7 +274,6 @@ public class ProductModelImpl
      * com.hellblazer.CoRE.network.Relationship)
      */
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean isAccessible(Product parent,
                                 Relationship parentRelationship,

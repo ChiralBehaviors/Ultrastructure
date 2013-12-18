@@ -19,6 +19,8 @@ package com.hellblazer.CoRE.attribute;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The interface for data types that have attributes
  * 
@@ -26,9 +28,12 @@ import java.util.Set;
  * 
  */
 public interface Attributable<AttributeType extends AttributeValue<?>> {
+    @JsonIgnore
     Set<AttributeType> getAttributes();
 
+    @JsonIgnore
     Class<AttributeType> getAttributeType();
 
+    @JsonIgnore
     void setAttributes(Set<AttributeType> attributes);
 }

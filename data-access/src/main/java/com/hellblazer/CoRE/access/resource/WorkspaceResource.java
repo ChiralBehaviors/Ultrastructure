@@ -31,6 +31,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
@@ -67,7 +68,7 @@ public class WorkspaceResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Product insertWorkspace(Workspace w) {
+    public Workspace insertWorkspace(Workspace w) {
         em.getTransaction().begin();
         try {
             Product origin = w.getProducts().get(0);
@@ -83,9 +84,11 @@ public class WorkspaceResource {
 
             em.getTransaction().commit();
             em.refresh(origin);
+            Workspace ws = Workspace.loadWorkspace(origin, w.getWorkspaceOf(),
+                                                   em);
             ObjectMapper mapper = new ObjectMapper();
             mapper.enableDefaultTyping();
-            return origin;
+            return ws;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
@@ -93,6 +96,34 @@ public class WorkspaceResource {
             throw e;
         }
 
+    }
+
+    @POST
+    @Path("/{id}/{relId}/add")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Workspace addRuleformToWorkspace(ExistentialRuleform<?, ?> ef,
+                                            @PathParam("id") long id,
+                                            @PathParam("relId") long relId) {
+        Product p = new Product();
+        p.setId(id);
+
+        Relationship r = new Relationship();
+        r.setId(relId);
+
+        Workspace w = Workspace.loadWorkspace(p, r, em);
+        em.getTransaction().begin();
+        try {
+            
+            w.addToWorkspace(ef);
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        }
+        w = Workspace.loadWorkspace(w.getParentProduct(), w.getWorkspaceOf(),
+                                    em);
+        return w;
     }
 
 }

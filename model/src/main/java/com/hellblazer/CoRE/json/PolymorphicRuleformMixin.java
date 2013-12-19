@@ -155,9 +155,7 @@ import com.hellblazer.CoRE.product.ProductNetworkDeduction;
 
                @Type(value = WorkspaceRelationshipAuthorization.class, name = "workspaceRelationshipAuthorization"),
                @Type(value = WorkspaceStatusCodeAuthorization.class, name = "workspaceStatusCodeAuthorization"),
-               @Type(value = WorkspaceUnitAuthorization.class, name = "workspaceUnitAuthorization"),
-               @Type(value = AbstractObject.class, name = "abstractObject"),
-               @Type(value = ConcreteObject.class, name = "concreteObject")})
+               @Type(value = WorkspaceUnitAuthorization.class, name = "workspaceUnitAuthorization")})
 public abstract class PolymorphicRuleformMixin {
 
 }

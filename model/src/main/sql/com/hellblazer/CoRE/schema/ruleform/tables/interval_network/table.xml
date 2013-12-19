@@ -14,8 +14,6 @@
               relationship bigint NOT NULL,
               child bigint NOT NULL,
               inferred boolean NOT NULL DEFAULT FALSE,
-              resolved_start numeric,
-              resolved_duration numeric,
               notes character varying,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,

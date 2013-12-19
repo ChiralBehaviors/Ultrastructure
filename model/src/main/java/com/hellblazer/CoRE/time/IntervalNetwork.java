@@ -32,9 +32,6 @@ import static com.hellblazer.CoRE.time.IntervalNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.time.IntervalNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.time.IntervalNetwork.INSERT_NEW_NETWORK_RULES;
 
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -182,12 +179,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(name = "parent")
     private Interval           parent;
 
-    @Column(name = "resolved_duration")
-    private BigDecimal         resolvedDuration;
-
-    @Column(name = "resolved_start")
-    private BigDecimal         resolvedStart;
-
     public IntervalNetwork() {
         super();
     }
@@ -261,21 +252,5 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public void setParent(Interval parent) {
         this.parent = parent;
-    }
-
-    protected BigDecimal getResolvedDuration() {
-        return resolvedDuration;
-    }
-
-    protected BigDecimal getResolvedStart() {
-        return resolvedStart;
-    }
-
-    protected void setResolvedDuration(BigDecimal resolvedDuration) {
-        this.resolvedDuration = resolvedDuration;
-    }
-
-    protected void setResolvedStart(BigDecimal resolvedStart) {
-        this.resolvedStart = resolvedStart;
     }
 }

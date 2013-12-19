@@ -33,7 +33,6 @@ import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.RelationshipModel;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.network.RelationshipAttribute;
 import com.hellblazer.CoRE.network.RelationshipAttributeAuthorization;

@@ -146,6 +146,7 @@ public class StatusCode extends
     public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
     public static final String     UNLINKED                                 = "statusCode"
                                                                               + UNLINKED_SUFFIX;
+    
     private static final long      serialVersionUID                         = 1L;
 
 

@@ -40,7 +40,6 @@ import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.location.LocationProductAccessAuthorization;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 

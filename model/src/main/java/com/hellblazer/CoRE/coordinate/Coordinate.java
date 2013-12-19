@@ -17,8 +17,16 @@
 package com.hellblazer.CoRE.coordinate;
 
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
+import static com.hellblazer.CoRE.coordinate.Coordinate.FIND_BY_NAME;
+import static com.hellblazer.CoRE.coordinate.Coordinate.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.coordinate.Coordinate.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.coordinate.Coordinate.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.coordinate.Coordinate.GET_ALL_PARENT_RELATIONSHIPS;
+import static com.hellblazer.CoRE.coordinate.Coordinate.GET_CHILD;
+import static com.hellblazer.CoRE.coordinate.Coordinate.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.coordinate.Coordinate.NESTING_QUERY;
 import static com.hellblazer.CoRE.coordinate.Coordinate.ORDERED_ATTRIBUTES;
+import static com.hellblazer.CoRE.coordinate.Coordinate.UNLINKED;
 
 import java.util.List;
 import java.util.Set;
@@ -53,20 +61,85 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @Table(name = "coordinate", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_id_seq", sequenceName = "coordinate_id_seq")
-@NamedQueries({ @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from CoordinateAttribute as ca where ca.coordinate = :coordinate") })
 @NamedNativeQueries({
-// ?1 = #inner, ?2 = #outer
-                     @NamedNativeQuery(name = NESTING_QUERY, query = "SELECT * FROM ruleform.nest_coordinates(?1, ?2)", resultClass = Coordinate.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = "coordinate" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate', ?1, ?2)", resultClass = NameSearchResult.class) })
+                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                + "FROM coordinate AS unlinked "
+                                                                + "JOIN ("
+                                                                + "     SELECT id "
+                                                                + "     FROM coordinate "
+                                                                + "     EXCEPT ("
+                                                                + "             SELECT distinct(net.child) "
+                                                                + "             FROM coordinate_network as net "
+                                                                + "             WHERE net.parent = coordinate_id('Agency') "
+                                                                + "             AND relationship = relationship_id('includes') "
+                                                                + "     )"
+                                                                + ") AS linked ON unlinked.id = linked.id "
+                                                                + "WHERE unlinked.id != coordinate_id('Agency');", resultClass = Agency.class),
+                     // ?1 = :queryString, ?2 = :numberOfMatches                                                                       
+                     @NamedNativeQuery(name = "coordinate" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class),
+                     // ?1 = #inner, ?2 = #outer
+                     @NamedNativeQuery(name = NESTING_QUERY, query = "SELECT * FROM ruleform.nest_coordinates(?1, ?2)", resultClass = Coordinate.class) })
+@NamedQueries({
+               @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from CoordinateAttribute as ca where ca.coordinate = :coordinate"),
+               @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                            + "  attrValue "
+                                                                            + "FROM "
+                                                                            + "       CoordinateAttribute attrValue, "
+                                                                            + "       CoordinateAttributeAuthorization auth, "
+                                                                            + "       CoordinateNetwork network "
+                                                                            + "WHERE "
+                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
+                                                                            + "        network.relationship = auth.classification AND "
+                                                                            + "        network.child = auth.classifier AND"
+                                                                            + "        attrValue.coordinate = :ruleform AND "
+                                                                            + "        auth.classification = :classification AND "
+                                                                            + "        auth.classifier = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from CoordinateAttributeAuthorization ra "
+                                                                                    + "WHERE ra.classifier = :classification "
+                                                                                    + "AND ra.classifier = :classifier"),
+               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from CoordinateAttributeAuthorization ra "
+                                                                                 + "WHERE ra.groupingAgency = :groupingAgency"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                     + "FROM CoordinateNetwork n "
+                                                     + "WHERE n.parent = :p "
+                                                     + "AND n.relationship = :r"),
+               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                        + "FROM CoordinateNetwork n "
+                                                                        + "WHERE n.child = :c"),
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM CoordinateNetwork n "
+                                                                           + "WHERE n.parent = :coordinate "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 public class Coordinate extends
         ExistentialRuleform<Coordinate, CoordinateNetwork> implements
         Attributable<CoordinateAttribute> {
-    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES = "interval.immediateChildrenNetworkRules";
-    public static final String       NESTING_QUERY                    = "coordinate.nestCoordinates";
 
-    public static final String       ORDERED_ATTRIBUTES               = "coordinate.orderedAttributes";
-    private static final long        serialVersionUID                 = 1L;
+    public static final String       AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "coordinate.CoordinateAttributesByClassification";
+
+    public static final String       AUTHORIZED_AGENCY_ATTRIBUTES             = "coordinate.authorizedAttributes";
+    public static final String       FIND_BY_NAME                             = "coordinate"
+                                                                                + FIND_BY_NAME_SUFFIX;
+    public static final String       FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "coordinate"
+                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String       FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "coordinate"
+                                                                                + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String       FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "coordinate"
+                                                                                + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String       GET_ALL_PARENT_RELATIONSHIPS             = "coordinate"
+                                                                                + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String       GET_CHILD                                = "coordinate"
+                                                                                + GET_CHILD_SUFFIX;
+    public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "coordinate"
+                                                                                + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES         = "coordinate.immediateChildrenNetworkRules";
+    public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "coordinate.qualifiedEntityNetworkRules";
+    public static final String       UNLINKED                                 = "coordinate"
+                                                                                + UNLINKED_SUFFIX;
+    public static final String       NESTING_QUERY                            = "coordinate.nestCoordinates";
+
+    public static final String       ORDERED_ATTRIBUTES                       = "coordinate.orderedAttributes";
+    private static final long        serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to CoordinateAttribute
     @OneToMany(mappedBy = "coordinate")

@@ -45,6 +45,7 @@ import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
+import com.hellblazer.CoRE.meta.RelationshipModel;
 import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
@@ -103,15 +104,16 @@ public class ModelImpl implements Model {
          */
     }
 
-    private final AttributeModel attributeModel;
-    private final EntityManager  em;
-    private final ProductModel   productModel;
-    private final Kernel         kernel;
-    private final IntervalModel  intervalModel;
-    private final LocationModel  locationModel;
+    private final AttributeModel    attributeModel;
+    private final EntityManager     em;
+    private final ProductModel      productModel;
+    private final RelationshipModel relationshipModel;
+    private final Kernel            kernel;
+    private final IntervalModel     intervalModel;
+    private final LocationModel     locationModel;
 
-    private final AgencyModel    agencyModel;
-    private final JobModel       jobModel;
+    private final AgencyModel       agencyModel;
+    private final JobModel          jobModel;
 
     public ModelImpl(EntityManager entityManager) {
         this(entityManager, new KernelImpl(entityManager));
@@ -126,6 +128,7 @@ public class ModelImpl implements Model {
         locationModel = new LocationModelImpl(em, kernel);
         agencyModel = new AgencyModelImpl(em, kernel);
         jobModel = new JobModelImpl(this);
+        relationshipModel = new RelationshipModelImpl(em, kernel);
     }
 
     /*
@@ -330,6 +333,11 @@ public class ModelImpl implements Model {
     @Override
     public ProductModel getProductModel() {
         return productModel;
+    }
+
+    @Override
+    public RelationshipModel getRelationshipModel() {
+        return relationshipModel;
     }
 
 }

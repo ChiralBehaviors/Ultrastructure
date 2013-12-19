@@ -4,7 +4,7 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
     
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml"/>
@@ -74,5 +74,9 @@
     <include relativeToChangelogFile="true" file="tables/unit_network/triggers.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_network/triggers.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_network/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship_attribute_authorization/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship_attribute/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code_attribute_authorization/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code_attribute/triggers.xml"/>
     
 </databaseChangeLog>

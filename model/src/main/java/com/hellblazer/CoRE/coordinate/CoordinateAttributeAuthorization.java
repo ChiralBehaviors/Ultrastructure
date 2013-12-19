@@ -30,7 +30,7 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.attribute.AttributeAuthorization;
+import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 
 /**
  * 
@@ -42,7 +42,7 @@ import com.hellblazer.CoRE.attribute.AttributeAuthorization;
 @Entity
 @Table(name = "coordinate_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_attribute_authorization_id_seq", sequenceName = "coordinate_attribute_authorization_id_seq")
-public class CoordinateAttributeAuthorization extends AttributeAuthorization {
+public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthorization<Coordinate> {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "classification_coordinate")
-    private Coordinate        classificationCoordinate;
+    private Coordinate        classifier;
 
     @Id
     @GeneratedValue(generator = "coordinate_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
@@ -86,7 +86,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     }
 
     public Coordinate getClassificationCoordinate() {
-        return classificationCoordinate;
+        return classifier;
     }
 
     /* (non-Javadoc)
@@ -102,7 +102,7 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     }
 
     public void setClassificationCoordinate(Coordinate classificationCoordinate) {
-        this.classificationCoordinate = classificationCoordinate;
+        this.classifier = classificationCoordinate;
     }
 
     /* (non-Javadoc)
@@ -119,8 +119,8 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (classificationCoordinate != null) {
-            classificationCoordinate = (Coordinate) classificationCoordinate.manageEntity(em,
+        if (classifier != null) {
+            classifier = (Coordinate) classifier.manageEntity(em,
                                                                                           knownObjects);
         }
         if (agency != null) {
@@ -128,5 +128,21 @@ public class CoordinateAttributeAuthorization extends AttributeAuthorization {
         }
         super.traverseForeignKeys(em, knownObjects);
 
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
+     */
+    @Override
+    public Coordinate getClassifier() { 
+        return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public void setClassifier(Coordinate classifier) {
+       this.classifier = classifier; 
     }
 }

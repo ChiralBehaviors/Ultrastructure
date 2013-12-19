@@ -3,7 +3,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
@@ -13,7 +13,7 @@
 			   JOIN ruleform.interval r ON ra.interval = r.id
 			   JOIN ruleform.attribute a ON ra.attribute = a.id
 			   LEFT JOIN ruleform.unit u ON ra.unit = u.id
-			   JOIN ruleform.interval up ON ra.updated_by = up.id;
+			   JOIN ruleform.agency up ON ra.updated_by = up.id;
 			
 			ALTER TABLE readable.interval_attribute
 			  OWNER TO core;

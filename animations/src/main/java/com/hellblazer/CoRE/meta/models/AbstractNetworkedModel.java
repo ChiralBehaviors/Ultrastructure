@@ -59,23 +59,15 @@ import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.NetworkedModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductNetwork;
-import com.hellblazer.CoRE.time.Interval;
-import com.hellblazer.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
@@ -395,26 +387,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return em.createQuery(query).getResultList();
     }
 
+    @SuppressWarnings("unchecked")
     public Class<?> getNetworkOf(Class<?> networked) {
-        if (networked == Attribute.class) {
-            return AttributeNetwork.class;
-        }
-        if (networked == Product.class) {
-            return ProductNetwork.class;
-        }
-        if (networked == Location.class) {
-            return LocationNetwork.class;
-        }
-        if (networked == Agency.class) {
-            return AgencyNetwork.class;
-        }
-        if (networked == Interval.class) {
-            return IntervalNetwork.class;
-        }
-        throw new IllegalArgumentException(
-                                           String.format("Class %s is not a subclass of %s",
-                                                         networked,
-                                                         NetworkRuleform.class));
+        return (Class<RuleForm>) ((ParameterizedType) entity.getGenericSuperclass()).getActualTypeArguments()[1];
     }
 
     @Override

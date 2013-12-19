@@ -41,7 +41,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * 
  */
 @Entity
-@Table(name = "agency_attribute_authorization", schema = "ruleform")
+@Table(name = "interval_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "interval_attribute_authorization_id_seq", sequenceName = "interval_attribute_authorization_id_seq")
 public class IntervalAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Interval> {

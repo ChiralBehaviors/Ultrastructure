@@ -63,6 +63,8 @@
 		file="functions/propagate_product_network_deductions.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/propagate_agency_network_deductions.xml" />
+    <include relativeToChangelogFile="true"
+        file="functions/propagate_relationship_network_deductions.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/if_table_exists.xml" />
 </databaseChangeLog>

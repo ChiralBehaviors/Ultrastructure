@@ -100,6 +100,11 @@ public interface Model {
     EntityManager getEntityManager();
 
     /**
+     * @return the Interval model
+     */
+    IntervalModel getIntervalModel();
+
+    /**
      * @return the Job Model
      */
     JobModel getJobModel();
@@ -112,11 +117,6 @@ public interface Model {
     Kernel getKernel();
 
     /**
-     * @return the Interval model
-     */
-    IntervalModel getIntervalModel();
-
-    /**
      * @return the Location model
      */
     LocationModel getLocationModel();
@@ -125,5 +125,10 @@ public interface Model {
      * @return the Product model
      */
     ProductModel getProductModel();
+
+    /**
+     * @return the Relationship model
+     */
+    RelationshipModel getRelationshipModel();
 
 }

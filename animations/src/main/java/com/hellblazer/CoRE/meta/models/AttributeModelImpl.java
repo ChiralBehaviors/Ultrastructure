@@ -25,7 +25,6 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
@@ -230,25 +229,6 @@ public class AttributeModelImpl
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#isAccessible(com.hellblazer.CoRE
-     * .network.Networked, com.hellblazer.CoRE.network.Relationship,
-     * com.hellblazer.CoRE.network.Relationship,
-     * com.hellblazer.CoRE.network.Networked,
-     * com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public boolean isAccessible(Attribute parent,
-                                Relationship parentRelationship,
-                                Relationship authorizingRelationship,
-                                ExistentialRuleform<?, ?> child,
-                                Relationship childRelationship) {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     public Attribute transform(Product service, Agency agency, Product product) {
 

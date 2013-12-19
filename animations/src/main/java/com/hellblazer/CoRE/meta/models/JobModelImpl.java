@@ -299,11 +299,11 @@ public class JobModelImpl implements JobModel {
         return JSP.call(new Call<T>(procedure));
     }
 
+    private final AgencyModel   agencyModel;
     private final EntityManager em;
     private final Kernel        kernel;
     private final LocationModel locationModel;
     private final ProductModel  productModel;
-    private final AgencyModel   agencyModel;
 
     public JobModelImpl(Model model) {
         em = model.getEntityManager();

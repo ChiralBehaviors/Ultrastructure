@@ -33,9 +33,9 @@ import com.hellblazer.CoRE.event.StatusCode;
  */
 public class SCC {
     private final Map<StatusCode, List<StatusCode>> graph;
+    private final Map<StatusCode, Integer>          low    = new HashMap<StatusCode, Integer>();
     private final List<StatusCode[]>                result = new ArrayList<StatusCode[]>();
     private List<StatusCode>                        stack  = new ArrayList<StatusCode>();
-    private final Map<StatusCode, Integer>          low    = new HashMap<StatusCode, Integer>();
 
     public SCC(Map<StatusCode, List<StatusCode>> graph) {
         this.graph = graph;

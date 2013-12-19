@@ -21,27 +21,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationAgencyAccessAuthorization;
 import com.hellblazer.CoRE.location.LocationAttribute;
 import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
 import com.hellblazer.CoRE.location.LocationNetwork;
-import com.hellblazer.CoRE.location.LocationProductAccessAuthorization;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand
@@ -233,140 +227,6 @@ public class LocationModelImpl
     public List<Relationship> getTransitiveRelationships(Location parent) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#isAccessible(com.hellblazer.CoRE
-     * .ExistentialRuleform, com.hellblazer.CoRE.network.Relationship,
-     * com.hellblazer.CoRE.network.Relationship,
-     * com.hellblazer.CoRE.ExistentialRuleform,
-     * com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public boolean isAccessible(Location parent,
-                                Relationship parentRelationship,
-                                Relationship authorizingRelationship,
-                                ExistentialRuleform<?, ?> child,
-                                Relationship childRelationship) {
-        if (parent == null || child == null || authorizingRelationship == null) {
-            throw new IllegalArgumentException(
-                                               "parent, authorizingRelationship, and child cannot be null");
-        }
-        if (child instanceof Agency) {
-
-            return isAgencyAccessible(parent, parentRelationship,
-                                      authorizingRelationship, (Agency) child,
-                                      childRelationship);
-        } else if (child instanceof Product) {
-            return isProductAccessible(parent, parentRelationship,
-                                       authorizingRelationship,
-                                       (Product) child, childRelationship);
-        } else {
-            throw new IllegalArgumentException(
-                                               "child type is not supported for this query");
-        }
-
-    }
-
-    /**
-     * @param parent
-     * @param parentRelationship
-     * @param authorizingRelationship
-     * @param child
-     * @param childRelationship
-     * @return
-     */
-    private boolean isAgencyAccessible(Location parent,
-                                       Relationship parentRelationship,
-                                       Relationship authorizingRelationship,
-                                       Agency child,
-                                       Relationship childRelationship) {
-        Query query;
-
-        if (parentRelationship == null && childRelationship == null) {
-            query = em.createNamedQuery(LocationAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
-            query.setParameter("parent", parent);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-        } else if (childRelationship == null) {
-            query = em.createNamedQuery(LocationAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-            query.setParameter("netRelationship", parentRelationship);
-            query.setParameter("netChild", parent);
-
-        } else if (parentRelationship == null) {
-            query = em.createNamedQuery(LocationAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parent", parent);
-            query.setParameter("netRelationship", childRelationship);
-            query.setParameter("netChild", child);
-
-        } else {
-            query = em.createNamedQuery(LocationAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parentNetRelationship", parentRelationship);
-            query.setParameter("parentNetChild", parent);
-            query.setParameter("childNetRelationship", childRelationship);
-            query.setParameter("childNetChild", child);
-
-        }
-        List<?> results = query.getResultList();
-
-        return results.size() > 0;
-
-    }
-
-    /**
-     * @param parent
-     * @param parentRelationship
-     * @param authorizingRelationship
-     * @param child
-     * @param childRelationship
-     * @return
-     */
-    private boolean isProductAccessible(Location parent,
-                                        Relationship parentRelationship,
-                                        Relationship authorizingRelationship,
-                                        Product child,
-                                        Relationship childRelationship) {
-        Query query;
-
-        if (parentRelationship == null && childRelationship == null) {
-            query = em.createNamedQuery(LocationProductAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
-            query.setParameter("parent", parent);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-        } else if (childRelationship == null) {
-            query = em.createNamedQuery(LocationProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-            query.setParameter("netRelationship", parentRelationship);
-            query.setParameter("netChild", parent);
-
-        } else if (parentRelationship == null) {
-            query = em.createNamedQuery(LocationProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parent", parent);
-            query.setParameter("netRelationship", childRelationship);
-            query.setParameter("netChild", child);
-
-        } else {
-            query = em.createNamedQuery(LocationProductAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parentNetRelationship", parentRelationship);
-            query.setParameter("parentNetChild", parent);
-            query.setParameter("childNetRelationship", childRelationship);
-            query.setParameter("childNetChild", child);
-
-        }
-        List<?> results = query.getResultList();
-
-        return results.size() > 0;
-
     }
 
     /**

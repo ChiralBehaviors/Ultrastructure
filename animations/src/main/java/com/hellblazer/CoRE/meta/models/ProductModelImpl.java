@@ -26,8 +26,6 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.event.StatusCode;
 import com.hellblazer.CoRE.event.StatusCodeSequencing;
@@ -35,7 +33,6 @@ import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
-import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
@@ -43,7 +40,6 @@ import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductLocationAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
@@ -237,6 +233,13 @@ public class ProductModelImpl
         return null;
     }
 
+    public List<?> getLeaves(Product product, Relationship relationship) {
+        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_RULEFORMS_REFERENCED_BY_AUTH);
+        query.setParameter("parent", product);
+        query.setParameter("relationship", relationship);
+        return query.getResultList();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -246,8 +249,16 @@ public class ProductModelImpl
      */
     @Override
     public List<Product> getNetwork(Product parent, Relationship relationship) {
-        TypedQuery<Product> q = em.createNamedQuery(ProductNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, Product.class);
+        TypedQuery<Product> q = em.createNamedQuery(ProductNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP,
+                                                    Product.class);
         return q.getResultList();
+    }
+
+    public List<?> getNetworks(Product product, Relationship relationship) {
+        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_PARENT_CHILD_NETWORKS);
+        query.setParameter("parent", product);
+        query.setParameter("relationship", relationship);
+        return query.getResultList();
     }
 
     /*
@@ -261,142 +272,6 @@ public class ProductModelImpl
     public List<Relationship> getTransitiveRelationships(Product parent) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#isAccessible(com.hellblazer.CoRE
-     * .network.Networked, com.hellblazer.CoRE.network.Relationship,
-     * com.hellblazer.CoRE.network.Relationship,
-     * com.hellblazer.CoRE.network.Networked,
-     * com.hellblazer.CoRE.network.Relationship)
-     */
-
-    @Override
-    public boolean isAccessible(Product parent,
-                                Relationship parentRelationship,
-                                Relationship authorizingRelationship,
-                                ExistentialRuleform<?, ?> child,
-                                Relationship childRelationship) {
-
-        if (parent == null || child == null || authorizingRelationship == null) {
-            throw new IllegalArgumentException(
-                                               "parent, authorizingRelationship, and child cannot be null");
-        }
-        if ("Agency".equals(child.getClass().getSimpleName())) {
-
-            return isAgencyAccessible(parent, parentRelationship,
-                                      authorizingRelationship, (Agency) child,
-                                      childRelationship);
-        } else if ("Location".equals(child.getClass().getSimpleName())) {
-            return isLocationAccessible(parent, parentRelationship,
-                                        authorizingRelationship,
-                                        (Location) child, childRelationship);
-        } else {
-            throw new IllegalArgumentException(
-                                               "child type is not supported for this query");
-        }
-
-    }
-
-    /**
-     * @param parent
-     * @param parentRelationship
-     * @param authorizingRelationship
-     * @param child
-     * @param childRelationship
-     * @return
-     */
-    private boolean isAgencyAccessible(Product parent,
-                                       Relationship parentRelationship,
-                                       Relationship authorizingRelationship,
-                                       Agency child,
-                                       Relationship childRelationship) {
-        Query query;
-
-        if (parentRelationship == null && childRelationship == null) {
-            query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
-            query.setParameter("parent", parent);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-        } else if (childRelationship == null) {
-            query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-            query.setParameter("netRelationship", parentRelationship);
-            query.setParameter("netChild", parent);
-
-        } else if (parentRelationship == null) {
-            query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parent", parent);
-            query.setParameter("netRelationship", childRelationship);
-            query.setParameter("netChild", child);
-
-        } else {
-            query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parentNetRelationship", parentRelationship);
-            query.setParameter("parentNetChild", parent);
-            query.setParameter("childNetRelationship", childRelationship);
-            query.setParameter("childNetChild", child);
-
-        }
-        List<?> results = query.getResultList();
-
-        return results.size() > 0;
-
-    }
-
-    /**
-     * @param parent
-     * @param parentRelationship
-     * @param authorizingRelationship
-     * @param child
-     * @param childRelationship
-     * @return
-     */
-    private boolean isLocationAccessible(Product parent,
-                                         Relationship parentRelationship,
-                                         Relationship authorizingRelationship,
-                                         Location child,
-                                         Relationship childRelationship) {
-        Query query;
-
-        if (parentRelationship == null && childRelationship == null) {
-            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD);
-            query.setParameter("parent", parent);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-        } else if (childRelationship == null) {
-            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("child", child);
-            query.setParameter("netRelationship", parentRelationship);
-            query.setParameter("netChild", parent);
-
-        } else if (parentRelationship == null) {
-            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parent", parent);
-            query.setParameter("netRelationship", childRelationship);
-            query.setParameter("netChild", child);
-
-        } else {
-            query = em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD);
-            query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("parentNetRelationship", parentRelationship);
-            query.setParameter("parentNetChild", parent);
-            query.setParameter("childNetRelationship", childRelationship);
-            query.setParameter("childNetChild", child);
-
-        }
-        List<?> results = query.getResultList();
-
-        return results.size() > 0;
-
     }
 
     /**
@@ -414,19 +289,5 @@ public class ProductModelImpl
             defaultValue(attribute);
             em.persist(attribute);
         }
-    }
-    
-    public List<?> getLeaves(Product product, Relationship relationship) {
-        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_RULEFORMS_REFERENCED_BY_AUTH);
-        query.setParameter("parent", product);
-        query.setParameter("relationship", relationship);
-        return query.getResultList();
-    }
-    
-    public List<?> getNetworks(Product product, Relationship relationship) {
-        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_PARENT_CHILD_NETWORKS);
-        query.setParameter("parent", product);
-        query.setParameter("relationship", relationship);
-        return query.getResultList();
     }
 }

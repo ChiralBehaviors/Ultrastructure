@@ -17,9 +17,17 @@
 package com.hellblazer.CoRE.time;
 
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
-import static com.hellblazer.CoRE.time.Interval.*;
+import static com.hellblazer.CoRE.time.Interval.FIND_BY_NAME;
+import static com.hellblazer.CoRE.time.Interval.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.time.Interval.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.time.Interval.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.time.Interval.GET_ALL_PARENT_RELATIONSHIPS;
+import static com.hellblazer.CoRE.time.Interval.GET_CHILD;
+import static com.hellblazer.CoRE.time.Interval.GET_CHILD_RULES_BY_RELATIONSHIP;
+import static com.hellblazer.CoRE.time.Interval.ORDERED_ATTRIBUTES;
+import static com.hellblazer.CoRE.time.Interval.UNLINKED;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -133,7 +141,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     @JsonIgnore
     private Set<IntervalAttribute> attributes;
 
-    private BigInteger             duration;
+    private BigDecimal             duration;
 
     @Id
     @GeneratedValue(generator = "interval_id_seq", strategy = GenerationType.SEQUENCE)
@@ -149,7 +157,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     @JsonIgnore
     private Set<IntervalNetwork>   networkByParent;
 
-    private BigInteger             start;
+    private BigDecimal             start;
 
     public Interval() {
         super();
@@ -181,6 +189,16 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     public Interval(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
+    }
+
+    public Interval(BigDecimal start, BigDecimal duration, String name,
+                    Agency updatedBy) {
+        this(start, duration, name, null, updatedBy);
+    }
+
+    public Interval(BigDecimal start, BigDecimal duration, String name,
+                    String description, Agency updatedBy) {
+        this(name, description, updatedBy);
     }
 
     /*
@@ -241,7 +259,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     /**
      * @return the duration
      */
-    public BigInteger getDuration() {
+    public BigDecimal getDuration() {
         return duration;
     }
 
@@ -290,7 +308,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     /**
      * @return the start
      */
-    public BigInteger getStart() {
+    public BigDecimal getStart() {
         return start;
     }
 
@@ -333,7 +351,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * @param duration
      *            the duration to set
      */
-    public void setDuration(BigInteger duration) {
+    public void setDuration(BigDecimal duration) {
         this.duration = duration;
     }
 
@@ -373,7 +391,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * @param start
      *            the start to set
      */
-    public void setStart(BigInteger start) {
+    public void setStart(BigDecimal start) {
         this.start = start;
     }
 }

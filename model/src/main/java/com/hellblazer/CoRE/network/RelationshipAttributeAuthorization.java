@@ -82,14 +82,6 @@ public class RelationshipAttributeAuthorization extends
         super(classification, updatedBy);
     }
 
-    public RelationshipAttributeAuthorization(Relationship classification,
-                                              Relationship classifier,
-                                              Attribute authorized,
-                                              Agency updatedBy) {
-        this(classification, authorized, updatedBy);
-        this.classifier = classifier;
-    }
-
     /**
      * @param id
      * @param classification
@@ -100,6 +92,14 @@ public class RelationshipAttributeAuthorization extends
                                               Attribute authorized,
                                               Agency updatedBy) {
         super(classification, authorized, updatedBy);
+    }
+
+    public RelationshipAttributeAuthorization(Relationship classification,
+                                              Relationship classifier,
+                                              Attribute authorized,
+                                              Agency updatedBy) {
+        this(classification, authorized, updatedBy);
+        this.classifier = classifier;
     }
 
     /* (non-Javadoc)

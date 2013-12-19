@@ -122,30 +122,32 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 public class StatusCode extends
         ExistentialRuleform<StatusCode, StatusCodeNetwork> {
-    public static final String       AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "statusCode.AgencyAttributesByClassification";
-    public static final String       AUTHORIZED_AGENCY_ATTRIBUTES             = "statusCode.authorizedAttributes";
 
-    public static final String       FIND_BY_NAME                             = "statusCode"
-                                                                                + FIND_BY_NAME_SUFFIX;
-    public static final String       FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "statusCode"
-                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String       FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "statusCode"
-                                                                                + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String       FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "statusCode"
-                                                                                + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String       GET_ALL_PARENT_RELATIONSHIPS             = "statusCode"
-                                                                                + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String       GET_CHILD                                = "statusCode"
-                                                                                + GET_CHILD_SUFFIX;
-    public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
-                                                                                + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES         = "statusCode.immediateChildrenNetworkRules";
-    public static final String       IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
-    public static final String       ORDERED_ATTRIBUTES                       = "statusCode.orderedAttributes";
-    public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
-    public static final String       UNLINKED                                 = "statusCode"
-                                                                                + UNLINKED_SUFFIX;
-    private static final long        serialVersionUID                         = 1L;
+    public static final String     AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "statusCode.AgencyAttributesByClassification";
+    public static final String     AUTHORIZED_AGENCY_ATTRIBUTES             = "statusCode.authorizedAttributes";
+
+    public static final String     FIND_BY_NAME                             = "statusCode"
+                                                                              + FIND_BY_NAME_SUFFIX;
+    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "statusCode"
+                                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "statusCode"
+                                                                              + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "statusCode"
+                                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "statusCode"
+                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String     GET_CHILD                                = "statusCode"
+                                                                              + GET_CHILD_SUFFIX;
+    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
+                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "statusCode.immediateChildrenNetworkRules";
+    public static final String     IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
+    public static final String     ORDERED_ATTRIBUTES                       = "statusCode.orderedAttributes";
+    public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
+    public static final String     UNLINKED                                 = "statusCode"
+                                                                              + UNLINKED_SUFFIX;
+    private static final long      serialVersionUID                         = 1L;
+
 
     //bi-directional many-to-one association to AgencyAttribute
     @OneToMany(mappedBy = "statusCode", cascade = CascadeType.ALL)

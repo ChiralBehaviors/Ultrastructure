@@ -82,14 +82,6 @@ public class StatusCodeAttributeAuthorization extends
         super(classification, updatedBy);
     }
 
-    public StatusCodeAttributeAuthorization(Relationship classification,
-                                            StatusCode classifier,
-                                            Attribute authorized,
-                                            Agency updatedBy) {
-        this(classification, authorized, updatedBy);
-        this.classifier = classifier;
-    }
-
     /**
      * @param id
      * @param classification
@@ -100,6 +92,14 @@ public class StatusCodeAttributeAuthorization extends
                                             Attribute authorized,
                                             Agency updatedBy) {
         super(classification, authorized, updatedBy);
+    }
+
+    public StatusCodeAttributeAuthorization(Relationship classification,
+                                            StatusCode classifier,
+                                            Attribute authorized,
+                                            Agency updatedBy) {
+        this(classification, authorized, updatedBy);
+        this.classifier = classifier;
     }
 
     /* (non-Javadoc)

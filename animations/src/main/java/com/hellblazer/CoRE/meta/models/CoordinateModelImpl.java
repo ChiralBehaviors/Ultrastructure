@@ -215,7 +215,7 @@ public class CoordinateModelImpl
      * .ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public Graph getNetwork(Coordinate parent, Relationship relationship) {
+    public List<Coordinate> getNetwork(Coordinate parent, Relationship relationship) {
         // TODO Auto-generated method stub
         return null;
     }

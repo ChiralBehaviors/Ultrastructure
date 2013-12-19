@@ -38,8 +38,8 @@ import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AttributeModel;
-import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
@@ -213,7 +213,7 @@ public class AttributeModelImpl
      * .network.Networked, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public Graph getNetwork(Attribute parent, Relationship relationship) {
+    public List<Attribute> getNetwork(Attribute parent, Relationship relationship) {
         // TODO Auto-generated method stub
         return null;
     }

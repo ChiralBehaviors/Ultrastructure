@@ -108,10 +108,6 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         return id;
     }
 
-    public StatusCode getStatusCode() {
-        return statusCode;
-    }
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
@@ -127,6 +123,10 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     @Override
     public Class<StatusCode> getRuleformClass() {
         return StatusCode.class;
+    }
+
+    public StatusCode getStatusCode() {
+        return statusCode;
     }
 
     /* (non-Javadoc)

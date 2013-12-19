@@ -16,12 +16,17 @@
  */
 package com.hellblazer.CoRE.attribute;
 
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+import static com.hellblazer.CoRE.attribute.UnitNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -33,25 +38,30 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM UnitNetwork n "
+                                                                                   + "WHERE n.parent = :parent "
+                                                                                   + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "unit_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "unit_network_id_seq", sequenceName = "unit_network_id_seq")
 public class UnitNetwork extends NetworkRuleform<Unit> {
 
-    private static final long serialVersionUID = 1L; //bi-directional many-to-one association to Agency
+    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "unitNetwork"
+                                                                        + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+    private static final long  serialVersionUID                       = 1L;                                             //bi-directional many-to-one association to Agency
 
     @ManyToOne
     @JoinColumn(name = "child")
-    private Unit              child;
+    private Unit               child;
 
     @Id
     @GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+    private Long               id;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Unit              parent;
+    private Unit               parent;
 
     /**
      * 

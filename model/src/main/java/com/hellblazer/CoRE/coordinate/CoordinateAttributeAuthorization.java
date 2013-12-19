@@ -121,7 +121,7 @@ public class CoordinateAttributeAuthorization extends
      * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
      */
     @Override
-    public Coordinate getClassifier() {
+    public Coordinate getClassifier() { 
         return classifier;
     }
 

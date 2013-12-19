@@ -133,12 +133,12 @@ public class Coordinate extends
     public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "coordinate"
                                                                                 + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES         = "coordinate.immediateChildrenNetworkRules";
+    public static final String       NESTING_QUERY                            = "coordinate.nestCoordinates";
+    public static final String       ORDERED_ATTRIBUTES                       = "coordinate.orderedAttributes";
     public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "coordinate.qualifiedEntityNetworkRules";
+
     public static final String       UNLINKED                                 = "coordinate"
                                                                                 + UNLINKED_SUFFIX;
-    public static final String       NESTING_QUERY                            = "coordinate.nestCoordinates";
-
-    public static final String       ORDERED_ATTRIBUTES                       = "coordinate.orderedAttributes";
     private static final long        serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to CoordinateAttribute

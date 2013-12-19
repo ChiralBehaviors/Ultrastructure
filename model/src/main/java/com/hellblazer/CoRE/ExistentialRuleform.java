@@ -50,6 +50,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public static final String GET_ALL_PARENT_RELATIONSHIPS_SUFFIX                           = ".getAllParentRelationships";
     public static final String GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX                        = ".getChildRulesByRelationship";
     public static final String GET_CHILD_SUFFIX                                              = ".getChild";
+    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX                 = ".getChildrenForRuleformRelationship";
     public static final String INFERENCE_STEP_FROM_LAST_PASS_SUFFIX                          = ".inferenceStepFromLastPass";
     public static final String INFERENCE_STEP_SUFFIX                                         = ".inference";
     public static final String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";

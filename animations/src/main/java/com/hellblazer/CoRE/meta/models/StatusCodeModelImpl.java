@@ -214,7 +214,7 @@ public class StatusCodeModelImpl
      * .ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public Graph getNetwork(StatusCode parent, Relationship relationship) {
+    public List<StatusCode> getNetwork(StatusCode parent, Relationship relationship) {
         // TODO Auto-generated method stub
         return null;
     }

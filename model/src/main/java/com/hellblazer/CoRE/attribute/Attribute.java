@@ -110,7 +110,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "attribute"
                                                                                    + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String          GET_CHILD                                = "attribute"
-                                                                                   + GET_CHILD_SUFFIX;
+                                                                                   + GET_CHILDREN_SUFFIX;
     public static final String          GET_CHILD_RULES_BY_RELATIONSHIP          = "attribute"
                                                                                    + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String          NAME_SEARCH                              = "attribute"

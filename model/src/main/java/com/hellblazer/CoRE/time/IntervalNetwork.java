@@ -19,7 +19,7 @@ package com.hellblazer.CoRE.time;
 import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
@@ -27,7 +27,7 @@ import static com.hellblazer.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.time.IntervalNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.time.IntervalNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.time.IntervalNetwork.GENERATE_NETWORK_INVERSES;
-import static com.hellblazer.CoRE.time.IntervalNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP;
+import static com.hellblazer.CoRE.time.IntervalNetwork.GET_CHILDREN;
 import static com.hellblazer.CoRE.time.IntervalNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.time.IntervalNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.time.IntervalNetwork.INSERT_NEW_NETWORK_RULES;
@@ -139,31 +139,31 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                  + " WHERE exist.parent IS NULL "
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
-@NamedQueries({ @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM IntervalNetwork n "
-                                                                                   + "WHERE n.parent = :parent "
-                                                                                   + "AND n.relationship = :relationship") })
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "interval_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "interval_network_id_seq", sequenceName = "interval_network_id_seq")
 public class IntervalNetwork extends NetworkRuleform<Interval> {
 
-    public static final String DEDUCE_NEW_NETWORK_RULES               = "intervalNetwork"
-                                                                        + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES          = "intervalNetwork"
-                                                                        + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES              = "intervalNetwork"
-                                                                        + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "intervalNetwork"
-                                                                        + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS                 = "intervalNetwork"
-                                                                        + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                         = "intervalNetwork"
-                                                                        + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS          = "intervalNetwork"
-                                                                        + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES               = "intervalNetwork"
-                                                                        + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID                       = 1L;
+    public static final String DEDUCE_NEW_NETWORK_RULES      = "intervalNetwork"
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GATHER_EXISTING_NETWORK_RULES = "intervalNetwork"
+                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String GENERATE_NETWORK_INVERSES     = "intervalNetwork"
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+    public static final String GET_CHILDREN                  = "intervalNetwork"
+                                                               + GET_CHILDREN_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS        = "intervalNetwork"
+                                                               + USED_RELATIONSHIPS_SUFFIX;
+    public static final String INFERENCE_STEP                = "intervalNetwork"
+                                                               + INFERENCE_STEP_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS = "intervalNetwork"
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES      = "intervalNetwork"
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID              = 1L;
 
     //bi-directional many-to-one association to Interval
     @ManyToOne

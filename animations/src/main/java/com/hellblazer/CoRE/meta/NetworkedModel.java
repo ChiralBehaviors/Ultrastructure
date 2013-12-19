@@ -59,6 +59,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
      * @return
      */
     public List<RuleForm> getUnlinked();
+    
+    public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
     /**
      * Answer the list of relationships used in this ruleform's networks.
@@ -198,13 +200,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
     List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
                                                Agency groupingAgency);
 
-    /**
-     * 
-     * @param parent
-     * @param r
-     * @return
-     */
-    RuleForm getChild(RuleForm parent, Relationship r);
 
     /**
      * Answer the Facet of the ruleform instance containing the authorized
@@ -241,7 +236,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
      * @param relationship
      * @return
      */
-    List<RuleForm> getNetwork(RuleForm parent, Relationship relationship);
+    List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
 
     /**
      * 

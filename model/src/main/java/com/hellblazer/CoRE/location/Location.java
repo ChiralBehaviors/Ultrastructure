@@ -111,7 +111,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "location"
                                                                               + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String     GET_CHILD                                = "location"
-                                                                              + GET_CHILD_SUFFIX;
+                                                                              + GET_CHILDREN_SUFFIX;
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "location"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     LOCATION_NAME                            = "location.getName";

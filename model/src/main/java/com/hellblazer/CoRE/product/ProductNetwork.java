@@ -19,14 +19,20 @@ package com.hellblazer.CoRE.product;
 import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
-
-import static com.hellblazer.CoRE.product.Product.*;
-import static com.hellblazer.CoRE.product.ProductNetwork.*;
+import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;
+import static com.hellblazer.CoRE.product.ProductNetwork.GENERATE_NETWORK_INVERSES;
+import static com.hellblazer.CoRE.product.ProductNetwork.GET_CHILDREN;
+import static com.hellblazer.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
+import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP;
+import static com.hellblazer.CoRE.product.ProductNetwork.INFERENCE_STEP_FROM_LAST_PASS;
+import static com.hellblazer.CoRE.product.ProductNetwork.INSERT_NEW_NETWORK_RULES;
 
 import java.util.List;
 import java.util.Map;
@@ -158,28 +164,28 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
 
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n"),
-               @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM ProductNetwork n "
-                                                                                  + "WHERE n.parent = :parent "
-                                                                                  + "AND n.relationship = :relationship") })
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM ProductNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship") })
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
-    public static final String DEDUCE_NEW_NETWORK_RULES               = "productNetwork"
-                                                                        + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES          = "productNetwork"
-                                                                        + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES              = "productNetwork"
-                                                                        + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "productNetwork"
-                                                                        + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS                 = "productNetwork"
-                                                                        + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                         = "productNetwork"
-                                                                        + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS          = "productNetwork"
-                                                                        + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES               = "productNetwork"
-                                                                        + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID                       = 1L;
+    public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GATHER_EXISTING_NETWORK_RULES = "productNetwork"
+                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String GENERATE_NETWORK_INVERSES     = "productNetwork"
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+    public static final String GET_CHILDREN                  = "productNetwork"
+                                                               + GET_CHILDREN_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS        = "productNetwork"
+                                                               + USED_RELATIONSHIPS_SUFFIX;
+    public static final String INFERENCE_STEP                = "productNetwork"
+                                                               + INFERENCE_STEP_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS = "productNetwork"
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID              = 1L;
 
     public static List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();

@@ -16,8 +16,8 @@
  */
 package com.hellblazer.CoRE.attribute;
 
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
-import static com.hellblazer.CoRE.attribute.UnitNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
+import static com.hellblazer.CoRE.attribute.UnitNetwork.GET_CHILDREN;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +38,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM UnitNetwork n "
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
                                                                                    + "WHERE n.parent = :parent "
                                                                                    + "AND n.relationship = :relationship") })
 @Entity
@@ -46,8 +46,8 @@ import com.hellblazer.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "unit_network_id_seq", sequenceName = "unit_network_id_seq")
 public class UnitNetwork extends NetworkRuleform<Unit> {
 
-    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "unitNetwork"
-                                                                        + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+    public static final String GET_CHILDREN = "unitNetwork"
+                                                                        + GET_CHILDREN_SUFFIX;
     private static final long  serialVersionUID                       = 1L;                                             //bi-directional many-to-one association to Agency
 
     @ManyToOne

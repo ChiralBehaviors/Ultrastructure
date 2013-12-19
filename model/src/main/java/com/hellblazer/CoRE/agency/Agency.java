@@ -127,7 +127,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     public static final String             GET_ALL_PARENT_RELATIONSHIPS             = "agency"
                                                                                       + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String             GET_CHILD                                = "agency"
-                                                                                      + GET_CHILD_SUFFIX;
+                                                                                      + GET_CHILDREN_SUFFIX;
     public static final String             GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
                                                                                       + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String             IMMEDIATE_CHILDREN_NETWORK_RULES         = "agency.immediateChildrenNetworkRules";

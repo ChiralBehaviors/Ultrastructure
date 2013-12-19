@@ -137,7 +137,7 @@ public class StatusCode extends
     public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "statusCode"
                                                                               + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String     GET_CHILD                                = "statusCode"
-                                                                              + GET_CHILD_SUFFIX;
+                                                                              + GET_CHILDREN_SUFFIX;
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "statusCode.immediateChildrenNetworkRules";

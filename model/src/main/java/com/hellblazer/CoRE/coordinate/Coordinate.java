@@ -129,7 +129,7 @@ public class Coordinate extends
     public static final String       GET_ALL_PARENT_RELATIONSHIPS             = "coordinate"
                                                                                 + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String       GET_CHILD                                = "coordinate"
-                                                                                + GET_CHILD_SUFFIX;
+                                                                                + GET_CHILDREN_SUFFIX;
     public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "coordinate"
                                                                                 + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES         = "coordinate.immediateChildrenNetworkRules";

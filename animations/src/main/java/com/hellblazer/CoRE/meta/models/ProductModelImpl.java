@@ -233,34 +233,6 @@ public class ProductModelImpl
         return null;
     }
 
-    public List<?> getLeaves(Product product, Relationship relationship) {
-        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_RULEFORMS_REFERENCED_BY_AUTH);
-        query.setParameter("parent", product);
-        query.setParameter("relationship", relationship);
-        return query.getResultList();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
-     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public List<Product> getNetwork(Product parent, Relationship relationship) {
-        TypedQuery<Product> q = em.createNamedQuery(ProductNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP,
-                                                    Product.class);
-        return q.getResultList();
-    }
-
-    public List<?> getNetworks(Product product, Relationship relationship) {
-        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_PARENT_CHILD_NETWORKS);
-        query.setParameter("parent", product);
-        query.setParameter("relationship", relationship);
-        return query.getResultList();
-    }
-
     /*
      * (non-Javadoc)
      * 

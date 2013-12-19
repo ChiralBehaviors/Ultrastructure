@@ -26,7 +26,7 @@ import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATH
 import static com.hellblazer.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILD_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
@@ -194,6 +194,26 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         child.link(r.getInverse(), parent, updatedBy,
                    kernel.getInverseSoftware(), em);
     }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getChild(com.hellblazer.CoRE.
+     * ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public RuleForm getSingleChild(RuleForm parent, Relationship r) {
+        TypedQuery<RuleForm> query = em.createNamedQuery(prefix
+                                                                 + GET_CHILDREN_SUFFIX,
+                                                         entity);
+        query.setParameter("p", parent);
+        query.setParameter("r", r);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
     public void generateInverses() {
         Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
@@ -338,27 +358,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * (non-Javadoc)
      * 
      * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getChild(com.hellblazer.CoRE.
-     * ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public RuleForm getChild(RuleForm parent, Relationship r) {
-        TypedQuery<RuleForm> query = em.createNamedQuery(prefix
-                                                                 + GET_CHILD_SUFFIX,
-                                                         entity);
-        query.setParameter("p", parent);
-        query.setParameter("r", r);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getFacet(com.hellblazer.CoRE.
      * ExistentialRuleform, com.hellblazer.CoRE.meta.Aspect)
      */
@@ -438,7 +437,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                 ExistentialRuleform<?, ?> child,
                                 Relationship childRelationship) {
         String queryPrefix = constructQueryPrefix(parent, child);
-        return isRuleformAccessible(parent, parentRelationship, authorizingRelationship, child, childRelationship, queryPrefix);
+        return isRuleformAccessible(parent, parentRelationship,
+                                    authorizingRelationship, child,
+                                    childRelationship, queryPrefix);
     }
 
     @Override
@@ -452,6 +453,24 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         em.createNativeQuery(String.format("DELETE FROM %s WHERE parent = %s AND relationship = %s",
                                            networkTable, parent, relationship));
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
+     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<RuleForm> getChildren(RuleForm parent, Relationship relationship) {
+        String prefix = parent.getClass().getSimpleName().toLowerCase()
+                        + "Network";
+        @SuppressWarnings("unchecked")
+        TypedQuery<RuleForm> q = (TypedQuery<RuleForm>) em.createNamedQuery(prefix
+                                                                                    + ExistentialRuleform.GET_CHILDREN_SUFFIX,
+                                                                            parent.getClass());
+        return q.getResultList();
     }
 
     @Override
@@ -516,7 +535,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     private String constructQueryPrefix(RuleForm parent,
                                         ExistentialRuleform<?, ?> child) {
-        return parent.getClass().getSimpleName().toLowerCase() + child.getClass().getSimpleName() + "AccessAuthorization";
+        return parent.getClass().getSimpleName().toLowerCase()
+               + child.getClass().getSimpleName() + "AccessAuthorization";
     }
 
     private void createCurrentPassExistingRules() {
@@ -580,9 +600,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     private Class<AttributeAuthorization> extractedAuthorization() {
         return (Class<AttributeAuthorization>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[1];
     }
-    
-    
-    
+
     @SuppressWarnings("unchecked")
     private Class<RuleForm> extractedEntity() {
         return (Class<RuleForm>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -594,41 +612,45 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                          Ruleform child,
                                          Relationship childRelationship,
                                          String queryPrefix) {
-          Query query;
-          
-          if (parentRelationship == null && childRelationship == null) {
-              query = em.createNamedQuery(queryPrefix + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX);
-              query.setParameter("parent", parent);
-              query.setParameter("relationship", authorizingRelationship);
-              query.setParameter("child", child);
-          } else if (childRelationship == null) {
-              query = em.createNamedQuery(queryPrefix + AccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX);
-              query.setParameter("relationship", authorizingRelationship);
-              query.setParameter("child", child);
-              query.setParameter("netRelationship", parentRelationship);
-              query.setParameter("netChild", parent);
+        Query query;
 
-          } else if (parentRelationship == null) {
-              query = em.createNamedQuery(queryPrefix + AccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX);
-              query.setParameter("relationship", authorizingRelationship);
-              query.setParameter("parent", parent);
-              query.setParameter("netRelationship", childRelationship);
-              query.setParameter("netChild", child);
+        if (parentRelationship == null && childRelationship == null) {
+            query = em.createNamedQuery(queryPrefix
+                                        + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX);
+            query.setParameter("parent", parent);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
+        } else if (childRelationship == null) {
+            query = em.createNamedQuery(queryPrefix
+                                        + AccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("child", child);
+            query.setParameter("netRelationship", parentRelationship);
+            query.setParameter("netChild", parent);
 
-          } else {
-              query = em.createNamedQuery(queryPrefix + AccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX);
-              query.setParameter("relationship", authorizingRelationship);
-              query.setParameter("parentNetRelationship", parentRelationship);
-              query.setParameter("parentNetChild", parent);
-              query.setParameter("childNetRelationship", childRelationship);
-              query.setParameter("childNetChild", child);
+        } else if (parentRelationship == null) {
+            query = em.createNamedQuery(queryPrefix
+                                        + AccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parent", parent);
+            query.setParameter("netRelationship", childRelationship);
+            query.setParameter("netChild", child);
 
-          }
-          List<?> results = query.getResultList();
+        } else {
+            query = em.createNamedQuery(queryPrefix
+                                        + AccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("parentNetRelationship", parentRelationship);
+            query.setParameter("parentNetChild", parent);
+            query.setParameter("childNetRelationship", childRelationship);
+            query.setParameter("childNetChild", child);
 
-          return results.size() > 0;
+        }
+        List<?> results = query.getResultList();
 
-      }
+        return results.size() > 0;
+
+    }
 
     /**
      * @param attribute

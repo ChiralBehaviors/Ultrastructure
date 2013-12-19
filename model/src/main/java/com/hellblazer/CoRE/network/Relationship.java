@@ -128,7 +128,7 @@ public class Relationship extends
     public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "relationship"
                                                                               + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String     GET_CHILD                                = "relationship"
-                                                                              + GET_CHILD_SUFFIX;
+                                                                              + GET_CHILDREN_SUFFIX;
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "relationship"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "relationship.immediateChildrenNetworkRules";

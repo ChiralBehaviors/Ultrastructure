@@ -19,7 +19,7 @@ package com.hellblazer.CoRE.coordinate;
 import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
@@ -27,7 +27,7 @@ import static com.hellblazer.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.GENERATE_NETWORK_INVERSES;
-import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP;
+import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.GET_CHILDREN;
 import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.coordinate.CoordinateNetwork.INSERT_NEW_NETWORK_RULES;
@@ -139,31 +139,31 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                  + " WHERE exist.parent IS NULL "
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
-@NamedQueries({ @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM CoordinateNetwork n "
-                                                                                   + "WHERE n.parent = :parent "
-                                                                                   + "AND n.relationship = :relationship") })
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM CoordinateNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "coordinate_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_network_id_seq", sequenceName = "coordinate_network_id_seq")
 public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
 
-    public static final String DEDUCE_NEW_NETWORK_RULES               = "coordinateNetwork"
-                                                                        + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES          = "coordinateNetwork"
-                                                                        + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES              = "coordinateNetwork"
-                                                                        + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "coordinateNetwork"
-                                                                        + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS                 = "coordinateNetwork"
-                                                                        + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                         = "coordinateNetwork"
-                                                                        + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS          = "coordinateNetwork"
-                                                                        + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES               = "coordinateNetwork"
-                                                                        + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID                       = 1L;                                             //bi-directional many-to-one association to Agency
+    public static final String DEDUCE_NEW_NETWORK_RULES      = "coordinateNetwork"
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GATHER_EXISTING_NETWORK_RULES = "coordinateNetwork"
+                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String GENERATE_NETWORK_INVERSES     = "coordinateNetwork"
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+    public static final String GET_CHILDREN                  = "coordinateNetwork"
+                                                               + GET_CHILDREN_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS        = "coordinateNetwork"
+                                                               + USED_RELATIONSHIPS_SUFFIX;
+    public static final String INFERENCE_STEP                = "coordinateNetwork"
+                                                               + INFERENCE_STEP_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS = "coordinateNetwork"
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES      = "coordinateNetwork"
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
 
     @ManyToOne
     @JoinColumn(name = "child")

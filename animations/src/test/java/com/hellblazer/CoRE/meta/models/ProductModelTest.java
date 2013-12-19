@@ -192,7 +192,7 @@ public class ProductModelTest extends AbstractModelTest {
 //        assertTrue(model.isAccessible(a, null, equals, ag2, isA));
 //        assertTrue(model.isAccessible(b, isA, equals, ag2, isA));
         
-        List<?> stuff = model.getNetworks(a, equals);
+        List<?> stuff = model.getChildren(a, equals);
         System.out.println(stuff);
 
     }

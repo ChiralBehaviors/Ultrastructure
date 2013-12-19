@@ -203,18 +203,6 @@ public class AttributeModelImpl
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
-     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public List<Attribute> getNetwork(Attribute parent, Relationship relationship) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     /*
      * (non-Javadoc)
@@ -302,12 +290,13 @@ public class AttributeModelImpl
      */
     private Product findProduct(Transformation transformation, Agency agency,
                                 Product product) {
-        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILD,
+        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILDREN,
                                                                  Product.class);
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
                                          transformation.getRelationshipKey());
         // productNetworkQuery.setParameter("agency", agency);
+      //TODO HHILDEBRAND this might return more than one result
         return productNetworkQuery.getSingleResult();
     }
 
@@ -333,13 +322,14 @@ public class AttributeModelImpl
      */
     private Product getMappedProduct(TransformationMetarule transfromationMetarule,
                                      Product product) {
-        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILD,
+        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILDREN,
                                                                  Product.class);
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
                                          transfromationMetarule.getRelationshipMap());
         // productNetworkQuery.setParameter("agency",
         // transfromationMetarule.getProductNetworkAgency());
+      //TODO HHILDEBRAND this might return more than one result
         return productNetworkQuery.getSingleResult();
     }
 

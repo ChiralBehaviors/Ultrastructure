@@ -19,14 +19,14 @@ package com.hellblazer.CoRE.location;
 import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.location.LocationNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.location.LocationNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.location.LocationNetwork.GENERATE_NETWORK_INVERSES;
-import static com.hellblazer.CoRE.location.LocationNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP;
+import static com.hellblazer.CoRE.location.LocationNetwork.GET_CHILDREN;
 import static com.hellblazer.CoRE.location.LocationNetwork.GET_USED_RELATIONSHIPS;
 import static com.hellblazer.CoRE.location.LocationNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.location.LocationNetwork.INFERENCE_STEP_FROM_LAST_PASS;
@@ -150,7 +150,7 @@ import com.hellblazer.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "location_network_id_seq", sequenceName = "location_network_id_seq")
 @NamedQueries({
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
-               @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM LocationNetwork n "
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM LocationNetwork n "
                                                                                   + "WHERE n.parent = :parent "
                                                                                   + "AND n.relationship = :relationship") })
 public class LocationNetwork extends NetworkRuleform<Location> {
@@ -160,8 +160,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
                                                                + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "locationNetwork"
-            + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+    public static final String GET_CHILDREN = "locationNetwork"
+            + GET_CHILDREN_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "locationNetwork.getUsedRelationships";
     public static final String INFERENCE_STEP                = "locationNetwork"
                                                                + INFERENCE_STEP_SUFFIX;

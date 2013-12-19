@@ -19,14 +19,14 @@ package com.hellblazer.CoRE.attribute;
 import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.GENERATE_NETWORK_INVERSES;
-import static com.hellblazer.CoRE.attribute.AttributeNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP;
+import static com.hellblazer.CoRE.attribute.AttributeNetwork.GET_CHILDREN;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.INFERENCE_STEP_FROM_LAST_PASS;
@@ -52,6 +52,7 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
+
 /**
  * The network relationships of attributes.
  * 
@@ -147,12 +148,13 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @Table(name = "attribute_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
-@NamedQueries({ @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
-                                                                             + "WHERE n.parent = :attribute and n.inferred = FALSE and n.relationship.preferred = FALSE "
-                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-                                                                             @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM AttributeNetwork n "
-                                                                                     + "WHERE n.parent = :parent "
-                                                                                     + "AND n.relationship = :relationship") })
+@NamedQueries({
+               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
+                                                                            + "WHERE n.parent = :attribute and n.inferred = FALSE and n.relationship.preferred = FALSE "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship") })
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "attributeNetwork"
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
@@ -160,8 +162,8 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
                                                                   + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES        = "attributeNetwork"
                                                                   + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "attributeNetwork"
-            + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+    public static final String GET_CHILDREN                     = "attributeNetwork"
+                                                                  + GET_CHILDREN_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS           = "attributeNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "attribute.immediateChildrenNetworkRules";
     public static final String INFERENCE_STEP                   = "attributeNetwork"

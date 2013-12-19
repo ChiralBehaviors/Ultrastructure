@@ -19,7 +19,7 @@ package com.hellblazer.CoRE.network;
 import static com.hellblazer.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+import static com.hellblazer.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
@@ -27,7 +27,7 @@ import static com.hellblazer.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.hellblazer.CoRE.network.RelationshipNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.network.RelationshipNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.network.RelationshipNetwork.GENERATE_NETWORK_INVERSES;
-import static com.hellblazer.CoRE.network.RelationshipNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP;
+import static com.hellblazer.CoRE.network.RelationshipNetwork.GET_CHILDREN;
 import static com.hellblazer.CoRE.network.RelationshipNetwork.INFERENCE_STEP;
 import static com.hellblazer.CoRE.network.RelationshipNetwork.INFERENCE_STEP_FROM_LAST_PASS;
 import static com.hellblazer.CoRE.network.RelationshipNetwork.INSERT_NEW_NETWORK_RULES;
@@ -137,7 +137,7 @@ import com.hellblazer.CoRE.agency.Agency;
                                                                                  + " WHERE exist.parent IS NULL "
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
-@NamedQueries({ @NamedQuery(name = GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, query = "SELECT n.child FROM RelationshipNetwork n "
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM RelationshipNetwork n "
                                                                                    + "WHERE n.parent = :parent "
                                                                                    + "AND n.relationship = :relationship") })
 @Entity
@@ -150,8 +150,8 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
                                                                         + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES              = "relationshipNetwork"
                                                                         + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP = "relationshipNetwork"
-                                                                        + GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP_SUFFIX;
+    public static final String GET_CHILDREN = "relationshipNetwork"
+                                                                        + GET_CHILDREN_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS                 = "relationshipNetwork"
                                                                         + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                         = "relationshipNetwork"

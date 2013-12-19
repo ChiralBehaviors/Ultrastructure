@@ -207,20 +207,6 @@ public class CoordinateModelImpl
      * (non-Javadoc)
      * 
      * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
-     * .ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public List<Coordinate> getNetwork(Coordinate parent,
-                                       Relationship relationship) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
      * .hellblazer.CoRE.ExistentialRuleform)
      */

@@ -57,7 +57,7 @@ public class DeserializerTest extends DatabaseTest {
         em.clear();
     }
 
-    //@Test
+    @Test
     public void testDeserializer() throws JsonParseException,
                                   JsonMappingException, IOException {
         Product p = new Product("P", "P", core);

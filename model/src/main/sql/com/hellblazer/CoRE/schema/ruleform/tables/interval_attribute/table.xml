@@ -3,7 +3,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
@@ -35,7 +35,7 @@
                   REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT interval_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.interval (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT interval_attribute_interval_key UNIQUE (interval , attribute ),
               CONSTRAINT interval_attribute_sequence_number_check CHECK (sequence_number > 0),

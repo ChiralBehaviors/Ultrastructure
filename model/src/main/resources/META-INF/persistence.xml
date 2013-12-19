@@ -45,6 +45,8 @@
 		<class>com.hellblazer.CoRE.event.ProtocolAttribute</class>
 		<class>com.hellblazer.CoRE.event.ProtocolAttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.event.StatusCode</class>
+		<class>com.hellblazer.CoRE.event.StatusCodeAttribute</class>
+		<class>com.hellblazer.CoRE.event.StatusCodeAttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.event.StatusCodeNetwork</class>
 		<class>com.hellblazer.CoRE.event.StatusCodeSequencing</class>
 		<class>com.hellblazer.CoRE.location.Location</class>
@@ -54,6 +56,8 @@
 		<class>com.hellblazer.CoRE.location.LocationNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationRelationship</class>
 		<class>com.hellblazer.CoRE.network.Relationship</class>
+		<class>com.hellblazer.CoRE.network.RelationshipAttribute</class>
+		<class>com.hellblazer.CoRE.network.RelationshipAttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.network.RelationshipNetwork</class>
 		<class>com.hellblazer.CoRE.network.NetworkInference</class>
 		<class>com.hellblazer.CoRE.network.NetworkAuthorization</class>
@@ -80,7 +84,7 @@
 		<class>com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization</class>
 		<class>com.hellblazer.CoRE.time.Interval</class>
 		<class>com.hellblazer.CoRE.time.IntervalAttribute</class>
-        <class>com.hellblazer.CoRE.time.IntervalAttributeAuthorization</class>
+		<class>com.hellblazer.CoRE.time.IntervalAttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.time.IntervalNetwork</class>
 	</persistence-unit>
 </persistence>

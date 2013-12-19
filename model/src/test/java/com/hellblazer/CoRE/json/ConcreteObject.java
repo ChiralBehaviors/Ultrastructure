@@ -16,19 +16,30 @@
  */
 package com.hellblazer.CoRE.json;
 
+import com.hellblazer.CoRE.agency.Agency;
 
-public class ConcreteObject extends AbstractObject {
+
+public class ConcreteObject extends Agency {
     String value;
 
-    public ConcreteObject(int id, String name, AbstractObject ref,
+    public ConcreteObject(long id, String name, AbstractObject ref,
                           String value) {
-        this.id = id;
-        this.name = name;
-        this.ref = ref;
+        setId(id);
+//        this.name = name;
+//        this.ref = ref;
         this.value = value;
     }
     
     public ConcreteObject() {
         
     }
+    
+    public String getValue() {
+        return value;
+    }
+    
+    public void setValue(String v) {
+        value = v;
+    }
+
 }

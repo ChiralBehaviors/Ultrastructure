@@ -3,9 +3,9 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-	<changeSet id="1" author="hhildebrand">
+	<changeSet id="10" author="hhildebrand">
 		<sql><![CDATA[
             CREATE TABLE ruleform.interval_attribute_authorization
             (
@@ -18,7 +18,7 @@
               integer_value integer, -- Contains a single acceptable integer-value if 'attribute' has a data type of 'integer'
               numeric_value numeric, -- Contains a single acceptable numeric-value if 'attribute' has a data type of 'numeric'
               timestamp_value timestamp with time zone,
-              grouping_interval bigint, -- If present, used to select an entire grouping of intervals that can be acceptable values
+              grouping_agency bigint, -- If present, used to select an entire grouping of intervals that can be acceptable values
               notes character varying, -- Additional notes regarding this rule
               updated_by bigint NOT NULL, -- The interval that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
@@ -32,11 +32,11 @@
               CONSTRAINT interval_attribute_authorization_classifier_fkey FOREIGN KEY (classifier)
                   REFERENCES ruleform.interval (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT interval_attribute_authorization_grouping_interval_fkey FOREIGN KEY (grouping_interval)
-                  REFERENCES ruleform.interval (id) MATCH SIMPLE
+              CONSTRAINT interval_attribute_authorization_grouping_interval_fkey FOREIGN KEY (grouping_agency)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT interval_attribute_authorization_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.interval (id) MATCH SIMPLE
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT interval_attribute_authorizat_classification_attribute_clas_key UNIQUE (classification , classifier , authorized_attribute , sequence_number )
             )
@@ -60,4 +60,26 @@
 			<dropTable tableName="ruleform.interval_attribute_authorization" />
 		</rollback>
 	</changeSet>
+    <changeSet id="20" author="hhildebrand">
+        <sql> ALTER TABLE ruleform.interval_attribute_authorization OWNER TO core; </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet id="30" author="hhildebrand">
+        <sql><![CDATA[
+            GRANT ALL ON TABLE ruleform.interval_attribute_authorization TO core;
+            GRANT SELECT ON TABLE ruleform.interval_attribute_authorization TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.interval_attribute_authorization TO core_read_write;
+            ]]>
+        </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet id="40"
+        author="hhildebrand">
+        <sql> CREATE INDEX interval_attribute_authorization_updated_by_fkey_idx ON ruleform.interval_attribute_authorization USING btree
+            (updated_by ); </sql>
+        <rollback>
+            <dropIndex tableName="ruleform.interval_attribute_authorization"
+                indexName="interval_attribute_authorization_updated_by_fkey_idx"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

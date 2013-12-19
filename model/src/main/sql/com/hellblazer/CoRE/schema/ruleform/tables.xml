@@ -4,7 +4,7 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
     
     <include relativeToChangelogFile="true" file="tables/agency-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product-0.0.1.xml"/>
@@ -66,4 +66,8 @@
     <include relativeToChangelogFile="true" file="tables/unit_network.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_network.xml"/>
     <include relativeToChangelogFile="true" file="tables/coordinate_network.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship_attribute_authorization.xml"/>
+    <include relativeToChangelogFile="true" file="tables/relationship_attribute.xml"/>
+    <include relativeToChangelogFile="true" file="tables/status_code_attribute.xml"/> 
+    <include relativeToChangelogFile="true" file="tables/status_code_attribute_authorization.xml"/>
 </databaseChangeLog>

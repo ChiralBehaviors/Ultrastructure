@@ -45,7 +45,7 @@ public class TatusTest {
     public void testDeserialize() throws JsonGenerationException,
                                  JsonMappingException, IOException {
         ConcreteObject c = new ConcreteObject(0, "Rock Hard", null, "Concrete");
-        c.setCircularRef(c);
+        c.setUpdatedBy(c);
 
         SimpleModule module = new SimpleModule();
         module.setMixInAnnotation(AbstractObject.class, PolymorphMixin.class);

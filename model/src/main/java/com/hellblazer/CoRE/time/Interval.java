@@ -122,10 +122,10 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "interval"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "interval.immediateChildrenNetworkRules";
+    public static final String     ORDERED_ATTRIBUTES                       = "interval.orderedAttributes";
     public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "interval.qualifiedEntityNetworkRules";
     public static final String     UNLINKED                                 = "interval"
                                                                               + UNLINKED_SUFFIX;
-    public static final String     ORDERED_ATTRIBUTES                       = "interval.orderedAttributes";
     private static final long      serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to IntervalAttribute

@@ -39,8 +39,8 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.AgencyModel;
-import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 
@@ -216,7 +216,7 @@ public class AgencyModelImpl
      * .ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public Graph getNetwork(Agency parent, Relationship relationship) {
+    public List<Agency> getNetwork(Agency parent, Relationship relationship) {
         // TODO Auto-generated method stub
         return null;
     }

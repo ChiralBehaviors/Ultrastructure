@@ -132,10 +132,10 @@ public class Relationship extends
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "relationship"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "relationship.immediateChildrenNetworkRules";
+    public static final String     ORDERED_ATTRIBUTES                       = "relationship.orderedAttributes";
     public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "relationship.qualifiedEntityNetworkRules";
     public static final String     UNLINKED                                 = "relationship"
                                                                               + UNLINKED_SUFFIX;
-    public static final String     ORDERED_ATTRIBUTES                       = "relationship.orderedAttributes";
 
     private static final long          serialVersionUID                 = 1L;
 

@@ -82,13 +82,6 @@ public class IntervalAttributeAuthorization extends
         super(classification, updatedBy);
     }
 
-    public IntervalAttributeAuthorization(Relationship classification,
-                                        Interval classifier,
-                                        Attribute authorized, Agency updatedBy) {
-        this(classification, authorized, updatedBy);
-        this.classifier = classifier;
-    }
-
     /**
      * @param id
      * @param classification
@@ -98,6 +91,13 @@ public class IntervalAttributeAuthorization extends
     public IntervalAttributeAuthorization(Relationship classification,
                                         Attribute authorized, Agency updatedBy) {
         super(classification, authorized, updatedBy);
+    }
+
+    public IntervalAttributeAuthorization(Relationship classification,
+                                        Interval classifier,
+                                        Attribute authorized, Agency updatedBy) {
+        this(classification, authorized, updatedBy);
+        this.classifier = classifier;
     }
 
     /* (non-Javadoc)

@@ -104,22 +104,22 @@ import com.hellblazer.CoRE.network.Relationship;
 @DiscriminatorValue(AccessAuthorization.PRODUCT_AGENCY)
 public class ProductAgencyAccessAuthorization extends
         ProductAccessAuthorization {
-
     public static final String PRODUCT_AGENCY_ACCESS_AUTH_PREFIX                                       = "productAgencyAccessAuthorization";
+    
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + AgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
-
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+    public static final String FIND_PARENT_CHILD_NETWORKS                                              = "test2";
 
     public static final String FIND_RULEFORMS_REFERENCED_BY_AUTH                                       = "test";
-    public static final String FIND_PARENT_CHILD_NETWORKS                                              = "test2";
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

@@ -25,9 +25,9 @@ import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
-import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
+import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -242,7 +242,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
      * @param relationship
      * @return
      */
-    Graph getNetwork(RuleForm parent, Relationship relationship);
+    List<RuleForm> getNetwork(RuleForm parent, Relationship relationship);
 
     /**
      * 

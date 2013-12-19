@@ -90,6 +90,14 @@ public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthori
     }
 
     /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
+     */
+    @Override
+    public Coordinate getClassifier() { 
+        return classifier;
+    }
+
+    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.Ruleform#getId()
      */
     @Override
@@ -103,6 +111,14 @@ public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthori
 
     public void setClassificationCoordinate(Coordinate classificationCoordinate) {
         this.classifier = classificationCoordinate;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public void setClassifier(Coordinate classifier) {
+       this.classifier = classifier; 
     }
 
     /* (non-Javadoc)
@@ -128,21 +144,5 @@ public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthori
         }
         super.traverseForeignKeys(em, knownObjects);
 
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
-     */
-    @Override
-    public Coordinate getClassifier() { 
-        return classifier;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setClassifier(Coordinate classifier) {
-       this.classifier = classifier; 
     }
 }

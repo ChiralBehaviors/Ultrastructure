@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -36,7 +37,6 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.ProductModel;
-import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -245,9 +245,9 @@ public class ProductModelImpl
      * .network.Networked, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public Graph getNetwork(Product parent, Relationship relationship) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Product> getNetwork(Product parent, Relationship relationship) {
+        TypedQuery<Product> q = em.createNamedQuery(ProductNetwork.GET_CHILDREN_FOR_RULEFORM_RELATIONSHIP, Product.class);
+        return q.getResultList();
     }
 
     /*

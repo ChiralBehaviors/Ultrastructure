@@ -125,5 +125,14 @@ public class WorkspaceResource {
                                     em);
         return w;
     }
+    
+    @GET
+    @Path("/{id}/{relId}/Product")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Ruleform> getAllRuleformsForType(@PathParam("id") long id,
+                                                 @PathParam("relId") long relId) {
+        
+        return null;
+    }
 
 }

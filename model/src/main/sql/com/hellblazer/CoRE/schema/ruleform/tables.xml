@@ -70,4 +70,6 @@
     <include relativeToChangelogFile="true" file="tables/relationship_attribute.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_attribute.xml"/> 
     <include relativeToChangelogFile="true" file="tables/status_code_attribute_authorization.xml"/>
+    <include relativeToChangelogFile="true" file="tables/unit_attribute.xml"/> 
+    <include relativeToChangelogFile="true" file="tables/unit_attribute_authorization.xml"/>
 </databaseChangeLog>

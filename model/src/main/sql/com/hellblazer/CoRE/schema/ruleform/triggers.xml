@@ -78,5 +78,7 @@
     <include relativeToChangelogFile="true" file="tables/relationship_attribute/triggers.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_attribute_authorization/triggers.xml"/>
     <include relativeToChangelogFile="true" file="tables/status_code_attribute/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/unit_attribute_authorization/triggers.xml"/>
+    <include relativeToChangelogFile="true" file="tables/unit_attribute/triggers.xml"/>
     
 </databaseChangeLog>

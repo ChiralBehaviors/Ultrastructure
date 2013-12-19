@@ -69,6 +69,8 @@
         file="functions/propagate_coordinate_network_deductions.xml" />
     <include relativeToChangelogFile="true"
         file="functions/propagate_status_code_network_deductions.xml" />
+    <include relativeToChangelogFile="true"
+        file="functions/propagate_unit_network_deductions.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/if_table_exists.xml" />
 </databaseChangeLog>

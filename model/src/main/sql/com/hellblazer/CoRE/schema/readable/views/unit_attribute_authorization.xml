@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.unit_attribute_authorization AS 
+             SELECT     base_table.id ,
+                res.name AS grouping_agency, 
+                cls.name AS classification, 
+			    b.name AS classifier, 
+			    att.name AS authorized_attribute, 
+			    base_table.sequence_number, 
+			    base_table.text_value, 
+			    base_table.integer_value, 
+			    base_table.numeric_value, 
+			    base_table.notes, 
+			    up.name AS updated_by, 
+			    base_table.update_date
+			 FROM ruleform.unit_attribute_authorization base_table
+			 LEFT JOIN ruleform.agency res ON base_table.grouping_agency = res.id
+			 JOIN ruleform.relationship cls ON base_table.classification = cls.id
+			 JOIN ruleform.unit b ON base_table.classifier = b.id
+			 JOIN ruleform.attribute att ON base_table.authorized_attribute = att.id
+			 JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			
+			ALTER TABLE readable.unit_attribute_authorization
+			  OWNER TO core;
+			GRANT ALL ON TABLE readable.unit_attribute_authorization TO core;
+			GRANT SELECT ON TABLE readable.unit_attribute_authorization TO core_read_write;
+			GRANT SELECT ON TABLE readable.unit_attribute_authorization TO core_read_only;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.unit_attribute_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

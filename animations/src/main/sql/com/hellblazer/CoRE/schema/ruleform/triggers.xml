@@ -41,5 +41,7 @@
         file="tables/coordinate_network/trigger_propagate_deductions.xml" />
     <include relativeToChangelogFile="true"
         file="tables/status_code_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true"
+        file="tables/unit_network/trigger_propagate_deductions.xml" />
 
 </databaseChangeLog>

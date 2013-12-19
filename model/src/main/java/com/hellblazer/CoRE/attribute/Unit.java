@@ -50,6 +50,10 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     private String             abbreviation;
 
+    @OneToMany(mappedBy = "unitRf", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<UnitAttribute> attributes;
+
     private String             datatype;
 
     private Boolean            enumerated                       = false;
@@ -132,8 +136,21 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         networkByParent.add(relationship);
     }
 
+    @Override
+    public Unit clone() {
+        Unit clone = (Unit) super.clone();
+        clone.networkByChild = null;
+        clone.networkByParent = null;
+        clone.attributes = null;
+        return clone;
+    }
+
     public String getAbbreviation() {
         return abbreviation;
+    }
+
+    public Set<UnitAttribute> getAttributes() {
+        return attributes;
     }
 
     public String getDatatype() {
@@ -215,6 +232,10 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public void setAttributes(Set<UnitAttribute> attributes) {
+        this.attributes = attributes;
     }
 
     public void setDatatype(String datatype) {

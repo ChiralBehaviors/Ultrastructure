@@ -17,7 +17,16 @@
 package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
-import static com.hellblazer.CoRE.event.StatusCode.*; 
+import static com.hellblazer.CoRE.event.StatusCode.FIND_BY_NAME;
+import static com.hellblazer.CoRE.event.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.event.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.event.StatusCode.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.event.StatusCode.GET_ALL_PARENT_RELATIONSHIPS;
+import static com.hellblazer.CoRE.event.StatusCode.GET_CHILD;
+import static com.hellblazer.CoRE.event.StatusCode.GET_CHILD_RULES_BY_RELATIONSHIP;
+import static com.hellblazer.CoRE.event.StatusCode.IS_TERMINAL_STATE;
+import static com.hellblazer.CoRE.event.StatusCode.ORDERED_ATTRIBUTES;
+import static com.hellblazer.CoRE.event.StatusCode.UNLINKED;
 
 import java.util.List;
 import java.util.Set;
@@ -113,48 +122,53 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 public class StatusCode extends
         ExistentialRuleform<StatusCode, StatusCodeNetwork> {
-    public static final String     ORDERED_ATTRIBUTES                       = "statusCode.orderedAttributes";
-    public static final String     AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "statusCode.AgencyAttributesByClassification";
+    public static final String       AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "statusCode.AgencyAttributesByClassification";
+    public static final String       AUTHORIZED_AGENCY_ATTRIBUTES             = "statusCode.authorizedAttributes";
 
-    public static final String     AUTHORIZED_AGENCY_ATTRIBUTES             = "statusCode.authorizedAttributes";
-    public static final String     FIND_BY_NAME                             = "statusCode"
-                                                                              + FIND_BY_NAME_SUFFIX;
-    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "statusCode"
-                                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "statusCode"
-                                                                              + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "statusCode"
-                                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "statusCode"
-                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String     GET_CHILD                                = "statusCode"
-                                                                              + GET_CHILD_SUFFIX;
-    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
-                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "statusCode.immediateChildrenNetworkRules";
-    public static final String     IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
-    public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
-    public static final String     UNLINKED                                 = "statusCode"
-                                                                              + UNLINKED_SUFFIX;
-    private static final long      serialVersionUID                         = 1L;
+    public static final String       FIND_BY_NAME                             = "statusCode"
+                                                                                + FIND_BY_NAME_SUFFIX;
+    public static final String       FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "statusCode"
+                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String       FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "statusCode"
+                                                                                + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String       FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "statusCode"
+                                                                                + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String       GET_ALL_PARENT_RELATIONSHIPS             = "statusCode"
+                                                                                + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String       GET_CHILD                                = "statusCode"
+                                                                                + GET_CHILD_SUFFIX;
+    public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
+                                                                                + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES         = "statusCode.immediateChildrenNetworkRules";
+    public static final String       IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
+    public static final String       ORDERED_ATTRIBUTES                       = "statusCode.orderedAttributes";
+    public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
+    public static final String       UNLINKED                                 = "statusCode"
+                                                                                + UNLINKED_SUFFIX;
+    private static final long        serialVersionUID                         = 1L;
+
+    //bi-directional many-to-one association to AgencyAttribute
+    @OneToMany(mappedBy = "statusCode", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<StatusCodeAttribute> attributes;
 
     @Column(name = "fail_parent")
-    private Boolean                failParent                               = true;
+    private Boolean                  failParent                               = true;
 
     @Id
     @GeneratedValue(generator = "status_code_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                   id;
+    private Long                     id;
 
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<StatusCodeNetwork> networkByChild;
+    private Set<StatusCodeNetwork>   networkByChild;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<StatusCodeNetwork> networkByParent;
+    private Set<StatusCodeNetwork>   networkByParent;
 
     @Column(name = "propagate_children")
-    private Boolean                propagateChildren                        = true;
+    private Boolean                  propagateChildren                        = true;
 
     public StatusCode() {
     }
@@ -228,6 +242,19 @@ public class StatusCode extends
         networkByParent.add(relationship);
     }
 
+    @Override
+    public StatusCode clone() {
+        StatusCode clone = (StatusCode) super.clone();
+        clone.networkByChild = null;
+        clone.networkByParent = null;
+        clone.attributes = null;
+        return clone;
+    }
+
+    public Set<StatusCodeAttribute> getAttributes() {
+        return attributes;
+    }
+
     public Boolean getFailParent() {
         return failParent;
     }
@@ -285,6 +312,10 @@ public class StatusCode extends
                                                           r.getInverse(), this,
                                                           inverseSoftware);
         em.persist(inverse);
+    }
+
+    public void setAttributes(Set<StatusCodeAttribute> attributes) {
+        this.attributes = attributes;
     }
 
     public void setFailParent(Boolean failParent) {

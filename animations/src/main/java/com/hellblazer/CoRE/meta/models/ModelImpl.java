@@ -40,12 +40,14 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.AttributeModel;
+import com.hellblazer.CoRE.meta.CoordinateModel;
 import com.hellblazer.CoRE.meta.IntervalModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.RelationshipModel;
+import com.hellblazer.CoRE.meta.StatusCodeModel;
 import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
@@ -104,16 +106,19 @@ public class ModelImpl implements Model {
          */
     }
 
+    private final AgencyModel       agencyModel;
     private final AttributeModel    attributeModel;
+    private final CoordinateModel   coordinateModel;
     private final EntityManager     em;
+    private final IntervalModel     intervalModel;
+    private final JobModel          jobModel;
+
+    private final Kernel            kernel;
+
+    private final LocationModel     locationModel;
     private final ProductModel      productModel;
     private final RelationshipModel relationshipModel;
-    private final Kernel            kernel;
-    private final IntervalModel     intervalModel;
-    private final LocationModel     locationModel;
-
-    private final AgencyModel       agencyModel;
-    private final JobModel          jobModel;
+    private final StatusCodeModel   statusCodeModel;
 
     public ModelImpl(EntityManager entityManager) {
         this(entityManager, new KernelImpl(entityManager));
@@ -129,6 +134,8 @@ public class ModelImpl implements Model {
         agencyModel = new AgencyModelImpl(em, kernel);
         jobModel = new JobModelImpl(this);
         relationshipModel = new RelationshipModelImpl(em, kernel);
+        statusCodeModel = new StatusCodeModelImpl(em, kernel);
+        coordinateModel = new CoordinateModelImpl(em, kernel);
     }
 
     /*
@@ -280,6 +287,11 @@ public class ModelImpl implements Model {
         return attributeModel;
     }
 
+    @Override
+    public CoordinateModel getCoordinateModel() {
+        return coordinateModel;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -338,6 +350,11 @@ public class ModelImpl implements Model {
     @Override
     public RelationshipModel getRelationshipModel() {
         return relationshipModel;
+    }
+
+    @Override
+    public StatusCodeModel getStatusCodeModel() {
+        return statusCodeModel;
     }
 
 }

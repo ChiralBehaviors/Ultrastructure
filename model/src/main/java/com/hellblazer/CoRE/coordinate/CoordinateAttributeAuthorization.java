@@ -30,7 +30,9 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
+import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * 
@@ -42,7 +44,8 @@ import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 @Entity
 @Table(name = "coordinate_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_attribute_authorization_id_seq", sequenceName = "coordinate_attribute_authorization_id_seq")
-public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthorization<Coordinate> {
+public class CoordinateAttributeAuthorization extends
+        ClassifiedAttributeAuthorization<Coordinate> {
 
     private static final long serialVersionUID = 1L;
 
@@ -81,11 +84,44 @@ public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthori
         super(id);
     }
 
+    public CoordinateAttributeAuthorization(Relationship classification,
+                                            Agency updatedBy) {
+        super(classification, updatedBy);
+    }
+
+    public CoordinateAttributeAuthorization(Relationship classification,
+                                            Attribute authorized,
+                                            Agency updatedBy) {
+        super(classification, authorized, updatedBy);
+    }
+
+    /**
+     * @param classification
+     * @param classifier2
+     * @param attribute
+     * @param coreModel
+     */
+    public CoordinateAttributeAuthorization(Relationship classification,
+                                            Coordinate classifier,
+                                            Attribute attribute,
+                                            Agency updatedBy) {
+        this(classification, attribute, updatedBy);
+        this.classifier = classifier;
+    }
+
     public Agency getAgency() {
         return agency;
     }
 
     public Coordinate getClassificationCoordinate() {
+        return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
+     */
+    @Override
+    public Coordinate getClassifier() {
         return classifier;
     }
 
@@ -102,7 +138,15 @@ public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthori
     }
 
     public void setClassificationCoordinate(Coordinate classificationCoordinate) {
-        this.classifier = classificationCoordinate;
+        classifier = classificationCoordinate;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public void setClassifier(Coordinate classifier) {
+        this.classifier = classifier;
     }
 
     /* (non-Javadoc)
@@ -120,29 +164,12 @@ public class CoordinateAttributeAuthorization extends ClassifiedAttributeAuthori
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (classifier != null) {
-            classifier = (Coordinate) classifier.manageEntity(em,
-                                                                                          knownObjects);
+            classifier = (Coordinate) classifier.manageEntity(em, knownObjects);
         }
         if (agency != null) {
             agency = (Agency) agency.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
-     */
-    @Override
-    public Coordinate getClassifier() { 
-        return classifier;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setClassifier(Coordinate classifier) {
-       this.classifier = classifier; 
     }
 }

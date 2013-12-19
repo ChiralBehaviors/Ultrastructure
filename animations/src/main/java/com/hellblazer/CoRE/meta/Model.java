@@ -131,4 +131,14 @@ public interface Model {
      */
     RelationshipModel getRelationshipModel();
 
+    /**
+     * @return the StatusCode model
+     */
+    StatusCodeModel getStatusCodeModel();
+
+    /**
+     * @return the Coordinate model
+     */
+    CoordinateModel getCoordinateModel();
+
 }

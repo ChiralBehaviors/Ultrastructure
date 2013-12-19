@@ -10,7 +10,7 @@ import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
- * Representation of a NetworkGraph intended to be serialized by Jackson.
+ * Representation of a Network intended to be serialized by Jackson.
  * Jackson will only fully serialize the first appearance of an object in a
  * response, and thereafter it will confine itself to the object type and ID.
  * This makes the generated JSON structures inconsistent and very hard for JS
@@ -75,7 +75,17 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
             indices.put(nodes.get(i), i);
         }
 
-        for (NetworkRuleform<T> n : ng.getEdges()) {
+        populateGraphFromNetwork(ng.getEdges(), indices);
+
+    }
+
+    /**
+     * @param ng
+     * @param indices
+     */
+    private void populateGraphFromNetwork(List<NetworkRuleform<T>> net,
+                                          Map<T, Integer> indices) {
+        for (NetworkRuleform<T> n : net) {
             int source, target;
             long relationship;
             if (indices.get(n.getParent()) == null) {
@@ -98,7 +108,13 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 
             edges.add(new GraphEdge(source, relationship, target));
         }
-
+    }
+    
+    public SerializableGraph(List<NetworkRuleform<T>> net) {
+        
+        Map<T, Integer> indices = new HashMap<T, Integer>();
+        populateGraphFromNetwork(net, indices);
+        this.origin = indices.entrySet().iterator().next().getKey();
     }
 
     public List<GraphEdge> getEdges() {

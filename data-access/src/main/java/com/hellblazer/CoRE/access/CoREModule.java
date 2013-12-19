@@ -18,7 +18,7 @@ package com.hellblazer.CoRE.access;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.access.resource.PolymorphicRuleformMixin;
+import com.hellblazer.CoRE.json.PolymorphicRuleformMixin;
 
 /**
  * A jackson module for registering serializers and deserializers.

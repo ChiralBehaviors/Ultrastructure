@@ -21,12 +21,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.authorization.WorkspaceAuthorization;
 import com.hellblazer.CoRE.meta.graph.query.AccessAuthorizationGraphQuery;
 import com.hellblazer.CoRE.meta.graph.query.NetworkGraphQuery;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
  * The object that gets de/serialized as a workspace in JSON
@@ -147,6 +149,20 @@ public class Workspace {
      */
     public void setWorkspaceOf(Relationship workspaceOf) {
         this.workspaceOf = workspaceOf;
+    }
+    
+    public void addToWorkspace(ExistentialRuleform<?,?> rf) {
+        //TODO HPARRY generalize
+        Product p = (Product)rf;
+        p.setUpdatedBy(em.merge(p.getUpdatedBy()));
+        ProductNetwork pn = new ProductNetwork(workspace, workspaceOf, p, p.getUpdatedBy()); 
+        em.persist(p);
+        em.persist(pn);
+    }
+    
+    public void removeFromWorkspace(ExistentialRuleform<?,?> rf) {
+        //TODO HPARRY
+        
     }
 
     private List<AccessAuthorization> loadWorkspaceAccessAuthorizations() {

@@ -415,4 +415,18 @@ public class ProductModelImpl
             em.persist(attribute);
         }
     }
+    
+    public List<?> getLeaves(Product product, Relationship relationship) {
+        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_RULEFORMS_REFERENCED_BY_AUTH);
+        query.setParameter("parent", product);
+        query.setParameter("relationship", relationship);
+        return query.getResultList();
+    }
+    
+    public List<?> getNetworks(Product product, Relationship relationship) {
+        Query query = em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_PARENT_CHILD_NETWORKS);
+        query.setParameter("parent", product);
+        query.setParameter("relationship", relationship);
+        return query.getResultList();
+    }
 }

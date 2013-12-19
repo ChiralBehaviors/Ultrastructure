@@ -239,6 +239,15 @@ public class Coordinate extends
     }
 
     @Override
+    public Coordinate clone() {
+        Coordinate clone = (Coordinate) super.clone();
+        clone.networkByChild = null;
+        clone.networkByParent = null;
+        clone.attributes = null;
+        return clone;
+    }
+
+    @Override
     public Set<CoordinateAttribute> getAttributes() {
         return attributes;
     }

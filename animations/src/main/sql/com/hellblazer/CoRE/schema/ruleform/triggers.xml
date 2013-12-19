@@ -37,5 +37,9 @@
 		file="tables/agency_network/trigger_propagate_deductions.xml" />
     <include relativeToChangelogFile="true"
         file="tables/relationship_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true"
+        file="tables/coordinate_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true"
+        file="tables/status_code_network/trigger_propagate_deductions.xml" />
 
 </databaseChangeLog>

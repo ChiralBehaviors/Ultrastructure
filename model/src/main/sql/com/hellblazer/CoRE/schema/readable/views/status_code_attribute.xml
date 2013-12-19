@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.status_code_attribute AS 
+			 SELECT ra.id, r.name AS status_code, a.name AS attribute, ra.numeric_value, ra.integer_value, ra.boolean_value, ra.text_value, u.name AS unit, ra.notes, up.name AS updated_by, ra.update_date
+			   FROM ruleform.status_code_attribute ra
+			   JOIN ruleform.status_code r ON ra.status_code = r.id
+			   JOIN ruleform.attribute a ON ra.attribute = a.id
+			   LEFT JOIN ruleform.unit u ON ra.unit = u.id
+			   JOIN ruleform.agency up ON ra.updated_by = up.id;
+			
+			ALTER TABLE readable.status_code_attribute
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.status_code_attribute" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

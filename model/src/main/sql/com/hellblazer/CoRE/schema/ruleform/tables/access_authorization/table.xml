@@ -13,11 +13,23 @@
                   product1 bigint,
                   agency1 bigint,
                   location1 bigint,
+                  attribute1 bigint,
+                  coordinate1 bigint,
+                  interval1 bigint,
+                  relationship1 bigint,
+                  status_code1 bigint,
+                  unit1 bigint,
                   authorization_type character varying NOT NULL,
                   relationship bigint NOT NULL,
                   product2 bigint,
                   agency2 bigint,
                   location2 bigint,
+                  attribute2 bigint,
+                  coordinate2 bigint,
+                  interval2 bigint,
+                  relationship2 bigint,
+                  status_code2 bigint,
+                  unit2 bigint,
                   parent_transitive_relationship bigint,
                   child_transitive_relationship bigint,
                   description character varying,
@@ -35,6 +47,24 @@
                   CONSTRAINT access_authorization_location1_fkey FOREIGN KEY (location1)
                       REFERENCES ruleform.location (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_attribute1_fkey FOREIGN KEY (attribute1)
+                      REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_coordinate1_fkey FOREIGN KEY (coordinate1)
+                      REFERENCES ruleform.coordinate (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_interval1_fkey FOREIGN KEY (interval1)
+                      REFERENCES ruleform.interval (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_relationship1_fkey FOREIGN KEY (relationship1)
+                      REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_status_code1_fkey FOREIGN KEY (status_code1)
+                      REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_unit1_fkey FOREIGN KEY (unit1)
+                      REFERENCES ruleform.unit (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_relationship_fkey FOREIGN KEY (relationship)
                       REFERENCES ruleform.relationship (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
@@ -46,6 +76,24 @@
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_location2_fkey FOREIGN KEY (location2)
                       REFERENCES ruleform.location (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_attribute2_fkey FOREIGN KEY (attribute2)
+                      REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_coordinate2_fkey FOREIGN KEY (coordinate2)
+                      REFERENCES ruleform.coordinate (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_interval2_fkey FOREIGN KEY (interval2)
+                      REFERENCES ruleform.interval (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_relationship2_fkey FOREIGN KEY (relationship2)
+                      REFERENCES ruleform.relationship (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_status_code2_fkey FOREIGN KEY (status_code2)
+                      REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+                  CONSTRAINT access_authorization_unit2_fkey FOREIGN KEY (unit2)
+                      REFERENCES ruleform.unit (id) MATCH SIMPLE
                       ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
                   CONSTRAINT access_authorization_updated_by_fkey FOREIGN KEY (updated_by)
                       REFERENCES ruleform.agency (id) MATCH SIMPLE

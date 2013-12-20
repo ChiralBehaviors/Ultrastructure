@@ -70,16 +70,14 @@
 	<include relativeToChangelogFile="true"
 		file="/views/transformation_metarule.xml" />
 	<include relativeToChangelogFile="true" file="/views/unit_values.xml" />
-	<include relativeToChangelogFile="true"
-		file="/views/workspace_relationship_authorization.xml" />
-	<include relativeToChangelogFile="true"
-		file="/views/workspace_status_code_authorization.xml" />
     <include relativeToChangelogFile="true"
         file="/views/unit.xml" />
     <include relativeToChangelogFile="true"
+        file="/views/unit_attribute.xml" />
+    <include relativeToChangelogFile="true"
+        file="/views/unit_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true"
         file="/views/unit_network.xml" />
-	<include relativeToChangelogFile="true"
-		file="/views/workspace_unit_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="/views/product_agency_access_authorization.xml" />
 	<include relativeToChangelogFile="true"
@@ -102,9 +100,5 @@
         file="/views/status_code_attribute.xml" />
     <include relativeToChangelogFile="true"
         file="/views/status_code_attribute_authorization.xml" />
-    <include relativeToChangelogFile="true"
-        file="/views/unit_attribute.xml" />
-    <include relativeToChangelogFile="true"
-        file="/views/unit_attribute_authorization.xml" />
 
 </databaseChangeLog>

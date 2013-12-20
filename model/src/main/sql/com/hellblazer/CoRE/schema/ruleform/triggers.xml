@@ -64,8 +64,6 @@
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization/trigger-sourcing_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/protocol_attribute_authorization/trigger-protocol_attribute_authorization_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/access_authorization/trigger-access_authorization_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/workspace_authorization/trigger-workspace_authorization_update_date.xml"/>
-    
     <include relativeToChangelogFile="true" file="tables/interval_attribute/trigger-interval_attribute_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/interval_network/trigger-interval_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/interval/trigger-interval_restrict_pinnned.xml"/>

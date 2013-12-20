@@ -19,11 +19,9 @@ package com.hellblazer.CoRE.object;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
-import com.hellblazer.CoRE.authorization.WorkspaceAuthorization;
 import com.hellblazer.CoRE.meta.graph.query.AccessAuthorizationGraphQuery;
 import com.hellblazer.CoRE.meta.graph.query.NetworkGraphQuery;
 import com.hellblazer.CoRE.network.Relationship;
@@ -56,7 +54,6 @@ public class Workspace {
         ws.em = em;
         ws.products = ws.loadWorkspaceProducts();
         ws.accessAuths = ws.loadWorkspaceAccessAuthorizations();
-        ws.loadWorkspaceAuthorizations();
 
         return ws;
     }
@@ -65,9 +62,7 @@ public class Workspace {
     private Relationship                 workspaceOf;
     private EntityManager                em;
     private List<Product>                products;
-    private List<AccessAuthorization>    accessAuths;
-
-    private List<WorkspaceAuthorization> workspaceAuths;
+    private List<AccessAuthorization>    accessAuths; 
 
     /**
      * An empty constructor for JSON serialization.
@@ -102,15 +97,7 @@ public class Workspace {
      */
     public Product getWorkspace() {
         return workspace;
-    }
-
-    /**
-     * 
-     * @return workspace authorizations
-     */
-    public List<WorkspaceAuthorization> getWorkspaceAuths() {
-        return workspaceAuths;
-    }
+    } 
 
     /**
      * @return the workspaceOf
@@ -171,16 +158,7 @@ public class Workspace {
                                                                                 workspaceOf,
                                                                                 em);
         return query.getResults();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void loadWorkspaceAuthorizations() {
-        Query q = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATIONS_FOR_WORKSPACE,
-                                      WorkspaceAuthorization.class);
-        q.setParameter("product", workspace);
-        workspaceAuths = q.getResultList();
-
-    }
+    } 
 
     private List<Product> loadWorkspaceProducts() {
         NetworkGraphQuery<Product> queryAgency = new NetworkGraphQuery<Product>(

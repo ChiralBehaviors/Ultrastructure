@@ -80,10 +80,6 @@
 		<class>com.hellblazer.CoRE.location.LocationAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationProductAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationAgencyAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.authorization.WorkspaceAuthorization</class>
-		<class>com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization</class>
-		<class>com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization</class>
-		<class>com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization</class>
 		<class>com.hellblazer.CoRE.time.Interval</class>
 		<class>com.hellblazer.CoRE.time.IntervalAttribute</class>
 		<class>com.hellblazer.CoRE.time.IntervalAttributeAuthorization</class>

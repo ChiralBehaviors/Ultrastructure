@@ -35,9 +35,6 @@ import com.hellblazer.CoRE.attribute.TransformationMetarule;
 import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.attribute.UnitValue;
 import com.hellblazer.CoRE.attribute.ValueType;
-import com.hellblazer.CoRE.authorization.WorkspaceRelationshipAuthorization;
-import com.hellblazer.CoRE.authorization.WorkspaceStatusCodeAuthorization;
-import com.hellblazer.CoRE.authorization.WorkspaceUnitAuthorization;
 import com.hellblazer.CoRE.coordinate.Coordinate;
 import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
 import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
@@ -151,11 +148,7 @@ import com.hellblazer.CoRE.product.ProductNetworkDeduction;
                @Type(value = AgencyNetwork.class, name = "agencyNetwork"),
                @Type(value = AgencyNetworkAuthorization.class, name = "agencyNetworkAuthorization"),
                @Type(value = AgencyProductAccessAuthorization.class, name = "agencyProductAccessAuthorization"),
-               @Type(value = AgencyLocationAccessAuthorization.class, name = "agencyLocationAccessAuthorization"),
-
-               @Type(value = WorkspaceRelationshipAuthorization.class, name = "workspaceRelationshipAuthorization"),
-               @Type(value = WorkspaceStatusCodeAuthorization.class, name = "workspaceStatusCodeAuthorization"),
-               @Type(value = WorkspaceUnitAuthorization.class, name = "workspaceUnitAuthorization")})
+               @Type(value = AgencyLocationAccessAuthorization.class, name = "agencyLocationAccessAuthorization")})
 public abstract class PolymorphicRuleformMixin {
 
 }

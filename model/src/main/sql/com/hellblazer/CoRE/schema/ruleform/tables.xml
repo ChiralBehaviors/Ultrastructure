@@ -58,7 +58,6 @@
     <include relativeToChangelogFile="true" file="tables/attr_meta_attr_auth-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization.xml"/>
     <include relativeToChangelogFile="true" file="tables/access_authorization.xml"/>
-    <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml"/>
     <include relativeToChangelogFile="true" file="tables/interval.xml"/>
     <include relativeToChangelogFile="true" file="tables/interval_attribute.xml"/>
     <include relativeToChangelogFile="true" file="tables/interval_network.xml"/>

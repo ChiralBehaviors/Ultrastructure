@@ -49,14 +49,9 @@ public class CoordinateAttributeAuthorization extends
 
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency            agency;
-
     //bi-directional many-to-one association to Product
     @ManyToOne
-    @JoinColumn(name = "classification_coordinate")
+    @JoinColumn(name = "classifier")
     private Coordinate        classifier;
 
     @Id
@@ -109,10 +104,6 @@ public class CoordinateAttributeAuthorization extends
         this.classifier = classifier;
     }
 
-    public Agency getAgency() {
-        return agency;
-    }
-
     public Coordinate getClassificationCoordinate() {
         return classifier;
     }
@@ -121,7 +112,7 @@ public class CoordinateAttributeAuthorization extends
      * @see com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
      */
     @Override
-    public Coordinate getClassifier() { 
+    public Coordinate getClassifier() {
         return classifier;
     }
 
@@ -131,10 +122,6 @@ public class CoordinateAttributeAuthorization extends
     @Override
     public Long getId() {
         return id;
-    }
-
-    public void setAgency(Agency agency) {
-        this.agency = agency;
     }
 
     public void setClassificationCoordinate(Coordinate classificationCoordinate) {
@@ -165,9 +152,6 @@ public class CoordinateAttributeAuthorization extends
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (classifier != null) {
             classifier = (Coordinate) classifier.manageEntity(em, knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

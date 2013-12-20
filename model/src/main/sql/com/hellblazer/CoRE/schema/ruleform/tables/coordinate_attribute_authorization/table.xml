@@ -10,57 +10,49 @@
             CREATE TABLE ruleform.coordinate_attribute_authorization
             (
               id bigserial NOT NULL, -- Unique identifier
-              agency bigint NOT NULL, -- The agency that declares a particular classification
-              classification bigint NOT NULL, -- In conjunction with the 'classification_coordinate' column, the agency that determines the classification criteria for selecting attributes a certain Coordinate must have
-              classification_coordinate bigint NOT NULL, -- In conjunction with the 'classification_attribute' column, determines the classification criteria for selecting attributes a certain Coordinate must have
-              authorized_attribute bigint NOT NULL, -- An Attribute a Coordinate is expected to have
+              classification bigint NOT NULL, -- In conjunction with the 'coordinate' column, determines the classification criteria for selecting attributes a certain coordinate must have
+              classifier bigint NOT NULL, -- In conjunction with the 'classification' column, determines the classification criteria for selecting attributes a certain coordinate must have
+              authorized_attribute bigint NOT NULL, -- An Attribute a coordinate is expected to have
               sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when an Attribute can have multiple acceptable values
-              grouping_agency bigint, -- If present, along with 'coordinate_attribute' and 'coordinate_value', used to select an entire grouping of Coordinates that can be acceptable values
               text_value character varying, -- Contains a single acceptable text-value if 'attribute' has a data type of 'text'
               integer_value integer, -- Contains a single acceptable integer-value if 'attribute' has a data type of 'integer'
               numeric_value numeric, -- Contains a single acceptable numeric-value if 'attribute' has a data type of 'numeric'
               timestamp_value timestamp with time zone,
+              grouping_agency bigint, -- If present, used to select an entire grouping of coordinates that can be acceptable values
               notes character varying, -- Additional notes regarding this rule
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
+              updated_by bigint NOT NULL, -- The coordinate that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
               CONSTRAINT coordinate_attribute_authorization_pkey PRIMARY KEY (id ),
-              CONSTRAINT coordinate_attribute_authorization_authorized_attribute_fkey FOREIGN KEY (authorized_attribute)
+              CONSTRAINT coordinate_attribute_authorization_attribute_fkey FOREIGN KEY (authorized_attribute)
                   REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT coordinate_attribute_authorization_classification_fkey FOREIGN KEY (classification)
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_authorization_classification_attribute_fkey FOREIGN KEY (classification)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT coordinate_attribute_authorization_classification_coordinate_fkey FOREIGN KEY (classification_coordinate)
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_authorization_classifier_fkey FOREIGN KEY (classifier)
                   REFERENCES ruleform.coordinate (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT coordinate_attribute_authorization_grouping_agency_fkey FOREIGN KEY (grouping_agency)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT coordinate_attribute_authorization_agency_fkey FOREIGN KEY (agency)
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_authorization_grouping_coordinate_fkey FOREIGN KEY (grouping_agency)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE RESTRICT,
               CONSTRAINT coordinate_attribute_authorization_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT coordinate_attribute_authorizatio_agency_classification_attri_key UNIQUE (agency , classification , classification_coordinate , authorized_attribute , sequence_number )
+                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT coordinate_attribute_authorizat_classification_attribute_clas_key UNIQUE (classification , classifier , authorized_attribute , sequence_number )
             )
             WITH (
               OIDS=FALSE
             );
             COMMENT ON TABLE ruleform.coordinate_attribute_authorization
-              IS 'Defines rules stating what attributes (and values thereof) are authorized for particular Coordinates';
+              IS 'Defines rules stating what attributes (and values thereof) are authorized for particular coordinates';
             COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.agency IS 'The agency that declares a particular classification';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.classification IS 'In conjunction with the ''classification_coordinate'' column, determines the classification criteria for selecting attributes a certain Coordinate must have';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.classification_coordinate IS 'In conjunction with the ''classification'' column, determines the classification criteria for selecting attributes a certain Coordinate must have';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.authorized_attribute IS 'An Attribute a Coordinate is expected to have';
+            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.classification IS 'In conjunction with the ''coordinate'' column, determines the classification criteria for selecting attributes a certain coordinate must have';
+            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.classifier IS 'In conjunction with the ''classification'' column, determines the classification criteria for selecting attributes a certain coordinate must have';
+            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.authorized_attribute IS 'An Attribute a coordinate is expected to have';
             COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.sequence_number IS 'Ordering and uniqueness, for when an Attribute can have multiple acceptable values';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.grouping_agency IS 'If present, along with ''coordinate_attribute'' and ''coordinate_value'', used to select an entire grouping of Coordinates that can be acceptable values';
             COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.text_value IS 'Contains a single acceptable text-value if ''attribute'' has a data type of ''text''';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.integer_value IS 'Contains a single acceptable integer-value if ''attribute'' has a data type of ''integer''';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.numeric_value IS 'Contains a single acceptable numeric-value if ''attribute'' has a data type of ''numeric''';
             COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.notes IS 'Additional notes regarding this rule';
-            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.updated_by IS 'The agency that last updated this rule';
+            COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.updated_by IS 'The coordinate that last updated this rule';
             COMMENT ON COLUMN ruleform.coordinate_attribute_authorization.update_date IS 'The date this rule was last changed';
             ]]>
 		</sql>

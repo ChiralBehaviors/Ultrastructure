@@ -15,7 +15,9 @@
 	<include relativeToChangelogFile="true" file="/views/attribute_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/coordinate.xml" />
 	<include relativeToChangelogFile="true"
-		file="/views/coordinate_attribute.xml" />  
+		file="/views/coordinate_attribute.xml" />
+    <include relativeToChangelogFile="true"
+        file="/views/coordinate_attribute_authorization.xml" />
     <include relativeToChangelogFile="true"
         file="/views/coordinate_network.xml" />  
 	<include relativeToChangelogFile="true"
@@ -49,6 +51,8 @@
 	<include relativeToChangelogFile="true" file="/views/meta_protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/protocol.xml" />
 	<include relativeToChangelogFile="true" file="/views/relationship.xml" />
+    <include relativeToChangelogFile="true" file="/views/relationship_attribute.xml" />
+    <include relativeToChangelogFile="true" file="/views/relationship_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="/views/relationship_network.xml" />
 	<include relativeToChangelogFile="true" file="/views/network_inference.xml" />
 	<include relativeToChangelogFile="true" file="/views/agency.xml" />

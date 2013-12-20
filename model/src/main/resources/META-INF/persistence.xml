@@ -16,6 +16,8 @@
 		<class>com.hellblazer.CoRE.attribute.Transformation</class>
 		<class>com.hellblazer.CoRE.attribute.TransformationMetarule</class>
 		<class>com.hellblazer.CoRE.attribute.Unit</class>
+		<class>com.hellblazer.CoRE.attribute.UnitAttribute</class>
+		<class>com.hellblazer.CoRE.attribute.UnitAttributeAuthorization</class>
 		<class>com.hellblazer.CoRE.attribute.UnitNetwork</class>
 		<class>com.hellblazer.CoRE.attribute.UnitValue</class>
 		<class>com.hellblazer.CoRE.coordinate.Coordinate</class>

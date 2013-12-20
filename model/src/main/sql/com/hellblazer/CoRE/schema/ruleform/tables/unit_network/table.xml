@@ -20,10 +20,10 @@
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               CONSTRAINT unit_network_pkey PRIMARY KEY (id ),
               CONSTRAINT unit_network_child_fkey FOREIGN KEY (child)
-                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT unit_network_parent_fkey FOREIGN KEY (parent)
-                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
                   ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
               CONSTRAINT unit_network_relationship_fkey FOREIGN KEY (relationship)
                   REFERENCES ruleform.relationship (id) MATCH SIMPLE

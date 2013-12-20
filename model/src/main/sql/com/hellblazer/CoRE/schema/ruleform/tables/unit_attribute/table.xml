@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE TABLE ruleform.unit_attribute
+            (
+              id bigserial NOT NULL,
+              unit_rf bigint NOT NULL,
+              attribute bigint NOT NULL,
+              numeric_value numeric,
+              integer_value integer,
+              boolean_value boolean,
+              text_value character varying,
+              timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
+              binary_value bytea, -- If the Attribute has a binary value, it is stored in this column
+              unit bigint,
+              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1,
+              notes character varying,
+              updated_by bigint NOT NULL,
+              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+
+              CONSTRAINT unit_attribute_pkey PRIMARY KEY (id ),
+              CONSTRAINT unit_attribute_attribute_fkey FOREIGN KEY (attribute)
+                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_attribute_unit_rf_fkey FOREIGN KEY (unit_rf)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_attribute_unit_fkey FOREIGN KEY (unit)
+                  REFERENCES ruleform.unit (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_attribute_updated_by_fkey FOREIGN KEY (updated_by)
+                  REFERENCES ruleform.agency (id) MATCH SIMPLE
+                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
+              CONSTRAINT unit_attribute_unit_key UNIQUE (unit , attribute ),
+              CONSTRAINT unit_attribute_sequence_number_check CHECK (sequence_number > 0),
+              CONSTRAINT unit_attribute_valid_value CHECK ((ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(text_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value)) = 1)
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="ruleform.unit_attribute"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="hhildebrand">
+        <sql> ALTER TABLE ruleform.unit_attribute OWNER TO core; </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet id="3"
+        author="hhildebrand">
+        <sql> CREATE INDEX unit_attribute_updated_by_fkey_idx ON ruleform.unit_attribute USING btree
+            (updated_by ); </sql>
+        <rollback>
+            <dropIndex tableName="ruleform.unit_attribute"
+                indexName="unit_attribute_updated_by_fkey_idx"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="4" author="hhildebrand">
+        <sql><![CDATA[
+            GRANT ALL ON TABLE ruleform.unit_attribute TO core;
+            GRANT SELECT ON TABLE ruleform.unit_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.unit_attribute TO core_read_write;
+            ]]>
+        </sql>
+        <rollback/>
+    </changeSet>
+</databaseChangeLog>

@@ -98,5 +98,9 @@
         file="/views/status_code_attribute.xml" />
     <include relativeToChangelogFile="true"
         file="/views/status_code_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true"
+        file="/views/unit_attribute.xml" />
+    <include relativeToChangelogFile="true"
+        file="/views/unit_attribute_authorization.xml" />
 
 </databaseChangeLog>

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -60,6 +59,7 @@ public class DeserializerTest extends DatabaseTest {
     //@Test
     public void testDeserializer() throws JsonParseException,
                                   JsonMappingException, IOException {
+        @SuppressWarnings("unused")
         Product p = new Product("P", "P", core);
 
         SimpleModule module = new SimpleModule();
@@ -86,6 +86,7 @@ public class DeserializerTest extends DatabaseTest {
         System.out.println(baos.toString());
         InputStream is = new ByteArrayInputStream(baos.toByteArray());
 
+        @SuppressWarnings("unused")
         Agency p2 = mapper.readValue(is, Agency.class);
         beginTransaction();
         //em.persist(p2);

@@ -21,8 +21,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -37,7 +35,6 @@ import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
 import com.hellblazer.CoRE.product.ProductNetwork;

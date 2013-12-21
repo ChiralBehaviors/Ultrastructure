@@ -17,17 +17,28 @@
 package com.hellblazer.CoRE.access.resource;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hellblazer.CoRE.Ruleform;
+import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.meta.ProductModel;
+import com.hellblazer.CoRE.meta.models.ProductModelImpl;
+import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
+import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
  * A REST resource for processing atomic transactions full of multiple objects
@@ -95,4 +106,45 @@ public class CollectionResource {
     //
     //	}
 
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Product> get(@PathParam("id") long id,
+                             @QueryParam("relId") List<String> relIds)
+                                                                      throws JsonProcessingException {
+
+        Product p = new Product();
+        p.setId(id);
+        List<Ruleform> nodes = new LinkedList<Ruleform>();
+        nodes.add(p);
+        List<Relationship> rels = new LinkedList<Relationship>();
+        rels.add(em.find(Relationship.class, 6L));
+        for (String rid : relIds) {
+            Relationship r = em.find(Relationship.class, rid);
+            rels.add(r);
+        }
+        ProductModel pm = new ProductModelImpl(em);
+        return pm.getChildren(p, rels.get(0));
+
+    }
+
+    @POST
+    @Path("/{parentId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Product createNewProduct(@PathParam("parentId") long parentId,
+                                          @QueryParam("relId") long relId,
+                                          String name)
+                                                      throws JsonProcessingException {
+        em.getTransaction().begin();
+        Product parent = em.find(Product.class, parentId);
+        Relationship rel = em.find(Relationship.class, 32L);
+        Agency core = em.find(Agency.class, 1L);
+        Product child = new Product(name, name,core);
+        em.persist(child);
+        ProductNetwork net = new ProductNetwork(parent, rel, child, core);
+        em.persist(net);
+        em.getTransaction().commit();
+        em.refresh(child);
+        return child;
+    }
 }

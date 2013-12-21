@@ -673,6 +673,10 @@ public class JobModelImpl implements JobModel {
         try {
             return createQuery(metaProtocol, job).getResultList();
         } catch (NonUniqueResultException e) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("non unique transformation of %s, meta protocol %s",
+                                       job, metaProtocol));
+            }
             return Collections.emptyList();
         }
     }

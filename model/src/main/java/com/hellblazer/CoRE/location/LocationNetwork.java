@@ -151,8 +151,8 @@ import com.hellblazer.CoRE.network.Relationship;
 @NamedQueries({
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM LocationNetwork n "
-                                                                                  + "WHERE n.parent = :parent "
-                                                                                  + "AND n.relationship = :relationship") })
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship") })
 public class LocationNetwork extends NetworkRuleform<Location> {
     public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
@@ -160,8 +160,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
                                                                + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN = "locationNetwork"
-            + GET_CHILDREN_SUFFIX;
+    public static final String GET_CHILDREN                  = "locationNetwork"
+                                                               + GET_CHILDREN_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "locationNetwork.getUsedRelationships";
     public static final String INFERENCE_STEP                = "locationNetwork"
                                                                + INFERENCE_STEP_SUFFIX;

@@ -23,8 +23,8 @@ import java.util.List;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.event.StatusCode;
-import com.hellblazer.CoRE.event.StatusCodeNetwork;
+import com.hellblazer.CoRE.event.status.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCodeNetwork;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 

@@ -32,7 +32,6 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
-import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * The authorizations for attributes on entities.

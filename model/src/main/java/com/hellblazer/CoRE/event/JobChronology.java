@@ -32,6 +32,7 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.event.status.StatusCode;
 
 /**
  * The persistent class for the job_chronology database table.

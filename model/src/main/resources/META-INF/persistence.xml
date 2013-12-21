@@ -15,11 +15,11 @@
 		<class>com.hellblazer.CoRE.attribute.AttributeValue</class>
 		<class>com.hellblazer.CoRE.attribute.Transformation</class>
 		<class>com.hellblazer.CoRE.attribute.TransformationMetarule</class>
-		<class>com.hellblazer.CoRE.attribute.Unit</class>
-		<class>com.hellblazer.CoRE.attribute.UnitAttribute</class>
-		<class>com.hellblazer.CoRE.attribute.UnitAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.attribute.UnitNetwork</class>
-		<class>com.hellblazer.CoRE.attribute.UnitValue</class>
+		<class>com.hellblazer.CoRE.attribute.unit.Unit</class>
+		<class>com.hellblazer.CoRE.attribute.unit.UnitAttribute</class>
+		<class>com.hellblazer.CoRE.attribute.unit.UnitAttributeAuthorization</class>
+		<class>com.hellblazer.CoRE.attribute.unit.UnitNetwork</class>
+		<class>com.hellblazer.CoRE.attribute.unit.UnitValue</class>
 		<class>com.hellblazer.CoRE.coordinate.Coordinate</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateAttribute</class>
 		<class>com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization</class>
@@ -35,7 +35,6 @@
 		<class>com.hellblazer.CoRE.product.ProductNetwork</class>
 		<class>com.hellblazer.CoRE.product.ProductNetworkAttribute</class>
 		<class>com.hellblazer.CoRE.product.ProductNetworkAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductNetworkDeduction</class>
 		<class>com.hellblazer.CoRE.event.ProductChildSequencingAuthorization</class>
 		<class>com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization</class>
 		<class>com.hellblazer.CoRE.event.ProductParentSequencingAuthorization</class>
@@ -46,11 +45,11 @@
 		<class>com.hellblazer.CoRE.event.Protocol</class>
 		<class>com.hellblazer.CoRE.event.ProtocolAttribute</class>
 		<class>com.hellblazer.CoRE.event.ProtocolAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.event.StatusCode</class>
-		<class>com.hellblazer.CoRE.event.StatusCodeAttribute</class>
-		<class>com.hellblazer.CoRE.event.StatusCodeAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.event.StatusCodeNetwork</class>
-		<class>com.hellblazer.CoRE.event.StatusCodeSequencing</class>
+		<class>com.hellblazer.CoRE.event.status.StatusCode</class>
+		<class>com.hellblazer.CoRE.event.status.StatusCodeAttribute</class>
+		<class>com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization</class>
+		<class>com.hellblazer.CoRE.event.status.StatusCodeNetwork</class>
+		<class>com.hellblazer.CoRE.event.status.StatusCodeSequencing</class>
 		<class>com.hellblazer.CoRE.location.Location</class>
 		<class>com.hellblazer.CoRE.location.LocationAttribute</class>
 		<class>com.hellblazer.CoRE.location.LocationAttributeAuthorization</class>
@@ -65,25 +64,25 @@
 		<class>com.hellblazer.CoRE.network.NetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.network.NetworkRuleform</class>
 		<class>com.hellblazer.CoRE.agency.Agency</class>
-		<class>com.hellblazer.CoRE.agency.AgencyAttribute</class>
+		<class>com.hellblazer.CoRE.agency.access.AgencyAttribute</class>
 		<class>com.hellblazer.CoRE.agency.AgencyAttributeAuthorization</class>
-		<class>com.hellblazer.CoRE.agency.AgencyAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.agency.AgencyProductAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.access.AgencyAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.access.AgencyProductAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.agency.AgencyNetwork</class>
 		<class>com.hellblazer.CoRE.agency.AgencyNetworkAuthorization</class>
 		<class>com.hellblazer.CoRE.ExistentialRuleform</class>
 		<class>com.hellblazer.CoRE.Ruleform</class>
-		<class>com.hellblazer.CoRE.agency.AgencyLocationAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductAttributeAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductLocationAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductRelationshipAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductStatusCodeAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductUnitAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.location.LocationAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.location.LocationProductAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.location.LocationAgencyAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.agency.access.AgencyLocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.access.ProductAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.access.ProductRelationshipAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.access.ProductStatusCodeAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.location.access.LocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.location.access.LocationProductAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.location.access.LocationAgencyAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.time.Interval</class>
 		<class>com.hellblazer.CoRE.time.IntervalAttribute</class>
 		<class>com.hellblazer.CoRE.time.IntervalAttributeAuthorization</class>

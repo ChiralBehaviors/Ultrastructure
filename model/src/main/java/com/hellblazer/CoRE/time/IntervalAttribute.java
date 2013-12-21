@@ -35,7 +35,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.attribute.Unit;
+import com.hellblazer.CoRE.attribute.unit.Unit;
 
 /**
  * @author hhildebrand

@@ -18,7 +18,6 @@
     <include relativeToChangelogFile="true" file="tables/coordinate-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_location-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/location_network-0.0.1.xml"/>
-    <include relativeToChangelogFile="true" file="tables/product_network_deduction-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml"/>
     <include relativeToChangelogFile="true" file="tables/transformation_metarule-0.0.1.xml"/>

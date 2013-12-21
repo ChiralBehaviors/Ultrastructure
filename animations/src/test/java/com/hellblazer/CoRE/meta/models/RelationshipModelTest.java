@@ -55,7 +55,7 @@ public class RelationshipModelTest extends AbstractModelTest {
         em.persist(b);
         Relationship c = new Relationship("C", core);
         c.setInverse(c);
-        em.persist(c); 
+        em.persist(c);
         RelationshipNetwork edgeA = new RelationshipNetwork(a, equals, b, core);
         em.persist(edgeA);
         RelationshipNetwork edgeB = new RelationshipNetwork(b, equals2, c, core);
@@ -65,7 +65,7 @@ public class RelationshipModelTest extends AbstractModelTest {
         em.clear();
 
         List<RelationshipNetwork> edges = em.createQuery("SELECT edge FROM RelationshipNetwork edge WHERE edge.inferred = TRUE",
-                                                       RelationshipNetwork.class).getResultList();
+                                                         RelationshipNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }
 }

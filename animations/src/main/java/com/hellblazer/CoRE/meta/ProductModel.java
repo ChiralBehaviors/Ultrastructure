@@ -19,8 +19,8 @@ package com.hellblazer.CoRE.meta;
 
 import java.util.List;
 
-import com.hellblazer.CoRE.event.StatusCode;
-import com.hellblazer.CoRE.event.StatusCodeSequencing;
+import com.hellblazer.CoRE.event.status.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;

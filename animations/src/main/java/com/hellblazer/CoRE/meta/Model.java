@@ -93,6 +93,11 @@ public interface Model {
     AttributeModel getAttributeModel();
 
     /**
+     * @return the Coordinate model
+     */
+    CoordinateModel getCoordinateModel();
+
+    /**
      * Answer the product manager used for this model instance
      * 
      * @return
@@ -135,10 +140,5 @@ public interface Model {
      * @return the StatusCode model
      */
     StatusCodeModel getStatusCodeModel();
-
-    /**
-     * @return the Coordinate model
-     */
-    CoordinateModel getCoordinateModel();
 
 }

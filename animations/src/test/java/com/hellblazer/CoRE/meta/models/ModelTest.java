@@ -25,7 +25,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyAttribute;
+import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.ValueType;
 import com.hellblazer.CoRE.network.Aspect;

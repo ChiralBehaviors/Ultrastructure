@@ -34,7 +34,7 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.attribute.Unit;
+import com.hellblazer.CoRE.attribute.unit.Unit;
 import com.hellblazer.CoRE.product.Product;
 
 /**

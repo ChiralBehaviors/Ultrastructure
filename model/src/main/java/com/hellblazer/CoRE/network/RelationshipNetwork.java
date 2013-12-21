@@ -138,29 +138,29 @@ import com.hellblazer.CoRE.agency.Agency;
                                                                                  + "  AND exist.relationship IS NULL "
                                                                                  + "  AND exist.child IS NULL") })
 @NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM RelationshipNetwork n "
-                                                                                   + "WHERE n.parent = :parent "
-                                                                                   + "AND n.relationship = :relationship") })
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "relationship_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "relationship_network_id_seq", sequenceName = "relationship_network_id_seq")
 public class RelationshipNetwork extends NetworkRuleform<Relationship> {
-    public static final String DEDUCE_NEW_NETWORK_RULES               = "relationshipNetwork"
-                                                                        + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES          = "relationshipNetwork"
-                                                                        + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES              = "relationshipNetwork"
-                                                                        + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN = "relationshipNetwork"
-                                                                        + GET_CHILDREN_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS                 = "relationshipNetwork"
-                                                                        + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                         = "relationshipNetwork"
-                                                                        + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS          = "relationshipNetwork"
-                                                                        + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES               = "relationshipNetwork"
-                                                                        + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID                       = 1L;                                             //bi-directional many-to-one association to Agency
+    public static final String DEDUCE_NEW_NETWORK_RULES      = "relationshipNetwork"
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GATHER_EXISTING_NETWORK_RULES = "relationshipNetwork"
+                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String GENERATE_NETWORK_INVERSES     = "relationshipNetwork"
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+    public static final String GET_CHILDREN                  = "relationshipNetwork"
+                                                               + GET_CHILDREN_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS        = "relationshipNetwork"
+                                                               + USED_RELATIONSHIPS_SUFFIX;
+    public static final String INFERENCE_STEP                = "relationshipNetwork"
+                                                               + INFERENCE_STEP_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS = "relationshipNetwork"
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES      = "relationshipNetwork"
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
 
     @ManyToOne
     @JoinColumn(name = "child")

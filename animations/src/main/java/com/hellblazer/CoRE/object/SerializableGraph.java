@@ -10,11 +10,11 @@ import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
- * Representation of a Network intended to be serialized by Jackson.
- * Jackson will only fully serialize the first appearance of an object in a
- * response, and thereafter it will confine itself to the object type and ID.
- * This makes the generated JSON structures inconsistent and very hard for JS
- * clients to consume.
+ * Representation of a Network intended to be serialized by Jackson. Jackson
+ * will only fully serialize the first appearance of an object in a response,
+ * and thereafter it will confine itself to the object type and ID. This makes
+ * the generated JSON structures inconsistent and very hard for JS clients to
+ * consume.
  * 
  * To make life easier, this class contains no duplicate instances. It's a
  * unique list of nodes in the graph, a unique list of Relationship types
@@ -66,6 +66,13 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 
     private List<T>            nodes;
 
+    public SerializableGraph(List<NetworkRuleform<T>> net) {
+
+        Map<T, Integer> indices = new HashMap<T, Integer>();
+        populateGraphFromNetwork(net, indices);
+        this.origin = indices.entrySet().iterator().next().getKey();
+    }
+
     public SerializableGraph(NetworkGraphQuery<T> ng) {
         this.relationships = ng.getRelationships();
         this.nodes = ng.getNodes();
@@ -77,6 +84,22 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 
         populateGraphFromNetwork(ng.getEdges(), indices);
 
+    }
+
+    public List<GraphEdge> getEdges() {
+        return this.edges;
+    }
+
+    public List<T> getNodes() {
+        return this.nodes;
+    }
+
+    public T getOrigin() {
+        return this.origin;
+    }
+
+    public List<Relationship> getRelationships() {
+        return this.relationships;
     }
 
     /**
@@ -108,29 +131,6 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 
             edges.add(new GraphEdge(source, relationship, target));
         }
-    }
-    
-    public SerializableGraph(List<NetworkRuleform<T>> net) {
-        
-        Map<T, Integer> indices = new HashMap<T, Integer>();
-        populateGraphFromNetwork(net, indices);
-        this.origin = indices.entrySet().iterator().next().getKey();
-    }
-
-    public List<GraphEdge> getEdges() {
-        return this.edges;
-    }
-
-    public List<T> getNodes() {
-        return this.nodes;
-    }
-
-    public T getOrigin() {
-        return this.origin;
-    }
-
-    public List<Relationship> getRelationships() {
-        return this.relationships;
     }
 
 }

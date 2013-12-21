@@ -21,7 +21,6 @@
     <include relativeToChangelogFile="true" file="tables/product_location_network/trigger-product_location_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_location/trigger-product_location_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_network_attribute/trigger-product_network_attribute_update_date.xml"/>
-    <include relativeToChangelogFile="true" file="tables/product_network_deduction/trigger-product_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product_network/trigger-product_network_update_date.xml"/>
     <include relativeToChangelogFile="true" file="tables/product/trigger-product_restrict_pinned.xml"/>
     <include relativeToChangelogFile="true" file="tables/product/trigger-product_update_date.xml"/>

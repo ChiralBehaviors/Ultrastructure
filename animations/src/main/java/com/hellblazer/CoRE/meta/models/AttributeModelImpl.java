@@ -203,7 +203,6 @@ public class AttributeModelImpl
         return null;
     }
 
-
     /*
      * (non-Javadoc)
      * 
@@ -216,7 +215,6 @@ public class AttributeModelImpl
         // TODO Auto-generated method stub
         return null;
     }
-
 
     public Attribute transform(Product service, Agency agency, Product product) {
 
@@ -296,7 +294,7 @@ public class AttributeModelImpl
         productNetworkQuery.setParameter("relationship",
                                          transformation.getRelationshipKey());
         // productNetworkQuery.setParameter("agency", agency);
-      //TODO HHILDEBRAND this might return more than one result
+        //TODO HHILDEBRAND this might return more than one result
         return productNetworkQuery.getSingleResult();
     }
 
@@ -329,7 +327,7 @@ public class AttributeModelImpl
                                          transfromationMetarule.getRelationshipMap());
         // productNetworkQuery.setParameter("agency",
         // transfromationMetarule.getProductNetworkAgency());
-      //TODO HHILDEBRAND this might return more than one result
+        //TODO HHILDEBRAND this might return more than one result
         return productNetworkQuery.getSingleResult();
     }
 

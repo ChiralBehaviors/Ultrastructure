@@ -30,7 +30,7 @@ import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.product.Product;
 

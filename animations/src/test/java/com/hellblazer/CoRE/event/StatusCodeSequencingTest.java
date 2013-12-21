@@ -34,6 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.event.status.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.JobModelImpl;

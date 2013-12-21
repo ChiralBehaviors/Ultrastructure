@@ -58,6 +58,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
+import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.product.Product;
 

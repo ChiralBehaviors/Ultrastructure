@@ -18,8 +18,8 @@
 package com.hellblazer.CoRE.meta;
 
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyAttribute;
 import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
+import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 
 /**
  * @author hhildebrand

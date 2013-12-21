@@ -32,8 +32,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.hellblazer.CoRE.Util;
-import com.hellblazer.CoRE.agency.AgencyAttribute;
 import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
+import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.kernel.Bootstrap;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 

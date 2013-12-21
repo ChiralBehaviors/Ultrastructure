@@ -26,9 +26,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyLocationAccessAuthorization;
 import com.hellblazer.CoRE.agency.AgencyNetwork;
-import com.hellblazer.CoRE.agency.AgencyProductAccessAuthorization;
+import com.hellblazer.CoRE.agency.access.AgencyLocationAccessAuthorization;
+import com.hellblazer.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.network.NetworkInference;

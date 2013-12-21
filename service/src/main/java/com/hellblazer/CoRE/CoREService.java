@@ -24,7 +24,7 @@ import javax.persistence.Persistence;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.hellblazer.CoRE.access.DataAccessBundle;
-import com.hellblazer.CoRE.agency.AgencyAttribute;
+import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.authentication.AgencyAuthenticator;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;

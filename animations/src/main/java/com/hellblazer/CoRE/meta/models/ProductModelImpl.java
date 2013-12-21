@@ -25,8 +25,8 @@ import javax.persistence.EntityManager;
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.event.StatusCode;
-import com.hellblazer.CoRE.event.StatusCodeSequencing;
+import com.hellblazer.CoRE.event.status.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;

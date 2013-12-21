@@ -25,10 +25,10 @@ import javax.persistence.EntityManager;
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.attribute.UnitAttribute;
-import com.hellblazer.CoRE.attribute.UnitAttributeAuthorization;
-import com.hellblazer.CoRE.attribute.UnitNetwork;
+import com.hellblazer.CoRE.attribute.unit.Unit;
+import com.hellblazer.CoRE.attribute.unit.UnitAttribute;
+import com.hellblazer.CoRE.attribute.unit.UnitAttributeAuthorization;
+import com.hellblazer.CoRE.attribute.unit.UnitNetwork;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
@@ -41,8 +41,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-public class UnitModelImpl
-        extends
+public class UnitModelImpl extends
         AbstractNetworkedModel<Unit, UnitAttributeAuthorization, UnitAttribute>
         implements UnitModel {
 
@@ -120,12 +119,33 @@ public class UnitModelImpl
     public void authorize(Aspect<Unit> aspect, Attribute... attributes) {
         for (Attribute attribute : attributes) {
             UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(
-                                                                                                  aspect.getClassification(),
-                                                                                                  aspect.getClassifier(),
-                                                                                                  attribute,
-                                                                                                  kernel.getCoreModel());
+                                                                                      aspect.getClassification(),
+                                                                                      aspect.getClassifier(),
+                                                                                      attribute,
+                                                                                      kernel.getCoreModel());
             em.persist(authorization);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
+     * .Aspect<RuleForm>[])
+     */
+    @Override
+    public final Unit create(String name, String description,
+                             Aspect<Unit> aspect, Aspect<Unit>... aspects) {
+        Unit agency = new Unit(name, description, kernel.getCoreModel());
+        em.persist(agency);
+        initialize(agency, aspect);
+        if (aspects != null) {
+            for (Aspect<Unit> a : aspects) {
+                initialize(agency, a);
+            }
+        }
+        return agency;
     }
 
     /*
@@ -154,29 +174,6 @@ public class UnitModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
-     * .Aspect<RuleForm>[])
-     */
-    @Override
-    public final Unit create(String name, String description,
-                                   Aspect<Unit> aspect,
-                                   Aspect<Unit>... aspects) {
-        Unit agency = new Unit(name, description,
-                                           kernel.getCoreModel());
-        em.persist(agency);
-        initialize(agency, aspect);
-        if (aspects != null) {
-            for (Aspect<Unit> a : aspects) {
-                initialize(agency, a);
-            }
-        }
-        return agency;
     }
 
     /*
@@ -225,8 +222,8 @@ public class UnitModelImpl
                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
         for (UnitAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             UnitAttribute attribute = new UnitAttribute(
-                                                                    authorization.getAuthorizedAttribute(),
-                                                                    kernel.getCoreModel());
+                                                        authorization.getAuthorizedAttribute(),
+                                                        kernel.getCoreModel());
             attribute.setUnit(agency);
             defaultValue(attribute);
             em.persist(attribute);

@@ -25,7 +25,7 @@ import static com.hellblazer.CoRE.agency.Agency.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.hellblazer.CoRE.agency.Agency.GET_CHILD;
 import static com.hellblazer.CoRE.agency.Agency.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.agency.Agency.UNLINKED;
-import static com.hellblazer.CoRE.agency.AgencyAttribute.GET_ATTRIBUTE;
+import static com.hellblazer.CoRE.agency.access.AgencyAttribute.GET_ATTRIBUTE;
 
 import java.util.List;
 import java.util.Set;
@@ -47,6 +47,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.agency.access.AgencyAccessAuthorization;
+import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.network.Relationship;
@@ -113,51 +115,51 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 @SequenceGenerator(schema = "ruleform", name = "agency_id_seq", sequenceName = "agency_id_seq")
 public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
         implements Attributable<AgencyAttribute> {
-    public static final String             AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
+    public static final String                AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
 
-    public static final String             AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
-    public static final String             FIND_BY_NAME                             = "agency"
-                                                                                      + FIND_BY_NAME_SUFFIX;
-    public static final String             FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "agency"
-                                                                                      + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String             FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "agency"
-                                                                                      + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String             FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "agency"
-                                                                                      + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String             GET_ALL_PARENT_RELATIONSHIPS             = "agency"
-                                                                                      + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String             GET_CHILD                                = "agency"
-                                                                                      + GET_CHILDREN_SUFFIX;
-    public static final String             GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
-                                                                                      + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String             IMMEDIATE_CHILDREN_NETWORK_RULES         = "agency.immediateChildrenNetworkRules";
-    public static final String             QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
-    public static final String             UNLINKED                                 = "agency"
-                                                                                      + UNLINKED_SUFFIX;
-    private static final long              serialVersionUID                         = 1L;
+    public static final String                AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
+    public static final String                FIND_BY_NAME                             = "agency"
+                                                                                         + FIND_BY_NAME_SUFFIX;
+    public static final String                FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "agency"
+                                                                                         + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String                FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "agency"
+                                                                                         + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String                FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "agency"
+                                                                                         + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String                GET_ALL_PARENT_RELATIONSHIPS             = "agency"
+                                                                                         + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String                GET_CHILD                                = "agency"
+                                                                                         + GET_CHILDREN_SUFFIX;
+    public static final String                GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
+                                                                                         + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String                IMMEDIATE_CHILDREN_NETWORK_RULES         = "agency.immediateChildrenNetworkRules";
+    public static final String                QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
+    public static final String                UNLINKED                                 = "agency"
+                                                                                         + UNLINKED_SUFFIX;
+    private static final long                 serialVersionUID                         = 1L;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<AgencyAccessAuthorization> accessAuthsByParent;
+    private Set<AgencyAccessAuthorization<?>> accessAuthsByParent;
 
     //bi-directional many-to-one association to AgencyAttribute
     @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<AgencyAttribute>           attributes;
+    private Set<AgencyAttribute>              attributes;
 
     @Id
     @GeneratedValue(generator = "agency_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                           id;
+    private Long                              id;
 
     //bi-directional many-to-one association to AgencyNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<AgencyNetwork>             networkByChild;
+    private Set<AgencyNetwork>                networkByChild;
 
     //bi-directional many-to-one association to AgencyNetwork
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<AgencyNetwork>             networkByParent;
+    private Set<AgencyNetwork>                networkByParent;
 
     public Agency() {
     }

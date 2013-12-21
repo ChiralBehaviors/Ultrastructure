@@ -35,7 +35,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.attribute.Unit;
+import com.hellblazer.CoRE.attribute.unit.Unit;
 
 /**
  * @author hhildebrand
@@ -54,10 +54,10 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     private Long               id;
 
     //bi-directional many-to-one association to Relationship
-    
+
     @ManyToOne
     @JoinColumn(name = "relationship")
-    private Relationship           relationship;
+    private Relationship       relationship;
 
     public RelationshipAttribute() {
         super();
@@ -76,20 +76,22 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     }
 
     public RelationshipAttribute(Attribute attribute, BigDecimal value,
-                             Agency updatedBy) {
+                                 Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
     public RelationshipAttribute(Attribute attribute, boolean value,
-                             Agency updatedBy) {
+                                 Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
-    public RelationshipAttribute(Attribute attribute, int value, Agency updatedBy) {
+    public RelationshipAttribute(Attribute attribute, int value,
+                                 Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
-    public RelationshipAttribute(Attribute attribute, String value, Agency updatedBy) {
+    public RelationshipAttribute(Attribute attribute, String value,
+                                 Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -139,6 +141,6 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     }
 
     public void setRelationship(Relationship interval) {
-        this.relationship = interval;
+        relationship = interval;
     }
 }

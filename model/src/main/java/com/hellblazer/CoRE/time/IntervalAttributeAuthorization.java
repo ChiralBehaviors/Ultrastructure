@@ -46,10 +46,10 @@ import com.hellblazer.CoRE.network.Relationship;
 public class IntervalAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Interval> {
     private static final long serialVersionUID = 1L;
- 
+
     @ManyToOne
     @JoinColumn(name = "classifier")
-    private Interval            classifier;
+    private Interval          classifier;
 
     @Id
     @GeneratedValue(generator = "interval_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
@@ -78,7 +78,7 @@ public class IntervalAttributeAuthorization extends
      * @param updatedBy
      */
     public IntervalAttributeAuthorization(Relationship classification,
-                                        Agency updatedBy) {
+                                          Agency updatedBy) {
         super(classification, updatedBy);
     }
 
@@ -89,13 +89,13 @@ public class IntervalAttributeAuthorization extends
      * @param updatedBy
      */
     public IntervalAttributeAuthorization(Relationship classification,
-                                        Attribute authorized, Agency updatedBy) {
+                                          Attribute authorized, Agency updatedBy) {
         super(classification, authorized, updatedBy);
     }
 
     public IntervalAttributeAuthorization(Relationship classification,
-                                        Interval classifier,
-                                        Attribute authorized, Agency updatedBy) {
+                                          Interval classifier,
+                                          Attribute authorized, Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
     }

@@ -16,9 +16,9 @@
  */
 package com.hellblazer.CoRE.meta;
 
-import com.hellblazer.CoRE.event.StatusCode;
-import com.hellblazer.CoRE.event.StatusCodeAttribute;
-import com.hellblazer.CoRE.event.StatusCodeAttributeAuthorization;
+import com.hellblazer.CoRE.event.status.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCodeAttribute;
+import com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization;
 
 /**
  * @author hhildebrand

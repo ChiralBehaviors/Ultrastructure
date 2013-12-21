@@ -25,10 +25,10 @@ import javax.persistence.EntityManager;
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.event.StatusCode;
-import com.hellblazer.CoRE.event.StatusCodeAttribute;
-import com.hellblazer.CoRE.event.StatusCodeAttributeAuthorization;
-import com.hellblazer.CoRE.event.StatusCodeNetwork;
+import com.hellblazer.CoRE.event.status.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCodeAttribute;
+import com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization;
+import com.hellblazer.CoRE.event.status.StatusCodeNetwork;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;

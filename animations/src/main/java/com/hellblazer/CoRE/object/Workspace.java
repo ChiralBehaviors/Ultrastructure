@@ -58,17 +58,27 @@ public class Workspace {
         return ws;
     }
 
-    private Product                      workspace;
-    private Relationship                 workspaceOf;
-    private EntityManager                em;
-    private List<Product>                products;
-    private List<AccessAuthorization>    accessAuths; 
+    private Product                   workspace;
+    private Relationship              workspaceOf;
+    private EntityManager             em;
+    private List<Product>             products;
+    private List<AccessAuthorization> accessAuths;
 
     /**
      * An empty constructor for JSON serialization.
      */
     public Workspace() {
         // empty constructor for JSON
+    }
+
+    public void addToWorkspace(ExistentialRuleform<?, ?> rf) {
+        //TODO HPARRY generalize
+        Product p = (Product) rf;
+        p.setUpdatedBy(em.merge(p.getUpdatedBy()));
+        ProductNetwork pn = new ProductNetwork(workspace, workspaceOf, p,
+                                               p.getUpdatedBy());
+        em.persist(p);
+        em.persist(pn);
     }
 
     /**
@@ -97,13 +107,18 @@ public class Workspace {
      */
     public Product getWorkspace() {
         return workspace;
-    } 
+    }
 
     /**
      * @return the workspaceOf
      */
     public Relationship getWorkspaceOf() {
         return workspaceOf;
+    }
+
+    public void removeFromWorkspace(ExistentialRuleform<?, ?> rf) {
+        //TODO HPARRY
+
     }
 
     /**
@@ -137,20 +152,6 @@ public class Workspace {
     public void setWorkspaceOf(Relationship workspaceOf) {
         this.workspaceOf = workspaceOf;
     }
-    
-    public void addToWorkspace(ExistentialRuleform<?,?> rf) {
-        //TODO HPARRY generalize
-        Product p = (Product)rf;
-        p.setUpdatedBy(em.merge(p.getUpdatedBy()));
-        ProductNetwork pn = new ProductNetwork(workspace, workspaceOf, p, p.getUpdatedBy()); 
-        em.persist(p);
-        em.persist(pn);
-    }
-    
-    public void removeFromWorkspace(ExistentialRuleform<?,?> rf) {
-        //TODO HPARRY
-        
-    }
 
     private List<AccessAuthorization> loadWorkspaceAccessAuthorizations() {
         AccessAuthorizationGraphQuery query = new AccessAuthorizationGraphQuery(
@@ -158,7 +159,7 @@ public class Workspace {
                                                                                 workspaceOf,
                                                                                 em);
         return query.getResults();
-    } 
+    }
 
     private List<Product> loadWorkspaceProducts() {
         NetworkGraphQuery<Product> queryAgency = new NetworkGraphQuery<Product>(

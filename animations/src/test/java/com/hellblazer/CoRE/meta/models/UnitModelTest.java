@@ -23,8 +23,8 @@ import java.util.List;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.attribute.UnitNetwork;
+import com.hellblazer.CoRE.attribute.unit.Unit;
+import com.hellblazer.CoRE.attribute.unit.UnitNetwork;
 import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 

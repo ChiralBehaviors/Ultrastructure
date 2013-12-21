@@ -19,7 +19,7 @@ package com.hellblazer.CoRE.kernel;
 
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;

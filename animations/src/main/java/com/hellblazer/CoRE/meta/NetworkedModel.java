@@ -53,14 +53,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
     public RuleForm create(String name, String description,
                            Aspect<RuleForm> aspect, Aspect<RuleForm>... aspects);
 
+    public RuleForm getSingleChild(RuleForm parent, Relationship r);
+
     /**
      * Answer the list of unlinked
      * 
      * @return
      */
     public List<RuleForm> getUnlinked();
-    
-    public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
     /**
      * Answer the list of relationships used in this ruleform's networks.
@@ -200,6 +200,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
     List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
                                                Agency groupingAgency);
 
+    /**
+     * 
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
 
     /**
      * Answer the Facet of the ruleform instance containing the authorized
@@ -229,14 +236,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
      * @return
      */
     List<RuleForm> getInGroup(RuleForm parent, Relationship relationship);
-
-    /**
-     * 
-     * @param parent
-     * @param relationship
-     * @return
-     */
-    List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
 
     /**
      * 

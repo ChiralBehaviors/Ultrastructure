@@ -21,7 +21,7 @@ import javax.persistence.EntityManager;
 
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.event.StatusCode;
+import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownLocation;

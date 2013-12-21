@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
 import com.hellblazer.CoRE.Util;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyAttribute;
+import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;

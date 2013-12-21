@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.agency.AgencyProductAccessAuthorization;
+import com.hellblazer.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.hellblazer.CoRE.kernel.Bootstrap;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;

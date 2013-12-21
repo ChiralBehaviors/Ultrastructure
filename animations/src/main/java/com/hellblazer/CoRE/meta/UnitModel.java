@@ -16,9 +16,9 @@
  */
 package com.hellblazer.CoRE.meta;
 
-import com.hellblazer.CoRE.attribute.Unit;
-import com.hellblazer.CoRE.attribute.UnitAttribute;
-import com.hellblazer.CoRE.attribute.UnitAttributeAuthorization;
+import com.hellblazer.CoRE.attribute.unit.Unit;
+import com.hellblazer.CoRE.attribute.unit.UnitAttribute;
+import com.hellblazer.CoRE.attribute.unit.UnitAttributeAuthorization;
 
 /**
  * @author hhildebrand

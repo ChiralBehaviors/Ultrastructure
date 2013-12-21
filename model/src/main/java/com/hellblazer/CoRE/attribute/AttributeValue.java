@@ -34,6 +34,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.attribute.unit.Unit;
 import com.hellblazer.CoRE.event.JobAttribute;
 
 /**

@@ -25,7 +25,7 @@ import javax.persistence.Query;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.ProductAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductAccessAuthorization;
 
 /**
  * @author hparry

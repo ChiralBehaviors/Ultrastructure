@@ -30,9 +30,9 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization;
-import com.hellblazer.CoRE.product.ProductLocationAccessAuthorization;
 import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**

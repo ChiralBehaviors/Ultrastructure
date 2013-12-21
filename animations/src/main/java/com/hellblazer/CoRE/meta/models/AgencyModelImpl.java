@@ -25,9 +25,9 @@ import javax.persistence.EntityManager;
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyAttribute;
 import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
 import com.hellblazer.CoRE.agency.AgencyNetwork;
+import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
@@ -200,7 +200,6 @@ public class AgencyModelImpl
         // TODO Auto-generated method stub
         return null;
     }
-
 
     /*
      * (non-Javadoc)

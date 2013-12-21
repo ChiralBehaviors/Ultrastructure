@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.attribute.Unit;
 import com.hellblazer.CoRE.attribute.ValueType;
+import com.hellblazer.CoRE.attribute.unit.Unit;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.test.DatabaseTest;
 

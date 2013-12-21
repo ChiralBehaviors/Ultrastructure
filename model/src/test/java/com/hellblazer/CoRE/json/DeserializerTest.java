@@ -59,8 +59,7 @@ public class DeserializerTest extends DatabaseTest {
     //@Test
     public void testDeserializer() throws JsonParseException,
                                   JsonMappingException, IOException {
-        @SuppressWarnings("unused")
-        Product p = new Product("P", "P", core);
+        new Product("P", "P", core);
 
         SimpleModule module = new SimpleModule();
         module.setMixInAnnotation(Ruleform.class,
@@ -70,8 +69,9 @@ public class DeserializerTest extends DatabaseTest {
             public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
                                                           BeanDescription beanDesc,
                                                           JsonDeserializer<?> deserializer) {
-                if (Ruleform.class.isAssignableFrom(beanDesc.getBeanClass()))
+                if (Ruleform.class.isAssignableFrom(beanDesc.getBeanClass())) {
                     return new RuleformDeserializer(deserializer, em);
+                }
                 return deserializer;
             }
         });
@@ -86,8 +86,7 @@ public class DeserializerTest extends DatabaseTest {
         System.out.println(baos.toString());
         InputStream is = new ByteArrayInputStream(baos.toByteArray());
 
-        @SuppressWarnings("unused")
-        Agency p2 = mapper.readValue(is, Agency.class);
+        mapper.readValue(is, Agency.class);
         beginTransaction();
         //em.persist(p2);
         commitTransaction();

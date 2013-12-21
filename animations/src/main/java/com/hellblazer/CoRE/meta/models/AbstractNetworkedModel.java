@@ -195,31 +195,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                    kernel.getInverseSoftware(), em);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getChild(com.hellblazer.CoRE.
-     * ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public RuleForm getSingleChild(RuleForm parent, Relationship r) {
-        TypedQuery<RuleForm> query = em.createNamedQuery(prefix
-                                                                 + GET_CHILDREN_SUFFIX,
-                                                         entity);
-        query.setParameter("p", parent);
-        query.setParameter("r", r);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("%s has no child for relationship %s",
-                                        parent, r));
-            }
-            return null;
-        }
-    }
-
     public void generateInverses() {
         Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
                                                         GENERATE_NETWORK_INVERSES_SUFFIX));
@@ -363,6 +338,24 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * (non-Javadoc)
      * 
      * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
+     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<RuleForm> getChildren(RuleForm parent, Relationship relationship) {
+        String prefix = parent.getClass().getSimpleName().toLowerCase()
+                        + "Network";
+        @SuppressWarnings("unchecked")
+        TypedQuery<RuleForm> q = (TypedQuery<RuleForm>) em.createNamedQuery(prefix
+                                                                                    + ExistentialRuleform.GET_CHILDREN_SUFFIX,
+                                                                            parent.getClass());
+        return q.getResultList();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getFacet(com.hellblazer.CoRE.
      * ExistentialRuleform, com.hellblazer.CoRE.meta.Aspect)
      */
@@ -419,6 +412,31 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     /*
      * (non-Javadoc)
      * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getChild(com.hellblazer.CoRE.
+     * ExistentialRuleform, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public RuleForm getSingleChild(RuleForm parent, Relationship r) {
+        TypedQuery<RuleForm> query = em.createNamedQuery(prefix
+                                                                 + GET_CHILDREN_SUFFIX,
+                                                         entity);
+        query.setParameter("p", parent);
+        query.setParameter("r", r);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("%s has no child for relationship %s",
+                                        parent, r));
+            }
+            return null;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.hellblazer.CoRE.meta.NetworkedModel#getUnlinked()
      */
     @Override
@@ -458,24 +476,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         em.createNativeQuery(String.format("DELETE FROM %s WHERE parent = %s AND relationship = %s",
                                            networkTable, parent, relationship));
 
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getNetwork(com.hellblazer.CoRE
-     * .network.Networked, com.hellblazer.CoRE.network.Relationship)
-     */
-    @Override
-    public List<RuleForm> getChildren(RuleForm parent, Relationship relationship) {
-        String prefix = parent.getClass().getSimpleName().toLowerCase()
-                        + "Network";
-        @SuppressWarnings("unchecked")
-        TypedQuery<RuleForm> q = (TypedQuery<RuleForm>) em.createNamedQuery(prefix
-                                                                                    + ExistentialRuleform.GET_CHILDREN_SUFFIX,
-                                                                            parent.getClass());
-        return q.getResultList();
     }
 
     @Override

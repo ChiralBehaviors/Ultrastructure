@@ -21,9 +21,10 @@ public class RuleformDeserializer extends StdDeserializer<Ruleform> implements
 
     private final JsonDeserializer<?> defaultDeserializer;
 
-    private final EntityManager em;
+    private final EntityManager       em;
 
-    public RuleformDeserializer(JsonDeserializer<?> defaultDeserializer, EntityManager em) {
+    public RuleformDeserializer(JsonDeserializer<?> defaultDeserializer,
+                                EntityManager em) {
         super(Ruleform.class);
         this.defaultDeserializer = defaultDeserializer;
         this.em = em;

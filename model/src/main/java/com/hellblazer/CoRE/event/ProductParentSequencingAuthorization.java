@@ -35,6 +35,7 @@ import javax.persistence.Table;
 
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.product.Product;
 
 /**

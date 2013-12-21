@@ -107,9 +107,9 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                          + "AND ea.classifier = :classifier "
                                                                          + "AND ea.groupingAgency = :groupingAgency"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
-                                                     + "FROM ProductNetwork n "
-                                                     + "WHERE n.parent = :p "
-                                                     + "AND n.relationship = :r"),
+                                                        + "FROM ProductNetwork n "
+                                                        + "WHERE n.parent = :p "
+                                                        + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM ProductNetwork n "
                                                                         + "WHERE n.child = :c"),
@@ -147,7 +147,7 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
                                                                                            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String    GET_ALL_PARENT_RELATIONSHIPS                           = "product"
                                                                                            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String    GET_CHILDREN                                              = "product"
+    public static final String    GET_CHILDREN                                           = "product"
                                                                                            + GET_CHILDREN_SUFFIX;
     public static final String    GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
                                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;

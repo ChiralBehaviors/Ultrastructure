@@ -27,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 
@@ -41,7 +42,8 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
                                                                                + "WHERE auth.relationship = :r "
                                                                                + "AND auth.parent = :rf ") })
 @Entity
-public abstract class AgencyAccessAuthorization extends AccessAuthorization {
+public abstract class AgencyAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
+        extends AccessAuthorization<Agency, Child> {
 
     public static final String AGENCY_ACCESS_AUTHORIZATION_PREFIX                 = "agencyAccessAuthorization";
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = AGENCY_ACCESS_AUTHORIZATION_PREFIX

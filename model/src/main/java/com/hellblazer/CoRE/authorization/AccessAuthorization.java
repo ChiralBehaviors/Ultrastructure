@@ -46,7 +46,8 @@ import com.hellblazer.CoRE.network.Relationship;
 @Table(name = "access_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "access_authorization_id_seq", sequenceName = "access_authorization_id_seq")
 @DiscriminatorColumn(name = "authorization_type")
-public abstract class AccessAuthorization extends Ruleform {
+public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Parent, ?>, Child extends ExistentialRuleform<Child, ?>>
+        extends Ruleform {
 
     public static final String AGENCY_LOCATION                                                                = "1";
     // IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
@@ -63,8 +64,11 @@ public abstract class AccessAuthorization extends Ruleform {
     public static final String LOCATION_AGENCY                                                                = "4";
     public static final String LOCATION_PRODUCT                                                               = "5";
     public static final String PRODUCT_AGENCY                                                                 = "2";
-
     public static final String PRODUCT_LOCATION                                                               = "3";
+    public static final String PRODUCT_ATTRIBUTE                                                              = "6";
+    public static final String PRODUCT_RELATIONSHIP                                                           = "7";
+    public static final String PRODUCT_STATUS_CODE                                                            = "8";
+    public static final String PRODUCT_UNIT                                                                   = "9";
     private static final long  serialVersionUID                                                               = 1L;
 
     @Column(name = "authorization_type")
@@ -87,7 +91,7 @@ public abstract class AccessAuthorization extends Ruleform {
     @JoinColumn(name = "relationship")
     protected Relationship     relationship;
 
-    abstract public ExistentialRuleform<?, ?> getChild();
+    abstract public Child getChild();
 
     /**
      * @return the childTransitiveRelationship
@@ -101,7 +105,7 @@ public abstract class AccessAuthorization extends Ruleform {
         return id;
     }
 
-    abstract public ExistentialRuleform<?, ?> getParent();
+    abstract public Parent getParent();
 
     /**
      * @return the parentTransitiveRelationship

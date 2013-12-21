@@ -80,13 +80,14 @@ import com.hellblazer.CoRE.product.Product;
                                                                                     + "AND auth.child = childNet.parent ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.AGENCY_PRODUCT)
-public class AgencyProductAccessAuthorization extends AgencyAccessAuthorization {
+public class AgencyProductAccessAuthorization extends
+        AgencyAccessAuthorization<Product> {
 
     public static final String AGENCY_PRODUCT_ACCESS_AUTH_PREFIX                                       = "agencyProductAccessAuthorization";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = AGENCY_PRODUCT_ACCESS_AUTH_PREFIX
-                                                                                                         + LocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = AGENCY_PRODUCT_ACCESS_AUTH_PREFIX
-                                                                                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
 
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = AGENCY_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.product_attribute_access_authorization AS 
+             SELECT a.id, p.name AS product, ptr.name AS product_relationship, r.name AS relationship,
+                    l.name AS attribute, ctr.name AS attribute_relationship
+               FROM ruleform.access_authorization a
+               JOIN ruleform.product p ON a.product1 = p.id
+               JOIN ruleform.relationship ptr ON a.parent_transitive_relationship = ptr.id
+               JOIN ruleform.relationship r ON a.relationship = r.id
+               JOIN ruleform.attribute l ON a.attribute2 = l.id
+               JOIN ruleform.relationship ctr ON a.child_transitive_relationship = ctr.id
+               WHERE a.authorization_type = '6';
+            
+            ALTER TABLE readable.product_attribute_access_authorization
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="product_attribute_access_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

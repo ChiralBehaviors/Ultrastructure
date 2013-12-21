@@ -16,7 +16,13 @@
  */
 package com.hellblazer.CoRE.product;
 
-import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.*;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_PARENT_CHILD_NETWORKS;
+import static com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization.FIND_RULEFORMS_REFERENCED_BY_AUTH;
 
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +40,6 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyAccessAuthorization;
 import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
@@ -103,13 +108,13 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_AGENCY)
 public class ProductAgencyAccessAuthorization extends
-        ProductAccessAuthorization {
+        ProductAccessAuthorization<Agency> {
     public static final String PRODUCT_AGENCY_ACCESS_AUTH_PREFIX                                       = "productAgencyAccessAuthorization";
-    
+
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + AgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX

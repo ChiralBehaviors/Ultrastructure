@@ -81,14 +81,14 @@ import com.hellblazer.CoRE.product.Product;
 @Entity
 @DiscriminatorValue(AccessAuthorization.LOCATION_PRODUCT)
 public class LocationProductAccessAuthorization extends
-        LocationAccessAuthorization {
+        LocationAccessAuthorization<Product> {
     public static final String LOCATION_PRODUCT_ACCESS_AUTH_PREFIX                                     = "locationProductAccessAuthorization";
 
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
-                                                                                                         + LocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
 
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
-                                                                                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
@@ -96,7 +96,7 @@ public class LocationProductAccessAuthorization extends
 
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
-    
+
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

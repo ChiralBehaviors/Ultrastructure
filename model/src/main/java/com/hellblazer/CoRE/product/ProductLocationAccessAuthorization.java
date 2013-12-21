@@ -36,7 +36,6 @@ import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationAccessAuthorization;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -82,13 +81,13 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_LOCATION)
 public class ProductLocationAccessAuthorization extends
-        ProductAccessAuthorization {
+        ProductAccessAuthorization<Location> {
     public static final String PRODUCT_LOCATION_ACCESS_AUTH_PREFIX                                     = "productLocationAccessAuthorization";
 
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + LocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
@@ -96,7 +95,7 @@ public class ProductLocationAccessAuthorization extends
 
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
-    
+
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

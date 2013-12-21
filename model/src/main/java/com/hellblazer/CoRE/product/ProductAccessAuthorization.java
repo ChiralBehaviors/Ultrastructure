@@ -32,6 +32,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.authorization.AccessAuthorization;
 
@@ -50,7 +51,8 @@ import com.hellblazer.CoRE.authorization.AccessAuthorization;
                                                               + "WHERE auth.parent = :parent "
                                                               + "AND auth.relationship = :relationship ") })
 @Entity
-public abstract class ProductAccessAuthorization extends AccessAuthorization {
+public abstract class ProductAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
+        extends AccessAuthorization<Product, Child> {
     public static final String  PRODUCT_ACCESS_AUTHORIZATION_PREFIX                = "productAccessAuthorization";
 
     public static final String  FIND_AUTHORIZATION                                 = PRODUCT_ACCESS_AUTHORIZATION_PREFIX

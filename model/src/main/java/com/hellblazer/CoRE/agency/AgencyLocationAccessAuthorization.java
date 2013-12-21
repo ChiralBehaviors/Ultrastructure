@@ -81,13 +81,13 @@ import com.hellblazer.CoRE.network.Relationship;
 @Entity
 @DiscriminatorValue(AccessAuthorization.AGENCY_LOCATION)
 public class AgencyLocationAccessAuthorization extends
-        AgencyAccessAuthorization {
+        AgencyAccessAuthorization<Location> {
 
     public static final String AGENCY_LOCATION_ACCESS_AUTH_PREFIX                                      = "agencyLocationAccessAuthorization";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + LocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
 
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;

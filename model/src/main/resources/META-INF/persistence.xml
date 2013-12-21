@@ -75,8 +75,12 @@
 		<class>com.hellblazer.CoRE.Ruleform</class>
 		<class>com.hellblazer.CoRE.agency.AgencyLocationAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.product.ProductAccessAuthorization</class>
-		<class>com.hellblazer.CoRE.product.ProductLocationAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.product.ProductAgencyAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductAttributeAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductLocationAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductRelationshipAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductStatusCodeAccessAuthorization</class>
+		<class>com.hellblazer.CoRE.product.ProductUnitAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationProductAccessAuthorization</class>
 		<class>com.hellblazer.CoRE.location.LocationAgencyAccessAuthorization</class>

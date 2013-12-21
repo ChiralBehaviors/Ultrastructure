@@ -194,6 +194,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         child.link(r.getInverse(), parent, updatedBy,
                    kernel.getInverseSoftware(), em);
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -211,6 +212,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("%s has no child for relationship %s",
+                                        parent, r));
+            }
             return null;
         }
     }

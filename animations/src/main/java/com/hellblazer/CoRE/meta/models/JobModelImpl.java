@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -669,7 +670,11 @@ public class JobModelImpl implements JobModel {
         // Find protocols which match transformations specified by the meta
         // protocol
 
-        return createQuery(metaProtocol, job).getResultList();
+        try {
+            return createQuery(metaProtocol, job).getResultList();
+        } catch (NonUniqueResultException e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override

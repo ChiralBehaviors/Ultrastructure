@@ -86,7 +86,7 @@
 	<include relativeToChangelogFile="true"
 		file="/views/product_attribute_access_authorization.xml" />
 	<!-- <include relativeToChangelogFile="true"
-		file="/views/product_relationship_access_authorization.xml" /> can't do this join right at the moment ;) -->
+		file="/views/product_relationship_access_authorization.xml" /> TODO can't do this join right at the moment ;) -->
 	<include relativeToChangelogFile="true"
 		file="/views/product_status_code_access_authorization.xml" />
 	<include relativeToChangelogFile="true"

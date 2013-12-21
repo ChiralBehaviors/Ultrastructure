@@ -1249,7 +1249,6 @@ public class JobModelImpl implements JobModel {
             }
             return kernel.getSameAgency();
         } else {
-            //TODO HHILDEBRAND this might return more than one result
             return agencyModel.getSingleChild(agency, relationship);
         }
     }
@@ -1294,7 +1293,6 @@ public class JobModelImpl implements JobModel {
             }
             return kernel.getSameLocation();
         } else {
-            //TODO HHILDEBRAND this might return more than one result
             return locationModel.getSingleChild(location, relationship);
         }
     }
@@ -1352,7 +1350,6 @@ public class JobModelImpl implements JobModel {
             }
             return kernel.getSameProduct();
         } else {
-            //TODO HHILDEBRAND this might return more than one result
             return productModel.getSingleChild(product, relationship);
         }
     }

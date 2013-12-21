@@ -48,9 +48,9 @@ import com.hellblazer.CoRE.network.Relationship;
 @DiscriminatorColumn(name = "authorization_type")
 public abstract class AccessAuthorization extends Ruleform {
 
-    public static final String agency_LOCATION                                                                = "1";
+    public static final String AGENCY_LOCATION                                                                = "1";
     // IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
-    public static final String agency_PRODUCT                                                                 = "0";
+    public static final String AGENCY_PRODUCT                                                                 = "0";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX = ".findAllAuthsForParentRelationshipChildMatchOnAllRelationships";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX                            = ".findAllAuthsForParentRelationshipChild";
     public static final String FIND_AUTHORIZATION_SUFFIX                                                      = ".findAuthorization";

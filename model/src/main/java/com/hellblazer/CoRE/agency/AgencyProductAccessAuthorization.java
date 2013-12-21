@@ -79,7 +79,7 @@ import com.hellblazer.CoRE.product.Product;
                                                                                     + "AND auth.parent = parentNet.parent "
                                                                                     + "AND auth.child = childNet.parent ") })
 @Entity
-@DiscriminatorValue(AccessAuthorization.agency_PRODUCT)
+@DiscriminatorValue(AccessAuthorization.AGENCY_PRODUCT)
 public class AgencyProductAccessAuthorization extends AgencyAccessAuthorization {
 
     public static final String AGENCY_PRODUCT_ACCESS_AUTH_PREFIX                                       = "agencyProductAccessAuthorization";
@@ -102,7 +102,7 @@ public class AgencyProductAccessAuthorization extends AgencyAccessAuthorization 
     private Product            child;
 
     {
-        setAuthorizationType(AccessAuthorization.agency_PRODUCT);
+        setAuthorizationType(AccessAuthorization.AGENCY_PRODUCT);
     }
 
     public AgencyProductAccessAuthorization() {

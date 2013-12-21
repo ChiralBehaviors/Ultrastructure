@@ -79,7 +79,7 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                     + "AND auth.parent = parentNet.parent "
                                                                                     + "AND auth.child = childNet.parent ") })
 @Entity
-@DiscriminatorValue(AccessAuthorization.agency_LOCATION)
+@DiscriminatorValue(AccessAuthorization.AGENCY_LOCATION)
 public class AgencyLocationAccessAuthorization extends
         AgencyAccessAuthorization {
 
@@ -103,7 +103,7 @@ public class AgencyLocationAccessAuthorization extends
     private Location           child;
 
     {
-        setAuthorizationType(AccessAuthorization.agency_LOCATION);
+        setAuthorizationType(AccessAuthorization.AGENCY_LOCATION);
     }
 
     public AgencyLocationAccessAuthorization() {

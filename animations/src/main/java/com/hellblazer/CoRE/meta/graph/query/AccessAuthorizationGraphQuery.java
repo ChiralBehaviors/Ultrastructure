@@ -33,29 +33,29 @@ import com.hellblazer.CoRE.product.access.ProductAccessAuthorization;
  */
 public class AccessAuthorizationGraphQuery {
 
-    private EntityManager             em;
-    private AccessAuthorization       authorization;
-    private List<AccessAuthorization> auths;
-    private ExistentialRuleform<?, ?> parent;
-    private Relationship              relationship;
+    private EntityManager                   em;
+    private AccessAuthorization<?, ?>       authorization;
+    private List<AccessAuthorization<?, ?>> auths;
+    private ExistentialRuleform<?, ?>       parent;
+    private Relationship                    relationship;
 
     public AccessAuthorizationGraphQuery(ExistentialRuleform<?, ?> parent,
                                          Relationship rel, EntityManager em) {
         this.parent = parent;
         relationship = rel;
         this.em = em;
-        auths = new LinkedList<AccessAuthorization>();
+        auths = new LinkedList<AccessAuthorization<?, ?>>();
         findAuthorizations();
     }
 
     /**
      * @return the authorization
      */
-    public AccessAuthorization getAuthorization() {
+    public AccessAuthorization<?, ?> getAuthorization() {
         return authorization;
     }
 
-    public List<AccessAuthorization> getResults() {
+    public List<AccessAuthorization<?, ?>> getResults() {
         return auths;
     }
 
@@ -63,7 +63,7 @@ public class AccessAuthorizationGraphQuery {
      * @param authorization
      *            the authorization to set
      */
-    public void setAuthorization(AccessAuthorization authorization) {
+    public void setAuthorization(AccessAuthorization<?, ?> authorization) {
         this.authorization = authorization;
     }
 

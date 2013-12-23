@@ -77,8 +77,8 @@ public class WorkspaceResource {
             for (Product p : nets) {
                 p.manageEntity(em, knownObjects);
             }
-            List<AccessAuthorization> auths = w.getAccessAuths();
-            for (AccessAuthorization auth : auths) {
+            List<AccessAuthorization<?, ?>> auths = w.getAccessAuths();
+            for (AccessAuthorization<?, ?> auth : auths) {
                 auth.manageEntity(em, knownObjects);
             }
 
@@ -113,7 +113,7 @@ public class WorkspaceResource {
         Workspace w = Workspace.loadWorkspace(p, r, em);
         em.getTransaction().begin();
         try {
-            
+
             w.addToWorkspace(ef);
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
@@ -125,13 +125,13 @@ public class WorkspaceResource {
                                     em);
         return w;
     }
-    
+
     @GET
     @Path("/{id}/{relId}/Product")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Ruleform> getAllRuleformsForType(@PathParam("id") long id,
                                                  @PathParam("relId") long relId) {
-        
+
         return null;
     }
 

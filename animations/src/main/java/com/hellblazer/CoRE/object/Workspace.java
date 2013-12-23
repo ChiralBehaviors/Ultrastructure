@@ -58,11 +58,11 @@ public class Workspace {
         return ws;
     }
 
-    private Product                   workspace;
-    private Relationship              workspaceOf;
-    private EntityManager             em;
-    private List<Product>             products;
-    private List<AccessAuthorization> accessAuths;
+    private Product                         workspace;
+    private Relationship                    workspaceOf;
+    private EntityManager                   em;
+    private List<Product>                   products;
+    private List<AccessAuthorization<?, ?>> accessAuths;
 
     /**
      * An empty constructor for JSON serialization.
@@ -84,7 +84,7 @@ public class Workspace {
     /**
      * @return the auths
      */
-    public List<AccessAuthorization> getAccessAuths() {
+    public List<AccessAuthorization<?, ?>> getAccessAuths() {
         return accessAuths;
     }
 
@@ -125,7 +125,7 @@ public class Workspace {
      * @param auths
      *            the auths to set
      */
-    public void setAuths(List<AccessAuthorization> auths) {
+    public void setAuths(List<AccessAuthorization<?, ?>> auths) {
         accessAuths = auths;
     }
 
@@ -153,7 +153,7 @@ public class Workspace {
         this.workspaceOf = workspaceOf;
     }
 
-    private List<AccessAuthorization> loadWorkspaceAccessAuthorizations() {
+    private List<AccessAuthorization<?, ?>> loadWorkspaceAccessAuthorizations() {
         AccessAuthorizationGraphQuery query = new AccessAuthorizationGraphQuery(
                                                                                 workspace,
                                                                                 workspaceOf,

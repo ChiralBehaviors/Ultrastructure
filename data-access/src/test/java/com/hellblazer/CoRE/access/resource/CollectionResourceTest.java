@@ -45,7 +45,7 @@ public class CollectionResourceTest extends DatabaseTest {
         resource = new CollectionResource(emf);
         em.getTransaction().begin();
 
-        Agency core = new Agency("CoRE");
+        core = new Agency("CoRE");
         core.setUpdatedBy(core);
         core = em.merge(core);
         assertTrue(core != null);
@@ -134,6 +134,28 @@ public class CollectionResourceTest extends DatabaseTest {
         core = (Agency) resource.post(core);
         assertNotNull(core.getId());
 
+    }
+    
+    @Test
+    public void testPost() throws JsonProcessingException {
+        resource = new CollectionResource(emf);
+        Agency core = new Agency("hparry", "test resource");
+        core.setUpdatedBy(core);
+
+        core = (Agency) resource.post(core);
+        Product p = new Product("wheee", "wheee");
+        
+        
+        Product parent = new Product("Parent", "parent", core);
+        parent = (Product) resource.post(parent);
+        Relationship workspaceOf = new Relationship("workspaceOf", "workspaceOf", core);
+        workspaceOf.setInverse(workspaceOf);
+        workspaceOf = (Relationship) resource.post(workspaceOf);
+//        Agency core = new Agency("hparry", "test resource");
+//        core.setUpdatedBy(core);
+        p.setUpdatedBy(core);
+        p = resource.createNewProduct(parent.getId(), workspaceOf.getId(), p);
+        assertNotNull(p.getId());
     }
 
     //    @Test

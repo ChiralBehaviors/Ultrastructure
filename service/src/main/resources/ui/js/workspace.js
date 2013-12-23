@@ -1,6 +1,6 @@
-var ProductModel = Backbone.Model.extend({
-    
-    type : "Product"
+var ProductModel = Backbone.Model.extend({  
+    url: "/v1/services/data/collection/6",
+    type : "product"
 });
 
 var ProductCollection = Backbone.Collection.extend({
@@ -20,9 +20,12 @@ var products = new ProductCollection();
 
 $("#submit").click(function() {
     console.log("name: " + $("#new_product_name"));
-    products.create(new ProductModel({
-        name : $("#new_product_name").val()
-    }))
+    var p = new ProductModel({
+        name : $("#new_product_name").val(),
+        type: "Product"
+    });
+    console.log(p);
+    p.save(p);
 })
 
 $('#find').click(function() {

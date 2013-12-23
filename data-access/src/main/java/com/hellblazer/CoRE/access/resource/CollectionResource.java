@@ -133,15 +133,13 @@ public class CollectionResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Product createNewProduct(@PathParam("parentId") long parentId,
                                           @QueryParam("relId") long relId,
-                                          String name)
+                                          Product child)
                                                       throws JsonProcessingException {
         em.getTransaction().begin();
         Product parent = em.find(Product.class, parentId);
-        Relationship rel = em.find(Relationship.class, 32L);
-        Agency core = em.find(Agency.class, 1L);
-        Product child = new Product(name, name,core);
+        Relationship rel = em.find(Relationship.class, relId);
         em.persist(child);
-        ProductNetwork net = new ProductNetwork(parent, rel, child, core);
+        ProductNetwork net = new ProductNetwork(parent, rel, child, parent.getUpdatedBy());
         em.persist(net);
         em.getTransaction().commit();
         em.refresh(child);

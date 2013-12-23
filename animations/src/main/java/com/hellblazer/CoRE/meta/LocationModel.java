@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.meta;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.location.LocationAttribute;
 import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
+import com.hellblazer.CoRE.location.LocationNetwork;
 
 /**
  * @author hhildebrand
@@ -27,6 +28,6 @@ import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
  */
 public interface LocationModel
         extends
-        NetworkedModel<Location, LocationAttributeAuthorization, LocationAttribute> {
+        NetworkedModel<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute> {
 
 }

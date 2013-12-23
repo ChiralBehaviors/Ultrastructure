@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.product.access;
 
 import static com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
 import static com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
+import static com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization.FIND_AUTHORIZATION;
 import static com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
 import static com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
 import static com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD;
@@ -105,7 +106,11 @@ import com.hellblazer.CoRE.product.Product;
                                                                       + "WHERE auth.parent = :parent "
                                                                       + "AND auth.relationship = :relationship "
                                                                       + "AND auth.parent = pnet.parent "
-                                                                      + "AND auth.child = anet.parent") })
+                                                                      + "AND auth.child = anet.parent"),
+               @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
+                                                              + "FROM ProductAgencyAccessAuthorization auth "
+                                                              + "WHERE auth.parent = :parent "
+                                                              + "AND auth.relationship = :relationship ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_AGENCY)
 public class ProductAgencyAccessAuthorization extends
@@ -120,6 +125,8 @@ public class ProductAgencyAccessAuthorization extends
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+    public static final String FIND_AUTHORIZATION                                                      = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHORIZATION_SUFFIX;
 
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;

@@ -18,6 +18,7 @@
 package com.hellblazer.CoRE.meta;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
@@ -27,6 +28,7 @@ import com.hellblazer.CoRE.attribute.AttributeValue;
 import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
+import com.hellblazer.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -36,7 +38,7 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<?>> {
+public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<?>> {
 
     /**
      * Create a new instance with the supplied aspects
@@ -228,7 +230,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?
      * @param parent
      * @return
      */
-    List<Relationship> getImmediateRelationships(RuleForm parent);
+    Collection<Relationship> getImmediateRelationships(RuleForm parent);
 
     /**
      * @param parent

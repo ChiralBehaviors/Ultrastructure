@@ -25,7 +25,6 @@ import javax.persistence.EntityManager;
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
@@ -38,6 +37,12 @@ import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
 import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductRelationshipAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductStatusCodeAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization;
 
 /**
  * @author hhildebrand
@@ -45,7 +50,7 @@ import com.hellblazer.CoRE.product.ProductNetwork;
  */
 public class ProductModelImpl
         extends
-        AbstractNetworkedModel<Product, ProductAttributeAuthorization, ProductAttribute>
+        AbstractNetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute>
         implements ProductModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -183,19 +188,6 @@ public class ProductModelImpl
      * (non-Javadoc)
      * 
      * @see
-     * com.hellblazer.CoRE.meta.ProductModel#findStatusCodes(com.hellblazer.
-     * CoRE.product.Product)
-     */
-    @Override
-    public List<StatusCode> findStatusCodes(Product parent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * com.hellblazer.CoRE.meta.ProductModel#findStatusCodeSequences(com.hellblazer
      * .CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
      */
@@ -221,25 +213,12 @@ public class ProductModelImpl
      * (non-Javadoc)
      * 
      * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.network.Networked)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(Product parent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
      * .hellblazer.CoRE.network.Networked)
      */
     @Override
     public List<Relationship> getTransitiveRelationships(Product parent) {
-        // TODO Auto-generated method stub
+        // TODO
         return null;
     }
 
@@ -258,5 +237,65 @@ public class ProductModelImpl
             defaultValue(attribute);
             em.persist(attribute);
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.ProductModel#getAgencyAccessAuths(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<ProductAgencyAccessAuthorization> getAgencyAccessAuths(Product parent,
+                                                                       Relationship relationship) {
+        return em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHORIZATION,
+                                   ProductAgencyAccessAuthorization.class).getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.ProductModel#getAttributeAccessAuths(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<ProductAttributeAccessAuthorization> getAttributeAccessAuths(Product parent,
+                                                                             Relationship relationship) {
+        return em.createNamedQuery(ProductAttributeAccessAuthorization.FIND_AUTHORIZATION,
+                                   ProductAttributeAccessAuthorization.class).getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.ProductModel#getLocationAccessAuths(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<ProductLocationAccessAuthorization> getLocationAccessAuths(Product parent,
+                                                                           Relationship relationship) {
+        return em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHORIZATION,
+                                   ProductLocationAccessAuthorization.class).getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.ProductModel#getRelationshipAccessAuths(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<ProductRelationshipAccessAuthorization> getRelationshipAccessAuths(Product parent,
+                                                                                   Relationship relationship) {
+        return em.createNamedQuery(ProductRelationshipAccessAuthorization.FIND_AUTHORIZATION,
+                                   ProductRelationshipAccessAuthorization.class).getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.ProductModel#getStatusCodeAccessAuths(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<ProductStatusCodeAccessAuthorization> getStatusCodeAccessAuths(Product parent,
+                                                                               Relationship relationship) {
+        return em.createNamedQuery(ProductStatusCodeAccessAuthorization.FIND_AUTHORIZATION,
+                                   ProductStatusCodeAccessAuthorization.class).getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.ProductModel#getUnitAccessAuths(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
+     */
+    @Override
+    public List<ProductUnitAccessAuthorization> getUnitAccessAuths(Product parent,
+                                                                   Relationship relationship) {
+        return em.createNamedQuery(ProductUnitAccessAuthorization.FIND_AUTHORIZATION,
+                                   ProductUnitAccessAuthorization.class).getResultList();
     }
 }

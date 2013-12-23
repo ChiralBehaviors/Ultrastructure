@@ -42,7 +42,7 @@ import com.hellblazer.CoRE.network.RelationshipNetwork;
  */
 public class RelationshipModelImpl
         extends
-        AbstractNetworkedModel<Relationship, RelationshipAttributeAuthorization, RelationshipAttribute>
+        AbstractNetworkedModel<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute>
         implements RelationshipModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -187,19 +187,6 @@ public class RelationshipModelImpl
      */
     @Override
     public List<Relationship> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(Relationship parent) {
         // TODO Auto-generated method stub
         return null;
     }

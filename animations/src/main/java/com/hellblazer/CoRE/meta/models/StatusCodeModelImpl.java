@@ -18,9 +18,13 @@
 package com.hellblazer.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -29,6 +33,7 @@ import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.event.status.StatusCodeAttribute;
 import com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.hellblazer.CoRE.event.status.StatusCodeNetwork;
+import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
@@ -36,6 +41,7 @@ import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.StatusCodeModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand
@@ -43,7 +49,7 @@ import com.hellblazer.CoRE.network.Relationship;
  */
 public class StatusCodeModelImpl
         extends
-        AbstractNetworkedModel<StatusCode, StatusCodeAttributeAuthorization, StatusCodeAttribute>
+        AbstractNetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute>
         implements StatusCodeModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -194,19 +200,6 @@ public class StatusCodeModelImpl
      * (non-Javadoc)
      * 
      * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(StatusCode parent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
      * .hellblazer.CoRE.ExistentialRuleform)
      */
@@ -231,5 +224,57 @@ public class StatusCodeModelImpl
             defaultValue(attribute);
             em.persist(attribute);
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodes(com.hellblazer.CoRE.product.Product)
+     */
+    @Override
+    public Collection<StatusCode> getStatusCodes(Product service) {
+        Set<StatusCode> codes = new HashSet<StatusCode>();
+        TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES,
+                                                           StatusCode.class);
+        query.setParameter("service", service);
+        codes.addAll(query.getResultList());
+        query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODES,
+                                    StatusCode.class);
+        query.setParameter("service", service);
+        codes.addAll(query.getResultList());
+        return codes;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencing(com.hellblazer.CoRE.product.Product)
+     */
+    @Override
+    public List<StatusCodeSequencing> getStatusCodeSequencing(Product service) {
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING,
+                                                                     StatusCodeSequencing.class);
+        query.setParameter("service", service);
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencingParent(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.event.status.StatusCode)
+     */
+    @Override
+    public List<StatusCodeSequencing> getStatusCodeSequencingParent(Product service,
+                                                                    StatusCode parent) {
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING,
+                                                                     StatusCodeSequencing.class);
+        query.setParameter("service", service);
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.event.status.StatusCode)
+     */
+    @Override
+    public List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
+                                                                   StatusCode child) {
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING,
+                                                                     StatusCodeSequencing.class);
+        query.setParameter("service", service);
+        return query.getResultList();
     }
 }

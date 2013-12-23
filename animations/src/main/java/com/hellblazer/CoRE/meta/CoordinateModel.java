@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.meta;
 import com.hellblazer.CoRE.coordinate.Coordinate;
 import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
 import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
+import com.hellblazer.CoRE.coordinate.CoordinateNetwork;
 
 /**
  * @author hhildebrand
@@ -26,6 +27,6 @@ import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
  */
 public interface CoordinateModel
         extends
-        NetworkedModel<Coordinate, CoordinateAttributeAuthorization, CoordinateAttribute> {
+        NetworkedModel<Coordinate, CoordinateNetwork, CoordinateAttributeAuthorization, CoordinateAttribute> {
 
 }

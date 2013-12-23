@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.meta;
 import com.hellblazer.CoRE.time.Interval;
 import com.hellblazer.CoRE.time.IntervalAttribute;
 import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
+import com.hellblazer.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
@@ -26,6 +27,6 @@ import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
  */
 public interface IntervalModel
         extends
-        NetworkedModel<Interval, IntervalAttributeAuthorization, IntervalAttribute> {
+        NetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
 
 }

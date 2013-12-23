@@ -39,8 +39,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -75,9 +78,9 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<?>>
+abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<?>>
         implements
-        NetworkedModel<RuleForm, AttributeAuthorization, AttributeType> {
+        NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
 
     private static Logger log = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
@@ -182,7 +185,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         entity = extractedEntity();
         authorization = extractedAuthorization();
         attribute = extractedAttribute();
-        network = (Class<NetworkRuleform<RuleForm>>) getNetworkOf(entity);
+        network = (Class<NetworkRuleform<RuleForm>>) extractedNetwork();
         prefix = ModelImpl.prefixFor(entity);
         networkPrefix = ModelImpl.prefixFor(network);
         unqualifiedNetworkTable = tableName(network);
@@ -370,6 +373,22 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         };
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
+     * .hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public Collection<Relationship> getImmediateRelationships(RuleForm parent) {
+        Set<Relationship> relationships = new HashSet<Relationship>();
+        for (Network network : parent.getNetworkByChild()) {
+            relationships.add(network.getRelationship());
+        }
+        return relationships;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<RuleForm> getInGroup(RuleForm parent, Relationship relationship) {
@@ -386,16 +405,11 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return em.createQuery(query).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
-    public Class<?> getNetworkOf(Class<?> networked) {
-        return (Class<RuleForm>) ((ParameterizedType) entity.getGenericSuperclass()).getActualTypeArguments()[1];
-    }
-
     @Override
     public List<RuleForm> getNotInGroup(RuleForm parent,
                                         Relationship relationship) {
         /*
-         * SELECT e FROM productTable AS e, ProductNetwork AS n WHERE n.parent =
+         * SELECT e FROM product AS e, ProductNetwork AS n WHERE n.parent <>
          * :parent AND n.relationship = :relationship AND n.child <> e;
          */
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -598,17 +612,22 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @SuppressWarnings("unchecked")
     private Class<AttributeType> extractedAttribute() {
-        return (Class<AttributeType>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[2];
+        return (Class<AttributeType>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[3];
     }
 
     @SuppressWarnings("unchecked")
     private Class<AttributeAuthorization> extractedAuthorization() {
-        return (Class<AttributeAuthorization>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+        return (Class<AttributeAuthorization>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[2];
     }
 
     @SuppressWarnings("unchecked")
     private Class<RuleForm> extractedEntity() {
         return (Class<RuleForm>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<Network> extractedNetwork() {
+        return (Class<Network>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[1];
     }
 
     private boolean isRuleformAccessible(RuleForm parent,

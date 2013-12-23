@@ -43,7 +43,7 @@ import com.hellblazer.CoRE.network.Relationship;
  */
 public class CoordinateModelImpl
         extends
-        AbstractNetworkedModel<Coordinate, CoordinateAttributeAuthorization, CoordinateAttribute>
+        AbstractNetworkedModel<Coordinate, CoordinateNetwork, CoordinateAttributeAuthorization, CoordinateAttribute>
         implements CoordinateModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -186,19 +186,6 @@ public class CoordinateModelImpl
      */
     @Override
     public List<Coordinate> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(Coordinate parent) {
         // TODO Auto-generated method stub
         return null;
     }

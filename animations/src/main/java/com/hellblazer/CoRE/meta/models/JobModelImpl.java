@@ -468,7 +468,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Job> getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
+    public List<Job> getAllActiveSubJobsOf(Job parent,
                                                               Agency agency) {
         List<Job> jobs = new ArrayList<Job>();
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
@@ -478,14 +478,14 @@ public class JobModelImpl implements JobModel {
         for (Job subJob : query.getResultList()) {
             if (isActive(subJob)) {
                 jobs.add(subJob);
-                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency, jobs);
+                getAllActiveSubJobsOf(parent, agency, jobs);
             }
         }
         return jobs;
     }
 
     @Override
-    public void getAllActiveSubJobsOfJobAssignedToAgency(Job parent,
+    public void getAllActiveSubJobsOf(Job parent,
                                                          Agency agency,
                                                          List<Job> jobs) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
@@ -495,7 +495,7 @@ public class JobModelImpl implements JobModel {
         for (Job subJob : query.getResultList()) {
             if (isActive(subJob)) {
                 jobs.add(subJob);
-                getAllActiveSubJobsOfJobAssignedToAgency(parent, agency, jobs);
+                getAllActiveSubJobsOf(parent, agency, jobs);
             }
         }
     }

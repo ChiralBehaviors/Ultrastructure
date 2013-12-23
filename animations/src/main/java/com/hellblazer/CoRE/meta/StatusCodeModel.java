@@ -16,9 +16,15 @@
  */
 package com.hellblazer.CoRE.meta;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.event.status.StatusCodeAttribute;
 import com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization;
+import com.hellblazer.CoRE.event.status.StatusCodeNetwork;
+import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
+import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand
@@ -26,6 +32,45 @@ import com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization;
  */
 public interface StatusCodeModel
         extends
-        NetworkedModel<StatusCode, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
+        NetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
+
+    /**
+     * Answer the unique status codes associated with a service
+     * 
+     * @param service
+     * @return the unique status codes associated with a service
+     */
+    Collection<StatusCode> getStatusCodes(Product service);
+
+    /**
+     * Answer the list of {@link #StatusCodeSequencing} that refer to a service
+     * 
+     * @param service
+     * @return the list of {@link #StatusCodeSequencing} that refer to a service
+     */
+    List<StatusCodeSequencing> getStatusCodeSequencing(Product service);
+
+    /**
+     * Answer the list of {@link #StatusCodeSequencing} that refer to the
+     * service with the parent {@link #StatusCode}
+     * 
+     * @param service
+     * @param parent
+     * @return the list of {@link #StatusCodeSequencing} that refer to the
+     *         service with the parent {@link #StatusCode}
+     */
+    List<StatusCodeSequencing> getStatusCodeSequencingParent(Product service,
+                                                             StatusCode parent);
+
+    /**
+     * Answer the list of {@link #StatusCodeSequencing} that refer to the
+     * service with the child {@link #StatusCode}
+     * 
+     * @param service
+     * @param child
+     * @return
+     */
+    List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
+                                                            StatusCode child);
 
 }

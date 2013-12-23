@@ -48,7 +48,7 @@ import com.hellblazer.CoRE.product.ProductAttribute;
  */
 public class AttributeModelImpl
         extends
-        AbstractNetworkedModel<Attribute, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
+        AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -186,19 +186,6 @@ public class AttributeModelImpl
      */
     @Override
     public List<Attribute> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.network.Networked)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(Attribute parent) {
         // TODO Auto-generated method stub
         return null;
     }

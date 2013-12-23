@@ -16,7 +16,8 @@
  */
 package com.hellblazer.CoRE.event.status;
 
-import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS;
+import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.*;
+import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING;
 import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_CHILD_STATUS_CODES;
 import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODES;
 import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
@@ -64,17 +65,29 @@ import com.hellblazer.CoRE.product.ProductNetwork;
                                                                    + " WHERE scs.service = :service"),
                @NamedQuery(name = GET_CHILD_STATUS_CODES, query = "SELECT DISTINCT(scs.childCode) "
                                                                   + " FROM StatusCodeSequencing scs "
-                                                                  + " WHERE scs.service = :service") })
+                                                                  + " WHERE scs.service = :service"),
+               @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                            + " WHERE scs.service = :service"
+                                                                            + "   AND scs.childCode = :statusCode"),
+               @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                             + " WHERE scs.service = :service"
+                                                                             + "   AND scs.parentCode = :statusCode"),
+               @NamedQuery(name = GET_ALL_STATUS_CODE_SEQUENCING, query = "SELECT scs "
+                                                                          + " FROM StatusCodeSequencing scs "
+                                                                          + " WHERE scs.service = :service") })
 @Entity
 @Table(name = "status_code_sequencing", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "status_code_sequencing_id_seq", sequenceName = "status_code_sequencing_id_seq")
 public class StatusCodeSequencing extends Ruleform {
-    public static final String  ENSURE_VALID_SERVICE_STATUS = "statusCodeSequencing.ensureValidServiceAndStatus";
-    public static final String  GET_CHILD_STATUS_CODES      = "statusCodeSequencing.getChildStatusCodes";
-    public static final String  GET_PARENT_STATUS_CODES     = "statusCodeSequencing.getParentStatusCodes";
-    public static final String  IS_VALID_NEXT_STATUS        = "statusCodeSequencing.isValidNextStatus";
+    public static final String  ENSURE_VALID_SERVICE_STATUS       = "statusCodeSequencing.ensureValidServiceAndStatus";
+    public static final String  GET_CHILD_STATUS_CODES            = "statusCodeSequencing.getChildStatusCodes";
+    public static final String  GET_PARENT_STATUS_CODES           = "statusCodeSequencing.getParentStatusCodes";
+    public static final String  GET_ALL_STATUS_CODE_SEQUENCING    = "statusCodeSequencing.getAllStatusCodeSequencing";
+    public static final String  GET_CHILD_STATUS_CODE_SEQUENCING  = "statusCodeSequencing.getChildStatusCodeSequencing";
+    public static final String  GET_PARENT_STATUS_CODE_SEQUENCING = "statusCodeSequencing.getParentStatusCodeSequencing";
+    public static final String  IS_VALID_NEXT_STATUS              = "statusCodeSequencing.isValidNextStatus";
 
-    private static final long   serialVersionUID            = 1L;
+    private static final long   serialVersionUID                  = 1L;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -91,7 +104,7 @@ public class StatusCodeSequencing extends Ruleform {
     private StatusCode          parentCode;
 
     @Column(name = "sequence_number")
-    private Integer             sequenceNumber              = 1;
+    private Integer             sequenceNumber                    = 1;
 
     //bi-directional many-to-one association to Event
     @ManyToOne(optional = false)

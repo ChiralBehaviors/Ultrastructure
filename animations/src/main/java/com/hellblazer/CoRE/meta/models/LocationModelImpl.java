@@ -43,7 +43,7 @@ import com.hellblazer.CoRE.network.Relationship;
  */
 public class LocationModelImpl
         extends
-        AbstractNetworkedModel<Location, LocationAttributeAuthorization, LocationAttribute>
+        AbstractNetworkedModel<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute>
         implements LocationModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -186,19 +186,6 @@ public class LocationModelImpl
      */
     @Override
     public List<Location> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(Location parent) {
         // TODO Auto-generated method stub
         return null;
     }

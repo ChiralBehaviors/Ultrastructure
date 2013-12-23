@@ -19,12 +19,14 @@ package com.hellblazer.CoRE.meta;
 import com.hellblazer.CoRE.attribute.unit.Unit;
 import com.hellblazer.CoRE.attribute.unit.UnitAttribute;
 import com.hellblazer.CoRE.attribute.unit.UnitAttributeAuthorization;
+import com.hellblazer.CoRE.attribute.unit.UnitNetwork;
 
 /**
  * @author hhildebrand
  * 
  */
-public interface UnitModel extends
-        NetworkedModel<Unit, UnitAttributeAuthorization, UnitAttribute> {
+public interface UnitModel
+        extends
+        NetworkedModel<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute> {
 
 }

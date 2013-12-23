@@ -43,7 +43,7 @@ import com.hellblazer.CoRE.time.IntervalNetwork;
  */
 public class IntervalModelImpl
         extends
-        AbstractNetworkedModel<Interval, IntervalAttributeAuthorization, IntervalAttribute>
+        AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
         implements IntervalModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -185,19 +185,6 @@ public class IntervalModelImpl
      */
     @Override
     public List<Interval> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(Interval parent) {
         // TODO Auto-generated method stub
         return null;
     }

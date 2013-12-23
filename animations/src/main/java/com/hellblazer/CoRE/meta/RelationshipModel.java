@@ -19,6 +19,7 @@ package com.hellblazer.CoRE.meta;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.network.RelationshipAttribute;
 import com.hellblazer.CoRE.network.RelationshipAttributeAuthorization;
+import com.hellblazer.CoRE.network.RelationshipNetwork;
 
 /**
  * @author hhildebrand
@@ -26,6 +27,6 @@ import com.hellblazer.CoRE.network.RelationshipAttributeAuthorization;
  */
 public interface RelationshipModel
         extends
-        NetworkedModel<Relationship, RelationshipAttributeAuthorization, RelationshipAttribute> {
+        NetworkedModel<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute> {
 
 }

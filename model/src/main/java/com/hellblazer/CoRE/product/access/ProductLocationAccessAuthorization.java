@@ -16,7 +16,7 @@
  */
 package com.hellblazer.CoRE.product.access;
 
-import static com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+import static com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization.*;
 import static com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
 import static com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
 import static com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
@@ -78,7 +78,11 @@ import com.hellblazer.CoRE.product.Product;
                                                                                     + "AND childNet.relationship = :childNetRelationship "
                                                                                     + "AND childNet.child = :childNetChild "
                                                                                     + "AND auth.parent = parentNet.parent "
-                                                                                    + "AND auth.child = childNet.parent ") })
+                                                                                    + "AND auth.child = childNet.parent "),
+               @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
+                                                              + "FROM ProductLocationAccessAuthorization auth "
+                                                              + "WHERE auth.parent = :parent "
+                                                              + "AND auth.relationship = :relationship ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_LOCATION)
 public class ProductLocationAccessAuthorization extends
@@ -89,6 +93,8 @@ public class ProductLocationAccessAuthorization extends
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+    public static final String FIND_AUTHORIZATION                                                      = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
+                                                                                                         + FIND_AUTHORIZATION_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX

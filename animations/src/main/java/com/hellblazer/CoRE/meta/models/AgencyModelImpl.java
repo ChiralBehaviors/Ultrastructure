@@ -43,7 +43,7 @@ import com.hellblazer.CoRE.network.Relationship;
  */
 public class AgencyModelImpl
         extends
-        AbstractNetworkedModel<Agency, AgencyAttributeAuthorization, AgencyAttribute>
+        AbstractNetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
         implements AgencyModel {
 
     private static class Call<T> implements StoredProcedure<T> {
@@ -184,19 +184,6 @@ public class AgencyModelImpl
      */
     @Override
     public List<Agency> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getImmediateRelationships(Agency parent) {
         // TODO Auto-generated method stub
         return null;
     }

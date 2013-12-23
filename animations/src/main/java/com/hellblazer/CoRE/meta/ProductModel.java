@@ -19,12 +19,18 @@ package com.hellblazer.CoRE.meta;
 
 import java.util.List;
 
-import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
+import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductRelationshipAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductStatusCodeAccessAuthorization;
+import com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization;
 
 /**
  * @author hhildebrand
@@ -32,14 +38,7 @@ import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
  */
 public interface ProductModel
         extends
-        NetworkedModel<Product, ProductAttributeAuthorization, ProductAttribute> {
-
-    /**
-     * 
-     * @param parent
-     * @return
-     */
-    List<StatusCode> findStatusCodes(Product parent);
+        NetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
 
     /**
      * 
@@ -49,5 +48,23 @@ public interface ProductModel
      */
     List<StatusCodeSequencing> findStatusCodeSequences(Product parent,
                                                        Relationship relationship);
+
+    List<ProductAgencyAccessAuthorization> getAgencyAccessAuths(Product parent,
+                                                                Relationship relationship);
+
+    List<ProductAttributeAccessAuthorization> getAttributeAccessAuths(Product parent,
+                                                                      Relationship relationship);
+
+    List<ProductLocationAccessAuthorization> getLocationAccessAuths(Product parent,
+                                                                    Relationship relationship);
+
+    List<ProductRelationshipAccessAuthorization> getRelationshipAccessAuths(Product parent,
+                                                                            Relationship relationship);
+
+    List<ProductStatusCodeAccessAuthorization> getStatusCodeAccessAuths(Product parent,
+                                                                        Relationship relationship);
+
+    List<ProductUnitAccessAuthorization> getUnitAccessAuths(Product parent,
+                                                            Relationship relationship);
 
 }

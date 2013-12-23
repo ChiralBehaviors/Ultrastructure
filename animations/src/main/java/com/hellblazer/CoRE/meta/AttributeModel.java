@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.meta;
 import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
 import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
+import com.hellblazer.CoRE.attribute.AttributeNetwork;
 
 /**
  * @author hhildebrand
@@ -27,6 +28,6 @@ import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
  */
 public interface AttributeModel
         extends
-        NetworkedModel<Attribute, AttributeMetaAttributeAuthorization, AttributeMetaAttribute> {
+        NetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute> {
 
 }

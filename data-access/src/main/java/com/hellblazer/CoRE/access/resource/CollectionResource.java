@@ -33,7 +33,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.models.ProductModelImpl;
 import com.hellblazer.CoRE.network.Relationship;

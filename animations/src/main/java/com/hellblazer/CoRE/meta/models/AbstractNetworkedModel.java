@@ -384,7 +384,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public Collection<Relationship> getImmediateRelationships(RuleForm parent) {
         Set<Relationship> relationships = new HashSet<Relationship>();
         for (Network network : parent.getNetworkByChild()) {
-            addTransitiveRelationships(network, relationships);
+            relationships.add(network.getRelationship());
         }
         return relationships;
     }
@@ -458,8 +458,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public Collection<Relationship> getTransitiveRelationships(RuleForm parent) {
         Set<Relationship> relationships = new HashSet<Relationship>();
-        for (Network network : parent.getNetworkByChild()) {
-            addTransitiveRelationships(network, relationships);
+        Set<RuleForm> visited = new HashSet<RuleForm>();
+        visited.add(parent);
+        for (Network network : parent.getNetworkByParent()) {
+            addTransitiveRelationships(network, visited, relationships);
         }
         return relationships;
     }
@@ -555,10 +557,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private void addTransitiveRelationships(Network edge,
-                                            Set<Relationship> relationships) {
-        relationships.add(edge.getRelationship());
-        for (Network network : edge.getChild().getNetworkByChild()) {
-            addTransitiveRelationships(network, relationships);
+                                            Set<RuleForm> visited, Set<Relationship> relationships) {
+        if (!relationships.add(edge.getRelationship())) {
+            return;
+        }
+        RuleForm child = edge.getChild();
+        for (Network network : child.getNetworkByParent()) {
+            RuleForm traversing = network.getChild();
+            if (visited.add(traversing)) {
+                addTransitiveRelationships(network, visited, relationships);
+            }
         }
     }
 

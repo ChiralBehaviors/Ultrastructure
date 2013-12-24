@@ -25,7 +25,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.agency.AgencyNetwork;
 import com.hellblazer.CoRE.network.Aspect;
+import com.hellblazer.CoRE.network.NetworkInference;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -63,7 +65,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         assertEquals(testAgency, inGroup.get(0));
     }
 
-    // @Test TODO not currently working ;)
+    // @Test  
     public void testNotInGroup() {
         em.getTransaction().begin();
         Relationship classification = new Relationship(
@@ -84,5 +86,69 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
                                                                        inverse);
         assertNotNull(notInGroup);
         assertEquals(1, notInGroup.size());
+    }
+
+    @Test
+    public void testGetTransitiveRelationships() {
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
+
+        em.getTransaction().begin();
+
+        Relationship equals2 = new Relationship("equals 2",
+                                                "an alias for equals", core);
+        equals2.setInverse(equals2);
+        em.persist(equals2);
+        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+                                                         equals, core);
+        em.persist(aEqualsA);
+        Agency a = new Agency("A", "A", core);
+        em.persist(a);
+        Agency b = new Agency("B", "B", core);
+        em.persist(b);
+        Agency c = new Agency("C", "C", core);
+        em.persist(c);
+        AgencyNetwork edgeA = new AgencyNetwork(a, equals, b, core);
+        em.persist(edgeA);
+        AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
+        em.persist(edgeB);
+
+        em.getTransaction().commit();
+        em.clear();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(2,
+                     model.getAgencyModel().getTransitiveRelationships(a).size());
+    }
+
+    @Test
+    public void testGetImmediateRelationships() {
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
+
+        em.getTransaction().begin();
+
+        Relationship equals2 = new Relationship("equals 2",
+                                                "an alias for equals", core);
+        equals2.setInverse(equals2);
+        em.persist(equals2);
+        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+                                                         equals, core);
+        em.persist(aEqualsA);
+        Agency a = new Agency("A", "A", core);
+        em.persist(a);
+        Agency b = new Agency("B", "B", core);
+        em.persist(b);
+        Agency c = new Agency("C", "C", core);
+        em.persist(c);
+        AgencyNetwork edgeA = new AgencyNetwork(a, equals, b, core);
+        em.persist(edgeA);
+        AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
+        em.persist(edgeB);
+
+        em.getTransaction().commit();
+        em.clear();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(1,
+                     model.getAgencyModel().getImmediateRelationships(a).size());
     }
 }

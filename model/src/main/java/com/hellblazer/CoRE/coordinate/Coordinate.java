@@ -28,6 +28,7 @@ import static com.hellblazer.CoRE.coordinate.Coordinate.NESTING_QUERY;
 import static com.hellblazer.CoRE.coordinate.Coordinate.ORDERED_ATTRIBUTES;
 import static com.hellblazer.CoRE.coordinate.Coordinate.UNLINKED;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -287,6 +288,9 @@ public class Coordinate extends
      */
     @Override
     public Set<CoordinateNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
@@ -297,6 +301,9 @@ public class Coordinate extends
      */
     @Override
     public Set<CoordinateNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

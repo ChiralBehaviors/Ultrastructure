@@ -28,6 +28,7 @@ import static com.hellblazer.CoRE.event.status.StatusCode.IS_TERMINAL_STATE;
 import static com.hellblazer.CoRE.event.status.StatusCode.ORDERED_ATTRIBUTES;
 import static com.hellblazer.CoRE.event.status.StatusCode.UNLINKED;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -281,6 +282,9 @@ public class StatusCode extends
      */
     @Override
     public Set<StatusCodeNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
@@ -289,6 +293,9 @@ public class StatusCode extends
      */
     @Override
     public Set<StatusCodeNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

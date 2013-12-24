@@ -17,6 +17,7 @@
 package com.hellblazer.CoRE.attribute.unit;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -193,6 +194,9 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public Set<UnitNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
@@ -203,6 +207,9 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public Set<UnitNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

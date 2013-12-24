@@ -34,6 +34,7 @@ import static com.hellblazer.CoRE.product.Product.SUBSUMING_ENTITIES;
 import static com.hellblazer.CoRE.product.Product.UPDATED_BY;
 import static com.hellblazer.CoRE.product.Product.UPDATED_BY_NAME;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -328,6 +329,9 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
      */
     @Override
     public Set<ProductNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
@@ -338,6 +342,9 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
      */
     @Override
     public Set<ProductNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

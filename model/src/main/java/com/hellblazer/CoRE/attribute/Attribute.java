@@ -25,6 +25,7 @@ import static com.hellblazer.CoRE.attribute.Attribute.NAME_SEARCH;
 import static com.hellblazer.CoRE.attribute.Attribute.UNLINKED;
 import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -294,11 +295,17 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
 
     @Override
     public Set<AttributeNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
     @Override
     public Set<AttributeNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

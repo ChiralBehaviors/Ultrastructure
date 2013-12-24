@@ -28,6 +28,7 @@ import static com.hellblazer.CoRE.time.Interval.ORDERED_ATTRIBUTES;
 import static com.hellblazer.CoRE.time.Interval.UNLINKED;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -292,6 +293,9 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      */
     @Override
     public Set<IntervalNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
@@ -302,6 +306,9 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      */
     @Override
     public Set<IntervalNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

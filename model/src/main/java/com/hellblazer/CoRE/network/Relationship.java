@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.network.Relationship.GET_CHILD_RULES_BY_RELATI
 import static com.hellblazer.CoRE.network.Relationship.ORDERED_ATTRIBUTES;
 import static com.hellblazer.CoRE.network.Relationship.UNLINKED;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -293,6 +294,9 @@ public class Relationship extends
      */
     @Override
     public Set<RelationshipNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
@@ -301,6 +305,9 @@ public class Relationship extends
      */
     @Override
     public Set<RelationshipNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

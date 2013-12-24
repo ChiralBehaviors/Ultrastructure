@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.agency.Agency.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.agency.Agency.UNLINKED;
 import static com.hellblazer.CoRE.agency.access.AgencyAttribute.GET_ATTRIBUTE;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -289,11 +290,17 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
 
     @Override
     public Set<AgencyNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
     @Override
     public Set<AgencyNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

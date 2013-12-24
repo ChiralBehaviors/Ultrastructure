@@ -27,6 +27,7 @@ import static com.hellblazer.CoRE.location.Location.GET_CHILD;
 import static com.hellblazer.CoRE.location.Location.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.location.Location.LOCATION_NAME;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -270,6 +271,9 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
      */
     @Override
     public Set<LocationNetwork> getNetworkByChild() {
+        if (networkByChild == null) {
+            return Collections.emptySet();
+        }
         return networkByChild;
     }
 
@@ -280,6 +284,9 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
      */
     @Override
     public Set<LocationNetwork> getNetworkByParent() {
+        if (networkByParent == null) {
+            return Collections.emptySet();
+        }
         return networkByParent;
     }
 

@@ -191,19 +191,6 @@ public class RelationshipModelImpl
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getTransitiveRelationships(Relationship parent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     /**
      * @param agency
      * @param aspect

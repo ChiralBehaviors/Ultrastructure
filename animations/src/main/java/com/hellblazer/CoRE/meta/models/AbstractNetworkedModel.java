@@ -384,7 +384,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public Collection<Relationship> getImmediateRelationships(RuleForm parent) {
         Set<Relationship> relationships = new HashSet<Relationship>();
         for (Network network : parent.getNetworkByChild()) {
-            relationships.add(network.getRelationship());
+            addTransitiveRelationships(network, relationships);
         }
         return relationships;
     }
@@ -446,6 +446,22 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
             return null;
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
+     * .hellblazer.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public Collection<Relationship> getTransitiveRelationships(RuleForm parent) {
+        Set<Relationship> relationships = new HashSet<Relationship>();
+        for (Network network : parent.getNetworkByChild()) {
+            addTransitiveRelationships(network, relationships);
+        }
+        return relationships;
     }
 
     /*
@@ -536,6 +552,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             alterDeductionTablesForNextPass();
             generateInverses();
         } while (true);
+    }
+
+    private void addTransitiveRelationships(Network edge,
+                                            Set<Relationship> relationships) {
+        relationships.add(edge.getRelationship());
+        for (Network network : edge.getChild().getNetworkByChild()) {
+            addTransitiveRelationships(network, relationships);
+        }
     }
 
     private void alterDeductionTablesForNextPass() {

@@ -35,7 +35,6 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -184,19 +183,6 @@ public class AgencyModelImpl
      */
     @Override
     public List<Agency> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getTransitiveRelationships(Agency parent) {
         // TODO Auto-generated method stub
         return null;
     }

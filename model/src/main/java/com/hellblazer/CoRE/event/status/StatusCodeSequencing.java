@@ -16,10 +16,12 @@
  */
 package com.hellblazer.CoRE.event.status;
 
-import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.*;
+import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS;
 import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING;
 import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_CHILD_STATUS_CODES;
+import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING;
 import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODES;
+import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING;
 import static com.hellblazer.CoRE.event.status.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
 import java.util.Map;

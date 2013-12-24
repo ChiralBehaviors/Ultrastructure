@@ -148,11 +148,11 @@ public interface JobModel {
      */
     Collection<Job> getAllActiveSubJobsOf(Job job);
 
-    Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
-
     List<Job> getAllActiveSubJobsOf(Job parent, Agency agency);
 
     void getAllActiveSubJobsOf(Job parent, Agency agency, List<Job> jobs);
+
+    Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
 
     /**
      * Answer the list of sequencing authorizations that have the job's service

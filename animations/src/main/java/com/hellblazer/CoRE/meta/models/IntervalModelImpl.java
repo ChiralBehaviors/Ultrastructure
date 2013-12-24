@@ -31,7 +31,6 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.IntervalModel;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.time.Interval;
 import com.hellblazer.CoRE.time.IntervalAttribute;
 import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
@@ -185,19 +184,6 @@ public class IntervalModelImpl
      */
     @Override
     public List<Interval> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getTransitiveRelationships(Interval parent) {
         // TODO Auto-generated method stub
         return null;
     }

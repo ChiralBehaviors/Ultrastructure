@@ -40,7 +40,6 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.StatusCodeModel;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 
 /**
@@ -196,36 +195,6 @@ public class StatusCodeModelImpl
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getTransitiveRelationships(StatusCode parent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @param agency
-     * @param aspect
-     */
-    protected void initialize(StatusCode agency, Aspect<StatusCode> aspect) {
-        agency.link(aspect.getClassification(), aspect.getClassifier(),
-                    kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        for (StatusCodeAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            StatusCodeAttribute attribute = new StatusCodeAttribute(
-                                                                    authorization.getAuthorizedAttribute(),
-                                                                    kernel.getCoreModel());
-            attribute.setStatusCode(agency);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-    }
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodes(com.hellblazer.CoRE.product.Product)
      */
@@ -255,6 +224,18 @@ public class StatusCodeModelImpl
     }
 
     /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.event.status.StatusCode)
+     */
+    @Override
+    public List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
+                                                                   StatusCode child) {
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING,
+                                                                     StatusCodeSequencing.class);
+        query.setParameter("service", service);
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencingParent(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.event.status.StatusCode)
      */
     @Override
@@ -266,15 +247,20 @@ public class StatusCodeModelImpl
         return query.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.event.status.StatusCode)
+    /**
+     * @param agency
+     * @param aspect
      */
-    @Override
-    public List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
-                                                                   StatusCode child) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING,
-                                                                     StatusCodeSequencing.class);
-        query.setParameter("service", service);
-        return query.getResultList();
+    protected void initialize(StatusCode agency, Aspect<StatusCode> aspect) {
+        agency.link(aspect.getClassification(), aspect.getClassifier(),
+                    kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        for (StatusCodeAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
+            StatusCodeAttribute attribute = new StatusCodeAttribute(
+                                                                    authorization.getAuthorizedAttribute(),
+                                                                    kernel.getCoreModel());
+            attribute.setStatusCode(agency);
+            defaultValue(attribute);
+            em.persist(attribute);
+        }
     }
 }

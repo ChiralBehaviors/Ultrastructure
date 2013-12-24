@@ -16,8 +16,9 @@
  */
 package com.hellblazer.CoRE.product.access;
 
-import static com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization.*;
+import static com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
 import static com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
+import static com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization.FIND_AUTHORIZATION;
 import static com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
 import static com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
 import static com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD;
@@ -87,7 +88,7 @@ import com.hellblazer.CoRE.product.Product;
 @DiscriminatorValue(AccessAuthorization.PRODUCT_ATTRIBUTE)
 public class ProductAttributeAccessAuthorization extends
         ProductAccessAuthorization<Attribute> {
-    public static final String PRODUCT_ATTRIBUTE_ACCESS_AUTH_PREFIX                                     = "productAttributeAccessAuthorization";
+    public static final String PRODUCT_ATTRIBUTE_ACCESS_AUTH_PREFIX                                    = "productAttributeAccessAuthorization";
 
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_ATTRIBUTE_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;

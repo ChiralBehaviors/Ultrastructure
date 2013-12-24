@@ -35,7 +35,6 @@ import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.CoordinateModel;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -186,19 +185,6 @@ public class CoordinateModelImpl
      */
     @Override
     public List<Coordinate> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getTransitiveRelationships(Coordinate parent) {
         // TODO Auto-generated method stub
         return null;
     }

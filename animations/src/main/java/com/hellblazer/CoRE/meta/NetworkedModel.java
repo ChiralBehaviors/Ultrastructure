@@ -252,7 +252,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param parent
      * @return
      */
-    List<Relationship> getTransitiveRelationships(RuleForm parent);
+    Collection<Relationship> getTransitiveRelationships(RuleForm parent);
 
     /**
      * 

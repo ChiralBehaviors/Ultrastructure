@@ -52,6 +52,17 @@ public interface StatusCodeModel
 
     /**
      * Answer the list of {@link #StatusCodeSequencing} that refer to the
+     * service with the child {@link #StatusCode}
+     * 
+     * @param service
+     * @param child
+     * @return
+     */
+    List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
+                                                            StatusCode child);
+
+    /**
+     * Answer the list of {@link #StatusCodeSequencing} that refer to the
      * service with the parent {@link #StatusCode}
      * 
      * @param service
@@ -61,16 +72,5 @@ public interface StatusCodeModel
      */
     List<StatusCodeSequencing> getStatusCodeSequencingParent(Product service,
                                                              StatusCode parent);
-
-    /**
-     * Answer the list of {@link #StatusCodeSequencing} that refer to the
-     * service with the child {@link #StatusCode}
-     * 
-     * @param service
-     * @param child
-     * @return
-     */
-    List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
-                                                            StatusCode child);
 
 }

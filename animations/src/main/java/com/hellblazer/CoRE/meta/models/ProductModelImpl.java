@@ -209,36 +209,6 @@ public class ProductModelImpl
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.network.Networked)
-     */
-    @Override
-    public List<Relationship> getTransitiveRelationships(Product parent) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * @param product
-     * @param aspect
-     */
-    protected void initialize(Product product, Aspect<Product> aspect) {
-        product.link(aspect.getClassification(), aspect.getClassifier(),
-                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        for (ProductAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            ProductAttribute attribute = new ProductAttribute(
-                                                              authorization.getAuthorizedAttribute(),
-                                                              kernel.getCoreModel());
-            attribute.setProduct(product);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-    }
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.ProductModel#getAgencyAccessAuths(com.hellblazer.CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
      */
@@ -297,5 +267,22 @@ public class ProductModelImpl
                                                                    Relationship relationship) {
         return em.createNamedQuery(ProductUnitAccessAuthorization.FIND_AUTHORIZATION,
                                    ProductUnitAccessAuthorization.class).getResultList();
+    }
+
+    /**
+     * @param product
+     * @param aspect
+     */
+    protected void initialize(Product product, Aspect<Product> aspect) {
+        product.link(aspect.getClassification(), aspect.getClassifier(),
+                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        for (ProductAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
+            ProductAttribute attribute = new ProductAttribute(
+                                                              authorization.getAuthorizedAttribute(),
+                                                              kernel.getCoreModel());
+            attribute.setProduct(product);
+            defaultValue(attribute);
+            em.persist(attribute);
+        }
     }
 }

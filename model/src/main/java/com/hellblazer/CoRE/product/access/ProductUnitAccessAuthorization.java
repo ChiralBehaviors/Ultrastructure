@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.hellblazer.CoRE.product.access;
- 
+
 import static com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
 import static com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
 import static com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization.FIND_AUTHORIZATION;

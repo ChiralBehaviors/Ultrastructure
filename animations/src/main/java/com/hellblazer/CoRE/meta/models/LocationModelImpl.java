@@ -35,7 +35,6 @@ import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
 import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -186,19 +185,6 @@ public class LocationModelImpl
      */
     @Override
     public List<Location> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.hellblazer.CoRE.meta.NetworkedModel#getTransitiveRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public List<Relationship> getTransitiveRelationships(Location parent) {
         // TODO Auto-generated method stub
         return null;
     }

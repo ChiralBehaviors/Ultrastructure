@@ -394,9 +394,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public Collection<Relationship> getImmediateRelationships(RuleForm parent) {
         Set<Relationship> relationships = new HashSet<Relationship>();
-        for (Network network : parent.getNetworkByChild()) {
+        Set<Relationship> inverses = new HashSet<Relationship>();
+        for (Network network : parent.getNetworkByParent()) {
             if (!network.isInferred()) {
-                relationships.add(network.getRelationship());
+                Relationship relationship = network.getRelationship();
+                if (!inverses.contains(relationship)) {
+                    relationships.add(relationship);
+                    inverses.add(relationship.getInverse());
+                }
             }
         }
         return relationships;
@@ -471,10 +476,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public Collection<Relationship> getTransitiveRelationships(RuleForm parent) {
         Set<Relationship> relationships = new HashSet<Relationship>();
+        Set<Relationship> inverses = new HashSet<Relationship>();
         Set<RuleForm> visited = new HashSet<RuleForm>();
         visited.add(parent);
         for (Network network : parent.getNetworkByParent()) {
-            addTransitiveRelationships(network, visited, relationships);
+            addTransitiveRelationships(network, inverses, visited,
+                                       relationships);
         }
         return relationships;
     }
@@ -570,16 +577,23 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private void addTransitiveRelationships(Network edge,
+                                            Set<Relationship> inverses,
                                             Set<RuleForm> visited,
                                             Set<Relationship> relationships) {
-        if (!relationships.add(edge.getRelationship())) {
+        Relationship relationship = edge.getRelationship();
+        if (inverses.contains(relationship)) {
             return;
         }
+        if (!relationships.add(relationship)) {
+            return;
+        }
+        inverses.add(relationship.getInverse());
         RuleForm child = edge.getChild();
         for (Network network : child.getNetworkByParent()) {
             RuleForm traversing = network.getChild();
             if (visited.add(traversing)) {
-                addTransitiveRelationships(network, visited, relationships);
+                addTransitiveRelationships(network, inverses, visited,
+                                           relationships);
             }
         }
     }

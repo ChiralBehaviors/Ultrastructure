@@ -395,7 +395,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public Collection<Relationship> getImmediateRelationships(RuleForm parent) {
         Set<Relationship> relationships = new HashSet<Relationship>();
         for (Network network : parent.getNetworkByChild()) {
-            relationships.add(network.getRelationship());
+            if (!network.isInferred()) {
+                relationships.add(network.getRelationship());
+            }
         }
         return relationships;
     }

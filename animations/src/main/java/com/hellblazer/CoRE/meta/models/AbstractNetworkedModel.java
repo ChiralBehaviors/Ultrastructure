@@ -373,6 +373,17 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         };
     }
 
+    @Override
+    public Collection<Network> getImmediateNetworkEdges(RuleForm parent) {
+        List<Network> edges = new ArrayList<Network>();
+        for (Network edge : parent.getNetworkByParent()) {
+            if (!edge.isInferred()) {
+                edges.add(edge);
+            }
+        }
+        return edges;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -557,7 +568,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private void addTransitiveRelationships(Network edge,
-                                            Set<RuleForm> visited, Set<Relationship> relationships) {
+                                            Set<RuleForm> visited,
+                                            Set<Relationship> relationships) {
         if (!relationships.add(edge.getRelationship())) {
             return;
         }

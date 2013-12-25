@@ -133,7 +133,6 @@ public class Coordinate extends
                                                                                 + GET_CHILDREN_SUFFIX;
     public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "coordinate"
                                                                                 + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES         = "coordinate.immediateChildrenNetworkRules";
     public static final String       NESTING_QUERY                            = "coordinate.nestCoordinates";
     public static final String       ORDERED_ATTRIBUTES                       = "coordinate.orderedAttributes";
     public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "coordinate.qualifiedEntityNetworkRules";
@@ -266,19 +265,6 @@ public class Coordinate extends
     @Override
     public Long getId() {
         return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.
-     * persistence.EntityManager)
-     */
-    @Override
-    public List<CoordinateNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   CoordinateNetwork.class).setParameter("coordinate",
-                                                                         this).getResultList();
     }
 
     /*

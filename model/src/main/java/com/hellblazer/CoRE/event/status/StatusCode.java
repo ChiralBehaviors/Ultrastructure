@@ -29,7 +29,6 @@ import static com.hellblazer.CoRE.event.status.StatusCode.ORDERED_ATTRIBUTES;
 import static com.hellblazer.CoRE.event.status.StatusCode.UNLINKED;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -141,7 +140,6 @@ public class StatusCode extends
                                                                                 + GET_CHILDREN_SUFFIX;
     public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
                                                                                 + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String       IMMEDIATE_CHILDREN_NETWORK_RULES         = "statusCode.immediateChildrenNetworkRules";
     public static final String       IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
     public static final String       ORDERED_ATTRIBUTES                       = "statusCode.orderedAttributes";
     public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
@@ -265,16 +263,6 @@ public class StatusCode extends
     @Override
     public Long getId() {
         return id;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.persistence.EntityManager)
-     */
-    @Override
-    public List<StatusCodeNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   StatusCodeNetwork.class).setParameter("statusCode",
-                                                                         this).getResultList();
     }
 
     /* (non-Javadoc)

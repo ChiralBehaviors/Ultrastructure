@@ -117,8 +117,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
      */
     @Override
     public SingularAttribute<? extends AttributeValue<Interval>, Interval> getRuleformAttribute() {
-        // TODO Auto-generated method stub
-        return null;
+        return IntervalAttribute_.interval;
     }
 
     /* (non-Javadoc)

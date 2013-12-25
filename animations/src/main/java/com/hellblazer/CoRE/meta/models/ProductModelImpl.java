@@ -18,19 +18,25 @@
 package com.hellblazer.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
 import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
 import com.hellblazer.CoRE.kernel.Kernel;
 import com.hellblazer.CoRE.kernel.KernelImpl;
+import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
+import com.hellblazer.CoRE.meta.StatusCodeModel;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
@@ -101,11 +107,13 @@ public class ProductModelImpl
         return JSP.call(new Call<T>(procedure));
     }
 
+    private final StatusCodeModel statusCodeModel;
+
     /**
      * @param em
      */
     public ProductModelImpl(EntityManager em) {
-        super(em, new KernelImpl(em));
+        this(em, new KernelImpl(em));
     }
 
     /**
@@ -113,6 +121,12 @@ public class ProductModelImpl
      */
     public ProductModelImpl(EntityManager em, Kernel kernel) {
         super(em, kernel);
+        statusCodeModel = new StatusCodeModelImpl(em, kernel);
+    }
+
+    public ProductModelImpl(Model model) {
+        super(model.getEntityManager(), model.getKernel());
+        statusCodeModel = model.getStatusCodeModel();
     }
 
     /*
@@ -192,21 +206,18 @@ public class ProductModelImpl
      * .CoRE.product.Product, com.hellblazer.CoRE.network.Relationship)
      */
     @Override
-    public List<StatusCodeSequencing> findStatusCodeSequences(Product parent,
-                                                              Relationship relationship) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#findUnlinkedNodes()
-     */
-    @Override
-    public List<Product> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
+    public Collection<StatusCodeSequencing> findStatusCodeSequences(Product parent,
+                                                                    Relationship relationship) {
+        Set<StatusCodeSequencing> sequences = new HashSet<StatusCodeSequencing>();
+        for (ProductStatusCodeAccessAuthorization auth : getStatusCodeAccessAuths(parent,
+                                                                                  relationship)) {
+            for (StatusCode code : statusCodeModel.getChildren(auth.getChild(),
+                                                               auth.getChildTransitiveRelationship())) {
+                sequences.addAll(statusCodeModel.getStatusCodeSequencingChild(code));
+                sequences.addAll(statusCodeModel.getStatusCodeSequencingParent(code));
+            }
+        }
+        return sequences;
     }
 
     /* (non-Javadoc)

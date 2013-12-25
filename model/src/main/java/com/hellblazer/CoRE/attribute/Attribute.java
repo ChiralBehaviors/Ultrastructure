@@ -23,10 +23,8 @@ import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD;
 import static com.hellblazer.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.attribute.Attribute.NAME_SEARCH;
 import static com.hellblazer.CoRE.attribute.Attribute.UNLINKED;
-import static com.hellblazer.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -116,7 +114,8 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
                                                                                    + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String          NAME_SEARCH                              = "attribute"
                                                                                    + NAME_SEARCH_SUFFIX;
-    public static final String          UNLINKED                                 = "attribute.unlinked";
+    public static final String          UNLINKED                                 = "attribute"
+                                                                                   + UNLINKED_SUFFIX;
     private static final long           serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute
@@ -274,19 +273,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     @Override
     public Long getId() {
         return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
-     */
-    @Override
-    public List<AttributeNetwork> getImmediateChildren(EntityManager em) {
-
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   AttributeNetwork.class).setParameter("attribute",
-                                                                        this).getResultList();
     }
 
     public Boolean getInheritable() {

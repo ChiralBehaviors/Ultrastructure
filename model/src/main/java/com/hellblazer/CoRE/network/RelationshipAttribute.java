@@ -120,8 +120,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
      */
     @Override
     public SingularAttribute<? extends AttributeValue<Relationship>, Relationship> getRuleformAttribute() {
-        // TODO Auto-generated method stub
-        return null;
+        return RelationshipAttribute_.relationship;
     }
 
     /* (non-Javadoc)

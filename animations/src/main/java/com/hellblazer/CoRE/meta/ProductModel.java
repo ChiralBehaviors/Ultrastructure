@@ -17,6 +17,7 @@
 
 package com.hellblazer.CoRE.meta;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
@@ -46,7 +47,7 @@ public interface ProductModel
      * @param relationship
      * @return
      */
-    List<StatusCodeSequencing> findStatusCodeSequences(Product parent,
+    Collection<StatusCodeSequencing> findStatusCodeSequences(Product parent,
                                                        Relationship relationship);
 
     List<ProductAgencyAccessAuthorization> getAgencyAccessAuths(Product parent,

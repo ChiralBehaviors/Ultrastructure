@@ -28,7 +28,6 @@ import static com.hellblazer.CoRE.network.Relationship.ORDERED_ATTRIBUTES;
 import static com.hellblazer.CoRE.network.Relationship.UNLINKED;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -133,7 +132,6 @@ public class Relationship extends
                                                                                   + GET_CHILDREN_SUFFIX;
     public static final String         GET_CHILD_RULES_BY_RELATIONSHIP          = "relationship"
                                                                                   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String         IMMEDIATE_CHILDREN_NETWORK_RULES         = "relationship.immediateChildrenNetworkRules";
     public static final String         ORDERED_ATTRIBUTES                       = "relationship.orderedAttributes";
     public static final String         QUALIFIED_ENTITY_NETWORK_RULES           = "relationship.qualifiedEntityNetworkRules";
     public static final String         UNLINKED                                 = "relationship"
@@ -273,16 +271,6 @@ public class Relationship extends
     @Override
     public Long getId() {
         return id;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.persistence.EntityManager)
-     */
-    @Override
-    public List<RelationshipNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   RelationshipNetwork.class).setParameter("relationship",
-                                                                           this).getResultList();
     }
 
     public Relationship getInverse() {

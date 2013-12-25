@@ -37,7 +37,6 @@ public class AttributeValueSerializer<T extends AttributeValue<? extends Rulefor
 
     public AttributeValueSerializer(Class<?> t, boolean dummy) {
         super(t, dummy);
-        // TODO Auto-generated constructor stub
     }
 
     @Override

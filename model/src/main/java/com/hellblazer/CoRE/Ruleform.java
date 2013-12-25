@@ -230,9 +230,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
      */
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-
-        //TODO either fix this or get rid of it
-        //research.manageEntity(em, knownObjects);
         if (updatedBy != null) {
             updatedBy = (Agency) updatedBy.manageEntity(em, knownObjects);
         }

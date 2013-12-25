@@ -114,8 +114,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
      */
     @Override
     public SingularAttribute<? extends AttributeValue<StatusCode>, StatusCode> getRuleformAttribute() {
-        // TODO Auto-generated method stub
-        return null;
+        return StatusCodeAttribute_.statusCode;
     }
 
     /* (non-Javadoc)

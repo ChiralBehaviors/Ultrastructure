@@ -18,7 +18,6 @@
 package com.hellblazer.CoRE.meta.models;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -176,17 +175,6 @@ public class LocationModelImpl
             }
         }
         return location;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#findUnlinkedNodes()
-     */
-    @Override
-    public List<Location> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /**

@@ -46,8 +46,6 @@ public class ProductLocationAttributeAuthorization extends
         AttributeAuthorization {
     private static final long serialVersionUID = 1L;
 
-    //TODO hhildebrand this should probably have an FK to product or productlocation or something
-
     @ManyToOne
     @JoinColumn(name = "classification")
     private Relationship      classification;

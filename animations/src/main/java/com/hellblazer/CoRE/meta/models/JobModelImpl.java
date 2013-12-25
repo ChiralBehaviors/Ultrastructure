@@ -707,11 +707,11 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public Set<StatusCode> getStatusCodesFor(Product service) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES,
+        TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES_SERVICE,
                                                            StatusCode.class);
         query.setParameter("service", service);
         Set<StatusCode> result = new HashSet<StatusCode>(query.getResultList());
-        query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODES,
+        query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODES_SERVICE,
                                     StatusCode.class);
         query.setParameter("service", service);
         result.addAll(query.getResultList());

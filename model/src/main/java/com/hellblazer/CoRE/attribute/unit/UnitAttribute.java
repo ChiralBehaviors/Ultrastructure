@@ -110,8 +110,7 @@ public class UnitAttribute extends AttributeValue<Unit> {
      */
     @Override
     public SingularAttribute<? extends AttributeValue<Unit>, Unit> getRuleformAttribute() {
-        // TODO Auto-generated method stub
-        return null;
+        return UnitAttribute_.unitRf;
     }
 
     /* (non-Javadoc)

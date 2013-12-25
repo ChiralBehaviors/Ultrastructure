@@ -45,8 +45,6 @@ public class DataAccessBundle implements
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)

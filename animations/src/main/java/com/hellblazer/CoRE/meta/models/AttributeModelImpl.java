@@ -178,17 +178,6 @@ public class AttributeModelImpl
         return attribute;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#findUnlinkedNodes()
-     */
-    @Override
-    public List<Attribute> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public Attribute transform(Product service, Agency agency, Product product) {
 
         Attribute txfmd = null;
@@ -266,8 +255,6 @@ public class AttributeModelImpl
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
                                          transformation.getRelationshipKey());
-        // productNetworkQuery.setParameter("agency", agency);
-        //TODO HHILDEBRAND this might return more than one result
         return productNetworkQuery.getSingleResult();
     }
 
@@ -298,9 +285,6 @@ public class AttributeModelImpl
         productNetworkQuery.setParameter("parent", product);
         productNetworkQuery.setParameter("relationship",
                                          transfromationMetarule.getRelationshipMap());
-        // productNetworkQuery.setParameter("agency",
-        // transfromationMetarule.getProductNetworkAgency());
-        //TODO HHILDEBRAND this might return more than one result
         return productNetworkQuery.getSingleResult();
     }
 

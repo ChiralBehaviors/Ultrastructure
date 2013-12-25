@@ -16,9 +16,16 @@
  */
 package com.hellblazer.CoRE.attribute.unit;
 
+import static com.hellblazer.CoRE.attribute.unit.Unit.FIND_BY_NAME;
+import static com.hellblazer.CoRE.attribute.unit.Unit.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.hellblazer.CoRE.attribute.unit.Unit.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.hellblazer.CoRE.attribute.unit.Unit.GET_CHILD;
+import static com.hellblazer.CoRE.attribute.unit.Unit.GET_CHILD_RULES_BY_RELATIONSHIP;
+import static com.hellblazer.CoRE.attribute.unit.Unit.NAME_SEARCH;
+import static com.hellblazer.CoRE.attribute.unit.Unit.UNLINKED;
+
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -27,13 +34,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
+import com.hellblazer.CoRE.NameSearchResult;
 import com.hellblazer.CoRE.agency.Agency;
+import com.hellblazer.CoRE.attribute.Attribute;
 import com.hellblazer.CoRE.network.Relationship;
 
 /**
@@ -42,12 +55,66 @@ import com.hellblazer.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
+@NamedQueries({
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                            + "  attrValue "
+                                                                            + "FROM "
+                                                                            + "       UnitAttribute attrValue, "
+                                                                            + "       UnitAttributeAuthorization auth, "
+                                                                            + "       UnitNetwork network "
+                                                                            + "WHERE "
+                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
+                                                                            + "        network.relationship = auth.classification AND "
+                                                                            + "        network.child = auth.classifier AND"
+                                                                            + "        attrValue.attribute = :ruleform AND "
+                                                                            + "        auth.classification = :classification AND "
+                                                                            + "        auth.classifier = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from UnitAttributeAuthorization ama "
+                                                                                    + "WHERE ama.classification = :classification "
+                                                                                    + "AND ama.classifier = :classifier"),
+               @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                     + "FROM UnitNetwork rn "
+                                                     + "WHERE rn.parent = :parent "
+                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM UnitNetwork n "
+                                                                           + "WHERE n.parent = :attribute "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+@NamedNativeQueries({
+                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                + "FROM attribute AS unlinked "
+                                                                + "JOIN ("
+                                                                + "SELECT id "
+                                                                + "FROM attribute "
+                                                                + "EXCEPT ("
+                                                                + "SELECT distinct(net.child) "
+                                                                + "FROM unit_network as net "
+                                                                + "WHERE net.parent = attribute_id('Attribute') "
+                                                                + "AND relationship = relationship_id('includes') "
+                                                                + ")"
+                                                                + ") AS linked ON unlinked.id = linked.id "
+                                                                + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class),
+                     // ?1 = :queryString, ?2 = :numberOfMatches
+                     @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "unit", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "unit_id_seq", sequenceName = "unit_id_seq")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
-    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "unit.immediateChildrenNetworkRules";
-    private static final long  serialVersionUID                 = 1L;
+    public static final String FIND_BY_NAME                             = "unit.findByName";
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "unit"
+                                                                          + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "unit"
+                                                                          + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String GET_CHILD                                = "unit"
+                                                                          + GET_CHILDREN_SUFFIX;
+    public static final String GET_CHILD_RULES_BY_RELATIONSHIP          = "unit"
+                                                                          + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String NAME_SEARCH                              = "unit"
+                                                                          + NAME_SEARCH_SUFFIX;
+    public static final String UNLINKED                                 = "unit"
+                                                                          + UNLINKED_SUFFIX;
+    private static final long  serialVersionUID                         = 1L;
 
     private String             abbreviation;
 
@@ -57,7 +124,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     private String             datatype;
 
-    private Boolean            enumerated                       = false;
+    private Boolean            enumerated                               = false;
 
     @Id
     @GeneratedValue(generator = "unit_id_seq", strategy = GenerationType.SEQUENCE)
@@ -165,18 +232,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     @Override
     public Long getId() {
         return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.ExistentialRuleform#getImmediateChildren(javax.
-     * persistence.EntityManager)
-     */
-    @Override
-    public List<UnitNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   UnitNetwork.class).setParameter("unit", this).getResultList();
     }
 
     public BigDecimal getMax() {

@@ -24,7 +24,6 @@ import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_P
 import static com.hellblazer.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.hellblazer.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
-import static com.hellblazer.CoRE.product.Product.IMMEDIATE_CHILDREN_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.DEDUCE_NEW_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GATHER_EXISTING_NETWORK_RULES;
 import static com.hellblazer.CoRE.product.ProductNetwork.GENERATE_NETWORK_INVERSES;
@@ -157,12 +156,6 @@ import com.hellblazer.CoRE.network.Relationship;
 @Table(name = "product_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_network_id_seq", sequenceName = "product_network_id_seq", allocationSize = 1)
 @NamedQueries({
-               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from ProductNetwork n "
-                                                                            + "where n.parent = :product "
-                                                                            + "and n.inferred = FALSE "
-                                                                            + "and n.relationship.preferred = FALSE "
-                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM ProductNetwork n "
                                                         + "WHERE n.parent = :parent "

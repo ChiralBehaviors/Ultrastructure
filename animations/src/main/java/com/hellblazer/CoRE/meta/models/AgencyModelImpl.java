@@ -18,7 +18,6 @@
 package com.hellblazer.CoRE.meta.models;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -174,17 +173,6 @@ public class AgencyModelImpl
             }
         }
         return agency;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#findUnlinkedNodes()
-     */
-    @Override
-    public List<Agency> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /**

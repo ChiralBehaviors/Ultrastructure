@@ -89,12 +89,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     RuleForm create(RuleForm prototype);
 
     /**
-     * 
-     * @return
-     */
-    List<RuleForm> findUnlinkedNodes();
-
-    /**
      * Answer the allowed values for an Attribute, classified by the supplied
      * aspect
      * 
@@ -231,6 +225,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return
      */
     Collection<Relationship> getImmediateRelationships(RuleForm parent);
+
+    /**
+     * 
+     * @param parent
+     * @return
+     */
+    Collection<Network> getImmediateNetworkEdges(RuleForm parent);
 
     /**
      * @param parent

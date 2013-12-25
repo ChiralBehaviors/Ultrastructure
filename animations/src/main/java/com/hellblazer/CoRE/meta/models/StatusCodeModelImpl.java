@@ -184,28 +184,17 @@ public class StatusCodeModelImpl
         return agency;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.meta.NetworkedModel#findUnlinkedNodes()
-     */
-    @Override
-    public List<StatusCode> findUnlinkedNodes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     /* (non-Javadoc)
      * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodes(com.hellblazer.CoRE.product.Product)
      */
     @Override
     public Collection<StatusCode> getStatusCodes(Product service) {
         Set<StatusCode> codes = new HashSet<StatusCode>();
-        TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES,
+        TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES_SERVICE,
                                                            StatusCode.class);
         query.setParameter("service", service);
         codes.addAll(query.getResultList());
-        query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODES,
+        query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODES_SERVICE,
                                     StatusCode.class);
         query.setParameter("service", service);
         codes.addAll(query.getResultList());
@@ -229,9 +218,21 @@ public class StatusCodeModelImpl
     @Override
     public List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
                                                                    StatusCode child) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING,
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE,
                                                                      StatusCodeSequencing.class);
         query.setParameter("service", service);
+        query.setParameter("statusCode", child);
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.hellblazer.CoRE.event.status.StatusCode)
+     */
+    @Override
+    public Collection<StatusCodeSequencing> getStatusCodeSequencingChild(StatusCode child) {
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING,
+                                                                     StatusCodeSequencing.class);
+        query.setParameter("statusCode", child);
         return query.getResultList();
     }
 
@@ -244,6 +245,18 @@ public class StatusCodeModelImpl
         TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING,
                                                                      StatusCodeSequencing.class);
         query.setParameter("service", service);
+        query.setParameter("statusCode", parent);
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.StatusCodeModel#getStatusCodeSequencingParent(com.hellblazer.CoRE.event.status.StatusCode)
+     */
+    @Override
+    public List<StatusCodeSequencing> getStatusCodeSequencingParent(StatusCode parent) {
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING,
+                                                                     StatusCodeSequencing.class);
+        query.setParameter("statusCode", parent);
         return query.getResultList();
     }
 

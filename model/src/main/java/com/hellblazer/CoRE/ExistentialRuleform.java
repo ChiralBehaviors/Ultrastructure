@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -109,8 +108,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public String getDescription() {
         return description;
     }
-
-    abstract public List<Network> getImmediateChildren(EntityManager em);
 
     /**
      * @return the name

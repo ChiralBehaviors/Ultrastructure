@@ -35,7 +35,6 @@ import static com.hellblazer.CoRE.product.Product.UPDATED_BY;
 import static com.hellblazer.CoRE.product.Product.UPDATED_BY_NAME;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -152,7 +151,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
                                                                                            + GET_CHILDREN_SUFFIX;
     public static final String    GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
                                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String    IMMEDIATE_CHILDREN_NETWORK_RULES                       = "product.immediateChildrenNetworkRules";
     public static final String    NAME_SEARCH                                            = "product"
                                                                                            + NAME_SEARCH_SUFFIX;
     public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";
@@ -304,18 +302,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
     @Override
     public Long getId() {
         return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
-     */
-    @Override
-    public List<ProductNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   ProductNetwork.class).setParameter("product",
-                                                                      this).getResultList();
     }
 
     public Set<ProductLocation> getLocations() {

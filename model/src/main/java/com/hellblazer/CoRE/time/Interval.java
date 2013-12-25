@@ -29,7 +29,6 @@ import static com.hellblazer.CoRE.time.Interval.UNLINKED;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -130,7 +129,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
                                                                               + GET_CHILDREN_SUFFIX;
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "interval"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String     IMMEDIATE_CHILDREN_NETWORK_RULES         = "interval.immediateChildrenNetworkRules";
     public static final String     ORDERED_ATTRIBUTES                       = "interval.orderedAttributes";
     public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "interval.qualifiedEntityNetworkRules";
     public static final String     UNLINKED                                 = "interval"
@@ -272,18 +270,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     @Override
     public Long getId() {
         return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
-     */
-    @Override
-    public List<IntervalNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   IntervalNetwork.class).setParameter("interval",
-                                                                       this).getResultList();
     }
 
     /*

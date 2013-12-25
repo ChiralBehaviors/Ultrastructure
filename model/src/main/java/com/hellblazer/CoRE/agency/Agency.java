@@ -133,7 +133,6 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
                                                                                          + GET_CHILDREN_SUFFIX;
     public static final String                GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
                                                                                          + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String                IMMEDIATE_CHILDREN_NETWORK_RULES         = "agency.immediateChildrenNetworkRules";
     public static final String                QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
     public static final String                UNLINKED                                 = "agency"
                                                                                          + UNLINKED_SUFFIX;
@@ -276,16 +275,6 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     @Override
     public Long getId() {
         return id;
-    }
-
-    /* (non-Javadoc)
-     * @see com.hellblazer.CoRE.Networked#getImmediateChildren()
-     */
-    @Override
-    public List<AgencyNetwork> getImmediateChildren(EntityManager em) {
-        return em.createNamedQuery(IMMEDIATE_CHILDREN_NETWORK_RULES,
-                                   AgencyNetwork.class).setParameter("agency",
-                                                                     this).getResultList();
     }
 
     @Override

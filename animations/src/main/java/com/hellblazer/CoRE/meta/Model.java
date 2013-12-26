@@ -141,4 +141,14 @@ public interface Model {
      */
     StatusCodeModel getStatusCodeModel();
 
+    /**
+     * @return the UnitCode model
+     */
+    UnitModel getUnitModel();
+
+    /**
+     * @return the UnitCode model
+     */
+    WorkspaceModel getWorkspaceModel();
+
 }

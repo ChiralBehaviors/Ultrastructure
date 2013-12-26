@@ -48,6 +48,8 @@ import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.RelationshipModel;
 import com.hellblazer.CoRE.meta.StatusCodeModel;
+import com.hellblazer.CoRE.meta.UnitModel;
+import com.hellblazer.CoRE.meta.WorkspaceModel;
 import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
@@ -119,6 +121,8 @@ public class ModelImpl implements Model {
     private final ProductModel      productModel;
     private final RelationshipModel relationshipModel;
     private final StatusCodeModel   statusCodeModel;
+    private final UnitModel         unitModel;
+    private final WorkspaceModel    workspaceModel;
 
     public ModelImpl(EntityManager entityManager) {
         this(entityManager, new KernelImpl(entityManager));
@@ -136,6 +140,8 @@ public class ModelImpl implements Model {
         relationshipModel = new RelationshipModelImpl(em, kernel);
         statusCodeModel = new StatusCodeModelImpl(em, kernel);
         coordinateModel = new CoordinateModelImpl(em, kernel);
+        unitModel = new UnitModelImpl(em, kernel);
+        workspaceModel = new WorkspaceModelImpl(this);
     }
 
     /*
@@ -355,6 +361,22 @@ public class ModelImpl implements Model {
     @Override
     public StatusCodeModel getStatusCodeModel() {
         return statusCodeModel;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.Model#getUnitModel()
+     */
+    @Override
+    public UnitModel getUnitModel() {
+        return unitModel;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.Model#getWorkspaceModel()
+     */
+    @Override
+    public WorkspaceModel getWorkspaceModel() {
+        return workspaceModel;
     }
 
 }

@@ -224,14 +224,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param parent
      * @return
      */
-    Collection<Relationship> getImmediateRelationships(RuleForm parent);
+    Collection<Network> getImmediateNetworkEdges(RuleForm parent);
 
     /**
      * 
      * @param parent
      * @return
      */
-    Collection<Network> getImmediateNetworkEdges(RuleForm parent);
+    Collection<Relationship> getImmediateRelationships(RuleForm parent);
 
     /**
      * @param parent

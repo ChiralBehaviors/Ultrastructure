@@ -17,10 +17,8 @@
 
 package com.hellblazer.CoRE.meta;
 
-import java.util.Collection;
 import java.util.List;
 
-import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.ProductAttribute;
@@ -40,15 +38,6 @@ import com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization;
 public interface ProductModel
         extends
         NetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
-
-    /**
-     * 
-     * @param parent
-     * @param relationship
-     * @return
-     */
-    Collection<StatusCodeSequencing> findStatusCodeSequences(Product parent,
-                                                       Relationship relationship);
 
     List<ProductAgencyAccessAuthorization> getAgencyAccessAuths(Product parent,
                                                                 Relationship relationship);

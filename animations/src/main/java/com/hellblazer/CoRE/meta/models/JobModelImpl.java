@@ -821,7 +821,7 @@ public class JobModelImpl implements JobModel {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
         job.setAssignTo(resolve(parent.getAssignTo(), protocol.getAssignTo()));
-        job.setRequester(resolve(parent.getRequester(), protocol.getRequester()));
+        job.setRequester(parent.getRequester());
         job.setProduct(resolve(parent.getProduct(), protocol.getProduct()));
         job.setDeliverFrom(resolve(parent.getDeliverFrom(),
                                    protocol.getDeliverFrom()));

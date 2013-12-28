@@ -229,6 +229,26 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(6, jobs.size());
     }
 
+    @Test
+    public void testEuOrder() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment, scenario.cafleurBon,
+                            scenario.deliver, scenario.abc486, scenario.rc31,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.active);
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(1, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        List<Job> jobs = findAllJobs();
+        assertEquals(7, jobs.size());
+    }
+
     private List<Job> findAllJobs() {
         TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",
                                                                      Job.class);

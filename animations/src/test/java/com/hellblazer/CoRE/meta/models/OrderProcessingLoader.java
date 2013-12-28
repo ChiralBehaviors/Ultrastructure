@@ -100,12 +100,14 @@ public class OrderProcessingLoader {
     public Location             euro;
     public Location             france;
     public Location             paris;
+    public Location             rc31;
     public Location             rsb225;
     public Location             factory1;
     public Location             us;
     private Location            anyLocation;
 
     public Agency               billingComputer;
+    public Agency               cafleurBon;
     public Agency               core;
     public Agency               cpu;
     public Agency               creditDept;
@@ -123,10 +125,11 @@ public class OrderProcessingLoader {
     public Attribute            taxRateAttribute;
     public Attribute            discountAttribute;
 
+    public ProtocolAttribute    price;
+
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
-    public ProtocolAttribute    price;
 
     public OrderProcessingLoader(EntityManager em) throws Exception {
         this.em = em;
@@ -149,6 +152,8 @@ public class OrderProcessingLoader {
         model.getAgencyModel().link(georgeTownUniversity, salesTaxStatus,
                                     exempt, core);
         model.getAgencyModel().link(orgA, customerType, externalCust, core);
+        model.getAgencyModel().link(cafleurBon, customerType, externalCust,
+                                    core);
         model.getAgencyModel().link(orgA, salesTaxStatus, nonExemptAgency, core);
     }
 
@@ -175,6 +180,9 @@ public class OrderProcessingLoader {
 
         georgeTownUniversity = new Agency("GU", "Georgetown University", core);
         em.persist(georgeTownUniversity);
+
+        cafleurBon = new Agency("carfleurBon", "Carfleur Bon", core);
+        em.persist(cafleurBon);
 
         manufacturer = new Agency("MNFR", "Manufacturer", core);
         em.persist(manufacturer);
@@ -211,6 +219,7 @@ public class OrderProcessingLoader {
         model.getLocationModel().link(factory1, street, bht378, core);
         model.getLocationModel().link(rsb225, city, dc, core);
         model.getLocationModel().link(bht378, city, dc, core);
+        model.getLocationModel().link(rc31, city, paris, core);
         model.getLocationModel().link(dc, region, east_coast, core);
         model.getLocationModel().link(east_coast, area, us, core);
         model.getLocationModel().link(paris, region, france, core);
@@ -222,6 +231,9 @@ public class OrderProcessingLoader {
         em.persist(rsb225);
         bht378 = new Location("37BHT", "37 Bret Harte Terrace", core);
         em.persist(bht378);
+
+        rc31 = new Location("31rc", "31 Rue Cambon", core);
+        em.persist(rc31);
 
         bin1 = new Location("BIN01", "Bin #1", core);
         em.persist(bin1);
@@ -257,10 +269,9 @@ public class OrderProcessingLoader {
                                            customerType, anyRelationship, area,
                                            area, core);
         em.persist(m3);
-        MetaProtocol m5 = new MetaProtocol(salesTax, 1,
-                                           notApplicableRelationship,
+        MetaProtocol m5 = new MetaProtocol(fee, 1, notApplicableRelationship,
                                            salesTaxStatus, sameRelationship,
-                                           state, anyRelationship, core);
+                                           city, anyRelationship, core);
         em.persist(m5);
         MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 1,
                                            notApplicableRelationship,

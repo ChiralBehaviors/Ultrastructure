@@ -161,7 +161,7 @@ public class JobModelTest extends AbstractModelTest {
     public void testNetworkInference() {
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
                                                      LocationNetwork.class).getResultList();
-        assertEquals(18, edges.size());
+        assertEquals(22, edges.size());
 
         TypedQuery<LocationNetwork> edgeQuery = em.createQuery("select edge FROM LocationNetwork edge WHERE edge.parent = :parent AND edge.relationship = :relationship AND edge.child = :child",
                                                                LocationNetwork.class);

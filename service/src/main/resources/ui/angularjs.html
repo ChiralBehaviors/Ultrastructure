@@ -1,0 +1,39 @@
+<html>
+<body ng-app>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+		
+	<div id="main">
+	   <nav class="{{active}}" ng-click="$event.preventDefault()">
+	       <a href="#" class="home" ng-click="active='home'">Home</a>
+	       <a href="#" class="projects" ng-click="active='projects'">Projects</a>
+	   </nav>
+	   
+	   <p ng-hide="active">Click something</p>
+	   <p ng-show="active">You clicked {{active}}</p>
+	</div>
+	<div id="tut2" ng-controller="InlineEditorController" ng-click="hideToolTip()">
+	   <div class="tooltip" ng-click="$event.stopPropagation()" ng-show="showToolTip">
+	       <input type="text" ng-model="value"/>
+	   </div>
+	   
+	   <p ng-click="toggleToolTip($event)">{{value}}</p>
+	</div>
+	<script type="text/javascript">
+	   function InlineEditorController($scope) {
+	       $scope.showToolTip = false;
+	       $scope.value = 'Edit me';
+	       
+	       $scope.hideToolTip = function() {
+	           $scope.showToolTip = false;
+	       }
+	       
+	       $scope.toggleToolTip = function(e) {
+	           console.log("click");
+	           e.stopPropagation();
+	           $scope.showToolTip = !$scope.showToolTip;
+	       }
+	   }
+	</script>
+</body>
+</html>

@@ -31,7 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.base.Optional;
-import com.hellblazer.CoRE.Util;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.kernel.WellKnownObject;
@@ -41,6 +40,7 @@ import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.hellblazer.CoRE.network.Aspect;
 import com.hellblazer.CoRE.network.Facet;
 import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
+import com.hellblazer.CoRE.utils.Util;
 import com.yammer.dropwizard.auth.basic.BasicCredentials;
 
 /**

@@ -8,15 +8,15 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.product_parent_sequencing_authorization AS 
-			 SELECT base_table.id, p.name AS parent, sc.name AS status_code, 
-			        base_table.sequence_number, mp.name AS my_parent, 
+			 SELECT base_table.id, p.name AS service, sc.name AS status_code, 
+			        base_table.sequence_number, mp.name AS parent, 
 			        mps.name AS parent_status_to_set, base_table.set_if_active_siblings, 
 			        base_table.notes,
 			        up.name AS updated_by, base_table.update_date
 			   FROM ruleform.product_parent_sequencing_authorization base_table
-			   JOIN ruleform.product p ON base_table.parent = p.id
+			   JOIN ruleform.product p ON base_table.service = p.id
 			   JOIN ruleform.status_code sc ON base_table.status_code = sc.id
-			   LEFT JOIN ruleform.product mp ON base_table.my_parent = mp.id
+			   LEFT JOIN ruleform.product mp ON base_table.parent = mp.id
 			   LEFT JOIN ruleform.status_code mps ON base_table.parent_status_to_set = mps.id
 			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			

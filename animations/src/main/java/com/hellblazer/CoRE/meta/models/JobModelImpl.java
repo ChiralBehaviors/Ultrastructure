@@ -154,7 +154,7 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("my_parent"),
+                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("parent"),
                                                      (Long) triggerData.getNew().getObject("parent_status_to_set"));
                 return null;
             }
@@ -760,7 +760,7 @@ public class JobModelImpl implements JobModel {
     public List<Job> getUnsetSiblings(Job parent, Product service) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_UNSET_SIBLINGS,
                                                     Job.class);
-        query.setParameter("event", service);
+        query.setParameter("service", service);
         query.setParameter("unset", kernel.getUnset());
         query.setParameter("parent", parent);
         return query.getResultList();
@@ -930,16 +930,19 @@ public class JobModelImpl implements JobModel {
 
         for (ProductParentSequencingAuthorization seq : getParentActions(job)) {
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
-                // If the parent job has the specified event then, make the
-                // change
-                // if the specified event is NULL then set it
                 if (seq.getParent() == null
-                    || seq.getParent().equals(job.getParent())) {
+                    && seq.getService().equals(job.getParent().getService())) {
                     changeStatus(job.getParent(),
                                  seq.getParentStatusToSet(),
                                  String.format("'Automatically switching to %s via direct communication from child job %s",
                                                seq.getParentStatusToSet(), job));
-                    break; // quit processing once we've set a status
+                    break;
+                } else if (seq.getParent().equals(job.getParent().getService())) {
+                    changeStatus(job.getParent(),
+                                 seq.getParentStatusToSet(),
+                                 String.format("'Automatically switching to %s via direct communication from child job %s",
+                                               seq.getParentStatusToSet(), job));
+                    break;
                 }
             }
         }
@@ -1380,4 +1383,5 @@ public class JobModelImpl implements JobModel {
             MODIFIED_SERVICES.clear();
         }
     }
+
 }

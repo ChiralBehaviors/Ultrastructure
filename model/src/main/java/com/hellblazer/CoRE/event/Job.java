@@ -84,6 +84,10 @@ import com.hellblazer.CoRE.product.Product;
                                                                  + "AND sequencing.service = :service "
                                                                  + "  AND sequencing.parentCode = :parent "
                                                                  + "ORDER BY sequencing.sequenceNumber"),
+               @NamedQuery(name = GET_UNSET_SIBLINGS, query = "SELECT j FROM Job AS j "
+                                                              + "WHERE j.service = :service "
+                                                              + "  AND j.status = :unset "
+                                                              + "  AND j.parent = :parent"),
                @NamedQuery(name = GET_SUB_JOBS_ASSIGNED_TO, query = "SELECT j "
                                                                     + "FROM Job AS j "
                                                                     + "WHERE j.parent = :job "
@@ -100,11 +104,6 @@ import com.hellblazer.CoRE.product.Product;
                                                                            + "  ) "
                                                                            + "  AND event = :event "
                                                                            + "ORDER BY sc.name ASC"),
-                     @NamedNativeQuery(name = GET_UNSET_SIBLINGS, query = "SELECT j FROM Job AS j "
-                                                                          + "    JOIN Job AS parent ON parentId = j.parentJob "
-                                                                          + "WHERE j.service = :service "
-                                                                          + "  AND j.status = :unset "
-                                                                          + "  AND j.parentJob = :parent"),
                      @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS, query = "SELECT job.* FROM ruleform.job as job "
                                                                            + "WHERE parent = ? "
                                                                            + "  AND ruleform.is_job_active( job.id )"),

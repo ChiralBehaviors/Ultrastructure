@@ -42,39 +42,39 @@ import com.hellblazer.CoRE.product.Product;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq "
-                                                               + " WHERE seq.parent = :service"
-                                                               + "   AND seq.statusCode = :status "
-                                                               + "ORDER BY seq.myParent") })
+@NamedQueries({ @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
+                                                               + " WHERE seq.service = :service"
+                                                               + "   AND seq.statusCode = :status"
+                                                               + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_parent_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_parent_sequencing_authorization_id_seq", sequenceName = "product_parent_sequencing_authorization_id_seq")
 public class ProductParentSequencingAuthorization extends Ruleform {
-    public static final String GET_PARENT_ACTIONS = "productParentSequencingAuthorization.getParentActions";
+    public static final String GET_PARENT_ACTIONS  = "productParentSequencingAuthorization.getParentActions";
 
-    private static final long  serialVersionUID   = 1L;
+    private static final long  serialVersionUID    = 1L;
 
     @Id
     @GeneratedValue(generator = "product_child_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "my_parent")
-    private Product            myParent;
-
-    @ManyToOne
     @JoinColumn(name = "parent")
     private Product            parent;
+
+    @ManyToOne
+    @JoinColumn(name = "service")
+    private Product            service;
 
     @ManyToOne
     @JoinColumn(name = "parent_status_to_set")
     private StatusCode         parentStatusToSet;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber     = 1;
+    private Integer            sequenceNumber      = 1;
 
     @Column(name = "set_if_active_siblings")
-    private Boolean            setIfActiveSiblings;
+    private Boolean            setIfActiveSiblings = true;
     @ManyToOne
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
@@ -114,9 +114,9 @@ public class ProductParentSequencingAuthorization extends Ruleform {
                                                 StatusCode parentStatusToSet,
                                                 Agency updatedBy) {
         super(updatedBy);
-        setParent(parent);
+        setService(parent);
         setStatusCode(statusCode);
-        setMyParent(myParent);
+        setParent(myParent);
         setParentStatusToSet(parentStatusToSet);
     }
 
@@ -143,12 +143,12 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         return id;
     }
 
-    public Product getMyParent() {
-        return myParent;
-    }
-
     public Product getParent() {
         return parent;
+    }
+
+    public Product getService() {
+        return service;
     }
 
     public StatusCode getParentStatusToSet() {
@@ -175,12 +175,12 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         this.id = id;
     }
 
-    public void setMyParent(Product myParent) {
-        this.myParent = myParent;
+    public void setParent(Product myParent) {
+        this.parent = myParent;
     }
 
-    public void setParent(Product parent) {
-        this.parent = parent;
+    public void setService(Product service) {
+        this.service = service;
     }
 
     public void setParentStatusToSet(StatusCode parentStatusToSet) {
@@ -205,11 +205,11 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (myParent != null) {
-            myParent = (Product) myParent.manageEntity(em, knownObjects);
-        }
         if (parent != null) {
             parent = (Product) parent.manageEntity(em, knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
         }
         if (parentStatusToSet != null) {
             parentStatusToSet = (StatusCode) parentStatusToSet.manageEntity(em,

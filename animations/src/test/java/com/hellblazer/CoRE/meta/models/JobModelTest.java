@@ -161,7 +161,7 @@ public class JobModelTest extends AbstractModelTest {
     public void testNetworkInference() {
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
                                                      LocationNetwork.class).getResultList();
-        assertEquals(18, edges.size());
+        assertEquals(22, edges.size());
 
         TypedQuery<LocationNetwork> edgeQuery = em.createQuery("select edge FROM LocationNetwork edge WHERE edge.parent = :parent AND edge.relationship = :relationship AND edge.child = :child",
                                                                LocationNetwork.class);
@@ -227,6 +227,46 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(2, protocols.size());
         List<Job> jobs = findAllJobs();
         assertEquals(6, jobs.size());
+    }
+
+    @Test
+    public void testNonExemptOrder() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment, scenario.orgA,
+                            scenario.deliver, scenario.abc486, scenario.bht378,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.active);
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(1, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        List<Job> jobs = findAllJobs();
+        assertEquals(7, jobs.size());
+    }
+
+    @Test
+    public void testEuOrder() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment, scenario.cafleurBon,
+                            scenario.deliver, scenario.abc486, scenario.rc31,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.active);
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(1, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        List<Job> jobs = findAllJobs();
+        assertEquals(7, jobs.size());
     }
 
     private List<Job> findAllJobs() {

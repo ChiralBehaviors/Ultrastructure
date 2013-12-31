@@ -242,7 +242,7 @@ public class StatusCodeModelImpl
     @Override
     public List<StatusCodeSequencing> getStatusCodeSequencingParent(Product service,
                                                                     StatusCode parent) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING,
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE,
                                                                      StatusCodeSequencing.class);
         query.setParameter("service", service);
         query.setParameter("statusCode", parent);

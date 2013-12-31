@@ -26,6 +26,7 @@ import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
 import static com.hellblazer.CoRE.event.Job.GET_ATTRIBUTE_VALUE;
 import static com.hellblazer.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_NEXT_STATUS_CODES;
+import static com.hellblazer.CoRE.event.Job.GET_STATUS_CODE_SEQUENCES;
 import static com.hellblazer.CoRE.event.Job.GET_SUB_JOBS_ASSIGNED_TO;
 import static com.hellblazer.CoRE.event.Job.GET_TERMINAL_STATES;
 import static com.hellblazer.CoRE.event.Job.GET_UNSET_SIBLINGS;
@@ -84,6 +85,16 @@ import com.hellblazer.CoRE.product.Product;
                                                                  + "AND sequencing.service = :service "
                                                                  + "  AND sequencing.parentCode = :parent "
                                                                  + "ORDER BY sequencing.sequenceNumber"),
+               @NamedQuery(name = GET_STATUS_CODE_SEQUENCES, query = "SELECT sequencing "
+                                                                     + " FROM StatusCodeSequencing AS sequencing"
+                                                                     + " WHERE sequencing.childCode = :code "
+                                                                     + " AND sequencing.service = :service "
+                                                                     + "   AND sequencing.parentCode = :parent "
+                                                                     + " ORDER BY sequencing.sequenceNumber"),
+               @NamedQuery(name = GET_UNSET_SIBLINGS, query = "SELECT j FROM Job AS j "
+                                                              + "WHERE j.service = :service "
+                                                              + "  AND j.status = :unset "
+                                                              + "  AND j.parent = :parent"),
                @NamedQuery(name = GET_SUB_JOBS_ASSIGNED_TO, query = "SELECT j "
                                                                     + "FROM Job AS j "
                                                                     + "WHERE j.parent = :job "
@@ -100,11 +111,6 @@ import com.hellblazer.CoRE.product.Product;
                                                                            + "  ) "
                                                                            + "  AND event = :event "
                                                                            + "ORDER BY sc.name ASC"),
-                     @NamedNativeQuery(name = GET_UNSET_SIBLINGS, query = "SELECT j FROM Job AS j "
-                                                                          + "    JOIN Job AS parent ON parentId = j.parentJob "
-                                                                          + "WHERE j.service = :service "
-                                                                          + "  AND j.status = :unset "
-                                                                          + "  AND j.parentJob = :parent"),
                      @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS, query = "SELECT job.* FROM ruleform.job as job "
                                                                            + "WHERE parent = ? "
                                                                            + "  AND ruleform.is_job_active( job.id )"),
@@ -182,6 +188,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String GET_SUB_JOBS_ASSIGNED_TO          = "job.getSubJobsAssignedTo";
     public static final String GET_TERMINAL_STATES               = "job.getTerminalStates";
     public static final String GET_UNSET_SIBLINGS                = "job.getUnsetSiblings";
+    public static final String GET_STATUS_CODE_SEQUENCES         = "job.getStatusCodeSequences";
     public static final String HAS_SCS                           = "job.hasScs";
     public static final String INITIAL_STATE                     = "job.initialState";
     public static final String STATUS_CODE                       = "job.statusCode";

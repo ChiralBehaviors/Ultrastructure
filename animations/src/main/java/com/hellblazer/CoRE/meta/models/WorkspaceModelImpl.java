@@ -18,8 +18,10 @@ package com.hellblazer.CoRE.meta.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.hellblazer.CoRE.agency.Agency;
@@ -36,6 +38,12 @@ import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.WorkspaceModel;
+import com.hellblazer.CoRE.meta.graph.Edge;
+import com.hellblazer.CoRE.meta.graph.Graph;
+import com.hellblazer.CoRE.meta.graph.Node;
+import com.hellblazer.CoRE.meta.graph.impl.EdgeImpl;
+import com.hellblazer.CoRE.meta.graph.impl.GraphImpl;
+import com.hellblazer.CoRE.meta.graph.impl.NodeImpl;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization;
@@ -243,5 +251,32 @@ public class WorkspaceModelImpl implements WorkspaceModel {
             }
         }
         return units;
+    }
+
+    @Override
+    public Graph getStatusCodeGraph(Product product) {
+        Map<StatusCode, Node<StatusCode>> nodes = new HashMap<StatusCode, Node<StatusCode>>();
+        List<Edge<?>> edges = new ArrayList<Edge<?>>();
+        for (StatusCode currentCode : model.getJobModel().getStatusCodesFor(product)) {
+            Node<StatusCode> parent = new NodeImpl<StatusCode>(currentCode);
+            nodes.put(currentCode, parent);
+            for (StatusCodeSequencing sequence : model.getStatusCodeModel().getStatusCodeSequencingParent(product,
+                                                                                                          currentCode)) {
+                StatusCode childCode = sequence.getChildCode();
+                Node<StatusCode> child = nodes.get(childCode);
+                if (child == null) {
+                    child = new NodeImpl<StatusCode>(childCode);
+                    nodes.put(childCode, child);
+                }
+                Edge<StatusCodeSequencing> edge = new EdgeImpl<StatusCodeSequencing>(
+                                                                                     parent,
+                                                                                     sequence,
+                                                                                     child);
+                edges.add(edge);
+            }
+        }
+        List<Node<?>> nodeList = new ArrayList<Node<?>>();
+        nodeList.addAll(nodes.values());
+        return new GraphImpl(nodeList, edges);
     }
 }

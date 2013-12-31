@@ -227,6 +227,64 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(2, protocols.size());
         List<Job> jobs = findAllJobs();
         assertEquals(6, jobs.size());
+
+        txn.begin();
+        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
+                                               Job.class);
+        query.setParameter("service", scenario.checkCredit);
+        Job creditCheck = query.getSingleResult();
+        creditCheck.setStatus(scenario.active);
+        txn.commit();
+        txn.begin();
+        creditCheck.setStatus(scenario.completed);
+        txn.commit();
+        em.clear();
+        txn.begin();
+        query.setParameter("service", scenario.pick);
+        Job pick = query.getSingleResult();
+        assertEquals(scenario.available, pick.getStatus());
+        pick.setStatus(scenario.active);
+        txn.commit();
+        txn.begin();
+        pick.setStatus(scenario.completed);
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.ship);
+        Job ship = query.getSingleResult();
+        assertEquals(scenario.waitingOnPurchaseOrder, ship.getStatus());
+        query.setParameter("service", scenario.fee);
+        Job fee = query.getSingleResult();
+        fee.setStatus(scenario.active);
+        txn.commit();
+        txn.begin();
+        fee.setStatus(scenario.completed);
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.printPurchaseOrder);
+        Job printPO = query.getSingleResult();
+        assertEquals(scenario.available, printPO.getStatus());
+        printPO.setStatus(scenario.active);
+        txn.commit();
+        txn.begin();
+        printPO.setStatus(scenario.completed);
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.ship);
+        ship = query.getSingleResult();
+        assertEquals(scenario.available, ship.getStatus());
+        ship.setStatus(scenario.active);
+        txn.commit();
+        txn.begin();
+        ship.setStatus(scenario.completed);
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.deliver);
+        Job deliver = query.getSingleResult();
+        assertEquals(scenario.completed, deliver.getStatus());
     }
 
     @Test

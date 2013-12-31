@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.hellblazer.CoRE;
+package com.hellblazer.CoRE.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

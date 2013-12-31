@@ -10,7 +10,8 @@
 		<button ng-click="remove($index)">Remove</button>
 	</div>
 	<form>
-	   <input ng-model="newItem.title"/>
+	   <input ng-model="newTitle"/>
+	   <input ng-model="newPrice" />
 	   <button ng-click="addItem()">Add</button>
 	</form>
 	<form>
@@ -23,7 +24,8 @@
         function CartController($scope) {
             
             $scope.checked = false;
-            $scope.newItem = null;
+            $scope.newTitle = null;
+            $scope.newPrice = null;
             
             $scope.items = [ {
                 title : 'Paint pots',
@@ -43,7 +45,8 @@
                 $scope.items.splice(index, 1);
             }
             $scope.addItem = function() {
-                $scope.items.splice(1, 0, $scope.newItem);
+                
+                $scope.items.splice(1, 0, {title: $scope.newTitle, price: $scope.newPrice});
             }
 
         }

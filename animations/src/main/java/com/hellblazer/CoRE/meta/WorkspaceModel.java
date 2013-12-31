@@ -30,6 +30,7 @@ import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
 import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.product.Product;
 
@@ -174,5 +175,7 @@ public interface WorkspaceModel {
      *         relationship
      */
     Collection<Unit> getUnits(Product workspace, Relationship relationship);
+
+    public abstract Graph getStatusCodeGraph(Product product);
 
 }

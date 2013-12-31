@@ -16,7 +16,6 @@
  */
 package com.hellblazer.CoRE.meta.graph.impl;
 
-import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.meta.graph.Node;
 
 /**
@@ -27,16 +26,16 @@ import com.hellblazer.CoRE.meta.graph.Node;
  * @author hparry
  * 
  */
-public class NodeImpl implements Node<Ruleform> {
+public class NodeImpl<T> implements Node<T> {
 
-    private Ruleform node;
+    private T node;
 
-    public NodeImpl(Ruleform node) {
+    public NodeImpl(T node) {
         this.node = node;
     }
 
     @Override
-    public Ruleform getNode() {
+    public T getNode() {
         return node;
     }
 

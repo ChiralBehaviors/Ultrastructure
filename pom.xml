@@ -25,7 +25,7 @@
 		<logging.core>INFO</logging.core>
 		<logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</logging.consoleLayoutPattern>
 		<testing.logging.core>INFO</testing.logging.core>
-        <testing.logging.jpa>WARN</testing.logging.jpa>
+		<testing.logging.jpa>WARN</testing.logging.jpa>
 		<testing.logging.org.apache>TRACE</testing.logging.org.apache>
 		<testing.logging.dbunit>WARN</testing.logging.dbunit>
 		<testing.logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</testing.logging.consoleLayoutPattern>
@@ -289,6 +289,9 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.7.2</version>
 					<configuration>
+						<forkCount>3</forkCount>
+						<reuseForks>true</reuseForks>
+						<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
 						<forkMode>always</forkMode>
 					</configuration>
 				</plugin>

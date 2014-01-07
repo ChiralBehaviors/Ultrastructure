@@ -46,19 +46,20 @@
         function ShoppingController($scope, Items) {
 
             $scope.items = Items.query();
-            /*  $scope.checked = false;
-             $scope.newTitle = null;
-             $scope.newPrice = null;
-             
-             
+            $scope.checked = false;
+            $scope.newTitle = null;
+            $scope.newPrice = null;
 
-             $scope.remove = function(index) {
-                 $scope.items.splice(index, 1);
-             }
-             $scope.addItem = function() {
-                 
-                 $scope.items.splice(1, 0, {title: $scope.newTitle, price: $scope.newPrice});
-             } */
+            $scope.remove = function(index) {
+                $scope.items.splice(index, 1);
+            }
+            $scope.addItem = function() {
+
+                $scope.items.splice(1, 0, {
+                    title : $scope.newTitle,
+                    price : $scope.newPrice
+                });
+            }
 
         }
     </script>

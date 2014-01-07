@@ -3,7 +3,7 @@
  */
 
 angular.module('uiApp')
-    .controller('NewCtrl', function ($scope) {
+    .controller('NewCtrl', function ($scope, $resource) {
         $scope.auth = {};
         $scope.products = [{name: 'prod1', rels: [{name: 'rel1'}, {name: 'rel2'}]},
             {name: 'prod2',
@@ -24,4 +24,11 @@ angular.module('uiApp')
             {name:'yellow', shade:'light'}
         ];
         $scope.color = $scope.colors[2]; // red
+
+        productResource = $resource('/v1/services/data/ruleform/Product/:id', {id: '@id'});
+
+        $scope.newProduct = productResource.get({id: '1'}, function() {
+            console.log('got a resource: ' + $scope.newProduct.name);
+        });
     });
+

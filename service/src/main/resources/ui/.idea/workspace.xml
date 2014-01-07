@@ -59,10 +59,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="new.html" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="new.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/new.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="74" selection-start="576" selection-end="576" vertical-scroll-proportion="0.42416453" vertical-offset="0" max-vertical-offset="778">
+            <state line="22" column="74" selection-start="576" selection-end="576" vertical-scroll-proportion="-13.75" vertical-offset="0" max-vertical-offset="570">
               <folding />
             </state>
           </provider>
@@ -71,16 +71,16 @@
       <file leaf-file-name="app.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/scripts/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="24" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
+            <state line="13" column="8" selection-start="256" selection-end="256" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="new.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="new.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/scripts/controllers/new.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="25" selection-start="137" selection-end="137" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+            <state line="34" column="0" selection-start="1028" selection-end="1028" vertical-scroll-proportion="0.59850377" vertical-offset="0" max-vertical-offset="802">
               <folding>
                 <element signature="e#0#39#0" expanded="false" />
               </folding>
@@ -109,8 +109,8 @@
       <list>
         <option value="$PROJECT_DIR$/app/scripts/app.js" />
         <option value="$PROJECT_DIR$/app/index.html" />
-        <option value="$PROJECT_DIR$/app/scripts/controllers/new.js" />
         <option value="$PROJECT_DIR$/app/views/new.html" />
+        <option value="$PROJECT_DIR$/app/scripts/controllers/new.js" />
       </list>
     </option>
   </component>
@@ -278,6 +278,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
+    <property name="FullScreen" value="true" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
@@ -402,26 +403,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/new.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="74" selection-start="576" selection-end="576" vertical-scroll-proportion="-13.75" vertical-offset="0" max-vertical-offset="570">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/scripts/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="24" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
+        <state line="13" column="8" selection-start="256" selection-end="256" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/scripts/controllers/new.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="25" selection-start="137" selection-end="137" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+        <state line="34" column="0" selection-start="1028" selection-end="1028" vertical-scroll-proportion="0.59850377" vertical-offset="0" max-vertical-offset="802">
           <folding>
             <element signature="e#0#39#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/new.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="74" selection-start="576" selection-end="576" vertical-scroll-proportion="0.42416453" vertical-offset="0" max-vertical-offset="778">
-          <folding />
         </state>
       </provider>
     </entry>

@@ -7,14 +7,14 @@
     Parent:
       <span >
         <select ng-model="product" ng-options="p.name for p in products">
-            <option value="">-- choose color --</option>
+
         </select>
       </span><br/>
 
     Relationship:
       <span  class="nullable">
-        <select ng-model="product" ng-options="r.name for r in product.rels">
-            <option value="">-- choose color --</option>
+        <select ng-model="product.rel" ng-options="r.name for r in product.rels">
+
         </select>
       </span><br/>
     Color grouped by shade:

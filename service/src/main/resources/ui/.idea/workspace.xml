@@ -62,7 +62,7 @@
       <file leaf-file-name="new.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/views/new.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="75" selection-start="470" selection-end="470" vertical-scroll-proportion="0.28920308" vertical-offset="0" max-vertical-offset="778">
+            <state line="15" column="37" selection-start="376" selection-end="376" vertical-scroll-proportion="0.28920308" vertical-offset="0" max-vertical-offset="778">
               <folding />
             </state>
           </provider>
@@ -420,7 +420,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/new.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="75" selection-start="470" selection-end="470" vertical-scroll-proportion="0.28920308" vertical-offset="0" max-vertical-offset="778">
+        <state line="15" column="37" selection-start="376" selection-end="376" vertical-scroll-proportion="0.28920308" vertical-offset="0" max-vertical-offset="778">
           <folding />
         </state>
       </provider>

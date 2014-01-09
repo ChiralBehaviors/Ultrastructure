@@ -16,9 +16,13 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -45,9 +49,26 @@ public class RuleformResource {
     public Ruleform getResource(@PathParam("ruleform") String type,
                         @PathParam("id") long id) throws ClassNotFoundException {
         String qualifiedName = "com.hellblazer.CoRE." + type.toLowerCase() + "." + type;
+        @SuppressWarnings("unchecked")
         Class<? extends Ruleform> c = (Class<? extends Ruleform>) Class.forName(qualifiedName);
         Ruleform rf = em.find(c, id);
         return rf;
+    }
+    @POST
+    @Path("/{ruleform}")
+    @Produces({MediaType.APPLICATION_JSON, "text/json"})
+    public long insertRuleform(@PathParam("ruleform") String type,
+                               Ruleform rf) {
+        if (!rf.getClass().getSimpleName().equals(type)) {
+            throw new IllegalArgumentException(String.format("expected type based on URL: %s, type of uploaded object: %s", type, rf.getClass().getSimpleName()));
+        }
+        
+        em.getTransaction().begin();
+        Map<Ruleform, Ruleform> map = new HashMap<Ruleform, Ruleform>();
+        rf.manageEntity(em, map);
+        em.getTransaction().commit();
+        em.refresh(rf);
+        return rf.getId();
     }
 
 }

@@ -17,10 +17,12 @@
 package com.hellblazer.CoRE.access.resource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -54,6 +56,20 @@ public class RuleformResource {
         Ruleform rf = em.find(c, id);
         return rf;
     }
+    
+    @GET
+    @Path("/{ruleform}")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public List<Ruleform> getResource(@PathParam("ruleform") String type) throws ClassNotFoundException {
+        String qualifiedName = "com.hellblazer.CoRE." + type.toLowerCase() + "." + type;
+        @SuppressWarnings("unchecked")
+        Class<? extends Ruleform> c = (Class<? extends Ruleform>) Class.forName(qualifiedName);
+        Query qr = em.createNamedQuery(type.toLowerCase() + Ruleform.FIND_ALL_SUFFIX, c);
+        List<Ruleform> results = qr.getResultList();
+        return results;
+    }
+    
+    
     @POST
     @Path("/{ruleform}")
     @Produces({MediaType.APPLICATION_JSON, "text/json"})

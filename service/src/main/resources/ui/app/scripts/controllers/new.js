@@ -4,7 +4,7 @@
 
 angular.module('uiApp')
     .controller('NewCtrl', function ($scope, $resource) {
-        $scope.auth = {};
+        $scope.auth = {type: "ProductNetwork"};
         $scope.products = [{name: 'prod1', rels: [{name: 'rel1'}, {name: 'rel2'}]},
             {name: 'prod2',
             rels: [{name: 'rel3'}, {name: 'rel4'}]}];
@@ -25,8 +25,11 @@ angular.module('uiApp')
         ];
         $scope.color = $scope.colors[2]; // red
 
-        productResource = $resource('/v1/services/data/ruleform/Product/:id', {id: '@id'});
-
+        var productResource = $resource('/v1/services/data/ruleform/Product/:id', {id: '@id'});
+        var authResource = $resource('/v1/services/data/ruleform/ProductNetwork');
+        $scope.authId = authResource.post($scope.auth, function() {
+            console.log('posted to the thingie: ' + $scope.authId);
+        });
         $scope.newProduct = productResource.get({id: '1'}, function() {
             console.log('got a resource: ' + $scope.newProduct.name);
         });

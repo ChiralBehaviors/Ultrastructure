@@ -828,13 +828,15 @@ public class JobModelImpl implements JobModel {
         job.setDeliverTo(resolve(parent.getDeliverTo(), protocol.getDeliverTo()));
         job.setService(protocol.getService());
         job.setStatus(kernel.getUnset());
-        /*
-         * for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
-         * JobAttribute attribute = pAttribute.createJobAttribute();
-         * attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
-         * attribute.setJob(job); em.persist(attribute); }
-         */
         em.persist(job);
+
+//        for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
+//            JobAttribute attribute = pAttribute.createJobAttribute();
+//            attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
+//            attribute.setJob(job);
+//            em.persist(attribute);
+//        }
+
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s from protocol %s", job,
                                     protocol));
@@ -1382,6 +1384,39 @@ public class JobModelImpl implements JobModel {
         } finally {
             MODIFIED_SERVICES.clear();
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.JobModel#getParentActions(com.hellblazer.CoRE.product.Product)
+     */
+    @Override
+    public List<ProductParentSequencingAuthorization> getParentActions(Product service) {
+        TypedQuery<ProductParentSequencingAuthorization> query = em.createNamedQuery(ProductParentSequencingAuthorization.GET_SEQUENCES,
+                                                                                     ProductParentSequencingAuthorization.class);
+        query.setParameter("service", service);
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.JobModel#getSiblingActions(com.hellblazer.CoRE.product.Product)
+     */
+    @Override
+    public List<ProductSiblingSequencingAuthorization> getSiblingActions(Product parent) {
+        TypedQuery<ProductSiblingSequencingAuthorization> query = em.createNamedQuery(ProductSiblingSequencingAuthorization.GET_SEQUENCES,
+                                                                                      ProductSiblingSequencingAuthorization.class);
+        query.setParameter("parent", parent);
+        return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.JobModel#getChildActions(com.hellblazer.CoRE.product.Product)
+     */
+    @Override
+    public List<ProductChildSequencingAuthorization> getChildActions(Product parent) {
+        TypedQuery<ProductChildSequencingAuthorization> query = em.createNamedQuery(ProductChildSequencingAuthorization.GET_SEQUENCES,
+                                                                                    ProductChildSequencingAuthorization.class);
+        query.setParameter("parent", parent);
+        return query.getResultList();
     }
 
 }

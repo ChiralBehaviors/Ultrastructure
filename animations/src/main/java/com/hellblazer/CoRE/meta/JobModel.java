@@ -402,4 +402,22 @@ public interface JobModel {
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
 
+    /**
+     * @param node
+     * @return
+     */
+    List<ProductParentSequencingAuthorization> getParentActions(Product node);
+
+    /**
+     * @param node
+     * @return
+     */
+    List<ProductSiblingSequencingAuthorization> getSiblingActions(Product node);
+
+    /**
+     * @param node
+     * @return
+     */
+    List<ProductChildSequencingAuthorization> getChildActions(Product node);
+
 }

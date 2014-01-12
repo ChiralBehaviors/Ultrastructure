@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.event;
 
+import static com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization.GET_SEQUENCES;
 import static com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization.GET_SIBLING_ACTIONS;
 
 import java.util.Map;
@@ -42,15 +43,20 @@ import com.hellblazer.CoRE.product.Product;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
-                                                                + "WHERE seq.parent = :service"
-                                                                + " AND seq.statusCode = :status "
-                                                                + "ORDER BY seq.sequenceNumber") })
+@NamedQueries({
+               @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
+                                                               + " WHERE seq.parent = :service"
+                                                               + " AND seq.statusCode = :status "
+                                                               + " ORDER BY seq.sequenceNumber"),
+               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
+                                                         + " WHERE seq.parent = :service"
+                                                         + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_sibling_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_sibling_sequencing_authorization_id_seq", sequenceName = "product_sibling_sequencing_authorization_id_seq")
 public class ProductSiblingSequencingAuthorization extends Ruleform {
     public static final String GET_SIBLING_ACTIONS = "productSequencingAuthorization.getSiblingActions";
+    public static final String GET_SEQUENCES       = "productSequencingAuthorization.getSequences";
 
     private static final long  serialVersionUID    = 1L;
 

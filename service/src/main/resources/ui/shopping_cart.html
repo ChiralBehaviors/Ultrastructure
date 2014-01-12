@@ -1,0 +1,67 @@
+<html ng-app="ShoppingModule">
+<head>
+<Title>Shopping Cart</Title>
+</head>
+<body ng-controller="ShoppingController">
+	<table>
+		<tr ng-repeat="item in items">
+			<td>{{item.title}}</td>
+			<td>{{item.description}}</td>
+			<td>{{item.price | currency}}</td>
+		</tr>
+	</table>
+	<form>
+		<input ng-model="newTitle" /> <input ng-model="newPrice" />
+		<button ng-click="addItem()">Add</button>
+	</form>
+	<form>
+		<input ng-model="checked" type="checkbox" />
+	</form>
+	<p>Checked? {{checked}}</p>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<script type="text/javascript">
+        var shoppingModule = angular.module("ShoppingModule", []);
+
+        shoppingModule.factory("Items", function() {
+            var items = {};
+            items.query = function() {
+                //pretend this hits a REST resource
+                return [ {
+                    title : 'Paint pots',
+                    quantity : 8,
+                    price : 3.95
+                }, {
+                    title : 'Polka dots',
+                    quantity : 17,
+                    price : 12.95
+                }, {
+                    title : 'Pebbles',
+                    quantity : 5,
+                    price : 6.95
+                } ];
+            };
+            return items;
+        })
+        function ShoppingController($scope, Items) {
+
+            $scope.items = Items.query();
+            $scope.checked = false;
+            $scope.newTitle = null;
+            $scope.newPrice = null;
+
+            $scope.remove = function(index) {
+                $scope.items.splice(index, 1);
+            }
+            $scope.addItem = function() {
+
+                $scope.items.splice(1, 0, {
+                    title : $scope.newTitle,
+                    price : $scope.newPrice
+                });
+            }
+
+        }
+    </script>
+</body>
+</html>

@@ -28,6 +28,7 @@ import com.hellblazer.CoRE.access.resource.CollectionResource;
 import com.hellblazer.CoRE.access.resource.CrudGuiResource;
 import com.hellblazer.CoRE.access.resource.CrudResource;
 import com.hellblazer.CoRE.access.resource.DomainResource;
+import com.hellblazer.CoRE.access.resource.RuleformResource;
 import com.hellblazer.CoRE.access.resource.TraversalResource;
 import com.hellblazer.CoRE.access.resource.WorkspaceResource;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
@@ -73,6 +74,7 @@ public class DataAccessBundle implements
         environment.addHealthCheck(new JpaHealthCheck(emf));
         environment.addResource(new CollectionResource(emf));
         environment.addResource(new WorkspaceResource(emf));
+        environment.addResource(new RuleformResource(emf));
 
     }
 }

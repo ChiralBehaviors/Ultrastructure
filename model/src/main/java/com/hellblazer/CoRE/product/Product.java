@@ -54,6 +54,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.attribute.Attributable;
 import com.hellblazer.CoRE.network.Relationship;
@@ -127,7 +128,7 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
         implements Attributable<ProductAttribute> {
 
     public static final String    CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
-    public static final String    FIND_ALL                                               = "product.findAll";
+    public static final String    FIND_ALL                                               = "product" + Ruleform.FIND_ALL_SUFFIX;
     public static final String    FIND_ATTRIBUTE_AUTHORIZATIONS                          = "product.findAttributeAuthorizations";
     public static final String    FIND_BY_ID                                             = "product.findById";
     public static final String    FIND_BY_NAME                                           = "product"

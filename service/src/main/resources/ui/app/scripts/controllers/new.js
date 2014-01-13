@@ -43,4 +43,9 @@ angular.module('apiApp')
         //$scope.ruleforms = [];
         $scope.ruleforms = productResource.query();
     })
+    .controller('ERDetailViewController', function($scope, $resource, $routeParams) {
+        var res = $resource('/v1/services/data/ruleform/:ruleform/:id');
+        
+        $scope.ruleform = res.get({ruleform: $routeParams.ruleform, id: $routeParams.id});
+    });
 

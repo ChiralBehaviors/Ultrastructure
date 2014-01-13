@@ -24,9 +24,13 @@ angular.module('apiApp', [
     .config(function($routeProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: 'views/exis_ruleform.html',
+                templateUrl: 'views/exis_ruleform_list.html',
                 controller: 'ERListViewCtrl',
                 isArray: 'true'
+            })
+            .when('/:ruleform/:id', {
+                templateUrl: 'views/exis_ruleform_detail.html',
+                controller: 'ERDetailViewController'
             })
             .otherwise({
                 redirectTo: '/'

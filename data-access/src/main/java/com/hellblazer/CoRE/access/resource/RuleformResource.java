@@ -17,12 +17,16 @@
 package com.hellblazer.CoRE.access.resource;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -43,6 +47,19 @@ public class RuleformResource {
     
     public RuleformResource(EntityManagerFactory emf) {
         this.em = emf.createEntityManager();
+    }
+    
+    @GET
+    @Path("/")
+    @Produces({MediaType.APPLICATION_JSON, "text/json"})
+    public List<String> getRuleformTypes() {
+        Metamodel m = em.getMetamodel();
+        Set<EntityType<?>> entities = m.getEntities();
+        List<String> types = new LinkedList<String>();
+        for (EntityType<?> e : entities) {
+            types.add(e.getName());
+        }
+        return types;
     }
     
     @GET

@@ -16,3 +16,19 @@ angular.module('uiApp', [
         redirectTo: '/'
       });
   });
+
+angular.module('apiApp', [
+      'ngResource', 
+      'ngRoute'
+])
+    .config(function($routeProvider) {
+        $routeProvider
+            .when('/', {
+                templateUrl: 'views/exis_ruleform.html',
+                controller: 'ERListViewCtrl',
+                isArray: 'true'
+            })
+            .otherwise({
+                redirectTo: '/'
+            });
+    });  

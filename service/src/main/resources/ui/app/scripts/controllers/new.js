@@ -35,3 +35,12 @@ angular.module('uiApp')
         });
     });
 
+angular.module('apiApp')
+    .controller('ERListViewCtrl', function($scope, $resource) {
+        var productResource = $resource('/v1/services/data/ruleform/Product/:productId', {
+            
+        });
+        //$scope.ruleforms = [];
+        $scope.ruleforms = productResource.query();
+    })
+

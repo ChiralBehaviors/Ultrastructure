@@ -15,7 +15,7 @@
               product_value bigint, -- If the Attribute is Product-valued, the value is stored in this column
               integer_value integer, -- If the Attribute is integer-valued, the value is stored in this column
               numeric_value numeric, -- If the Attribute is numerically-valued (i.e. non-integer), the value is stored in this column
-              boolean_value boolean, -- If the Attribute is boolean-valued, the value is stored in this column
+              boolean_value int2, -- If the Attribute is boolean-valued, the value is stored in this column
               text_value character varying, -- If the Attribute is text-valued, the value is stored in this column
               timestamp_value timestamp,
               binary_value bytea,

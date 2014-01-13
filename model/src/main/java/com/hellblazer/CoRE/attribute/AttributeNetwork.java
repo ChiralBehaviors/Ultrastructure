@@ -71,7 +71,7 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                       + "              FROM ruleform.attribute_network AS n) as premise1 "
                                                                       + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
                                                                       + "            FROM ruleform.attribute_network AS n "
-                                                                      + "            WHERE n.inferred = FALSE) as premise2  "
+                                                                      + "            WHERE n.inferred = 0) as premise2  "
                                                                       + "         ON premise2.parent = premise1.child "
                                                                       + "         AND premise2.child <> premise1.parent "
                                                                       + "     JOIN ruleform.network_inference AS deduction "
@@ -88,7 +88,7 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                      + "              FROM last_pass_rules AS n) as premise1 "
                                                                                      + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
                                                                                      + "            FROM ruleform.attribute_network AS n "
-                                                                                     + "            WHERE n.inferred = FALSE) as premise2  "
+                                                                                     + "            WHERE n.inferred = 0) as premise2  "
                                                                                      + "         ON premise2.parent = premise1.child "
                                                                                      + "         AND premise2.child <> premise1.parent "
                                                                                      + "     JOIN ruleform.network_inference AS deduction "
@@ -121,7 +121,7 @@ import com.hellblazer.CoRE.network.Relationship;
                                                                                 + "          AND n.child = cpr.child "
                                                                                 + "        RETURNING n.*) "
                                                                                 + "INSERT INTO ruleform.attribute_network(id, parent, relationship, child, inferred, updated_by) "
-                                                                                + "        SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, TRUE, ?1 "
+                                                                                + "        SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, 1, ?1 "
                                                                                 + "    FROM current_pass_rules cpr "
                                                                                 + "    LEFT OUTER JOIN upsert AS exist "
                                                                                 + "        ON cpr.parent = exist.parent "
@@ -150,7 +150,7 @@ import com.hellblazer.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
-                                                                            + "WHERE n.parent = :attribute and n.inferred = FALSE and n.relationship.preferred = FALSE "
+                                                                            + "WHERE n.parent = :attribute and n.inferred = 0 and n.relationship.preferred = 0 "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
                                                         + "WHERE n.parent = :parent "

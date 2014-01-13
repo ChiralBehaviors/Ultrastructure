@@ -16,7 +16,7 @@
               text_value character varying, -- If the Attribute has a text value, it is stored in this column
               numeric_value numeric, -- If the Attribute has a numeric (real) value, it is stored in this column
               integer_value integer, -- If the Attribute has an integer value, it is stored in this column
-              boolean_value boolean, -- If the Attribute has a boolean value, it is stored in this column
+              boolean_value int2, -- If the Attribute has a boolean value, it is stored in this column
               timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
               binary_value bytea, -- If the Attribute has a binary value, it is stored in this column
               product_value bigint, -- If the Attribute has a Product value, it is stored in this column

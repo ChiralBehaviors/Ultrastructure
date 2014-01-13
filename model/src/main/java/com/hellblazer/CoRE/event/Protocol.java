@@ -78,7 +78,7 @@ public class Protocol extends Ruleform {
     private Set<ProtocolAttribute> attributes;
 
     @Column(name = "copy_attributes")
-    private boolean                copyAttributes   = false;
+    private Integer                   copyAttributes   = FALSE;
 
     /**
      * the location to deliver the product from
@@ -253,7 +253,7 @@ public class Protocol extends Ruleform {
     }
 
     public boolean isCopyAttributes() {
-        return copyAttributes;
+        return toBoolean(copyAttributes);
     }
 
     public void setAssignTo(Agency assignTo) {
@@ -265,7 +265,7 @@ public class Protocol extends Ruleform {
     }
 
     public void setCopyAttributes(boolean copyAttributes) {
-        this.copyAttributes = copyAttributes;
+        this.copyAttributes = toInteger(copyAttributes);
     }
 
     /**

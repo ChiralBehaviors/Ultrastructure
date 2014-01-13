@@ -17,6 +17,7 @@
 package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.ProductChildSequencingAuthorization.GET_CHILD_ACTIONS;
+import static com.hellblazer.CoRE.event.ProductChildSequencingAuthorization.GET_SEQUENCES;
 
 import java.util.Map;
 
@@ -42,15 +43,20 @@ import com.hellblazer.CoRE.product.Product;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
-                                                              + "WHERE seq.parent = :service"
-                                                              + "  AND seq.statusCode = :status "
-                                                              + "ORDER BY seq.sequenceNumber") })
+@NamedQueries({
+               @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
+                                                             + "WHERE seq.parent = :service"
+                                                             + "  AND seq.statusCode = :status "
+                                                             + "ORDER BY seq.sequenceNumber"),
+               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
+                                                             + " WHERE seq.parent = :service"
+                                                             + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_child_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_child_sequencing_authorization_id_seq", sequenceName = "product_child_sequencing_authorization_id_seq")
 public class ProductChildSequencingAuthorization extends Ruleform {
     public static final String GET_CHILD_ACTIONS = "productChildSequencingAuthorization.getChildActions";
+    public static final String GET_SEQUENCES     = "productChildSequencingAuthorization.getSequences";
     private static final long  serialVersionUID  = 1L;
 
     @Id

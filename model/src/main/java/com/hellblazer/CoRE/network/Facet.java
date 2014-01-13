@@ -33,7 +33,7 @@ import com.hellblazer.CoRE.attribute.AttributeValue;
  * @author hhildebrand
  * 
  */
-abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeType extends AttributeValue<?>> {
+abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeType extends AttributeValue<RuleForm>> {
     private final Aspect<RuleForm>              aspect;
     private final Map<Attribute, AttributeType> attributeMap;
     private final RuleForm                      instance;

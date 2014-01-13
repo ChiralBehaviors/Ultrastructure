@@ -201,15 +201,15 @@ public class OrderProcessingLoader {
 
     public void createAttributes() {
         priceAttribute = new Attribute("price", "price", core,
-                                       ValueType.NUMERIC);
+                                       ValueType.INTEGER);
         em.persist(priceAttribute);
 
         taxRateAttribute = new Attribute("tax rate", "tax rate", core,
-                                         ValueType.NUMERIC);
+                                         ValueType.INTEGER);
         em.persist(taxRateAttribute);
 
         discountAttribute = new Attribute("discount", "discount", core,
-                                          ValueType.NUMERIC);
+                                          ValueType.INTEGER);
         em.persist(discountAttribute);
     }
 
@@ -504,7 +504,7 @@ public class OrderProcessingLoader {
         em.persist(feeProtocol);
 
         price = new ProtocolAttribute(priceAttribute, core);
-        price.setNumericValue(1500);
+        price.setIntegerValue(1500);
         price.setProtocol(feeProtocol);
         em.persist(price);
 
@@ -516,7 +516,7 @@ public class OrderProcessingLoader {
 
         ProtocolAttribute taxRate = new ProtocolAttribute(taxRateAttribute,
                                                           core);
-        taxRate.setNumericValue(0.0575);
+        taxRate.setIntegerValue(575);
         taxRate.setProtocol(salesTaxProtocol);
         em.persist(taxRate);
 
@@ -528,7 +528,7 @@ public class OrderProcessingLoader {
         ProtocolAttribute euroDiscount = new ProtocolAttribute(
                                                                discountAttribute,
                                                                core);
-        euroDiscount.setNumericValue(0.05);
+        euroDiscount.setIntegerValue(5);
         euroDiscount.setProtocol(salesTaxProtocol);
         em.persist(euroDiscount);
 
@@ -544,7 +544,7 @@ public class OrderProcessingLoader {
         ProtocolAttribute discountedPrice = new ProtocolAttribute(
                                                                   priceAttribute,
                                                                   core);
-        discountedPrice.setNumericValue(1250);
+        discountedPrice.setIntegerValue(1250);
         discountedPrice.setProtocol(gtuDiscountedPriceProtocol);
         em.persist(discountedPrice);
     }

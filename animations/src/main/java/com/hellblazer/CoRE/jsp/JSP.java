@@ -28,6 +28,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.apache.openjpa.util.StoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,9 @@ public abstract class JSP {
     private static final Logger               log        = LoggerFactory.getLogger(JSP.class);
 
     static {
-        Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
+        ClassLoader classLoader = JSP.class.getClassLoader();
+        Thread.currentThread().setContextClassLoader(classLoader);
+        StoreException.class.toString();
         InputStream is = JSP.class.getResourceAsStream("jpa.properties");
         if (is == null) {
             log.error("Unable to read jpa.properties, resource is null");
@@ -65,16 +68,20 @@ public abstract class JSP {
         Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
         EntityManager em = EMF.createEntityManager();
         em.getTransaction().begin();
+        T value;
         try {
-            T value = call.call(em);
-            em.getTransaction().commit();
-            return value;
-        } catch (Throwable e) {
+            value = call.call(em);
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
             StringWriter writer = new StringWriter();
             PrintWriter pWriter = new PrintWriter(writer);
             e.printStackTrace(pWriter);
-            throw new SQLException(String.format("Stored procedure failed\n%s",
+            pWriter.flush();
+            throw new SQLException(String.format("** Java Stored procedure failed\n%s",
                                                  writer.toString()), e);
         }
+        em.getTransaction().commit();
+        return value;
     }
 }

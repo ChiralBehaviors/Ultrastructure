@@ -16,7 +16,7 @@
               deliver_from bigint NOT NULL,
               service bigint NOT NULL,
               product bigint NOT NULL,
-              copy_attributes boolean DEFAULT FALSE,
+              copy_attributes int2 DEFAULT 0,
               sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an service / key combination can have multiple protocol rules
               assign_to bigint NOT NULL, -- The agency that should perform the service
               requester bigint NOT NULL, -- The agency that requested the service

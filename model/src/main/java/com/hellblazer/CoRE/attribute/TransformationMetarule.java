@@ -83,7 +83,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     private Product            service;
 
     @Column(name = "stop_on_match")
-    private Boolean            stopOnMatch;
+    private Integer            stopOnMatch;
 
     public TransformationMetarule() {
     }
@@ -117,7 +117,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     }
 
     public Boolean getStopOnMatch() {
-        return stopOnMatch;
+        return toBoolean(stopOnMatch);
     }
 
     public void setEntityMap(Relationship relationship2) {
@@ -150,7 +150,7 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     }
 
     public void setStopOnMatch(Boolean stopOnMatch) {
-        this.stopOnMatch = stopOnMatch;
+        this.stopOnMatch = toInteger(stopOnMatch);
     }
 
     /* (non-Javadoc)

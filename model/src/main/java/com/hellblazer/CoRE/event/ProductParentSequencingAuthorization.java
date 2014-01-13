@@ -17,6 +17,7 @@
 package com.hellblazer.CoRE.event;
 
 import static com.hellblazer.CoRE.event.ProductParentSequencingAuthorization.GET_PARENT_ACTIONS;
+import static com.hellblazer.CoRE.event.ProductParentSequencingAuthorization.GET_SEQUENCES;
 
 import java.util.Map;
 
@@ -42,15 +43,20 @@ import com.hellblazer.CoRE.product.Product;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
-                                                               + " WHERE seq.service = :service"
-                                                               + "   AND seq.statusCode = :status"
-                                                               + " ORDER BY seq.sequenceNumber") })
+@NamedQueries({
+               @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
+                                                              + " WHERE seq.service = :service"
+                                                              + "   AND seq.statusCode = :status"
+                                                              + " ORDER BY seq.sequenceNumber"),
+               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
+                                                         + " WHERE seq.service = :service"
+                                                         + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_parent_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_parent_sequencing_authorization_id_seq", sequenceName = "product_parent_sequencing_authorization_id_seq")
 public class ProductParentSequencingAuthorization extends Ruleform {
     public static final String GET_PARENT_ACTIONS  = "productParentSequencingAuthorization.getParentActions";
+    public static final String GET_SEQUENCES       = "productParentSequencingAuthorization.getSequences";
 
     private static final long  serialVersionUID    = 1L;
 
@@ -74,7 +80,8 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     private Integer            sequenceNumber      = 1;
 
     @Column(name = "set_if_active_siblings")
-    private Boolean            setIfActiveSiblings = true;
+    private Integer               setIfActiveSiblings = TRUE;
+
     @ManyToOne
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
@@ -160,7 +167,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     }
 
     public Boolean getSetIfActiveSiblings() {
-        return setIfActiveSiblings;
+        return toBoolean(setIfActiveSiblings);
     }
 
     public StatusCode getStatusCode() {
@@ -192,7 +199,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     }
 
     public void setSetIfActiveSiblings(Boolean setIfActiveSiblings) {
-        this.setIfActiveSiblings = setIfActiveSiblings;
+        this.setIfActiveSiblings = toInteger(setIfActiveSiblings);
     }
 
     public void setStatusCode(StatusCode statusCode) {

@@ -15,7 +15,7 @@
               agency_map bigint NOT NULL,
               product_map bigint NOT NULL,
               product_network_agency bigint,
-              stop_on_match boolean DEFAULT false,
+              stop_on_match int2 DEFAULT 0,
               notes character varying,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,

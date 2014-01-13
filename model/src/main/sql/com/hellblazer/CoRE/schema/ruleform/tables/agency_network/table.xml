@@ -13,7 +13,7 @@
               parent bigint NOT NULL,
               relationship bigint NOT NULL,
               child bigint NOT NULL,
-              inferred boolean NOT NULL DEFAULT FALSE,
+              inferred int2 NOT NULL DEFAULT 0,
               notes character varying,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,

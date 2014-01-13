@@ -46,7 +46,7 @@ public class UnitValue extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "boolean_value")
-    private Boolean           booleanValue;
+    private Integer           booleanValue;
 
     @Id
     @GeneratedValue(generator = "unit_value_id_seq", strategy = GenerationType.SEQUENCE)
@@ -80,7 +80,7 @@ public class UnitValue extends Ruleform {
     }
 
     public Boolean getBooleanValue() {
-        return booleanValue;
+        return toBoolean(booleanValue);
     }
 
     public Product getEntityValue() {
@@ -118,7 +118,7 @@ public class UnitValue extends Ruleform {
     }
 
     public void setBooleanValue(Boolean booleanValue) {
-        this.booleanValue = booleanValue;
+        this.booleanValue = toInteger(booleanValue);
     }
 
     public void setEntityValue(Product product) {

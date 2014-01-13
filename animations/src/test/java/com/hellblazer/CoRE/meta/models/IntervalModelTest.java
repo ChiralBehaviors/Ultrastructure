@@ -66,7 +66,7 @@ public class IntervalModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
 
-        List<IntervalNetwork> edges = em.createQuery("SELECT edge FROM IntervalNetwork edge WHERE edge.inferred = TRUE",
+        List<IntervalNetwork> edges = em.createQuery("SELECT edge FROM IntervalNetwork edge WHERE edge.inferred = 1",
                                                      IntervalNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }

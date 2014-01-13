@@ -154,7 +154,7 @@ public class StatusCode extends
     private Set<StatusCodeAttribute> attributes;
 
     @Column(name = "fail_parent")
-    private Boolean                  failParent                               = true;
+    private Integer                     failParent                               = TRUE;
 
     @Id
     @GeneratedValue(generator = "status_code_id_seq", strategy = GenerationType.SEQUENCE)
@@ -169,7 +169,7 @@ public class StatusCode extends
     private Set<StatusCodeNetwork>   networkByParent;
 
     @Column(name = "propagate_children")
-    private Boolean                  propagateChildren                        = true;
+    private Integer                     propagateChildren                        = TRUE;
 
     public StatusCode() {
     }
@@ -257,7 +257,7 @@ public class StatusCode extends
     }
 
     public Boolean getFailParent() {
-        return failParent;
+        return toBoolean(failParent);
     }
 
     @Override
@@ -288,7 +288,7 @@ public class StatusCode extends
     }
 
     public Boolean getPropagateChildren() {
-        return propagateChildren;
+        return toBoolean(propagateChildren);
     }
 
     /* (non-Javadoc)
@@ -316,7 +316,7 @@ public class StatusCode extends
     }
 
     public void setFailParent(Boolean failParent) {
-        this.failParent = failParent;
+        this.failParent = toInteger(failParent);
     }
 
     @Override
@@ -341,6 +341,6 @@ public class StatusCode extends
     }
 
     public void setPropagateChildren(Boolean propagateChildren) {
-        this.propagateChildren = propagateChildren;
+        this.propagateChildren = toInteger(propagateChildren);
     }
 }

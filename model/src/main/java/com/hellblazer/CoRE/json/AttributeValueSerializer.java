@@ -32,7 +32,7 @@ import com.hellblazer.CoRE.attribute.AttributeValue;
  * 
  * @param <T>
  */
-public class AttributeValueSerializer<T extends AttributeValue<? extends Ruleform>>
+public class AttributeValueSerializer<T extends Ruleform>
         extends StdSerializer<AttributeValue<? extends Ruleform>> {
 
     public AttributeValueSerializer(Class<?> t, boolean dummy) {

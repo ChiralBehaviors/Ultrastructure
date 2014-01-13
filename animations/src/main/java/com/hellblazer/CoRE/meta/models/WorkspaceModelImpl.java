@@ -279,4 +279,56 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         nodeList.addAll(nodes.values());
         return new GraphImpl(nodeList, edges);
     }
+
+    public Graph getStatusCodeSequencingGraph(Product product) {
+        Map<Product, Node<Product>> nodes = new HashMap<Product, Node<Product>>();
+        List<Edge<?>> edges = new ArrayList<Edge<?>>();
+        Node<Product> current = new NodeImpl<Product>(product);
+        traverseStatusCodeSequencing(current, nodes, edges);
+        List<Node<?>> nodeList = new ArrayList<Node<?>>();
+        nodeList.addAll(nodes.values());
+        return new GraphImpl(nodeList, edges);
+    }
+
+    /**
+     * @param current
+     * @param nodes
+     * @param edges
+     */
+    private void traverseStatusCodeSequencing(Node<Product> current,
+                                              Map<Product, Node<Product>> nodes,
+                                              List<Edge<?>> edges) {
+        if (nodes.containsKey(current.getNode())) {
+            return;
+        }
+        for (ProductParentSequencingAuthorization auth : model.getJobModel().getParentActions(current.getNode())) {
+            Node<Product> p = nodes.get(auth.getService());
+            if (p == null) {
+                p = new NodeImpl<Product>(auth.getService());
+                traverseStatusCodeSequencing(p, nodes, edges);
+            }
+            edges.add(new EdgeImpl<ProductParentSequencingAuthorization>(p,
+                                                                         auth,
+                                                                         current));
+        }
+        for (ProductSiblingSequencingAuthorization auth : model.getJobModel().getSiblingActions(current.getNode())) {
+            Node<Product> p = nodes.get(auth.getParent());
+            if (p == null) {
+                p = new NodeImpl<Product>(auth.getParent());
+            }
+            edges.add(new EdgeImpl<ProductSiblingSequencingAuthorization>(
+                                                                          current,
+                                                                          auth,
+                                                                          p));
+        }
+        for (ProductChildSequencingAuthorization auth : model.getJobModel().getChildActions(current.getNode())) {
+            Node<Product> p = nodes.get(auth.getParent());
+            if (p == null) {
+                p = new NodeImpl<Product>(auth.getParent());
+            }
+            edges.add(new EdgeImpl<ProductChildSequencingAuthorization>(
+                                                                        current,
+                                                                        auth, p));
+        }
+    }
 }

@@ -17,7 +17,7 @@
               duration numeric,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              pinned boolean NOT NULL DEFAULT false,
+              pinned int2 NOT NULL DEFAULT 0,
               CONSTRAINT interval_pkey PRIMARY KEY (id ),
               CONSTRAINT interval_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE

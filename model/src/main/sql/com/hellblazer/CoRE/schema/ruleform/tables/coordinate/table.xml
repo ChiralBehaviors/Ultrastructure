@@ -13,7 +13,7 @@
               name character varying NOT NULL, -- The unique name of a coordinate
               description character varying, -- Free-form description of the coordinate
               notes character varying, -- Usage notes for the coordinate
-              pinned boolean NOT NULL DEFAULT false, -- Indicates that a coordinate rule has been pinned, restricting changes to the rule
+              pinned int2 NOT NULL DEFAULT 0, -- Indicates that a coordinate rule has been pinned, restricting changes to the rule
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
               CONSTRAINT coordinate_pkey PRIMARY KEY (id ),

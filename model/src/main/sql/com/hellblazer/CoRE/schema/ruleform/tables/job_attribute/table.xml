@@ -15,7 +15,7 @@
               sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when a Job can have multiple values for a given Attribute
               text_value character varying, -- If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL
               numeric_value numeric, -- If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL
-              boolean_value boolean,
+              boolean_value int2,
               integer_value integer, -- If the Attribute is integer-valued, the value goes in this column; all other value columns should be NULL
               timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
               binary_value bytea, -- If the Attribute has a binary value, it is stored in this column

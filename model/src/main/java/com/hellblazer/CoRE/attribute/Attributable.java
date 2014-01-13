@@ -20,6 +20,7 @@ package com.hellblazer.CoRE.attribute;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.CoRE.Ruleform;
 
 /**
  * The interface for data types that have attributes
@@ -27,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  * 
  */
-public interface Attributable<AttributeType extends AttributeValue<?>> {
+public interface Attributable<AttributeType extends Ruleform> {
     @JsonIgnore
     Set<AttributeType> getAttributes();
 

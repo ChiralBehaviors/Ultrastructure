@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
             CREATE TABLE ruleform.unit
             (
               id bigserial NOT NULL,
@@ -16,11 +16,11 @@
               notes character varying,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              pinned boolean NOT NULL DEFAULT false,
+              pinned int2 NOT NULL DEFAULT 0,
               datatype character varying, -- The underlying datatype of a measurement of this kind of Unit
               min numeric, -- If the unit is integer or numeric and has a minimum value, it is stored here.
               max numeric, -- If the unit is integer or numeric and has a maximum value, it is stored here.
-              enumerated boolean DEFAULT false, -- If the allowable values of the unit constitute an enumerated set, then this should be TRUE.
+              enumerated int2 DEFAULT 0, -- If the allowable values of the unit constitute an enumerated set, then this should be TRUE.
               CONSTRAINT unit_pkey PRIMARY KEY (id ),
               CONSTRAINT unit_updated_by_fkey FOREIGN KEY (updated_by)
                   REFERENCES ruleform.agency (id) MATCH SIMPLE
@@ -40,9 +40,9 @@
             COMMENT ON COLUMN ruleform.unit.enumerated 
                 IS 'If the allowable values of the unit constitute an enumerated set, then this should be TRUE.';
             ]]>
-        </sql>
-        <rollback>
-            <dropTable tableName="ruleform.unit"/>
-        </rollback>
-    </changeSet>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.unit" />
+		</rollback>
+	</changeSet>
 </databaseChangeLog>

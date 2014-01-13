@@ -49,12 +49,14 @@ import org.slf4j.LoggerFactory;
 
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
 import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.hellblazer.CoRE.event.Protocol;
+import com.hellblazer.CoRE.event.ProtocolAttribute;
 import com.hellblazer.CoRE.event.Protocol_;
 import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
@@ -830,12 +832,12 @@ public class JobModelImpl implements JobModel {
         job.setStatus(kernel.getUnset());
         em.persist(job);
 
-//        for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
-//            JobAttribute attribute = pAttribute.createJobAttribute();
-//            attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
-//            attribute.setJob(job);
-//            em.persist(attribute);
-//        }
+        for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
+            JobAttribute attribute = pAttribute.createJobAttribute();
+            attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
+            attribute.setJob(job);
+            em.persist(attribute);
+        }
 
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s from protocol %s", job,

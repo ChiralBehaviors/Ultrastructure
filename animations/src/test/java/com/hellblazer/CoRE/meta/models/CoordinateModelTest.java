@@ -62,7 +62,7 @@ public class CoordinateModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
 
-        List<CoordinateNetwork> edges = em.createQuery("SELECT edge FROM CoordinateNetwork edge WHERE edge.inferred = TRUE",
+        List<CoordinateNetwork> edges = em.createQuery("SELECT edge FROM CoordinateNetwork edge WHERE edge.inferred = 1",
                                                        CoordinateNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }

@@ -12,16 +12,16 @@
             $BODY$
             BEGIN
                 IF (TG_OP = 'UPDATE') THEN
-                    IF (OLD.pinned IS FALSE) OR (NEW.pinned IS FALSE) THEN
+                    IF (OLD.pinned = 0) OR (NEW.pinned = 0) THEN
                         RETURN NEW;
                     ELSE 
-                        IF (OLD.pinned IS TRUE) THEN 
+                        IF (OLD.pinned = 1) THEN 
                             RAISE EXCEPTION 'Cannot update pinned % %', TG_RELNAME, OLD.name;
                         END IF;
                     END IF;
                 ELSE
                     IF (TG_OP = 'DELETE') THEN
-                        IF OLD.pinned IS TRUE THEN
+                        IF OLD.pinned = 1 THEN
                             RAISE EXCEPTION 'Cannot delete pinned % ''%''', TG_RELNAME, OLD.name;
                         ELSE
                             RETURN OLD;

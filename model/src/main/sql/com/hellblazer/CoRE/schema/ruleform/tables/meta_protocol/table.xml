@@ -17,7 +17,7 @@
               product_ordered bigint NOT NULL, -- Used to select a mapped value for the product ordered
               deliver_to bigint NOT NULL, -- Used to select a mapped value for the location to deliver to
               deliver_from bigint NOT NULL, -- Used to select a mapped value for the location to deliver from
-              stop_on_match boolean DEFAULT FALSE, -- Indicates no further meta protocol transformations should be processed
+              stop_on_match int2 DEFAULT 0, -- Indicates no further meta protocol transformations should be processed
               notes character varying, -- Additional notes regarding usage of the meta protocol
               updated_by bigint NOT NULL, -- The agency that last updated this rule
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed

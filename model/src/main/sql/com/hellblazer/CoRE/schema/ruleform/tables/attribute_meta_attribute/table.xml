@@ -13,7 +13,7 @@
               attribute bigint NOT NULL,
               meta_attribute bigint NOT NULL,
               numeric_value numeric,
-              boolean_value boolean,
+              boolean_value int2,
               text_value character varying,
               binary_value bytea,
               attribute_value bigint,

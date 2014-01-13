@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
+	<changeSet id="1" author="hhildebrand">
+		<sql><![CDATA[
             CREATE TABLE ruleform.attribute
                 (
                   id bigserial NOT NULL,
@@ -15,8 +15,8 @@
                   notes character varying,
                   updated_by bigint NOT NULL,
                   update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-                  pinned boolean NOT NULL DEFAULT false,
-                  inheritable boolean NOT NULL DEFAULT false,
+                  pinned int2 NOT NULL DEFAULT 0,
+                  inheritable int2 NOT NULL DEFAULT 0,
                   value_type smallint NOT NULL,
                   CONSTRAINT attribute_pkey PRIMARY KEY (id ),
                   CONSTRAINT attribute_updated_by_fkey FOREIGN KEY (updated_by)
@@ -30,9 +30,9 @@
                 COMMENT ON TABLE ruleform.attribute
                       IS 'Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes.';
             ]]>
-        </sql>
-        <rollback>
-            <dropTable tableName="ruleform.attribute"/>
-        </rollback>
-    </changeSet>
+		</sql>
+		<rollback>
+			<dropTable tableName="ruleform.attribute" />
+		</rollback>
+	</changeSet>
 </databaseChangeLog>

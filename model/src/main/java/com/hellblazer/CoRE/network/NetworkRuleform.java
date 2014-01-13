@@ -44,7 +44,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    private boolean           inferred         = false;
+    private int               inferred         = FALSE;
 
     @ManyToOne
     @JoinColumn(name = "relationship")
@@ -120,13 +120,13 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     }
 
     public boolean isInferred() {
-        return inferred;
+        return inferred == TRUE;
     }
 
     abstract public void setChild(E child);
 
     public void setInferred(boolean inferred) {
-        this.inferred = inferred;
+        this.inferred = inferred ? TRUE : FALSE;
     }
 
     abstract public void setParent(E parent);

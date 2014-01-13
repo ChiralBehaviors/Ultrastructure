@@ -93,7 +93,7 @@ public class Bootstrap {
             s.setLong(1, wko.id());
             s.setString(2, wko.productName());
             s.setString(3, wko.description());
-            s.setBoolean(4, true);
+            s.setByte(4, (byte) 1);
             s.setLong(5, WellKnownAgency.CORE.id());
             s.setInt(6, wko.valueType().ordinal());
             s.execute();
@@ -109,7 +109,7 @@ public class Bootstrap {
             s.setLong(1, wkl.id());
             s.setString(2, wkl.productName());
             s.setString(3, wkl.description());
-            s.setBoolean(4, true);
+            s.setByte(4, (byte) 1);
             s.setLong(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
@@ -125,7 +125,7 @@ public class Bootstrap {
             s.setLong(1, wko.id());
             s.setString(2, wko.productName());
             s.setString(3, wko.description());
-            s.setBoolean(4, true);
+            s.setByte(4, (byte) 1);
             s.setLong(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
@@ -140,10 +140,10 @@ public class Bootstrap {
             s.setLong(1, wko.id());
             s.setString(2, wko.productName());
             s.setString(3, wko.description());
-            s.setBoolean(4, true);
+            s.setByte(4, (byte) 1);
             s.setLong(5, WellKnownAgency.CORE.id());
             s.setLong(6, wko.inverse().id());
-            s.setBoolean(7, wko.preferred());
+            s.setByte(7, (byte) (wko.preferred() ? 1 : 0));
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko), e);

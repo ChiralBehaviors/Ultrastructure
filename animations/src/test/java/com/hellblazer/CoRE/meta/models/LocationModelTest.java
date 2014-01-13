@@ -143,7 +143,7 @@ public class LocationModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
 
-        List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = TRUE",
+        List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = 1",
                                                      LocationNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }

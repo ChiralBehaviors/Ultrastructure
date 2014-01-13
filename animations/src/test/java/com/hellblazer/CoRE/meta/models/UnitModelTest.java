@@ -62,7 +62,7 @@ public class UnitModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
 
-        List<UnitNetwork> edges = em.createQuery("SELECT edge FROM UnitNetwork edge WHERE edge.inferred = TRUE",
+        List<UnitNetwork> edges = em.createQuery("SELECT edge FROM UnitNetwork edge WHERE edge.inferred = 1",
                                                  UnitNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }

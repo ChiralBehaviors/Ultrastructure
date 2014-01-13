@@ -162,7 +162,7 @@ public class Relationship extends
 
     private String                     operator;
 
-    private Boolean                    preferred                                = Boolean.FALSE;
+    private Integer                       preferred                                = FALSE;
 
     public Relationship() {
     }
@@ -304,7 +304,7 @@ public class Relationship extends
     }
 
     public Boolean getPreferred() {
-        return preferred;
+        return toBoolean(preferred);
     }
 
     /* (non-Javadoc)
@@ -363,7 +363,7 @@ public class Relationship extends
     }
 
     public void setPreferred(Boolean preferred) {
-        this.preferred = preferred;
+        this.preferred = toInteger(preferred);
     }
 
     /* (non-Javadoc)

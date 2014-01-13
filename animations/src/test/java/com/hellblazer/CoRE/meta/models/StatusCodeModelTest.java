@@ -62,7 +62,7 @@ public class StatusCodeModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
 
-        List<StatusCodeNetwork> edges = em.createQuery("SELECT edge FROM StatusCodeNetwork edge WHERE edge.inferred = TRUE",
+        List<StatusCodeNetwork> edges = em.createQuery("SELECT edge FROM StatusCodeNetwork edge WHERE edge.inferred = 1",
                                                        StatusCodeNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }

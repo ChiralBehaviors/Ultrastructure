@@ -16,7 +16,7 @@
               product_value bigint,
               numeric_value numeric,
               integer_value integer,
-              boolean_value boolean,
+              boolean_value int2,
               text_value character varying,
               timestamp_value timestamp,
               binary_value bytea,

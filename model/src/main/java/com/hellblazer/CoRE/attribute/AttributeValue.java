@@ -48,7 +48,6 @@ import com.hellblazer.CoRE.event.JobAttribute;
 public abstract class AttributeValue<RuleForm extends Ruleform> extends
         Ruleform {
     private static final long serialVersionUID = 1L;
-
     //bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "attribute")
@@ -58,7 +57,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private byte[]            binaryValue;
 
     @Column(name = "boolean_value")
-    private Boolean           booleanValue;
+    private Integer              booleanValue;
 
     @Column(name = "integer_value")
     private Integer           integerValue;
@@ -109,9 +108,9 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         numericValue = value;
     }
 
-    public AttributeValue(Attribute attribute, boolean value, Agency updatedBy) {
+    public AttributeValue(Attribute attribute, Boolean value, Agency updatedBy) {
         this(attribute, updatedBy);
-        booleanValue = value;
+        booleanValue = toInteger(value);
     }
 
     public AttributeValue(Attribute attribute, int value, Agency updatedBy) {
@@ -187,7 +186,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
                                                                   ValueType.BOOLEAN,
                                                                   attribute.getValueType()));
         }
-        return booleanValue;
+        return toBoolean(booleanValue);
     }
 
     public Integer getIntegerValue() {
@@ -262,7 +261,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
                                                                   ValueType.BOOLEAN,
                                                                   attribute.getValueType()));
         }
-        this.booleanValue = booleanValue;
+        this.booleanValue = toInteger(booleanValue);
     }
 
     public void setIntegerValue(Integer integerValue) {

@@ -15,7 +15,7 @@
               integer_value integer, -- A permitted integer value for this unit
               numeric_value numeric, -- A permitted numeric value for this unit
               text_value text, -- A permitted text value for this unit
-              boolean_value boolean, -- A permitted boolean value for this unit
+              boolean_value int2, -- A permitted boolean value for this unit
               product_value bigint, -- A permitted Product value for this unit
               notes character varying, -- Usage notes for this rule
               updated_by bigint NOT NULL, -- The agency that last updated this rule

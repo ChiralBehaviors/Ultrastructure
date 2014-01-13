@@ -59,7 +59,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     private String             description;
     private String             name;
-    private Boolean            pinned                                                        = Boolean.FALSE;
+    private Integer               pinned                                                        = FALSE;
 
     public ExistentialRuleform() {
     }
@@ -124,7 +124,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
      * @return the pinned
      */
     public Boolean getPinned() {
-        return pinned;
+        return toBoolean(pinned);
     }
 
     abstract public void link(Relationship r, RuleForm child, Agency updatedBy,
@@ -155,7 +155,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
      *            the pinned to set
      */
     public void setPinned(Boolean pinned) {
-        this.pinned = pinned;
+        this.pinned = toInteger(pinned);
     }
 
     @Override

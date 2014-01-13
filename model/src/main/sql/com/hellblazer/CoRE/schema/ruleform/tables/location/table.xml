@@ -13,7 +13,7 @@
               name character varying NOT NULL, 
               description character varying,
               notes character varying,
-              pinned boolean NOT NULL DEFAULT false,
+              pinned int2 NOT NULL DEFAULT 0,
               updated_by bigint NOT NULL,
               update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
               CONSTRAINT location_pkey PRIMARY KEY (id ),

@@ -101,7 +101,7 @@ public class MetaProtocol extends Ruleform {
      * Indicates no further transformations should be applied
      */
     @Column(name = "stop_on_match")
-    private Boolean            stopOnMatch      = false;
+    private Integer               stopOnMatch      = FALSE;
 
     public MetaProtocol() {
     }
@@ -201,7 +201,7 @@ public class MetaProtocol extends Ruleform {
      * @return the stopOnMatch
      */
     public Boolean getStopOnMatch() {
-        return stopOnMatch;
+        return toBoolean(stopOnMatch);
     }
 
     /**
@@ -266,7 +266,7 @@ public class MetaProtocol extends Ruleform {
      *            the stopOnMatch to set
      */
     public void setStopOnMatch(Boolean stopOnMatch) {
-        this.stopOnMatch = stopOnMatch;
+        this.stopOnMatch = toInteger(stopOnMatch);
     }
 
     /* (non-Javadoc)

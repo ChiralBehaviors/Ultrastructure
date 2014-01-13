@@ -65,6 +65,7 @@ public class RuleformResource {
         @SuppressWarnings("unchecked")
         Class<? extends Ruleform> c = (Class<? extends Ruleform>) Class.forName(qualifiedName);
         Query qr = em.createNamedQuery(type.toLowerCase() + Ruleform.FIND_ALL_SUFFIX, c);
+        @SuppressWarnings("unchecked")
         List<Ruleform> results = qr.getResultList();
         return results;
     }

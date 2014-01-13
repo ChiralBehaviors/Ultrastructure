@@ -124,7 +124,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     private String             datatype;
 
-    private Boolean            enumerated                               = false;
+    private Integer            enumerated                               = FALSE;
 
     @Id
     @GeneratedValue(generator = "unit_id_seq", strategy = GenerationType.SEQUENCE)
@@ -226,7 +226,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     public Boolean getEnumerated() {
-        return enumerated;
+        return toBoolean(enumerated);
     }
 
     @Override
@@ -305,7 +305,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     public void setEnumerated(Boolean enumerated) {
-        this.enumerated = enumerated;
+        this.enumerated = toInteger(enumerated);
     }
 
     @Override

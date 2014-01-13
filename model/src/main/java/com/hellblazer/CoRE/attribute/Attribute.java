@@ -127,7 +127,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     @GeneratedValue(generator = "attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                        id;
 
-    private Boolean                     inheritable                              = false;
+    private Integer                     inheritable                              = FALSE;
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
@@ -276,7 +276,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     }
 
     public Boolean getInheritable() {
-        return inheritable;
+        return toBoolean(inheritable);
     }
 
     @Override
@@ -328,7 +328,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     }
 
     public void setInheritable(Boolean inheritable) {
-        this.inheritable = inheritable;
+        this.inheritable = toInteger(inheritable);
     }
 
     @Override

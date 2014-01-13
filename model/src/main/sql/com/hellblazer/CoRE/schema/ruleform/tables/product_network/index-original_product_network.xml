@@ -13,7 +13,7 @@
 			ON ruleform.product_network
 			USING btree
 			(id )
-			WHERE inferred = FALSE; 
+			WHERE inferred = 0; 
 			]]>
 		</sql>
 		<rollback>

@@ -22,7 +22,7 @@ import static com.hellblazer.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_AUTHOR
 import static com.hellblazer.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.hellblazer.CoRE.agency.Agency.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.hellblazer.CoRE.agency.Agency.GET_ALL_PARENT_RELATIONSHIPS;
-import static com.hellblazer.CoRE.agency.Agency.GET_CHILD;
+import static com.hellblazer.CoRE.agency.Agency.*;
 import static com.hellblazer.CoRE.agency.Agency.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.hellblazer.CoRE.agency.Agency.UNLINKED;
 import static com.hellblazer.CoRE.agency.access.AgencyAttribute.GET_ATTRIBUTE;
@@ -48,6 +48,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.NameSearchResult;
+import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.agency.access.AgencyAccessAuthorization;
 import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.attribute.Attributable;
@@ -65,6 +66,7 @@ import com.hellblazer.CoRE.product.ProductNetwork;
  * 
  */
 @NamedQueries({
+               @NamedQuery(name = FIND_ALL, query = "select a from Agency a"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
                                                                             + "  attrValue "
@@ -119,6 +121,8 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     public static final String                AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
 
     public static final String                AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
+    public static final String                FIND_ALL                                 = "agency"
+                                                                                         + Ruleform.FIND_ALL_SUFFIX;
     public static final String                FIND_BY_NAME                             = "agency"
                                                                                          + FIND_BY_NAME_SUFFIX;
     public static final String                FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "agency"

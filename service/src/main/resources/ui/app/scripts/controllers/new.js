@@ -36,9 +36,9 @@ angular.module('uiApp')
     });
 
 angular.module('apiApp')
-    .controller('ERListViewCtrl', function($scope, $resource) {
-        var productResource = $resource('/v1/services/data/ruleform/Product/:productId', {
-            
+    .controller('ERListViewCtrl', function($scope, $resource, $routeParams) {
+        var productResource = $resource('/v1/services/data/ruleform/:ruleform', {
+            ruleform:$routeParams.ruleform
         });
         //$scope.ruleforms = [];
         $scope.ruleforms = productResource.query();

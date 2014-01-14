@@ -16,6 +16,7 @@
  */
 package com.hellblazer.CoRE.access.resource;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +35,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.reflections.Reflections;
+
 import com.hellblazer.CoRE.Ruleform;
 
 /**
@@ -44,22 +47,26 @@ import com.hellblazer.CoRE.Ruleform;
 public class RuleformResource {
     
     private EntityManager em;
-    
+    private final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<String, Class<? extends Ruleform>>();
+
     public RuleformResource(EntityManagerFactory emf) {
+        Reflections reflections = new Reflections(
+                                                  Ruleform.class.getPackage().getName());
+        for (Class<? extends Ruleform> form : reflections.getSubTypesOf(Ruleform.class)) {
+            if (!Modifier.isAbstract(form.getModifiers())) {
+                Class<?> prev = entityMap.put(form.getSimpleName(), form);
+                assert prev == null : String.format("Found previous mapping %s of: %s",
+                                                    prev, form);
+            }
+        }
         this.em = emf.createEntityManager();
     }
     
     @GET
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON, "text/json"})
-    public List<String> getRuleformTypes() {
-        Metamodel m = em.getMetamodel();
-        Set<EntityType<?>> entities = m.getEntities();
-        List<String> types = new LinkedList<String>();
-        for (EntityType<?> e : entities) {
-            types.add(e.getName());
-        }
-        return types;
+    public Set<String> getRuleformTypes() {
+        return entityMap.keySet();
     }
     
     @GET
@@ -67,9 +74,7 @@ public class RuleformResource {
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     public Ruleform getResource(@PathParam("ruleform") String type,
                         @PathParam("id") long id) throws ClassNotFoundException {
-        String qualifiedName = "com.hellblazer.CoRE." + type.toLowerCase() + "." + type;
-        @SuppressWarnings("unchecked")
-        Class<? extends Ruleform> c = (Class<? extends Ruleform>) Class.forName(qualifiedName);
+        Class<? extends Ruleform> c = entityMap.get(type);
         Ruleform rf = em.find(c, id);
         return rf;
     }
@@ -78,9 +83,7 @@ public class RuleformResource {
     @Path("/{ruleform}")
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     public List<Ruleform> getResource(@PathParam("ruleform") String type) throws ClassNotFoundException {
-        String qualifiedName = "com.hellblazer.CoRE." + type.toLowerCase() + "." + type;
-        @SuppressWarnings("unchecked")
-        Class<? extends Ruleform> c = (Class<? extends Ruleform>) Class.forName(qualifiedName);
+        Class<? extends Ruleform> c = entityMap.get(type);
         Query qr = em.createNamedQuery(type.toLowerCase() + Ruleform.FIND_ALL_SUFFIX, c);
         @SuppressWarnings("unchecked")
         List<Ruleform> results = qr.getResultList();

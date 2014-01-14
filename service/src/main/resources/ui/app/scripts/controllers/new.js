@@ -47,5 +47,13 @@ angular.module('apiApp')
         var res = $resource('/v1/services/data/ruleform/:ruleform/:id');
         
         $scope.ruleform = res.get({ruleform: $routeParams.ruleform, id: $routeParams.id});
+    })
+    .controller('TypeListController', function($scope, $http) {
+        //need to use $http here because $resource expects an array of OBJECTS, 
+        //not an array of primitives
+        $http.get('/v1/services/data/ruleform').success(function(data){
+            $scope.ruleforms = data;
+          });
+        
     });
 

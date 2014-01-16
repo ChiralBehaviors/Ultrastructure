@@ -27,13 +27,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.reflections.Reflections;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
-import org.reflections.Reflections;
 
 import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.agency.Agency;
 
 /**
  * A class for generating a file for deserializing ruleforms. If you want your ruleform deserialized
@@ -46,10 +45,13 @@ import com.hellblazer.CoRE.agency.Agency;
  * 
  */
 public class PolymorphicMixinGenerator {
+    static final String outputDir = "target/generated-sources/com/hellblazer/CoRE/generated/";
+    static final String filename = "PolymorphicRuleformMixin.java";
     public static void main(String[] args) throws IOException {
-
-        Files.deleteIfExists(Paths.get("target/generated-sources/PolymorphicRuleformMixin.java"));
         
+
+        Files.deleteIfExists(Paths.get(outputDir + filename));
+        Files.createDirectories(Paths.get(outputDir));
         final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<String, Class<? extends Ruleform>>();
         List<String> imports = new LinkedList<String>();
         List<AnnotationValue> annotations = new LinkedList<AnnotationValue>();
@@ -80,7 +82,7 @@ public class PolymorphicMixinGenerator {
             mixin.add("annotations", annotations.subList(0, annotations.size() -2));
         }
         mixin.add("lasta", annotations.get(annotations.size() - 1));
-        Path p = Paths.get("target/generated-sources/PolymorphicRuleformMixin.java");
+        Path p = Paths.get(outputDir + filename);
 
         FileOutputStream os = new FileOutputStream(Files.createFile(p).toFile());
         os.write(mixin.render().getBytes());

@@ -142,7 +142,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!-- Run annotation processors on src/main/java sources -->
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
 				<artifactId>maven-processor-plugin</artifactId>
@@ -162,14 +161,13 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Disable annotation processors during normal compilation -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<compilerArgument>-proc:none</compilerArgument>
-					<source>1.6</source>
-					<target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>

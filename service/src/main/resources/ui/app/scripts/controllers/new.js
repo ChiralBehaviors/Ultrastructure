@@ -35,3 +35,25 @@ angular.module('uiApp')
         });
     });
 
+angular.module('apiApp')
+    .controller('ERListViewCtrl', function($scope, $resource, $routeParams) {
+        var productResource = $resource('/v1/services/data/ruleform/:ruleform', {
+            ruleform:$routeParams.ruleform
+        });
+        //$scope.ruleforms = [];
+        $scope.ruleforms = productResource.query();
+    })
+    .controller('ERDetailViewController', function($scope, $resource, $routeParams) {
+        var res = $resource('/v1/services/data/ruleform/:ruleform/:id');
+        
+        $scope.ruleform = res.get({ruleform: $routeParams.ruleform, id: $routeParams.id});
+    })
+    .controller('TypeListController', function($scope, $http) {
+        //need to use $http here because $resource expects an array of OBJECTS, 
+        //not an array of primitives
+        $http.get('/v1/services/data/ruleform').success(function(data){
+            $scope.ruleforms = data;
+          });
+        
+    });
+

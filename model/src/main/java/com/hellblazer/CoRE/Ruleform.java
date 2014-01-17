@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.json.RuleformIdGenerator;
 
 /**
  * The superclass of all rule forms.

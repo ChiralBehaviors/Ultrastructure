@@ -32,6 +32,11 @@
 			<artifactId>stringtemplate</artifactId>
 			<version>4.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<version>3.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

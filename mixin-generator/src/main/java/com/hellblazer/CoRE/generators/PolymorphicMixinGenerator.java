@@ -30,7 +30,6 @@ import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.reflections.Reflections;
-import org.sonatype.inject.Parameters;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
@@ -51,32 +50,38 @@ import com.hellblazer.CoRE.Ruleform;
  * 
  * @phase generate-sources
  * 
+ *        //
  */
+//@Mojo(name = "mixin-generator")
+//@Execute(goal = "generate", phase = LifecyclePhase.GENERATE_SOURCES)
 public class PolymorphicMixinGenerator extends AbstractMojo {
-    /*
+
+    /**
      * @parameter
-     * @required
      */
-    @Parameters
     private String packageName;
-    /*
+
+    /**
      * @parameter
-     * @required
      */
     private File   outputDirectory;
-    /*
+
+    /**
      * @parameter
-     * @required
      */
     private String className;
 
     public void execute() throws MojoExecutionException {
+        System.out.println(String.format("args: %s, %s, %s", packageName,
+                                         outputDirectory, className));
         File file = new File(outputDirectory,
                              String.format("%s/%s.java",
                                            packageName.replace('.', '/'),
                                            className));
+        File parentDir = new File(outputDirectory,
+                                  packageName.replace('.', '/'));
         try {
-            Files.createDirectories(file.toPath());
+            Files.createDirectories(parentDir.toPath());
         } catch (IOException e) {
             throw new MojoExecutionException(
                                              String.format("Cannot create parent directories %s",
@@ -101,8 +106,7 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
             }
         }
 
-        STGroup group = new STGroupFile(
-                                        "src/main/resources/templates/polymorphicmixin.stg");
+        STGroup group = new STGroupFile("templates/polymorphicmixin.stg");
         ST mixin = group.getInstanceOf("mixinclass");
         mixin.add("importdecs", imports);
 
@@ -117,6 +121,7 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
 
         FileOutputStream os;
         try {
+            Files.deleteIfExists(file.toPath());
             os = new FileOutputStream(Files.createFile(file.toPath()).toFile());
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException(
@@ -124,10 +129,11 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
                                                            file.getAbsolutePath(),
                                                            e));
         } catch (IOException e) {
+
             throw new MojoExecutionException(
-                                             String.format("Error creating file %s",
+                                             String.format("Error creating file %s\nCause: %s",
                                                            file.getAbsolutePath(),
-                                                           e));
+                                                           e.getMessage()));
         }
         try {
             os.write(mixin.render().getBytes());

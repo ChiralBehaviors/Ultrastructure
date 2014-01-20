@@ -88,6 +88,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     RuleForm create(RuleForm prototype);
 
+    List<RuleForm> findAll();
+
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
      * aspect

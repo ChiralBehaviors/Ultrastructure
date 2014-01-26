@@ -211,6 +211,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
     }
     
+    
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#find(long)
+     */
+    @Override
+    public RuleForm find(long id) {
+        RuleForm rf = em.find(entity, id);
+        return rf;
+    }
+
     @Override
     public List<RuleForm> findAll() {
         CriteriaBuilder cb = em.getCriteriaBuilder();

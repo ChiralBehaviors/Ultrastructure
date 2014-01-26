@@ -31,6 +31,8 @@ import com.hellblazer.CoRE.access.resource.DomainResource;
 import com.hellblazer.CoRE.access.resource.RuleformResource;
 import com.hellblazer.CoRE.access.resource.TraversalResource;
 import com.hellblazer.CoRE.access.resource.WorkspaceResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.ProductResource;
+import com.hellblazer.CoRE.access.resource.test.TestResource;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;
 import com.yammer.dropwizard.ConfiguredBundle;
@@ -75,6 +77,10 @@ public class DataAccessBundle implements
         environment.addResource(new CollectionResource(emf));
         environment.addResource(new WorkspaceResource(emf));
         environment.addResource(new RuleformResource(emf));
+        environment.addResource(new ProductResource(emf.createEntityManager()));
+        environment.addResource(new TestResource());
+    
+        
 
     }
 }

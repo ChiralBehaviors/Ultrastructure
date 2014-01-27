@@ -19,26 +19,22 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.meta.models.ProductModelImpl;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.meta.models.RelationshipModelImpl;
+import com.hellblazer.CoRE.network.Relationship;
+import com.hellblazer.CoRE.network.RelationshipAttribute;
+import com.hellblazer.CoRE.network.RelationshipAttributeAuthorization;
+import com.hellblazer.CoRE.network.RelationshipNetwork;
 
 /**
  * @author hparry
  * 
  */
-@Path("/v{version : \\d+}/services/data/ruleform/Product")
-public class ProductResource
+@Path("/v{version : \\d+}/services/data/ruleform/Relationship")
+public class RelationshipResource
         extends
-        AbstractRuleformResource<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
+        AbstractRuleformResource<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute> {
 
-    /**
-     * @param em
-     */
-    public ProductResource(EntityManager em) {
-        super(em, new ProductModelImpl(em, null));
+    public RelationshipResource(EntityManager em) {
+        super(em, new RelationshipModelImpl(em));
     }
-
 }

@@ -19,26 +19,22 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.meta.models.ProductModelImpl;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.location.Location;
+import com.hellblazer.CoRE.location.LocationAttribute;
+import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
+import com.hellblazer.CoRE.location.LocationNetwork;
+import com.hellblazer.CoRE.meta.models.LocationModelImpl;
 
 /**
  * @author hparry
- * 
+ *
  */
-@Path("/v{version : \\d+}/services/data/ruleform/Product")
-public class ProductResource
+@Path("/v{version : \\d+}/services/data/ruleform/Location")
+public class LocationResource
         extends
-        AbstractRuleformResource<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
+        AbstractRuleformResource<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute> {
 
-    /**
-     * @param em
-     */
-    public ProductResource(EntityManager em) {
-        super(em, new ProductModelImpl(em, null));
+    public LocationResource(EntityManager em) {
+        super(em, new LocationModelImpl(em));
     }
-
 }

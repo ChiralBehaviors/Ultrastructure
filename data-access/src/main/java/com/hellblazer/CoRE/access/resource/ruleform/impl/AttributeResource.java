@@ -19,26 +19,22 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.meta.models.ProductModelImpl;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.attribute.Attribute;
+import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
+import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
+import com.hellblazer.CoRE.attribute.AttributeNetwork;
+import com.hellblazer.CoRE.meta.models.AttributeModelImpl;
 
 /**
  * @author hparry
- * 
+ *
  */
-@Path("/v{version : \\d+}/services/data/ruleform/Product")
-public class ProductResource
+@Path("/v{version : \\d+}/services/data/ruleform/Attribute")
+public class AttributeResource
         extends
-        AbstractRuleformResource<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
+        AbstractRuleformResource<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute> {
 
-    /**
-     * @param em
-     */
-    public ProductResource(EntityManager em) {
-        super(em, new ProductModelImpl(em, null));
+    public AttributeResource(EntityManager em) {
+        super(em, new AttributeModelImpl(em));
     }
-
 }

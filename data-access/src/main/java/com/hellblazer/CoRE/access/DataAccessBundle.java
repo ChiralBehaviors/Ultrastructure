@@ -31,8 +31,15 @@ import com.hellblazer.CoRE.access.resource.DomainResource;
 import com.hellblazer.CoRE.access.resource.RuleformResource;
 import com.hellblazer.CoRE.access.resource.TraversalResource;
 import com.hellblazer.CoRE.access.resource.WorkspaceResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.AgencyResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.AttributeResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.CoordinateResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.IntervalResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.LocationResource;
 import com.hellblazer.CoRE.access.resource.ruleform.impl.ProductResource;
-import com.hellblazer.CoRE.access.resource.test.TestResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.RelationshipResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.StatusCodeResource;
+import com.hellblazer.CoRE.access.resource.ruleform.impl.UnitResource;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;
 import com.yammer.dropwizard.ConfiguredBundle;
@@ -78,9 +85,14 @@ public class DataAccessBundle implements
         environment.addResource(new WorkspaceResource(emf));
         environment.addResource(new RuleformResource(emf));
         environment.addResource(new ProductResource(emf.createEntityManager()));
-        environment.addResource(new TestResource());
-    
-        
+        environment.addResource(new AgencyResource(emf.createEntityManager()));
+        environment.addResource(new AttributeResource(emf.createEntityManager()));
+        environment.addResource(new CoordinateResource(emf.createEntityManager()));
+        environment.addResource(new IntervalResource(emf.createEntityManager()));
+        environment.addResource(new LocationResource(emf.createEntityManager()));
+        environment.addResource(new RelationshipResource(emf.createEntityManager()));
+        environment.addResource(new StatusCodeResource(emf.createEntityManager()));
+        environment.addResource(new UnitResource(emf.createEntityManager()));
 
     }
 }

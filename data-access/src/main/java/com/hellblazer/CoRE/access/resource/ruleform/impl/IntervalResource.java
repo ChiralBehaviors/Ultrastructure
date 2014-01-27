@@ -19,26 +19,22 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.meta.models.ProductModelImpl;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.meta.models.IntervalModelImpl;
+import com.hellblazer.CoRE.time.Interval;
+import com.hellblazer.CoRE.time.IntervalAttribute;
+import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
+import com.hellblazer.CoRE.time.IntervalNetwork;
 
 /**
  * @author hparry
- * 
+ *
  */
-@Path("/v{version : \\d+}/services/data/ruleform/Product")
-public class ProductResource
+@Path("/v{version : \\d+}/services/data/ruleform/Interval")
+public class IntervalResource
         extends
-        AbstractRuleformResource<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
-
-    /**
-     * @param em
-     */
-    public ProductResource(EntityManager em) {
-        super(em, new ProductModelImpl(em, null));
+        AbstractRuleformResource<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
+    
+    public IntervalResource(EntityManager em) {
+        super(em, new IntervalModelImpl(em));
     }
-
 }

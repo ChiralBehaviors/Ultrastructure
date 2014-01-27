@@ -19,26 +19,22 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.meta.models.ProductModelImpl;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductNetwork;
+import com.hellblazer.CoRE.coordinate.Coordinate;
+import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
+import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
+import com.hellblazer.CoRE.coordinate.CoordinateNetwork;
+import com.hellblazer.CoRE.meta.models.CoordinateModelImpl;
 
 /**
  * @author hparry
  * 
  */
-@Path("/v{version : \\d+}/services/data/ruleform/Product")
-public class ProductResource
+@Path("/v{version : \\d+}/services/data/ruleform/Coordinate")
+public class CoordinateResource
         extends
-        AbstractRuleformResource<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
+        AbstractRuleformResource<Coordinate, CoordinateNetwork, CoordinateAttributeAuthorization, CoordinateAttribute> {
 
-    /**
-     * @param em
-     */
-    public ProductResource(EntityManager em) {
-        super(em, new ProductModelImpl(em, null));
+    public CoordinateResource(EntityManager em) {
+        super(em, new CoordinateModelImpl(em));
     }
-
 }

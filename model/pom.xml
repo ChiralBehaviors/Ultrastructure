@@ -212,70 +212,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>com.hellblazer</groupId>
-				<artifactId>pljava-loader</artifactId>
-				<configuration>
-					<jdbcUrl>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbcUrl>
-					<username>${testing.db.login}</username>
-					<password>${testing.db.password}</password>
-					<!-- excluded> <resource> <groupId>org.apache.openjpa</groupId> <artifactId>openjpa-all</artifactId> 
-						<version>2.2.1</version> </resource> </excluded -->
-					<additional>
-						<resource>
-							<groupId>org.slf4j</groupId>
-							<artifactId>slf4j-jdk14</artifactId>
-							<version>1.7.5</version>
-						</resource>
-					</additional>
-					<excluded>
-						<resource>
-							<groupId>org.apache.openjpa</groupId>
-							<artifactId>openjpa-all</artifactId>
-							<version>2.2.2</version>
-							<type>jar</type>
-						</resource>
-					</excluded>
-					<classpathProperty>pljavaClassPath</classpathProperty>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>load</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>sql-maven-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>postgresql</groupId>
-						<artifactId>postgresql</artifactId>
-						<version>${postgresql.driver.version}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<id>set-classpath</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>execute</goal>
-						</goals>
-						<configuration>
-							<driver>org.postgresql.Driver</driver>
-							<url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</url>
-							<username>${testing.db.login}</username>
-							<password>${testing.db.password}</password>
-							<autocommit>true</autocommit>
-							<sqlCommand>SELECT sqlj.set_classpath('ruleform',
-								'${pljavaClassPath}');</sqlCommand>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -433,6 +369,74 @@
 				<jdbc.url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbc.url>
 				<jdbc.driver>org.postgresql.Driver</jdbc.driver>
 			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.hellblazer</groupId>
+						<artifactId>pljava-loader</artifactId>
+						<configuration>
+							<jdbcUrl>${jdbc.url}</jdbcUrl>
+							<username>${testing.db.login}</username>
+							<password>${testing.db.password}</password>
+							<!-- excluded> <resource> <groupId>org.apache.openjpa</groupId> <artifactId>openjpa-all</artifactId> 
+								<version>2.2.1</version> </resource> </excluded -->
+							<additional>
+								<resource>
+									<groupId>org.slf4j</groupId>
+									<artifactId>slf4j-jdk14</artifactId>
+									<version>1.7.5</version>
+								</resource>
+							</additional>
+							<excluded>
+								<resource>
+									<groupId>org.apache.openjpa</groupId>
+									<artifactId>openjpa-all</artifactId>
+									<version>2.2.2</version>
+									<type>jar</type>
+								</resource>
+							</excluded>
+							<classpathProperty>pljavaClassPath</classpathProperty>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>generate-test-sources</phase>
+								<goals>
+									<goal>load</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>sql-maven-plugin</artifactId>
+						<dependencies>
+							<dependency>
+								<groupId>postgresql</groupId>
+								<artifactId>postgresql</artifactId>
+								<version>${postgresql.driver.version}</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>set-classpath</id>
+								<phase>generate-test-sources</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<driver>org.postgresql.Driver</driver>
+									<url>${jdbc.url}</url>
+									<username>${testing.db.login}</username>
+									<password>${testing.db.password}</password>
+									<autocommit>true</autocommit>
+									<sqlCommand>SELECT sqlj.set_classpath('ruleform',
+										'${pljavaClassPath}');</sqlCommand>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 

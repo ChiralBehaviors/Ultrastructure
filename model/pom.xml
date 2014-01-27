@@ -116,11 +116,16 @@
 						<artifactId>postgresql</artifactId>
 						<version>${postgresql.driver.version}</version>
 					</dependency>
+					<dependency>
+						<groupId>org.apache.derby</groupId>
+						<artifactId>derby</artifactId>
+						<version>10.10.1.1</version>
+					</dependency>
 				</dependencies>
 				<configuration>
 					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-					<driver>org.postgresql.Driver</driver>
-					<url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</url>
+					<driver>${jdbc.driver}</driver>
+					<url>${jdbc.url}</url>
 					<username>${testing.db.login}</username>
 					<password>${testing.db.password}</password>
 					<changeLogFile>${main.sql}/com/hellblazer/CoRE/schema/core.xml</changeLogFile>
@@ -170,8 +175,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<compilerArgument>-proc:none</compilerArgument>
-                    <source>1.7</source>
-                    <target>1.7</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -417,5 +422,18 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>postgres</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<jdbc.url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbc.url>
+				<jdbc.driver>org.postgresql.Driver</jdbc.driver>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

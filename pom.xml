@@ -202,6 +202,10 @@
 
 	<pluginRepositories>
 		<pluginRepository>
+			<id>Maven central</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</pluginRepository>
+		<pluginRepository>
 			<id>hellblazer-snapshots</id>
 			<url>https://repository-hal900000.forge.cloudbees.com/snapshot/</url>
 		</pluginRepository>

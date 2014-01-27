@@ -210,6 +210,25 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                    System.currentTimeMillis() - then));
         }
     }
+    
+    
+    /* (non-Javadoc)
+     * @see com.hellblazer.CoRE.meta.NetworkedModel#find(long)
+     */
+    @Override
+    public RuleForm find(long id) {
+        RuleForm rf = em.find(entity, id);
+        return rf;
+    }
+
+    @Override
+    public List<RuleForm> findAll() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<RuleForm> cq = cb.createQuery(entity);
+        cq.from(entity);
+        return em.createQuery(cq).getResultList();
+    }
+
 
     @Override
     public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,

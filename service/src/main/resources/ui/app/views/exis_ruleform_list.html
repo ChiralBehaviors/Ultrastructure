@@ -1,4 +1,5 @@
+<a href="/ui/app/ruleform_list.html">Back to Ruleform types</a>
 <div ng-repeat="rf in ruleforms" ng-controller="ERListViewCtrl">
     <span>{{rf.id}}</span>
-    <span><a href="/ui/app/ruleform_list.html#/Product/{{rf.id}}">{{rf.name}}</a></span>
+    <span><a href="/ui/app/ruleform_list.html#/{{ruleform}}/{{rf.id}}">{{rf.name}}</a></span>
 </div>

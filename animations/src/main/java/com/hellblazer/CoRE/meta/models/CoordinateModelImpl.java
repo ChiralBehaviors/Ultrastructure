@@ -161,6 +161,7 @@ public class CoordinateModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     public final Coordinate create(String name, String description,
                                    Aspect<Coordinate> aspect,

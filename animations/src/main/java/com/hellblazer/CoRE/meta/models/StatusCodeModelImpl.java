@@ -168,6 +168,7 @@ public class StatusCodeModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     public final StatusCode create(String name, String description,
                                    Aspect<StatusCode> aspect,

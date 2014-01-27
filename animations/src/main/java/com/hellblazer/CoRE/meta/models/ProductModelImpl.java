@@ -173,6 +173,7 @@ public class ProductModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     final public Product create(String name, String description,
                                 Aspect<Product> aspect,

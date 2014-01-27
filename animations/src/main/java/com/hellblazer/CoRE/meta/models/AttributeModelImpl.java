@@ -162,6 +162,7 @@ public class AttributeModelImpl
         return copy;
     }
 
+    @SafeVarargs
     @Override
     public final Attribute create(String name, String description,
                                   Aspect<Attribute> aspect,

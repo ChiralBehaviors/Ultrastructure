@@ -161,6 +161,7 @@ public class LocationModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     public final Location create(String name, String description,
                                  Aspect<Location> aspect,

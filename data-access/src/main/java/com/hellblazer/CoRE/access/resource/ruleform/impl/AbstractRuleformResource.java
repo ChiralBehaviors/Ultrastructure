@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.ws.rs.PathParam;
 
 import com.hellblazer.CoRE.ExistentialRuleform;
 import com.hellblazer.CoRE.Ruleform;
@@ -58,7 +57,7 @@ public abstract class AbstractRuleformResource<RuleForm extends ExistentialRulef
     }
 
     @Override
-    public RuleForm getResource(@PathParam("id") long id)
+    public RuleForm getResource(long id)
                                                          throws ClassNotFoundException {
         return model.find(id);
     }

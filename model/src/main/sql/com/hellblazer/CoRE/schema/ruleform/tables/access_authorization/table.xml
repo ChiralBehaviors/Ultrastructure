@@ -45,6 +45,9 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.access_authorizations"/>
+        </rollback>
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-65">

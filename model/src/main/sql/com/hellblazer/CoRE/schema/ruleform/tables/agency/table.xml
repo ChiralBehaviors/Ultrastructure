@@ -26,10 +26,19 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.agency"/>
+        </rollback>
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-110">
         <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.agency" constraintName="agency_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency"/>
+    </changeSet>
+    
+    <changeSet author="hhildebrand" id="1390879803225-436">
+        <createIndex indexName="agency_updated_by_fkey_idx" tableName="ruleform.agency" unique="false">
+            <column name="updated_by"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>

@@ -1,60 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.product_sibling_sequencing_authorization
-            (
-              id bigserial NOT NULL, -- Unique identifier
-              parent bigint NOT NULL, -- The last service of a given protocol that was completed
-              status_code bigint NOT NULL, -- The status of the last service completed
-              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when 
-                                                                           -- a service / Status Code combination can trigger multiple child services
-              next_sibling bigint, -- A sibling job with a product equal to this can have its status changed
-              next_sibling_status bigint, -- The status to set for the sibling job referred to by "next_sibling"
-              notes character varying, -- Additional notes regarding usage of this particular rule
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
-              CONSTRAINT product_sibling_sequencing_authorization_pkey PRIMARY KEY (id ),
-              CONSTRAINT product_sibling_sequencing_authorization_next_sibling_fkey FOREIGN KEY (next_sibling)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_sibling_sequencing_authorization_next_sibling_status_fkey FOREIGN KEY (next_sibling_status)
-                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_sibling_sequencing_authorization_parent_fkey FOREIGN KEY (parent)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_sibling_sequencing_authorization_status_code_fkey FOREIGN KEY (status_code)
-                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_sibling_sequencing_authorization_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_sibling_sequencing_authorization_parent_status_code_sequ_key UNIQUE (parent , status_code , sequence_number )
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.product_sibling_sequencing_authorization
-              IS 'Determines what the next available product should be, based on the status code returned for the previous product';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.parent IS 'The last product of a given protocol that was completed';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.status_code IS 'The status of the last product completed';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.sequence_number IS 'Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.notes IS 'Additional notes regarding usage of this particular rule';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.updated_by IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.update_date IS 'The date this rule was last changed';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.next_sibling IS 'A sibling job with an product equal to this can have its status changed';
-            COMMENT ON COLUMN ruleform.product_sibling_sequencing_authorization.next_sibling_status IS 'The status to set for the sibling job referred to by "next_sibling"';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.product_sibling_sequencing_authorization" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-44">
+        <createTable remarks="Determines what the next available product should be, based on the status code returned for the previous product"
+            tableName="ruleform.product_sibling_sequencing_authorization"
+        >
+            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="product_sibling_sequencing_authorization_pkey" />
+            </column>
+            <column name="parent" remarks="The last product of a given protocol that was completed" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_code" remarks="The status of the last product completed" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products" type="ruleform.sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="next_sibling" remarks="A sibling job with an product equal to this can have its status changed" type="INT8" />
+            <column name="next_sibling_status" remarks="The status to set for the sibling job referred to by &quot;next_sibling&quot;"
+                type="INT8" />
+            <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.product_sibling_sequencing_authorization" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-267">
+        <addForeignKeyConstraint baseColumnNames="next_sibling" baseTableName="ruleform.product_sibling_sequencing_authorization"
+            constraintName="product_sibling_sequencing_authorization_next_sibling_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-268">
+        <addForeignKeyConstraint baseColumnNames="next_sibling_status" baseTableName="ruleform.product_sibling_sequencing_authorization"
+            constraintName="product_sibling_sequencing_authorization_next_sibling_status_fk" deferrable="true" initiallyDeferred="false"
+            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.status_code" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-269">
+        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.product_sibling_sequencing_authorization"
+            constraintName="product_sibling_sequencing_authorization_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-270">
+        <addForeignKeyConstraint baseColumnNames="status_code" baseTableName="ruleform.product_sibling_sequencing_authorization"
+            constraintName="product_sibling_sequencing_authorization_status_code_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.status_code" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-271">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.product_sibling_sequencing_authorization"
+            constraintName="product_sibling_sequencing_authorization_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-404">
+        <addUniqueConstraint columnNames="parent, status_code, sequence_number" constraintName="product_sibling_sequencing_authorization_parent_status_code_seq"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.product_sibling_sequencing_authorization" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-508">
+        <createIndex indexName="product_sibling_sequencing_authorization_updated_by_fkey_idx" tableName="ruleform.product_sibling_sequencing_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

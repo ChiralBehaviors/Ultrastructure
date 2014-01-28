@@ -1,75 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE TABLE ruleform.product_network_attribute
-            (
-              id bigserial NOT NULL, -- Unique identifier for a Product Network Attribute rule
-              agency bigint NOT NULL, -- The agency that the information in this rule comes from
-              network_rule bigint NOT NULL, -- The Product Network rule whose attribute is being defined
-              attribute bigint NOT NULL, -- The Attribute of the Product Network rule being defined
-              text_value character varying, -- If the Attribute has a text value, it is stored in this column
-              numeric_value numeric, -- If the Attribute has a numeric (real) value, it is stored in this column
-              integer_value integer, -- If the Attribute has an integer value, it is stored in this column
-              boolean_value int2, -- If the Attribute has a boolean value, it is stored in this column
-              timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
-              binary_value bytea, -- If the Attribute has a binary value, it is stored in this column
-              product_value bigint, -- If the Attribute has a Product value, it is stored in this column
-              unit bigint, -- The unit of measurement the Attribute value is measured in, if any
-              notes character varying, -- Miscellaneous notes about this rule
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time of the last update to this rule
-              sequence_number integer NOT NULL DEFAULT 1,
-              CONSTRAINT product_network_attribute_pkey PRIMARY KEY (id ),
-              CONSTRAINT product_network_attribute_attribute_fkey FOREIGN KEY (attribute)
-                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_product_value_fkey FOREIGN KEY (product_value)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_network_rule_fkey FOREIGN KEY (network_rule)
-                  REFERENCES ruleform.product_network (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_agency_fkey FOREIGN KEY (agency)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_unit_fkey FOREIGN KEY (unit)
-                  REFERENCES ruleform.unit (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT product_network_attribute_key UNIQUE (agency , network_rule , attribute , sequence_number ),
-              CONSTRAINT valid_sequence_number CHECK (sequence_number > 0),
-              CONSTRAINT valid_value CHECK ((ruleform.null_zero(text_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value) + ruleform.null_zero(product_value)) = 1)
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.product_network_attribute
-              IS 'Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves';
-            COMMENT ON COLUMN ruleform.product_network_attribute.id IS 'Unique identifier for a Product Network Attribute rule';
-            COMMENT ON COLUMN ruleform.product_network_attribute.agency IS 'The agency that the information in this rule comes from';
-            COMMENT ON COLUMN ruleform.product_network_attribute.network_rule IS 'The Product Network rule whose attribute is being defined';
-            COMMENT ON COLUMN ruleform.product_network_attribute.attribute IS 'The Attribute of the Product Network rule being defined';
-            COMMENT ON COLUMN ruleform.product_network_attribute.text_value IS 'If the Attribute has a text value, it is stored in this column';
-            COMMENT ON COLUMN ruleform.product_network_attribute.numeric_value IS 'If the Attribute has a numeric (real) value, it is stored in this column';
-            COMMENT ON COLUMN ruleform.product_network_attribute.integer_value IS 'If the Attribute has an integer value, it is stored in this column';
-            COMMENT ON COLUMN ruleform.product_network_attribute.boolean_value IS 'If the Attribute has a boolean value, it is stored in this column';
-            COMMENT ON COLUMN ruleform.product_network_attribute.product_value IS 'If the Attribute has a Product value, it is stored in this column';
-            COMMENT ON COLUMN ruleform.product_network_attribute.unit IS 'The unit of measurement the Attribute value is measured in, if any';
-            COMMENT ON COLUMN ruleform.product_network_attribute.notes IS 'Miscellaneous notes about this rule';
-            COMMENT ON COLUMN ruleform.product_network_attribute.updated_by IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.product_network_attribute.update_date IS 'The time of the last update to this rule';
-            ]]>
-        </sql>
+    <changeSet author="hhildebrand" id="1390879803225-41">
+        <createTable
+            remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
+            tableName="ruleform.product_network_attribute"
+        >
+            <column autoIncrement="true" name="id" remarks="Unique identifier for a Product Network Attribute rule" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="product_network_attribute_pkey" />
+            </column>
+            <column name="agency" remarks="The agency that the information in this rule comes from" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="network_rule" remarks="The Product Network rule whose attribute is being defined" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="attribute" remarks="The Attribute of the Product Network rule being defined" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="text_value" remarks="If the Attribute has a text value, it is stored in this column" type="VARCHAR(10485760)" />
+            <column name="numeric_value" remarks="If the Attribute has a numeric (real) value, it is stored in this column" type="numeric" />
+            <column name="integer_value" remarks="If the Attribute has an integer value, it is stored in this column" type="INT4" />
+            <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="SMALLINT" />
+            <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="product_value" remarks="If the Attribute has a Product value, it is stored in this column" type="INT8" />
+            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="INT8" />
+            <column name="notes" remarks="Miscellaneous notes about this rule" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The time of the last update to this rule"
+                type="TIMESTAMP WITH TIME ZONE"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="1" name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
         <rollback>
-            <dropTable tableName="ruleform.product_network_attribute"/>
+            <dropTable tableName="ruleform.product_network_attribute" />
         </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-246">
+        <addForeignKeyConstraint baseColumnNames="agency" baseTableName="ruleform.product_network_attribute"
+            constraintName="product_network_attribute_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-247">
+        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.product_network_attribute"
+            constraintName="product_network_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-248">
+        <addForeignKeyConstraint baseColumnNames="network_rule" baseTableName="ruleform.product_network_attribute"
+            constraintName="product_network_attribute_network_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-249">
+        <addForeignKeyConstraint baseColumnNames="product_value" baseTableName="ruleform.product_network_attribute"
+            constraintName="product_network_attribute_product_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-250">
+        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.product_network_attribute"
+            constraintName="product_network_attribute_unit_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.unit" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-251">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.product_network_attribute"
+            constraintName="product_network_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-401">
+        <addUniqueConstraint columnNames="agency, network_rule, attribute, sequence_number" constraintName="product_network_attribute_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.product_network_attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-496">
+        <createIndex indexName="product_network_attribute_agency_fkey_idx" tableName="ruleform.product_network_attribute"
+            unique="false"
+        >
+            <column name="agency" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-497">
+        <createIndex indexName="product_network_attribute_attribute_fkey_idx" tableName="ruleform.product_network_attribute"
+            unique="false"
+        >
+            <column name="attribute" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-498">
+        <createIndex indexName="product_network_attribute_network_rule_fkey_idx" tableName="ruleform.product_network_attribute"
+            unique="false"
+        >
+            <column name="network_rule" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-499">
+        <createIndex indexName="product_network_attribute_product_value_fkey_idx" tableName="ruleform.product_network_attribute"
+            unique="false"
+        >
+            <column name="product_value" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-500">
+        <createIndex indexName="product_network_attribute_unit_fkey_idx" tableName="ruleform.product_network_attribute" unique="false">
+            <column name="unit" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-501">
+        <createIndex indexName="product_network_attribute_updated_by_fkey_idx" tableName="ruleform.product_network_attribute"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

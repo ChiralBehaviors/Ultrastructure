@@ -1,73 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.protocol
-            (
-              id bigserial NOT NULL, -- Unique identifier
-              requested_service bigint NOT NULL,
-              requested_product bigint NOT NULL,
-              deliver_to bigint NOT NULL,
-              deliver_from bigint NOT NULL,
-              service bigint NOT NULL,
-              product bigint NOT NULL,
-              copy_attributes int2 DEFAULT 0,
-              sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an service / key combination can have multiple protocol rules
-              assign_to bigint NOT NULL, -- The agency that should perform the service
-              requester bigint NOT NULL, -- The agency that requested the service
-              notes character varying, -- Additional notes regarding usage of the attribute
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
-              CONSTRAINT protocol_pkey PRIMARY KEY (id ),
-              CONSTRAINT protocol_assign_to_fkey FOREIGN KEY (assign_to)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_requester_fkey FOREIGN KEY (requester)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_requested_service_fkey FOREIGN KEY (requested_service)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_product_ordered_fkey FOREIGN KEY (requested_product)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_service_fkey FOREIGN KEY (service)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_product_fkey FOREIGN KEY (product)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_deliver_to_fkey FOREIGN KEY (deliver_to)
-                  REFERENCES ruleform.location (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_deliver_from_fkey FOREIGN KEY (deliver_from)
-                  REFERENCES ruleform.location (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT protocol_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.protocol
-              IS 'Defines protocol rules for carrying out tasks';
-            COMMENT ON COLUMN ruleform.protocol.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.protocol.service IS 'The service whose steps are being specified';
-            COMMENT ON COLUMN ruleform.protocol.sequence_number IS 'Ordering and uniqueness, for when an service / key combination can have multiple protocol rules';
-            COMMENT ON COLUMN ruleform.protocol.assign_to IS 'The agency that should perform the task';
-            COMMENT ON COLUMN ruleform.protocol.notes IS 'Additional notes regarding usage of the attribute';
-            COMMENT ON COLUMN ruleform.protocol.updated_by IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.protocol.update_date IS 'The date this rule was last changed';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.protocol" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-45">
+        <createTable remarks="Defines protocol rules for carrying out tasks" tableName="ruleform.protocol">
+            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="protocol_pkey" />
+            </column>
+            <column name="requested_service" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="requested_product" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_to" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_from" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="service" remarks="The service whose steps are being specified" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="product" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="copy_attributes" type="SMALLINT" />
+            <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
+                type="ruleform.sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="assign_to" remarks="The agency that should perform the task" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="requester" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" remarks="Additional notes regarding usage of the attribute" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.protocol" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-273">
+        <addForeignKeyConstraint baseColumnNames="assign_to" baseTableName="ruleform.protocol" constraintName="protocol_assign_to_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-294">
+        <addForeignKeyConstraint baseColumnNames="deliver_from" baseTableName="ruleform.protocol" constraintName="protocol_deliver_from_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-295">
+        <addForeignKeyConstraint baseColumnNames="deliver_to" baseTableName="ruleform.protocol" constraintName="protocol_deliver_to_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-296">
+        <addForeignKeyConstraint baseColumnNames="product" baseTableName="ruleform.protocol" constraintName="protocol_product_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-297">
+        <addForeignKeyConstraint baseColumnNames="requested_product" baseTableName="ruleform.protocol"
+            constraintName="protocol_product_ordered_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-298">
+        <addForeignKeyConstraint baseColumnNames="requested_service" baseTableName="ruleform.protocol"
+            constraintName="protocol_requested_service_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-299">
+        <addForeignKeyConstraint baseColumnNames="requester" baseTableName="ruleform.protocol" constraintName="protocol_requester_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-300">
+        <addForeignKeyConstraint baseColumnNames="service" baseTableName="ruleform.protocol" constraintName="protocol_service_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-301">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.protocol" constraintName="protocol_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-512">
+        <createIndex indexName="protocol_updated_by_fkey_idx" tableName="ruleform.protocol" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

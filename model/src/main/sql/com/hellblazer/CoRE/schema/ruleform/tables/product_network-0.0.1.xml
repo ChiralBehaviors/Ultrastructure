@@ -7,12 +7,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <include relativeToChangelogFile="true" file="product_network/table.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/grants.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/index-product_network_child.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/index-product_network_parent.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/index-product_network_relationship.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/index-product_network_updated_by.xml"/>
-    <include relativeToChangelogFile="true" file="product_network/index-original_product_network.xml"/>
+    <include relativeToChangelogFile="true" file="product_network/grants.xml"/> 
     <include relativeToChangelogFile="true" file="product_network/owner.xml"/>
     <include relativeToChangelogFile="true" file="product_network/statistics.xml"/>
 

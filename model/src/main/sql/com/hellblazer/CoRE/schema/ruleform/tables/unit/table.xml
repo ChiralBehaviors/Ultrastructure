@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.unit
-            (
-              id bigserial NOT NULL,
-              name character varying NOT NULL,
-              description character varying,
-              abbreviation character varying(10),
-              notes character varying,
-              updated_by bigint NOT NULL,
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              pinned int2 NOT NULL DEFAULT 0,
-              datatype character varying, -- The underlying datatype of a measurement of this kind of Unit
-              min numeric, -- If the unit is integer or numeric and has a minimum value, it is stored here.
-              max numeric, -- If the unit is integer or numeric and has a maximum value, it is stored here.
-              enumerated int2 DEFAULT 0, -- If the allowable values of the unit constitute an enumerated set, then this should be TRUE.
-              CONSTRAINT unit_pkey PRIMARY KEY (id ),
-              CONSTRAINT unit_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT unit_name_key UNIQUE (name ),
-              CONSTRAINT valid_datatype CHECK (datatype::text = ANY (ARRAY['integer'::character varying::text, 'numeric'::character varying::text, 'text'::character varying::text, 'boolean'::character varying::text, 'product'::character varying::text]))
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON COLUMN ruleform.unit.datatype 
-                IS 'The underlying datatype of a measurement of this kind of Unit';
-            COMMENT ON COLUMN ruleform.unit.min 
-                IS 'If the unit is integer or numeric and has a minimum value, it is stored here.';
-            COMMENT ON COLUMN ruleform.unit.max 
-                IS 'If the unit is integer or numeric and has a maximum value, it is stored here.';
-            COMMENT ON COLUMN ruleform.unit.enumerated 
-                IS 'If the allowable values of the unit constitute an enumerated set, then this should be TRUE.';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.unit" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-60">
+        <createTable tableName="ruleform.unit">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="unit_pkey" />
+            </column>
+            <column name="name" type="VARCHAR(10485760)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(10485760)" />
+            <column name="abbreviation" type="VARCHAR(10)" />
+            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="pinned" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="datatype" remarks="The underlying datatype of a measurement of this kind of Unit" type="VARCHAR(10485760)" />
+            <column name="min" remarks="If the unit is integer or numeric and has a minimum value, it is stored here." type="numeric" />
+            <column name="max" remarks="If the unit is integer or numeric and has a maximum value, it is stored here." type="numeric" />
+            <column defaultValueNumeric="0" name="enumerated"
+                remarks="If the allowable values of the unit constitute an enumerated set, then this should be TRUE." type="SMALLINT" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.unit" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-365">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.unit" constraintName="unit_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-420">
+        <addUniqueConstraint columnNames="name" constraintName="unit_name_key" deferrable="false" disabled="false"
+            initiallyDeferred="false" tableName="ruleform.unit" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-526">
+        <createIndex indexName="unit_updated_by_fkey_idx" tableName="ruleform.unit" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

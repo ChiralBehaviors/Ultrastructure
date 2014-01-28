@@ -1,56 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE TABLE ruleform.unit_values
-            (
-              id bigserial NOT NULL, -- Otherwise meaningless identifier for a rule
-              unit bigint NOT NULL, -- The unit whose values are being enumerated
-              sequence_number ruleform.sequence_number NOT NULL, -- The ordering of this value in the set of values for the given unit
-              integer_value integer, -- A permitted integer value for this unit
-              numeric_value numeric, -- A permitted numeric value for this unit
-              text_value text, -- A permitted text value for this unit
-              boolean_value int2, -- A permitted boolean value for this unit
-              product_value bigint, -- A permitted Product value for this unit
-              notes character varying, -- Usage notes for this rule
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The time at which this rule was last updated
-              CONSTRAINT unit_values_pkey PRIMARY KEY (id ),
-              CONSTRAINT unit_values_product_value_fkey FOREIGN KEY (product_value)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT unit_values_unit_fkey FOREIGN KEY (unit)
-                  REFERENCES ruleform.unit (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT unit_values_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT unit_values_unit_key UNIQUE (unit , sequence_number ),
-              CONSTRAINT valid_value CHECK ((ruleform.null_zero(integer_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(text_value) + ruleform.null_zero(boolean_value) + ruleform.null_zero(product_value)) = 1)
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON COLUMN ruleform.unit_values.id IS 'Otherwise meaningless identifier for a rule';
-            COMMENT ON COLUMN ruleform.unit_values.unit IS 'The unit whose values are being enumerated';
-            COMMENT ON COLUMN ruleform.unit_values.sequence_number IS 'The ordering of this value in the set of values for the given unit';
-            COMMENT ON COLUMN ruleform.unit_values.integer_value IS 'A permitted integer value for this unit';
-            COMMENT ON COLUMN ruleform.unit_values.numeric_value IS 'A permitted numeric value for this unit';
-            COMMENT ON COLUMN ruleform.unit_values.text_value IS 'A permitted text value for this unit';
-            COMMENT ON COLUMN ruleform.unit_values.boolean_value IS 'A permitted boolean value for this unit';
-            COMMENT ON COLUMN ruleform.unit_values.product_value IS 'A permitted Product value for this unit';
-            COMMENT ON COLUMN ruleform.unit_values.notes IS 'Usage notes for this rule';
-            COMMENT ON COLUMN ruleform.unit_values.updated_by IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.unit_values.update_date IS 'The time at which this rule was last updated';
-            ]]>
-        </sql>
+    <changeSet author="hhildebrand" id="1390879803225-64">
+        <createTable tableName="ruleform.unit_values">
+            <column autoIncrement="true" name="id" remarks="Otherwise meaningless identifier for a rule" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="unit_values_pkey" />
+            </column>
+            <column name="unit" remarks="The unit whose values are being enumerated" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="sequence_number" remarks="The ordering of this value in the set of values for the given unit" type="ruleform.sequence_number">
+                <constraints nullable="false" />
+            </column>
+            <column name="integer_value" remarks="A permitted integer value for this unit" type="INT4" />
+            <column name="numeric_value" remarks="A permitted numeric value for this unit" type="numeric" />
+            <column name="text_value" remarks="A permitted text value for this unit" type="TEXT" />
+            <column name="boolean_value" remarks="A permitted boolean value for this unit" type="SMALLINT" />
+            <column name="product_value" remarks="A permitted Product value for this unit" type="INT8" />
+            <column name="notes" remarks="Usage notes for this rule" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"
+                remarks="The time at which this rule was last updated" type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
         <rollback>
-            <dropTable tableName="ruleform.unit_values"/>
+            <dropTable tableName="ruleform.unit_values" />
         </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-366">
+        <addForeignKeyConstraint baseColumnNames="product_value" baseTableName="ruleform.unit_values"
+            constraintName="unit_values_product_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-367">
+        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.unit_values" constraintName="unit_values_unit_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.unit" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-368">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.unit_values" constraintName="unit_values_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-422">
+        <addUniqueConstraint columnNames="unit, sequence_number" constraintName="unit_values_unit_key" deferrable="false"
+            disabled="false" initiallyDeferred="false" tableName="ruleform.unit_values" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-527">
+        <createIndex indexName="unit_values_unit_fkey_idx" tableName="ruleform.unit_values" unique="false">
+            <column name="unit" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-528">
+        <createIndex indexName="unit_values_updated_by_fkey_idx" tableName="ruleform.unit_values" unique="false">
+            <column name="updated_by" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

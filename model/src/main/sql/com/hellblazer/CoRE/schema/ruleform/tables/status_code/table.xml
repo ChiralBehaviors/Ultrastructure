@@ -1,55 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE TABLE ruleform.status_code
-            (
-              id bigserial NOT NULL, -- Unique identifier
-              name character varying NOT NULL, -- The unique name of a status code
-              description character varying, -- A free-form textual description of a status code
-              notes character varying, -- Additional notes regarding usage of the status code
-              pinned int2 NOT NULL DEFAULT 0, -- Indicates that a rule has been pinned, restricting changes to the rule
-              fail_parent int2 NOT NULL DEFAULT 1, -- Setting a job to this status code will trigger a cascading failure up to its parent
-              propagate_children int2 NOT NULL DEFAULT 1, -- Setting a job to this status code will trigger the propagation of child (implicit) jobs
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
-              CONSTRAINT status_code_pkey PRIMARY KEY (id ),
-              CONSTRAINT status_code_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.status_code
-                  IS 'Existential ruleform for all status codes (event outcomes)';
-            COMMENT ON COLUMN ruleform.status_code.id 
-                    IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.status_code.name 
-                    IS 'The unique name of a status code';
-            COMMENT ON COLUMN ruleform.status_code.description 
-                    IS 'A free-form textual description of a status code';
-            COMMENT ON COLUMN ruleform.status_code.notes 
-                    IS 'Additional notes regarding usage of the status code';
-            COMMENT ON COLUMN ruleform.status_code.pinned 
-                    IS 'Indicates that a rule has been pinned, restricting changes to the rule';
-            COMMENT ON COLUMN ruleform.status_code.fail_parent 
-                    IS 'Setting a job to this status code will trigger a cascading failure up to its parent';
-            COMMENT ON COLUMN ruleform.status_code.propagate_children 
-                    IS 'Setting a job to this status code will trigger the propagation of child (implicit) jobs';
-            COMMENT ON COLUMN ruleform.status_code.updated_by 
-                    IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.status_code.update_date 
-                    IS 'The date this rule was last changed';
-            ]]>
-        </sql>
+    <changeSet author="hhildebrand" id="1390879803225-53">
+        <createTable remarks="Existential ruleform for all status codes (event outcomes)" tableName="ruleform.status_code">
+            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="status_code_pkey" />
+            </column>
+            <column name="name" remarks="The unique name of a status code" type="VARCHAR(10485760)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" remarks="A free-form textual description of a status code" type="VARCHAR(10485760)" />
+            <column name="notes" remarks="Additional notes regarding usage of the status code" type="VARCHAR(10485760)" />
+            <column defaultValueNumeric="0" name="pinned" remarks="Indicates that a rule has been pinned, restricting changes to the rule"
+                type="SMALLINT"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="1" name="fail_parent"
+                remarks="Setting a job to this status code will trigger a cascading failure up to its parent" type="SMALLINT"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="1" name="propagate_children"
+                remarks="Setting a job to this status code will trigger the propagation of child (implicit) jobs" type="SMALLINT"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
         <rollback>
-            <dropTable tableName="ruleform.status_code"/>
+            <dropTable tableName="ruleform.status_code" />
         </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-338">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.status_code" constraintName="status_code_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-521">
+        <createIndex indexName="status_code_updated_by_fkey_idx" tableName="ruleform.status_code" unique="false">
+            <column name="updated_by" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

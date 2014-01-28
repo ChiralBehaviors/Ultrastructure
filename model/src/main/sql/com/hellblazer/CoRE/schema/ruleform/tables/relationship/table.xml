@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-    
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE TABLE ruleform.relationship
-            (
-              id bigserial NOT NULL,
-              name character varying NOT NULL,
-              description character varying,
-              preferred int2 NOT NULL,
-              inverse bigint NOT NULL,
-              notes character varying,
-              updated_by bigint NOT NULL,
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              pinned int2 NOT NULL DEFAULT 0,
-              operator ruleform.relational_operator,  
-              CONSTRAINT relationship_pkey PRIMARY KEY (id ),
-              CONSTRAINT relationship_name UNIQUE (name),
-              CONSTRAINT relationship_inverse_fkey FOREIGN KEY (inverse)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED,
-              CONSTRAINT relationship_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            ]]>
-        </sql>
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
+
+    <changeSet author="hhildebrand" id="1390879803225-48">
+        <createTable tableName="ruleform.relationship">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="relationship_pkey" />
+            </column>
+            <column name="name" type="VARCHAR(10485760)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(10485760)" />
+            <column name="preferred" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="inverse" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="pinned" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="operator" type="ruleform.relational_operator" />
+        </createTable>
         <rollback>
-            <dropTable tableName="ruleform.relationship"/>
+            <dropTable tableName="ruleform.relationship" />
         </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-316">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.relationship" constraintName="relationship_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-409">
+        <addUniqueConstraint columnNames="name" constraintName="relationship_name" deferrable="false" disabled="false"
+            initiallyDeferred="false" tableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-515">
+        <createIndex indexName="relationship_inverse_fkey_idx" tableName="ruleform.relationship" unique="false">
+            <column name="inverse" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-516">
+        <createIndex indexName="relationship_updated_by_fkey_idx" tableName="ruleform.relationship" unique="false">
+            <column name="updated_by" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

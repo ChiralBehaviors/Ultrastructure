@@ -1,46 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE TABLE ruleform.transformation_metarule
-            (
-              id bigserial NOT NULL,
-              service bigint NOT NULL,
-              sequence_number ruleform.sequence_number NOT NULL,
-              agency_map bigint NOT NULL,
-              product_map bigint NOT NULL,
-              product_network_agency bigint,
-              stop_on_match int2 DEFAULT 0,
-              notes character varying,
-              updated_by bigint NOT NULL,
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              CONSTRAINT transformation_metarule_pkey PRIMARY KEY (id ),
-              CONSTRAINT transformation_metarule_product_map_fkey FOREIGN KEY (product_map)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_metarule_product_network_agency_fkey FOREIGN KEY (product_network_agency)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_metarule_service_fkey FOREIGN KEY (service)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_metarule_agency_map_fkey FOREIGN KEY (agency_map)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT transformation_metarule_service_key UNIQUE (service , sequence_number )
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            ]]>
-        </sql>
+    <changeSet author="hhildebrand" id="1390879803225-59">
+        <createTable tableName="ruleform.transformation_metarule">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="transformation_metarule_pkey" />
+            </column>
+            <column name="service" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="sequence_number" type="ruleform.sequence_number">
+                <constraints nullable="false" />
+            </column>
+            <column name="agency_map" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_map" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_network_agency" type="INT8" />
+            <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
+            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
         <rollback>
-            <dropTable tableName="ruleform.transformation_metarule"/>
+            <dropTable tableName="ruleform.transformation_metarule" />
         </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-343">
+        <addForeignKeyConstraint baseColumnNames="agency_map" baseTableName="ruleform.transformation_metarule"
+            constraintName="transformation_metarule_agency_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-344">
+        <addForeignKeyConstraint baseColumnNames="product_map" baseTableName="ruleform.transformation_metarule"
+            constraintName="transformation_metarule_product_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-345">
+        <addForeignKeyConstraint baseColumnNames="product_network_agency" baseTableName="ruleform.transformation_metarule"
+            constraintName="transformation_metarule_product_network_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-346">
+        <addForeignKeyConstraint baseColumnNames="service" baseTableName="ruleform.transformation_metarule"
+            constraintName="transformation_metarule_service_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-416">
+        <addUniqueConstraint columnNames="service, sequence_number" constraintName="transformation_metarule_service_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.transformation_metarule" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-522">
+        <createIndex indexName="transformation_metarule_updated_by_fkey_idx" tableName="ruleform.transformation_metarule"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

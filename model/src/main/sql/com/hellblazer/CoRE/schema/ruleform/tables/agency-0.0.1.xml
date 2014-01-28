@@ -8,7 +8,6 @@
 
     <include relativeToChangelogFile="true" file="agency/table.xml"/>
     <include relativeToChangelogFile="true" file="agency/grants.xml"/>
-    <include relativeToChangelogFile="true" file="agency/index-agency_updated-by.xml"/>
     <include relativeToChangelogFile="true" file="agency/owner.xml"/>
 
 </databaseChangeLog>

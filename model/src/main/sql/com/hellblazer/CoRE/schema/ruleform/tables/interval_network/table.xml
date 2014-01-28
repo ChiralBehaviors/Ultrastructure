@@ -1,45 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE TABLE ruleform.interval_network
-            (
-              id bigserial NOT NULL,
-              parent bigint NOT NULL,
-              relationship bigint NOT NULL,
-              child bigint NOT NULL,
-              inferred int2 NOT NULL DEFAULT 0,
-              notes character varying,
-              updated_by bigint NOT NULL,
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              ordering ruleform.ordinal_number,
-              CONSTRAINT interval_network_pkey PRIMARY KEY (id ),
-              CONSTRAINT interval_network_child_fkey FOREIGN KEY (child)
-                  REFERENCES ruleform.interval (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT interval_network_parent_fkey FOREIGN KEY (parent)
-                  REFERENCES ruleform.interval (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT interval_network_relationship_fkey FOREIGN KEY (relationship)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT interval_network_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT interval_network_parent_key UNIQUE (parent , relationship , child )
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            ]]>
-        </sql>
+    <changeSet author="hhildebrand" id="1390879803225-20">
+        <createTable tableName="ruleform.interval_network">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="interval_network_pkey" />
+            </column>
+            <column name="parent" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="relationship" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="child" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+            <column name="ordering" type="ruleform.ordinal_number" />
+        </createTable>
         <rollback>
-            <dropTable tableName="ruleform.interval_network"/>
+            <dropTable tableName="ruleform.interval_network" />
         </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-154">
+        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.interval_network" constraintName="interval_network_child_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.interval" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-155">
+        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.interval_network" constraintName="interval_network_parent_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.interval" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-156">
+        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.interval_network"
+            constraintName="interval_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-157">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.interval_network"
+            constraintName="interval_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-383">
+        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="interval_network_parent_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.interval_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-458">
+        <createIndex indexName="interval_network_child_fkey_idx" tableName="ruleform.interval_network" unique="false">
+            <column name="child" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-459">
+        <createIndex indexName="interval_network_parent_fkey_idx" tableName="ruleform.interval_network" unique="false">
+            <column name="parent" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-460">
+        <createIndex indexName="interval_network_relationship_fkey_idx" tableName="ruleform.interval_network" unique="false">
+            <column name="relationship" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-461">
+        <createIndex indexName="interval_network_updated_by_fkey_idx" tableName="ruleform.interval_network" unique="false">
+            <column name="updated_by" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

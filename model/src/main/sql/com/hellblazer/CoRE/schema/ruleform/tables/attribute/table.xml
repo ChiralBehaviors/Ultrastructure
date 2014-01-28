@@ -1,38 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.attribute
-                (
-                  id bigserial NOT NULL,
-                  name character varying NOT NULL,
-                  description character varying,
-                  notes character varying,
-                  updated_by bigint NOT NULL,
-                  update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-                  pinned int2 NOT NULL DEFAULT 0,
-                  inheritable int2 NOT NULL DEFAULT 0,
-                  value_type smallint NOT NULL,
-                  CONSTRAINT attribute_pkey PRIMARY KEY (id ),
-                  CONSTRAINT attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                      REFERENCES ruleform.agency (id) MATCH SIMPLE
-                      ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-                  CONSTRAINT valid_type CHECK (value_type < 5)
-                )
-                WITH (
-                  OIDS=FALSE
-                );
-                COMMENT ON TABLE ruleform.attribute
-                      IS 'Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes.';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.attribute" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-9">
+        <createTable remarks="Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes."
+            tableName="ruleform.attribute"
+        >
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="attribute_pkey" />
+            </column>
+            <column name="name" type="VARCHAR(10485760)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(10485760)" />
+            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="pinned" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="inheritable" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="value_type" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.attribute" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-126">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.attribute" constraintName="attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-446">
+        <createIndex indexName="attribute_updated_by_fkey_idx" tableName="ruleform.attribute" unique="false">
+            <column name="updated_by"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

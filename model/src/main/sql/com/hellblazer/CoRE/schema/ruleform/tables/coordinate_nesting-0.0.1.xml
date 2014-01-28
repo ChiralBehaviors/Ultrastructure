@@ -7,11 +7,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <include relativeToChangelogFile="true" file="coordinate_nesting/table.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate_nesting/grants.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate_nesting/index-coordinate_nesting_attribute.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate_nesting/index-coordinate_nesting_inner_attribute.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate_nesting/index-coordinate_nesting_outer_attribute.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate_nesting/index-coordinate_nesting_updated_by.xml"/>
+    <include relativeToChangelogFile="true" file="coordinate_nesting/grants.xml"/> 
     <include relativeToChangelogFile="true" file="coordinate_nesting/owner.xml"/>
 
 </databaseChangeLog>

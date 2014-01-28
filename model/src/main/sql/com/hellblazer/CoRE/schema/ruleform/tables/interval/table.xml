@@ -1,37 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.interval
-            (
-              id bigserial NOT NULL,
-              name character varying NOT NULL,
-              description character varying,
-              notes character varying,
-              start numeric,
-              duration numeric,
-              updated_by bigint NOT NULL,
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              pinned int2 NOT NULL DEFAULT 0,
-              CONSTRAINT interval_pkey PRIMARY KEY (id ),
-              CONSTRAINT interval_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.interval
-                IS 'A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and products in time';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.interval" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-17">
+        <createTable
+            remarks="A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and products in time"
+            tableName="ruleform.interval"
+        >
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="interval_pkey" />
+            </column>
+            <column name="name" type="VARCHAR(10485760)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(10485760)" />
+            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="start" type="numeric" />
+            <column name="duration" type="numeric" />
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="pinned" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.interval" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-158">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.interval" constraintName="interval_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-462">
+        <createIndex indexName="interval_updated_by_fkey_idx" tableName="ruleform.interval" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

@@ -7,8 +7,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <include relativeToChangelogFile="true" file="coordinate/table.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate/grants.xml"/>
-    <include relativeToChangelogFile="true" file="coordinate/index-coordinate_updated_by.xml"/>
+    <include relativeToChangelogFile="true" file="coordinate/grants.xml"/> 
     <include relativeToChangelogFile="true" file="coordinate/owner.xml"/>
 
 </databaseChangeLog>

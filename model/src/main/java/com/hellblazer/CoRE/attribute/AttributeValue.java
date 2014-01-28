@@ -1,5 +1,5 @@
 /** 
- * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
+ * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

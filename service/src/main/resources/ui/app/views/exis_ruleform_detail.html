@@ -2,4 +2,10 @@
 <a href="/ui/app/ruleform_list.html#/{{ruleform.ruleform}}/">Back to {{ruleform.ruleform}} list</a><br/>
     <span>Name: {{ruleform.name}}</span><br/>
     <span>Description: {{ruleform.description}}</span><br/>
+    <div>
+        Network
+        <div ng-repeat="r in networks">
+            {{r.relationship.name}} {{r.child.name}}
+        </div>
+    </div>
 </div>

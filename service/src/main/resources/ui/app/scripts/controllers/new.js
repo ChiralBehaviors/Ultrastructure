@@ -44,9 +44,11 @@ angular.module('apiApp')
         $scope.ruleforms = productResource.query();
     })
     .controller('ERDetailViewController', function($scope, $resource, $routeParams) {
-        var res = $resource('/v1/services/data/ruleform/:ruleform/:id');
-        
-        $scope.ruleform = res.get({ruleform: $routeParams.ruleform, id: $routeParams.id});
+        //var res = $resource('/v1/services/data/ruleform/:ruleform/:id');
+        var networkRes = $resource('/v1/services/data/ruleform/:ruleform/:id/networks')
+        //$scope.ruleform = res.get({ruleform: $routeParams.ruleform, id: $routeParams.id});
+        $scope.networks = networkRes.get({ruleform: $routeParams.ruleform, id: $routeParams.id});
+        $scope.ruleform = networks[0].parent;
     })
     .controller('TypeListController', function($scope, $http) {
         //need to use $http here because $resource expects an array of OBJECTS, 

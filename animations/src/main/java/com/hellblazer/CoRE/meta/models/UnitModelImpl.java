@@ -132,6 +132,7 @@ public class UnitModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     public final Unit create(String name, String description,
                              Aspect<Unit> aspect, Aspect<Unit>... aspects) {

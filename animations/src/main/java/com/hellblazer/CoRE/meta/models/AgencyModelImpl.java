@@ -160,6 +160,7 @@ public class AgencyModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     public final Agency create(String name, String description,
                                Aspect<Agency> aspect, Aspect<Agency>... aspects) {

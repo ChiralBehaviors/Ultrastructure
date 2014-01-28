@@ -40,7 +40,7 @@
 				<artifactId>mixin-generator</artifactId>
 				<version>0.0.2-SNAPSHOT</version>
 				<configuration>
-					<outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+					<outputDirectory>${project.build.directory}/generated-sources/mixin</outputDirectory>
 					<packageName>com.hellblazer.CoRE.json</packageName>
 					<className>PolymorphicRuleformMixin</className>
 				</configuration>
@@ -67,8 +67,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>target/generated-sources</source>
-                
+                <source>target/generated-sources/mixin</source>
               </sources>
             </configuration>
           </execution>

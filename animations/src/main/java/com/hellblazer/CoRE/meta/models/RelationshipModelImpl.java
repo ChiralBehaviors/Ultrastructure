@@ -162,6 +162,7 @@ public class RelationshipModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     public final Relationship create(String name, String description,
                                      Aspect<Relationship> aspect,

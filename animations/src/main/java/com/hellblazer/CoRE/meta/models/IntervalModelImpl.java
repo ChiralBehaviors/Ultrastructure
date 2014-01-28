@@ -160,6 +160,7 @@ public class IntervalModelImpl
      * com.hellblazer.CoRE.meta.NetworkedModel#create(com.hellblazer.CoRE.meta
      * .Aspect<RuleForm>[])
      */
+    @SafeVarargs
     @Override
     public final Interval create(String name, String description,
                                  Aspect<Interval> aspect,

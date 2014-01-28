@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -87,7 +89,7 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
                                                            file.getParent()), e);
         }
         final Map<String, Class<?>> entityMap = new HashMap<String, Class<?>>();
-        List<String> imports = new LinkedList<String>();
+        Set<String> imports = new HashSet<String>();
         List<AnnotationValue> annotations = new LinkedList<AnnotationValue>();
 
         Reflections reflections = new Reflections(

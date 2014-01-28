@@ -1,54 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.location_relationship
-            (
-              id bigserial NOT NULL,
-              relationship bigint NOT NULL,
-              target_context bigint NOT NULL,
-              product_mapped_value bigint NOT NULL,
-              sequence_number integer NOT NULL,
-              location_1_attribute bigint NOT NULL,
-              attribute_relationship bigint NOT NULL,
-              location_2_attribute bigint NOT NULL,
-              updated_by bigint NOT NULL,
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              notes character varying,
-              CONSTRAINT location_relationship_pkey PRIMARY KEY (id ),
-              CONSTRAINT location_relationship_attribute_relationship_fkey FOREIGN KEY (attribute_relationship)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_product_mapped_value_fkey FOREIGN KEY (product_mapped_value)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_location_1_attribute_fkey FOREIGN KEY (location_1_attribute)
-                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_location_2_attribute_fkey FOREIGN KEY (location_2_attribute)
-                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_relationship_fkey FOREIGN KEY (relationship)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT location_relationship_context_key UNIQUE (relationship, product_mapped_value , sequence_number ),
-              CONSTRAINT location_relationship_sequence_number_check CHECK (sequence_number > 0)
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.location_relationship" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-29">
+        <createTable tableName="ruleform.location_relationship">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="location_relationship_pkey" />
+            </column>
+            <column name="relationship" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="target_context" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_mapped_value" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
+            <column name="location_1_attribute" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="attribute_relationship" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="location_2_attribute" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" type="VARCHAR(10485760)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.location_relationship" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-194">
+        <addForeignKeyConstraint baseColumnNames="attribute_relationship" baseTableName="ruleform.location_relationship"
+            constraintName="location_relationship_attribute_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-195">
+        <addForeignKeyConstraint baseColumnNames="location_1_attribute" baseTableName="ruleform.location_relationship"
+            constraintName="location_relationship_location_1_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-196">
+        <addForeignKeyConstraint baseColumnNames="location_2_attribute" baseTableName="ruleform.location_relationship"
+            constraintName="location_relationship_location_2_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-197">
+        <addForeignKeyConstraint baseColumnNames="product_mapped_value" baseTableName="ruleform.location_relationship"
+            constraintName="location_relationship_product_mapped_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-198">
+        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.location_relationship"
+            constraintName="location_relationship_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-199">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location_relationship"
+            constraintName="location_relationship_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-390">
+        <addUniqueConstraint columnNames="relationship, product_mapped_value, sequence_number" constraintName="location_relationship_context_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.location_relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-477">
+        <createIndex indexName="location_relationship_updated_by_fkey_idx" tableName="ruleform.location_relationship" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

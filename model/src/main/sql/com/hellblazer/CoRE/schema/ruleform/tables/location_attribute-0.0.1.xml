@@ -8,10 +8,6 @@
 
     <include relativeToChangelogFile="true" file="location_attribute/table.xml"/>
     <include relativeToChangelogFile="true" file="location_attribute/grants.xml"/>
-    <include relativeToChangelogFile="true" file="location_attribute/index-location_attribute_product_value.xml"/>
-    <include relativeToChangelogFile="true" file="location_attribute/index-location_attribute_integer.xml"/>
-    <include relativeToChangelogFile="true" file="location_attribute/index-location_attribute_text.xml"/>
-    <include relativeToChangelogFile="true" file="location_attribute/index-location_attribute_updated_by.xml"/>
     <include relativeToChangelogFile="true" file="location_attribute/owner.xml"/>
 
 </databaseChangeLog>

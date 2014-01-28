@@ -1,84 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.job
-            (
-              id bigserial NOT NULL, -- Unique identifier
-              service bigint NOT NULL, -- the service this job is performing
-              product bigint NOT NULL, -- the product of this service
-              assign_to bigint NOT NULL, -- The agency doing this Job
-              requester bigint NOT NULL, -- The agency requesting the service of this job
-              deliver_to bigint NOT NULL, -- The location to deliver the product of this job
-              deliver_from bigint NOT NULL, -- The location where the product of this job is delivered from
-              status bigint NOT NULL, -- The current status of this Job
-              parent bigint, -- The parent of this job, in a hierarchical sense
-              sequence_number integer NOT NULL DEFAULT 0, -- The sibling sequence of this job
-              notes character varying, -- Additional notes regarding usage of this particular rule
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
-              CONSTRAINT job_pkey PRIMARY KEY (id ),
-              CONSTRAINT job_assign_to_fkey FOREIGN KEY (assign_to)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_requester_fkey FOREIGN KEY (requester)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_deliver_to_fkey FOREIGN KEY (deliver_to)
-                  REFERENCES ruleform.location (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_deliver_from_fkey FOREIGN KEY (deliver_from)
-                  REFERENCES ruleform.location (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_service_fkey FOREIGN KEY (service)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_product_fkey FOREIGN KEY (product)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_parent_fkey FOREIGN KEY (parent)
-                  REFERENCES ruleform.job (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_status_fkey FOREIGN KEY (status)
-                  REFERENCES ruleform.status_code (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE
-              -- CONSTRAINT job_unique UNIQUE (parent, sequence_number )
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.job
-               IS 'An instantiation of an service; something actually done';
-            COMMENT ON COLUMN ruleform.job.id 
-                IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.job.service 
-                IS 'The service performed by this Job';
-            COMMENT ON COLUMN ruleform.job.product
-                IS 'The product produced this Job';
-            COMMENT ON COLUMN ruleform.job.assign_to 
-                IS 'The agency doing this Job';
-            COMMENT ON COLUMN ruleform.job.status 
-                IS 'The current status of this Job';
-            COMMENT ON COLUMN ruleform.job.parent
-                IS 'The parent of this job, in a hierarchical sense';
-            COMMENT ON COLUMN ruleform.job.notes 
-                IS 'Additional notes regarding usage of this particular rule';
-            COMMENT ON COLUMN ruleform.job.updated_by 
-                IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.job.update_date 
-                IS 'The date this rule was last changed';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.job" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-21">
+        <createTable remarks="An instantiation of an service; something actually done" tableName="ruleform.job">
+            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="job_pkey" />
+            </column>
+            <column name="service" remarks="The service performed by this Job" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="product" remarks="The product produced this Job" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="assign_to" remarks="The agency doing this Job" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="requester" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_to" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_from" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" remarks="The current status of this Job" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="INT8" />
+            <column defaultValueNumeric="0" name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.job" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-159">
+        <addForeignKeyConstraint baseColumnNames="assign_to" baseTableName="ruleform.job" constraintName="job_assign_to_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-167">
+        <addForeignKeyConstraint baseColumnNames="deliver_from" baseTableName="ruleform.job" constraintName="job_deliver_from_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-168">
+        <addForeignKeyConstraint baseColumnNames="deliver_to" baseTableName="ruleform.job" constraintName="job_deliver_to_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-169">
+        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.job" constraintName="job_parent_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.job" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-170">
+        <addForeignKeyConstraint baseColumnNames="product" baseTableName="ruleform.job" constraintName="job_product_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-171">
+        <addForeignKeyConstraint baseColumnNames="requester" baseTableName="ruleform.job" constraintName="job_requester_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-172">
+        <addForeignKeyConstraint baseColumnNames="service" baseTableName="ruleform.job" constraintName="job_service_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-173">
+        <addForeignKeyConstraint baseColumnNames="status" baseTableName="ruleform.job" constraintName="job_status_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.status_code" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-174">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.job" constraintName="job_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-463">
+        <createIndex indexName="job_assign_to_fkey_idx" tableName="ruleform.job" unique="false">
+            <column name="assign_to" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-466">
+        <createIndex indexName="job_parent_fkey_idx" tableName="ruleform.job" unique="false">
+            <column name="parent" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

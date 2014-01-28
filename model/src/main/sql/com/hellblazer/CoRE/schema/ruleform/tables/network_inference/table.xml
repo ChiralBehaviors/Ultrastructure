@@ -1,43 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.network_inference
-            (
-              id bigserial NOT NULL,
-              premise1 bigint NOT NULL,
-              premise2 bigint NOT NULL,
-              inference bigint NOT NULL,
-              notes character varying,
-              updated_by bigint NOT NULL,
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-              CONSTRAINT network_inference_pkey PRIMARY KEY (id ),
-              CONSTRAINT network_inference_relationship1_fkey FOREIGN KEY (premise1)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT network_inference_relationship2_fkey FOREIGN KEY (premise2)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT network_inference_relationship3_fkey FOREIGN KEY (inference)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT network_inference_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT network_inference_relationship1_key UNIQUE (premise1 , premise2 )
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.network_inference" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-31">
+        <createTable tableName="ruleform.network_inference">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="network_inference_pkey" />
+            </column>
+            <column name="premise1" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise2" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="inference" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="updated_by" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.network_inference" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-208">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.network_inference"
+            constraintName="network_inference_relationship1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-209">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.network_inference"
+            constraintName="network_inference_relationship2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-210">
+        <addForeignKeyConstraint baseColumnNames="inference" baseTableName="ruleform.network_inference"
+            constraintName="network_inference_relationship3_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-211">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.network_inference"
+            constraintName="network_inference_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-392">
+        <addUniqueConstraint columnNames="premise1, premise2" constraintName="network_inference_relationship1_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.network_inference" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-480">
+        <createIndex indexName="network_inference_updated_by_fkey_idx" tableName="ruleform.network_inference" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

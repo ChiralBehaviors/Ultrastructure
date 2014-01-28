@@ -8,8 +8,6 @@
 
     <include relativeToChangelogFile="true" file="job/table.xml"/>
     <include relativeToChangelogFile="true" file="job/grants.xml"/>
-    <include relativeToChangelogFile="true" file="job/owner.xml"/>
-    <include relativeToChangelogFile="true" file="job/index-job-assign_to.xml"/>
-    <include relativeToChangelogFile="true" file="job/index-job-parent.xml"/>
+    <include relativeToChangelogFile="true" file="job/owner.xml"/> 
 
 </databaseChangeLog>

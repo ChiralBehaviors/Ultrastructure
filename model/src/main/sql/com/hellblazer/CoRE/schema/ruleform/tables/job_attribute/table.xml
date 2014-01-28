@@ -1,65 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.job_attribute
-            (
-              id bigserial NOT NULL, -- Unique identifier
-              job bigint NOT NULL, -- The Job whose attributes are being specified
-              attribute bigint NOT NULL, -- The Attribute or facet of the given Job being declared
-              sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when a Job can have multiple values for a given Attribute
-              text_value character varying, -- If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL
-              numeric_value numeric, -- If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL
-              boolean_value int2,
-              integer_value integer, -- If the Attribute is integer-valued, the value goes in this column; all other value columns should be NULL
-              timestamp_value timestamp, -- If the Attribute has a timestamp value, it is stored in this column
-              binary_value bytea, -- If the Attribute has a binary value, it is stored in this column
-              unit bigint, -- The unit of measure (if any) associated with the given value
-              notes character varying, -- Additional notes regarding this rule
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
-              CONSTRAINT job_attribute_pkey PRIMARY KEY (id ),
-              CONSTRAINT job_attribute_attribute_fkey FOREIGN KEY (attribute)
-                  REFERENCES ruleform.attribute (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_attribute_job_fkey FOREIGN KEY (job)
-                  REFERENCES ruleform.job (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_attribute_units_fkey FOREIGN KEY (unit)
-                  REFERENCES ruleform.unit (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_attribute_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT job_attribute_sequence_number_key UNIQUE (job , attribute , sequence_number ),
-              CONSTRAINT job_attribute_sequence_number_check CHECK (sequence_number > 0),
-              CONSTRAINT job_attribute_valid_value CHECK ((ruleform.null_zero(text_value) + ruleform.null_zero(numeric_value) + ruleform.null_zero(integer_value) + ruleform.null_zero(timestamp_value) + ruleform.null_zero(binary_value) + ruleform.null_zero(boolean_value)) = 1)
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.job_attribute
-              IS 'Attributes attached to a specific invocation of an Event';
-            COMMENT ON COLUMN ruleform.job_attribute.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.job_attribute.job IS 'The Job whose attributes are being specified';
-            COMMENT ON COLUMN ruleform.job_attribute.attribute IS 'The Attribute or facet of the given Job being declared';
-            COMMENT ON COLUMN ruleform.job_attribute.sequence_number IS 'Ordering and uniqueness, for when a Job can have multiple values for a given Attribute';
-            COMMENT ON COLUMN ruleform.job_attribute.text_value IS 'If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL';
-            COMMENT ON COLUMN ruleform.job_attribute.numeric_value IS 'If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL';
-            COMMENT ON COLUMN ruleform.job_attribute.integer_value IS 'If the Attribute is integer-valued, the value goes in this column; all other value columns should be NULL';
-            COMMENT ON COLUMN ruleform.job_attribute.unit IS 'The unit of measure (if any) associated with the given value';
-            COMMENT ON COLUMN ruleform.job_attribute.notes IS 'Additional notes regarding this rule';
-            COMMENT ON COLUMN ruleform.job_attribute.updated_by IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.job_attribute.update_date IS 'The date this rule was last changed';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.job_attribute" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-22">
+        <createTable remarks="Attributes attached to a specific invocation of an Event" tableName="ruleform.job_attribute">
+            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="job_attribute_pkey" />
+            </column>
+            <column name="job" remarks="The Job whose attributes are being specified" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="attribute" remarks="The Attribute or facet of the given Job being declared" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="sequence_number" remarks="Ordering and uniqueness, for when a Job can have multiple values for a given Attribute"
+                type="ruleform.sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="text_value" remarks="If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL"
+                type="VARCHAR(10485760)" />
+            <column name="numeric_value" remarks="If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL"
+                type="numeric" />
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="integer_value" remarks="If the Attribute is integer-valued, the value goes in this column; all other value columns should be NULL"
+                type="INT4" />
+            <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="unit" remarks="The unit of measure (if any) associated with the given value" type="INT8" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.job_attribute" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-160">
+        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.job_attribute" constraintName="job_attribute_attribute_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-161">
+        <addForeignKeyConstraint baseColumnNames="job" baseTableName="ruleform.job_attribute" constraintName="job_attribute_job_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.job" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-162">
+        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.job_attribute" constraintName="job_attribute_units_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.unit" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-163">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.job_attribute" constraintName="job_attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-384">
+        <addUniqueConstraint columnNames="job, attribute, sequence_number" constraintName="job_attribute_sequence_number_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.job_attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-464">
+        <createIndex indexName="job_attribute_updated_by_fkey_idx" tableName="ruleform.job_attribute" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

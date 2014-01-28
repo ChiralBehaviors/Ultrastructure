@@ -1,67 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.meta_protocol
-            (
-              id bigserial NOT NULL, -- Unique identifier
-              service bigint NOT NULL, -- The Event we are creating a mask for
-              sequence_number ruleform.sequence_number NOT NULL, -- Ordering and uniqueness, for when an Event can have multiple meta-protocol rules
-              requesting_agency bigint NOT NULL, -- Used to select a mapped value for the requesting agency
-              service_type bigint NOT NULL, -- Used to select a mapped value for the service type
-              product_ordered bigint NOT NULL, -- Used to select a mapped value for the product ordered
-              deliver_to bigint NOT NULL, -- Used to select a mapped value for the location to deliver to
-              deliver_from bigint NOT NULL, -- Used to select a mapped value for the location to deliver from
-              stop_on_match int2 DEFAULT 0, -- Indicates no further meta protocol transformations should be processed
-              notes character varying, -- Additional notes regarding usage of the meta protocol
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
-              CONSTRAINT meta_protocol_pkey PRIMARY KEY (id ),
-              CONSTRAINT meta_protocol_service_type_fkey FOREIGN KEY (service_type)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_requesting_agency_fkey FOREIGN KEY (requesting_agency)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_product_ordered_fkey FOREIGN KEY (product_ordered)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_service_fkey FOREIGN KEY (service)
-                  REFERENCES ruleform.product (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_deliver_to_fkey FOREIGN KEY (deliver_to)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_deliver_from_fkey FOREIGN KEY (deliver_from)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT DEFERRABLE INITIALLY IMMEDIATE,
-              CONSTRAINT meta_protocol_service_sequence_number_key UNIQUE (service , sequence_number )
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.meta_protocol
-              IS 'Rules for generating masks for the protocol ruleform';
-            COMMENT ON COLUMN ruleform.meta_protocol.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.meta_protocol.service IS 'The service we are creating a mask for';
-            COMMENT ON COLUMN ruleform.meta_protocol.sequence_number IS 'Ordering and uniqueness, for when a service can have multiple meta-protocol rules';
-            COMMENT ON COLUMN ruleform.meta_protocol.service_type IS 'Used to select a mapped value from a Product';
-            COMMENT ON COLUMN ruleform.meta_protocol.product_ordered IS 'Used to select a mapped value from a Product';
-            COMMENT ON COLUMN ruleform.meta_protocol.notes IS 'Additional notes regarding usage of the attribute';
-            COMMENT ON COLUMN ruleform.meta_protocol.updated_by IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.meta_protocol.update_date IS 'The date this rule was last changed';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.meta_protocol" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-30">
+        <createTable remarks="Rules for generating masks for the protocol ruleform" tableName="ruleform.meta_protocol">
+            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="meta_protocol_pkey" />
+            </column>
+            <column name="service" remarks="The service we are creating a mask for" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="sequence_number" remarks="Ordering and uniqueness, for when a service can have multiple meta-protocol rules"
+                type="ruleform.sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="requesting_agency" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="service_type" remarks="Used to select a mapped value from a Product" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_ordered" remarks="Used to select a mapped value from a Product" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_to" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_from" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
+            <column name="notes" remarks="Additional notes regarding usage of the attribute" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.meta_protocol" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-201">
+        <addForeignKeyConstraint baseColumnNames="deliver_from" baseTableName="ruleform.meta_protocol"
+            constraintName="meta_protocol_deliver_from_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-202">
+        <addForeignKeyConstraint baseColumnNames="deliver_to" baseTableName="ruleform.meta_protocol" constraintName="meta_protocol_deliver_to_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-203">
+        <addForeignKeyConstraint baseColumnNames="product_ordered" baseTableName="ruleform.meta_protocol"
+            constraintName="meta_protocol_product_ordered_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-204">
+        <addForeignKeyConstraint baseColumnNames="requesting_agency" baseTableName="ruleform.meta_protocol"
+            constraintName="meta_protocol_requesting_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-205">
+        <addForeignKeyConstraint baseColumnNames="service" baseTableName="ruleform.meta_protocol" constraintName="meta_protocol_service_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-206">
+        <addForeignKeyConstraint baseColumnNames="service_type" baseTableName="ruleform.meta_protocol"
+            constraintName="meta_protocol_service_type_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-207">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.meta_protocol" constraintName="meta_protocol_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-391">
+        <addUniqueConstraint columnNames="service, sequence_number" constraintName="meta_protocol_service_sequence_number_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.meta_protocol" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-479">
+        <createIndex indexName="meta_protocol_updated_by_fkey_idx" tableName="ruleform.meta_protocol" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

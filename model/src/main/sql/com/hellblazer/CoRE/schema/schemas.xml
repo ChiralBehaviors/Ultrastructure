@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
+
+    <changeSet
+        id="core_admin postgresql schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql" />
+        </preConditions>
+        <sql><![CDATA[
+             CREATE SCHEMA core_admin;
+            ALTER SCHEMA core_admin OWNER TO core;
+            COMMENT ON SCHEMA core_admin IS 'Contains helpful functions and views for monitoring the CoRE system';
+            ]]>
+        </sql>
+        <rollback>
+            DROP SCHEMA core_admin;
+        </rollback>
+    </changeSet>
+
+    <changeSet
+        id="core_admin derby schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="derby" />
+        </preConditions>
+        <sql><![CDATA[
+             CREATE SCHEMA core_admin;
+            COMMENT ON SCHEMA core_admin IS 'Contains helpful functions and views for monitoring the CoRE system';
+            ]]>
+        </sql>
+        <rollback>
+            DROP SCHEMA core_admin;
+        </rollback>
+    </changeSet>
+
+    <changeSet
+        id="readable postresql schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql" />
+        </preConditions>
+        <sql><![CDATA[
+            CREATE SCHEMA readable; 
+            ALTER SCHEMA readable OWNER TO core;
+            COMMENT ON SCHEMA readable IS 'Location of "readable" views of ruleforms';
+            ]]>
+        </sql>
+        <rollback>
+            DROP SCHEMA readable;
+        </rollback>
+    </changeSet>
+
+    <changeSet
+        id="readable derby schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="derby" />
+        </preConditions>
+        <sql><![CDATA[
+            CREATE SCHEMA readable; 
+            COMMENT ON SCHEMA readable IS 'Location of "readable" views of ruleforms';
+            ]]>
+        </sql>
+        <rollback>
+            DROP SCHEMA readable;
+        </rollback>
+    </changeSet>
+
+    <changeSet
+        id="ruleform posgresql schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql" />
+        </preConditions>
+        <sql><![CDATA[
+            CREATE SCHEMA ruleform; 
+            ALTER SCHEMA ruleform OWNER TO core;
+            COMMENT ON SCHEMA ruleform IS 'Location of CoRE Ultra-Structure ruleform tables';
+            ]]>
+        </sql>
+        <rollback>
+            DROP SCHEMA ruleform;
+        </rollback>
+    </changeSet>
+
+    <changeSet
+        id="ruleform derby schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="derby" />
+        </preConditions>
+        <sql><![CDATA[
+            CREATE SCHEMA ruleform; 
+            COMMENT ON SCHEMA ruleform IS 'Location of CoRE Ultra-Structure ruleform tables';
+            ]]>
+        </sql>
+        <rollback>
+            DROP SCHEMA ruleform;
+        </rollback>
+    </changeSet>
+
+    <changeSet
+        id="sysadmin postgresql schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql" />
+        </preConditions>
+        <sql><![CDATA[
+            CREATE SCHEMA sysadmin;
+            ALTER SCHEMA sysadmin OWNER TO core;
+            COMMENT ON SCHEMA sysadmin IS 'This schema contains a variety of helpful views and functions to aid in the administration and monitoring of a database.';
+            ]]>
+        </sql>
+        <rollback>
+            DROP schema sysadmin;
+        </rollback>
+    </changeSet>
+
+    <changeSet
+        id="sysadmin derby schema"
+        author="hhildebrand"
+    >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="derby" />
+        </preConditions>
+        <sql><![CDATA[
+            CREATE SCHEMA sysadmin;
+            COMMENT ON SCHEMA sysadmin IS 'This schema contains a variety of helpful views and functions to aid in the administration and monitoring of a database.';
+            ]]>
+        </sql>
+        <rollback>
+            DROP schema sysadmin;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
+

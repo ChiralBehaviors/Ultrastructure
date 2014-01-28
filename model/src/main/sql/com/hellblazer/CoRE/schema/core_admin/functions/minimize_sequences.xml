@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-    
-    <changeSet id="1" author="hhildebrand">
-        <sql splitStatements="false"><![CDATA[
+
+	<changeSet id="1" author="hhildebrand">
+		<preConditions>
+			<dbms type="postgresql" />
+		</preConditions>
+		
+		<sql splitStatements="false"><![CDATA[
             CREATE FUNCTION core_admin.minimize_sequences() RETURNS void
                 AS $$
             DECLARE
@@ -40,7 +44,7 @@
             
             ALTER FUNCTION core_admin.minimize_sequences() OWNER TO core;
             ]]>
-        </sql>
-        <rollback> DROP FUNCTION core_admin.minimize_sequences(); </rollback>
-    </changeSet>
+		</sql>
+		<rollback> DROP FUNCTION core_admin.minimize_sequences(); </rollback>
+	</changeSet>
 </databaseChangeLog>

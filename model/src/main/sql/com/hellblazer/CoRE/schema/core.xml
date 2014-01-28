@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<preConditions>
-		<dbms type="postgresql" />
-	</preConditions>
+    <!-- Liquibase stores absolute file paths in their change log with the 
+        location of every changeset file. They figure that 200 characters is enough 
+        length to hold this information, and I disagree. -->
 
-	<!-- Liquibase stores absolute file paths in their change log with the location 
-		of every changeset file. They figure that 200 characters is enough length 
-		to hold this information, and I disagree. -->
-
-	<changeSet id="modify changelog column length" author="hparry">
-		<sql><![CDATA[
+    <changeSet
+        id="modify changelog column length"
+        author="hparry"
+    >
+        <sql><![CDATA[
             ALTER TABLE databasechangelog
             ALTER COLUMN filename TYPE varchar(500);
             ]]>
 
-		</sql>
-	</changeSet>
+        </sql>
+    </changeSet>
 
-	<include relativeToChangelogFile="true" file="ruleform/ruleform.xml" />
-	<include relativeToChangelogFile="true" file="core_admin/core_admin.xml" />
-	<include relativeToChangelogFile="true" file="readable/readable.xml" />
+    <include
+        relativeToChangelogFile="true"
+        file="schemas.xml" />
+    <include
+        relativeToChangelogFile="true"
+        file="ruleform/ruleform.xml" />
+    <include
+        relativeToChangelogFile="true"
+        file="core_admin/core_admin.xml" />
+    <include
+        relativeToChangelogFile="true"
+        file="readable/readable.xml" />
 
 </databaseChangeLog>

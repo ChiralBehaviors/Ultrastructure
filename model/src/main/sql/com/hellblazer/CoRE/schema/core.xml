@@ -11,17 +11,17 @@
         location of every changeset file. They figure that 200 characters is enough 
         length to hold this information, and I disagree. -->
 
-    <changeSet
+<!--     <changeSet
         id="modify changelog column length"
         author="hparry"
     >
         <sql><![CDATA[
-            ALTER TABLE databasechangelog
+            ALTER TABLE public.databasechangelog
             ALTER COLUMN filename TYPE varchar(500);
             ]]>
 
         </sql>
-    </changeSet>
+    </changeSet> -->
 
     <include
         relativeToChangelogFile="true"

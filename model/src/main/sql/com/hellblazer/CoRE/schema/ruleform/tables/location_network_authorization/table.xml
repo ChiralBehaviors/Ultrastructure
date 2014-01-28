@@ -1,64 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE TABLE ruleform.location_network_authorization
-            (
-              id bigserial NOT NULL, -- Unique identifier
-              classification bigint NOT NULL, -- In conjunction with the 'classifier' column, the relationship that determines the classification criteria for selecting network relationships a certain Location must have
-              classifier bigint NOT NULL, -- In conjunction with the 'classification_attribute' column, determines the classification criteria for selecting network relationships a certain Location must have
-              authorized_parent bigint NOT NULL, -- A network parent an Location is expected to have
-              authorized_relationship bigint NOT NULL, -- A network relationship an Location is expected to have
-              sequence_number ruleform.sequence_number NOT NULL DEFAULT 1, -- Ordering and uniqueness, for when an relationship can have multiple acceptable parent values
-              grouping_agency bigint, -- If present, used to select an entire grouping of Locations for this relationship
-              notes character varying, -- Additional notes regarding this rule
-              updated_by bigint NOT NULL, -- The agency that last updated this rule
-              update_date timestamp with time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, -- The date this rule was last changed
-              CONSTRAINT location_network_authorization_pkey PRIMARY KEY (id ),
-              CONSTRAINT location_network_authorization_authorized_parent_fkey FOREIGN KEY (authorized_parent)
-                  REFERENCES ruleform.location (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT location_network_authorization_authorized_relationship_fkey FOREIGN KEY (authorized_relationship)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT location_network_authorization_classification_fkey FOREIGN KEY (classification)
-                  REFERENCES ruleform.relationship (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT location_network_authorization_classifier_fkey FOREIGN KEY (classifier)
-                  REFERENCES ruleform.location (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT location_network_authorization_grouping_agency_fkey FOREIGN KEY (grouping_agency)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT location_network_authorization_updated_by_fkey FOREIGN KEY (updated_by)
-                  REFERENCES ruleform.agency (id) MATCH SIMPLE
-                  ON UPDATE CASCADE ON DELETE RESTRICT,
-              CONSTRAINT location_attribute_auth_agency_classification_key UNIQUE (classification , classifier, authorized_parent, authorized_relationship , sequence_number )
-            )
-            WITH (
-              OIDS=FALSE
-            );
-            COMMENT ON TABLE ruleform.location_network_authorization
-              IS 'Defines rules stating what network relationships are authorized for particular Locations';
-            COMMENT ON COLUMN ruleform.location_network_authorization.id IS 'Unique identifier';
-            COMMENT ON COLUMN ruleform.location_network_authorization.classification IS 'In conjunction with the ''classifier'' column, determines the classification criteria for selecting network relationships a certain Location must have';
-            COMMENT ON COLUMN ruleform.location_network_authorization.classifier IS 'In conjunction with the ''classification'' column, determines the classification criteria for selecting network relationships a certain Location must have';
-            COMMENT ON COLUMN ruleform.location_network_authorization.authorized_relationship IS 'A network relationship a Location is expected to have';
-            COMMENT ON COLUMN ruleform.location_network_authorization.authorized_parent IS 'A network parent a Location is expected to have';
-            COMMENT ON COLUMN ruleform.location_network_authorization.sequence_number IS 'Ordering and uniqueness, for when an Attribute can have multiple acceptable values';
-            COMMENT ON COLUMN ruleform.location_network_authorization.grouping_agency IS 'A network parent an Location is expected to have';
-            COMMENT ON COLUMN ruleform.location_network_authorization.notes IS 'Additional notes regarding this rule';
-            COMMENT ON COLUMN ruleform.location_network_authorization.updated_by IS 'The agency that last updated this rule';
-            COMMENT ON COLUMN ruleform.location_network_authorization.update_date IS 'The date this rule was last changed';
-            ]]>
-		</sql>
-		<rollback>
-			<dropTable tableName="ruleform.location_network_authorization" />
-		</rollback>
-	</changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-29">
+        <createTable remarks="Defines rules stating what network relationships are authorized for particular Locations"
+            tableName="ruleform.location_network_authorization"
+        >
+            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="location_network_authorization_pkey" />
+            </column>
+            <column name="classification"
+                remarks="In conjunction with the 'classifier' column, determines the classification criteria for selecting network relationships a certain Location must have"
+                type="INT8"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="classifier"
+                remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting network relationships a certain Location must have"
+                type="INT8"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_parent" remarks="A network parent a Location is expected to have" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_relationship" remarks="A network relationship a Location is expected to have" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="ruleform.sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="grouping_agency" remarks="A network parent an Location is expected to have" type="INT8" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ruleform.location_network_authorization" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-187">
+        <addForeignKeyConstraint baseColumnNames="authorized_parent" baseTableName="ruleform.location_network_authorization"
+            constraintName="location_network_authorization_authorized_parent_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-188">
+        <addForeignKeyConstraint baseColumnNames="authorized_relationship" baseTableName="ruleform.location_network_authorization"
+            constraintName="location_network_authorization_authorized_relationship_fkey" deferrable="false" initiallyDeferred="false"
+            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-189">
+        <addForeignKeyConstraint baseColumnNames="classification" baseTableName="ruleform.location_network_authorization"
+            constraintName="location_network_authorization_classification_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-190">
+        <addForeignKeyConstraint baseColumnNames="classifier" baseTableName="ruleform.location_network_authorization"
+            constraintName="location_network_authorization_classifier_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-191">
+        <addForeignKeyConstraint baseColumnNames="grouping_agency" baseTableName="ruleform.location_network_authorization"
+            constraintName="location_network_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-192">
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location_network_authorization"
+            constraintName="location_network_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-387">
+        <addUniqueConstraint columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number"
+            constraintName="location_attribute_auth_agency_classification_key" deferrable="false" disabled="false" initiallyDeferred="false"
+            tableName="ruleform.location_network_authorization" />
+    </changeSet>
+    <changeSet author="hhildebrand (generated)" id="1390943449355-473">
+        <createIndex indexName="location_network_authorization_updated_by_fkey_idx" tableName="ruleform.location_network_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

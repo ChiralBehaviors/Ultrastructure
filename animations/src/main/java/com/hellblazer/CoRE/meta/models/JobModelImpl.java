@@ -633,7 +633,17 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Protocol> getProtocols(Job job) {
-        List<Protocol> protocols = new ArrayList<Protocol>();
+        // First we try for protocols which match the current job
+        List<Protocol> protocols = getProtocols(job.getService(),
+                                                   job.getRequester(),
+                                                   job.getProduct(),
+                                                   job.getDeliverTo(),
+                                                   job.getDeliverFrom());
+        if (!protocols.isEmpty()) {
+            return protocols;
+        }
+
+        protocols = new ArrayList<Protocol>();
         if (job.getStatus().getPropagateChildren()) {
             for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
                 for (Protocol protocol : getProtocols(job, metaProtocol)) {
@@ -655,17 +665,7 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<Protocol> getProtocols(Job job, MetaProtocol metaProtocol) {
-        // First we try for protocols which match the current job
-        List<Protocol> exactMatches = getProtocols(job.getService(),
-                                                   job.getRequester(),
-                                                   job.getProduct(),
-                                                   job.getDeliverTo(),
-                                                   job.getDeliverFrom());
-        if (!exactMatches.isEmpty()) {
-            return exactMatches;
-        }
-
-        // Find protocols which match transformations specified by the meta
+    	// Find protocols which match transformations specified by the meta
         // protocol
 
         try {

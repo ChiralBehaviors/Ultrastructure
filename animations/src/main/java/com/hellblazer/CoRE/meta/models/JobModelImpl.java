@@ -42,6 +42,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.openjpa.persistence.QueryImpl;
 import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -669,7 +670,8 @@ public class JobModelImpl implements JobModel {
         // protocol
 
         try {
-            return createQuery(metaProtocol, job).getResultList();
+        	TypedQuery<Protocol> tq = createQuery(metaProtocol, job);
+            return tq.getResultList();
         } catch (NonUniqueResultException e) {
             if (log.isInfoEnabled()) {
                 log.info(String.format("non unique transformation of %s, meta protocol %s",
@@ -677,6 +679,37 @@ public class JobModelImpl implements JobModel {
             }
             return Collections.emptyList();
         }
+    }
+    
+    /**
+     * This query will do the work of matching protocols to networks defined
+     * by jobs and metaprocols. This is the real deal except it doesn't work
+     * in the db triggers for some stupid reason so we're not using it right now.
+     * @param metaprotocol
+     * @param job
+     * @return
+     */
+    public TypedQuery<Protocol> createBetterQuery(MetaProtocol metaprotocol, Job job) {
+    	
+    	TypedQuery<Protocol> tq = em.createNamedQuery(Protocol.GET_FOR_JOB, Protocol.class);
+    	tq.setParameter(1, job.getDeliverFrom().getId());
+    	tq.setParameter(2, metaprotocol.getDeliverFrom().getId());
+    	tq.setParameter(3, job.getDeliverTo().getId());
+    	tq.setParameter(4, metaprotocol.getDeliverTo().getId());
+    	tq.setParameter(5, job.getProduct().getId());
+    	tq.setParameter(6, metaprotocol.getProductOrdered().getId());
+    	tq.setParameter(7, job.getRequester().getId());
+    	tq.setParameter(8, metaprotocol.getRequestingAgency().getId());
+    	tq.setParameter(9, job.getService().getId());
+    	tq.setParameter(10, kernel.getAnyLocation().getId());
+    	tq.setParameter(11, kernel.getSameLocation().getId());
+    	tq.setParameter(12, kernel.getAnyLocation().getId());
+    	tq.setParameter(13, kernel.getSameLocation().getId());
+    	tq.setParameter(14, kernel.getAnyProduct().getId());
+    	tq.setParameter(15, kernel.getSameProduct().getId());
+    	tq.setParameter(16, kernel.getAnyAgency().getId());
+    	tq.setParameter(17, kernel.getSameAgency().getId());
+    	return tq;
     }
 
     @Override

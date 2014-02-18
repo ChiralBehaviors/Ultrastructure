@@ -18,6 +18,7 @@ package com.hellblazer.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -325,6 +326,64 @@ public class JobModelTest extends AbstractModelTest {
         List<Job> jobs = findAllJobs();
         assertEquals(7, jobs.size());
     }
+    
+    @Test
+	public void testDeliverWithoutMetaProtocol() {
+		em.getTransaction().begin();
+
+		StatusCode startState = new StatusCode("begin", kernel.getCore());
+		startState.setPropagateChildren(true);
+		em.persist(startState);
+
+		StatusCode delivered = new StatusCode("delivered", kernel.getCore());
+		em.persist(delivered);
+		
+		StatusCode shipState = new StatusCode("shipping", kernel.getCore());
+		em.persist(shipState);
+
+		Product kiki = new Product("Kiki's Delivery Service", kernel.getCore());
+		em.persist(kiki);
+
+		Product shipping = new Product("Kiki's Shipping Service",
+				kernel.getCore());
+		em.persist(shipping);
+
+		Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
+		em.persist(bento);
+
+		StatusCodeSequencing sequence = new StatusCodeSequencing(kiki,
+				startState, delivered, kernel.getCore());
+		em.persist(sequence);
+
+		StatusCodeSequencing childSequence = new StatusCodeSequencing(shipping,
+				shipState, delivered, kernel.getCore());
+		em.persist(childSequence);
+
+		Protocol p = new Protocol(kiki, kernel.getCore(), bento,
+				kernel.getAnyLocation(), kernel.getAnyLocation(),
+				kernel.getCore(), shipping, bento, false, kernel.getCore());
+		em.persist(p);
+		
+		em.getTransaction().commit();
+		
+		em.getTransaction().begin();
+
+		Job job = new Job(kernel.getCore(), kernel.getCore(), kiki, bento,
+				kernel.getAnyLocation(), kernel.getAnyLocation(), kernel.getCore());
+		em.persist(job);
+
+		em.getTransaction().commit();
+
+		em.getTransaction().begin();
+		job.setStatus(startState);
+		em.getTransaction().commit();
+
+		TypedQuery<Job> query = em.createQuery(
+				"select j from Job j where j.service = :service", Job.class);
+		query.setParameter("service", shipping);
+		Job j = query.getSingleResult();
+		assertNotNull(j);
+	}
 
     private List<Job> findAllJobs() {
         TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",

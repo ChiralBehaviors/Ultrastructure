@@ -17,9 +17,6 @@
 package com.hellblazer.CoRE.meta.models;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -111,7 +108,93 @@ public class HalliesJobModelTest extends AbstractModelTest {
 		job.setStatus(startState);
 		em.getTransaction().commit();
 
-		//em.getTransaction().begin();
+		TypedQuery<Job> query = em.createQuery(
+				"select j from Job j where j.service = :service", Job.class);
+		query.setParameter("service", shipping);
+		Job j = query.getSingleResult();
+		assertNotNull(j);
+	}
+	
+	@Test
+	public void testCreateBetterQuery() {
+		em.getTransaction().begin();
+		Job job = new Job(scenario.cpu, scenario.georgeTownUniversity, scenario.pick, scenario.abc486,
+				scenario.east_coast, scenario.east_coast, kernel.getCore());
+		em.persist(job);
+		em.getTransaction().commit();
+		
+		em.getTransaction().begin();
+		job.setStatus(scenario.available);
+		em.getTransaction().commit();
+		
+		jobModel.generateImplicitJobs(job);
+		TypedQuery<Job> query = em.createQuery(
+				"select j from Job j where j.service = :service", Job.class);
+		query.setParameter("service", scenario.checkCredit);
+		
+		TypedQuery<MetaProtocol> q = em.createQuery("select m from MetaProtocol m where m.service = :service", MetaProtocol.class);
+		q.setParameter("service", scenario.pick);
+		MetaProtocol mp = q.getSingleResult();
+		@SuppressWarnings("unchecked")
+		List<Protocol> protocols = ((JobModelImpl)jobModel).createBetterQuery(mp, job).getResultList();
+		assertEquals(1, protocols.size());
+		Job j = query.getSingleResult();
+		assertNotNull(j);
+		
+		
+	}
+	
+	@Test
+	public void testDeliverWithMetaprotocol() {
+		em.getTransaction().begin();
+
+		StatusCode startState = new StatusCode("begin", kernel.getCore());
+		startState.setPropagateChildren(true);
+		em.persist(startState);
+
+		StatusCode delivered = new StatusCode("delivered", kernel.getCore());
+		em.persist(delivered);
+		
+		StatusCode shipState = new StatusCode("shipping", kernel.getCore());
+		em.persist(shipState);
+
+		Product kiki = new Product("Kiki's Delivery Service", kernel.getCore());
+		em.persist(kiki);
+
+		Product shipping = new Product("Kiki's Shipping Service",
+				kernel.getCore());
+		em.persist(shipping);
+
+		Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
+		em.persist(bento);
+
+		StatusCodeSequencing sequence = new StatusCodeSequencing(kiki,
+				startState, delivered, kernel.getCore());
+		em.persist(sequence);
+
+		StatusCodeSequencing childSequence = new StatusCodeSequencing(shipping,
+				shipState, delivered, kernel.getCore());
+		em.persist(childSequence);
+
+		Protocol p = new Protocol(kiki, kernel.getCore(), bento,
+				kernel.getAnyLocation(), kernel.getAnyLocation(),
+				kernel.getCore(), shipping, bento, false, kernel.getCore());
+		em.persist(p);
+		
+		em.getTransaction().commit();
+		
+		em.getTransaction().begin();
+
+		Job job = new Job(kernel.getCore(), kernel.getCore(), kiki, bento,
+				kernel.getAnyLocation(), kernel.getAnyLocation(), kernel.getCore());
+		em.persist(job);
+
+		em.getTransaction().commit();
+
+		em.getTransaction().begin();
+		job.setStatus(startState);
+		em.getTransaction().commit();
+
 		TypedQuery<Job> query = em.createQuery(
 				"select j from Job j where j.service = :service", Job.class);
 		query.setParameter("service", shipping);

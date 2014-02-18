@@ -659,6 +659,7 @@ public class HalliesOrderProcessingLoader {
     public void createStatusCodes() {
         available = new StatusCode("Available",
                                    "The job is available for execution", core);
+        available.setPropagateChildren(true);
         em.persist(available);
 
         active = new StatusCode("Active", "Working on it now", core);

@@ -39,8 +39,10 @@ import com.hellblazer.CoRE.access.resource.ruleform.impl.ProductResource;
 import com.hellblazer.CoRE.access.resource.ruleform.impl.RelationshipResource;
 import com.hellblazer.CoRE.access.resource.ruleform.impl.StatusCodeResource;
 import com.hellblazer.CoRE.access.resource.ruleform.impl.UnitResource;
+import com.hellblazer.CoRE.access.resource.ruleform.workflow.JobResource;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;
+import com.hellblazer.CoRE.meta.models.ModelImpl;
 import com.yammer.dropwizard.ConfiguredBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
@@ -92,6 +94,7 @@ public class DataAccessBundle implements
         environment.addResource(new RelationshipResource(emf.createEntityManager()));
         environment.addResource(new StatusCodeResource(emf.createEntityManager()));
         environment.addResource(new UnitResource(emf.createEntityManager()));
+        environment.addResource(new JobResource(new ModelImpl(emf.createEntityManager())));
 
     }
 }

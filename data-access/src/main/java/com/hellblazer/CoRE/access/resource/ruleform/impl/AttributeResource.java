@@ -26,14 +26,14 @@ import com.hellblazer.CoRE.meta.models.AttributeModelImpl;
 
 /**
  * @author hparry
- *
+ * 
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Attribute")
 public class AttributeResource
-        extends
-        AbstractRuleformResource<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute> {
+		extends
+		AbstractRuleformResource<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute> {
 
-    public AttributeResource(EntityManager em) {
-        super(em, new AttributeModelImpl(em));
-    }
+	public AttributeResource(EntityManager em) {
+		super(em, new AttributeModelImpl(em));
+	}
 }

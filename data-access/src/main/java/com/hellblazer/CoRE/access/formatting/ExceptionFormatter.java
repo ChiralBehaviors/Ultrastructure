@@ -34,33 +34,35 @@ import org.w3c.dom.Element;
  * 
  */
 public class ExceptionFormatter extends XMLFormatter {
-    /**
-     * Creates a XML Document with given header and stack trace of the given
-     * error.
-     * 
-     * @param header
-     * @param e
-     */
-    public Document createXML(String header, Throwable e) {
-        Element root = newDocument(Constants.ROOT_ELEMENT_ERROR);
-        Document doc = root.getOwnerDocument();
-        Element errorHeader = doc.createElement(Constants.ELEMENT_ERROR_HEADER);
-        Element errorMessage = doc.createElement(Constants.ELEMENT_ERROR_MESSAGE);
-        Element stackTrace = doc.createElement(Constants.ELEMENT_ERROR_TRACE);
+	/**
+	 * Creates a XML Document with given header and stack trace of the given
+	 * error.
+	 * 
+	 * @param header
+	 * @param e
+	 */
+	public Document createXML(String header, Throwable e) {
+		Element root = newDocument(Constants.ROOT_ELEMENT_ERROR);
+		Document doc = root.getOwnerDocument();
+		Element errorHeader = doc.createElement(Constants.ELEMENT_ERROR_HEADER);
+		Element errorMessage = doc
+				.createElement(Constants.ELEMENT_ERROR_MESSAGE);
+		Element stackTrace = doc.createElement(Constants.ELEMENT_ERROR_TRACE);
 
-        errorHeader.setTextContent(header);
-        errorMessage.appendChild(doc.createCDATASection(e.getMessage() == null ? "<No Error Message Provided>"
-                                                                              : e.getMessage()));
+		errorHeader.setTextContent(header);
+		errorMessage
+				.appendChild(doc.createCDATASection(e.getMessage() == null ? "<No Error Message Provided>"
+						: e.getMessage()));
 
-        StringWriter buf = new StringWriter();
-        e.printStackTrace(new PrintWriter(buf, true));
-        stackTrace.appendChild(doc.createCDATASection(buf.toString()));
+		StringWriter buf = new StringWriter();
+		e.printStackTrace(new PrintWriter(buf, true));
+		stackTrace.appendChild(doc.createCDATASection(buf.toString()));
 
-        root.appendChild(errorHeader);
-        root.appendChild(errorMessage);
-        root.appendChild(stackTrace);
+		root.appendChild(errorHeader);
+		root.appendChild(errorMessage);
+		root.appendChild(stackTrace);
 
-        return doc;
-    }
+		return doc;
+	}
 
 }

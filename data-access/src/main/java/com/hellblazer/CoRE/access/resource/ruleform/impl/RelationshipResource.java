@@ -30,10 +30,10 @@ import com.hellblazer.CoRE.network.RelationshipNetwork;
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Relationship")
 public class RelationshipResource
-        extends
-        AbstractRuleformResource<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute> {
+		extends
+		AbstractRuleformResource<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute> {
 
-    public RelationshipResource(EntityManager em) {
-        super(em, new RelationshipModelImpl(em));
-    }
+	public RelationshipResource(EntityManager em) {
+		super(em, new RelationshipModelImpl(em));
+	}
 }

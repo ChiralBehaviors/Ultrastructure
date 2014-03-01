@@ -48,99 +48,101 @@ import com.hellblazer.CoRE.product.ProductNetwork;
 @Path("/v{version : \\d+}/services/data/collection")
 public class CollectionResource {
 
-    EntityManager em;
+	EntityManager em;
 
-    /**
-     * @param emf
-     */
-    public CollectionResource(EntityManagerFactory emf) {
-        em = emf.createEntityManager();
-    }
+	/**
+	 * @param emf
+	 */
+	public CollectionResource(EntityManagerFactory emf) {
+		em = emf.createEntityManager();
+	}
 
-    @POST
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Ruleform post(Ruleform graph) throws JsonProcessingException {
-        em.getTransaction().begin();
-        try {
+	@POST
+	@Path("/{parentId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Product createNewProduct(@PathParam("parentId") long parentId,
+			@QueryParam("relId") long relId, Product child)
+			throws JsonProcessingException {
+		em.getTransaction().begin();
+		Product parent = em.find(Product.class, parentId);
+		Relationship rel = em.find(Relationship.class, relId);
+		em.persist(child);
+		ProductNetwork net = new ProductNetwork(parent, rel, child,
+				parent.getUpdatedBy());
+		em.persist(net);
+		em.getTransaction().commit();
+		em.refresh(child);
+		return child;
+	}
 
-            Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
-            graph.manageEntity(em, knownObjects);
+	// @GET
+	// @Path("/{id}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public SerializableGraph get(@PathParam("id") long id, @QueryParam("rel")
+	// List<String> relIds) throws JsonProcessingException {
+	//
+	// Product p = new Product();
+	// p.setId(id);
+	// List<Ruleform> nodes = new LinkedList<Ruleform>();
+	// nodes.add(p);
+	// List<Relationship> rels = new LinkedList<Relationship>();
+	// for (String rid : relIds) {
+	// Relationship r = em.find(Relationship.class, rid);
+	// rels.add(r);
+	// }
+	// GraphQuery ng = getNetwork(nodes, rels);
+	// SerializableGraph sg = new SerializableGraph(ng);
+	// return sg;
+	// }
+	//
+	// public GraphQuery getNetwork(List<Ruleform> nodes, List<Relationship>
+	// relationships) throws JsonProcessingException {
+	// GraphQuery pg = new GraphQuery(nodes, relationships, em);
+	// return pg;
+	//
+	// }
 
-            em.getTransaction().commit();
-            em.refresh(graph);
-            return graph;
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
-        }
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Product> get(@PathParam("id") long id,
+			@QueryParam("relId") List<String> relIds)
+			throws JsonProcessingException {
 
-    }
+		Product p = new Product();
+		p.setId(id);
+		List<Ruleform> nodes = new LinkedList<Ruleform>();
+		nodes.add(p);
+		List<Relationship> rels = new LinkedList<Relationship>();
+		rels.add(em.find(Relationship.class, 6L));
+		for (String rid : relIds) {
+			Relationship r = em.find(Relationship.class, rid);
+			rels.add(r);
+		}
+		ProductModel pm = new ProductModelImpl(em);
+		return pm.getChildren(p, rels.get(0));
 
-    //	@GET
-    //	@Path("/{id}")
-    //	@Produces(MediaType.APPLICATION_JSON)
-    //	public SerializableGraph get(@PathParam("id") long id, @QueryParam("rel") List<String> relIds) throws JsonProcessingException {
-    //
-    //		Product p = new Product();
-    //		p.setId(id);
-    //		List<Ruleform> nodes = new LinkedList<Ruleform>();
-    //		nodes.add(p);
-    //		List<Relationship> rels = new LinkedList<Relationship>();
-    //		for (String rid : relIds) {
-    //			Relationship r = em.find(Relationship.class, rid);
-    //			rels.add(r);
-    //		}
-    //		GraphQuery ng = getNetwork(nodes, rels);
-    //		SerializableGraph sg = new SerializableGraph(ng);
-    //		return sg;
-    //	}
-    //	
-    //	public GraphQuery getNetwork(List<Ruleform> nodes, List<Relationship> relationships) throws JsonProcessingException {
-    //		GraphQuery pg = new GraphQuery(nodes, relationships, em);
-    //		return pg;
-    //
-    //	}
+	}
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> get(@PathParam("id") long id,
-                             @QueryParam("relId") List<String> relIds)
-                                                                      throws JsonProcessingException {
+	@POST
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Ruleform post(Ruleform graph) throws JsonProcessingException {
+		em.getTransaction().begin();
+		try {
 
-        Product p = new Product();
-        p.setId(id);
-        List<Ruleform> nodes = new LinkedList<Ruleform>();
-        nodes.add(p);
-        List<Relationship> rels = new LinkedList<Relationship>();
-        rels.add(em.find(Relationship.class, 6L));
-        for (String rid : relIds) {
-            Relationship r = em.find(Relationship.class, rid);
-            rels.add(r);
-        }
-        ProductModel pm = new ProductModelImpl(em);
-        return pm.getChildren(p, rels.get(0));
+			Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
+			graph.manageEntity(em, knownObjects);
 
-    }
+			em.getTransaction().commit();
+			em.refresh(graph);
+			return graph;
+		} catch (Exception e) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			throw e;
+		}
 
-    @POST
-    @Path("/{parentId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Product createNewProduct(@PathParam("parentId") long parentId,
-                                          @QueryParam("relId") long relId,
-                                          Product child)
-                                                      throws JsonProcessingException {
-        em.getTransaction().begin();
-        Product parent = em.find(Product.class, parentId);
-        Relationship rel = em.find(Relationship.class, relId);
-        em.persist(child);
-        ProductNetwork net = new ProductNetwork(parent, rel, child, parent.getUpdatedBy());
-        em.persist(net);
-        em.getTransaction().commit();
-        em.refresh(child);
-        return child;
-    }
+	}
 }

@@ -26,15 +26,15 @@ import com.hellblazer.CoRE.meta.models.UnitModelImpl;
 
 /**
  * @author hparry
- *
+ * 
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Unit")
 public class UnitResource
-        extends
-        AbstractRuleformResource<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute> {
-    
-    public UnitResource(EntityManager em) {
-        super(em, new UnitModelImpl(em));
-    }
+		extends
+		AbstractRuleformResource<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute> {
+
+	public UnitResource(EntityManager em) {
+		super(em, new UnitModelImpl(em));
+	}
 
 }

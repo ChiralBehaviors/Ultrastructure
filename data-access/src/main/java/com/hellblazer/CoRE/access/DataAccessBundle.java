@@ -52,49 +52,59 @@ import com.yammer.dropwizard.config.Environment;
  * 
  */
 public class DataAccessBundle implements
-        ConfiguredBundle<CoREServiceConfiguration> {
+		ConfiguredBundle<CoREServiceConfiguration> {
 
-    @Override
-    public void initialize(Bootstrap<?> bootstrap) {
-    }
+	@Override
+	public void initialize(Bootstrap<?> bootstrap) {
+	}
 
-    /* (non-Javadoc)
-     * @see com.yammer.dropwizard.ConfiguredBundle#initialize(java.lang.Object, com.yammer.dropwizard.config.Environment)
-     */
-    @Override
-    public void run(CoREServiceConfiguration configuration,
-                    Environment environment) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.yammer.dropwizard.ConfiguredBundle#initialize(java.lang.Object,
+	 * com.yammer.dropwizard.config.Environment)
+	 */
+	@Override
+	public void run(CoREServiceConfiguration configuration,
+			Environment environment) {
 
-        JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();
+		JpaConfiguration jpaConfig = configuration
+				.getCrudServiceConfiguration();
 
-        String unit = jpaConfig.getPersistenceUnit();
-        Map<String, String> properties = jpaConfig.getProperties();
-        properties.put("openjpa.EntityManagerFactoryPool", "true");
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
-                                                                          properties);
-        //necessary for polymorphic ruleform deserialization
-        CoREModule module = new CoREModule();
-        environment.getObjectMapperFactory().registerModule(module);
-        environment.addResource(new CrudResource(emf));
-        environment.addResource(new CrudGuiResource(unit));
-        environment.addResource(new DomainResource(
-                                                   unit,
-                                                   (OpenJPAEntityManagerFactory) emf));
-        environment.addResource(new TraversalResource(emf));
-        environment.addHealthCheck(new JpaHealthCheck(emf));
-        environment.addResource(new CollectionResource(emf));
-        environment.addResource(new WorkspaceResource(emf));
-        environment.addResource(new RuleformResource(emf));
-        environment.addResource(new ProductResource(emf.createEntityManager()));
-        environment.addResource(new AgencyResource(emf.createEntityManager()));
-        environment.addResource(new AttributeResource(emf.createEntityManager()));
-        environment.addResource(new CoordinateResource(emf.createEntityManager()));
-        environment.addResource(new IntervalResource(emf.createEntityManager()));
-        environment.addResource(new LocationResource(emf.createEntityManager()));
-        environment.addResource(new RelationshipResource(emf.createEntityManager()));
-        environment.addResource(new StatusCodeResource(emf.createEntityManager()));
-        environment.addResource(new UnitResource(emf.createEntityManager()));
-        environment.addResource(new JobResource(new ModelImpl(emf.createEntityManager())));
+		String unit = jpaConfig.getPersistenceUnit();
+		Map<String, String> properties = jpaConfig.getProperties();
+		properties.put("openjpa.EntityManagerFactoryPool", "true");
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
+				properties);
+		// necessary for polymorphic ruleform deserialization
+		CoREModule module = new CoREModule();
+		environment.getObjectMapperFactory().registerModule(module);
+		environment.addResource(new CrudResource(emf));
+		environment.addResource(new CrudGuiResource(unit));
+		environment.addResource(new DomainResource(unit,
+				(OpenJPAEntityManagerFactory) emf));
+		environment.addResource(new TraversalResource(emf));
+		environment.addHealthCheck(new JpaHealthCheck(emf));
+		environment.addResource(new CollectionResource(emf));
+		environment.addResource(new WorkspaceResource(emf));
+		environment.addResource(new RuleformResource(emf));
+		environment.addResource(new ProductResource(emf.createEntityManager()));
+		environment.addResource(new AgencyResource(emf.createEntityManager()));
+		environment
+				.addResource(new AttributeResource(emf.createEntityManager()));
+		environment.addResource(new CoordinateResource(emf
+				.createEntityManager()));
+		environment
+				.addResource(new IntervalResource(emf.createEntityManager()));
+		environment
+				.addResource(new LocationResource(emf.createEntityManager()));
+		environment.addResource(new RelationshipResource(emf
+				.createEntityManager()));
+		environment.addResource(new StatusCodeResource(emf
+				.createEntityManager()));
+		environment.addResource(new UnitResource(emf.createEntityManager()));
+		environment.addResource(new JobResource(new ModelImpl(emf
+				.createEntityManager())));
 
-    }
+	}
 }

@@ -39,31 +39,29 @@ import com.hellblazer.CoRE.Ruleform;
 @Path("/v{version : \\d+}/services/data/ruleform")
 public class RuleformResource {
 
-    protected EntityManager                              em;
-    private final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<String, Class<? extends Ruleform>>();
+	protected EntityManager em;
+	private final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<String, Class<? extends Ruleform>>();
 
-    public RuleformResource(EntityManagerFactory emf) {
-        Reflections reflections = new Reflections(
-                                                  Ruleform.class.getPackage().getName());
-        for (@SuppressWarnings("rawtypes") Class<? extends ExistentialRuleform> form : reflections.getSubTypesOf(ExistentialRuleform.class)) {
-            if (!Modifier.isAbstract(form.getModifiers())) {
-                Class<?> prev = entityMap.put(form.getSimpleName(), form);
-                assert prev == null : String.format("Found previous mapping %s of: %s",
-                                                    prev, form);
-            }
-        }
-        this.em = emf.createEntityManager();
-    }
+	public RuleformResource(EntityManagerFactory emf) {
+		Reflections reflections = new Reflections(Ruleform.class.getPackage()
+				.getName());
+		for (@SuppressWarnings("rawtypes")
+		Class<? extends ExistentialRuleform> form : reflections
+				.getSubTypesOf(ExistentialRuleform.class)) {
+			if (!Modifier.isAbstract(form.getModifiers())) {
+				Class<?> prev = entityMap.put(form.getSimpleName(), form);
+				assert prev == null : String.format(
+						"Found previous mapping %s of: %s", prev, form);
+			}
+		}
+		em = emf.createEntityManager();
+	}
 
-    @GET
-    @Path("/")
-    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    public Set<String> getRuleformTypes() {
-        return entityMap.keySet();
-    }
-
-
-
-
+	@GET
+	@Path("/")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public Set<String> getRuleformTypes() {
+		return entityMap.keySet();
+	}
 
 }

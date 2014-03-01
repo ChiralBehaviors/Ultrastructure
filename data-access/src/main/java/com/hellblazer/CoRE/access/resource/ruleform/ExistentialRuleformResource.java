@@ -36,24 +36,24 @@ import com.hellblazer.CoRE.network.NetworkRuleform;
  */
 public interface ExistentialRuleformResource<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> {
 
-    @Path("/")
-    @GET
-    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    List<RuleForm> getAll() throws ClassNotFoundException;
+	@Path("/")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	List<RuleForm> getAll() throws ClassNotFoundException;
 
-    @Path("/{id}")
-    @GET
-    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    RuleForm getResource(@PathParam("id") long id)
-                                                  throws ClassNotFoundException;
+	@Path("/{id}/networks")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	Collection<Network> getNetworks(@PathParam("id") long id);
 
-    @Path("/")
-    @PUT
-    long insert(RuleForm rf);
-    
-    @Path("/{id}/networks")
-    @GET
-    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    Collection<Network> getNetworks(@PathParam("id") long id);
+	@Path("/{id}")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	RuleForm getResource(@PathParam("id") long id)
+			throws ClassNotFoundException;
+
+	@Path("/")
+	@PUT
+	long insert(RuleForm rf);
 
 }

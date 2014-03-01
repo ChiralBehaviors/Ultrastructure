@@ -24,20 +24,22 @@ import com.yammer.metrics.core.HealthCheck;
  * 
  */
 public class JpaHealthCheck extends HealthCheck {
-    private final EntityManagerFactory emf;
+	private final EntityManagerFactory emf;
 
-    public JpaHealthCheck(EntityManagerFactory emf) {
-        super("CRUD");
-        this.emf = emf;
-    }
+	public JpaHealthCheck(EntityManagerFactory emf) {
+		super("CRUD");
+		this.emf = emf;
+	}
 
-    /* (non-Javadoc)
-     * @see com.yammer.metrics.core.HealthCheck#check()
-     */
-    @Override
-    protected Result check() throws Exception {
-        return emf.isOpen() ? Result.healthy()
-                           : Result.unhealthy("Product Manager Factory offline");
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.yammer.metrics.core.HealthCheck#check()
+	 */
+	@Override
+	protected Result check() throws Exception {
+		return emf.isOpen() ? Result.healthy() : Result
+				.unhealthy("Product Manager Factory offline");
+	}
 
 }

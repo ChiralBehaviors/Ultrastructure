@@ -36,57 +36,59 @@ import com.hellblazer.CoRE.access.formatting.TokenReplacedStream;
  */
 @Path("/v{version : \\d+}/services/data/crud-gui")
 public class CrudGuiResource {
-    private String       rootResource;
-    private final String unitName;
+	private String rootResource;
+	private final String unitName;
 
-    /**
-     * @param unitName
-     */
-    public CrudGuiResource(String unitName) {
-        this.unitName = unitName;
-    }
+	/**
+	 * @param unitName
+	 */
+	public CrudGuiResource(String unitName) {
+		this.unitName = unitName;
+	}
 
-    @GET
-    @Path("/images/{image}")
-    @Produces("image/*")
-    public Response getImage(@PathParam("version") int version,
-                             @PathParam("image") String image) {
-        return Response.ok(getClass().getResourceAsStream("images/" + image)).build();
-    }
+	@GET
+	@Path("/images/{image}")
+	@Produces("image/*")
+	public Response getImage(@PathParam("version") int version,
+			@PathParam("image") String image) {
+		return Response.ok(getClass().getResourceAsStream("images/" + image))
+				.build();
+	}
 
-    @GET
-    @Path("/{resource}")
-    @Produces(MediaType.WILDCARD)
-    public Response getRoot(@PathParam("version") int version,
-                            @PathParam("resource") String resource) {
-        if (resource == null) {
-            return Response.ok(getClass().getResourceAsStream("jest.html")).build();
-        }
-        return Response.ok(getClass().getResourceAsStream(resource)).build();
-    }
+	@GET
+	@Path("/{resource}")
+	@Produces(MediaType.WILDCARD)
+	public Response getRoot(@PathParam("version") int version,
+			@PathParam("resource") String resource) {
+		if (resource == null) {
+			return Response.ok(getClass().getResourceAsStream("jest.html"))
+					.build();
+		}
+		return Response.ok(getClass().getResourceAsStream(resource)).build();
+	}
 
-    @GET
-    @Path("/")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getRoot(@PathParam("version") int version,
-                            @Context UriInfo uriInfo) throws IOException {
-        if (rootResource == null) {
-            String base = uriInfo.getRequestUri().toString();
-            base = base.endsWith("/") ? base : base + "/";
-            String[] tokens = { "${persistence.unit}", unitName, "${jest.uri}",
-                    base, "${webapp.name}", "/", "${servlet.name}", "crud",
-                    "${server.name}", uriInfo.getRequestUri().getHost(),
-                    "${server.port}", "" + uriInfo.getRequestUri().getPort(),
+	@GET
+	@Path("/")
+	@Produces(MediaType.TEXT_HTML)
+	public Response getRoot(@PathParam("version") int version,
+			@Context UriInfo uriInfo) throws IOException {
+		if (rootResource == null) {
+			String base = uriInfo.getRequestUri().toString();
+			base = base.endsWith("/") ? base : base + "/";
+			String[] tokens = { "${persistence.unit}", unitName, "${jest.uri}",
+					base, "${webapp.name}", "/", "${servlet.name}", "crud",
+					"${server.name}", uriInfo.getRequestUri().getHost(),
+					"${server.port}", "" + uriInfo.getRequestUri().getPort(),
 
-                    "${dojo.base}", Constants.DOJO_BASE_URL, "${dojo.theme}",
-                    Constants.DOJO_THEME,
+					"${dojo.base}", Constants.DOJO_BASE_URL, "${dojo.theme}",
+					Constants.DOJO_THEME,
 
-            };
-            InputStream in = getClass().getResourceAsStream("jest.html");
-            CharArrayWriter out = new CharArrayWriter();
-            new TokenReplacedStream().replace(in, out, tokens);
-            rootResource = out.toString();
-        }
-        return Response.ok(rootResource).build();
-    }
+			};
+			InputStream in = getClass().getResourceAsStream("jest.html");
+			CharArrayWriter out = new CharArrayWriter();
+			new TokenReplacedStream().replace(in, out, tokens);
+			rootResource = out.toString();
+		}
+		return Response.ok(rootResource).build();
+	}
 }

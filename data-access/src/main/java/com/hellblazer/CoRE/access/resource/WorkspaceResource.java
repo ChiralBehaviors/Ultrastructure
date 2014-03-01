@@ -44,94 +44,93 @@ import com.hellblazer.CoRE.product.Product;
 @Path("/v{version : \\d+}/services/data/workspace")
 public class WorkspaceResource {
 
-    EntityManager em;
+	EntityManager em;
 
-    /**
-     * @param emf
-     */
-    public WorkspaceResource(EntityManagerFactory emf) {
-        em = emf.createEntityManager();
-    }
+	/**
+	 * @param emf
+	 */
+	public WorkspaceResource(EntityManagerFactory emf) {
+		em = emf.createEntityManager();
+	}
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Workspace get(@PathParam("id") long productId,
-                         @QueryParam("relId") long relId) {
-        Product p = em.find(Product.class, productId);
-        Relationship r = em.find(Relationship.class, relId);
-        Workspace w = Workspace.loadWorkspace(p, r, em);
+	@POST
+	@Path("/{id}/{relId}/add")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Workspace addRuleformToWorkspace(ExistentialRuleform<?, ?> ef,
+			@PathParam("id") long id, @PathParam("relId") long relId) {
+		Product p = new Product();
+		p.setId(id);
 
-        return w;
-    }
+		Relationship r = new Relationship();
+		r.setId(relId);
 
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Workspace insertWorkspace(Workspace w) {
-        em.getTransaction().begin();
-        try {
-            Product origin = w.getProducts().get(0);
-            List<Product> nets = w.getProducts();
-            Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
-            for (Product p : nets) {
-                p.manageEntity(em, knownObjects);
-            }
-            List<AccessAuthorization<?, ?>> auths = w.getAccessAuths();
-            for (AccessAuthorization<?, ?> auth : auths) {
-                auth.manageEntity(em, knownObjects);
-            }
+		Workspace w = Workspace.loadWorkspace(p, r, em);
+		em.getTransaction().begin();
+		try {
 
-            em.getTransaction().commit();
-            em.refresh(origin);
-            Workspace ws = Workspace.loadWorkspace(origin, w.getWorkspaceOf(),
-                                                   em);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enableDefaultTyping();
-            return ws;
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
-        }
+			w.addToWorkspace(ef);
+		} catch (Exception e) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			throw e;
+		}
+		w = Workspace.loadWorkspace(w.getParentProduct(), w.getWorkspaceOf(),
+				em);
+		return w;
+	}
 
-    }
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Workspace get(@PathParam("id") long productId,
+			@QueryParam("relId") long relId) {
+		Product p = em.find(Product.class, productId);
+		Relationship r = em.find(Relationship.class, relId);
+		Workspace w = Workspace.loadWorkspace(p, r, em);
 
-    @POST
-    @Path("/{id}/{relId}/add")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Workspace addRuleformToWorkspace(ExistentialRuleform<?, ?> ef,
-                                            @PathParam("id") long id,
-                                            @PathParam("relId") long relId) {
-        Product p = new Product();
-        p.setId(id);
+		return w;
+	}
 
-        Relationship r = new Relationship();
-        r.setId(relId);
+	@GET
+	@Path("/{id}/{relId}/Product")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Ruleform> getAllRuleformsForType(@PathParam("id") long id,
+			@PathParam("relId") long relId) {
 
-        Workspace w = Workspace.loadWorkspace(p, r, em);
-        em.getTransaction().begin();
-        try {
+		return null;
+	}
 
-            w.addToWorkspace(ef);
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
-        }
-        w = Workspace.loadWorkspace(w.getParentProduct(), w.getWorkspaceOf(),
-                                    em);
-        return w;
-    }
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Workspace insertWorkspace(Workspace w) {
+		em.getTransaction().begin();
+		try {
+			Product origin = w.getProducts().get(0);
+			List<Product> nets = w.getProducts();
+			Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
+			for (Product p : nets) {
+				p.manageEntity(em, knownObjects);
+			}
+			List<AccessAuthorization<?, ?>> auths = w.getAccessAuths();
+			for (AccessAuthorization<?, ?> auth : auths) {
+				auth.manageEntity(em, knownObjects);
+			}
 
-    @GET
-    @Path("/{id}/{relId}/Product")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Ruleform> getAllRuleformsForType(@PathParam("id") long id,
-                                                 @PathParam("relId") long relId) {
+			em.getTransaction().commit();
+			em.refresh(origin);
+			Workspace ws = Workspace.loadWorkspace(origin, w.getWorkspaceOf(),
+					em);
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.enableDefaultTyping();
+			return ws;
+		} catch (Exception e) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			throw e;
+		}
 
-        return null;
-    }
+	}
 
 }

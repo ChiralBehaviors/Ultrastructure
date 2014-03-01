@@ -26,14 +26,14 @@ import com.hellblazer.CoRE.meta.models.LocationModelImpl;
 
 /**
  * @author hparry
- *
+ * 
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Location")
 public class LocationResource
-        extends
-        AbstractRuleformResource<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute> {
+		extends
+		AbstractRuleformResource<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute> {
 
-    public LocationResource(EntityManager em) {
-        super(em, new LocationModelImpl(em));
-    }
+	public LocationResource(EntityManager em) {
+		super(em, new LocationModelImpl(em));
+	}
 }

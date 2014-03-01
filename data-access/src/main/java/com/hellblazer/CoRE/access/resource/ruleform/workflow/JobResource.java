@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,9 +33,11 @@ import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.Protocol;
+import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.JobModelImpl;
+import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry
@@ -48,7 +51,59 @@ public class JobResource {
 
 	public JobResource(Model model) {
 		this.model = new JobModelImpl(model);
-		this.em = model.getEntityManager();
+		em = model.getEntityManager();
+	}
+
+	@PUT
+	@Path("/{id}")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public void changeJobStatus(@PathParam("id") long jobId, StatusCode status) {
+		Job job = em.find(Job.class, jobId);
+		if (job == null) {
+			throw new InvalidParameterException(String.format(
+					"No job with %d exists", jobId));
+		}
+
+		em.getTransaction().begin();
+		try {
+			model.changeStatus(job, status, null);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw e;
+		}
+
+	}
+
+	@GET
+	@Path("/{id}/subjobs")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public List<Job> getActiveSubJobs(@PathParam("id") long jobId,
+			@QueryParam("agencyId") Long agencyId) {
+		Job job = em.find(Job.class, jobId);
+		if (job == null) {
+			throw new InvalidParameterException(String.format(
+					"No job with %d exists", jobId));
+		}
+
+		if (agencyId == null) {
+			return model.getActiveSubJobsOf(job);
+		}
+		Agency agency = em.find(Agency.class, agencyId);
+		return model.getAllActiveSubJobsOf(job, agency);
+	}
+
+	@GET
+	@Path("/{id}/chronology")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public List<JobChronology> getChronology(@PathParam("id") long jobId) {
+		Job job = em.find(Job.class, jobId);
+		if (job == null) {
+			throw new InvalidParameterException(String.format(
+					"No job with %d exists", jobId));
+		}
+
+		return model.getChronologyForJob(job);
 	}
 
 	@GET
@@ -67,6 +122,24 @@ public class JobResource {
 		return model.getActiveJobsFor(agency);
 	}
 
+	@GET
+	@Path("/status/{id}/next")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public List<StatusCode> getNextStatuses(@PathParam("id") long statusId,
+			@QueryParam("service") long serviceId) {
+		StatusCode status = em.find(StatusCode.class, statusId);
+		Product service = em.find(Product.class, serviceId);
+		return model.getNextStatusCodes(service, status);
+	}
+
+	@GET
+	@Path("/{id}/terminal-statues")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public List<StatusCode> getTerminalStates(@PathParam("id") long jobId) {
+		Job job = em.find(Job.class, jobId);
+		return model.getTerminalStates(job);
+	}
+
 	@POST
 	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
 	public Job insertJob(Job parent, Protocol protocol) {
@@ -79,17 +152,6 @@ public class JobResource {
 			em.getTransaction().rollback();
 			throw e;
 		}
-	}
-	@GET
-	@Path("/{id}/chronology")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public List<JobChronology> getChronology(@PathParam("id") long jobId) {
-		Job job = em.find(Job.class, jobId);
-		if (job == null) {
-			throw new InvalidParameterException(String.format("No job with %d exists", jobId));
-		}
-		
-		return model.getChronologyForJob(job);
 	}
 
 }

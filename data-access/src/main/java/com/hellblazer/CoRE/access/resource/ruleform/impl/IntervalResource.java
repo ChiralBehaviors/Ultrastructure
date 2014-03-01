@@ -26,14 +26,14 @@ import com.hellblazer.CoRE.time.IntervalNetwork;
 
 /**
  * @author hparry
- *
+ * 
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Interval")
 public class IntervalResource
-        extends
-        AbstractRuleformResource<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
-    
-    public IntervalResource(EntityManager em) {
-        super(em, new IntervalModelImpl(em));
-    }
+		extends
+		AbstractRuleformResource<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
+
+	public IntervalResource(EntityManager em) {
+		super(em, new IntervalModelImpl(em));
+	}
 }

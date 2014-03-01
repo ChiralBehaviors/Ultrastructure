@@ -24,39 +24,39 @@ import javax.ws.rs.core.Response.Status;
  * 
  */
 public abstract class AbstractParam<V> {
-    private final String originalParam;
-    private final V      value;
+	private final String originalParam;
+	private final V value;
 
-    public AbstractParam(String param) throws WebApplicationException {
-        this.originalParam = param;
-        try {
-            this.value = parse(param);
-        } catch (Throwable e) {
-            throw new WebApplicationException(onError(param, e));
-        }
-    }
+	public AbstractParam(String param) throws WebApplicationException {
+		this.originalParam = param;
+		try {
+			this.value = parse(param);
+		} catch (Throwable e) {
+			throw new WebApplicationException(onError(param, e));
+		}
+	}
 
-    public String getOriginalParam() {
-        return originalParam;
-    }
+	public String getOriginalParam() {
+		return originalParam;
+	}
 
-    public V getValue() {
-        return value;
-    }
+	public V getValue() {
+		return value;
+	}
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
+	@Override
+	public String toString() {
+		return value.toString();
+	}
 
-    protected String getErrorMessage(String param, Throwable e) {
-        return "Invalid parameter: " + param + " (" + e.getMessage() + ")";
-    }
+	protected String getErrorMessage(String param, Throwable e) {
+		return "Invalid parameter: " + param + " (" + e.getMessage() + ")";
+	}
 
-    protected Response onError(String param, Throwable e) {
-        return Response.status(Status.BAD_REQUEST).entity(getErrorMessage(param,
-                                                                          e)).build();
-    }
+	protected Response onError(String param, Throwable e) {
+		return Response.status(Status.BAD_REQUEST)
+				.entity(getErrorMessage(param, e)).build();
+	}
 
-    protected abstract V parse(String param) throws Throwable;
+	protected abstract V parse(String param) throws Throwable;
 }

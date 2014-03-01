@@ -26,14 +26,14 @@ import com.hellblazer.CoRE.meta.models.AgencyModelImpl;
 
 /**
  * @author hparry
- *
+ * 
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Agency")
 public class AgencyResource
-        extends
-        AbstractRuleformResource<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute> {
+		extends
+		AbstractRuleformResource<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute> {
 
-    public AgencyResource(EntityManager em) {
-        super(em, new AgencyModelImpl(em));
-    }
+	public AgencyResource(EntityManager em) {
+		super(em, new AgencyModelImpl(em));
+	}
 }

@@ -30,10 +30,10 @@ import com.hellblazer.CoRE.meta.models.CoordinateModelImpl;
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Coordinate")
 public class CoordinateResource
-        extends
-        AbstractRuleformResource<Coordinate, CoordinateNetwork, CoordinateAttributeAuthorization, CoordinateAttribute> {
+		extends
+		AbstractRuleformResource<Coordinate, CoordinateNetwork, CoordinateAttributeAuthorization, CoordinateAttribute> {
 
-    public CoordinateResource(EntityManager em) {
-        super(em, new CoordinateModelImpl(em));
-    }
+	public CoordinateResource(EntityManager em) {
+		super(em, new CoordinateModelImpl(em));
+	}
 }

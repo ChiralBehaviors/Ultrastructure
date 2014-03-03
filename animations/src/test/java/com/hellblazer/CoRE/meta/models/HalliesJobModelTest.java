@@ -16,7 +16,11 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -455,6 +459,23 @@ public class HalliesJobModelTest extends AbstractModelTest {
 		assertEquals(2, protocols.size());
 		List<Job> jobs = findAllJobs();
 		assertEquals(7, jobs.size());
+	}
+	
+	@Test
+	public void testDeployShoggoth() {
+		EntityTransaction txn = em.getTransaction();
+		txn.begin();
+		Job order = new Job(scenario.armyOfDarkness, scenario.admin,
+				scenario.deploy, scenario.shoggoth, scenario.node21, kernel.getNotApplicableLocation(),
+				scenario.core);
+		em.persist(order);
+		txn.commit();
+		txn.begin();
+		order.setStatus(scenario.active);
+		txn.commit();
+		txn.begin();
+		order.setStatus(scenario.completed);
+		txn.commit();
 	}
 
 	private List<Job> findAllJobs() {

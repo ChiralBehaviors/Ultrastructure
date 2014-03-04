@@ -74,6 +74,14 @@ public class JobResource {
 		}
 
 	}
+	
+	@GET
+	@Path("/{id}")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public Job getJob(@PathParam("id") long id) {
+		Job job = em.find(Job.class, id);
+		return job;
+	}
 
 	@GET
 	@Path("/{id}/subjobs")

@@ -129,6 +129,8 @@ public class JobResource {
 		}
 		return model.getActiveJobsFor(agency);
 	}
+	//TODO get chronology of all sub jobs
+	//get jobs for parent - loop until you get no more jobs. Then get the chronologies for all jobs in that set
 
 	@GET
 	@Path("/status/{id}/next")

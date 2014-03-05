@@ -18,14 +18,9 @@ package com.hellblazer.CoRE.access.resource.ruleform.workflow;
 import javax.persistence.EntityTransaction;
 
 import org.junit.Before;
-import org.junit.Test;
 
-import com.hellblazer.CoRE.event.Job;
-import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.models.AbstractModelTest;
 import com.hellblazer.CoRE.meta.models.HalliesOrderProcessingLoader;
-
-import static org.junit.Assert.*;
 
 /**
  * @author hparry
@@ -34,6 +29,7 @@ import static org.junit.Assert.*;
 public class JobResourceTest extends AbstractModelTest{
 	
 	private HalliesOrderProcessingLoader scenario;
+	@SuppressWarnings("unused")
 	private JobResource resource;
 
 	@Override
@@ -48,7 +44,8 @@ public class JobResourceTest extends AbstractModelTest{
 		txn.commit();
 	}
 	
-	//@Test
+	
+//	@Test
 //	public void testDeployShoggoth() {
 //		
 //		Job order = new Job(scenario.armyOfDarkness, scenario.admin,

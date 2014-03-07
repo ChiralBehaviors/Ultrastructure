@@ -18,9 +18,13 @@ package com.hellblazer.CoRE.access.resource.ruleform.workflow;
 import javax.persistence.EntityTransaction;
 
 import org.junit.Before;
+import org.junit.Test;
 
+import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.meta.models.AbstractModelTest;
 import com.hellblazer.CoRE.meta.models.HalliesOrderProcessingLoader;
+
+import static org.junit.Assert.*;
 
 /**
  * @author hparry
@@ -29,7 +33,6 @@ import com.hellblazer.CoRE.meta.models.HalliesOrderProcessingLoader;
 public class JobResourceTest extends AbstractModelTest{
 	
 	private HalliesOrderProcessingLoader scenario;
-	@SuppressWarnings("unused")
 	private JobResource resource;
 
 	@Override
@@ -45,21 +48,21 @@ public class JobResourceTest extends AbstractModelTest{
 	}
 	
 	
-//	@Test
-//	public void testDeployShoggoth() {
-//		
-//		Job order = new Job(scenario.armyOfDarkness, scenario.admin,
-//				scenario.deploy, scenario.shoggoth, scenario.node21, kernel.getNotApplicableLocation(),
-//				scenario.core);
-//		
-//		order = resource.insertJob(order, null);
-//		assertNotNull(order.getId());
-//		
-//		resource.changeJobStatus(order.getId(), scenario.active);
-//		order = resource.getJob(order.getId());
-//		
-//		assertEquals(scenario.active, order.getStatus());
-//		
-//	}
+	@Test
+	public void testDeployShoggoth() {
+		
+		Job order = new Job(scenario.armyOfDarkness, scenario.admin,
+				scenario.deploy, scenario.shoggoth, scenario.node21, kernel.getNotApplicableLocation(),
+				scenario.core);
+		
+		order = resource.insertJob(order);
+		assertNotNull(order.getId());
+		
+		resource.changeJobStatus(order.getId(), scenario.active, "activate job");
+		order = resource.getJob(order.getId());
+		
+		assertEquals(scenario.active, order.getStatus());
+		
+	}
 
 }

@@ -57,7 +57,7 @@ public class JobResource {
 	@PUT
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public void changeJobStatus(@PathParam("id") long jobId, StatusCode status) {
+	public void changeJobStatus(@PathParam("id") long jobId, StatusCode status, String notes) {
 		Job job = em.find(Job.class, jobId);
 		if (job == null) {
 			throw new InvalidParameterException(String.format(
@@ -65,16 +65,12 @@ public class JobResource {
 		}
 
 		em.getTransaction().begin();
-		try {
-			model.changeStatus(job, status, null);
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw e;
-		}
+
+		model.changeStatus(job, status, notes);
+		em.getTransaction().commit();
 
 	}
-	
+
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
@@ -129,8 +125,10 @@ public class JobResource {
 		}
 		return model.getActiveJobsFor(agency);
 	}
-	//TODO get chronology of all sub jobs
-	//get jobs for parent - loop until you get no more jobs. Then get the chronologies for all jobs in that set
+
+	// TODO get chronology of all sub jobs
+	// get jobs for parent - loop until you get no more jobs. Then get the
+	// chronologies for all jobs in that set
 
 	@GET
 	@Path("/status/{id}/next")
@@ -152,11 +150,12 @@ public class JobResource {
 
 	@POST
 	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public Job insertJob(Job parent, Protocol protocol) {
+	public Job insertJob(Job job) {
 		em.getTransaction().begin();
 		try {
-			Job job = model.insertJob(parent, protocol);
+			em.persist(job);
 			em.getTransaction().commit();
+			em.refresh(job);
 			return job;
 		} catch (Exception e) {
 			em.getTransaction().rollback();

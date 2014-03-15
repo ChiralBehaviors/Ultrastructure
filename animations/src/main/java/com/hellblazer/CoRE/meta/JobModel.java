@@ -21,6 +21,8 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.Job;
 import com.hellblazer.CoRE.event.JobAttribute;
@@ -438,6 +440,16 @@ public interface JobModel {
 	 * @return the highest sequence number used in the chain
 	 */
 	int createStatusCodeChain(Product service, StatusCode[] codes,
+			int startingSequenceNumber, Agency updatedBy);
+
+	/**
+	 * @param service
+	 * @param codes
+	 * @param startingSequenceNumber
+	 * @param updatedBy
+	 */
+	void createStatusCodeSequencings(Product service,
+			List<Pair<StatusCode, StatusCode>> codes,
 			int startingSequenceNumber, Agency updatedBy);
 
 }

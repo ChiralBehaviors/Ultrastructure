@@ -42,6 +42,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -372,6 +373,14 @@ public class JobModelImpl implements JobModel {
     		startingSequenceNumber++;
     	}
     	return startingSequenceNumber;
+    }
+    
+    @Override
+    public void createStatusCodeSequencings(Product service, List<Pair<StatusCode, StatusCode>> codes, int startingSequenceNumber, Agency updatedBy) {
+    	for (Pair<StatusCode, StatusCode> p : codes) {
+    		em.persist(new StatusCodeSequencing(service, p.getLeft(), p.getRight(), startingSequenceNumber, updatedBy));
+    		startingSequenceNumber++;
+    	}
     }
 
     @Override

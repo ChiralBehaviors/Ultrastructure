@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
 import com.hellblazer.CoRE.event.MetaProtocol;
 import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
@@ -418,5 +419,11 @@ public interface JobModel {
      * @return
      */
     List<ProductChildSequencingAuthorization> getChildActions(Product node);
+
+	/**
+	 * @param job
+	 * @return
+	 */
+	List<JobAttribute> getAttributesForJob(Job job);
 
 }

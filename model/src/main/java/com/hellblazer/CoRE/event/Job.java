@@ -22,6 +22,7 @@ import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
+import static com.hellblazer.CoRE.event.Job.GET_ATTRIBUTES_FOR_JOB;
 import static com.hellblazer.CoRE.event.Job.GET_ATTRIBUTE_VALUE;
 import static com.hellblazer.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.hellblazer.CoRE.event.Job.GET_NEXT_STATUS_CODES;
@@ -77,6 +78,9 @@ import com.hellblazer.CoRE.product.Product;
                                                                              + "FROM Job AS j "
                                                                              + "WHERE j.parent = :parent "
                                                                              + "  AND j.status <> :unset"),
+               @NamedQuery(name = GET_ATTRIBUTES_FOR_JOB, query = "SELECT ja "
+                                                               + "FROM JobAttribute AS ja "
+                                                               + "WHERE ja.job = :job"),                                                          
                @NamedQuery(name = HAS_SCS, query = "SELECT scs from StatusCodeSequencing scs where scs.service = :service "),
                @NamedQuery(name = GET_NEXT_STATUS_CODES, query = "SELECT code "
                                                                  + "FROM StatusCodeSequencing AS sequencing, StatusCode AS code "
@@ -180,6 +184,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS = "job.getActiveOrTerminatedSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS               = "job.getActiveSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE   = "job.getActiveSubJobsForService";
+    public static final String GET_ATTRIBUTES_FOR_JOB			 = "job.getAttributesForJob";
     public static final String GET_ATTRIBUTE_VALUE               = "job.getAttributeValue";
     public static final String GET_INITIAL_SUB_JOBS              = "job.getInitialSubJobs";
     public static final String GET_NEXT_STATUS_CODES             = "job.getNextStatusCodes";

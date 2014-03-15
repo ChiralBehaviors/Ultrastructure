@@ -497,6 +497,11 @@ public class JobModelImpl implements JobModel {
         }
         return tally;
     }
+    
+    @Override
+    public List<JobAttribute> getAttributesForJob(Job job) {
+    	return em.createNamedQuery(Job.GET_ATTRIBUTES_FOR_JOB, JobAttribute.class).getResultList();
+    }
 
     /**
      * @param job

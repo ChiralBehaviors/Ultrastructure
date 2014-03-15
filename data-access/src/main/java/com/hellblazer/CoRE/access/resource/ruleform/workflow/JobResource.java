@@ -31,8 +31,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.hellblazer.CoRE.agency.Agency;
 import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.event.JobAttribute;
 import com.hellblazer.CoRE.event.JobChronology;
-import com.hellblazer.CoRE.event.Protocol;
 import com.hellblazer.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
@@ -96,6 +96,14 @@ public class JobResource {
 		Agency agency = em.find(Agency.class, agencyId);
 		return model.getAllActiveSubJobsOf(job, agency);
 	}
+	
+	@GET
+	@Path("/{id}/attributes")
+	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+	public List<JobAttribute> getAttributesForJob(@PathParam("id") long jobId) {
+		Job job = em.find(Job.class, jobId);
+		return model.getAttributesForJob(job);
+	}
 
 	@GET
 	@Path("/{id}/chronology")
@@ -147,6 +155,7 @@ public class JobResource {
 		Job job = em.find(Job.class, jobId);
 		return model.getTerminalStates(job);
 	}
+	
 
 	@POST
 	@Produces({ MediaType.APPLICATION_JSON, "text/json" })

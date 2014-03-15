@@ -363,6 +363,16 @@ public class JobModelImpl implements JobModel {
         addJobChronology(job, now, oldStatus, notes);
         return j;
     }
+    
+    @Override
+    public int createStatusCodeChain(Product service, StatusCode[] codes, int startingSequenceNumber, Agency updatedBy) {
+    	if (codes.length < 2) return startingSequenceNumber;
+    	for (int i = 0; i < codes.length - 1; i++) {
+    		em.persist(new StatusCodeSequencing(service, codes[i], codes[i+1], startingSequenceNumber, updatedBy));
+    		startingSequenceNumber++;
+    	}
+    	return startingSequenceNumber;
+    }
 
     @Override
     public void ensureNextStateIsValid(Job job, Product service,

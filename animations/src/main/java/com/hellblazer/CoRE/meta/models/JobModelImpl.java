@@ -91,6 +91,11 @@ public class JobModelImpl implements JobModel {
         public T call(EntityManager em) throws Exception {
             return procedure.call(new JobModelImpl(new ModelImpl(em)));
         }
+
+        @Override
+        public String toString() {
+            return "Call [" + procedure + "]";
+        }
     }
 
     private static interface Procedure<T> {
@@ -109,6 +114,10 @@ public class JobModelImpl implements JobModel {
                 jobModel.automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
                 return null;
             }
+
+            public String toString() {
+                return "JobModel.automatically_generate_implicit_jobs_for_explicit_jobs";
+            }
         });
     }
 
@@ -117,11 +126,17 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
+                log.info("before ensure_next_status_is_valid");
                 jobModel.ensureNextStateIsValid(triggerData.getNew().getLong("id"),
                                                 triggerData.getNew().getLong("service"),
                                                 triggerData.getOld().getLong("status"),
                                                 triggerData.getNew().getLong("status"));
+                log.info("completed ensure_next_status_is_valid");
                 return null;
+            }
+
+            public String toString() {
+                return "JobModel.ensure_next_state_is_valid";
             }
         });
     }
@@ -134,6 +149,10 @@ public class JobModelImpl implements JobModel {
                 jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_child"),
                                                      (Long) triggerData.getNew().getObject("next_child_status"));
                 return null;
+            }
+
+            public String toString() {
+                return "JobModel.ensure_valid_child_service_and_status";
             }
         });
     }
@@ -160,6 +179,10 @@ public class JobModelImpl implements JobModel {
                                                      (Long) triggerData.getNew().getObject("parent_status_to_set"));
                 return null;
             }
+
+            public String toString() {
+                return "JobModel.ensure_valid_parent_service_and_status";
+            }
         });
     }
 
@@ -172,6 +195,10 @@ public class JobModelImpl implements JobModel {
                                                      (Long) triggerData.getNew().getObject("next_sibling_status"));
                 return null;
             }
+
+            public String toString() {
+                return "JobModel.ensure_valid_sibling_service_and_status";
+            }
         });
     }
 
@@ -181,6 +208,10 @@ public class JobModelImpl implements JobModel {
             @Override
             public Long call(JobModelImpl jobModel) throws Exception {
                 return jobModel.getInitialState(service);
+            }
+
+            public String toString() {
+                return "JobModel.get_initial_state";
             }
         });
     }
@@ -199,6 +230,10 @@ public class JobModelImpl implements JobModel {
             public Iterator<Long> call(JobModelImpl jobModel) throws Exception {
                 return new RuleformIdIterator(
                                               jobModel.getStatusCodeIdsForEvent(serviceId).iterator());
+            }
+
+            public String toString() {
+                return "JobModel.get_status_code_ids_for_service";
             }
         });
     }
@@ -244,6 +279,10 @@ public class JobModelImpl implements JobModel {
             public Boolean call(JobModelImpl jobModel) throws Exception {
                 return jobModel.isJobActive(job);
             }
+
+            public String toString() {
+                return "JobModel.is_job_active";
+            }
         });
     }
 
@@ -254,6 +293,10 @@ public class JobModelImpl implements JobModel {
             @Override
             public Boolean call(JobModelImpl jobModel) throws Exception {
                 return jobModel.isTerminalState(service, statusCode);
+            }
+
+            public String toString() {
+                return "JobModel.is_terminal_state";
             }
         });
     }
@@ -266,6 +309,10 @@ public class JobModelImpl implements JobModel {
                 jobModel.logInsertsInJobChronology(triggerData.getNew().getLong("id"),
                                                    triggerData.getNew().getLong("status"));
                 return null;
+            }
+
+            public String toString() {
+                return "JobModel.log_inserts_in_job_chronology";
             }
         });
     }
@@ -284,6 +331,10 @@ public class JobModelImpl implements JobModel {
                 jobModel.processJobChange(triggerData.getNew().getLong("id"));
                 return null;
             }
+
+            public String toString() {
+                return "JobModel.process_job_change";
+            }
         });
     }
 
@@ -294,6 +345,10 @@ public class JobModelImpl implements JobModel {
             public Void call(JobModelImpl jobModel) throws Exception {
                 jobModel.validateStateGraph();
                 return null;
+            }
+
+            public String toString() {
+                return "JobModel.validate_state_graph";
             }
         });
     }
@@ -364,23 +419,35 @@ public class JobModelImpl implements JobModel {
         addJobChronology(job, now, oldStatus, notes);
         return j;
     }
-    
+
     @Override
-    public int createStatusCodeChain(Product service, StatusCode[] codes, int startingSequenceNumber, Agency updatedBy) {
-    	if (codes.length < 2) return startingSequenceNumber;
-    	for (int i = 0; i < codes.length - 1; i++) {
-    		em.persist(new StatusCodeSequencing(service, codes[i], codes[i+1], startingSequenceNumber, updatedBy));
-    		startingSequenceNumber++;
-    	}
-    	return startingSequenceNumber;
+    public int createStatusCodeChain(Product service, StatusCode[] codes,
+                                     int startingSequenceNumber,
+                                     Agency updatedBy) {
+        if (codes.length < 2)
+            return startingSequenceNumber;
+        for (int i = 0; i < codes.length - 1; i++) {
+            em.persist(new StatusCodeSequencing(service, codes[i],
+                                                codes[i + 1],
+                                                startingSequenceNumber,
+                                                updatedBy));
+            startingSequenceNumber++;
+        }
+        return startingSequenceNumber;
     }
-    
+
     @Override
-    public void createStatusCodeSequencings(Product service, List<Pair<StatusCode, StatusCode>> codes, int startingSequenceNumber, Agency updatedBy) {
-    	for (Pair<StatusCode, StatusCode> p : codes) {
-    		em.persist(new StatusCodeSequencing(service, p.getLeft(), p.getRight(), startingSequenceNumber, updatedBy));
-    		startingSequenceNumber++;
-    	}
+    public void createStatusCodeSequencings(Product service,
+                                            List<Pair<StatusCode, StatusCode>> codes,
+                                            int startingSequenceNumber,
+                                            Agency updatedBy) {
+        for (Pair<StatusCode, StatusCode> p : codes) {
+            em.persist(new StatusCodeSequencing(service, p.getLeft(),
+                                                p.getRight(),
+                                                startingSequenceNumber,
+                                                updatedBy));
+            startingSequenceNumber++;
+        }
     }
 
     @Override
@@ -388,7 +455,19 @@ public class JobModelImpl implements JobModel {
                                        StatusCode currentStatus,
                                        StatusCode nextStatus)
                                                              throws SQLException {
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Updating %s, current: %s, next: %s", job,
+                                    currentStatus, nextStatus));
+        }
         if (kernel.getUnset().equals(currentStatus)) {
+            StatusCode initialState = getInitialState(service);
+            if (!nextStatus.equals(initialState)) {
+                throw new SQLException(
+                                       String.format("%s is not allowed as a next state for Service %s coming from %s.  The only allowable state is the initial state of %s  Please consult the Status Code Sequencing rules.",
+                                                     nextStatus, service,
+                                                     currentStatus,
+                                                     initialState));
+            }
             return;
         }
         if (!getNextStatusCodes(service, currentStatus).contains(nextStatus)) {
@@ -396,6 +475,13 @@ public class JobModelImpl implements JobModel {
                                    String.format("%s is not allowed as a next state for Service %s coming from %s.  Please consult the Status Code Sequencing rules.",
                                                  nextStatus, service,
                                                  currentStatus));
+        }
+        if (getTerminalStates(job).contains(nextStatus)) {
+            if (!getAllActiveSubJobsOf(job).isEmpty()) {
+                throw new SQLException(
+                                       String.format("Cannot enter terminal state %s for %s, as subjobs are still active",
+                                                     nextStatus, job));
+            }
         }
     }
 
@@ -516,10 +602,11 @@ public class JobModelImpl implements JobModel {
         }
         return tally;
     }
-    
+
     @Override
     public List<JobAttribute> getAttributesForJob(Job job) {
-    	return em.createNamedQuery(Job.GET_ATTRIBUTES_FOR_JOB, JobAttribute.class).getResultList();
+        return em.createNamedQuery(Job.GET_ATTRIBUTES_FOR_JOB,
+                                   JobAttribute.class).getResultList();
     }
 
     /**
@@ -659,10 +746,10 @@ public class JobModelImpl implements JobModel {
     public List<Protocol> getProtocols(Job job) {
         // First we try for protocols which match the current job
         List<Protocol> protocols = getProtocols(job.getService(),
-                                                   job.getRequester(),
-                                                   job.getProduct(),
-                                                   job.getDeliverTo(),
-                                                   job.getDeliverFrom());
+                                                job.getRequester(),
+                                                job.getProduct(),
+                                                job.getDeliverTo(),
+                                                job.getDeliverFrom());
         if (!protocols.isEmpty()) {
             return protocols;
         }
@@ -689,11 +776,11 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<Protocol> getProtocols(Job job, MetaProtocol metaProtocol) {
-    	// Find protocols which match transformations specified by the meta
+        // Find protocols which match transformations specified by the meta
         // protocol
 
         try {
-        	TypedQuery<Protocol> tq = createQuery(metaProtocol, job);
+            TypedQuery<Protocol> tq = createQuery(metaProtocol, job);
             return tq.getResultList();
         } catch (NonUniqueResultException e) {
             if (log.isInfoEnabled()) {
@@ -703,36 +790,39 @@ public class JobModelImpl implements JobModel {
             return Collections.emptyList();
         }
     }
-    
+
     /**
-     * This query will do the work of matching protocols to networks defined
-     * by jobs and metaprocols. This is the real deal except it doesn't work
-     * in the db triggers for some stupid reason so we're not using it right now.
+     * This query will do the work of matching protocols to networks defined by
+     * jobs and metaprocols. This is the real deal except it doesn't work in the
+     * db triggers for some stupid reason so we're not using it right now.
+     * 
      * @param metaprotocol
      * @param job
      * @return
      */
-    public TypedQuery<Protocol> createBetterQuery(MetaProtocol metaprotocol, Job job) {
-    	
-    	TypedQuery<Protocol> tq = em.createNamedQuery(Protocol.GET_FOR_JOB, Protocol.class);
-    	tq.setParameter(1, job.getDeliverFrom().getId());
-    	tq.setParameter(2, metaprotocol.getDeliverFrom().getId());
-    	tq.setParameter(3, job.getDeliverTo().getId());
-    	tq.setParameter(4, metaprotocol.getDeliverTo().getId());
-    	tq.setParameter(5, job.getProduct().getId());
-    	tq.setParameter(6, metaprotocol.getProductOrdered().getId());
-    	tq.setParameter(7, job.getRequester().getId());
-    	tq.setParameter(8, metaprotocol.getRequestingAgency().getId());
-    	tq.setParameter(9, job.getService().getId());
-    	tq.setParameter(10, kernel.getAnyLocation().getId());
-    	tq.setParameter(11, kernel.getSameLocation().getId());
-    	tq.setParameter(12, kernel.getAnyLocation().getId());
-    	tq.setParameter(13, kernel.getSameLocation().getId());
-    	tq.setParameter(14, kernel.getAnyProduct().getId());
-    	tq.setParameter(15, kernel.getSameProduct().getId());
-    	tq.setParameter(16, kernel.getAnyAgency().getId());
-    	tq.setParameter(17, kernel.getSameAgency().getId());
-    	return tq;
+    public TypedQuery<Protocol> createBetterQuery(MetaProtocol metaprotocol,
+                                                  Job job) {
+
+        TypedQuery<Protocol> tq = em.createNamedQuery(Protocol.GET_FOR_JOB,
+                                                      Protocol.class);
+        tq.setParameter(1, job.getDeliverFrom().getId());
+        tq.setParameter(2, metaprotocol.getDeliverFrom().getId());
+        tq.setParameter(3, job.getDeliverTo().getId());
+        tq.setParameter(4, metaprotocol.getDeliverTo().getId());
+        tq.setParameter(5, job.getProduct().getId());
+        tq.setParameter(6, metaprotocol.getProductOrdered().getId());
+        tq.setParameter(7, job.getRequester().getId());
+        tq.setParameter(8, metaprotocol.getRequestingAgency().getId());
+        tq.setParameter(9, job.getService().getId());
+        tq.setParameter(10, kernel.getAnyLocation().getId());
+        tq.setParameter(11, kernel.getSameLocation().getId());
+        tq.setParameter(12, kernel.getAnyLocation().getId());
+        tq.setParameter(13, kernel.getSameLocation().getId());
+        tq.setParameter(14, kernel.getAnyProduct().getId());
+        tq.setParameter(15, kernel.getSameProduct().getId());
+        tq.setParameter(16, kernel.getAnyAgency().getId());
+        tq.setParameter(17, kernel.getSameAgency().getId());
+        return tq;
     }
 
     @Override
@@ -779,7 +869,7 @@ public class JobModelImpl implements JobModel {
     public List<StatusCode> getTerminalStates(Job job) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES,
                                                            StatusCode.class);
-
+        query.setParameter(1, job.getService().getId());
         return query.getResultList();
     }
 

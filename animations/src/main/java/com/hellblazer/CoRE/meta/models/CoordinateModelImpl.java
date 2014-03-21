@@ -54,6 +54,11 @@ public class CoordinateModelImpl
         public T call(EntityManager em) throws Exception {
             return procedure.call(new CoordinateModelImpl(em));
         }
+
+        @Override
+        public String toString() {
+            return "Call [" + procedure + "]";
+        }
     }
 
     private static interface Procedure<T> {
@@ -73,6 +78,10 @@ public class CoordinateModelImpl
                 agencyModel.propagate();
                 return null;
             }
+
+            public String toString() {
+                return "CoordinateModel.propagate";
+            }
         });
     }
 
@@ -84,6 +93,10 @@ public class CoordinateModelImpl
                 agencyModel.networkEdgeDeleted(data.getOld().getLong("parent"),
                                                data.getOld().getLong("relationship"));
                 return null;
+            }
+
+            public String toString() {
+                return "CoordinateModel.track_network_deleted";
             }
         });
     }

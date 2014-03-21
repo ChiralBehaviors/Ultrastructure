@@ -54,6 +54,11 @@ public class RelationshipModelImpl
         public T call(EntityManager em) throws Exception {
             return procedure.call(new RelationshipModelImpl(em));
         }
+
+        @Override
+        public String toString() {
+            return "Call [" + procedure + "]";
+        }
     }
 
     private static interface Procedure<T> {

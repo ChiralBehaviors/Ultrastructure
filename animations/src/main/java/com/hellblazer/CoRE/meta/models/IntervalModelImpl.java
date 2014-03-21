@@ -54,6 +54,11 @@ public class IntervalModelImpl
         public T call(EntityManager em) throws Exception {
             return procedure.call(new IntervalModelImpl(em));
         }
+
+        @Override
+        public String toString() {
+            return "Call [" + procedure + "]";
+        }
     }
 
     private static interface Procedure<T> {
@@ -73,6 +78,10 @@ public class IntervalModelImpl
                 agencyModel.propagate();
                 return null;
             }
+
+            public String toString() {
+                return "IntervalModel.propagate";
+            }
         });
     }
 
@@ -84,6 +93,10 @@ public class IntervalModelImpl
                 agencyModel.networkEdgeDeleted(data.getOld().getLong("parent"),
                                                data.getOld().getLong("relationship"));
                 return null;
+            }
+
+            public String toString() {
+                return "IntervalModel.track_network_deleted";
             }
         });
     }

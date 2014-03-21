@@ -228,5 +228,4 @@ public class ProcessWorkflowLoader {
 		Protocol pushJarsProtocol = new Protocol(pushJars, anyAgency, sameProduct, anyLocation, anyLocation, DEPLOYER_ANY, DEPLOY_SERVICE, sameProduct, false, core);
 		em.persist(pushJarsProtocol);
 	}
-
 }

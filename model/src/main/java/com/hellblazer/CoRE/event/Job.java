@@ -109,10 +109,10 @@ import com.hellblazer.CoRE.product.Product;
                                                                            + "WHERE "
                                                                            + "  NOT EXISTS ( "
                                                                            + "    SELECT parent_code FROM ruleform.status_code_sequencing "
-                                                                           + "    WHERE event = seq.event "
+                                                                           + "    WHERE service = seq.service "
                                                                            + "      AND parent_code = seq.child_code "
                                                                            + "  ) "
-                                                                           + "  AND event = :event "
+                                                                           + "  AND service = ? "
                                                                            + "ORDER BY sc.name ASC"),
                      @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS, query = "SELECT job.* FROM ruleform.job as job "
                                                                            + "WHERE parent = ? "

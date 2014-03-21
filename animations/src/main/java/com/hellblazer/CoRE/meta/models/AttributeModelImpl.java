@@ -60,6 +60,11 @@ public class AttributeModelImpl
         public T call(EntityManager em) throws Exception {
             return procedure.call(new AttributeModelImpl(em));
         }
+
+        @Override
+        public String toString() {
+            return "Call [" + procedure + "]";
+        }
     }
 
     private static interface Procedure<T> {
@@ -78,6 +83,10 @@ public class AttributeModelImpl
                                                   data.getOld().getLong("relationship"));
                 return null;
             }
+
+            public String toString() {
+                return "AttributeModel.track_network_deleted";
+            }
         });
     }
 
@@ -92,6 +101,10 @@ public class AttributeModelImpl
                                                                throws Exception {
                 attributrModel.propagate();
                 return null;
+            }
+
+            public String toString() {
+                return "AttributeModel.propagate";
             }
         });
     }

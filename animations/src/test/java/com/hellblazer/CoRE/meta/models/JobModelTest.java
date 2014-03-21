@@ -219,6 +219,9 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
+        order.setStatus(scenario.available);
+        txn.commit();
+        txn.begin();
         order.setStatus(scenario.active);
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
@@ -297,6 +300,9 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
+        order.setStatus(scenario.available);
+        txn.commit();
+        txn.begin();
         order.setStatus(scenario.active);
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
@@ -317,6 +323,9 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
+        order.setStatus(scenario.available);
+        txn.commit();
+        txn.begin();
         order.setStatus(scenario.active);
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
@@ -326,64 +335,72 @@ public class JobModelTest extends AbstractModelTest {
         List<Job> jobs = findAllJobs();
         assertEquals(7, jobs.size());
     }
-    
+
     @Test
-	public void testDeliverWithoutMetaProtocol() {
-		em.getTransaction().begin();
+    public void testDeliverWithoutMetaProtocol() {
+        em.getTransaction().begin();
 
-		StatusCode startState = new StatusCode("begin", kernel.getCore());
-		startState.setPropagateChildren(true);
-		em.persist(startState);
+        StatusCode startState = new StatusCode("begin", kernel.getCore());
+        startState.setPropagateChildren(true);
+        em.persist(startState);
 
-		StatusCode delivered = new StatusCode("delivered", kernel.getCore());
-		em.persist(delivered);
-		
-		StatusCode shipState = new StatusCode("shipping", kernel.getCore());
-		em.persist(shipState);
+        StatusCode delivered = new StatusCode("delivered", kernel.getCore());
+        em.persist(delivered);
 
-		Product kiki = new Product("Kiki's Delivery Service", kernel.getCore());
-		em.persist(kiki);
+        StatusCode shipState = new StatusCode("shipping", kernel.getCore());
+        em.persist(shipState);
 
-		Product shipping = new Product("Kiki's Shipping Service",
-				kernel.getCore());
-		em.persist(shipping);
+        Product kiki = new Product("Kiki's Delivery Service", kernel.getCore());
+        em.persist(kiki);
 
-		Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
-		em.persist(bento);
+        Product shipping = new Product("Kiki's Shipping Service",
+                                       kernel.getCore());
+        em.persist(shipping);
 
-		StatusCodeSequencing sequence = new StatusCodeSequencing(kiki,
-				startState, delivered, kernel.getCore());
-		em.persist(sequence);
+        Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
+        em.persist(bento);
 
-		StatusCodeSequencing childSequence = new StatusCodeSequencing(shipping,
-				shipState, delivered, kernel.getCore());
-		em.persist(childSequence);
+        StatusCodeSequencing sequence = new StatusCodeSequencing(
+                                                                 kiki,
+                                                                 startState,
+                                                                 delivered,
+                                                                 kernel.getCore());
+        em.persist(sequence);
 
-		Protocol p = new Protocol(kiki, kernel.getCore(), bento,
-				kernel.getAnyLocation(), kernel.getAnyLocation(),
-				kernel.getCore(), shipping, bento, false, kernel.getCore());
-		em.persist(p);
-		
-		em.getTransaction().commit();
-		
-		em.getTransaction().begin();
+        StatusCodeSequencing childSequence = new StatusCodeSequencing(
+                                                                      shipping,
+                                                                      shipState,
+                                                                      delivered,
+                                                                      kernel.getCore());
+        em.persist(childSequence);
 
-		Job job = new Job(kernel.getCore(), kernel.getCore(), kiki, bento,
-				kernel.getAnyLocation(), kernel.getAnyLocation(), kernel.getCore());
-		em.persist(job);
+        Protocol p = new Protocol(kiki, kernel.getCore(), bento,
+                                  kernel.getAnyLocation(),
+                                  kernel.getAnyLocation(), kernel.getCore(),
+                                  shipping, bento, false, kernel.getCore());
+        em.persist(p);
 
-		em.getTransaction().commit();
+        em.getTransaction().commit();
 
-		em.getTransaction().begin();
-		job.setStatus(startState);
-		em.getTransaction().commit();
+        em.getTransaction().begin();
 
-		TypedQuery<Job> query = em.createQuery(
-				"select j from Job j where j.service = :service", Job.class);
-		query.setParameter("service", shipping);
-		Job j = query.getSingleResult();
-		assertNotNull(j);
-	}
+        Job job = new Job(kernel.getCore(), kernel.getCore(), kiki, bento,
+                          kernel.getAnyLocation(), kernel.getAnyLocation(),
+                          kernel.getCore());
+        em.persist(job);
+
+        em.getTransaction().commit();
+
+        em.getTransaction().begin();
+        job.setStatus(startState);
+        em.getTransaction().commit();
+
+        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
+                                               Job.class);
+        query.setParameter("service", shipping);
+        Job j = query.getSingleResult();
+        assertNotNull(j);
+    }
 
     private List<Job> findAllJobs() {
         TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",

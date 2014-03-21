@@ -54,6 +54,11 @@ public class UnitModelImpl
         public T call(EntityManager em) throws Exception {
             return procedure.call(new UnitModelImpl(em));
         }
+
+        @Override
+        public String toString() {
+            return "Call [" + procedure + "]";
+        }
     }
 
     private static interface Procedure<T> {

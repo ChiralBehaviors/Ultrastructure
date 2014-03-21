@@ -18,14 +18,13 @@ package com.hellblazer.CoRE.jsp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 
 import org.apache.openjpa.util.StoreException;
 import org.slf4j.Logger;
@@ -42,6 +41,8 @@ public abstract class JSP {
     private static final Properties           PROPERTIES = new Properties();
     private static final EntityManagerFactory EMF;
     private static final Logger               log        = LoggerFactory.getLogger(JSP.class);
+    private static int                        depth      = 0;
+    private static SQLException               rootCause;
 
     static {
         ClassLoader classLoader = JSP.class.getClassLoader();
@@ -64,23 +65,85 @@ public abstract class JSP {
     }
 
     public static <T> T call(StoredProcedure<T> call) throws SQLException {
-        Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
-        EntityManager em = EMF.createEntityManager();
-        em.getTransaction().begin();
-        T value;
-        try {
-            value = call.call(em);
-        } catch (SQLException e) {
-            throw e;
-        } catch (Exception e) {
-            StringWriter writer = new StringWriter();
-            PrintWriter pWriter = new PrintWriter(writer);
-            e.printStackTrace(pWriter);
-            pWriter.flush();
-            throw new SQLException(String.format("** Java Stored procedure failed\n%s",
-                                                 writer.toString()), e);
+        depth++;
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("nesting depth: %s", depth));
         }
-        em.getTransaction().commit();
-        return value;
+        try {
+            Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
+            throwRootCause();
+            EntityManager em = EMF.createEntityManager();
+            em.getTransaction().begin();
+            T value;
+            try {
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("calling %s", call));
+                }
+                try {
+                    value = call.call(em);
+                } finally {
+                    if (log.isDebugEnabled()) {
+                        log.debug(String.format("exiting %s", call));
+                    }
+                }
+            } catch (SQLException e) {
+                if (rootCause == null) {
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("Setting root cause to: %s", e));
+                    }
+                    rootCause = e;
+                }
+                if (log.isTraceEnabled()) {
+                    log.warn(String.format("Error during %s", call), e);
+                }
+                throw e;
+            } catch (Throwable e) {
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Error during %s", call), e);
+                }
+                SQLException sqlException = new SQLException(
+                                                             String.format("** Java Stored procedure failed %s",
+                                                                           call),
+                                                             e);
+                if (rootCause == null) {
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("Setting root cause to: %s",
+                                                sqlException));
+                    }
+                    rootCause = sqlException;
+                }
+                throw sqlException;
+            }
+            throwRootCause();
+            try {
+                em.getTransaction().commit();
+            } catch (RollbackException e) {
+                Throwable cause = e.getCause();
+                while (true) {
+                    if (cause == null) {
+                        throw e;
+                    }
+                    if (cause instanceof SQLException) {
+                        throw (SQLException) cause;
+                    }
+                    cause = cause.getCause();
+                }
+            }
+            return value;
+        } finally {
+            depth--;
+            if (depth == 0) {
+                if (log.isTraceEnabled()) {
+                    log.trace("clearing root cause");
+                }
+                rootCause = null;
+            }
+        }
+    }
+
+    private static void throwRootCause() throws SQLException {
+        if (rootCause != null) {
+            throw rootCause;
+        }
     }
 }

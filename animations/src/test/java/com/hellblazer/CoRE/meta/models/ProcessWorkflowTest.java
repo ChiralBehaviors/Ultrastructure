@@ -15,25 +15,49 @@
  */
 package com.hellblazer.CoRE.meta.models;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import javax.persistence.EntityTransaction;
+
+import org.junit.Before;
 import org.junit.Test;
+
+import com.hellblazer.CoRE.event.Job;
+import com.hellblazer.CoRE.meta.JobModel;
 
 /**
  * @author hparry
- *
+ * 
  */
-public class ProcessWorkflowTest {
-	
+public class ProcessWorkflowTest extends AbstractModelTest {
+
+	private JobModel jobModel;
+	private ProcessWorkflowLoader scenario;
+
+	@Override
+	@Before
+	public void initialize() throws Exception {
+		super.initialize();
+		jobModel = model.getJobModel();
+		EntityTransaction txn = em.getTransaction();
+		scenario = new ProcessWorkflowLoader(em);
+		txn.begin();
+		scenario.load();
+		txn.commit();
+	}
+
 	@Test
 	public void testDeploySteelThread() {
-		//instantiate system
-		//retrieve doc/create initial topology in US
-		//deploy system -> raiden calls
-		//deploy cluster -> raiden calls
-		//create containers
-		//start containers
-		//wait until CNC assembles
-		//deploy processes
-		//start processes
+		em.getTransaction().begin();
+		Job deployJob = new Job(scenario.DEPLOYER_ANY, scenario.core,
+				scenario.deploySystem, scenario.DISTRIBUTED_SYSTEM,
+				scenario.anyLocation, scenario.anyLocation, scenario.core);
+		em.persist(deployJob);
+		em.getTransaction().commit();
+		List<Job> activeJobsFor = jobModel.getActiveJobsFor(scenario.DEPLOYER_ANY);
+		assertEquals(5, activeJobsFor.size());
 	}
 
 }

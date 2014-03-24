@@ -44,9 +44,11 @@ public class ProcessWorkflowLoader {
 	public Agency EC2_API;
 	public Agency DEPLOYER_ANY;
 
-	public Product DEPLOY_SERVICE;
-	public Product createTopology;
-	public Product pushJars;
+	public Product deploySystem;
+	public Product createSystem;
+	public Product createCluster;
+	public Product createProcess;
+	public Product startProcess;
 
 	public Product ANY_PROCESS;
 	public Product proc73;
@@ -55,16 +57,10 @@ public class ProcessWorkflowLoader {
 	public Product CLUSTER;
 	public Product cluster1;
 
-	
 	public StatusCode unset;
-	public StatusCode deploying;
-	public StatusCode deployed;
-	public StatusCode starting;
-	public StatusCode running;
-	public StatusCode stopping;
-	public StatusCode stopped;
+	public StatusCode started;
 	public StatusCode failed;
-	public StatusCode undeployed;
+	public StatusCode completed;
 
 	public Location DATA_CENTER;
 	public Location dc421;
@@ -115,20 +111,29 @@ public class ProcessWorkflowLoader {
 
 	public void createProducts() {
 
-		DEPLOY_SERVICE = new Product("Any Deploy Service",
-				"Any deploy service", core);
-		em.persist(DEPLOY_SERVICE);
-		createTopology = new Product("Create Topology", "The service that creates a network topology", core);
-		em.persist(createTopology);
-		pushJars = new Product("Push Jars", "The service that pushes process jars to a topology", core);
-		em.persist(pushJars);
+		deploySystem = new Product("Any Deploy Service", "Any deploy service",
+				core);
+		em.persist(deploySystem);
+		createSystem = new Product("Create System",
+				"The service that creates a distributed system", core);
+		em.persist(createSystem);
+		createCluster = new Product("Create Cluster",
+				"The service that creates a cluster of lxcs", core);
+		em.persist(createCluster);
+		createProcess = new Product("Create Process",
+				"The service to create a process", core);
+		em.persist(createProcess);
+		startProcess = new Product("Start Process",
+				"The service to start a process", core);
+		em.persist(startProcess);
 
 		ANY_PROCESS = new Product("Any Process", "Any process", core);
 		em.persist(ANY_PROCESS);
 		proc73 = new Product("Process 73", "Process 73", core);
 		em.persist(proc73);
 
-		DISTRIBUTED_SYSTEM = new Product("Distributed System", "Distributed system", core);
+		DISTRIBUTED_SYSTEM = new Product("Distributed System",
+				"Distributed system", core);
 		em.persist(DISTRIBUTED_SYSTEM);
 		ds1 = new Product("DS1", "Distributed system 1", core);
 		em.persist(ds1);
@@ -167,65 +172,82 @@ public class ProcessWorkflowLoader {
 	public void createStatusCodes() {
 		unset = new StatusCode("unset", "unset", core);
 		em.persist(unset);
-		deploying = new StatusCode("deploying", "deploying", core);
-		em.persist(deploying);
-		deployed = new StatusCode("deployed", "deployed", core);
-		em.persist(deployed);
-		starting = new StatusCode("started", "started", core);
-		em.persist(starting);
-		running = new StatusCode("starting", "starting", core);
-		em.persist(running);
-		stopping = new StatusCode("stopping", "stopping", core);
-		em.persist(stopping);
-		stopped = new StatusCode("stopped", "stopped", core);
-		em.persist(stopped);
+		started = new StatusCode("started", "started", core);
+		em.persist(started);
 		failed = new StatusCode("failed", "failed", core);
 		em.persist(failed);
-		undeployed = new StatusCode("undeployed", "undeployed", core);
-		em.persist(undeployed);
+		completed = new StatusCode("completed", "completed", core);
+		em.persist(completed);
 	}
 
 	public void createStatusCodeSequencing() {
 		List<Pair<StatusCode, StatusCode>> pairs = new LinkedList<Pair<StatusCode, StatusCode>>();
-//		pairs.add(Pair.of(unset, deploying));
-//		pairs.add(Pair.of(deploying, deployed));
-//		pairs.add(Pair.of(deployed, starting));
-//		pairs.add(Pair.of(starting, running));
-//		pairs.add(Pair.of(running, stopping));
-//		pairs.add(Pair.of(stopping, stopped));
-//		pairs.add(Pair.of(stopped, undeployed));
-//		pairs.add(Pair.of(deploying, failed));
-//		pairs.add(Pair.of(deployed, failed));
-//		pairs.add(Pair.of(starting, failed));
-//		pairs.add(Pair.of(running, failed));
-//		pairs.add(Pair.of(stopping, failed));
-//		pairs.add(Pair.of(stopped, failed));
-//		pairs.add(Pair.of(failed, undeployed));
-		
-		pairs.add(Pair.of(unset, deploying));
-		pairs.add(Pair.of(deploying, deployed));
-		pairs.add(Pair.of(deploying, failed));
-		model.getJobModel().createStatusCodeSequencings(DEPLOY_SERVICE, pairs, 0, core);
-	
+
+		pairs.add(Pair.of(unset, started));
+		pairs.add(Pair.of(started, completed));
+		pairs.add(Pair.of(started, failed));
+		model.getJobModel().createStatusCodeSequencings(deploySystem, pairs,
+				10, core);
+		model.getJobModel().createStatusCodeSequencings(createProcess, pairs,
+				20, core);
+		model.getJobModel().createStatusCodeSequencings(createSystem, pairs,
+				30, core);
+		model.getJobModel().createStatusCodeSequencings(createCluster, pairs,
+				40, core);
+		model.getJobModel().createStatusCodeSequencings(startProcess, pairs,
+				50, core);
+
 	}
-	
+
 	public void createStatusCodeSequencingAuthorizations() {
-		
 	}
-	
+
 	public void createRelationships() {
-		instanceOf = new Relationship("instance of", "A is an instance of B", core);
-		instanceOf.setInverse(classOf);
+		instanceOf = new Relationship("instance of", "A is an instance of B",
+				core);
 		em.persist(instanceOf);
 		classOf = new Relationship("class of", "A is the class of B", core);
 		classOf.setInverse(instanceOf);
 		em.persist(classOf);
+
+		instanceOf.setInverse(classOf);
+		em.persist(instanceOf);
 	}
 
 	public void createProtocols() {
-		Protocol createTopoProtocol = new Protocol(createTopology, anyAgency, sameProduct, anyLocation, anyLocation, DEPLOYER_ANY, DEPLOY_SERVICE, sameProduct, false, core);
-		em.persist(createTopoProtocol);
-		Protocol pushJarsProtocol = new Protocol(pushJars, anyAgency, sameProduct, anyLocation, anyLocation, DEPLOYER_ANY, DEPLOY_SERVICE, sameProduct, false, core);
-		em.persist(pushJarsProtocol);
+		Protocol startProcessProtocol = new Protocol(deploySystem, core,
+				sameProduct, anyLocation, anyLocation, DEPLOYER_ANY,
+				startProcess, DISTRIBUTED_SYSTEM, false, core);
+		em.persist(startProcessProtocol);
+		Protocol createProcessProtocol = new Protocol(startProcess, core,
+				sameProduct, anyLocation, anyLocation, DEPLOYER_ANY,
+				createProcess, DISTRIBUTED_SYSTEM, false, core);
+		em.persist(createProcessProtocol);
+		Protocol createClusterProtocol = new Protocol(createProcess, core,
+				sameProduct, anyLocation, anyLocation, DEPLOYER_ANY,
+				createCluster, DISTRIBUTED_SYSTEM, false, core);
+		em.persist(createClusterProtocol);
+		Protocol createSystemProtocol = new Protocol(createCluster, core,
+				sameProduct, anyLocation, anyLocation, DEPLOYER_ANY,
+				createSystem, DISTRIBUTED_SYSTEM, false, core);
+		em.persist(createSystemProtocol);
+	}
+
+	public void load() {
+		createAgencies();
+		// createAttributes();
+		createProducts();
+		// createServices();
+		createLocations();
+		createRelationships();
+		// createNetworkInferences();
+		// createProductNetworks();
+		createAgencyNetworks();
+		createLocationNetworks();
+		createProtocols();
+		// createMetaProtocols();
+		createStatusCodes();
+		createStatusCodeSequencing();
+		// createProductSequencingAuthorizations();
 	}
 }

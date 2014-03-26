@@ -22,6 +22,7 @@ import java.io.InputStream;
 
 import org.junit.Before;
 
+import com.chiralbehaviors.CoRE.json.PolymorphicRuleformMixin;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonParseException;

@@ -452,4 +452,10 @@ public interface JobModel {
 			List<Pair<StatusCode, StatusCode>> codes,
 			int startingSequenceNumber, Agency updatedBy);
 
+	/**
+	 * @param parent
+	 * @throws SQLException
+	 */
+	void ensureValidParentStatus(Job parent) throws SQLException;
+
 }

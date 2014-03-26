@@ -132,13 +132,13 @@ import com.hellblazer.CoRE.product.Product;
                                                                                 + "FROM ruleform.job AS j "
                                                                                 + "WHERE j.parent IS NULL "
                                                                                 + "  AND ruleform.is_job_active( j.id )"),
-                     @NamedNativeQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY, query = "SELECT j.* "
+                     @NamedNativeQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY, query = "SELECT DISTINCT j.* "
                                                                                   + "FROM ruleform.job_chronology AS jc "
                                                                                   + "JOIN ruleform.job AS j ON jc.job = j.id "
                                                                                   + "WHERE j.assign_to = ? "
                                                                                   + "  AND NOT ruleform.is_terminal_state(j.service, jc.status) "
-                                                                                  + "  AND jc.time_stamp = "
-                                                                                  + "    (SELECT max(time_stamp) FROM ruleform.job_chronology WHERE job = jc.job)"),
+                                                                                  + "  AND jc.sequence = "
+                                                                                  + "    (SELECT max(sequence) FROM ruleform.job_chronology WHERE job = jc.job)"),
                      //Probably a candidate for 8.4 WITH query...
                      @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.id  FROM ruleform.job AS j "
                                                                             + "JOIN ruleform.product_sibling_sequencing_authorization AS seq "

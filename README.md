@@ -46,6 +46,10 @@ You can build the project:
 
 If you get an error that user 'core' already exists, you need to drop the database and start from scratch. Scroll down to the bottom to see how.
 
+The default build does do any DB activity, nor tests.  To run tests, you need to activate the profile “database.active”:
+
+    $ mvn -P database.active clean install
+
 Now you can work directly with the database:
 
     $ cd schema

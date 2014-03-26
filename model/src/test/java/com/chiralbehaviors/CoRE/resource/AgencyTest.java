@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.hellblazer.CoRE.test.DatabaseTest;
+import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand

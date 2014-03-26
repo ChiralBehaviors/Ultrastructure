@@ -42,7 +42,6 @@
         <module>configuration</module>
         <module>data-access</module>
         <module>service</module>
-        <module>job-queue</module>
         <module>mixin-generator</module>
         <module>json</module>
     </modules>

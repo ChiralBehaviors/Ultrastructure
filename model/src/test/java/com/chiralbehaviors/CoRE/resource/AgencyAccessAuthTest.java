@@ -24,7 +24,7 @@ import com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.kernel.Bootstrap;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
-import com.hellblazer.CoRE.test.DatabaseTest;
+import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
  * @author hparry

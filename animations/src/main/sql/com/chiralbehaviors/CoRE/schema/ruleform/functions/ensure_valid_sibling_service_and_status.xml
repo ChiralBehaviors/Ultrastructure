@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+	<changeSet id="1" author="hhildebrand">
+		<sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.ensure_valid_sibling_service_and_status()
+                RETURNS trigger
+                AS 'com.chiralbehaviors.CoRE.meta.models.JobModelImpl.ensure_valid_sibling_service_and_status'
+                LANGUAGE javaU STABLE
+              COST 100;
+            ALTER FUNCTION ruleform.ensure_valid_sibling_service_and_status()
+              OWNER TO core;
+            ]]>
+		</sql>
+		<rollback> DROP FUNCTION ruleform.ensure_valid_sibling_service_and_status();
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

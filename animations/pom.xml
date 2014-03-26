@@ -186,7 +186,7 @@
                             <url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</url>
                             <username>${testing.db.login}</username>
                             <password>${testing.db.password}</password>
-                            <changeLogFile>${main.sql}/com/hellblazer/CoRE/schema/ruleform/animations.xml</changeLogFile>
+                            <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml</changeLogFile>
                             <verbose>false</verbose>
                         </configuration>
                         <executions>

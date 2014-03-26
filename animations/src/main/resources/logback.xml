@@ -6,7 +6,7 @@
 			<pattern>${testing.logging.consoleLayoutPattern}</pattern>
 		</encoder>
 	</appender>
-	<logger name="com.hellblazer.CoRE">
+	<logger name="com.chiralbehaviors.CoRE">
 		<level value="${testing.logging.core}" />
 	</logger>
 

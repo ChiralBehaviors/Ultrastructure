@@ -22,7 +22,10 @@ import java.io.InputStream;
 
 import org.junit.Before;
 
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.PolymorphicRuleformMixin;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -33,9 +36,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**

@@ -20,16 +20,16 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
+import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.hellblazer.CoRE.access.DataAccessBundle;
-import com.hellblazer.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.authentication.AgencyAuthenticator;
 import com.hellblazer.CoRE.configuration.CoREServiceConfiguration;
 import com.hellblazer.CoRE.configuration.JpaConfiguration;
 import com.hellblazer.CoRE.json.AttributeValueSerializer;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.auth.basic.BasicAuthProvider;

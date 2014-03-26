@@ -16,10 +16,10 @@
 
 package com.hellblazer.CoRE.meta;
 
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationAttribute;
-import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
-import com.hellblazer.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationAttribute;
+import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
 
 /**
  * @author hhildebrand

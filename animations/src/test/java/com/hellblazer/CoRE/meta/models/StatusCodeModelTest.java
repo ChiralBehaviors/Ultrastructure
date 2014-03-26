@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.event.status.StatusCodeNetwork;
-import com.hellblazer.CoRE.network.NetworkInference;
-import com.hellblazer.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.network.NetworkInference;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand

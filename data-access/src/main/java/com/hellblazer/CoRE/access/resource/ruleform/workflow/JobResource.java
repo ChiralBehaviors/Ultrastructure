@@ -29,15 +29,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.event.Job;
-import com.hellblazer.CoRE.event.JobAttribute;
-import com.hellblazer.CoRE.event.JobChronology;
-import com.hellblazer.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.JobAttribute;
+import com.chiralbehaviors.CoRE.event.JobChronology;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.JobModelImpl;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry

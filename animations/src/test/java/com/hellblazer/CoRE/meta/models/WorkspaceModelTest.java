@@ -27,7 +27,7 @@ import javax.persistence.EntityTransaction;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.hellblazer.CoRE.meta.WorkspaceModel;
 import com.hellblazer.CoRE.meta.graph.Graph;
 import com.hellblazer.CoRE.meta.graph.Node;

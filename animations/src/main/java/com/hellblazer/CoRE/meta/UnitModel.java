@@ -15,10 +15,10 @@
  */
 package com.hellblazer.CoRE.meta;
 
-import com.hellblazer.CoRE.attribute.unit.Unit;
-import com.hellblazer.CoRE.attribute.unit.UnitAttribute;
-import com.hellblazer.CoRE.attribute.unit.UnitAttributeAuthorization;
-import com.hellblazer.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 
 /**
  * @author hhildebrand

@@ -18,11 +18,11 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.hellblazer.CoRE.meta.models.RelationshipModelImpl;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.network.RelationshipAttribute;
-import com.hellblazer.CoRE.network.RelationshipAttributeAuthorization;
-import com.hellblazer.CoRE.network.RelationshipNetwork;
 
 /**
  * @author hparry

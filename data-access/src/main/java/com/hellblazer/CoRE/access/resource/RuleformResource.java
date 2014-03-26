@@ -29,8 +29,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.reflections.Reflections;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 
 /**
  * @author hparry

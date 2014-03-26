@@ -18,7 +18,7 @@ package com.hellblazer.CoRE.jsp;
 
 import java.util.Iterator;
 
-import com.hellblazer.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 
 /**
  * A simple class to allow pl/java to return ids of a list of ruleforms

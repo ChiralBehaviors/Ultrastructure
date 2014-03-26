@@ -26,9 +26,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.meta.graph.impl.GraphImpl;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry

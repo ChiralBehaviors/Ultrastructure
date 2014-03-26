@@ -18,10 +18,10 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
-import com.hellblazer.CoRE.agency.AgencyNetwork;
-import com.hellblazer.CoRE.agency.access.AgencyAttribute;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
 import com.hellblazer.CoRE.meta.models.AgencyModelImpl;
 
 /**

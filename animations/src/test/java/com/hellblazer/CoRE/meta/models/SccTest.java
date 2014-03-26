@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
 
 /**
  * @author hhildebrand

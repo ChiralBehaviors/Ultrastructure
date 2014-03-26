@@ -23,25 +23,25 @@ import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
+import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductAttributeAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductStatusCodeAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
-import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductNetwork;
-import com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductRelationshipAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductStatusCodeAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization;
 
 /**
  * @author hhildebrand

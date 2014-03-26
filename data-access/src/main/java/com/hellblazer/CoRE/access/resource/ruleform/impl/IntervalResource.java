@@ -18,11 +18,11 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.time.IntervalAttribute;
+import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
+import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.hellblazer.CoRE.meta.models.IntervalModelImpl;
-import com.hellblazer.CoRE.time.Interval;
-import com.hellblazer.CoRE.time.IntervalAttribute;
-import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
-import com.hellblazer.CoRE.time.IntervalNetwork;
 
 /**
  * @author hparry

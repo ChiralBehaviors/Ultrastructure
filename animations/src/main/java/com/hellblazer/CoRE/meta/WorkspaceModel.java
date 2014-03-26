@@ -17,21 +17,21 @@ package com.hellblazer.CoRE.meta;
 
 import java.util.Collection;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.attribute.unit.Unit;
-import com.hellblazer.CoRE.event.Job;
-import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
-import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
-import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
-import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
-import com.hellblazer.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.meta.graph.Graph;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand

@@ -22,17 +22,17 @@ import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationAttribute;
+import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationAttribute;
-import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
-import com.hellblazer.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.LocationModel;
-import com.hellblazer.CoRE.network.Aspect;
 
 /**
  * @author hhildebrand

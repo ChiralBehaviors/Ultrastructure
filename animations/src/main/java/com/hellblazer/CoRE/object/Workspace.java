@@ -19,13 +19,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.authorization.AccessAuthorization;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.authorization.AccessAuthorization;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.hellblazer.CoRE.meta.graph.query.AccessAuthorizationGraphQuery;
 import com.hellblazer.CoRE.meta.graph.query.NetworkGraphQuery;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
  * The object that gets de/serialized as a workspace in JSON

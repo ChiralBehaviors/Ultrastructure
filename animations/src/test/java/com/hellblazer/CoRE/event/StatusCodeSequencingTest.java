@@ -32,14 +32,14 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.JobModelImpl;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**

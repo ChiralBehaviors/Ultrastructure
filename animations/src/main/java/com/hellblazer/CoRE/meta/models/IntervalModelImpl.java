@@ -22,17 +22,17 @@ import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.time.IntervalAttribute;
+import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
+import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.IntervalModel;
-import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.time.Interval;
-import com.hellblazer.CoRE.time.IntervalAttribute;
-import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
-import com.hellblazer.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand

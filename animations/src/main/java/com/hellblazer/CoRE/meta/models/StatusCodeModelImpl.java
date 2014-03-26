@@ -27,19 +27,19 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.event.status.StatusCodeAttribute;
-import com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization;
-import com.hellblazer.CoRE.event.status.StatusCodeNetwork;
-import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.StatusCodeModel;
-import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand

@@ -15,10 +15,10 @@
  */
 package com.hellblazer.CoRE.meta;
 
-import com.hellblazer.CoRE.time.Interval;
-import com.hellblazer.CoRE.time.IntervalAttribute;
-import com.hellblazer.CoRE.time.IntervalAttributeAuthorization;
-import com.hellblazer.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.time.IntervalAttribute;
+import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
+import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand

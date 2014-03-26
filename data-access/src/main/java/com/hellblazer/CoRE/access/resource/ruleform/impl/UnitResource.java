@@ -18,10 +18,10 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.attribute.unit.Unit;
-import com.hellblazer.CoRE.attribute.unit.UnitAttribute;
-import com.hellblazer.CoRE.attribute.unit.UnitAttributeAuthorization;
-import com.hellblazer.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.hellblazer.CoRE.meta.models.UnitModelImpl;
 
 /**

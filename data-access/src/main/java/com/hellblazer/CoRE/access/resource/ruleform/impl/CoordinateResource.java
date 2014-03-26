@@ -18,10 +18,10 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.coordinate.Coordinate;
-import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
-import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
-import com.hellblazer.CoRE.coordinate.CoordinateNetwork;
+import com.chiralbehaviors.CoRE.coordinate.Coordinate;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateAttribute;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateAttributeAuthorization;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
 import com.hellblazer.CoRE.meta.models.CoordinateModelImpl;
 
 /**

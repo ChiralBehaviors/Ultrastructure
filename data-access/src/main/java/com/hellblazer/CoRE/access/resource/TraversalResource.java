@@ -41,7 +41,7 @@ import org.apache.openjpa.enhance.PersistenceCapable;
 import org.apache.openjpa.kernel.OpenJPAStateManager;
 import org.reflections.Reflections;
 
-import com.hellblazer.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.yammer.metrics.annotation.Timed;
 
 /**

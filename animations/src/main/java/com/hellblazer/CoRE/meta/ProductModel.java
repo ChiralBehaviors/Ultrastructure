@@ -18,17 +18,17 @@ package com.hellblazer.CoRE.meta;
 
 import java.util.List;
 
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
-import com.hellblazer.CoRE.product.ProductAttributeAuthorization;
-import com.hellblazer.CoRE.product.ProductNetwork;
-import com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductAttributeAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductRelationshipAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductStatusCodeAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductUnitAccessAuthorization;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
+import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductAttributeAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductStatusCodeAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
 
 /**
  * @author hhildebrand

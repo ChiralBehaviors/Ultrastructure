@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.hellblazer.CoRE.meta.graph.query.NetworkGraphQuery;
-import com.hellblazer.CoRE.network.NetworkRuleform;
-import com.hellblazer.CoRE.network.Relationship;
 
 /**
  * Representation of a Network intended to be serialized by Jackson. Jackson

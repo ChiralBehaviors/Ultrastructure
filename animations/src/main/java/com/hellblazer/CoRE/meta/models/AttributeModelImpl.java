@@ -24,21 +24,21 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
-import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
-import com.hellblazer.CoRE.attribute.AttributeNetwork;
-import com.hellblazer.CoRE.attribute.Transformation;
-import com.hellblazer.CoRE.attribute.TransformationMetarule;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.Transformation;
+import com.chiralbehaviors.CoRE.attribute.TransformationMetarule;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.AttributeModel;
-import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductAttribute;
 
 /**
  * @author hhildebrand

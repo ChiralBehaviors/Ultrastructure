@@ -29,13 +29,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.authorization.AccessAuthorization;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.authorization.AccessAuthorization;
-import com.hellblazer.CoRE.network.Relationship;
 import com.hellblazer.CoRE.object.Workspace;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry

@@ -23,11 +23,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyNetwork;
-import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.NetworkInference;
-import com.hellblazer.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.NetworkInference;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand

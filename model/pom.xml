@@ -359,7 +359,7 @@
                             <url>${jdbc.url}</url>
                             <username>${testing.db.login}</username>
                             <password>${testing.db.password}</password>
-                            <changeLogFile>${main.sql}/com/hellblazer/CoRE/schema/core.xml</changeLogFile>
+                            <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
                             <verbose>false</verbose>
                         </configuration>
                         <executions>

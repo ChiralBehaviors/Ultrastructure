@@ -18,10 +18,10 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.event.status.StatusCodeAttribute;
-import com.hellblazer.CoRE.event.status.StatusCodeAttributeAuthorization;
-import com.hellblazer.CoRE.event.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.hellblazer.CoRE.meta.models.StatusCodeModelImpl;
 
 /**

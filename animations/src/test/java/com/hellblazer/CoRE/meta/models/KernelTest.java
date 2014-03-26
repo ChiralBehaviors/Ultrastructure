@@ -28,9 +28,9 @@ import javax.persistence.Persistence;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.attribute.ValueType;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.WellKnownObject;
+import com.chiralbehaviors.CoRE.attribute.ValueType;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
 
 /**

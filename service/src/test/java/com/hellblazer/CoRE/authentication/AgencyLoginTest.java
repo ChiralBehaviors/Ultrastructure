@@ -29,17 +29,17 @@ import javax.persistence.Persistence;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
+import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
+import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
+import com.chiralbehaviors.CoRE.utils.Util;
 import com.google.common.base.Optional;
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.access.AgencyAttribute;
-import com.hellblazer.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.models.ModelImpl;
-import com.hellblazer.CoRE.network.Aspect;
-import com.hellblazer.CoRE.network.Facet;
-import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
-import com.hellblazer.CoRE.utils.Util;
 import com.yammer.dropwizard.auth.basic.BasicCredentials;
 
 /**

@@ -31,14 +31,14 @@ import javax.persistence.TypedQuery;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.event.Job;
-import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
-import com.hellblazer.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.meta.JobModel;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hhildebrand

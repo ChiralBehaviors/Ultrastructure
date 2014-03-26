@@ -18,10 +18,10 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
-import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
-import com.hellblazer.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.hellblazer.CoRE.meta.models.AttributeModelImpl;
 
 /**

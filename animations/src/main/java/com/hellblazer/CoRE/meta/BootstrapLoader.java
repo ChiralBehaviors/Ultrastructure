@@ -16,7 +16,7 @@
 
 package com.hellblazer.CoRE.meta;
 
-import static com.hellblazer.CoRE.kernel.WellKnownObject.CORE;
+import static com.chiralbehaviors.CoRE.kernel.WellKnownObject.CORE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,11 +30,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.hellblazer.CoRE.agency.AgencyAttributeAuthorization;
-import com.hellblazer.CoRE.agency.access.AgencyAttribute;
-import com.hellblazer.CoRE.kernel.Bootstrap;
-import com.hellblazer.CoRE.kernel.KernelImpl;
-import com.hellblazer.CoRE.utils.Util;
+import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
+import com.chiralbehaviors.CoRE.kernel.Bootstrap;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.utils.Util;
 
 /**
  * The bootstrap loader of the kernel rules for the CoRE

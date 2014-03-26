@@ -17,7 +17,7 @@ package com.hellblazer.CoRE.workspace.api;
 
 import java.util.List;
 
-import com.hellblazer.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hparry

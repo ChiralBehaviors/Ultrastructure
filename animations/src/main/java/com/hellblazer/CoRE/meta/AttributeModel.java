@@ -16,10 +16,10 @@
 
 package com.hellblazer.CoRE.meta;
 
-import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.attribute.AttributeMetaAttribute;
-import com.hellblazer.CoRE.attribute.AttributeMetaAttributeAuthorization;
-import com.hellblazer.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 
 /**
  * @author hhildebrand

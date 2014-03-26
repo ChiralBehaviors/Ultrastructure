@@ -35,7 +35,7 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
-import com.hellblazer.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 
 /**
  * A class for generating a file for deserializing ruleforms. If you want your

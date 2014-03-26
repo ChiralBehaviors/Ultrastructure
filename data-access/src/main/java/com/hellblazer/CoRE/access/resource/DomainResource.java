@@ -37,13 +37,13 @@ import org.apache.openjpa.persistence.OpenJPAEntityManager;
 import org.apache.openjpa.persistence.OpenJPAEntityManagerFactory;
 import org.w3c.dom.Document;
 
+import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.CoRE.access.formatting.PropertiesFormatter;
 import com.hellblazer.CoRE.access.formatting.XMLFormatter;
-import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 import com.yammer.dropwizard.auth.Auth;
 import com.yammer.metrics.annotation.Timed;
 

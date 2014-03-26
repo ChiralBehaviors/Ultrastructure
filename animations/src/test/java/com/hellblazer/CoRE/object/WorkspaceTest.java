@@ -23,15 +23,15 @@ import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.kernel.Bootstrap;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductNetwork;
-import com.hellblazer.CoRE.product.access.ProductAgencyAccessAuthorization;
-import com.hellblazer.CoRE.product.access.ProductLocationAccessAuthorization;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.kernel.Bootstrap;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**

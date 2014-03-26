@@ -20,11 +20,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
 
 /**
  * The meta model for the CoRE

@@ -23,11 +23,11 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 import com.hellblazer.CoRE.test.DatabaseTest;
 
 /**

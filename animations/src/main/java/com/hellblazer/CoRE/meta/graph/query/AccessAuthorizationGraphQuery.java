@@ -21,10 +21,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.authorization.AccessAuthorization;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.access.ProductAccessAuthorization;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.authorization.AccessAuthorization;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.access.ProductAccessAuthorization;
 
 /**
  * @author hparry

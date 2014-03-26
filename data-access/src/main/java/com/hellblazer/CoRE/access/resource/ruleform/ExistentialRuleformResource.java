@@ -25,10 +25,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
-import com.hellblazer.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
 /**
  * @author hparry

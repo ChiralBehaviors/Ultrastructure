@@ -27,8 +27,8 @@ import javax.persistence.Persistence;
 
 import org.junit.Before;
 
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.WellKnownObject;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.hellblazer.CoRE.meta.BootstrapLoader;
 import com.hellblazer.CoRE.meta.Model;
 

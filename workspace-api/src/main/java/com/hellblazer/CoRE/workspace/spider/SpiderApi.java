@@ -17,9 +17,9 @@ package com.hellblazer.CoRE.workspace.spider;
 
 import java.util.List;
 
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hparry

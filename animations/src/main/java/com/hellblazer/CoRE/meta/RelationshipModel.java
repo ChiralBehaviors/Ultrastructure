@@ -15,10 +15,10 @@
  */
 package com.hellblazer.CoRE.meta;
 
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.network.RelationshipAttribute;
-import com.hellblazer.CoRE.network.RelationshipAttributeAuthorization;
-import com.hellblazer.CoRE.network.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 
 /**
  * @author hhildebrand

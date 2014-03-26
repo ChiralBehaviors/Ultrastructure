@@ -18,12 +18,12 @@ package com.hellblazer.CoRE.json;
 
 import java.io.IOException;
 
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.attribute.AttributeValue;
 
 /**
  * 

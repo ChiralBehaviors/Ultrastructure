@@ -22,15 +22,15 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.ProductModel;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * @author hparry

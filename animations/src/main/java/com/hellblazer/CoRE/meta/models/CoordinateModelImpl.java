@@ -22,17 +22,17 @@ import javax.persistence.EntityManager;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.hellblazer.CoRE.attribute.Attribute;
-import com.hellblazer.CoRE.coordinate.Coordinate;
-import com.hellblazer.CoRE.coordinate.CoordinateAttribute;
-import com.hellblazer.CoRE.coordinate.CoordinateAttributeAuthorization;
-import com.hellblazer.CoRE.coordinate.CoordinateNetwork;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.coordinate.Coordinate;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateAttribute;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateAttributeAuthorization;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
 import com.hellblazer.CoRE.meta.CoordinateModel;
-import com.hellblazer.CoRE.network.Aspect;
 
 /**
  * @author hhildebrand

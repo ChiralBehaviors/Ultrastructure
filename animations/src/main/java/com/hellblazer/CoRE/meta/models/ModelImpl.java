@@ -16,8 +16,8 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static com.hellblazer.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
-import static com.hellblazer.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
+import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
+import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
 import java.util.List;
 
@@ -30,13 +30,14 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Ruleform;
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.attribute.AttributeValue_;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.AttributeModel;
 import com.hellblazer.CoRE.meta.CoordinateModel;
@@ -49,7 +50,6 @@ import com.hellblazer.CoRE.meta.RelationshipModel;
 import com.hellblazer.CoRE.meta.StatusCodeModel;
 import com.hellblazer.CoRE.meta.UnitModel;
 import com.hellblazer.CoRE.meta.WorkspaceModel;
-import com.hellblazer.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * @author hhildebrand

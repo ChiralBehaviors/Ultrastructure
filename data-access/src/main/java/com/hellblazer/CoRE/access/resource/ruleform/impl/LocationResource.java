@@ -18,10 +18,10 @@ package com.hellblazer.CoRE.access.resource.ruleform.impl;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationAttribute;
-import com.hellblazer.CoRE.location.LocationAttributeAuthorization;
-import com.hellblazer.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationAttribute;
+import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.hellblazer.CoRE.meta.models.LocationModelImpl;
 
 /**

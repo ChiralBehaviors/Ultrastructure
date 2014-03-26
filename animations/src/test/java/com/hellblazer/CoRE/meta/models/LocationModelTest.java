@@ -23,16 +23,16 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.agency.AgencyNetwork;
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.location.LocationNetwork;
-import com.hellblazer.CoRE.location.access.LocationAgencyAccessAuthorization;
-import com.hellblazer.CoRE.location.access.LocationProductAccessAuthorization;
-import com.hellblazer.CoRE.network.NetworkInference;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.location.access.LocationAgencyAccessAuthorization;
+import com.chiralbehaviors.CoRE.location.access.LocationProductAccessAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkInference;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 
 /**
  * @author hhildebrand

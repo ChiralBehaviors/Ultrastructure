@@ -16,7 +16,7 @@
 
 package com.hellblazer.CoRE.meta.models;
 
-import static com.hellblazer.CoRE.event.Job.CHRONOLOGY;
+import static com.chiralbehaviors.CoRE.event.Job.CHRONOLOGY;
 import static java.lang.String.format;
 
 import java.sql.SQLException;
@@ -47,32 +47,32 @@ import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.event.Job;
-import com.hellblazer.CoRE.event.JobAttribute;
-import com.hellblazer.CoRE.event.JobChronology;
-import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
-import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
-import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
-import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.ProtocolAttribute;
-import com.hellblazer.CoRE.event.Protocol_;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.JobAttribute;
+import com.chiralbehaviors.CoRE.event.JobChronology;
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.event.ProtocolAttribute;
+import com.chiralbehaviors.CoRE.event.Protocol_;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.CoRE.jsp.JSP;
 import com.hellblazer.CoRE.jsp.RuleformIdIterator;
 import com.hellblazer.CoRE.jsp.StoredProcedure;
-import com.hellblazer.CoRE.kernel.Kernel;
-import com.hellblazer.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
-import com.hellblazer.CoRE.location.Location;
 import com.hellblazer.CoRE.meta.AgencyModel;
 import com.hellblazer.CoRE.meta.JobModel;
 import com.hellblazer.CoRE.meta.LocationModel;
 import com.hellblazer.CoRE.meta.Model;
 import com.hellblazer.CoRE.meta.ProductModel;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
 
 /**
  * 

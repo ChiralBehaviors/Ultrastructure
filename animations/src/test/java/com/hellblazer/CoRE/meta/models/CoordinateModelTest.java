@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.coordinate.Coordinate;
-import com.hellblazer.CoRE.coordinate.CoordinateNetwork;
-import com.hellblazer.CoRE.network.NetworkInference;
-import com.hellblazer.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.coordinate.Coordinate;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
+import com.chiralbehaviors.CoRE.network.NetworkInference;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand

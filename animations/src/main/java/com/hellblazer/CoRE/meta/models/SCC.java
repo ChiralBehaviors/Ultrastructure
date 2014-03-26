@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.hellblazer.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
 
 /**
  * Use Tarjan's algorithm to detect all strongly-connected components (SCCs) in

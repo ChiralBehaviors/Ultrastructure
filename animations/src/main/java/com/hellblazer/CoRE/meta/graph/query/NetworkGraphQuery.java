@@ -21,9 +21,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.network.NetworkRuleform;
-import com.hellblazer.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * Class for representing the graphs created by networked ruleforms. The nodes

@@ -30,13 +30,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.hellblazer.CoRE.Ruleform;
 import com.hellblazer.CoRE.meta.ProductModel;
 import com.hellblazer.CoRE.meta.models.ProductModelImpl;
-import com.hellblazer.CoRE.network.Relationship;
-import com.hellblazer.CoRE.product.Product;
-import com.hellblazer.CoRE.product.ProductNetwork;
 
 /**
  * A REST resource for processing atomic transactions full of multiple objects

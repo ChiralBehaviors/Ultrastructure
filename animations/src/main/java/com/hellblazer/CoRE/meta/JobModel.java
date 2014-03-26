@@ -23,18 +23,18 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.hellblazer.CoRE.agency.Agency;
-import com.hellblazer.CoRE.event.Job;
-import com.hellblazer.CoRE.event.JobAttribute;
-import com.hellblazer.CoRE.event.JobChronology;
-import com.hellblazer.CoRE.event.MetaProtocol;
-import com.hellblazer.CoRE.event.ProductChildSequencingAuthorization;
-import com.hellblazer.CoRE.event.ProductParentSequencingAuthorization;
-import com.hellblazer.CoRE.event.ProductSiblingSequencingAuthorization;
-import com.hellblazer.CoRE.event.Protocol;
-import com.hellblazer.CoRE.event.status.StatusCode;
-import com.hellblazer.CoRE.location.Location;
-import com.hellblazer.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.JobAttribute;
+import com.chiralbehaviors.CoRE.event.JobChronology;
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand

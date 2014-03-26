@@ -9,7 +9,7 @@
   <logger name="org.dbunit">
     <level value="${testing.logging.dbunit}"/>
   </logger>
-  <logger name="com.hellblazer.CoRE">
+  <logger name="com.chiralbehaviors.CoRE">
     <level value="${testing.logging.core}"/>
   </logger>
   <logger name="openjpa">

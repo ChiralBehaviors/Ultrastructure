@@ -24,7 +24,7 @@ import javax.persistence.EntityTransaction;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hellblazer.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.Job;
 import com.hellblazer.CoRE.meta.JobModel;
 
 /**

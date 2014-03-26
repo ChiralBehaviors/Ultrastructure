@@ -22,13 +22,13 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import com.hellblazer.CoRE.ExistentialRuleform;
-import com.hellblazer.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.hellblazer.CoRE.access.resource.ruleform.ExistentialRuleformResource;
-import com.hellblazer.CoRE.attribute.AttributeValue;
-import com.hellblazer.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.hellblazer.CoRE.meta.NetworkedModel;
-import com.hellblazer.CoRE.network.NetworkRuleform;
 
 /**
  * @author hparry

@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.hellblazer.CoRE</groupId>
+		<groupId>com.chiralbehaviors.CoRE</groupId>
 		<artifactId>CoRE.app</artifactId>
 		<version>0.0.2-SNAPSHOT</version>
 	</parent>
@@ -11,7 +11,7 @@
 	<description>Support for serializing and deserializing graphs of ruleforms with Jackson</description>
 	<dependencies>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>model</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
@@ -21,7 +21,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>test-framework</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -36,12 +36,12 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.hellblazer.CoRE</groupId>
+				<groupId>com.chiralbehaviors.CoRE</groupId>
 				<artifactId>mixin-generator</artifactId>
 				<version>0.0.2-SNAPSHOT</version>
 				<configuration>
 					<outputDirectory>${project.build.directory}/generated-sources/mixin</outputDirectory>
-					<packageName>com.hellblazer.CoRE.json</packageName>
+					<packageName>com.chiralbehaviors.CoRE.json</packageName>
 					<className>PolymorphicRuleformMixin</className>
 				</configuration>
 				<executions>
@@ -88,7 +88,7 @@
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>
-											com.hellblazer.CoRE
+											com.chiralbehaviors.CoRE
 										</groupId>
 										<artifactId>
 											mixin-generator

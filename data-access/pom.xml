@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>CoRE.app</artifactId>
-		<groupId>com.hellblazer.CoRE</groupId>
+		<groupId>com.chiralbehaviors.CoRE</groupId>
 		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
@@ -41,7 +41,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>model</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
@@ -52,19 +52,19 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>model</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>configuration</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>test-framework</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -73,7 +73,7 @@
 			<artifactId>postgresql</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>animations</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
@@ -84,14 +84,14 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-            <groupId>com.hellblazer.CoRE</groupId>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>animations</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
             <version>${project.version}</version>
         </dependency>
 		<dependency>
-			<groupId>com.hellblazer.CoRE</groupId>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>json</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>

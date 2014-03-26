@@ -3,7 +3,7 @@
 >
     <parent>
         <artifactId>CoRE.app</artifactId>
-        <groupId>com.hellblazer.CoRE</groupId>
+        <groupId>com.chiralbehaviors.CoRE</groupId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
@@ -30,7 +30,7 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hellblazer.CoRE</groupId>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>test-framework</artifactId>
             <scope>test</scope>
             <exclusions>

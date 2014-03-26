@@ -3,7 +3,7 @@
 >
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.hellblazer.CoRE</groupId>
+        <groupId>com.chiralbehaviors.CoRE</groupId>
         <artifactId>CoRE.app</artifactId>
         <version>0.0.2-SNAPSHOT</version>
     </parent>
@@ -17,7 +17,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.hellblazer.CoRE</groupId>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>model</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -27,7 +27,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.hellblazer.CoRE</groupId>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>test-framework</artifactId>
             <scope>test</scope>
             <exclusions>

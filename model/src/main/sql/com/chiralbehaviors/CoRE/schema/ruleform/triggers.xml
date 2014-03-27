@@ -174,9 +174,6 @@
         file="tables/sourcing_authorization/trigger-sourcing_authorization_update_date.xml" />
     <include
         relativeToChangelogFile="true"
-        file="tables/protocol_attribute_authorization/trigger-protocol_attribute_authorization_update_date.xml" />
-    <include
-        relativeToChangelogFile="true"
         file="tables/access_authorization/trigger-access_authorization_update_date.xml" />
     <include
         relativeToChangelogFile="true"

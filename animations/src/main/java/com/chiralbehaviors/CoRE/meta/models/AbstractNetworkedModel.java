@@ -341,7 +341,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.hellblazer
+     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.chiralbehaviors
      * .CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.agency.Agency)
      */
     @Override

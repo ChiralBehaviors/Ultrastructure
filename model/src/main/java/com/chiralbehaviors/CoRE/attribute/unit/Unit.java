@@ -181,7 +181,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com.hellblazer
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com.chiralbehaviors
      * .CoRE.network.NetworkRuleform)
      */
     @Override
@@ -194,7 +194,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com.hellblazer
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com.chiralbehaviors
      * .CoRE.network.NetworkRuleform)
      */
     @Override

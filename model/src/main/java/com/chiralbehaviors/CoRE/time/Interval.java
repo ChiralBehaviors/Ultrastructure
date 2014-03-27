@@ -203,7 +203,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#addChildRelationship(com.hellblazer
+     * com.chiralbehaviors.CoRE.network.Networked#addChildRelationship(com.chiralbehaviors
      * .CoRE.network.NetworkRuleform)
      */
     @Override
@@ -216,7 +216,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#addParentRelationship(com.hellblazer
+     * com.chiralbehaviors.CoRE.network.Networked#addParentRelationship(com.chiralbehaviors
      * .CoRE.network.NetworkRuleform)
      */
     @Override

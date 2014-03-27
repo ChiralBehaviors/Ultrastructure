@@ -660,7 +660,7 @@ public class JobModelImpl implements JobModel {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#getChronologyForJob(com.hellblazer.
+	 * com.chiralbehaviors.CoRE.meta.JobModel#getChronologyForJob(com.chiralbehaviors.
 	 * CoRE.jsp.Job)
 	 */
 	@Override
@@ -738,7 +738,7 @@ public class JobModelImpl implements JobModel {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#getMostRecentChronologyEntry(com.hellblazer
+	 * com.chiralbehaviors.CoRE.meta.JobModel#getMostRecentChronologyEntry(com.chiralbehaviors
 	 * .CoRE.jsp.Job)
 	 */
 	@Override

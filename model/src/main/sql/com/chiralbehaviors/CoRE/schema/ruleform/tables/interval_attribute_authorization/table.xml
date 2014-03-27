@@ -32,6 +32,8 @@
             >
                 <constraints nullable="false" />
             </column>
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="binary_value" type="BYTEA" />
             <column name="text_value" remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
                 type="VARCHAR(10485760)" />
             <column name="integer_value" type="INT4" />

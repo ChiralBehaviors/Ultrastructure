@@ -38,6 +38,8 @@
             <column name="grouping_agency"
                 remarks="If present, along with 'location_attribute' and 'location_value', used to select an entire grouping of Locations that can be acceptable values"
                 type="INT8" />
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="binary_value" type="BYTEA" />
             <column name="text_value" remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
                 type="VARCHAR(10485760)" />
             <column name="integer_value" remarks="Contains a single acceptable integer-value if 'attribute' has a data type of 'integer'"

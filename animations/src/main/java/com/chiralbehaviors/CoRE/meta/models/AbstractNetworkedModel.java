@@ -209,8 +209,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                    System.currentTimeMillis() - then));
         }
     }
-    
-    
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#find(long)
      */
@@ -227,7 +226,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         cq.from(entity);
         return em.createQuery(cq).getResultList();
     }
-
 
     @Override
     public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
@@ -776,6 +774,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         List<ValueType> allowedValues = new ArrayList<ValueType>();
         for (AttributeAuthorization authorization : authorizations) {
             switch (attribute.getValueType()) {
+                case BOOLEAN: {
+                    allowedValues.add((ValueType) authorization.getBooleanValue());
+                    break;
+                }
                 case INTEGER: {
                     allowedValues.add((ValueType) authorization.getIntegerValue());
                     break;
@@ -792,7 +794,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                     allowedValues.add((ValueType) authorization.getTimestampValue());
                     break;
                 }
-                default:
+                case BINARY: {
+                    allowedValues.add((ValueType) authorization.getBinaryValue());
+                    break;
+                }
             }
         }
         return allowedValues;

@@ -44,7 +44,6 @@
 		<class>com.chiralbehaviors.CoRE.event.MetaProtocol</class>
 		<class>com.chiralbehaviors.CoRE.event.Protocol</class>
 		<class>com.chiralbehaviors.CoRE.event.ProtocolAttribute</class>
-		<class>com.chiralbehaviors.CoRE.event.ProtocolAttributeAuthorization</class>
 		<class>com.chiralbehaviors.CoRE.event.status.StatusCode</class>
 		<class>com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute</class>
 		<class>com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization</class>

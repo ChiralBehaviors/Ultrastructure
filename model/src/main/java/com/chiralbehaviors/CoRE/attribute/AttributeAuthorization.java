@@ -47,6 +47,12 @@ abstract public class AttributeAuthorization extends Ruleform {
     @JoinColumn(name = "authorized_attribute")
     private Attribute         authorizedAttribute;
 
+    @Column(name = "binary_value")
+    private byte[]            binaryValue;
+
+    @Column(name = "boolean_value")
+    private Integer           booleanValue;
+
     // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "grouping_agency")
@@ -101,6 +107,20 @@ abstract public class AttributeAuthorization extends Ruleform {
         return authorizedAttribute;
     }
 
+    /**
+     * @return the binaryValue
+     */
+    public byte[] getBinaryValue() {
+        return binaryValue;
+    }
+
+    /**
+     * @return the booleanValue
+     */
+    public Integer getBooleanValue() {
+        return booleanValue;
+    }
+
     public Agency getGroupingAgency() {
         return groupingAgency;
     }
@@ -127,6 +147,22 @@ abstract public class AttributeAuthorization extends Ruleform {
 
     public void setAuthorizedAttribute(Attribute productAttributeType3) {
         authorizedAttribute = productAttributeType3;
+    }
+
+    /**
+     * @param binaryValue
+     *            the binaryValue to set
+     */
+    public void setBinaryValue(byte[] binaryValue) {
+        this.binaryValue = binaryValue;
+    }
+
+    /**
+     * @param booleanValue
+     *            the booleanValue to set
+     */
+    public void setBooleanValue(Integer booleanValue) {
+        this.booleanValue = booleanValue;
     }
 
     public void setGroupingAgency(Agency agency) {

@@ -64,7 +64,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                                       + "              FROM ruleform.coordinate_network AS n) as premise1 "
                                                                       + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
                                                                       + "            FROM ruleform.coordinate_network AS n "
-                                                                      + "            WHERE n.inferred = 0) as premise2  "
+                                                                      + "            WHERE n.inferred_from IS NULL) as premise2  "
                                                                       + "         ON premise2.parent = premise1.child "
                                                                       + "         AND premise2.child <> premise1.parent "
                                                                       + "     JOIN ruleform.network_inference AS deduction "
@@ -81,7 +81,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                                                      + "              FROM last_pass_rules AS n) as premise1 "
                                                                                      + "     JOIN  (SELECT n.id, n.parent, n.relationship, n.child "
                                                                                      + "            FROM ruleform.coordinate_network AS n "
-                                                                                     + "            WHERE n.inferred = 0) as premise2  "
+                                                                                     + "            WHERE n.inferred_from IS NULL) as premise2  "
                                                                                      + "         ON premise2.parent = premise1.child "
                                                                                      + "         AND premise2.child <> premise1.parent "
                                                                                      + "     JOIN ruleform.network_inference AS deduction "
@@ -113,8 +113,8 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                                                 + "          AND n.relationship = cpr.relationship "
                                                                                 + "          AND n.child = cpr.child "
                                                                                 + "        RETURNING n.*) "
-                                                                                + "INSERT INTO ruleform.coordinate_network(id, parent, relationship, child, inferred, updated_by) "
-                                                                                + "        SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, 1, ?1 "
+                                                                                + "INSERT INTO ruleform.coordinate_network(id, parent, relationship, child, inference_rule, inferred_from, updated_by) "
+                                                                                + "        SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, cpr.inference_rule, cpr.inferredFrom, ?1 "
                                                                                 + "    FROM current_pass_rules cpr "
                                                                                 + "    LEFT OUTER JOIN upsert AS exist "
                                                                                 + "        ON cpr.parent = exist.parent "
@@ -171,6 +171,10 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     @Id
     @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
+
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private Coordinate         inferredFrom;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
@@ -233,6 +237,14 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         return id;
     }
 
+    /**
+     * @return the inferredFrom
+     */
+    @Override
+    public Coordinate getInferredFrom() {
+        return inferredFrom;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -255,6 +267,15 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @param inferredFrom
+     *            the inferredFrom to set
+     */
+    @Override
+    public void setInferredFrom(Coordinate inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     /* (non-Javadoc)

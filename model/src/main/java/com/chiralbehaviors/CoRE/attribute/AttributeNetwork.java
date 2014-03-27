@@ -149,7 +149,8 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
-                                                                            + "WHERE n.parent = :attribute and n.inferred = 0 and n.relationship.preferred = 0 "
+                                                                            + "WHERE n.parent = :attribute and n.inferredFrom IS NULL "
+                                                                            + "AND n.relationship.preferred = 0 "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
                                                         + "WHERE n.parent = :parent "
@@ -181,6 +182,10 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @Id
     @GeneratedValue(generator = "attribute_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
+
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private Attribute          inferredFrom;
 
     //bi-directional many-to-one association to Attribute
     @ManyToOne
@@ -233,6 +238,14 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
         return id;
     }
 
+    /**
+     * @return the inferredFrom
+     */
+    @Override
+    public Attribute getInferredFrom() {
+        return inferredFrom;
+    }
+
     @Override
     public Attribute getParent() {
         return parent;
@@ -246,6 +259,15 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @param inferredFrom
+     *            the inferredFrom to set
+     */
+    @Override
+    public void setInferredFrom(Attribute inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     @Override

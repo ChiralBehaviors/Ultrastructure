@@ -173,6 +173,10 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @GeneratedValue(generator = "interval_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private Interval           inferredFrom;
+
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
@@ -221,6 +225,14 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return id;
     }
 
+    /**
+     * @return the inferredFrom
+     */
+    @Override
+    public Interval getInferredFrom() {
+        return inferredFrom;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -243,6 +255,15 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @param inferredFrom
+     *            the inferredFrom to set
+     */
+    @Override
+    public void setInferredFrom(Interval inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     /* (non-Javadoc)

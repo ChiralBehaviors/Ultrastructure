@@ -182,6 +182,10 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @GeneratedValue(generator = "location_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long     id;
 
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private Location inferredFrom;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
     private Location parent;
@@ -232,6 +236,14 @@ public class LocationNetwork extends NetworkRuleform<Location> {
         return id;
     }
 
+    /**
+     * @return the inferredFrom
+     */
+    @Override
+    public Location getInferredFrom() {
+        return inferredFrom;
+    }
+
     @Override
     public Location getParent() {
         return parent;
@@ -245,6 +257,15 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @param inferredFrom
+     *            the inferredFrom to set
+     */
+    @Override
+    public void setInferredFrom(Location inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     @Override

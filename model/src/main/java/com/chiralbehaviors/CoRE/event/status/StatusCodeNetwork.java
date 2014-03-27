@@ -173,6 +173,10 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @GeneratedValue(generator = "status_code_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private StatusCode         inferredFrom;
+
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
@@ -234,6 +238,14 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         return id;
     }
 
+    /**
+     * @return the inferredFrom
+     */
+    @Override
+    public StatusCode getInferredFrom() {
+        return inferredFrom;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -256,6 +268,15 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @param inferredFrom
+     *            the inferredFrom to set
+     */
+    @Override
+    public void setInferredFrom(StatusCode inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     /* (non-Javadoc)

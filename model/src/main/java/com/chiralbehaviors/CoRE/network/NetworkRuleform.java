@@ -43,7 +43,9 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    private int               inferred         = FALSE;
+    @ManyToOne
+    @JoinColumn(name = "inference_rule")
+    private NetworkInference  inferenceRule;
 
     @ManyToOne
     @JoinColumn(name = "relationship")
@@ -96,6 +98,15 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     abstract public E getChild();
 
+    /**
+     * @return the inferenceRule
+     */
+    public NetworkInference getInferenceRule() {
+        return inferenceRule;
+    }
+
+    abstract public E getInferredFrom();
+
     abstract public E getParent();
 
     /**
@@ -119,14 +130,20 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     }
 
     public boolean isInferred() {
-        return inferred == TRUE;
+        return inferenceRule != null;
     }
 
     abstract public void setChild(E child);
 
-    public void setInferred(boolean inferred) {
-        this.inferred = inferred ? TRUE : FALSE;
+    /**
+     * @param inferenceRule
+     *            the inferenceRule to set
+     */
+    public void setInferenceRule(NetworkInference inferenceRule) {
+        this.inferenceRule = inferenceRule;
     }
+
+    abstract public void setInferredFrom(E inferred);
 
     abstract public void setParent(E parent);
 

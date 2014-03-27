@@ -174,6 +174,10 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @JoinColumn(name = "parent")
     private Relationship       parent;
 
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private Relationship       inferredFrom;
+
     /**
      * 
      */
@@ -230,6 +234,14 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         return id;
     }
 
+    /**
+     * @return the inferredFrom
+     */
+    @Override
+    public Relationship getInferredFrom() {
+        return inferredFrom;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -252,6 +264,15 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @param inferredFrom
+     *            the inferredFrom to set
+     */
+    @Override
+    public void setInferredFrom(Relationship inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     /* (non-Javadoc)

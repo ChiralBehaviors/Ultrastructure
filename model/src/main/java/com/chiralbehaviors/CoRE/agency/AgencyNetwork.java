@@ -65,7 +65,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
                                                                             + "where n.parent = :agency "
-                                                                            + "and n.inferred = 0 "
+                                                                            + "and n.inferredFrom IS NULL "
                                                                             + "and n.relationship.preferred = 0 "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
@@ -186,6 +186,10 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private Agency             inferredFrom;
+
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
@@ -237,6 +241,14 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
         return id;
     }
 
+    /**
+     * @return the inferredFrom
+     */
+    @Override
+    public Agency getInferredFrom() {
+        return inferredFrom;
+    }
+
     @Override
     public Agency getParent() {
         return parent;
@@ -254,6 +266,15 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @param inferredFrom
+     *            the inferredFrom to set
+     */
+    @Override
+    public void setInferredFrom(Agency inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     @Override

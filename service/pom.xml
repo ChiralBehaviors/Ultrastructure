@@ -29,8 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>animations</artifactId>
-			<version>${project.version}</version>
+			<artifactId>animations</artifactId> 
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-jdk14</artifactId>
@@ -48,8 +47,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>data-access</artifactId>
-			<version>${project.version}</version>
+			<artifactId>data-access</artifactId> 
 			<exclusions>
 				<exclusion>
 					<artifactId>javax.persistence</artifactId>

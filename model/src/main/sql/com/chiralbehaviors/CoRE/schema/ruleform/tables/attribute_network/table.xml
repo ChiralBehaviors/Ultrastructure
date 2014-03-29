@@ -37,17 +37,17 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-122">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.attribute_network" constraintName="attribute_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-123">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.attribute_network" constraintName="attribute_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-124">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.attribute_network"
-            constraintName="attribute_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            constraintName="attribute_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" 
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-125">

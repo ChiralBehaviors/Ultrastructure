@@ -37,17 +37,17 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-102">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.agency_network" constraintName="agency_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-103">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.agency_network" constraintName="agency_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-104">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.agency_network"
-            constraintName="agency_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            constraintName="agency_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" 
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-105">

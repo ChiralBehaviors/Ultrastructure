@@ -53,7 +53,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private byte[]            binaryValue;
 
     @Column(name = "boolean_value")
-    private Integer              booleanValue;
+    private Integer           booleanValue;
 
     @Column(name = "integer_value")
     private Integer           integerValue;

@@ -161,7 +161,7 @@ public class Relationship extends
 
     private String                     operator;
 
-    private Integer                       preferred                                = FALSE;
+    private Integer                    preferred                                = FALSE;
 
     public Relationship() {
     }

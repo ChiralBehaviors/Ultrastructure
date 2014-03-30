@@ -88,21 +88,21 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class ProductStatusCodeAccessAuthorization extends
         ProductAccessAuthorization<StatusCode> {
     public static final String PRODUCT_STATUS_CODE_ACCESS_AUTH_PREFIX                                  = "productStatusCodeAccessAuthorization";
-
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_STATUS_CODE_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_STATUS_CODE_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
-
     public static final String FIND_AUTHORIZATION                                                      = PRODUCT_STATUS_CODE_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHORIZATION_SUFFIX;
+
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_STATUS_CODE_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_STATUS_CODE_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
-
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_STATUS_CODE_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+
 
     private static final long  serialVersionUID                                                        = 1L;
 

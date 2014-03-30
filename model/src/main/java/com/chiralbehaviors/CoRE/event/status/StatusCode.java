@@ -153,7 +153,7 @@ public class StatusCode extends
     private Set<StatusCodeAttribute> attributes;
 
     @Column(name = "fail_parent")
-    private Integer                     failParent                               = TRUE;
+    private Integer                  failParent                               = TRUE;
 
     @Id
     @GeneratedValue(generator = "status_code_id_seq", strategy = GenerationType.SEQUENCE)
@@ -168,7 +168,7 @@ public class StatusCode extends
     private Set<StatusCodeNetwork>   networkByParent;
 
     @Column(name = "propagate_children")
-    private Integer                     propagateChildren                        = TRUE;
+    private Integer                  propagateChildren                        = TRUE;
 
     public StatusCode() {
     }

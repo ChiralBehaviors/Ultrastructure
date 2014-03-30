@@ -63,8 +63,8 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
     public static final String LOCATION_AGENCY                                                                = "4";
     public static final String LOCATION_PRODUCT                                                               = "5";
     public static final String PRODUCT_AGENCY                                                                 = "2";
-    public static final String PRODUCT_LOCATION                                                               = "3";
     public static final String PRODUCT_ATTRIBUTE                                                              = "6";
+    public static final String PRODUCT_LOCATION                                                               = "3";
     public static final String PRODUCT_RELATIONSHIP                                                           = "7";
     public static final String PRODUCT_STATUS_CODE                                                            = "8";
     public static final String PRODUCT_UNIT                                                                   = "9";

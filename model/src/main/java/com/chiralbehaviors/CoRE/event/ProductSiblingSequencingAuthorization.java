@@ -54,8 +54,8 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Table(name = "product_sibling_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_sibling_sequencing_authorization_id_seq", sequenceName = "product_sibling_sequencing_authorization_id_seq")
 public class ProductSiblingSequencingAuthorization extends Ruleform {
-    public static final String GET_SIBLING_ACTIONS = "productSequencingAuthorization.getSiblingActions";
     public static final String GET_SEQUENCES       = "productSequencingAuthorization.getSequences";
+    public static final String GET_SIBLING_ACTIONS = "productSequencingAuthorization.getSiblingActions";
 
     private static final long  serialVersionUID    = 1L;
 

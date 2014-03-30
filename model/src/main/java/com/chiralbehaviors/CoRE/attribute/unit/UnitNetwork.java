@@ -87,6 +87,14 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @JoinColumn(name = "parent")
     private Unit               parent;
 
+    @ManyToOne
+    @JoinColumn(name = "premise1")
+    private Unit               premise1;
+
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private Unit               premise2;
+
     /**
      * 
      */
@@ -159,6 +167,22 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public Unit getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public Unit getPremise2() {
+        return premise2;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
@@ -190,5 +214,23 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @Override
     public void setParent(Unit parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(Unit premise1) {
+        this.premise1 = premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(Unit premise2) {
+        this.premise2 = premise2;
     }
 }

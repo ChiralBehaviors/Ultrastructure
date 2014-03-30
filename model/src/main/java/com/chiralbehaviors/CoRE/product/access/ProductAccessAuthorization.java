@@ -55,9 +55,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class ProductAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
         extends AccessAuthorization<Product, Child> {
     public static final String  PRODUCT_ACCESS_AUTHORIZATION_PREFIX                = "productAccessAuthorization";
-
     public static final String  FIND_AUTHORIZATION                                 = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
                                                                                      + FIND_AUTHORIZATION_SUFFIX;
+
     public static final String  GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
                                                                                      + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 

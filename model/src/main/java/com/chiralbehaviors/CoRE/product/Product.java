@@ -127,7 +127,8 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
         implements Attributable<ProductAttribute> {
 
     public static final String    CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
-    public static final String    FIND_ALL                                               = "product" + Ruleform.FIND_ALL_SUFFIX;
+    public static final String    FIND_ALL                                               = "product"
+                                                                                           + Ruleform.FIND_ALL_SUFFIX;
     public static final String    FIND_ATTRIBUTE_AUTHORIZATIONS                          = "product.findAttributeAuthorizations";
     public static final String    FIND_BY_ID                                             = "product.findById";
     public static final String    FIND_BY_NAME                                           = "product"
@@ -147,10 +148,10 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
                                                                                            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String    GET_ALL_PARENT_RELATIONSHIPS                           = "product"
                                                                                            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String    GET_CHILDREN                                           = "product"
-                                                                                           + GET_CHILDREN_SUFFIX;
     public static final String    GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
                                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String    GET_CHILDREN                                           = "product"
+                                                                                           + GET_CHILDREN_SUFFIX;
     public static final String    NAME_SEARCH                                            = "product"
                                                                                            + NAME_SEARCH_SUFFIX;
     public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";

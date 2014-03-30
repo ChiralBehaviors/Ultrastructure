@@ -112,6 +112,14 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JoinColumn(name = "parent")
     private Product                      parent;
 
+    @ManyToOne
+    @JoinColumn(name = "premise1")
+    private Product                      premise1;
+
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private Product                      premise2;
+
     public ProductNetwork() {
     }
 
@@ -197,6 +205,22 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public Product getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public Product getPremise2() {
+        return premise2;
+    }
+
     @Override
     public void setAttributes(Set<ProductNetworkAttribute> productNetworkAttributes) {
         attributes = productNetworkAttributes;
@@ -224,6 +248,24 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @Override
     public void setParent(Product parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(Product premise1) {
+        this.premise1 = premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(Product premise2) {
+        this.premise2 = premise2;
     }
 
     /* (non-Javadoc)

@@ -75,14 +75,22 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @GeneratedValue(generator = "relationship_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
+    @ManyToOne
+    @JoinColumn(name = "inferred_from")
+    private Relationship       inferredFrom;
+
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
     private Relationship       parent;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Relationship       inferredFrom;
+    @JoinColumn(name = "premise1")
+    private Relationship       premise1;
+
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private Relationship       premise2;
 
     /**
      * 
@@ -156,6 +164,22 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public Relationship getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public Relationship getPremise2() {
+        return premise2;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
@@ -187,5 +211,23 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @Override
     public void setParent(Relationship parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(Relationship premise1) {
+        this.premise1 = premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(Relationship premise2) {
+        this.premise2 = premise2;
     }
 }

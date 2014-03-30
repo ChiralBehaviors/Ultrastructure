@@ -58,7 +58,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     private String             description;
     private String             name;
-    private Integer               pinned                                                        = FALSE;
+    private Integer            pinned                                                        = FALSE;
 
     public ExistentialRuleform() {
     }

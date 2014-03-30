@@ -68,18 +68,18 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     private Product            parent;
 
     @ManyToOne
-    @JoinColumn(name = "service")
-    private Product            service;
-
-    @ManyToOne
     @JoinColumn(name = "parent_status_to_set")
     private StatusCode         parentStatusToSet;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
 
+    @ManyToOne
+    @JoinColumn(name = "service")
+    private Product            service;
+
     @Column(name = "set_if_active_siblings")
-    private Integer               setIfActiveSiblings = TRUE;
+    private Integer            setIfActiveSiblings = TRUE;
 
     @ManyToOne
     @JoinColumn(name = "status_code")
@@ -153,16 +153,16 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         return parent;
     }
 
-    public Product getService() {
-        return service;
-    }
-
     public StatusCode getParentStatusToSet() {
         return parentStatusToSet;
     }
 
     public Integer getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    public Product getService() {
+        return service;
     }
 
     public Boolean getSetIfActiveSiblings() {
@@ -182,11 +182,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     }
 
     public void setParent(Product myParent) {
-        this.parent = myParent;
-    }
-
-    public void setService(Product service) {
-        this.service = service;
+        parent = myParent;
     }
 
     public void setParentStatusToSet(StatusCode parentStatusToSet) {
@@ -195,6 +191,10 @@ public class ProductParentSequencingAuthorization extends Ruleform {
 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    public void setService(Product service) {
+        this.service = service;
     }
 
     public void setSetIfActiveSiblings(Boolean setIfActiveSiblings) {

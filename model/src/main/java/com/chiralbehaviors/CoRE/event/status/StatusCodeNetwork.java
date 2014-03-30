@@ -88,6 +88,14 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @JoinColumn(name = "parent")
     private StatusCode         parent;
 
+    @ManyToOne
+    @JoinColumn(name = "premise1")
+    private StatusCode         premise1;
+
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private StatusCode         premise2;
+
     /**
      * 
      */
@@ -160,6 +168,22 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public StatusCode getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public StatusCode getPremise2() {
+        return premise2;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
@@ -191,5 +215,23 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @Override
     public void setParent(StatusCode parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(StatusCode premise1) {
+        this.premise1 = premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(StatusCode premise2) {
+        this.premise2 = premise2;
     }
 }

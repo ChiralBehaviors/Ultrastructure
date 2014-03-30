@@ -82,7 +82,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public class LocationAgencyAccessAuthorization extends
         LocationAccessAuthorization<Agency> {
     public static final String LOCATION_AGENCY_ACCESS_AUTH_PREFIX                                      = "locationAgencyAccessAuthorization";
-
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
@@ -91,9 +90,9 @@ public class LocationAgencyAccessAuthorization extends
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
-
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

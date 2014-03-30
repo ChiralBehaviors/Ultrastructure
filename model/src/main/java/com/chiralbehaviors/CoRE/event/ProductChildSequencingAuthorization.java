@@ -48,8 +48,8 @@ import com.chiralbehaviors.CoRE.product.Product;
                                                              + "  AND seq.statusCode = :status "
                                                              + "ORDER BY seq.sequenceNumber"),
                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
-                                                             + " WHERE seq.parent = :service"
-                                                             + " ORDER BY seq.sequenceNumber") })
+                                                         + " WHERE seq.parent = :service"
+                                                         + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_child_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_child_sequencing_authorization_id_seq", sequenceName = "product_child_sequencing_authorization_id_seq")

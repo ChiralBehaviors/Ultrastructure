@@ -96,6 +96,14 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @JoinColumn(name = "parent")
     private Location parent;
 
+    @ManyToOne
+    @JoinColumn(name = "premise1")
+    private Location premise1;
+
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private Location premise2;
+
     public LocationNetwork() {
     }
 
@@ -155,6 +163,22 @@ public class LocationNetwork extends NetworkRuleform<Location> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public Location getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public Location getPremise2() {
+        return premise2;
+    }
+
     @Override
     public void setChild(Location child) {
         this.child = child;
@@ -177,6 +201,24 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @Override
     public void setParent(Location parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(Location premise1) {
+        this.premise1 = premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(Location premise2) {
+        this.premise2 = premise2;
     }
 
     /* (non-Javadoc)

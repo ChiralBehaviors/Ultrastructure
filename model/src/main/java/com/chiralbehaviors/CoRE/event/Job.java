@@ -79,8 +79,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                              + "WHERE j.parent = :parent "
                                                                              + "  AND j.status <> :unset"),
                @NamedQuery(name = GET_ATTRIBUTES_FOR_JOB, query = "SELECT ja "
-                                                               + "FROM JobAttribute AS ja "
-                                                               + "WHERE ja.job = :job"),                                                          
+                                                                  + "FROM JobAttribute AS ja "
+                                                                  + "WHERE ja.job = :job"),
                @NamedQuery(name = HAS_SCS, query = "SELECT scs from StatusCodeSequencing scs where scs.service = :service "),
                @NamedQuery(name = GET_NEXT_STATUS_CODES, query = "SELECT code "
                                                                  + "FROM StatusCodeSequencing AS sequencing, StatusCode AS code "
@@ -184,15 +184,15 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS = "job.getActiveOrTerminatedSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS               = "job.getActiveSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE   = "job.getActiveSubJobsForService";
-    public static final String GET_ATTRIBUTES_FOR_JOB			 = "job.getAttributesForJob";
     public static final String GET_ATTRIBUTE_VALUE               = "job.getAttributeValue";
+    public static final String GET_ATTRIBUTES_FOR_JOB            = "job.getAttributesForJob";
     public static final String GET_INITIAL_SUB_JOBS              = "job.getInitialSubJobs";
     public static final String GET_NEXT_STATUS_CODES             = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS               = "job.getStatusCodeIds";
+    public static final String GET_STATUS_CODE_SEQUENCES         = "job.getStatusCodeSequences";
     public static final String GET_SUB_JOBS_ASSIGNED_TO          = "job.getSubJobsAssignedTo";
     public static final String GET_TERMINAL_STATES               = "job.getTerminalStates";
     public static final String GET_UNSET_SIBLINGS                = "job.getUnsetSiblings";
-    public static final String GET_STATUS_CODE_SEQUENCES         = "job.getStatusCodeSequences";
     public static final String HAS_SCS                           = "job.hasScs";
     public static final String INITIAL_STATE                     = "job.initialState";
     public static final String STATUS_CODE                       = "job.statusCode";

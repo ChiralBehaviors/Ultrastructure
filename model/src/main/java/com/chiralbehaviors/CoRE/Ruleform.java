@@ -43,15 +43,31 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 abstract public class Ruleform implements Serializable, Cloneable {
+    public static final Integer FALSE                 = Integer.valueOf((byte) 0);
+    public static final String  FIND_ALL_SUFFIX       = ".findAll";
     public static final String  FIND_BY_ID_SUFFIX     = ".findById";
     public static final String  FIND_BY_NAME_SUFFIX   = ".findByName";
-    public static final String  FIND_ALL_SUFFIX       = ".findAll";
     public static final String  FIND_FLAGGED_SUFFIX   = ".findFlagged";
     public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+
     public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
+
+    public static final Integer TRUE                  = Integer.valueOf((byte) 1);
 
     private static final long   serialVersionUID      = 1L;
 
+    public static Boolean toBoolean(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        return value.equals(Integer.valueOf(0)) ? Boolean.FALSE : Boolean.TRUE;
+    }
+    public static Integer toInteger(Boolean value) {
+        if (value == null) {
+            return null;
+        }
+        return value ? TRUE : FALSE;
+    }
     private String              notes;
 
     @Column(name = "update_date")
@@ -60,22 +76,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @ManyToOne
     @JoinColumn(name = "updated_by")
     protected Agency            updatedBy;
-    public static final Integer TRUE                  = Integer.valueOf((byte) 1);
-    public static final Integer FALSE                 = Integer.valueOf((byte) 0);
-
-    public static Boolean toBoolean(Integer value) {
-        if (value == null) {
-            return null;
-        }
-        return value.equals(Integer.valueOf(0)) ? Boolean.FALSE : Boolean.TRUE;
-    }
-
-    public static Integer toInteger(Boolean value) {
-        if (value == null) {
-            return null;
-        }
-        return value ? TRUE : FALSE;
-    }
 
     public Ruleform() {
     }

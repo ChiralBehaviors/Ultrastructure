@@ -88,6 +88,14 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(name = "parent")
     private Interval           parent;
 
+    @ManyToOne
+    @JoinColumn(name = "premise1")
+    private Interval           premise1;
+
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private Interval           premise2;
+
     public IntervalNetwork() {
         super();
     }
@@ -147,6 +155,22 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public Interval getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public Interval getPremise2() {
+        return premise2;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.network.Networked)
      */
@@ -178,5 +202,23 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public void setParent(Interval parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(Interval premise1) {
+        this.premise1 = premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(Interval premise2) {
+        this.premise2 = premise2;
     }
 }

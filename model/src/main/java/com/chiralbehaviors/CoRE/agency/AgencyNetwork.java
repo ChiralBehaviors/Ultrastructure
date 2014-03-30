@@ -101,6 +101,14 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @JoinColumn(name = "parent")
     private Agency             parent;
 
+    @ManyToOne
+    @JoinColumn(name = "premise1")
+    private Agency             premise1;
+
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private Agency             premise2;
+
     public AgencyNetwork() {
     }
 
@@ -160,6 +168,22 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public Agency getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public Agency getPremise2() {
+        return premise2;
+    }
+
     public List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
     }
@@ -186,6 +210,24 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setParent(Agency agency2) {
         parent = agency2;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(Agency premise1) {
+        this.premise1 = premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(Agency premise2) {
+        this.premise2 = premise2;
     }
 
     /* (non-Javadoc)

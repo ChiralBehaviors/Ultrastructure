@@ -100,7 +100,7 @@ public class MetaProtocol extends Ruleform {
      * Indicates no further transformations should be applied
      */
     @Column(name = "stop_on_match")
-    private Integer               stopOnMatch      = FALSE;
+    private Integer            stopOnMatch      = FALSE;
 
     public MetaProtocol() {
     }

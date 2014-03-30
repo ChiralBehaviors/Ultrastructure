@@ -18,6 +18,8 @@ package com.chiralbehaviors.CoRE.jsp;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -101,10 +103,16 @@ public abstract class JSP {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("Error during %s", call), e);
                 }
+                StringWriter string = new StringWriter();
+                PrintWriter writer = new PrintWriter(string);
+                e.printStackTrace(writer);
+                writer.flush();
                 SQLException sqlException = new SQLException(
-                                                             String.format("** Java Stored procedure failed %s",
-                                                                           call),
+                                                             String.format("** Java Stored procedure failed %s\n%s",
+                                                                           call,
+                                                                           string.toString()),
                                                              e);
+
                 if (rootCause == null) {
                     if (log.isTraceEnabled()) {
                         log.trace(String.format("Setting root cause to: %s",

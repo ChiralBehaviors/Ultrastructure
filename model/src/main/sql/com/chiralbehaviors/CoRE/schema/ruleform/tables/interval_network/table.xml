@@ -19,7 +19,16 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+            <column name="inferred_from" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise1" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise2" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="inference_rule" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -37,17 +46,17 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-154">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.interval_network" constraintName="interval_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.interval" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-155">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.interval_network" constraintName="interval_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.interval" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-156">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.interval_network"
-            constraintName="interval_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            constraintName="interval_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-157">
@@ -78,5 +87,25 @@
         <createIndex indexName="interval_network_updated_by_fkey_idx" tableName="ruleform.interval_network" unique="false">
             <column name="updated_by" />
         </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="90879803225-431">
+        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.interval_network"
+            constraintName="interval_network_inferred_from_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.interval_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="90879803225-432">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.interval_network"
+            constraintName="interval_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.interval_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="90879803225-433">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.interval_network"
+            constraintName="interval_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.interval_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="90879803225-434">
+        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.interval_network"
+            constraintName="interval_network_inference_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.network_inference" />
     </changeSet>
 </databaseChangeLog>

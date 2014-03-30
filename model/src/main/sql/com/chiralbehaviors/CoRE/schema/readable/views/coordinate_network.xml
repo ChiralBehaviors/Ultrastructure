@@ -13,7 +13,10 @@
 			     rel.name AS relationship, 
 			     c.name AS child, 
 			     n.ordering, 
-			     n.inferred, 
+                 n.inferred_from, 
+                 n.premise1, 
+                 n.premise2, 
+                 n.inference_rule,
 			     n.notes, 
 			     u.name AS updated_by, 
 			     n.update_date

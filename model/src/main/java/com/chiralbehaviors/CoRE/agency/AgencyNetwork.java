@@ -93,8 +93,8 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Agency             inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private AgencyNetwork      inferredFrom;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
@@ -102,12 +102,12 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     private Agency             parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Agency             premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private AgencyNetwork      premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Agency             premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private AgencyNetwork      premise2;
 
     public AgencyNetwork() {
     }
@@ -159,7 +159,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @return the inferredFrom
      */
     @Override
-    public Agency getInferredFrom() {
+    public AgencyNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -172,7 +172,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @return the premise1
      */
     @Override
-    public Agency getPremise1() {
+    public AgencyNetwork getPremise1() {
         return premise1;
     }
 
@@ -180,7 +180,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @return the premise2
      */
     @Override
-    public Agency getPremise2() {
+    public AgencyNetwork getPremise2() {
         return premise2;
     }
 
@@ -203,8 +203,8 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Agency inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Agency> inferredFrom) {
+        this.inferredFrom = (AgencyNetwork) inferredFrom;
     }
 
     @Override
@@ -217,8 +217,8 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Agency premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Agency> premise1) {
+        this.premise1 = (AgencyNetwork) premise1;
     }
 
     /**
@@ -226,8 +226,8 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Agency premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Agency> premise2) {
+        this.premise2 = (AgencyNetwork) premise2;
     }
 
     /* (non-Javadoc)

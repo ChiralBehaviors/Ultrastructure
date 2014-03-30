@@ -80,8 +80,8 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Interval           inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private IntervalNetwork    inferredFrom;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
@@ -89,12 +89,12 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     private Interval           parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Interval           premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private IntervalNetwork    premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Interval           premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private IntervalNetwork    premise2;
 
     public IntervalNetwork() {
         super();
@@ -143,7 +143,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      * @return the inferredFrom
      */
     @Override
-    public Interval getInferredFrom() {
+    public IntervalNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -159,7 +159,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      * @return the premise1
      */
     @Override
-    public Interval getPremise1() {
+    public IntervalNetwork getPremise1() {
         return premise1;
     }
 
@@ -167,7 +167,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      * @return the premise2
      */
     @Override
-    public Interval getPremise2() {
+    public IntervalNetwork getPremise2() {
         return premise2;
     }
 
@@ -192,8 +192,8 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Interval inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Interval> inferredFrom) {
+        this.inferredFrom = (IntervalNetwork) inferredFrom;
     }
 
     /* (non-Javadoc)
@@ -209,8 +209,8 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Interval premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Interval> premise1) {
+        this.premise1 = (IntervalNetwork) premise1;
     }
 
     /**
@@ -218,7 +218,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Interval premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Interval> premise2) {
+        this.premise2 = (IntervalNetwork) premise2;
     }
 }

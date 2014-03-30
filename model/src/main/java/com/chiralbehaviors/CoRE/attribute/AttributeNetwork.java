@@ -90,8 +90,8 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Attribute          inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private AttributeNetwork   inferredFrom;
 
     //bi-directional many-to-one association to Attribute
     @ManyToOne
@@ -99,12 +99,12 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private Attribute          parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Attribute          premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private AttributeNetwork   premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Attribute          premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private AttributeNetwork   premise2;
 
     public AttributeNetwork() {
     }
@@ -156,7 +156,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      * @return the inferredFrom
      */
     @Override
-    public Attribute getInferredFrom() {
+    public AttributeNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -169,7 +169,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      * @return the premise1
      */
     @Override
-    public Attribute getPremise1() {
+    public AttributeNetwork getPremise1() {
         return premise1;
     }
 
@@ -177,7 +177,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      * @return the premise2
      */
     @Override
-    public Attribute getPremise2() {
+    public AttributeNetwork getPremise2() {
         return premise2;
     }
 
@@ -196,8 +196,8 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Attribute inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Attribute> inferredFrom) {
+        this.inferredFrom = (AttributeNetwork) inferredFrom;
     }
 
     @Override
@@ -210,8 +210,8 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Attribute premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Attribute> premise1) {
+        this.premise1 = (AttributeNetwork) premise1;
     }
 
     /**
@@ -219,8 +219,8 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Attribute premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Attribute> premise2) {
+        this.premise2 = (AttributeNetwork) premise2;
     }
 
     /* (non-Javadoc)

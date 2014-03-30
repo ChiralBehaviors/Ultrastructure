@@ -79,8 +79,8 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Coordinate         inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private CoordinateNetwork  inferredFrom;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
@@ -88,12 +88,12 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     private Coordinate         parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Coordinate         premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private CoordinateNetwork  premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Coordinate         premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private CoordinateNetwork  premise2;
 
     /**
      * 
@@ -155,7 +155,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      * @return the inferredFrom
      */
     @Override
-    public Coordinate getInferredFrom() {
+    public CoordinateNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -171,7 +171,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      * @return the premise1
      */
     @Override
-    public Coordinate getPremise1() {
+    public CoordinateNetwork getPremise1() {
         return premise1;
     }
 
@@ -179,7 +179,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      * @return the premise2
      */
     @Override
-    public Coordinate getPremise2() {
+    public CoordinateNetwork getPremise2() {
         return premise2;
     }
 
@@ -204,8 +204,8 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Coordinate inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Coordinate> inferredFrom) {
+        this.inferredFrom = (CoordinateNetwork) inferredFrom;
     }
 
     /* (non-Javadoc)
@@ -221,8 +221,8 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Coordinate premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Coordinate> premise1) {
+        this.premise1 = (CoordinateNetwork) premise1;
     }
 
     /**
@@ -230,7 +230,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Coordinate premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Coordinate> premise2) {
+        this.premise2 = (CoordinateNetwork) premise2;
     }
 }

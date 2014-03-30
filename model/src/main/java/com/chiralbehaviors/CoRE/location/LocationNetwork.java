@@ -82,27 +82,27 @@ public class LocationNetwork extends NetworkRuleform<Location> {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "child")
-    private Location child;
+    private Location        child;
 
     @Id
     @GeneratedValue(generator = "location_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long     id;
+    private Long            id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Location inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private LocationNetwork inferredFrom;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
-    private Location parent;
+    private Location        parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Location premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private LocationNetwork premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Location premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private LocationNetwork premise2;
 
     public LocationNetwork() {
     }
@@ -154,7 +154,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @return the inferredFrom
      */
     @Override
-    public Location getInferredFrom() {
+    public LocationNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -167,7 +167,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @return the premise1
      */
     @Override
-    public Location getPremise1() {
+    public LocationNetwork getPremise1() {
         return premise1;
     }
 
@@ -175,7 +175,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @return the premise2
      */
     @Override
-    public Location getPremise2() {
+    public LocationNetwork getPremise2() {
         return premise2;
     }
 
@@ -194,8 +194,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Location inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Location> inferredFrom) {
+        this.inferredFrom = (LocationNetwork) inferredFrom;
     }
 
     @Override
@@ -208,8 +208,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Location premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Location> premise1) {
+        this.premise1 = (LocationNetwork) premise1;
     }
 
     /**
@@ -217,8 +217,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Location premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Location> premise2) {
+        this.premise2 = (LocationNetwork) premise2;
     }
 
     /* (non-Javadoc)

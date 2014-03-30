@@ -19,7 +19,16 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+            <column name="inferred_from" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise1" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise2" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="inference_rule" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -37,17 +46,17 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-122">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.attribute_network" constraintName="attribute_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-123">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.attribute_network" constraintName="attribute_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-124">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.attribute_network"
-            constraintName="attribute_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            constraintName="attribute_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-125">
@@ -78,5 +87,25 @@
         <createIndex indexName="attribute_network_updated_by_fkey_idx" tableName="ruleform.attribute_network" unique="false">
             <column name="updated_by" />
         </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-446">
+        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.attribute_network" constraintName="attribute_network_inferred_from_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.attribute_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-447">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.attribute_network" constraintName="attribute_network_premise1_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.attribute_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-448">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.attribute_network" constraintName="attribute_network_premise2_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.attribute_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-449">
+        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.attribute_network" constraintName="attribute_network_inference_rule_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.network_inference" />
     </changeSet>
 </databaseChangeLog>

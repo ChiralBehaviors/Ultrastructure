@@ -80,8 +80,8 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private StatusCode         inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private StatusCodeNetwork  inferredFrom;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
@@ -89,12 +89,12 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     private StatusCode         parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private StatusCode         premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private StatusCodeNetwork  premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private StatusCode         premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private StatusCodeNetwork  premise2;
 
     /**
      * 
@@ -156,7 +156,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      * @return the inferredFrom
      */
     @Override
-    public StatusCode getInferredFrom() {
+    public StatusCodeNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -172,7 +172,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      * @return the premise1
      */
     @Override
-    public StatusCode getPremise1() {
+    public StatusCodeNetwork getPremise1() {
         return premise1;
     }
 
@@ -180,7 +180,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      * @return the premise2
      */
     @Override
-    public StatusCode getPremise2() {
+    public StatusCodeNetwork getPremise2() {
         return premise2;
     }
 
@@ -205,8 +205,8 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(StatusCode inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<StatusCode> inferredFrom) {
+        this.inferredFrom = (StatusCodeNetwork) inferredFrom;
     }
 
     /* (non-Javadoc)
@@ -222,8 +222,8 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(StatusCode premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<StatusCode> premise1) {
+        this.premise1 = (StatusCodeNetwork) premise1;
     }
 
     /**
@@ -231,7 +231,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(StatusCode premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<StatusCode> premise2) {
+        this.premise2 = (StatusCodeNetwork) premise2;
     }
 }

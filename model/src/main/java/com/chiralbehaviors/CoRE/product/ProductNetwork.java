@@ -104,8 +104,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     private Long                         id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Product                      inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private ProductNetwork               inferredFrom;
 
     //bi-directional many-to-one association to Product
     @ManyToOne(cascade = CascadeType.ALL)
@@ -113,12 +113,12 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     private Product                      parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Product                      premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private ProductNetwork               premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Product                      premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private ProductNetwork               premise2;
 
     public ProductNetwork() {
     }
@@ -196,7 +196,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      * @return the inferredFrom
      */
     @Override
-    public Product getInferredFrom() {
+    public ProductNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -209,7 +209,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      * @return the premise1
      */
     @Override
-    public Product getPremise1() {
+    public ProductNetwork getPremise1() {
         return premise1;
     }
 
@@ -217,7 +217,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      * @return the premise2
      */
     @Override
-    public Product getPremise2() {
+    public ProductNetwork getPremise2() {
         return premise2;
     }
 
@@ -241,8 +241,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Product inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Product> inferredFrom) {
+        this.inferredFrom = (ProductNetwork) inferredFrom;
     }
 
     @Override
@@ -255,8 +255,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Product premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Product> premise1) {
+        this.premise1 = (ProductNetwork) premise1;
     }
 
     /**
@@ -264,8 +264,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Product premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Product> premise2) {
+        this.premise2 = (ProductNetwork) premise2;
     }
 
     /* (non-Javadoc)

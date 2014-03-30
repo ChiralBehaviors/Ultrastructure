@@ -96,7 +96,6 @@ public class LocationProductAccessAuthorization extends
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = LOCATION_PRODUCT_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
 
-
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

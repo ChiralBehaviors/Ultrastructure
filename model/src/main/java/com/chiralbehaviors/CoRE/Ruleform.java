@@ -62,20 +62,22 @@ abstract public class Ruleform implements Serializable, Cloneable {
         }
         return value.equals(Integer.valueOf(0)) ? Boolean.FALSE : Boolean.TRUE;
     }
+
     public static Integer toInteger(Boolean value) {
         if (value == null) {
             return null;
         }
         return value ? TRUE : FALSE;
     }
-    private String              notes;
+
+    private String    notes;
 
     @Column(name = "update_date")
-    private Timestamp           updateDate;
+    private Timestamp updateDate;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    protected Agency            updatedBy;
+    protected Agency  updatedBy;
 
     public Ruleform() {
     }

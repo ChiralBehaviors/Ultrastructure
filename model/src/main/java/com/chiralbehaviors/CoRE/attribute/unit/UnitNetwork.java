@@ -79,8 +79,8 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     private Long               id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Unit               inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private UnitNetwork        inferredFrom;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
@@ -88,12 +88,12 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     private Unit               parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Unit               premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private UnitNetwork        premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Unit               premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private UnitNetwork        premise2;
 
     /**
      * 
@@ -155,7 +155,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      * @return the inferredFrom
      */
     @Override
-    public Unit getInferredFrom() {
+    public UnitNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -171,7 +171,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      * @return the premise1
      */
     @Override
-    public Unit getPremise1() {
+    public UnitNetwork getPremise1() {
         return premise1;
     }
 
@@ -179,7 +179,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      * @return the premise2
      */
     @Override
-    public Unit getPremise2() {
+    public UnitNetwork getPremise2() {
         return premise2;
     }
 
@@ -204,8 +204,8 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Unit inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Unit> inferredFrom) {
+        this.inferredFrom = (UnitNetwork) inferredFrom;
     }
 
     /* (non-Javadoc)
@@ -221,8 +221,8 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Unit premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Unit> premise1) {
+        this.premise1 = (UnitNetwork) premise1;
     }
 
     /**
@@ -230,7 +230,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Unit premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Unit> premise2) {
+        this.premise2 = (UnitNetwork) premise2;
     }
 }

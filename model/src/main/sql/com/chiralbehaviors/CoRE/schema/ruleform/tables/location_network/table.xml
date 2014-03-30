@@ -19,7 +19,16 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+            <column name="inferred_from" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise1" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise2" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="inference_rule" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -35,18 +44,53 @@
             <dropTable tableName="ruleform.location_network" />
         </rollback>
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-192">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.location_network" constraintName="location_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship"/>
+    <changeSet author="hhildebrand" id="1390879803225-154">
+        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.location_network" constraintName="location_network_child_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-155">
+        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.location_network" constraintName="location_network_parent_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-156">
+        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.location_network"
+            constraintName="location_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-193">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location_network" constraintName="location_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency"/>
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location_network"
+            constraintName="location_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-389">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="location_network_parent_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.location_network"/>
+        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="location_network_parent_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.location_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-473">
         <createIndex indexName="location_network_child_fkey_idx" tableName="ruleform.location_network" unique="false">
-            <column name="child"/>
+            <column name="child" />
         </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="0879803225-431">
+        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.location_network"
+            constraintName="location_network_inferred_from_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.location_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="0879803225-432">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.location_network"
+            constraintName="location_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.location_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="0879803225-433">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.location_network"
+            constraintName="location_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.location_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="0879803225-434">
+        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.location_network"
+            constraintName="location_network_inference_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.network_inference" />
     </changeSet>
 </databaseChangeLog>

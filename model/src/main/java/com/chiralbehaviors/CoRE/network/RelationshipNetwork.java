@@ -49,48 +49,48 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 @Table(name = "relationship_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "relationship_network_id_seq", sequenceName = "relationship_network_id_seq")
 public class RelationshipNetwork extends NetworkRuleform<Relationship> {
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "relationshipNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "relationshipNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES     = "relationshipNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                  = "relationshipNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS        = "relationshipNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                = "relationshipNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "relationshipNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "relationshipNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
+    public static final String  DEDUCE_NEW_NETWORK_RULES      = "relationshipNetwork"
+                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+    public static final String  GATHER_EXISTING_NETWORK_RULES = "relationshipNetwork"
+                                                                + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+    public static final String  GENERATE_NETWORK_INVERSES     = "relationshipNetwork"
+                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
+    public static final String  GET_CHILDREN                  = "relationshipNetwork"
+                                                                + GET_CHILDREN_SUFFIX;
+    public static final String  GET_USED_RELATIONSHIPS        = "relationshipNetwork"
+                                                                + USED_RELATIONSHIPS_SUFFIX;
+    public static final String  INFERENCE_STEP                = "relationshipNetwork"
+                                                                + INFERENCE_STEP_SUFFIX;
+    public static final String  INFERENCE_STEP_FROM_LAST_PASS = "relationshipNetwork"
+                                                                + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String  INSERT_NEW_NETWORK_RULES      = "relationshipNetwork"
+                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long   serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
 
     @ManyToOne
     @JoinColumn(name = "child")
-    private Relationship       child;
+    private Relationship        child;
 
     @Id
     @GeneratedValue(generator = "relationship_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+    private Long                id;
 
     @ManyToOne
-    @JoinColumn(name = "inferred_from")
-    private Relationship       inferredFrom;
+    @JoinColumn(insertable = false, name = "inferred_from")
+    private RelationshipNetwork inferredFrom;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Relationship       parent;
+    private Relationship        parent;
 
     @ManyToOne
-    @JoinColumn(name = "premise1")
-    private Relationship       premise1;
+    @JoinColumn(insertable = false, name = "premise1")
+    private RelationshipNetwork premise1;
 
     @ManyToOne
-    @JoinColumn(name = "premise2")
-    private Relationship       premise2;
+    @JoinColumn(insertable = false, name = "premise2")
+    private RelationshipNetwork premise2;
 
     /**
      * 
@@ -152,7 +152,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      * @return the inferredFrom
      */
     @Override
-    public Relationship getInferredFrom() {
+    public RelationshipNetwork getInferredFrom() {
         return inferredFrom;
     }
 
@@ -168,7 +168,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      * @return the premise1
      */
     @Override
-    public Relationship getPremise1() {
+    public RelationshipNetwork getPremise1() {
         return premise1;
     }
 
@@ -176,7 +176,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      * @return the premise2
      */
     @Override
-    public Relationship getPremise2() {
+    public RelationshipNetwork getPremise2() {
         return premise2;
     }
 
@@ -201,8 +201,8 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      *            the inferredFrom to set
      */
     @Override
-    public void setInferredFrom(Relationship inferredFrom) {
-        this.inferredFrom = inferredFrom;
+    public void setInferredFrom(NetworkRuleform<Relationship> inferredFrom) {
+        this.inferredFrom = (RelationshipNetwork) inferredFrom;
     }
 
     /* (non-Javadoc)
@@ -218,8 +218,8 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      *            the premise1 to set
      */
     @Override
-    public void setPremise1(Relationship premise1) {
-        this.premise1 = premise1;
+    public void setPremise1(NetworkRuleform<Relationship> premise1) {
+        this.premise1 = (RelationshipNetwork) premise1;
     }
 
     /**
@@ -227,7 +227,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      *            the premise2 to set
      */
     @Override
-    public void setPremise2(Relationship premise2) {
-        this.premise2 = premise2;
+    public void setPremise2(NetworkRuleform<Relationship> premise2) {
+        this.premise2 = (RelationshipNetwork) premise2;
     }
 }

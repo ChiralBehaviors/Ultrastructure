@@ -28,6 +28,22 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
 public interface WellKnownObject {
 
     public static enum WellKnownAgency implements WellKnownObject {
+        CORE() {
+
+            @Override
+            public String description() {
+                return "The CoRE Ultra-Structure system";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.CORE;
+            }
+
+        },
         AGENCY() {
 
             @Override
@@ -39,7 +55,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.agency;
             }
 
@@ -55,24 +71,8 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ANY;
-            }
-
-        },
-        CORE() {
-
-            @Override
-            public String description() {
-                return "The CoRE Ultra-Structure system";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.CORE;
             }
 
         },
@@ -87,7 +87,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.CORE_ANIMATION_SOFTWARE;
             }
 
@@ -103,7 +103,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.CORE_MODEL;
             }
 
@@ -119,7 +119,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.CORE_USER;
             }
 
@@ -135,7 +135,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.INVERSE_SOFTWARE;
             }
 
@@ -151,7 +151,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -167,7 +167,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -183,7 +183,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.PROPAGATION_SOFTWARE;
             }
 
@@ -199,7 +199,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.SAME;
             }
 
@@ -215,7 +215,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.SPECIAL_SYSTEM_AGENCY;
             }
 
@@ -231,7 +231,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.SUPER_USER;
             }
 
@@ -266,7 +266,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ANY;
             }
 
@@ -282,7 +282,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ATTRIBUTE;
             }
 
@@ -295,19 +295,19 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.LOGIN;
-            }
-
-            /* (non-Javadoc)
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
              */
             @Override
             public ValueType valueType() {
                 return ValueType.TEXT;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.LOGIN;
             }
 
         },
@@ -322,7 +322,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -338,7 +338,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -351,19 +351,19 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String productName() {
-                return WellKnownObject.PASSWORD_HASH;
-            }
-
-            /* (non-Javadoc)
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
              */
             @Override
             public ValueType valueType() {
                 return ValueType.TEXT;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.PASSWORD_HASH;
             }
 
         };
@@ -389,6 +389,70 @@ public interface WellKnownObject {
         }
     }
 
+    public static enum WellKnownCoordinate implements WellKnownObject {
+        COORDINATE() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of a coordinate. All existential entities defined in the Coordinate ruleform are instances of 'Coordinate'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COORDINATE;
+            }
+
+        };
+
+        @Override
+        public Long id() {
+            return Long.valueOf(ordinal() + 1);
+        }
+
+        /* (non-Javadoc)
+         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
+         */
+        @Override
+        public String tableName() {
+            return "ruleform.coordinate";
+        }
+    }
+
+    public static enum WellKnownInterval implements WellKnownObject {
+        INTERVAL() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of an interval. All existential entities defined in the Interval ruleform are instances of 'Interval'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.INTERVAL;
+            }
+
+        };
+
+        @Override
+        public Long id() {
+            return Long.valueOf(ordinal() + 1);
+        }
+
+        /* (non-Javadoc)
+         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
+         */
+        @Override
+        public String tableName() {
+            return "ruleform.interval";
+        }
+    }
+
     public static enum WellKnownLocation implements WellKnownObject {
         ANY() {
 
@@ -401,7 +465,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ANY;
             }
 
@@ -417,7 +481,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.LOCATION;
             }
 
@@ -433,7 +497,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -449,7 +513,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ORIGINAL;
             }
 
@@ -465,7 +529,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.SAME;
             }
 
@@ -500,7 +564,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ANY;
             }
 
@@ -516,7 +580,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ENTITY;
             }
 
@@ -532,7 +596,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -548,8 +612,24 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ORIGINAL;
+            }
+
+        },
+        PRODUCT() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of a product. All existential entities defined in the Product ruleform are instances of 'Product'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.PRODUCT;
             }
 
         },
@@ -564,7 +644,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.SAME;
             }
 
@@ -579,7 +659,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.WORKSPACE;
             }
         };
@@ -618,7 +698,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.ANY;
             }
 
@@ -644,7 +724,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.CONTAINS;
             }
 
@@ -670,7 +750,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.DEVELOPED;
             }
 
@@ -696,7 +776,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.DEVELOPED_BY;
             }
 
@@ -722,7 +802,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.EQUALS;
             }
 
@@ -748,7 +828,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.FORMER_MEMBER_OF;
             }
 
@@ -774,7 +854,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.GREATER_THAN;
             }
 
@@ -800,7 +880,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.GREATER_THAN_OR_EQUALS;
             }
 
@@ -826,7 +906,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.HAD_MEMBER;
             }
 
@@ -852,7 +932,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.HAS_EXCEPTION;
             }
 
@@ -878,7 +958,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.HAS_HEAD;
             }
 
@@ -904,7 +984,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.HAS_MEMBER;
             }
 
@@ -930,7 +1010,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.HAS_VERSION;
             }
 
@@ -956,7 +1036,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.HEAD_OF;
             }
 
@@ -982,7 +1062,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.IN_WORKSPACE;
             }
 
@@ -1008,7 +1088,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.INCLUDES;
             }
 
@@ -1034,7 +1114,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.IS_A;
             }
 
@@ -1060,7 +1140,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.IS_CONTAINED_IN;
             }
 
@@ -1086,7 +1166,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.IS_EXCEPTION_TO;
             }
 
@@ -1112,7 +1192,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.IS_LOCATION_OF;
             }
 
@@ -1138,7 +1218,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.LESS_THAN;
             }
 
@@ -1164,7 +1244,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.LESS_THAN_OR_EQUALS;
             }
 
@@ -1190,7 +1270,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.MAPS_TO_LOCATION;
             }
 
@@ -1216,7 +1296,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.MEMBER_OF;
             }
 
@@ -1242,7 +1322,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
@@ -1267,7 +1347,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.OWNED_BY;
             }
 
@@ -1291,7 +1371,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.OWNS;
             }
 
@@ -1316,7 +1396,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.PROTOTYPE;
             }
 
@@ -1342,8 +1422,34 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.PROTOTYPE_OF;
+            }
+
+            @Override
+            boolean preferred() {
+                return true;
+            }
+
+        },
+        RELATIONSHIP() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of a relationship. All existential entities defined in the Relationship ruleform are instances of 'Relationsihip'";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.RELATIONSHIP;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.RELATIONSHIP;
             }
 
             @Override
@@ -1368,7 +1474,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.SAME;
             }
 
@@ -1394,7 +1500,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.VERSION_OF;
             }
 
@@ -1420,7 +1526,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.WORKSPACE_OF;
             }
 
@@ -1453,6 +1559,22 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownStatusCode implements WellKnownObject {
+        STATUS_CODE() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of an status code. All existential entities defined in the StatusCode ruleform are instances of 'Status Code'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.STATUS_CODE;
+            }
+
+        },
         UNSET() {
 
             @Override
@@ -1464,7 +1586,7 @@ public interface WellKnownObject {
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
-            public String productName() {
+            public String wkoName() {
                 return WellKnownObject.UNSET;
             }
 
@@ -1484,11 +1606,46 @@ public interface WellKnownObject {
         }
     }
 
+    public static enum WellKnownUnit implements WellKnownObject {
+        UNIT() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of an unit. All existential entities defined in the Unit ruleform are instances of 'Unit'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.UNIT;
+            }
+
+        };
+
+        @Override
+        public Long id() {
+            return Long.valueOf(ordinal() + 1);
+        }
+
+        /* (non-Javadoc)
+         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
+         */
+        @Override
+        public String tableName() {
+            return "ruleform.unit";
+        }
+    }
+
+    String STATUS_CODE               = "Status Code";
+
     String agency                    = "Agency";
     String ANY                       = "(ANY)";
     String ANYTHING                  = "anything";
     String ATTRIBUTE                 = "Attribute";
     String CONTAINS                  = "contains";
+    String COORDINATE                = "Coordinate";
     String CORE                      = "CoRE";
     String CORE_ANIMATION_SOFTWARE   = "CoRE Animation Software";
     String CORE_MODEL                = "CoRE Model";
@@ -1510,6 +1667,7 @@ public interface WellKnownObject {
     String IN_WORKSPACE              = "in-workspace";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";
+    String INTERVAL                  = "Interval";
     String IS_A                      = "is-a";
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";
@@ -1528,6 +1686,7 @@ public interface WellKnownObject {
     String OWNED_BY                  = "ownedBy";
     String OWNS                      = "owns";
     String PASSWORD_HASH             = "password-hash";
+    String PRODUCT                   = "PRODUCT";
     String PROPAGATION_SOFTWARE      = "Propagation Software";
     String PROTOTYPE                 = "prototype";
     String PROTOTYPE_OF              = "prototype-of";
@@ -1536,6 +1695,7 @@ public interface WellKnownObject {
     String SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
     String SPECIAL_SYSTEM_EVENT      = "Special System Event";
     String SUPER_USER                = "CoRE Super User";
+    String UNIT                      = "Unit";
     String UNSET                     = "(UNSET)";
     String VERSION_OF                = "version-of";
     String WORKSPACE                 = "Workspace";
@@ -1554,13 +1714,13 @@ public interface WellKnownObject {
 
     /**
      * 
-     * @return the name of the wko
-     */
-    String productName();
-
-    /**
-     * 
      * @return the table name of the class of wko
      */
     String tableName();
+
+    /**
+     * 
+     * @return the name of the wko
+     */
+    String wkoName();
 }

@@ -1,0 +1,115 @@
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/ormorm_2_0.xsd" version="2.0"
+>
+    <entity name="UnitNetwork" class="com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork"> 
+        <named-native-query name="unitNetwork.inference">
+            <query><![CDATA[
+            INSERT INTO working_memory(parent, relationship, child, premise1, premise2)
+                 SELECT
+                      premise1.parent,
+                      deduction.inference,
+                      premise2.child,
+                      premise1.id,
+                      premise2.id
+                 FROM  (SELECT n.id, n.parent, n.relationship, n.child
+                            FROM ruleform.unit_network AS n) as premise1
+                 JOIN  (SELECT n.id, n.parent, n.relationship, n.child
+                            FROM ruleform.unit_network AS n
+                            WHERE n.inferred = 0) as premise2
+                    ON premise2.parent = premise1.child
+                    AND premise2.child <> premise1.parent
+                 JOIN ruleform.network_inference AS deduction
+                    ON premise1.relationship = deduction.premise1
+                    AND premise2.relationship = deduction.premise2
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="unitNetwork.inferenceStepFromLastPass">
+            <query><![CDATA[
+            INSERT INTO working_memory(parent, relationship, child, premise1, premise2)
+                SELECT
+                    premise1.parent,
+                    deduction.inference,
+                    premise2.child,
+                    premise1.id,
+                    premise2.id
+                FROM (SELECT n.id, n.parent, n.relationship, n.child
+                        FROM last_pass_rules AS n) as premise1
+                JOIN (SELECT n.id, n.parent, n.relationship, n.child
+                        FROM ruleform.unit_network AS n
+                        WHERE n.inferred = 0) as premise2
+                    ON premise2.parent = premise1.child
+                    AND premise2.child <> premise1.parent
+                JOIN ruleform.network_inference AS deduction
+                    ON premise1.relationship = deduction.premise1
+                    AND premise2.relationship = deduction.premise2
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="unitNetwork.gatherExistingNetworkRules">
+            <query><![CDATA[
+            INSERT INTO current_pass_existing_rules
+                SELECT exist.id, wm.*
+                   FROM working_memory AS wm
+                JOIN ruleform.unit_network AS exist
+                    ON wm.parent = exist.parent
+                    AND wm.relationship = exist.relationship
+                    AND wm.child = exist.child
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="unitNetwork.deduceNewNetworkRules">
+            <query><![CDATA[
+            INSERT INTO current_pass_rules
+                SELECT nextval('ruleform.unit_network_id_seq'), wm.*
+                FROM (SELECT parent, relationship, child
+                      FROM working_memory GROUP BY parent, relationship, child) AS wm
+                LEFT OUTER JOIN ruleform.unit_network AS exist
+                     ON wm.parent = exist.parent
+                     AND wm.relationship = exist.relationship
+                     AND wm.child = exist.child
+                WHERE exist.parent IS NULL
+                 AND exist.relationship IS NULL
+                 AND exist.child IS NULL
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="unitNetwork.insertNewNetworkRules">
+            <query><![CDATA[
+            WITH upsert AS
+                   (UPDATE ruleform.unit_network n
+                    SET id = n.id, parent = n.parent, child= n.child
+                    FROM current_pass_rules cpr
+                    WHERE n.parent = cpr.parent
+                      AND n.relationship = cpr.relationship
+                      AND n.child = cpr.child
+                    RETURNING n.*)
+           INSERT INTO ruleform.unit_network(id, parent, relationship, child, inferred, updated_by)
+               SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, 1, ?1
+               FROM current_pass_rules cpr
+               LEFT OUTER JOIN upsert AS exist
+                   ON cpr.parent = exist.parent
+                   AND cpr.relationship = exist.relationship
+                   AND cpr.child = exist.child
+                 WHERE exist.parent IS NULL
+                 AND exist.relationship IS NULL
+                 AND exist.child IS NULL
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="unitNetwork.generateInverses">
+            <query><![CDATA[
+            INSERT INTO ruleform.unit_network(parent, relationship, child, updated_by, inferred)
+            SELECT net.child as parent,
+                rel.inverse as relationship,
+                net.parent as child,
+                ?1 as updated_by,
+                net.inferred
+            FROM ruleform.unit_network AS net
+            JOIN ruleform.relationship AS rel ON net.relationship = rel.id
+            LEFT OUTER JOIN ruleform.unit_network AS exist
+                ON net.child = exist.parent
+                AND rel.inverse = exist.relationship
+                AND net.parent = exist.child
+            WHERE exist.parent IS NULL
+              AND exist.relationship IS NULL
+              AND exist.child IS NULL
+            ]]></query>
+        </named-native-query>
+    </entity>
+</entity-mappings>

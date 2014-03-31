@@ -182,7 +182,7 @@ public class Bootstrap {
                                                  tableName), e);
         }
 
-        PreparedStatement update = connection.prepareStatement(String.format("SELECT setval('%s_id_seq', (SELECT max(net.id) FROM %s as net))",
+        PreparedStatement update = connection.prepareStatement(String.format("SELECT setval('%s_id_seq', 2)",
                                                                              tableName,
                                                                              tableName));
         update.execute();

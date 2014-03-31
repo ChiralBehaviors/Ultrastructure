@@ -582,7 +582,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             // Insert the new rules
             Query insert = em.createNamedQuery(networkPrefix
                                                + INSERT_NEW_NETWORK_RULES_SUFFIX);
-            insert.setParameter(1, kernel.getPropagationSoftware().getId());
+            insert.setParameter(1, 2L);
+            insert.setParameter(2, kernel.getPropagationSoftware().getId());
             int inserted = insert.executeUpdate();
             if (log.isTraceEnabled()) {
                 log.trace(String.format("inserted %s new rules", inserted));

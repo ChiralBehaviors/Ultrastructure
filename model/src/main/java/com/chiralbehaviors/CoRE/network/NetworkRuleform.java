@@ -134,7 +134,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     }
 
     public boolean isInferred() {
-        return inferenceRule != null;
+        return !inferenceRule.getId().equals(Long.valueOf(1L));
     }
 
     abstract public void setChild(E child);

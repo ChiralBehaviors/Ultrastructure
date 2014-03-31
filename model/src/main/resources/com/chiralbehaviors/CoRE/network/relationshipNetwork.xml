@@ -15,7 +15,7 @@
                             FROM ruleform.relationship_network AS n) as premise1
                  JOIN  (SELECT n.id, n.parent, n.relationship, n.child
                             FROM ruleform.relationship_network AS n
-                            WHERE n.inferred = 0) as premise2
+                            WHERE n.inferred_from != 1) as premise2
                     ON premise2.parent = premise1.child
                     AND premise2.child <> premise1.parent
                  JOIN ruleform.network_inference AS deduction
@@ -36,7 +36,7 @@
                         FROM last_pass_rules AS n) as premise1
                 JOIN (SELECT n.id, n.parent, n.relationship, n.child
                         FROM ruleform.relationship_network AS n
-                        WHERE n.inferred = 0) as premise2
+                        WHERE n.inferred_from != 1) as premise2
                     ON premise2.parent = premise1.child
                     AND premise2.child <> premise1.parent
                 JOIN ruleform.network_inference AS deduction
@@ -80,8 +80,8 @@
                       AND n.relationship = cpr.relationship
                       AND n.child = cpr.child
                     RETURNING n.*)
-           INSERT INTO ruleform.relationship_network(id, parent, relationship, child, inferred, updated_by)
-               SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, 1, ?1
+           INSERT INTO ruleform.relationship_network(id, parent, relationship, child, inferred_from, updated_by)
+               SELECT cpr.id, cpr.parent, cpr.relationship, cpr.child, ?1, ?2
                FROM current_pass_rules cpr
                LEFT OUTER JOIN upsert AS exist
                    ON cpr.parent = exist.parent
@@ -94,12 +94,12 @@
         </named-native-query>
         <named-native-query name="relationshipNetwork.generateInverses">
             <query><![CDATA[
-            INSERT INTO ruleform.relationship_network(parent, relationship, child, updated_by, inferred)
+            INSERT INTO ruleform.relationship_network(parent, relationship, child, updated_by, inferred_from)
             SELECT net.child as parent,
                 rel.inverse as relationship,
                 net.parent as child,
                 ?1 as updated_by,
-                net.inferred
+                net.inferred_from
             FROM ruleform.relationship_network AS net
             JOIN ruleform.relationship AS rel ON net.relationship = rel.id
             LEFT OUTER JOIN ruleform.relationship_network AS exist

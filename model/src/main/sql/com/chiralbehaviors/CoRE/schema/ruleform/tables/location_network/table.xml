@@ -41,22 +41,22 @@
         <addForeignKeyConstraint
             baseColumnNames="relationship" baseTableName="ruleform.location_network"
             constraintName="location_network_relationship_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.relationship" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hparry" id="1390879803225-193">
         <addForeignKeyConstraint
             baseColumnNames="parent" baseTableName="ruleform.location_network"
-            constraintName="location_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.location" />
+            constraintName="location_network_parent_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.location" />
     </changeSet>
     <changeSet author="hparry" id="1390879803225-194">
         <addForeignKeyConstraint
             baseColumnNames="child" baseTableName="ruleform.location_network"
-            constraintName="location_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.location" />
+            constraintName="location_network_child_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-198">
         <addForeignKeyConstraint

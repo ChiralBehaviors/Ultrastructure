@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.graph.Graph;
 import com.chiralbehaviors.CoRE.meta.graph.Node;
@@ -55,13 +56,13 @@ public class WorkspaceModelTest extends AbstractModelTest {
 
     @Test
     public void testStatusCodeGraph() {
-        Graph statusCodeGraph = workspaceModel.getStatusCodeGraph(scenario.pick);
+        Graph<StatusCode, StatusCodeNetwork> statusCodeGraph = workspaceModel.getStatusCodeGraph(scenario.pick);
         Collection<StatusCode> codes = model.getJobModel().getStatusCodesFor(scenario.pick);
         assertEquals(codes.size(), statusCodeGraph.getNodes().size());
-        for (Node<?> node : statusCodeGraph.getNodes()) {
+        for (Node<StatusCode> node : statusCodeGraph.getNodes()) {
             assertTrue(codes.contains(node.getNode()));
         }
-        Set<Node<?>> reduced = new HashSet<Node<?>>();
+        Set<Node<StatusCode>> reduced = new HashSet<Node<StatusCode>>();
         reduced.addAll(statusCodeGraph.getNodes());
         assertEquals(codes.size(), reduced.size());
     }

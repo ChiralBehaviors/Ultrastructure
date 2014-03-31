@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    
+    <changeSet id="1" author="hparry">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.forbid_foreign_key_updates()
+              RETURNS trigger AS
+            $BODY$
+            BEGIN
+                IF NEW.parent != OLD.parent
+                    OR NEW.relationship != OLD.relationship
+                    OR NEW.child != OLD.child
+                THEN RAISE EXCEPTION 'Cannot update parent, relationship, or child values.';
+                END IF;
+               
+            END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+            ALTER FUNCTION ruleform.forbid_foreign_key_updates()
+              OWNER TO core;
+            COMMENT ON FUNCTION ruleform.forbid_foreign_key_updates() IS 'Prevents network foreign keys from being updated.';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.forbid_foreign_key_updates(); </rollback>
+    </changeSet>
+</databaseChangeLog>

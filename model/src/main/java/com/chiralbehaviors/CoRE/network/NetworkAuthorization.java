@@ -39,106 +39,107 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>>
-        extends Ruleform {
+		extends Ruleform {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @ManyToOne
-    @JoinColumn(name = "authorized_relationship")
-    private Relationship      authorizedRelationship;
+	@ManyToOne
+	@JoinColumn(name = "authorized_relationship")
+	private Relationship authorizedRelationship;
 
-    @ManyToOne
-    @JoinColumn(name = "classification")
-    private Relationship      classification;
+	@ManyToOne
+	@JoinColumn(name = "classification")
+	private Relationship classification;
 
-    // bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "grouping_agency")
-    private Agency            groupingAgency;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "grouping_agency")
+	private Agency groupingAgency;
 
-    @Column(name = "sequence_number")
-    private Integer           sequenceNumber;
+	@Column(name = "sequence_number")
+	private Integer sequenceNumber;
 
-    public NetworkAuthorization() {
-        super();
-    }
+	public NetworkAuthorization() {
+		super();
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public NetworkAuthorization(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public NetworkAuthorization(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param id
-     */
-    public NetworkAuthorization(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public NetworkAuthorization(Long id) {
+		super(id);
+	}
 
-    abstract public RuleForm getAuthorizedParent();
+	abstract public RuleForm getAuthorizedParent();
 
-    public Relationship getAuthorizedRelationship() {
-        return authorizedRelationship;
-    }
+	public Relationship getAuthorizedRelationship() {
+		return authorizedRelationship;
+	}
 
-    public Relationship getClassification() {
-        return classification;
-    }
+	public Relationship getClassification() {
+		return classification;
+	}
 
-    abstract public RuleForm getClassifier();
+	abstract public RuleForm getClassifier();
 
-    public Agency getGroupingAgency() {
-        return groupingAgency;
-    }
+	public Agency getGroupingAgency() {
+		return groupingAgency;
+	}
 
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
+	public Integer getSequenceNumber() {
+		return sequenceNumber;
+	}
 
-    abstract public void setAuthorizedParent(RuleForm parent);
+	abstract public void setAuthorizedParent(RuleForm parent);
 
-    public void setAuthorizedRelationship(Relationship authorizedRelationship) {
-        this.authorizedRelationship = authorizedRelationship;
-    }
+	public void setAuthorizedRelationship(Relationship authorizedRelationship) {
+		this.authorizedRelationship = authorizedRelationship;
+	}
 
-    public void setClassification(Relationship classification) {
-        this.classification = classification;
-    }
+	public void setClassification(Relationship classification) {
+		this.classification = classification;
+	}
 
-    abstract public void setClassifier(RuleForm classifier);
+	abstract public void setClassifier(RuleForm classifier);
 
-    public void setGroupingAgency(Agency groupingAgency) {
-        this.groupingAgency = groupingAgency;
-    }
+	public void setGroupingAgency(Agency groupingAgency) {
+		this.groupingAgency = groupingAgency;
+	}
 
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
+	public void setSequenceNumber(Integer sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (authorizedRelationship != null) {
-            authorizedRelationship = (Relationship) authorizedRelationship.manageEntity(em,
-                                                                                        knownObjects);
-        }
-        if (classification != null) {
-            classification = (Relationship) classification.manageEntity(em,
-                                                                        knownObjects);
-        }
-        if (groupingAgency != null) {
-            groupingAgency = (Agency) groupingAgency.manageEntity(em,
-                                                                  knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (authorizedRelationship != null) {
+			authorizedRelationship = (Relationship) authorizedRelationship
+					.manageEntity(em, knownObjects);
+		}
+		if (classification != null) {
+			classification = (Relationship) classification.manageEntity(em,
+					knownObjects);
+		}
+		if (groupingAgency != null) {
+			groupingAgency = (Agency) groupingAgency.manageEntity(em,
+					knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

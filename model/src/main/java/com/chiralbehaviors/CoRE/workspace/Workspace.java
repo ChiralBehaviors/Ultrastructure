@@ -15,15 +15,17 @@
  */
 package com.chiralbehaviors.CoRE.workspace;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.graph.Graph;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -32,23 +34,25 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public interface Workspace {
 
-	<T extends ExistentialRuleform<?,?>> T getEntityByName(Class<T> clazz,
+	<T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntities(
+			Class<T> clazz);
+
+	Collection<MetaProtocol> getAllMetaProtocols();
+
+	Collection<Protocol> getAllProtocols();
+
+	<T extends ExistentialRuleform<?, ?>> T getEntityByName(Class<T> clazz,
 			String name);
 
-	Attribute getAttribute(String name);
-
-	StatusCode getStatusCodeGraph(Product service);
-
-	List<Protocol> getProtocolsFor(Product service);
+	<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Graph<RuleForm, Network> getGraph(
+			RuleForm parent, Relationship relationship);
 
 	List<MetaProtocol> getMetaProtocolsFor(Product service);
 
+	List<Protocol> getProtocolsFor(Product service);
+
 	<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Graph<RuleForm, Network>> getRootedNetworksFor(
 			RuleForm entity);
-	
-	<T extends ExistentialRuleform<?,?>> List<T> getAllEntities(Class<T> clazz);
-	
-	List<Protocol> getAllProtocols();
-	
-	List<MetaProtocol> getAllMetaProtocols();
+
+	Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product service);
 }

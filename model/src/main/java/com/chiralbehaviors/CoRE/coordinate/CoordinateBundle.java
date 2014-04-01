@@ -26,37 +26,37 @@ import com.chiralbehaviors.CoRE.product.Product;
 
 public class CoordinateBundle {
 
-    /** CoordinateAttributes that collectively denote some location. */
-    private final List<CoordinateAttribute> coordinates;
+	/** CoordinateAttributes that collectively denote some location. */
+	private final List<CoordinateAttribute> coordinates;
 
-    /**
-     * The context in which the location denoted by <code>coordinates</code>
-     * should be resolved.
-     */
-    private final Product                   finalContext;
+	/**
+	 * The context in which the location denoted by <code>coordinates</code>
+	 * should be resolved.
+	 */
+	private final Product finalContext;
 
-    /**
-     * Bundles the List of coordinates with the given Product as context. All
-     * CoordinateAttributes should be interpreted relative to
-     * <code>context</code>.
-     * 
-     * @param coordinates
-     *            CoordinateAttributes that collectively denote some location
-     * @param context
-     *            The context in which the location denoted by
-     *            <code>coordinates</code> should be resolved.
-     */
-    public CoordinateBundle(List<CoordinateAttribute> coordinates,
-                            Product context) {
-        this.coordinates = coordinates;
-        finalContext = context;
-    }
+	/**
+	 * Bundles the List of coordinates with the given Product as context. All
+	 * CoordinateAttributes should be interpreted relative to
+	 * <code>context</code>.
+	 * 
+	 * @param coordinates
+	 *            CoordinateAttributes that collectively denote some location
+	 * @param context
+	 *            The context in which the location denoted by
+	 *            <code>coordinates</code> should be resolved.
+	 */
+	public CoordinateBundle(List<CoordinateAttribute> coordinates,
+			Product context) {
+		this.coordinates = coordinates;
+		finalContext = context;
+	}
 
-    public List<CoordinateAttribute> getCoordinateAttributes() {
-        return coordinates;
-    }
+	public List<CoordinateAttribute> getCoordinateAttributes() {
+		return coordinates;
+	}
 
-    public Product getFinalContext() {
-        return finalContext;
-    }
+	public Product getFinalContext() {
+		return finalContext;
+	}
 }

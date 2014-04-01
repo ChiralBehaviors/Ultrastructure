@@ -42,117 +42,116 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * 
  */
 @NamedQueries({
-               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
-                                                                                                                   + "FROM AgencyLocationAccessAuthorization auth "
-                                                                                                                   + "WHERE auth.parent = :parent "
-                                                                                                                   + "AND auth.relationship = :relationship "
-                                                                                                                   + "AND auth.child = :child "
-                                                                                                                   + "AND auth.parentTransitiveRelationship = :parentRelationship "
-                                                                                                                   + "AND auth.childTransitiveRelationship = :childRelationship"),
-               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
-                                                                                        + "FROM AgencyLocationAccessAuthorization auth "
-                                                                                        + "WHERE auth.parent = :parent "
-                                                                                        + "AND auth.relationship = :relationship "
-                                                                                        + "AND auth.child = :child "),
-               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
-                                                                          + "FROM AgencyLocationAccessAuthorization auth, AgencyNetwork net "
-                                                                          + "WHERE auth.relationship = :relationship "
-                                                                          + "AND auth.child = :child "
-                                                                          + "AND net.relationship = :netRelationship "
-                                                                          + "AND net.child = :netChild "
-                                                                          + "AND auth.parent = net.parent "),
-               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
-                                                                         + "FROM AgencyLocationAccessAuthorization auth, LocationNetwork net "
-                                                                         + "WHERE auth.relationship = :relationship "
-                                                                         + "AND auth.parent = :parent "
-                                                                         + "AND net.relationship = :netRelationship "
-                                                                         + "AND net.child = :netChild "
-                                                                         + "AND auth.child = net.parent "),
-               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
-                                                                                    + "FROM AgencyLocationAccessAuthorization auth, AgencyNetwork parentNet, LocationNetwork childNet "
-                                                                                    + "WHERE auth.relationship = :relationship "
-                                                                                    + "AND parentNet.relationship = :parentNetRelationship "
-                                                                                    + "AND parentNet.child = :parentNetChild "
-                                                                                    + "AND childNet.relationship = :childNetRelationship "
-                                                                                    + "AND childNet.child = :childNetChild "
-                                                                                    + "AND auth.parent = parentNet.parent "
-                                                                                    + "AND auth.child = childNet.parent ") })
+		@NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
+				+ "FROM AgencyLocationAccessAuthorization auth "
+				+ "WHERE auth.parent = :parent "
+				+ "AND auth.relationship = :relationship "
+				+ "AND auth.child = :child "
+				+ "AND auth.parentTransitiveRelationship = :parentRelationship "
+				+ "AND auth.childTransitiveRelationship = :childRelationship"),
+		@NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
+				+ "FROM AgencyLocationAccessAuthorization auth "
+				+ "WHERE auth.parent = :parent "
+				+ "AND auth.relationship = :relationship "
+				+ "AND auth.child = :child "),
+		@NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
+				+ "FROM AgencyLocationAccessAuthorization auth, AgencyNetwork net "
+				+ "WHERE auth.relationship = :relationship "
+				+ "AND auth.child = :child "
+				+ "AND net.relationship = :netRelationship "
+				+ "AND net.child = :netChild "
+				+ "AND auth.parent = net.parent "),
+		@NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
+				+ "FROM AgencyLocationAccessAuthorization auth, LocationNetwork net "
+				+ "WHERE auth.relationship = :relationship "
+				+ "AND auth.parent = :parent "
+				+ "AND net.relationship = :netRelationship "
+				+ "AND net.child = :netChild " + "AND auth.child = net.parent "),
+		@NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
+				+ "FROM AgencyLocationAccessAuthorization auth, AgencyNetwork parentNet, LocationNetwork childNet "
+				+ "WHERE auth.relationship = :relationship "
+				+ "AND parentNet.relationship = :parentNetRelationship "
+				+ "AND parentNet.child = :parentNetChild "
+				+ "AND childNet.relationship = :childNetRelationship "
+				+ "AND childNet.child = :childNetChild "
+				+ "AND auth.parent = parentNet.parent "
+				+ "AND auth.child = childNet.parent ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.AGENCY_LOCATION)
 public class AgencyLocationAccessAuthorization extends
-        AgencyAccessAuthorization<Location> {
+		AgencyAccessAuthorization<Location> {
 
-    public static final String AGENCY_LOCATION_ACCESS_AUTH_PREFIX                                      = "agencyLocationAccessAuthorization";
-    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
-    public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+	public static final String AGENCY_LOCATION_ACCESS_AUTH_PREFIX = "agencyLocationAccessAuthorization";
+	public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+			+ FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+	public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+			+ FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
 
-    public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
-    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
-    public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+	public static final String FIND_AUTHS_FOR_INDIRECT_CHILD = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+			+ FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
+	public static final String FIND_AUTHS_FOR_INDIRECT_PARENT = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+			+ FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+	public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD = AGENCY_LOCATION_ACCESS_AUTH_PREFIX
+			+ FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
 
-    private static final long  serialVersionUID                                                        = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @ManyToOne
-    @JoinColumn(name = "location2")
-    private Location           child;
+	@ManyToOne
+	@JoinColumn(name = "location2")
+	private Location child;
 
-    {
-        setAuthorizationType(AccessAuthorization.AGENCY_LOCATION);
-    }
+	{
+		setAuthorizationType(AccessAuthorization.AGENCY_LOCATION);
+	}
 
-    public AgencyLocationAccessAuthorization() {
-        super();
-    }
+	public AgencyLocationAccessAuthorization() {
+		super();
+	}
 
-    /**
-     * @param Agency
-     * @param Relationship
-     * @param Product
-     * @param updatedBy
-     */
-    public AgencyLocationAccessAuthorization(Agency parent,
-                                             Relationship relationship,
-                                             Location child, Agency updatedBy) {
-        this();
-        setParent(parent);
-        setRelationship(relationship);
-        setChild(child);
-        setUpdatedBy(updatedBy);
-    }
+	/**
+	 * @param Agency
+	 * @param Relationship
+	 * @param Product
+	 * @param updatedBy
+	 */
+	public AgencyLocationAccessAuthorization(Agency parent,
+			Relationship relationship, Location child, Agency updatedBy) {
+		this();
+		setParent(parent);
+		setRelationship(relationship);
+		setChild(child);
+		setUpdatedBy(updatedBy);
+	}
 
-    /**
-     * @return the child
-     */
-    @Override
-    public Location getChild() {
-        return child;
-    }
+	/**
+	 * @return the child
+	 */
+	@Override
+	public Location getChild() {
+		return child;
+	}
 
-    /**
-     * @param child
-     *            the child to set
-     */
-    public void setChild(Location child) {
-        this.child = child;
-    }
+	/**
+	 * @param child
+	 *            the child to set
+	 */
+	public void setChild(Location child) {
+		this.child = child;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null) {
-            child = (Location) child.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (child != null) {
+			child = (Location) child.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
+	}
 }

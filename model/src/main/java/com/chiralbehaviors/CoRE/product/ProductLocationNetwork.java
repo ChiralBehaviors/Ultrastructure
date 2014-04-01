@@ -46,112 +46,116 @@ import com.chiralbehaviors.CoRE.coordinate.Coordinate;
 @SequenceGenerator(schema = "ruleform", name = "product_location_network_id_seq", sequenceName = "product_location_network_id_seq")
 @NamedQueries({ @NamedQuery(name = LOCATION_RULES, query = "select n from ProductLocationNetwork n where n.product = :product") })
 public class ProductLocationNetwork extends Ruleform {
-    public static final String LOCATION_RULES   = "productLocationNetwork.locationRules";
-    private static final long  serialVersionUID = 1L;
+	public static final String LOCATION_RULES = "productLocationNetwork.locationRules";
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency             agency;                                                    ;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "agency")
+	private Agency agency;;
 
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "contextual_product")
-    private Product            contextualProduct;
+	// bi-directional many-to-one association to Product
+	@ManyToOne
+	@JoinColumn(name = "contextual_product")
+	private Product contextualProduct;
 
-    //bi-directional many-to-one association to Coordinate
-    @ManyToOne
-    @JoinColumn(name = "coordinate")
-    private Coordinate         coordinate;
+	// bi-directional many-to-one association to Coordinate
+	@ManyToOne
+	@JoinColumn(name = "coordinate")
+	private Coordinate coordinate;
 
-    @Id
-    @GeneratedValue(generator = "product_location_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+	@Id
+	@GeneratedValue(generator = "product_location_network_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private Product            product;
+	// bi-directional many-to-one association to Product
+	@ManyToOne
+	@JoinColumn(name = "product")
+	private Product product;
 
-    public ProductLocationNetwork() {
-    }
+	public ProductLocationNetwork() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public ProductLocationNetwork(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public ProductLocationNetwork(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param id
-     */
-    public ProductLocationNetwork(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public ProductLocationNetwork(Long id) {
+		super(id);
+	}
 
-    public Agency getAgency() {
-        return agency;
-    }
+	public Agency getAgency() {
+		return agency;
+	}
 
-    public Product getContextualEntity() {
-        return contextualProduct;
-    }
+	public Product getContextualEntity() {
+		return contextualProduct;
+	}
 
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
+	public Coordinate getCoordinate() {
+		return coordinate;
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    public Product getProdut() {
-        return product;
-    }
+	public Product getProdut() {
+		return product;
+	}
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
+	public void setAgency(Agency agency2) {
+		agency = agency2;
+	}
 
-    public void setContextualProduct(Product product1) {
-        contextualProduct = product1;
-    }
+	public void setContextualProduct(Product product1) {
+		contextualProduct = product1;
+	}
 
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
+	public void setCoordinate(Coordinate coordinate) {
+		this.coordinate = coordinate;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setProduct(Product product2) {
-        product = product2;
-    }
+	public void setProduct(Product product2) {
+		product = product2;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (contextualProduct != null) {
-            contextualProduct = (Product) contextualProduct.manageEntity(em,
-                                                                         knownObjects);
-        }
-        if (coordinate != null) {
-            coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
-        }
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (contextualProduct != null) {
+			contextualProduct = (Product) contextualProduct.manageEntity(em,
+					knownObjects);
+		}
+		if (coordinate != null) {
+			coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
+		}
+		if (product != null) {
+			product = (Product) product.manageEntity(em, knownObjects);
+		}
+		if (agency != null) {
+			agency = (Agency) agency.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

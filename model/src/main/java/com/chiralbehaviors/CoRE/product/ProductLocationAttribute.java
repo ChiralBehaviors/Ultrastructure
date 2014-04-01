@@ -45,174 +45,184 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 @SequenceGenerator(schema = "ruleform", name = "product_location_attribute_id_seq", sequenceName = "product_location_attribute_id_seq")
 @Table(name = "product_location_attribute", schema = "ruleform")
 public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency            agency;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "agency")
+	private Agency agency;
 
-    @Id
-    @GeneratedValue(generator = "product_location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+	@Id
+	@GeneratedValue(generator = "product_location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to ProductLocation
-    @ManyToOne
-    @JoinColumn(name = "product_location")
-    private ProductLocation   productLocation;
+	// bi-directional many-to-one association to ProductLocation
+	@ManyToOne
+	@JoinColumn(name = "product_location")
+	private ProductLocation productLocation;
 
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           productValue;
+	// bi-directional many-to-one association to Product
+	@ManyToOne
+	@JoinColumn(name = "product_value")
+	private Product productValue;
 
-    public ProductLocationAttribute() {
-    }
+	public ProductLocationAttribute() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public ProductLocationAttribute(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param attribute
-     */
-    public ProductLocationAttribute(Attribute attribute) {
-        super(attribute);
-    }
+	/**
+	 * @param attribute
+	 */
+	public ProductLocationAttribute(Attribute attribute) {
+		super(attribute);
+	}
 
-    /**
-     * @param attribute
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param updatedBy
+	 */
+	public ProductLocationAttribute(Attribute attribute, Agency updatedBy) {
+		super(attribute, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Attribute attribute, BigDecimal value,
-                                    Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductLocationAttribute(Attribute attribute, BigDecimal value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Attribute attribute, boolean value,
-                                    Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductLocationAttribute(Attribute attribute, boolean value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Attribute attribute, int value,
-                                    Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductLocationAttribute(Attribute attribute, int value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductLocationAttribute(Attribute attribute, String value,
-                                    Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductLocationAttribute(Attribute attribute, String value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param unit
-     */
-    public ProductLocationAttribute(Attribute attribute, Unit unit) {
-        super(attribute, unit);
-    }
+	/**
+	 * @param attribute
+	 * @param unit
+	 */
+	public ProductLocationAttribute(Attribute attribute, Unit unit) {
+		super(attribute, unit);
+	}
 
-    /**
-     * @param id
-     */
-    public ProductLocationAttribute(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public ProductLocationAttribute(Long id) {
+		super(id);
+	}
 
-    public Agency getAgency() {
-        return agency;
-    }
+	public Agency getAgency() {
+		return agency;
+	}
 
-    public ProductLocation getEntityLocation() {
-        return productLocation;
-    }
+	public ProductLocation getEntityLocation() {
+		return productLocation;
+	}
 
-    public Product getEntityValue() {
-        return productValue;
-    }
+	public Product getEntityValue() {
+		return productValue;
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
-     */
-    @Override
-    public SingularAttribute<ProductLocationAttribute, ProductLocation> getRuleformAttribute() {
-        return ProductLocationAttribute_.productLocation;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+	 */
+	@Override
+	public SingularAttribute<ProductLocationAttribute, ProductLocation> getRuleformAttribute() {
+		return ProductLocationAttribute_.productLocation;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
-     */
-    @Override
-    public Class<ProductLocation> getRuleformClass() {
-        return ProductLocation.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
+	 */
+	@Override
+	public Class<ProductLocation> getRuleformClass() {
+		return ProductLocation.class;
+	}
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
+	public void setAgency(Agency agency2) {
+		agency = agency2;
+	}
 
-    public void setEntityLocation(ProductLocation productLocation) {
-        this.productLocation = productLocation;
-    }
+	public void setEntityLocation(ProductLocation productLocation) {
+		this.productLocation = productLocation;
+	}
 
-    public void setEntityValue(Product product) {
-        productValue = product;
-    }
+	public void setEntityValue(Product product) {
+		productValue = product;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (productLocation != null) {
-            productLocation = (ProductLocation) productLocation.manageEntity(em,
-                                                                             knownObjects);
-        }
-        if (productValue != null) {
-            productValue = (Product) productValue.manageEntity(em, knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (productLocation != null) {
+			productLocation = (ProductLocation) productLocation.manageEntity(
+					em, knownObjects);
+		}
+		if (productValue != null) {
+			productValue = (Product) productValue
+					.manageEntity(em, knownObjects);
+		}
+		if (agency != null) {
+			agency = (Agency) agency.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

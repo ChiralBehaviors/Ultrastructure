@@ -40,102 +40,125 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 @Table(name = "agency_network_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "agency_network_authorization_id_seq", sequenceName = "agency_network_authorization_id_seq")
 public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Event
-    @ManyToOne
-    @JoinColumn(name = "authorized_parent")
-    private Agency            authorizedParent;
+	// bi-directional many-to-one association to Event
+	@ManyToOne
+	@JoinColumn(name = "authorized_parent")
+	private Agency authorizedParent;
 
-    //bi-directional many-to-one association to Event
-    @ManyToOne
-    @JoinColumn(name = "classifier")
-    private Agency            classifier;
+	// bi-directional many-to-one association to Event
+	@ManyToOne
+	@JoinColumn(name = "classifier")
+	private Agency classifier;
 
-    @Id
-    @GeneratedValue(generator = "agency_network_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+	@Id
+	@GeneratedValue(generator = "agency_network_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    public AgencyNetworkAuthorization() {
-        super();
-    }
+	public AgencyNetworkAuthorization() {
+		super();
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public AgencyNetworkAuthorization(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public AgencyNetworkAuthorization(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param id
-     */
-    public AgencyNetworkAuthorization(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public AgencyNetworkAuthorization(Long id) {
+		super(id);
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent()
-     */
-    @Override
-    public Agency getAuthorizedParent() {
-        return authorizedParent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent
+	 * ()
+	 */
+	@Override
+	public Agency getAuthorizedParent() {
+		return authorizedParent;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
-     */
-    @Override
-    public Agency getClassifier() {
-        return classifier;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
+	 */
+	@Override
+	public Agency getClassifier() {
+		return classifier;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+	 */
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent(com.chiralbehaviors.CoRE.network.Networked)
-     */
-    @Override
-    public void setAuthorizedParent(Agency parent) {
-        authorizedParent = parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent
+	 * (com.chiralbehaviors.CoRE.network.Networked)
+	 */
+	@Override
+	public void setAuthorizedParent(Agency parent) {
+		authorizedParent = parent;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com.chiralbehaviors.CoRE.network.Networked)
-     */
-    @Override
-    public void setClassifier(Agency classifier) {
-        this.classifier = classifier;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com
+	 * .chiralbehaviors.CoRE.network.Networked)
+	 */
+	@Override
+	public void setClassifier(Agency classifier) {
+		this.classifier = classifier;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+	 */
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (authorizedParent != null) {
-            authorizedParent = (Agency) authorizedParent.manageEntity(em,
-                                                                      knownObjects);
-        }
-        if (classifier != null) {
-            classifier = (Agency) classifier.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (authorizedParent != null) {
+			authorizedParent = (Agency) authorizedParent.manageEntity(em,
+					knownObjects);
+		}
+		if (classifier != null) {
+			classifier = (Agency) classifier.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

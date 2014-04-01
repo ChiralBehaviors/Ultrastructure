@@ -40,118 +40,122 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 @Table(name = "coordinate_nesting", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_nesting_id_seq", sequenceName = "coordinate_nesting_id_seq")
 public class CoordinateNesting extends Ruleform {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Attribute
-    @ManyToOne
-    @JoinColumn(name = "attribute")
-    private Attribute         attribute;
+	// bi-directional many-to-one association to Attribute
+	@ManyToOne
+	@JoinColumn(name = "attribute")
+	private Attribute attribute;
 
-    @Id
-    @GeneratedValue(generator = "coordinate_nesting_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+	@Id
+	@GeneratedValue(generator = "coordinate_nesting_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Attribute
-    @ManyToOne
-    @JoinColumn(name = "inner_attribute")
-    private Attribute         innerAttribute;
+	// bi-directional many-to-one association to Attribute
+	@ManyToOne
+	@JoinColumn(name = "inner_attribute")
+	private Attribute innerAttribute;
 
-    private String            operation;
+	private String operation;
 
-    //bi-directional many-to-one association to Attribute
-    @ManyToOne
-    @JoinColumn(name = "outer_attribute")
-    private Attribute         outerAttribute;
+	// bi-directional many-to-one association to Attribute
+	@ManyToOne
+	@JoinColumn(name = "outer_attribute")
+	private Attribute outerAttribute;
 
-    @Column(name = "sequence_number")
-    private Integer           sequenceNumber;
+	@Column(name = "sequence_number")
+	private Integer sequenceNumber;
 
-    public CoordinateNesting() {
-    }
+	public CoordinateNesting() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public CoordinateNesting(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public CoordinateNesting(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param id
-     */
-    public CoordinateNesting(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public CoordinateNesting(Long id) {
+		super(id);
+	}
 
-    public Attribute getAttribute() {
-        return attribute;
-    }
+	public Attribute getAttribute() {
+		return attribute;
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    public Attribute getInnerAttribute() {
-        return innerAttribute;
-    }
+	public Attribute getInnerAttribute() {
+		return innerAttribute;
+	}
 
-    public String getOperation() {
-        return operation;
-    }
+	public String getOperation() {
+		return operation;
+	}
 
-    public Attribute getOuterAttribute() {
-        return outerAttribute;
-    }
+	public Attribute getOuterAttribute() {
+		return outerAttribute;
+	}
 
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
+	public Integer getSequenceNumber() {
+		return sequenceNumber;
+	}
 
-    public void setAttribute(Attribute attribute3) {
-        attribute = attribute3;
-    }
+	public void setAttribute(Attribute attribute3) {
+		attribute = attribute3;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setInnerAttribute(Attribute attribute2) {
-        innerAttribute = attribute2;
-    }
+	public void setInnerAttribute(Attribute attribute2) {
+		innerAttribute = attribute2;
+	}
 
-    public void setOperation(String operation) {
-        this.operation = operation;
-    }
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
 
-    public void setOuterAttribute(Attribute attribute1) {
-        outerAttribute = attribute1;
-    }
+	public void setOuterAttribute(Attribute attribute1) {
+		outerAttribute = attribute1;
+	}
 
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
+	public void setSequenceNumber(Integer sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (attribute != null) {
-            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-        }
-        if (innerAttribute != null) {
-            innerAttribute = (Attribute) innerAttribute.manageEntity(em,
-                                                                     knownObjects);
-        }
-        if (outerAttribute != null) {
-            outerAttribute = (Attribute) outerAttribute.manageEntity(em,
-                                                                     knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (attribute != null) {
+			attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+		}
+		if (innerAttribute != null) {
+			innerAttribute = (Attribute) innerAttribute.manageEntity(em,
+					knownObjects);
+		}
+		if (outerAttribute != null) {
+			outerAttribute = (Attribute) outerAttribute.manageEntity(em,
+					knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 
 }

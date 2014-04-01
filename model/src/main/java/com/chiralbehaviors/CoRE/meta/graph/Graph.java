@@ -24,16 +24,16 @@ import java.util.List;
  */
 public interface Graph<NodeType, EdgeType> {
 
-    Graph<NodeType, EdgeType> addEdge(Edge<EdgeType> e);
+	Graph<NodeType, EdgeType> addEdge(Edge<EdgeType> e);
 
-    Graph<NodeType, EdgeType> addNode(Node<NodeType> n);
+	Graph<NodeType, EdgeType> addNode(Node<NodeType> n);
 
-    List<Edge<EdgeType>> getEdges();
+	List<Edge<EdgeType>> getEdges();
 
-    List<Node<NodeType>> getNodes();
+	List<Node<NodeType>> getNodes();
 
-    Graph<NodeType, EdgeType> intersection(Graph<NodeType, EdgeType> g);
+	Graph<NodeType, EdgeType> intersection(Graph<NodeType, EdgeType> g);
 
-    Graph<NodeType, EdgeType> union(Graph<NodeType, EdgeType> g);
+	Graph<NodeType, EdgeType> union(Graph<NodeType, EdgeType> g);
 
 }

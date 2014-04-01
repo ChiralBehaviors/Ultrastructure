@@ -84,6 +84,7 @@ public class LocationAgencyAccessAuthorization extends
     public static final String LOCATION_AGENCY_ACCESS_AUTH_PREFIX                                      = "locationAgencyAccessAuthorization";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
@@ -141,7 +142,8 @@ public class LocationAgencyAccessAuthorization extends
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
      * EntityManager, java.util.Map)
      */
     @Override

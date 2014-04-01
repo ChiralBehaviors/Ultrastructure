@@ -46,20 +46,23 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-154">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.location_network" constraintName="location_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.location" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-155">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.location_network" constraintName="location_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.location" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-156">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.location_network"
-            constraintName="location_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="location_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-193">
+    <changeSet author="hhildebrand" id="1390879803225-473">
+        <createIndex indexName="location_network_child_fkey_idx" tableName="ruleform.location_network" unique="false">
+            <column name="child" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-198">
         <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location_network"
             constraintName="location_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
@@ -67,11 +70,6 @@
     <changeSet author="hhildebrand" id="1390879803225-389">
         <addUniqueConstraint columnNames="parent, relationship, child" constraintName="location_network_parent_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.location_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-473">
-        <createIndex indexName="location_network_child_fkey_idx" tableName="ruleform.location_network" unique="false">
-            <column name="child" />
-        </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="0879803225-431">
         <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.location_network"

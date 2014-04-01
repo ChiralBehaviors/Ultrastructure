@@ -54,22 +54,22 @@ public class Transformation extends Ruleform implements Serializable {
     public final static String GET              = "transformation.get";
     private static final long  serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
     private Agency             agency;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency_key")
     private Agency             agencyKey;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "assign_to")
     private Agency             assignTo;
 
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute          attribute;
@@ -78,22 +78,22 @@ public class Transformation extends Ruleform implements Serializable {
     @GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product")
     private Product            product;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "product_attribute_agency")
     private Agency             productAttributeAgency;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_key")
     private Product            productKey;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship_key")
     private Relationship       relationshipKey;
@@ -101,7 +101,7 @@ public class Transformation extends Ruleform implements Serializable {
     @Column(name = "sequence_number")
     private Integer            sequenceNumber;
 
-    //bi-directional many-to-one association to Event
+    // bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
@@ -206,8 +206,12 @@ public class Transformation extends Ruleform implements Serializable {
         this.service = service;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

@@ -47,7 +47,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
     private Agency            agency;
@@ -56,12 +56,12 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     @GeneratedValue(generator = "product_network_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to ProductNetwork
+    // bi-directional many-to-one association to ProductNetwork
     @ManyToOne
     @JoinColumn(name = "network_rule")
     private ProductNetwork    productNetwork;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
     private Product           productValue;
@@ -163,15 +163,20 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         return productValue;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<ProductNetworkAttribute, ProductNetwork> getRuleformAttribute() {
         return ProductNetworkAttribute_.productNetwork;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -196,8 +201,12 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         productValue = product;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

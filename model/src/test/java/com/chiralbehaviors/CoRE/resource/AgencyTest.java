@@ -62,17 +62,24 @@ public class AgencyTest extends DatabaseTest {
         System.out.println("Foo Updated By Class (Proxy): "
                            + foo.getUpdatedBy().getClass());
 
-        //        Assert.assertTrue(test.hashCode() == foo.getUpdatedBy().hashCode(), "Hashcodes aren't equal!");
-        //        Assert.assertTrue(test.getName().equals(foo.getUpdatedBy().getName()), "Names aren't equal!");
-        //        Assert.assertTrue(!test.getClass().equals(foo.getUpdatedBy().getClass()), "Classes are equal!  One should be a proxy");
-        //        
-        //        Assert.assertFalse(test == foo.getUpdatedBy(), "The objects shouldn't be identical!");
-        //        
-        //        Assert.assertTrue((Object)test.getClass() != (Object)foo.getUpdatedBy().getClass());
-        //        Assert.assertTrue((Object)foo.getUpdatedBy().getClass() != (Object)test.getClass());
-        //        System.out.println("Foo Updated By Class (Proxy): " + foo.getUpdatedBy().getClass());
-        //        
-        //        Assert.assertEquals(test, foo.getUpdatedBy(), "What the hell?");
+        // Assert.assertTrue(test.hashCode() == foo.getUpdatedBy().hashCode(),
+        // "Hashcodes aren't equal!");
+        // Assert.assertTrue(test.getName().equals(foo.getUpdatedBy().getName()),
+        // "Names aren't equal!");
+        // Assert.assertTrue(!test.getClass().equals(foo.getUpdatedBy().getClass()),
+        // "Classes are equal!  One should be a proxy");
+        //
+        // Assert.assertFalse(test == foo.getUpdatedBy(),
+        // "The objects shouldn't be identical!");
+        //
+        // Assert.assertTrue((Object)test.getClass() !=
+        // (Object)foo.getUpdatedBy().getClass());
+        // Assert.assertTrue((Object)foo.getUpdatedBy().getClass() !=
+        // (Object)test.getClass());
+        // System.out.println("Foo Updated By Class (Proxy): " +
+        // foo.getUpdatedBy().getClass());
+        //
+        // Assert.assertEquals(test, foo.getUpdatedBy(), "What the hell?");
         Assert.assertEquals(test, foo.getUpdatedBy());
 
         Assert.assertTrue(test.equals(foo.getUpdatedBy()));

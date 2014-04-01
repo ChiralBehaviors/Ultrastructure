@@ -11,4 +11,10 @@
             ruleform.location_network FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
         <rollback> DROP TRIGGER location_network_update_date ON ruleform.location_network; </rollback>
     </changeSet>
+    <changeSet id="2"
+        author="hparry">
+        <sql> CREATE TRIGGER location_network_no_update BEFORE UPDATE ON
+            ruleform.location_network FOR EACH ROW EXECUTE PROCEDURE ruleform.forbid_foreign_key_updates(); </sql>
+        <rollback> DROP TRIGGER location_network_no_update ON ruleform.location_network; </rollback>
+    </changeSet>
 </databaseChangeLog>

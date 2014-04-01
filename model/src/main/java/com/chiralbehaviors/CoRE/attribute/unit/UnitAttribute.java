@@ -51,7 +51,7 @@ public class UnitAttribute extends AttributeValue<Unit> {
     @GeneratedValue(generator = "unit_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Unit
+    // bi-directional many-to-one association to Unit
     @ManyToOne
     @JoinColumn(name = "unit_rf")
     private Unit               unitRf;
@@ -96,7 +96,9 @@ public class UnitAttribute extends AttributeValue<Unit> {
         super(id);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -104,15 +106,20 @@ public class UnitAttribute extends AttributeValue<Unit> {
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<? extends AttributeValue<Unit>, Unit> getRuleformAttribute() {
         return UnitAttribute_.unitRf;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -124,7 +131,9 @@ public class UnitAttribute extends AttributeValue<Unit> {
         return unitRf;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override

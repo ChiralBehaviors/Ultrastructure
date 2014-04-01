@@ -49,7 +49,7 @@ public class JobAttribute extends AttributeValue<Job> {
     @GeneratedValue(generator = "job_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Job
+    // bi-directional many-to-one association to Job
     @ManyToOne
     @JoinColumn(name = "job")
     private Job               job;
@@ -139,15 +139,20 @@ public class JobAttribute extends AttributeValue<Job> {
         return job;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<JobAttribute, Job> getRuleformAttribute() {
         return JobAttribute_.job;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -164,8 +169,12 @@ public class JobAttribute extends AttributeValue<Job> {
         this.job = job;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

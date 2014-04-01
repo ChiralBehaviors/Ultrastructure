@@ -46,17 +46,17 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-312">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.relationship_network"
-            constraintName="relationship_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="relationship_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-313">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.relationship_network"
-            constraintName="relationship_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="relationship_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-314">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.relationship_network"
-            constraintName="relationship_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="relationship_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-315">
@@ -88,8 +88,6 @@
             constraintName="relationship_network_inference_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.network_inference" />
     </changeSet>
-
-
     <changeSet id="2" author="hparry">
         <sql><![CDATA[
             GRANT ALL ON TABLE ruleform.relationship_network TO core;
@@ -100,7 +98,8 @@
         <rollback />
     </changeSet>
     <changeSet id="3" author="hparry">
-        <sql> ALTER TABLE ruleform.relationship_network OWNER TO core; </sql>
+        <sql> ALTER TABLE ruleform.relationship_network OWNER TO core;
+        </sql>
         <rollback />
     </changeSet>
 

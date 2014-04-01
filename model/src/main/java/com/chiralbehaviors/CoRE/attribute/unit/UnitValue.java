@@ -59,7 +59,7 @@ public class UnitValue extends Ruleform {
     @Column(name = "numeric_value")
     private BigDecimal        numericValue;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
     private Product           productValue;
@@ -70,7 +70,7 @@ public class UnitValue extends Ruleform {
     @Column(name = "text_value")
     private String            textValue;
 
-    //bi-directional many-to-one association to Unit
+    // bi-directional many-to-one association to Unit
     @ManyToOne
     @JoinColumn(name = "unit")
     private Unit              unit;
@@ -154,8 +154,12 @@ public class UnitValue extends Ruleform {
         this.unit = unit;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

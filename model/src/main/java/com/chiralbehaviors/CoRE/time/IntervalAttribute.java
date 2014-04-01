@@ -52,7 +52,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     @GeneratedValue(generator = "interval_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Interval
+    // bi-directional many-to-one association to Interval
     @ManyToOne
     @JoinColumn(name = "interval")
     private Interval           interval;
@@ -99,7 +99,9 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         super(id);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -111,15 +113,20 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         return interval;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<? extends AttributeValue<Interval>, Interval> getRuleformAttribute() {
         return IntervalAttribute_.interval;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -127,7 +134,9 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         return Interval.class;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override

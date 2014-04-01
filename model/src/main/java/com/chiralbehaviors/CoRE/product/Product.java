@@ -68,8 +68,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                @NamedQuery(name = FIND_BY_ID, query = "select e from Product e where e.id = :id"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Product e where e.name = :name"),
                @NamedQuery(name = FIND_ALL, query = "select e from Product e"),
-               @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy= :agency"),
-               @NamedQuery(name = UPDATED_BY_NAME, query = "select e from Product e where e.updatedBy.name= :name"),
+               @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy = :agency"),
+               @NamedQuery(name = UPDATED_BY_NAME, query = "select e from Product e where e.updatedBy.name = :name"),
                @NamedQuery(name = SUBSUMING_ENTITIES, query = "SELECT distinct(bn.child) "
                                                               + "FROM ProductNetwork AS bn "
                                                               + "WHERE bn.relationship = :relationship "
@@ -253,8 +253,8 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors.CoRE
-     * .NetworkRuleform)
+     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors
+     * .CoRE .NetworkRuleform)
      */
     @Override
     public void addChildRelationship(ProductNetwork relationship) {
@@ -266,8 +266,8 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors.CoRE
-     * .NetworkRuleform)
+     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors
+     * .CoRE .NetworkRuleform)
      */
     @Override
     public void addParentRelationship(ProductNetwork relationship) {

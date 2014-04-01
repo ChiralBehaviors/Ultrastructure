@@ -46,7 +46,7 @@ public class ProductAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Product> {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Product           classifier;
@@ -98,8 +98,11 @@ public class ProductAttributeAuthorization extends
         this.classifier = classifier;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * getClassifier()
      */
     @Override
     public Product getClassifier() {
@@ -111,8 +114,11 @@ public class ProductAttributeAuthorization extends
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setClassifier(Product classifier) {
@@ -124,8 +130,12 @@ public class ProductAttributeAuthorization extends
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

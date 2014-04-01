@@ -46,17 +46,15 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-258">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.product_network" constraintName="product_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-259">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.product_network" constraintName="product_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-260">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.product_network"
-            constraintName="product_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="product_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-261">

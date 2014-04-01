@@ -139,7 +139,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                   + "  AND NOT ruleform.is_terminal_state(j.service, jc.status) "
                                                                                   + "  AND jc.sequence = "
                                                                                   + "    (SELECT max(sequence) FROM ruleform.job_chronology WHERE job = jc.job)"),
-                     //Probably a candidate for 8.4 WITH query...
+                     // Probably a candidate for 8.4 WITH query...
                      @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.id  FROM ruleform.job AS j "
                                                                             + "JOIN ruleform.product_sibling_sequencing_authorization AS seq "
                                                                             + "    ON j.service = seq.parent "
@@ -330,7 +330,9 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         return attributes;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -489,8 +491,12 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
                + "]";
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

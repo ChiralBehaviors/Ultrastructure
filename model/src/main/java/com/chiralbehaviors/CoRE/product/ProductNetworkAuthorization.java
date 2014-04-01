@@ -43,12 +43,12 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "authorized_parent")
     private Product           authorizedParent;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Product           classifier;
@@ -78,23 +78,32 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
         super(id);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent
+     * ()
      */
     @Override
     public Product getAuthorizedParent() {
         return authorizedParent;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
      */
     @Override
     public Product getClassifier() {
         return classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -102,23 +111,33 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent
+     * (com.chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setAuthorizedParent(Product parent) {
         authorizedParent = parent;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com
+     * .chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setClassifier(Product classifier) {
         this.classifier = classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -126,8 +145,12 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

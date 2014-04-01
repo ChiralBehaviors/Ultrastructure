@@ -51,9 +51,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-@Entity
-@Table(name = "agency_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "agency_network_id_seq", sequenceName = "agency_network_id_seq")
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
                                                                             + "where n.parent = :agency "
@@ -64,6 +61,9 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
                                                         + "WHERE n.parent = :parent "
                                                         + "AND n.relationship = :relationship") })
+@Entity
+@Table(name = "agency_network", schema = "ruleform")
+@SequenceGenerator(schema = "ruleform", name = "agency_network_id_seq", sequenceName = "agency_network_id_seq")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
@@ -83,7 +83,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "child")
     private Agency             child;
@@ -91,12 +91,12 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Id
     @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
-
+ 
     @ManyToOne
     @JoinColumn(insertable = false, name = "inferred_from")
     private AgencyNetwork      inferredFrom;
 
-    //bi-directional many-to-one association to Agency
+    //bi-directional many-to-one association to Agency 
     @ManyToOne
     @JoinColumn(name = "parent")
     private Agency             parent;
@@ -211,7 +211,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     public void setParent(Agency agency2) {
         parent = agency2;
     }
-
+ 
     /**
      * @param premise1
      *            the premise1 to set

@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
+
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
                                                                             + "WHERE n.parent = :attribute and n.inferredFrom IS NULL "
@@ -80,7 +81,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "child")
     private Attribute          child;
@@ -93,7 +94,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @JoinColumn(insertable = false, name = "inferred_from")
     private AttributeNetwork   inferredFrom;
 
-    //bi-directional many-to-one association to Attribute
+    //bi-directional many-to-one association to Attribute 
     @ManyToOne
     @JoinColumn(name = "parent")
     private Attribute          parent;

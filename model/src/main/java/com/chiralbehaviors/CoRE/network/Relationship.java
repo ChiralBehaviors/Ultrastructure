@@ -76,7 +76,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                 + "     )"
                                                                 + ") AS linked ON unlinked.id = linked.id "
                                                                 + "WHERE unlinked.id != relationship_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches                                                                       
+                     // ?1 = :queryString, ?2 = :numberOfMatches
                      @NamedNativeQuery(name = "relationship"
                                               + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @NamedQueries({
@@ -236,8 +236,12 @@ public class Relationship extends
         setInverse(inverse);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com.chiralbehaviors.CoRE.network.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com
+     * .chiralbehaviors.CoRE.network.NetworkRuleform)
      */
     @Override
     public void addChildRelationship(RelationshipNetwork relationship) {
@@ -245,8 +249,12 @@ public class Relationship extends
         networkByChild.add(relationship);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com.chiralbehaviors.CoRE.network.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com
+     * .chiralbehaviors.CoRE.network.NetworkRuleform)
      */
     @Override
     public void addParentRelationship(RelationshipNetwork relationship) {
@@ -276,7 +284,9 @@ public class Relationship extends
         return inverse;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkByChild()
      */
     @Override
@@ -287,7 +297,9 @@ public class Relationship extends
         return networkByChild;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkByParent()
      */
     @Override
@@ -306,8 +318,14 @@ public class Relationship extends
         return toBoolean(preferred);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#link(com.chiralbehaviors.CoRE.network.Relationship, com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.agency.Agency, com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#link(com.chiralbehaviors
+     * .CoRE.network.Relationship, com.chiralbehaviors.CoRE.ExistentialRuleform,
+     * com.chiralbehaviors.CoRE.agency.Agency,
+     * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
     public void link(Relationship r, Relationship child, Agency updatedBy,
@@ -341,16 +359,24 @@ public class Relationship extends
         relationship.inverse = this;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util
+     * .Set)
      */
     @Override
     public void setNetworkByChild(Set<RelationshipNetwork> theNetworkByChild) {
         networkByChild = theNetworkByChild;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.
+     * util.Set)
      */
     @Override
     public void setNetworkByParent(Set<RelationshipNetwork> theNetworkByParent) {
@@ -365,8 +391,12 @@ public class Relationship extends
         this.preferred = toInteger(preferred);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

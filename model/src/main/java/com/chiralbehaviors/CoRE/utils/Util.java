@@ -124,9 +124,11 @@ public final class Util {
     private static String digestString(byte[] raw) {
         StringBuffer sb = new StringBuffer();
         for (byte element : raw) {
-            // Convert a byte into a (potentially) two character hexadecimal digit
+            // Convert a byte into a (potentially) two character hexadecimal
+            // digit
             String hex = Integer.toHexString(0xff & element);
-            // If the byte represented 0 through 15, it's going to be a single digit; pad it!
+            // If the byte represented 0 through 15, it's going to be a single
+            // digit; pad it!
             if (hex.length() == 1) {
                 sb.append('0');
             }

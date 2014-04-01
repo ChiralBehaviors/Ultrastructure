@@ -111,7 +111,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                 + "     )"
                                                                 + ") AS linked ON unlinked.id = linked.id "
                                                                 + "WHERE unlinked.id != agency_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches                                                                       
+                     // ?1 = :queryString, ?2 = :numberOfMatches
                      @NamedNativeQuery(name = "agency" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('agency', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "agency", schema = "ruleform")
@@ -146,7 +146,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     @JsonIgnore
     private Set<AgencyAccessAuthorization<?>> accessAuthsByParent;
 
-    //bi-directional many-to-one association to AgencyAttribute
+    // bi-directional many-to-one association to AgencyAttribute
     @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<AgencyAttribute>              attributes;
@@ -155,12 +155,12 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     @GeneratedValue(generator = "agency_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                              id;
 
-    //bi-directional many-to-one association to AgencyNetwork
+    // bi-directional many-to-one association to AgencyNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<AgencyNetwork>                networkByChild;
 
-    //bi-directional many-to-one association to AgencyNetwork
+    // bi-directional many-to-one association to AgencyNetwork
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<AgencyNetwork>                networkByParent;
@@ -219,8 +219,12 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
         attributes.add(attribute);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors.CoRE.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors
+     * .CoRE.NetworkRuleform)
      */
     @Override
     public void addChildRelationship(AgencyNetwork relationship) {
@@ -228,8 +232,12 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
         networkByChild.add(relationship);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors.CoRE.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors
+     * .CoRE.NetworkRuleform)
      */
     @Override
     public void addParentRelationship(AgencyNetwork relationship) {
@@ -268,7 +276,9 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
         return attributes;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -303,8 +313,13 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
                                                                       this).getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE.network.Relationship, com.chiralbehaviors.CoRE.network.Networked, com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE
+     * .network.Relationship, com.chiralbehaviors.CoRE.network.Networked,
+     * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
     public void link(Relationship r, Agency child, Agency updatedBy,

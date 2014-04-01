@@ -44,7 +44,7 @@ import com.chiralbehaviors.CoRE.event.JobAttribute;
 public abstract class AttributeValue<RuleForm extends Ruleform> extends
         Ruleform {
     private static final long serialVersionUID = 1L;
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
@@ -70,7 +70,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     @Column(name = "timestamp_value")
     private Timestamp         timestampValue;
 
-    //bi-directional many-to-one association to Unit
+    // bi-directional many-to-one association to Unit
     @ManyToOne
     @JoinColumn(name = "unit")
     private Unit              unit;
@@ -308,8 +308,12 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         this.unit = unit;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

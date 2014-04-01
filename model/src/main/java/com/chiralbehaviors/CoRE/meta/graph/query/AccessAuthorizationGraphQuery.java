@@ -32,9 +32,9 @@ import com.chiralbehaviors.CoRE.product.access.ProductAccessAuthorization;
  */
 public class AccessAuthorizationGraphQuery {
 
-    private EntityManager                   em;
     private AccessAuthorization<?, ?>       authorization;
     private List<AccessAuthorization<?, ?>> auths;
+    private EntityManager                   em;
     private ExistentialRuleform<?, ?>       parent;
     private Relationship                    relationship;
 

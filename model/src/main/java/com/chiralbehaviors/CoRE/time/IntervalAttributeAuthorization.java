@@ -99,8 +99,11 @@ public class IntervalAttributeAuthorization extends
         this.classifier = classifier;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * getClassifier()
      */
     @Override
     public Interval getClassifier() {
@@ -112,8 +115,11 @@ public class IntervalAttributeAuthorization extends
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setClassifier(Interval classifier) {
@@ -125,8 +131,12 @@ public class IntervalAttributeAuthorization extends
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

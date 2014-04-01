@@ -52,7 +52,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     @GeneratedValue(generator = "relationship_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
 
     @ManyToOne
     @JoinColumn(name = "relationship")
@@ -102,7 +102,9 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         super(id);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -114,15 +116,20 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         return relationship;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<? extends AttributeValue<Relationship>, Relationship> getRuleformAttribute() {
         return RelationshipAttribute_.relationship;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -130,7 +137,9 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         return Relationship.class;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override

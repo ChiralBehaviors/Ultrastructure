@@ -48,7 +48,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class CoordinateAttribute extends AttributeValue<Coordinate> {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Coordinate
+    // bi-directional many-to-one association to Coordinate
     @ManyToOne
     @JoinColumn(name = "coordinate")
     private Coordinate        coordinate;
@@ -57,7 +57,7 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     @GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_value")
     private Product           productValue;
@@ -154,15 +154,20 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
         return productValue;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<CoordinateAttribute, Coordinate> getRuleformAttribute() {
         return CoordinateAttribute_.coordinate;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -183,8 +188,12 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
         productValue = product;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

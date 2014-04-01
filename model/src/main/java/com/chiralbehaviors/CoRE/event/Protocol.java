@@ -87,7 +87,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                     + "OR p.product IN (?, ?)) " //kernel.any, kernel.same
                                                                     + "AND (p.requester IN (SELECT child FROM requestingAgency) "
                                                                     + "OR p.requester IN (?, ?))") })
-//kernel.any, kernel.same
 @Entity
 @Table(name = "protocol", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_id_seq", sequenceName = "protocol_id_seq")
@@ -366,7 +365,12 @@ public class Protocol extends Ruleform {
     /*
      * (non-Javadoc)
      * 
+    <<<<<<< HEAD
      * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+    =======
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+    >>>>>>> refs/heads/master
      * EntityManager, java.util.Map)
      */
     @Override

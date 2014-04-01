@@ -188,7 +188,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
             return knownObjects.get(this);
         }
 
-        //need to traverse leaf nodes first, before persisting this entity.
+        // need to traverse leaf nodes first, before persisting this entity.
         knownObjects.put(this, this);
         traverseForeignKeys(em, knownObjects);
 
@@ -236,8 +236,8 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return String.format("%s[%s]", getClass(), getId());
     }
 
-    //am I traversing the merged entity or the non-merged uploaded state?
-    //might as well make it merged
+    // am I traversing the merged entity or the non-merged uploaded state?
+    // might as well make it merged
     /**
      * Calls manageEntity on each foreign key and replaces non-managed foreign
      * key objects with managed objects

@@ -71,7 +71,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                 + "     )"
                                                                 + ") AS linked ON unlinked.id = linked.id "
                                                                 + "WHERE unlinked.id != interval_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches                                                                       
+                     // ?1 = :queryString, ?2 = :numberOfMatches
                      @NamedNativeQuery(name = "interval" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('interval', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @NamedQueries({
                @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from IntervalAttribute as ca where ca.interval = :interval"),
@@ -202,9 +202,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.chiralbehaviors.CoRE.network.Networked#addChildRelationship(com.chiralbehaviors
-     * .CoRE.network.NetworkRuleform)
+     * @see com.chiralbehaviors.CoRE.network.Networked#addChildRelationship(com.
+     * chiralbehaviors .CoRE.network.NetworkRuleform)
      */
     @Override
     public void addChildRelationship(IntervalNetwork relationship) {
@@ -216,8 +215,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#addParentRelationship(com.chiralbehaviors
-     * .CoRE.network.NetworkRuleform)
+     * com.chiralbehaviors.CoRE.network.Networked#addParentRelationship(com.
+     * chiralbehaviors .CoRE.network.NetworkRuleform)
      */
     @Override
     public void addParentRelationship(IntervalNetwork relationship) {
@@ -308,10 +307,10 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE.network
-     * .Relationship, com.chiralbehaviors.CoRE.network.Networked,
-     * com.chiralbehaviors.CoRE.agency.Agency, com.chiralbehaviors.CoRE.agency.Agency,
-     * javax.persistence.EntityManager)
+     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE
+     * .network .Relationship, com.chiralbehaviors.CoRE.network.Networked,
+     * com.chiralbehaviors.CoRE.agency.Agency,
+     * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
     public void link(Relationship r, Interval child, Agency updatedBy,
@@ -332,7 +331,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.attribute.Attributable#setAttributes(java.util.Set)
+     * com.chiralbehaviors.CoRE.attribute.Attributable#setAttributes(java.util
+     * .Set)
      */
     @Override
     public void setAttributes(Set<IntervalAttribute> attributes) {
@@ -361,7 +361,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#setNetworkByChild(java.util.Set)
+     * com.chiralbehaviors.CoRE.network.Networked#setNetworkByChild(java.util
+     * .Set)
      */
     @Override
     public void setNetworkByChild(Set<IntervalNetwork> networkByChild) {
@@ -372,7 +373,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#setNetworkByParent(java.util.Set)
+     * com.chiralbehaviors.CoRE.network.Networked#setNetworkByParent(java.util
+     * .Set)
      */
     @Override
     public void setNetworkByParent(Set<IntervalNetwork> networkByParent) {

@@ -63,7 +63,7 @@ public abstract class ProductAccessAuthorization<Child extends ExistentialRulefo
 
     private static final long   serialVersionUID                                   = 1L;
 
-    //bi-directional many-to-one association to ProductNetwork
+    // bi-directional many-to-one association to ProductNetwork
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetwork> networkByParent;
@@ -106,7 +106,8 @@ public abstract class ProductAccessAuthorization<Child extends ExistentialRulefo
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
      * EntityManager, java.util.Map)
      */
     @Override

@@ -137,7 +137,9 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
         super(notes, updatedBy);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -165,7 +167,9 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
         return statusCode;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -193,8 +197,12 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
         this.statusCode = statusCode;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

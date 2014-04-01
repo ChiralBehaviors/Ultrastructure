@@ -144,7 +144,8 @@ public class AgencyProductAccessAuthorization extends
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
      * EntityManager, java.util.Map)
      */
     @Override

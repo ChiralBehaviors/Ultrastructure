@@ -98,7 +98,7 @@ public class StatusCodeSequencing extends Ruleform {
 
     private static final long   serialVersionUID                          = 1L;
 
-    //bi-directional many-to-one association to StatusCode
+    // bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "child_code")
     private StatusCode          childCode;
@@ -107,7 +107,7 @@ public class StatusCodeSequencing extends Ruleform {
     @GeneratedValue(generator = "status_code_sequencing_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                id;
 
-    //bi-directional many-to-one association to StatusCode
+    // bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "parent_code")
     private StatusCode          parentCode;
@@ -115,17 +115,17 @@ public class StatusCodeSequencing extends Ruleform {
     @Column(name = "sequence_number")
     private Integer             sequenceNumber                            = 1;
 
-    //bi-directional many-to-one association to Event
+    // bi-directional many-to-one association to Event
     @ManyToOne(optional = false)
     @JoinColumn(name = "service")
     private Product             service;
 
-    //bi-directional many-to-one association to StatusCode
+    // bi-directional many-to-one association to StatusCode
     @OneToMany(mappedBy = "child")
     @JsonIgnore
     private Set<ProductNetwork> statusCodeByChild;
 
-    //bi-directional many-to-one association to StatusCode
+    // bi-directional many-to-one association to StatusCode
     @OneToMany(mappedBy = "parent")
     @JsonIgnore
     private Set<ProductNetwork> statusCodeByParent;
@@ -264,8 +264,12 @@ public class StatusCodeSequencing extends Ruleform {
         this.statusCodeByParent = statusCodeByParent;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

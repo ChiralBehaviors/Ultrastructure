@@ -89,12 +89,12 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
     }
 
-    //bi-directional many-to-one association to ProductNetworkAttribute
+    // bi-directional many-to-one association to ProductNetworkAttribute
     @OneToMany(mappedBy = "productNetwork", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetworkAttribute> attributes;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "child")
     private Product                      child;
@@ -107,7 +107,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JoinColumn(insertable = false, name = "inferred_from")
     private ProductNetwork               inferredFrom;
 
-    //bi-directional many-to-one association to Product
+    //bi-directional many-to-one association to Product 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
     private Product                      parent;
@@ -174,7 +174,9 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         return attributes;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -270,6 +272,14 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+    >>>>>>> refs/heads/master
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

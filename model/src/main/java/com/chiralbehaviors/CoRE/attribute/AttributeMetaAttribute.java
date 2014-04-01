@@ -140,7 +140,8 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<AttributeMetaAttribute, Attribute> getRuleformAttribute() {
@@ -188,7 +189,8 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
      * EntityManager, java.util.Map)
      */
     @Override

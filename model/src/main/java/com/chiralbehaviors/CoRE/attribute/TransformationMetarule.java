@@ -56,17 +56,17 @@ public class TransformationMetarule extends Ruleform implements Serializable {
     @GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "product_map")
     private Relationship       productMap;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "product_network_agency")
     private Agency             productNetworkAgency;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "agency_map")
     private Relationship       relationshipMap;
@@ -152,8 +152,12 @@ public class TransformationMetarule extends Ruleform implements Serializable {
         this.stopOnMatch = toInteger(stopOnMatch);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

@@ -49,7 +49,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     @GeneratedValue(generator = "protocol_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Protocol
+    // bi-directional many-to-one association to Protocol
     @ManyToOne
     @JoinColumn(name = "protocol")
     private Protocol          protocol;
@@ -151,15 +151,20 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
         return protocol;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<? extends AttributeValue<Protocol>, Protocol> getRuleformAttribute() {
         return ProtocolAttribute_.protocol;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -192,8 +197,12 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
         this.protocol = protocol;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

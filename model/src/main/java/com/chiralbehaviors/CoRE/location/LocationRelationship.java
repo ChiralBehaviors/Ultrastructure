@@ -56,7 +56,7 @@ public class LocationRelationship extends Ruleform {
     public static final String RULES                   = "locationRelationship.rules";
     private static final long  serialVersionUID        = 1L;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "attribute_relationship")
     private Relationship       attributeRelationship;
@@ -65,22 +65,22 @@ public class LocationRelationship extends Ruleform {
     @GeneratedValue(generator = "location_relationship_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "location_1_attribute")
     private Attribute          location1Attribute;
 
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "location_2_attribute")
     private Attribute          location2Attribute;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product_mapped_value")
     private Product            productMappedValue;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
@@ -163,8 +163,12 @@ public class LocationRelationship extends Ruleform {
         this.sequenceNumber = sequenceNumber;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

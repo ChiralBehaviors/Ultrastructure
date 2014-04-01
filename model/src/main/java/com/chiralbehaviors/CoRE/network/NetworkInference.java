@@ -46,17 +46,17 @@ public class NetworkInference extends Ruleform {
     @GeneratedValue(generator = "network_inference_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "inference")
     private Relationship      inference;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "premise1")
     private Relationship      premise1;
 
-    //bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
     @ManyToOne
     @JoinColumn(name = "premise2")
     private Relationship      premise2;
@@ -151,8 +151,12 @@ public class NetworkInference extends Ruleform {
         this.premise2 = premise2;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

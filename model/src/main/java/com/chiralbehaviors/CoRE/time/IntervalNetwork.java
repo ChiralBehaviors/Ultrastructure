@@ -70,7 +70,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID              = 1L;
 
-    //bi-directional many-to-one association to Interval
+    // bi-directional many-to-one association to Interval
     @ManyToOne
     @JoinColumn(name = "child")
     private Interval           child;
@@ -83,7 +83,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(insertable = false, name = "inferred_from")
     private IntervalNetwork    inferredFrom;
 
-    //bi-directional many-to-one association to Agency
+    //bi-directional many-to-one association to Agency 
     @ManyToOne
     @JoinColumn(name = "parent")
     private Interval           parent;
@@ -123,7 +123,9 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         super(relationship, updatedBy);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
@@ -131,7 +133,9 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -147,7 +151,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return inferredFrom;
     }
 
-    /* (non-Javadoc)
+    /* (non-Javadoc) 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
@@ -171,15 +175,21 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return premise2;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+     * .CoRE.network.Networked)
      */
     @Override
     public void setChild(Interval child) {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -198,6 +208,13 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.network.Networked)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+     * chiralbehaviors.CoRE.network.Networked)
+    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(Interval parent) {

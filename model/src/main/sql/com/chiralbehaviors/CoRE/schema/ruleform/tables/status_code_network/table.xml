@@ -46,17 +46,17 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-330">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="status_code_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-331">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="status_code_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-332">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="status_code_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-333">
@@ -100,7 +100,8 @@
         <rollback />
     </changeSet>
     <changeSet id="3" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.status_code_network OWNER TO core; </sql>
+        <sql> ALTER TABLE ruleform.status_code_network OWNER TO core;
+        </sql>
         <rollback />
     </changeSet>
 

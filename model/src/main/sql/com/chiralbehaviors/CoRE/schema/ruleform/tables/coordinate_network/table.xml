@@ -46,17 +46,16 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-140">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.coordinate_network" constraintName="coordinate_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.coordinate" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.coordinate" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-141">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.coordinate_network"
-            constraintName="coordinate_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="coordinate_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.coordinate" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-142">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.coordinate_network"
-            constraintName="coordinate_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            constraintName="coordinate_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-143">
@@ -69,24 +68,24 @@
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.coordinate_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-432">
-        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.coordinate_network" constraintName="coordinate_network_inferred_from_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.coordinate_network" />
+        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.coordinate_network"
+            constraintName="coordinate_network_inferred_from_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.coordinate_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-431">
-        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.coordinate_network" constraintName="coordinate_network_premise1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.coordinate_network" />
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.coordinate_network"
+            constraintName="coordinate_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.coordinate_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-433">
-        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.coordinate_network" constraintName="coordinate_network_premise2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.coordinate_network" />
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.coordinate_network"
+            constraintName="coordinate_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.coordinate_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-434">
-        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.coordinate_network" constraintName="coordinate_network_inference_rule_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.network_inference" />
+        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.coordinate_network"
+            constraintName="coordinate_network_inference_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.network_inference" />
     </changeSet>
 
 

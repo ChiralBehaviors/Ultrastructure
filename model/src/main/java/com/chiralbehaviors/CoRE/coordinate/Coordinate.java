@@ -75,7 +75,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                 + "     )"
                                                                 + ") AS linked ON unlinked.id = linked.id "
                                                                 + "WHERE unlinked.id != coordinate_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches                                                                       
+                     // ?1 = :queryString, ?2 = :numberOfMatches
                      @NamedNativeQuery(name = "coordinate" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('coordinate', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class),
                      // ?1 = #inner, ?2 = #outer
                      @NamedNativeQuery(name = NESTING_QUERY, query = "SELECT * FROM ruleform.nest_coordinates(?1, ?2)", resultClass = Coordinate.class) })
@@ -215,8 +215,8 @@ public class Coordinate extends
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com.chiralbehaviors
-     * .CoRE.network.NetworkRuleform)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com
+     * .chiralbehaviors .CoRE.network.NetworkRuleform)
      */
     @Override
     public void addChildRelationship(CoordinateNetwork relationship) {
@@ -228,8 +228,8 @@ public class Coordinate extends
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com.chiralbehaviors
-     * .CoRE.network.NetworkRuleform)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com
+     * .chiralbehaviors .CoRE.network.NetworkRuleform)
      */
     @Override
     public void addParentRelationship(CoordinateNetwork relationship) {
@@ -314,10 +314,11 @@ public class Coordinate extends
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#link(com.chiralbehaviors.CoRE.network
-     * .Relationship, com.chiralbehaviors.CoRE.ExistentialRuleform,
-     * com.chiralbehaviors.CoRE.agency.Agency, com.chiralbehaviors.CoRE.agency.Agency,
-     * javax.persistence.EntityManager)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#link(com.chiralbehaviors
+     * .CoRE.network .Relationship,
+     * com.chiralbehaviors.CoRE.ExistentialRuleform,
+     * com.chiralbehaviors.CoRE.agency.Agency,
+     * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
     public void link(Relationship r, Coordinate child, Agency updatedBy,
@@ -372,7 +373,8 @@ public class Coordinate extends
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util
+     * .Set)
      */
     @Override
     public void setNetworkByChild(Set<CoordinateNetwork> theNetworkByChild) {
@@ -383,7 +385,8 @@ public class Coordinate extends
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.
+     * util.Set)
      */
     @Override
     public void setNetworkByParent(Set<CoordinateNetwork> theNetworkByParent) {

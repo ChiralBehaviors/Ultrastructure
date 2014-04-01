@@ -223,8 +223,8 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors.CoRE
-     * .NetworkRuleform)
+     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors
+     * .CoRE .NetworkRuleform)
      */
     @Override
     public void addChildRelationship(AttributeNetwork relationship) {
@@ -236,8 +236,8 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors.CoRE
-     * .NetworkRuleform)
+     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors
+     * .CoRE .NetworkRuleform)
      */
     @Override
     public void addParentRelationship(AttributeNetwork relationship) {
@@ -302,8 +302,8 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE.network
-     * .Relationship, com.chiralbehaviors.CoRE.network.Networked,
+     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE
+     * .network .Relationship, com.chiralbehaviors.CoRE.network.Networked,
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override

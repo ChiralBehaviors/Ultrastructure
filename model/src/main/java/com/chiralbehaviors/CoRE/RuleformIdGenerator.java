@@ -38,16 +38,24 @@ public class RuleformIdGenerator extends ObjectIdGenerator<String> {
         this.scope = scope;
     }
 
-    /* (non-Javadoc)
-     * @see com.fasterxml.jackson.annotation.ObjectIdGenerator#canUseFor(com.fasterxml.jackson.annotation.ObjectIdGenerator)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.fasterxml.jackson.annotation.ObjectIdGenerator#canUseFor(com.fasterxml
+     * .jackson.annotation.ObjectIdGenerator)
      */
     @Override
     public boolean canUseFor(ObjectIdGenerator<?> gen) {
         return gen.getClass() == getClass() && gen.getScope() == scope;
     }
 
-    /* (non-Javadoc)
-     * @see com.fasterxml.jackson.annotation.ObjectIdGenerator#forScope(java.lang.Class)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.fasterxml.jackson.annotation.ObjectIdGenerator#forScope(java.lang
+     * .Class)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -57,8 +65,12 @@ public class RuleformIdGenerator extends ObjectIdGenerator<String> {
                                                             (Class<? extends Ruleform>) scope);
     }
 
-    /* (non-Javadoc)
-     * @see com.fasterxml.jackson.annotation.ObjectIdGenerator#generateId(java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.fasterxml.jackson.annotation.ObjectIdGenerator#generateId(java.lang
+     * .Object)
      */
     @Override
     public String generateId(Object forPojo) {
@@ -66,7 +78,9 @@ public class RuleformIdGenerator extends ObjectIdGenerator<String> {
                              ((Ruleform) forPojo).getId());
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.fasterxml.jackson.annotation.ObjectIdGenerator#getScope()
      */
     @Override
@@ -74,16 +88,23 @@ public class RuleformIdGenerator extends ObjectIdGenerator<String> {
         return scope;
     }
 
-    /* (non-Javadoc)
-     * @see com.fasterxml.jackson.annotation.ObjectIdGenerator#key(java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.fasterxml.jackson.annotation.ObjectIdGenerator#key(java.lang.Object)
      */
     @Override
     public IdKey key(Object key) {
         return new IdKey(getClass(), scope, key);
     }
 
-    /* (non-Javadoc)
-     * @see com.fasterxml.jackson.annotation.ObjectIdGenerator#newForSerialization(java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.fasterxml.jackson.annotation.ObjectIdGenerator#newForSerialization
+     * (java.lang.Object)
      */
     @Override
     public ObjectIdGenerator<String> newForSerialization(Object context) {

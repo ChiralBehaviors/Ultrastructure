@@ -109,15 +109,20 @@ public class AttributeMetaAttributeAuthorization extends
         super(classification, authorized, updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * getClassifier()
      */
     @Override
     public Attribute getClassifier() {
         return classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -125,15 +130,20 @@ public class AttributeMetaAttributeAuthorization extends
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setClassifier(Attribute classifier) {
         this.classifier = classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -141,8 +151,12 @@ public class AttributeMetaAttributeAuthorization extends
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

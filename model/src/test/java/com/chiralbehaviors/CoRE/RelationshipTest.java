@@ -108,10 +108,10 @@ public class RelationshipTest extends DatabaseTest {
 
         Relationship r1 = em.merge(relationship);
 
-        //Relationship i1 = dao.makePersistent(inverse);
+        // Relationship i1 = dao.makePersistent(inverse);
 
         // assertFalse(relationship == r1);
-        //assertTrue(inverse == i1);
+        // assertTrue(inverse == i1);
 
         System.out.println("R1: " + r1);
         System.out.println("I1: " + r1.getInverse());
@@ -121,12 +121,12 @@ public class RelationshipTest extends DatabaseTest {
 
         assertNotNull(r1.getInverse());
 
-        //assertEquals(r1.getInverse(), i1);
+        // assertEquals(r1.getInverse(), i1);
 
-        //assertNotNull(i1.getInverse());
-        //assertEquals(i1.getInverse(), r1);
+        // assertNotNull(i1.getInverse());
+        // assertEquals(i1.getInverse(), r1);
 
-        //dao.flush();  
+        // dao.flush();
         commitTransaction();
     }
 }

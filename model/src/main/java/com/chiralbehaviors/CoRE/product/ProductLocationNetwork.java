@@ -49,17 +49,17 @@ public class ProductLocationNetwork extends Ruleform {
     public static final String LOCATION_RULES   = "productLocationNetwork.locationRules";
     private static final long  serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "agency")
     private Agency             agency;                                                    ;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "contextual_product")
     private Product            contextualProduct;
 
-    //bi-directional many-to-one association to Coordinate
+    // bi-directional many-to-one association to Coordinate
     @ManyToOne
     @JoinColumn(name = "coordinate")
     private Coordinate         coordinate;
@@ -68,7 +68,7 @@ public class ProductLocationNetwork extends Ruleform {
     @GeneratedValue(generator = "product_location_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product")
     private Product            product;
@@ -132,8 +132,12 @@ public class ProductLocationNetwork extends Ruleform {
         product = product2;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

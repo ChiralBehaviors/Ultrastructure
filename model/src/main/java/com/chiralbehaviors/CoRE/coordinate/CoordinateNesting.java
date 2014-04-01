@@ -42,7 +42,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 public class CoordinateNesting extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
@@ -51,14 +51,14 @@ public class CoordinateNesting extends Ruleform {
     @GeneratedValue(generator = "coordinate_nesting_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "inner_attribute")
     private Attribute         innerAttribute;
 
     private String            operation;
 
-    //bi-directional many-to-one association to Attribute
+    // bi-directional many-to-one association to Attribute
     @ManyToOne
     @JoinColumn(name = "outer_attribute")
     private Attribute         outerAttribute;
@@ -133,8 +133,12 @@ public class CoordinateNesting extends Ruleform {
         this.sequenceNumber = sequenceNumber;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

@@ -52,7 +52,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     @GeneratedValue(generator = "status_code_attribute_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    //bi-directional many-to-one association to StatusCode
+    // bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
@@ -100,7 +100,9 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         super(id);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -108,15 +110,20 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
     public SingularAttribute<? extends AttributeValue<StatusCode>, StatusCode> getRuleformAttribute() {
         return StatusCodeAttribute_.statusCode;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
@@ -128,7 +135,9 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         return statusCode;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override

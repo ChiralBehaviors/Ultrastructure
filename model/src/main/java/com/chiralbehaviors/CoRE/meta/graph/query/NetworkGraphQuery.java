@@ -35,11 +35,11 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 public final class NetworkGraphQuery<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
 
+    private List<NetworkRuleform<RuleForm>> edges;
+    private EntityManager                   em;
+    private List<RuleForm>                  nodes;
     private RuleForm                        origin;
     private List<Relationship>              relationships;
-    private List<NetworkRuleform<RuleForm>> edges;
-    private List<RuleForm>                  nodes;
-    private EntityManager                   em;
 
     public NetworkGraphQuery(List<RuleForm> nodes,
                              List<Relationship> relationships, EntityManager em) {

@@ -47,7 +47,7 @@ public class JobChronology extends Ruleform {
     @GeneratedValue(generator = "job_chronology_id_seq", strategy = GenerationType.SEQUENCE)
     private Long              id;
 
-    //bi-directional many-to-one association to Job
+    // bi-directional many-to-one association to Job
     @ManyToOne
     @JoinColumn(name = "job")
     private Job               job;
@@ -56,7 +56,7 @@ public class JobChronology extends Ruleform {
     @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
     private Long              sequence;
 
-    //bi-directional many-to-one association to StatusCode
+    // bi-directional many-to-one association to StatusCode
     @ManyToOne
     @JoinColumn(name = "status")
     private StatusCode        statusCode;
@@ -127,8 +127,12 @@ public class JobChronology extends Ruleform {
         this.timeStamp = timeStamp;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

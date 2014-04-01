@@ -147,7 +147,7 @@ public class StatusCode extends
 
     private static final long        serialVersionUID                         = 1L;
 
-    //bi-directional many-to-one association to AgencyAttribute
+    // bi-directional many-to-one association to AgencyAttribute
     @OneToMany(mappedBy = "statusCode", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<StatusCodeAttribute> attributes;
@@ -224,8 +224,12 @@ public class StatusCode extends
         super(name, description, updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors.CoRE.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors
+     * .CoRE.NetworkRuleform)
      */
     @Override
     public void addChildRelationship(StatusCodeNetwork relationship) {
@@ -233,8 +237,12 @@ public class StatusCode extends
         networkByChild.add(relationship);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors.CoRE.NetworkRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors
+     * .CoRE.NetworkRuleform)
      */
     @Override
     public void addParentRelationship(StatusCodeNetwork relationship) {
@@ -264,7 +272,9 @@ public class StatusCode extends
         return id;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkByChild()
      */
     @Override
@@ -275,7 +285,9 @@ public class StatusCode extends
         return networkByChild;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkByParent()
      */
     @Override
@@ -290,8 +302,13 @@ public class StatusCode extends
         return toBoolean(propagateChildren);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE.network.Relationship, com.chiralbehaviors.CoRE.network.Networked, com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE
+     * .network.Relationship, com.chiralbehaviors.CoRE.network.Networked,
+     * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
     public void link(Relationship r, StatusCode child, Agency updatedBy,
@@ -323,16 +340,24 @@ public class StatusCode extends
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util
+     * .Set)
      */
     @Override
     public void setNetworkByChild(Set<StatusCodeNetwork> theNetworkByChild) {
         networkByChild = theNetworkByChild;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.
+     * util.Set)
      */
     @Override
     public void setNetworkByParent(Set<StatusCodeNetwork> theNetworkByParent) {

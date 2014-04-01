@@ -68,7 +68,9 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
                                                                + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "coordinateNetwork"
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
+    private static final long  serialVersionUID              = 1L;                                    // bi-directional
+                                                                                                       // many-to-one
+                                                                                                       // association to Agency
 
     @ManyToOne
     @JoinColumn(name = "child")
@@ -135,7 +137,9 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         super(relationship, updatedBy);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
@@ -143,7 +147,9 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         return child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -159,7 +165,9 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         return inferredFrom;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *  
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
@@ -183,15 +191,21 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         return premise2;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+     * .CoRE.ExistentialRuleform)
      */
     @Override
     public void setChild(Coordinate child) {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -210,6 +224,13 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+     * chiralbehaviors.CoRE.ExistentialRuleform)
+    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(Coordinate parent) {

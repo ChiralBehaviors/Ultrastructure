@@ -68,7 +68,9 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
                                                                + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "unitNetwork"
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
+    private static final long  serialVersionUID              = 1L;                                    // bi-directional
+                                                                                                       // many-to-one
+                                                                                                       // association to Agency
 
     @ManyToOne
     @JoinColumn(name = "child")
@@ -82,7 +84,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @JoinColumn(insertable = false, name = "inferred_from")
     private UnitNetwork        inferredFrom;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency 
     @ManyToOne
     @JoinColumn(name = "parent")
     private Unit               parent;
@@ -135,7 +137,9 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
@@ -143,7 +147,9 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         return child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -160,6 +166,11 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     }
 
     /* (non-Javadoc)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+    >>>>>>> refs/heads/master
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
@@ -183,15 +194,21 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         return premise2;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+     * .CoRE.ExistentialRuleform)
      */
     @Override
     public void setChild(Unit child) {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -210,6 +227,13 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+     * chiralbehaviors.CoRE.ExistentialRuleform)
+    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(Unit parent) {

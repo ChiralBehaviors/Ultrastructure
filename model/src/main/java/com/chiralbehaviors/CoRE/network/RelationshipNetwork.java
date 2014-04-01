@@ -65,7 +65,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
                                                                 + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String  INSERT_NEW_NETWORK_RULES      = "relationshipNetwork"
                                                                 + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long   serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
+    private static final long   serialVersionUID              = 1L;
 
     @ManyToOne
     @JoinColumn(name = "child")
@@ -79,7 +79,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @JoinColumn(insertable = false, name = "inferred_from")
     private RelationshipNetwork inferredFrom;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
     private Relationship        parent;
@@ -132,7 +132,9 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
@@ -140,7 +142,9 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         return child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -156,7 +160,8 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         return inferredFrom;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc) 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
@@ -180,15 +185,21 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         return premise2;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+     * .CoRE.ExistentialRuleform)
      */
     @Override
     public void setChild(Relationship child) {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -207,6 +218,13 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+     * chiralbehaviors.CoRE.ExistentialRuleform)
+    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(Relationship parent) {

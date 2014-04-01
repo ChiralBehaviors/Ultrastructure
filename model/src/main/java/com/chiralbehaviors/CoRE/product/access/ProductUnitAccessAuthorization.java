@@ -149,11 +149,12 @@ public class ProductUnitAccessAuthorization extends
     }
 
     /*
-    * (non-Javadoc)
-    * 
-    * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-    * EntityManager, java.util.Map)
-    */
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {

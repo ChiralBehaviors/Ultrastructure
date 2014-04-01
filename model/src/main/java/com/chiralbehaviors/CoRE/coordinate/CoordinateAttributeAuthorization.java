@@ -48,7 +48,7 @@ public class CoordinateAttributeAuthorization extends
 
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Product
+    // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Coordinate        classifier;
@@ -107,15 +107,20 @@ public class CoordinateAttributeAuthorization extends
         return classifier;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * getClassifier()
      */
     @Override
     public Coordinate getClassifier() {
         return classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -127,15 +132,20 @@ public class CoordinateAttributeAuthorization extends
         classifier = classificationCoordinate;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * setClassifier(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
     @Override
     public void setClassifier(Coordinate classifier) {
         this.classifier = classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -143,8 +153,12 @@ public class CoordinateAttributeAuthorization extends
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

@@ -42,12 +42,12 @@ public class LocationNetworkAuthorization extends
         NetworkAuthorization<Location> {
     private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Event
+    // bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "authorized_parent")
     private Location          authorizedParent;
 
-    //bi-directional many-to-one association to Event
+    // bi-directional many-to-one association to Event
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Location          classifier;
@@ -77,23 +77,32 @@ public class LocationNetworkAuthorization extends
         super(id);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent
+     * ()
      */
     @Override
     public Location getAuthorizedParent() {
         return authorizedParent;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
      */
     @Override
     public Location getClassifier() {
         return classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -101,23 +110,33 @@ public class LocationNetworkAuthorization extends
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent
+     * (com.chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setAuthorizedParent(Location parent) {
         authorizedParent = parent;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com
+     * .chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setClassifier(Location classifier) {
         this.classifier = classifier;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -125,8 +144,12 @@ public class LocationNetworkAuthorization extends
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

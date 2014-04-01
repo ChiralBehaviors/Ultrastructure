@@ -195,8 +195,8 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors.CoRE
-     * .NetworkRuleform)
+     * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors
+     * .CoRE .NetworkRuleform)
      */
     @Override
     public void addChildRelationship(LocationNetwork relationship) {
@@ -208,8 +208,8 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors.CoRE
-     * .NetworkRuleform)
+     * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors
+     * .CoRE .NetworkRuleform)
      */
     @Override
     public void addParentRelationship(LocationNetwork relationship) {
@@ -281,8 +281,8 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE.network
-     * .Relationship, com.chiralbehaviors.CoRE.network.Networked,
+     * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE
+     * .network .Relationship, com.chiralbehaviors.CoRE.network.Networked,
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override

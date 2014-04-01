@@ -69,7 +69,9 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     public static final String INSERT_NEW_NETWORK_RULES      = "statusCodeNetwork"
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
-    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
+    private static final long  serialVersionUID              = 1L;                                    // bi-directional
+                                                                                                       // many-to-one
+                                                                                                       // association to Agency
 
     @ManyToOne
     @JoinColumn(name = "child")
@@ -83,7 +85,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @JoinColumn(insertable = false, name = "inferred_from")
     private StatusCodeNetwork  inferredFrom;
 
-    //bi-directional many-to-one association to Agency
+    // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
     private StatusCode         parent;
@@ -136,7 +138,9 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
@@ -144,7 +148,9 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         return child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#getId()
      */
     @Override
@@ -161,6 +167,11 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     }
 
     /* (non-Javadoc)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+    >>>>>>> refs/heads/master
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
@@ -184,15 +195,21 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         return premise2;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+     * .CoRE.ExistentialRuleform)
      */
     @Override
     public void setChild(StatusCode child) {
         this.child = child;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
      */
     @Override
@@ -211,6 +228,13 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
+    =======
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+     * chiralbehaviors.CoRE.ExistentialRuleform)
+    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(StatusCode parent) {

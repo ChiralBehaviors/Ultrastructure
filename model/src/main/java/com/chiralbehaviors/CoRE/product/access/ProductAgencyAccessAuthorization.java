@@ -138,7 +138,7 @@ public class ProductAgencyAccessAuthorization extends
     @JoinColumn(name = "agency2")
     private Agency             child;
 
-    //bi-directional many-to-one association to ProductNetwork
+    // bi-directional many-to-one association to ProductNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<AgencyNetwork> networkByChild;
@@ -216,7 +216,8 @@ public class ProductAgencyAccessAuthorization extends
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
      * EntityManager, java.util.Map)
      */
     @Override

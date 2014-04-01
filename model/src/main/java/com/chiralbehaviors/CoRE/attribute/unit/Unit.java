@@ -181,8 +181,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com.chiralbehaviors
-     * .CoRE.network.NetworkRuleform)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com
+     * .chiralbehaviors .CoRE.network.NetworkRuleform)
      */
     @Override
     public void addChildRelationship(UnitNetwork relationship) {
@@ -194,8 +194,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com.chiralbehaviors
-     * .CoRE.network.NetworkRuleform)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com
+     * .chiralbehaviors .CoRE.network.NetworkRuleform)
      */
     @Override
     public void addParentRelationship(UnitNetwork relationship) {
@@ -271,10 +271,11 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#link(com.chiralbehaviors.CoRE.network
-     * .Relationship, com.chiralbehaviors.CoRE.ExistentialRuleform,
-     * com.chiralbehaviors.CoRE.agency.Agency, com.chiralbehaviors.CoRE.agency.Agency,
-     * javax.persistence.EntityManager)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#link(com.chiralbehaviors
+     * .CoRE.network .Relationship,
+     * com.chiralbehaviors.CoRE.ExistentialRuleform,
+     * com.chiralbehaviors.CoRE.agency.Agency,
+     * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
     public void link(Relationship r, Unit child, Agency updatedBy,
@@ -324,7 +325,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util.Set)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util
+     * .Set)
      */
     @Override
     public void setNetworkByChild(Set<UnitNetwork> theNetworkByChild) {
@@ -335,7 +337,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * (non-Javadoc)
      * 
      * @see
-     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.util.Set)
+     * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.
+     * util.Set)
      */
     @Override
     public void setNetworkByParent(Set<UnitNetwork> theNetworkByParent) {

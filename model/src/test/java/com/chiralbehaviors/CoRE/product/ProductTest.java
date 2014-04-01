@@ -71,8 +71,8 @@ public class ProductTest extends DatabaseTest {
         em.persist(b);
         commitTransaction();
 
-        // Now check to see that the Product you just made actually got into 
-        // the database. 
+        // Now check to see that the Product you just made actually got into
+        // the database.
 
         em.clear();
 

@@ -46,145 +46,154 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  * 
  */
 @NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_AGENCY, query = "SELECT ea FROM ProductAttribute ea"
-                                                                             + "   WHERE ea.product = :product "
-                                                                             + "   AND ea.attribute = :attribute") })
+		+ "   WHERE ea.product = :product "
+		+ "   AND ea.attribute = :attribute") })
 @Entity
 @Table(name = "product_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_attribute_id_seq", sequenceName = "product_attribute_id_seq")
 public class ProductAttribute extends AttributeValue<Product> {
-    public final static String FIND_ATTRIBUTE_VALUE_FROM_AGENCY = "productAttribute.findAttributeValueFromAgency";
-    private static final long  serialVersionUID                 = 1L;
+	public final static String FIND_ATTRIBUTE_VALUE_FROM_AGENCY = "productAttribute.findAttributeValueFromAgency";
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(generator = "product_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+	@Id
+	@GeneratedValue(generator = "product_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private Product            product;
+	// bi-directional many-to-one association to Product
+	@ManyToOne
+	@JoinColumn(name = "product")
+	private Product product;
 
-    public ProductAttribute() {
-    }
+	public ProductAttribute() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public ProductAttribute(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public ProductAttribute(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param attribute
-     */
-    public ProductAttribute(Attribute attribute) {
-        super(attribute);
-    }
+	/**
+	 * @param attribute
+	 */
+	public ProductAttribute(Attribute attribute) {
+		super(attribute);
+	}
 
-    /**
-     * @param attribute
-     * @param updatedBy
-     */
-    public ProductAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param updatedBy
+	 */
+	public ProductAttribute(Attribute attribute, Agency updatedBy) {
+		super(attribute, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductAttribute(Attribute attribute, BigDecimal value,
-                            Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductAttribute(Attribute attribute, BigDecimal value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductAttribute(Attribute attribute, boolean value, Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductAttribute(Attribute attribute, boolean value, Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductAttribute(Attribute attribute, int value, Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductAttribute(Attribute attribute, int value, Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param value
-     * @param updatedBy
-     */
-    public ProductAttribute(Attribute attribute, String value, Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	/**
+	 * @param attribute
+	 * @param value
+	 * @param updatedBy
+	 */
+	public ProductAttribute(Attribute attribute, String value, Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    /**
-     * @param attribute
-     * @param unit
-     */
-    public ProductAttribute(Attribute attribute, Unit unit) {
-        super(attribute, unit);
-    }
+	/**
+	 * @param attribute
+	 * @param unit
+	 */
+	public ProductAttribute(Attribute attribute, Unit unit) {
+		super(attribute, unit);
+	}
 
-    /**
-     * @param id
-     */
-    public ProductAttribute(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public ProductAttribute(Long id) {
+		super(id);
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public Product getProduct() {
+		return product;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
-     */
-    @Override
-    public SingularAttribute<ProductAttribute, Product> getRuleformAttribute() {
-        return ProductAttribute_.product;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+	 */
+	@Override
+	public SingularAttribute<ProductAttribute, Product> getRuleformAttribute() {
+		return ProductAttribute_.product;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
-     */
-    @Override
-    public Class<Product> getRuleformClass() {
-        return Product.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
+	 */
+	@Override
+	public Class<Product> getRuleformClass() {
+		return Product.class;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setProduct(Product product2) {
-        product = product2;
-    }
+	public void setProduct(Product product2) {
+		product = product2;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (product != null) {
+			product = (Product) product.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

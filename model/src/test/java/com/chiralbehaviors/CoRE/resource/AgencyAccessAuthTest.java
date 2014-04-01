@@ -32,29 +32,27 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
  */
 public class AgencyAccessAuthTest extends DatabaseTest {
 
-    private static Kernel kernel;
+	private static Kernel kernel;
 
-    @Before
-    public void initKernel() throws SQLException {
-        beginTransaction();
-        Bootstrap bt = new Bootstrap(connection);
-        bt.clear();
-        bt.bootstrap();
-        commitTransaction();
-        kernel = new KernelImpl(em);
-    }
+	@Before
+	public void initKernel() throws SQLException {
+		beginTransaction();
+		Bootstrap bt = new Bootstrap(connection);
+		bt.clear();
+		bt.bootstrap();
+		commitTransaction();
+		kernel = new KernelImpl(em);
+	}
 
-    @Test
-    public void testClassHierarchy() {
-        beginTransaction();
-        AgencyProductAccessAuthorization auth = new AgencyProductAccessAuthorization(
-                                                                                     kernel.getAnyAgency(),
-                                                                                     kernel.getAnyRelationship(),
-                                                                                     kernel.getAnyProduct(),
-                                                                                     kernel.getCoreUser());
-        em.persist(auth);
-        commitTransaction();
+	@Test
+	public void testClassHierarchy() {
+		beginTransaction();
+		AgencyProductAccessAuthorization auth = new AgencyProductAccessAuthorization(
+				kernel.getAnyAgency(), kernel.getAnyRelationship(),
+				kernel.getAnyProduct(), kernel.getCoreUser());
+		em.persist(auth);
+		commitTransaction();
 
-    }
+	}
 
 }

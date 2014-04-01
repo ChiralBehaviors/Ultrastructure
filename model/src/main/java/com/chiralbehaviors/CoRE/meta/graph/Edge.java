@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.meta.graph.impl;
 
-import com.chiralbehaviors.CoRE.meta.graph.Node;
+package com.chiralbehaviors.CoRE.meta.graph;
 
 /**
- * Wrapper class to turn a Ruleform into a node. Yes, it would be nice if the
- * Ruleform class just implemented the INode interface directly, but the
- * dependency management doesn't work out.
- * 
  * @author hparry
  * 
  */
-public class NodeImpl<T> implements Node<T> {
+public interface Edge<T> {
 
-    private T node;
+	public Node<?> getChild();
 
-    public NodeImpl(T node) {
-        this.node = node;
-    }
+	public T getEdgeObject();
 
-    @Override
-    public T getNode() {
-        return node;
-    }
+	public Node<?> getParent();
 
 }

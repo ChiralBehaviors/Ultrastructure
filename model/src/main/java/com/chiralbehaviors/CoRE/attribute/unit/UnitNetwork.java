@@ -45,129 +45,145 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * 
  */
 @NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
-                                                         + "WHERE n.parent = :parent "
-                                                         + "AND n.relationship = :relationship") })
+		+ "WHERE n.parent = :parent " + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "unit_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "unit_network_id_seq", sequenceName = "unit_network_id_seq")
 public class UnitNetwork extends NetworkRuleform<Unit> {
 
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "unitNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "unitNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES     = "unitNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                  = "unitNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS        = "unitNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                = "unitNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "unitNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "unitNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
+	public static final String DEDUCE_NEW_NETWORK_RULES = "unitNetwork"
+			+ DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+	public static final String GATHER_EXISTING_NETWORK_RULES = "unitNetwork"
+			+ GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+	public static final String GENERATE_NETWORK_INVERSES = "unitNetwork"
+			+ GENERATE_NETWORK_INVERSES_SUFFIX;
+	public static final String GET_CHILDREN = "unitNetwork"
+			+ GET_CHILDREN_SUFFIX;
+	public static final String GET_USED_RELATIONSHIPS = "unitNetwork"
+			+ USED_RELATIONSHIPS_SUFFIX;
+	public static final String INFERENCE_STEP = "unitNetwork"
+			+ INFERENCE_STEP_SUFFIX;
+	public static final String INFERENCE_STEP_FROM_LAST_PASS = "unitNetwork"
+			+ INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+	public static final String INSERT_NEW_NETWORK_RULES = "unitNetwork"
+			+ INSERT_NEW_NETWORK_RULES_SUFFIX;
+	private static final long serialVersionUID = 1L; // bi-directional
+														// many-to-one
+														// association to Agency
 
-    @ManyToOne
-    @JoinColumn(name = "child")
-    private Unit               child;
+	@ManyToOne
+	@JoinColumn(name = "child")
+	private Unit child;
 
-    @Id
-    @GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+	@Id
+	@GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    private Unit               parent;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "parent")
+	private Unit parent;
 
-    /**
+	/**
      * 
      */
-    public UnitNetwork() {
-        super();
-    }
+	public UnitNetwork() {
+		super();
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public UnitNetwork(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public UnitNetwork(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param id
-     */
-    public UnitNetwork(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public UnitNetwork(Long id) {
+		super(id);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public UnitNetwork(Relationship relationship, Agency updatedBy) {
-        super(relationship, updatedBy);
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public UnitNetwork(Relationship relationship, Agency updatedBy) {
+		super(relationship, updatedBy);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public UnitNetwork(Unit parent, Relationship relationship, Unit child,
-                       Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public UnitNetwork(Unit parent, Relationship relationship, Unit child,
+			Agency updatedBy) {
+		super(relationship, updatedBy);
+		this.parent = parent;
+		this.child = child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
-     */
-    @Override
-    public Unit getChild() {
-        return child;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
+	 */
+	@Override
+	public Unit getChild() {
+		return child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+	 */
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
-     */
-    @Override
-    public Unit getParent() {
-        return parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
+	 */
+	@Override
+	public Unit getParent() {
+		return parent;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setChild(Unit child) {
-        this.child = child;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+	 * .CoRE.ExistentialRuleform)
+	 */
+	@Override
+	public void setChild(Unit child) {
+		this.child = child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+	 */
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setParent(Unit parent) {
-        this.parent = parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+	 * chiralbehaviors.CoRE.ExistentialRuleform)
+	 */
+	@Override
+	public void setParent(Unit parent) {
+		this.parent = parent;
+	}
 }

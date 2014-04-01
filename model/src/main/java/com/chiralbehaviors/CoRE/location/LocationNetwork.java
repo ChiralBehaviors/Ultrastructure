@@ -59,118 +59,123 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Table(name = "location_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_network_id_seq", sequenceName = "location_network_id_seq")
 public class LocationNetwork extends NetworkRuleform<Location> {
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "locationNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                  = "locationNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS        = "locationNetwork.getUsedRelationships";
-    public static final String INFERENCE_STEP                = "locationNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "locationNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "locationNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;
+	public static final String DEDUCE_NEW_NETWORK_RULES = "locationNetwork"
+			+ DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+	public static final String GATHER_EXISTING_NETWORK_RULES = "locationNetwork"
+			+ GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+	public static final String GENERATE_NETWORK_INVERSES = "locationNetwork"
+			+ GENERATE_NETWORK_INVERSES_SUFFIX;
+	public static final String GET_CHILDREN = "locationNetwork"
+			+ GET_CHILDREN_SUFFIX;
+	public static final String GET_USED_RELATIONSHIPS = "locationNetwork.getUsedRelationships";
+	public static final String INFERENCE_STEP = "locationNetwork"
+			+ INFERENCE_STEP_SUFFIX;
+	public static final String INFERENCE_STEP_FROM_LAST_PASS = "locationNetwork"
+			+ INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+	public static final String INSERT_NEW_NETWORK_RULES = "locationNetwork"
+			+ INSERT_NEW_NETWORK_RULES_SUFFIX;
+	private static final long serialVersionUID = 1L;
 
-    public static List<Relationship> getUsedRelationships(EntityManager em) {
-        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
-    }
+	public static List<Relationship> getUsedRelationships(EntityManager em) {
+		return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class)
+				.getResultList();
+	}
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "child")
-    private Location child;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "child")
+	private Location child;
 
-    @Id
-    @GeneratedValue(generator = "location_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long     id;
+	@Id
+	@GeneratedValue(generator = "location_network_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "parent")
-    private Location parent;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "parent")
+	private Location parent;
 
-    public LocationNetwork() {
-    }
+	public LocationNetwork() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public LocationNetwork(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public LocationNetwork(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public LocationNetwork(Location parent, Relationship relationship,
-                           Location child, Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public LocationNetwork(Location parent, Relationship relationship,
+			Location child, Agency updatedBy) {
+		super(relationship, updatedBy);
+		this.parent = parent;
+		this.child = child;
+	}
 
-    /**
-     * @param id
-     */
-    public LocationNetwork(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public LocationNetwork(Long id) {
+		super(id);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public LocationNetwork(Relationship relationship, Agency updatedBy) {
-        super(relationship, updatedBy);
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public LocationNetwork(Relationship relationship, Agency updatedBy) {
+		super(relationship, updatedBy);
+	}
 
-    @Override
-    public Location getChild() {
-        return child;
-    }
+	@Override
+	public Location getChild() {
+		return child;
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    @Override
-    public Location getParent() {
-        return parent;
-    }
+	@Override
+	public Location getParent() {
+		return parent;
+	}
 
-    @Override
-    public void setChild(Location child) {
-        this.child = child;
-    }
+	@Override
+	public void setChild(Location child) {
+		this.child = child;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    @Override
-    public void setParent(Location parent) {
-        this.parent = parent;
-    }
+	@Override
+	public void setParent(Location parent) {
+		this.parent = parent;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null) {
-            child = (Location) child.manageEntity(em, knownObjects);
-        }
-        if (parent != null) {
-            parent = (Location) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (child != null) {
+			child = (Location) child.manageEntity(em, knownObjects);
+		}
+		if (parent != null) {
+			parent = (Location) parent.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

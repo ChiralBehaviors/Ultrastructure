@@ -24,39 +24,45 @@ import com.chiralbehaviors.CoRE.meta.graph.Node;
  */
 public class EdgeImpl<T> implements Edge<T> {
 
-    private final Node<?> parent;
-    private final Node<?> child;
-    private final T       model;
+	private final Node<?> parent;
+	private final Node<?> child;
+	private final T model;
 
-    public EdgeImpl(Node<?> parent, T model, Node<?> child) {
-        super();
-        this.parent = parent;
-        this.model = model;
-        this.child = child;
-    }
+	public EdgeImpl(Node<?> parent, T model, Node<?> child) {
+		super();
+		this.parent = parent;
+		this.model = model;
+		this.child = child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getChild()
-     */
-    @Override
-    public Node<?> getChild() {
-        return child;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getChild()
+	 */
+	@Override
+	public Node<?> getChild() {
+		return child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getEdgeObject()
-     */
-    @Override
-    public T getEdgeObject() {
-        return model;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getEdgeObject()
+	 */
+	@Override
+	public T getEdgeObject() {
+		return model;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getParent()
-     */
-    @Override
-    public Node<?> getParent() {
-        return parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getParent()
+	 */
+	@Override
+	public Node<?> getParent() {
+		return parent;
+	}
 
 }

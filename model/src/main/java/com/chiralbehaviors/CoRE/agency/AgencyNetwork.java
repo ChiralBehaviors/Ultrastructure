@@ -51,135 +51,140 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
+@NamedQueries({
+		@NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
+				+ "where n.parent = :agency "
+				+ "and n.inferred = 0 "
+				+ "and n.relationship.preferred = 0 "
+				+ "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+		@NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
+		@NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
+				+ "WHERE n.parent = :parent "
+				+ "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "agency_network_id_seq", sequenceName = "agency_network_id_seq")
-@NamedQueries({
-               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
-                                                                            + "where n.parent = :agency "
-                                                                            + "and n.inferred = 0 "
-                                                                            + "and n.relationship.preferred = 0 "
-                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship") })
 public class AgencyNetwork extends NetworkRuleform<Agency> {
-    public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES    = "agencyNetwork"
-                                                                  + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
-                                                                  + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                     = "agencyNetwork"
-                                                                  + GET_CHILDREN_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
-    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
-    public static final String INFERENCE_STEP                   = "agencyNetwork"
-                                                                  + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS    = "agencyNetwork"
-                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID                 = 1L;
+	public static final String DEDUCE_NEW_NETWORK_RULES = "agencyNetwork"
+			+ DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+	public static final String GATHER_EXISTING_NETWORK_RULES = "agencyNetwork"
+			+ GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+	public static final String GENERATE_NETWORK_INVERSES = "agencyNetwork"
+			+ GENERATE_NETWORK_INVERSES_SUFFIX;
+	public static final String GET_CHILDREN = "agencyNetwork"
+			+ GET_CHILDREN_SUFFIX;
+	public static final String GET_USED_RELATIONSHIPS = "agencyNetwork.getUsedRelationships";
+	public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
+	public static final String INFERENCE_STEP = "agencyNetwork"
+			+ INFERENCE_STEP_SUFFIX;
+	public static final String INFERENCE_STEP_FROM_LAST_PASS = "agencyNetwork"
+			+ INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+	public static final String INSERT_NEW_NETWORK_RULES = "agencyNetwork"
+			+ INSERT_NEW_NETWORK_RULES_SUFFIX;
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "child")
-    private Agency             child;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "child")
+	private Agency child;
 
-    @Id
-    @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+	@Id
+	@GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    private Agency             parent;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "parent")
+	private Agency parent;
 
-    public AgencyNetwork() {
-    }
+	public AgencyNetwork() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public AgencyNetwork(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public AgencyNetwork(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public AgencyNetwork(Agency parent, Relationship relationship,
-                         Agency child, Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public AgencyNetwork(Agency parent, Relationship relationship,
+			Agency child, Agency updatedBy) {
+		super(relationship, updatedBy);
+		this.parent = parent;
+		this.child = child;
+	}
 
-    /**
-     * @param id
-     */
-    public AgencyNetwork(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public AgencyNetwork(Long id) {
+		super(id);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public AgencyNetwork(Relationship relationship, Agency updatedBy) {
-        super(relationship, updatedBy);
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public AgencyNetwork(Relationship relationship, Agency updatedBy) {
+		super(relationship, updatedBy);
+	}
 
-    @Override
-    public Agency getChild() {
-        return child;
-    }
+	@Override
+	public Agency getChild() {
+		return child;
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    @Override
-    public Agency getParent() {
-        return parent;
-    }
+	@Override
+	public Agency getParent() {
+		return parent;
+	}
 
-    public List<Relationship> getUsedRelationships(EntityManager em) {
-        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
-    }
+	public List<Relationship> getUsedRelationships(EntityManager em) {
+		return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class)
+				.getResultList();
+	}
 
-    @Override
-    public void setChild(Agency agency3) {
-        child = agency3;
-    }
+	@Override
+	public void setChild(Agency agency3) {
+		child = agency3;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    @Override
-    public void setParent(Agency agency2) {
-        parent = agency2;
-    }
+	@Override
+	public void setParent(Agency agency2) {
+		parent = agency2;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null) {
-            child = (Agency) child.manageEntity(em, knownObjects);
-        }
-        if (parent != null) {
-            parent = (Agency) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (child != null) {
+			child = (Agency) child.manageEntity(em, knownObjects);
+		}
+		if (parent != null) {
+			parent = (Agency) parent.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

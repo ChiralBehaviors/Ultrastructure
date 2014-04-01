@@ -42,101 +42,108 @@ import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 @Table(name = "agency_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "relationship_attribute_authorization_id_seq", sequenceName = "relationship_attribute_authorization_id_seq")
 public class RelationshipAttributeAuthorization extends
-        ClassifiedAttributeAuthorization<Relationship> {
-    private static final long serialVersionUID = 1L;
+		ClassifiedAttributeAuthorization<Relationship> {
+	private static final long serialVersionUID = 1L;
 
-    @ManyToOne
-    @JoinColumn(name = "classifier")
-    private Relationship      classifier;
+	@ManyToOne
+	@JoinColumn(name = "classifier")
+	private Relationship classifier;
 
-    @Id
-    @GeneratedValue(generator = "relationship_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
+	@Id
+	@GeneratedValue(generator = "relationship_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    public RelationshipAttributeAuthorization() {
-    }
+	public RelationshipAttributeAuthorization() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public RelationshipAttributeAuthorization(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public RelationshipAttributeAuthorization(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param id
-     */
-    public RelationshipAttributeAuthorization(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public RelationshipAttributeAuthorization(Long id) {
+		super(id);
+	}
 
-    /**
-     * @param id
-     * @param classification
-     * @param updatedBy
-     */
-    public RelationshipAttributeAuthorization(Relationship classification,
-                                              Agency updatedBy) {
-        super(classification, updatedBy);
-    }
+	/**
+	 * @param id
+	 * @param classification
+	 * @param updatedBy
+	 */
+	public RelationshipAttributeAuthorization(Relationship classification,
+			Agency updatedBy) {
+		super(classification, updatedBy);
+	}
 
-    /**
-     * @param id
-     * @param classification
-     * @param authorized
-     * @param updatedBy
-     */
-    public RelationshipAttributeAuthorization(Relationship classification,
-                                              Attribute authorized,
-                                              Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-    }
+	/**
+	 * @param id
+	 * @param classification
+	 * @param authorized
+	 * @param updatedBy
+	 */
+	public RelationshipAttributeAuthorization(Relationship classification,
+			Attribute authorized, Agency updatedBy) {
+		super(classification, authorized, updatedBy);
+	}
 
-    public RelationshipAttributeAuthorization(Relationship classification,
-                                              Relationship classifier,
-                                              Attribute authorized,
-                                              Agency updatedBy) {
-        this(classification, authorized, updatedBy);
-        this.classifier = classifier;
-    }
+	public RelationshipAttributeAuthorization(Relationship classification,
+			Relationship classifier, Attribute authorized, Agency updatedBy) {
+		this(classification, authorized, updatedBy);
+		this.classifier = classifier;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#getClassifier()
-     */
-    @Override
-    public Relationship getClassifier() {
-        return classifier;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+	 * getClassifier()
+	 */
+	@Override
+	public Relationship getClassifier() {
+		return classifier;
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#setClassifier(com.chiralbehaviors.CoRE.network.Networked)
-     */
-    @Override
-    public void setClassifier(Relationship classifier) {
-        this.classifier = classifier;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+	 * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+	 */
+	@Override
+	public void setClassifier(Relationship classifier) {
+		this.classifier = classifier;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (classifier != null) {
-            classifier = (Relationship) classifier.manageEntity(em,
-                                                                knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (classifier != null) {
+			classifier = (Relationship) classifier.manageEntity(em,
+					knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

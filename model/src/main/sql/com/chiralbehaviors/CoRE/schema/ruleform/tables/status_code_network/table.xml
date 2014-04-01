@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
->
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <changeSet author="hhildebrand" id="1390879803225-56">
         <createTable tableName="ruleform.status_code_network">
             <column autoIncrement="true" name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" primaryKeyName="status_code_network_pkey" />
+                <constraints primaryKey="true"
+                    primaryKeyName="status_code_network_pkey" />
             </column>
             <column name="parent" type="INT8">
                 <constraints nullable="false" />
@@ -27,7 +28,8 @@
             <column name="updated_by" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+                name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -36,28 +38,39 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-330">
-        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+        <addForeignKeyConstraint
+            baseColumnNames="child" baseTableName="ruleform.status_code_network"
+            constraintName="status_code_network_child_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-331">
-        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+        <addForeignKeyConstraint
+            baseColumnNames="parent" baseTableName="ruleform.status_code_network"
+            constraintName="status_code_network_parent_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-332">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+        <addForeignKeyConstraint
+            baseColumnNames="relationship" baseTableName="ruleform.status_code_network"
+            constraintName="status_code_network_relationship_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-333">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+        <addForeignKeyConstraint
+            baseColumnNames="updated_by" baseTableName="ruleform.status_code_network"
+            constraintName="status_code_network_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-414">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="status_code_network_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.status_code_network" />
+        <addUniqueConstraint columnNames="parent, relationship, child"
+            constraintName="status_code_network_key" deferrable="false"
+            disabled="false" initiallyDeferred="false"
+            tableName="ruleform.status_code_network" />
     </changeSet>
 
 
@@ -71,7 +84,8 @@
         <rollback />
     </changeSet>
     <changeSet id="3" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.status_code_network OWNER TO core; </sql>
+        <sql> ALTER TABLE ruleform.status_code_network OWNER TO core;
+        </sql>
         <rollback />
     </changeSet>
 

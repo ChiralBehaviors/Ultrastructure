@@ -44,134 +44,125 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 public class ProductTest extends DatabaseTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProductTest.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ProductTest.class);
 
-    @Test
-    public void createEntity() {
-        beginTransaction();
+	@Test
+	public void createEntity() {
+		beginTransaction();
 
-        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-                                                       Agency.class).setParameter("name",
-                                                                                  "CoRE");
-        Agency r = query.getSingleResult();
+		TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+				Agency.class).setParameter("name", "CoRE");
+		Agency r = query.getSingleResult();
 
-        LOG.debug(String.format("Agency: %s", r));
+		LOG.debug(String.format("Agency: %s", r));
 
-        assertNotNull("Agency was null!", r);
-        assertEquals("CoRE", r.getName());
+		assertNotNull("Agency was null!", r);
+		assertEquals("CoRE", r.getName());
 
-        Product b = new Product();
+		Product b = new Product();
 
-        String name = "New Product";
-        b.setName(name);
-        b.setDescription("An Product created solely for testing purposes");
-        b.setUpdatedBy(r);
-        b.setPinned(false);
+		String name = "New Product";
+		b.setName(name);
+		b.setDescription("An Product created solely for testing purposes");
+		b.setUpdatedBy(r);
+		b.setPinned(false);
 
-        em.persist(b);
-        commitTransaction();
+		em.persist(b);
+		commitTransaction();
 
-        // Now check to see that the Product you just made actually got into 
-        // the database. 
+		// Now check to see that the Product you just made actually got into
+		// the database.
 
-        em.clear();
+		em.clear();
 
-        TypedQuery<Product> productQuery = em.createNamedQuery("product.findByName",
-                                                               Product.class).setParameter("name",
-                                                                                           name);
+		TypedQuery<Product> productQuery = em.createNamedQuery(
+				"product.findByName", Product.class).setParameter("name", name);
 
-        Product b2 = productQuery.getSingleResult();
+		Product b2 = productQuery.getSingleResult();
 
-        assertNotNull("Retrieved Product was null!", b2);
-        assertTrue(b != b2);
-        assertEquals(b, b2);
-    }
+		assertNotNull("Retrieved Product was null!", b2);
+		assertTrue(b != b2);
+		assertEquals(b, b2);
+	}
 
-    @Before
-    public void initData() {
-        beginTransaction();
+	@Before
+	public void initData() {
+		beginTransaction();
 
-        Agency core = new Agency("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
+		Agency core = new Agency("CoRE");
+		core.setUpdatedBy(core);
+		em.persist(core);
 
-        Product peptideFoo = new Product(
-                                         "Peptide Foo",
-                                         "The Foo peptide is lethal!  Do not eat!",
-                                         core);
-        em.persist(peptideFoo);
+		Product peptideFoo = new Product("Peptide Foo",
+				"The Foo peptide is lethal!  Do not eat!", core);
+		em.persist(peptideFoo);
 
-        Product peptideBar = new Product(
-                                         "Peptide Bar",
-                                         "The Foo peptide is lethal!  Do not eat!",
-                                         core);
-        em.persist(peptideBar);
+		Product peptideBar = new Product("Peptide Bar",
+				"The Foo peptide is lethal!  Do not eat!", core);
+		em.persist(peptideBar);
 
-        Attribute length = new Attribute(
-                                         "Length",
-                                         "Denotes the linear length of a thing",
-                                         ValueType.NUMERIC, core);
-        em.persist(length);
+		Attribute length = new Attribute("Length",
+				"Denotes the linear length of a thing", ValueType.NUMERIC, core);
+		em.persist(length);
 
-        Unit aminoAcids = new Unit(
-                                   "Amino Acids",
-                                   "A unit of length for protein primary sequences",
-                                   core);
-        aminoAcids.setAbbreviation("aa");
-        em.persist(aminoAcids);
+		Unit aminoAcids = new Unit("Amino Acids",
+				"A unit of length for protein primary sequences", core);
+		aminoAcids.setAbbreviation("aa");
+		em.persist(aminoAcids);
 
-        ProductAttribute attribute = new ProductAttribute(length, core);
-        attribute.setUnit(aminoAcids);
-        attribute.setProduct(peptideFoo);
-        attribute.setNumericValue(BigDecimal.valueOf(123));
-        em.persist(attribute);
+		ProductAttribute attribute = new ProductAttribute(length, core);
+		attribute.setUnit(aminoAcids);
+		attribute.setProduct(peptideFoo);
+		attribute.setNumericValue(BigDecimal.valueOf(123));
+		em.persist(attribute);
 
-        Relationship isA = new Relationship(
-                                            "is-a",
-                                            "Taxonomic relationship indicating membership in a group or category.",
-                                            core);
-        em.persist(isA);
+		Relationship isA = new Relationship(
+				"is-a",
+				"Taxonomic relationship indicating membership in a group or category.",
+				core);
+		em.persist(isA);
 
-        Relationship includes = new Relationship(
-                                                 "includes",
-                                                 "Taxonomic relationship defining membership in a group or category.  In 'A includes B', A is the more general product, while B is some specialization or grouping of A",
-                                                 core, isA);
-        em.persist(includes);
+		Relationship includes = new Relationship(
+				"includes",
+				"Taxonomic relationship defining membership in a group or category.  In 'A includes B', A is the more general product, while B is some specialization or grouping of A",
+				core, isA);
+		em.persist(includes);
 
-        commitTransaction();
-        em.clear();
-    }
+		commitTransaction();
+		em.clear();
+	}
 
-    @SuppressWarnings("boxing")
-    @Test
-    public void testAttributes() {
-        TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
-                                                              Product.class).setParameter("name",
-                                                                                          "Peptide Foo");
-        Product b = findProduct.getSingleResult();
-        assertNotNull(b);
-        assertEquals(b.getName(), "Peptide Foo");
-        LOG.debug(String.format("Product is: %s", b));
+	@SuppressWarnings("boxing")
+	@Test
+	public void testAttributes() {
+		TypedQuery<Product> findProduct = em.createNamedQuery(
+				"product.findByName", Product.class).setParameter("name",
+				"Peptide Foo");
+		Product b = findProduct.getSingleResult();
+		assertNotNull(b);
+		assertEquals(b.getName(), "Peptide Foo");
+		LOG.debug(String.format("Product is: %s", b));
 
-        TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
-                                                                  Attribute.class).setParameter("name",
-                                                                                                "Length");
+		TypedQuery<Attribute> findAttribute = em.createNamedQuery(
+				"attribute.findByName", Attribute.class).setParameter("name",
+				"Length");
 
-        Attribute a = findAttribute.getSingleResult();
-        assertNotNull(a);
-        assertEquals(a.getName(), "Length");
-        LOG.debug(String.format("Attribute is: %s", a));
+		Attribute a = findAttribute.getSingleResult();
+		assertNotNull(a);
+		assertEquals(a.getName(), "Length");
+		LOG.debug(String.format("Attribute is: %s", a));
 
-        Set<ProductAttribute> productAttributes = b.getAttributes();
-        assertNotNull(productAttributes);
-        assertEquals(1, productAttributes.size());
+		Set<ProductAttribute> productAttributes = b.getAttributes();
+		assertNotNull(productAttributes);
+		assertEquals(1, productAttributes.size());
 
-        Iterator<ProductAttribute> iter = productAttributes.iterator();
-        ProductAttribute bea = iter.next();
-        assertNotNull(bea);
-        assertEquals(b, bea.getProduct());
-        assertEquals(a, bea.getAttribute());
+		Iterator<ProductAttribute> iter = productAttributes.iterator();
+		ProductAttribute bea = iter.next();
+		assertNotNull(bea);
+		assertEquals(b, bea.getProduct());
+		assertEquals(a, bea.getAttribute());
 
-        assertEquals(new BigDecimal("123"), bea.getNumericValue());
-    }
+		assertEquals(new BigDecimal("123"), bea.getNumericValue());
+	}
 }

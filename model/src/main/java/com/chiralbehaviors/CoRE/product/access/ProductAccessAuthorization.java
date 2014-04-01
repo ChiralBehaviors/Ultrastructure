@@ -43,79 +43,79 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @NamedQueries({
 
-               @NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
-                                                                                              + "FROM ProductAccessAuthorization auth "
-                                                                                              + "WHERE auth.relationship = :r "
-                                                                                              + "AND auth.parent = :rf "),
-               @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
-                                                              + "FROM ProductAccessAuthorization auth "
-                                                              + "WHERE auth.parent = :parent "
-                                                              + "AND auth.relationship = :relationship ") })
+		@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+				+ "FROM ProductAccessAuthorization auth "
+				+ "WHERE auth.relationship = :r " + "AND auth.parent = :rf "),
+		@NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
+				+ "FROM ProductAccessAuthorization auth "
+				+ "WHERE auth.parent = :parent "
+				+ "AND auth.relationship = :relationship ") })
 @Entity
 public abstract class ProductAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
-        extends AccessAuthorization<Product, Child> {
-    public static final String  PRODUCT_ACCESS_AUTHORIZATION_PREFIX                = "productAccessAuthorization";
+		extends AccessAuthorization<Product, Child> {
+	public static final String PRODUCT_ACCESS_AUTHORIZATION_PREFIX = "productAccessAuthorization";
 
-    public static final String  FIND_AUTHORIZATION                                 = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
-                                                                                     + FIND_AUTHORIZATION_SUFFIX;
-    public static final String  GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
-                                                                                     + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+	public static final String FIND_AUTHORIZATION = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
+			+ FIND_AUTHORIZATION_SUFFIX;
+	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
+			+ GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
-    private static final long   serialVersionUID                                   = 1L;
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to ProductNetwork
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<ProductNetwork> networkByParent;
+	// bi-directional many-to-one association to ProductNetwork
+	@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<ProductNetwork> networkByParent;
 
-    @ManyToOne
-    @JoinColumn(name = "product1")
-    private Product             parent;
+	@ManyToOne
+	@JoinColumn(name = "product1")
+	private Product parent;
 
-    /**
-     * @return the networkByParent
-     */
-    public Set<ProductNetwork> getNetworkByParent() {
-        return networkByParent;
-    }
+	/**
+	 * @return the networkByParent
+	 */
+	public Set<ProductNetwork> getNetworkByParent() {
+		return networkByParent;
+	}
 
-    /**
-     * @return the parent
-     */
-    @Override
-    public Product getParent() {
-        return parent;
-    }
+	/**
+	 * @return the parent
+	 */
+	@Override
+	public Product getParent() {
+		return parent;
+	}
 
-    /**
-     * @param networkByParent
-     *            the networkByParent to set
-     */
-    public void setNetworkByParent(Set<ProductNetwork> networkByParent) {
-        this.networkByParent = networkByParent;
-    }
+	/**
+	 * @param networkByParent
+	 *            the networkByParent to set
+	 */
+	public void setNetworkByParent(Set<ProductNetwork> networkByParent) {
+		this.networkByParent = networkByParent;
+	}
 
-    /**
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(Product parent) {
-        this.parent = parent;
-    }
+	/**
+	 * @param parent
+	 *            the parent to set
+	 */
+	public void setParent(Product parent) {
+		this.parent = parent;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (parent != null) {
-            parent = (Product) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (parent != null) {
+			parent = (Product) parent.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
+	}
 
 }

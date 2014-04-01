@@ -45,129 +45,145 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * 
  */
 @NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM CoordinateNetwork n "
-                                                         + "WHERE n.parent = :parent "
-                                                         + "AND n.relationship = :relationship") })
+		+ "WHERE n.parent = :parent " + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "coordinate_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_network_id_seq", sequenceName = "coordinate_network_id_seq")
 public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
 
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "coordinateNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "coordinateNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES     = "coordinateNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                  = "coordinateNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS        = "coordinateNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                = "coordinateNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "coordinateNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "coordinateNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;                                    //bi-directional many-to-one association to Agency
+	public static final String DEDUCE_NEW_NETWORK_RULES = "coordinateNetwork"
+			+ DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+	public static final String GATHER_EXISTING_NETWORK_RULES = "coordinateNetwork"
+			+ GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+	public static final String GENERATE_NETWORK_INVERSES = "coordinateNetwork"
+			+ GENERATE_NETWORK_INVERSES_SUFFIX;
+	public static final String GET_CHILDREN = "coordinateNetwork"
+			+ GET_CHILDREN_SUFFIX;
+	public static final String GET_USED_RELATIONSHIPS = "coordinateNetwork"
+			+ USED_RELATIONSHIPS_SUFFIX;
+	public static final String INFERENCE_STEP = "coordinateNetwork"
+			+ INFERENCE_STEP_SUFFIX;
+	public static final String INFERENCE_STEP_FROM_LAST_PASS = "coordinateNetwork"
+			+ INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+	public static final String INSERT_NEW_NETWORK_RULES = "coordinateNetwork"
+			+ INSERT_NEW_NETWORK_RULES_SUFFIX;
+	private static final long serialVersionUID = 1L; // bi-directional
+														// many-to-one
+														// association to Agency
 
-    @ManyToOne
-    @JoinColumn(name = "child")
-    private Coordinate         child;
+	@ManyToOne
+	@JoinColumn(name = "child")
+	private Coordinate child;
 
-    @Id
-    @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+	@Id
+	@GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    private Coordinate         parent;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "parent")
+	private Coordinate parent;
 
-    /**
+	/**
      * 
      */
-    public CoordinateNetwork() {
-        super();
-    }
+	public CoordinateNetwork() {
+		super();
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public CoordinateNetwork(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public CoordinateNetwork(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public CoordinateNetwork(Coordinate parent, Relationship relationship,
-                             Coordinate child, Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public CoordinateNetwork(Coordinate parent, Relationship relationship,
+			Coordinate child, Agency updatedBy) {
+		super(relationship, updatedBy);
+		this.parent = parent;
+		this.child = child;
+	}
 
-    /**
-     * @param id
-     */
-    public CoordinateNetwork(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public CoordinateNetwork(Long id) {
+		super(id);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public CoordinateNetwork(Relationship relationship, Agency updatedBy) {
-        super(relationship, updatedBy);
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public CoordinateNetwork(Relationship relationship, Agency updatedBy) {
+		super(relationship, updatedBy);
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
-     */
-    @Override
-    public Coordinate getChild() {
-        return child;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
+	 */
+	@Override
+	public Coordinate getChild() {
+		return child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+	 */
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
-     */
-    @Override
-    public Coordinate getParent() {
-        return parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
+	 */
+	@Override
+	public Coordinate getParent() {
+		return parent;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setChild(Coordinate child) {
-        this.child = child;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+	 * .CoRE.ExistentialRuleform)
+	 */
+	@Override
+	public void setChild(Coordinate child) {
+		this.child = child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+	 */
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setParent(Coordinate parent) {
-        this.parent = parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+	 * chiralbehaviors.CoRE.ExistentialRuleform)
+	 */
+	@Override
+	public void setParent(Coordinate parent) {
+		this.parent = parent;
+	}
 }

@@ -45,98 +45,107 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 @SequenceGenerator(schema = "ruleform", name = "status_code_attribute_id_seq", sequenceName = "status_code_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from StatusCodeAttribute ra where ra.statusCode = :inteval and ra.attribute = :attribute") })
 public class StatusCodeAttribute extends AttributeValue<StatusCode> {
-    public static final String GET_ATTRIBUTE    = "statusCodeAttribute.intervalAttribute";
-    private static final long  serialVersionUID = 1L;
+	public static final String GET_ATTRIBUTE = "statusCodeAttribute.intervalAttribute";
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(generator = "status_code_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+	@Id
+	@GeneratedValue(generator = "status_code_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to StatusCode
-    @ManyToOne
-    @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+	// bi-directional many-to-one association to StatusCode
+	@ManyToOne
+	@JoinColumn(name = "status_code")
+	private StatusCode statusCode;
 
-    public StatusCodeAttribute() {
-        super();
-    }
+	public StatusCodeAttribute() {
+		super();
+	}
 
-    public StatusCodeAttribute(Agency updatedBy) {
-        super(updatedBy);
-    }
+	public StatusCodeAttribute(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    public StatusCodeAttribute(Attribute attribute) {
-        super(attribute);
-    }
+	public StatusCodeAttribute(Attribute attribute) {
+		super(attribute);
+	}
 
-    public StatusCodeAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-    }
+	public StatusCodeAttribute(Attribute attribute, Agency updatedBy) {
+		super(attribute, updatedBy);
+	}
 
-    public StatusCodeAttribute(Attribute attribute, BigDecimal value,
-                               Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	public StatusCodeAttribute(Attribute attribute, BigDecimal value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    public StatusCodeAttribute(Attribute attribute, boolean value,
-                               Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	public StatusCodeAttribute(Attribute attribute, boolean value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    public StatusCodeAttribute(Attribute attribute, int value, Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	public StatusCodeAttribute(Attribute attribute, int value, Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    public StatusCodeAttribute(Attribute attribute, String value,
-                               Agency updatedBy) {
-        super(attribute, value, updatedBy);
-    }
+	public StatusCodeAttribute(Attribute attribute, String value,
+			Agency updatedBy) {
+		super(attribute, value, updatedBy);
+	}
 
-    public StatusCodeAttribute(Attribute attribute, Unit unit) {
-        super(attribute, unit);
-    }
+	public StatusCodeAttribute(Attribute attribute, Unit unit) {
+		super(attribute, unit);
+	}
 
-    public StatusCodeAttribute(Long id) {
-        super(id);
-    }
+	public StatusCodeAttribute(Long id) {
+		super(id);
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+	 */
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
-     */
-    @Override
-    public SingularAttribute<? extends AttributeValue<StatusCode>, StatusCode> getRuleformAttribute() {
-        return StatusCodeAttribute_.statusCode;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+	 */
+	@Override
+	public SingularAttribute<? extends AttributeValue<StatusCode>, StatusCode> getRuleformAttribute() {
+		return StatusCodeAttribute_.statusCode;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
-     */
-    @Override
-    public Class<StatusCode> getRuleformClass() {
-        return StatusCode.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
+	 */
+	@Override
+	public Class<StatusCode> getRuleformClass() {
+		return StatusCode.class;
+	}
 
-    public StatusCode getStatusCode() {
-        return statusCode;
-    }
+	public StatusCode getStatusCode() {
+		return statusCode;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+	 */
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setStatusCode(StatusCode interval) {
-        statusCode = interval;
-    }
+	public void setStatusCode(StatusCode interval) {
+		statusCode = interval;
+	}
 }

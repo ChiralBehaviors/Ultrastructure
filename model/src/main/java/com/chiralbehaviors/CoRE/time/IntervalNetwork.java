@@ -45,117 +45,131 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * 
  */
 @NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
-                                                         + "WHERE n.parent = :parent "
-                                                         + "AND n.relationship = :relationship") })
+		+ "WHERE n.parent = :parent " + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "interval_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "interval_network_id_seq", sequenceName = "interval_network_id_seq")
 public class IntervalNetwork extends NetworkRuleform<Interval> {
 
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "intervalNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "intervalNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES     = "intervalNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                  = "intervalNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS        = "intervalNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                = "intervalNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "intervalNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "intervalNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;
+	public static final String DEDUCE_NEW_NETWORK_RULES = "intervalNetwork"
+			+ DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+	public static final String GATHER_EXISTING_NETWORK_RULES = "intervalNetwork"
+			+ GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+	public static final String GENERATE_NETWORK_INVERSES = "intervalNetwork"
+			+ GENERATE_NETWORK_INVERSES_SUFFIX;
+	public static final String GET_CHILDREN = "intervalNetwork"
+			+ GET_CHILDREN_SUFFIX;
+	public static final String GET_USED_RELATIONSHIPS = "intervalNetwork"
+			+ USED_RELATIONSHIPS_SUFFIX;
+	public static final String INFERENCE_STEP = "intervalNetwork"
+			+ INFERENCE_STEP_SUFFIX;
+	public static final String INFERENCE_STEP_FROM_LAST_PASS = "intervalNetwork"
+			+ INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+	public static final String INSERT_NEW_NETWORK_RULES = "intervalNetwork"
+			+ INSERT_NEW_NETWORK_RULES_SUFFIX;
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Interval
-    @ManyToOne
-    @JoinColumn(name = "child")
-    private Interval           child;
+	// bi-directional many-to-one association to Interval
+	@ManyToOne
+	@JoinColumn(name = "child")
+	private Interval child;
 
-    @Id
-    @GeneratedValue(generator = "interval_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+	@Id
+	@GeneratedValue(generator = "interval_network_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    private Interval           parent;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "parent")
+	private Interval parent;
 
-    public IntervalNetwork() {
-        super();
-    }
+	public IntervalNetwork() {
+		super();
+	}
 
-    public IntervalNetwork(Agency updatedBy) {
-        super(updatedBy);
-    }
+	public IntervalNetwork(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public IntervalNetwork(Interval parent, Relationship relationship,
-                           Interval child, Agency updatedBy) {
-        super(relationship, updatedBy);
-        this.parent = parent;
-        this.child = child;
-    }
+	/**
+	 * @param relationship
+	 * @param updatedBy
+	 */
+	public IntervalNetwork(Interval parent, Relationship relationship,
+			Interval child, Agency updatedBy) {
+		super(relationship, updatedBy);
+		this.parent = parent;
+		this.child = child;
+	}
 
-    public IntervalNetwork(Long id) {
-        super(id);
-    }
+	public IntervalNetwork(Long id) {
+		super(id);
+	}
 
-    public IntervalNetwork(Relationship relationship, Agency updatedBy) {
-        super(relationship, updatedBy);
-    }
+	public IntervalNetwork(Relationship relationship, Agency updatedBy) {
+		super(relationship, updatedBy);
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
-     */
-    @Override
-    public Interval getChild() {
-        return child;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
+	 */
+	@Override
+	public Interval getChild() {
+		return child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+	 */
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
-     */
-    @Override
-    public Interval getParent() {
-        return parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
+	 */
+	@Override
+	public Interval getParent() {
+		return parent;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors.CoRE.network.Networked)
-     */
-    @Override
-    public void setChild(Interval child) {
-        this.child = child;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.network.NetworkRuleform#setChild(com.chiralbehaviors
+	 * .CoRE.network.Networked)
+	 */
+	@Override
+	public void setChild(Interval child) {
+		this.child = child;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+	 */
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.network.Networked)
-     */
-    @Override
-    public void setParent(Interval parent) {
-        this.parent = parent;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
+	 * chiralbehaviors.CoRE.network.Networked)
+	 */
+	@Override
+	public void setParent(Interval parent) {
+		this.parent = parent;
+	}
 }

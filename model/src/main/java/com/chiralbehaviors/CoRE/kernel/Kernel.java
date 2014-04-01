@@ -29,130 +29,130 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public interface Kernel {
 
-    Agency getAgency();
+	Agency getAgency();
 
-    Agency getAnyAgency();
+	Agency getAnyAgency();
 
-    Attribute getAnyAttribute();
+	Attribute getAnyAttribute();
 
-    Location getAnyLocation();
+	Location getAnyLocation();
 
-    Product getAnyProduct();
+	Product getAnyProduct();
 
-    Relationship getAnyRelationship();
+	Relationship getAnyRelationship();
 
-    Attribute getAttribute();
+	Attribute getAttribute();
 
-    Relationship getContains();
+	Relationship getContains();
 
-    Agency getCore();
+	Agency getCore();
 
-    Agency getCoreAnimationSoftware();
+	Agency getCoreAnimationSoftware();
 
-    Agency getCoreModel();
+	Agency getCoreModel();
 
-    Agency getCoreUser();
+	Agency getCoreUser();
 
-    Relationship getDeveloped();
+	Relationship getDeveloped();
 
-    Relationship getDevelopedBy();
+	Relationship getDevelopedBy();
 
-    Relationship getEquals();
+	Relationship getEquals();
 
-    Relationship getFormerMemberOf();
+	Relationship getFormerMemberOf();
 
-    Relationship getGreaterThan();
+	Relationship getGreaterThan();
 
-    Relationship getGreaterThanOrEqual();
+	Relationship getGreaterThanOrEqual();
 
-    Relationship getHadMember();
+	Relationship getHadMember();
 
-    Relationship getHasException();
+	Relationship getHasException();
 
-    Relationship getHasHead();
+	Relationship getHasHead();
 
-    Relationship getHasMember();
+	Relationship getHasMember();
 
-    Relationship getHasVersion();
+	Relationship getHasVersion();
 
-    Relationship getHeadOf();
+	Relationship getHeadOf();
 
-    Relationship getIncludes();
+	Relationship getIncludes();
 
-    Agency getInverseSoftware();
+	Agency getInverseSoftware();
 
-    Relationship getInWorkspace();
+	Relationship getInWorkspace();
 
-    Relationship getIsA();
+	Relationship getIsA();
 
-    Relationship getIsContainedIn();
+	Relationship getIsContainedIn();
 
-    Relationship getIsExceptionTo();
+	Relationship getIsExceptionTo();
 
-    Relationship getIsLocationOf();
+	Relationship getIsLocationOf();
 
-    Relationship getLessThan();
+	Relationship getLessThan();
 
-    Relationship getLessThanOrEqual();
+	Relationship getLessThanOrEqual();
 
-    Location getLocation();
+	Location getLocation();
 
-    Attribute getLoginAttribute();
+	Attribute getLoginAttribute();
 
-    Relationship getMapsToLocation();
+	Relationship getMapsToLocation();
 
-    Relationship getMemberOf();
+	Relationship getMemberOf();
 
-    Agency getNotApplicableAgency();
+	Agency getNotApplicableAgency();
 
-    Attribute getNotApplicableAttribute();
+	Attribute getNotApplicableAttribute();
 
-    Location getNotApplicableLocation();
+	Location getNotApplicableLocation();
 
-    Product getNotApplicableProduct();
+	Product getNotApplicableProduct();
 
-    Relationship getNotApplicableRelationship();
+	Relationship getNotApplicableRelationship();
 
-    Agency getOriginalAgency();
+	Agency getOriginalAgency();
 
-    Attribute getOriginalAttribute();
+	Attribute getOriginalAttribute();
 
-    Location getOriginalLocation();
+	Location getOriginalLocation();
 
-    Product getOriginalProduct();
+	Product getOriginalProduct();
 
-    Relationship getOwnedBy();
+	Relationship getOwnedBy();
 
-    Relationship getOwns();
+	Relationship getOwns();
 
-    Attribute getPasswordHashAttribute();
+	Attribute getPasswordHashAttribute();
 
-    Product getProduct();
+	Product getProduct();
 
-    Agency getPropagationSoftware();
+	Agency getPropagationSoftware();
 
-    Relationship getPrototype();
+	Relationship getPrototype();
 
-    Relationship getPrototypeOf();
+	Relationship getPrototypeOf();
 
-    Agency getSameAgency();
+	Agency getSameAgency();
 
-    Location getSameLocation();
+	Location getSameLocation();
 
-    Product getSameProduct();
+	Product getSameProduct();
 
-    Relationship getSameRelationship();
+	Relationship getSameRelationship();
 
-    Agency getSpecialSystemAgency();
+	Agency getSpecialSystemAgency();
 
-    Agency getSuperUser();
+	Agency getSuperUser();
 
-    StatusCode getUnset();
+	StatusCode getUnset();
 
-    Relationship getVersionOf();
+	Relationship getVersionOf();
 
-    Product getWorkspace();
+	Product getWorkspace();
 
-    Relationship getWorkspaceOf();
+	Relationship getWorkspaceOf();
 
 }

@@ -30,31 +30,31 @@ import com.chiralbehaviors.CoRE.network.Aspect;
  * 
  */
 public class AuthenticatedPrincipal {
-    private final List<Aspect<Agency>> activeRoles;
-    private final Agency               principal;
+	private final List<Aspect<Agency>> activeRoles;
+	private final Agency principal;
 
-    /**
-     * @param principal
-     */
-    public AuthenticatedPrincipal(Agency principal) {
-        this(principal, Collections.<Aspect<Agency>> emptyList());
-    }
+	/**
+	 * @param principal
+	 */
+	public AuthenticatedPrincipal(Agency principal) {
+		this(principal, Collections.<Aspect<Agency>> emptyList());
+	}
 
-    /**
-     * @param principal
-     * @param activeRoles
-     */
-    public AuthenticatedPrincipal(Agency principal,
-                                  List<Aspect<Agency>> activeRoles) {
-        this.principal = principal;
-        this.activeRoles = Collections.unmodifiableList(activeRoles);
-    }
+	/**
+	 * @param principal
+	 * @param activeRoles
+	 */
+	public AuthenticatedPrincipal(Agency principal,
+			List<Aspect<Agency>> activeRoles) {
+		this.principal = principal;
+		this.activeRoles = Collections.unmodifiableList(activeRoles);
+	}
 
-    public List<Aspect<Agency>> getActiveRoles() {
-        return activeRoles;
-    }
+	public List<Aspect<Agency>> getActiveRoles() {
+		return activeRoles;
+	}
 
-    public Agency getPrincipal() {
-        return principal;
-    }
+	public Agency getPrincipal() {
+		return principal;
+	}
 }

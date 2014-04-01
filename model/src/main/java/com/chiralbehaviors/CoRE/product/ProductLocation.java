@@ -47,135 +47,142 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "product_location", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_location_id_seq", sequenceName = "product_location_id_seq")
 public class ProductLocation extends Ruleform implements
-        Attributable<ProductLocationAttribute> {
-    private static final long             serialVersionUID = 1L;
+		Attributable<ProductLocationAttribute> {
+	private static final long serialVersionUID = 1L;
 
-    //bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency")
-    private Agency                        agency;
+	// bi-directional many-to-one association to Agency
+	@ManyToOne
+	@JoinColumn(name = "agency")
+	private Agency agency;
 
-    //bi-directional many-to-one association to ProductLocationAttribute
-    @OneToMany(mappedBy = "productLocation")
-    @JsonIgnore
-    private Set<ProductLocationAttribute> attributes;
+	// bi-directional many-to-one association to ProductLocationAttribute
+	@OneToMany(mappedBy = "productLocation")
+	@JsonIgnore
+	private Set<ProductLocationAttribute> attributes;
 
-    @Id
-    @GeneratedValue(generator = "product_location_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                          id;
+	@Id
+	@GeneratedValue(generator = "product_location_id_seq", strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    //bi-directional many-to-one association to Location
-    @ManyToOne
-    @JoinColumn(name = "location")
-    private Location                      location;
+	// bi-directional many-to-one association to Location
+	@ManyToOne
+	@JoinColumn(name = "location")
+	private Location location;
 
-    //bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private Product                       product;
+	// bi-directional many-to-one association to Product
+	@ManyToOne
+	@JoinColumn(name = "product")
+	private Product product;
 
-    //bi-directional many-to-one association to Relationship
-    @ManyToOne
-    @JoinColumn(name = "relationship")
-    private Relationship                  relationship;
+	// bi-directional many-to-one association to Relationship
+	@ManyToOne
+	@JoinColumn(name = "relationship")
+	private Relationship relationship;
 
-    public ProductLocation() {
-    }
+	public ProductLocation() {
+	}
 
-    /**
-     * @param updatedBy
-     */
-    public ProductLocation(Agency updatedBy) {
-        super(updatedBy);
-    }
+	/**
+	 * @param updatedBy
+	 */
+	public ProductLocation(Agency updatedBy) {
+		super(updatedBy);
+	}
 
-    /**
-     * @param id
-     */
-    public ProductLocation(Long id) {
-        super(id);
-    }
+	/**
+	 * @param id
+	 */
+	public ProductLocation(Long id) {
+		super(id);
+	}
 
-    public Agency getAgency() {
-        return agency;
-    }
+	public Agency getAgency() {
+		return agency;
+	}
 
-    @Override
-    public Set<ProductLocationAttribute> getAttributes() {
-        return attributes;
-    }
+	@Override
+	public Set<ProductLocationAttribute> getAttributes() {
+		return attributes;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<ProductLocationAttribute> getAttributeType() {
-        return ProductLocationAttribute.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
+	 */
+	@Override
+	public Class<ProductLocationAttribute> getAttributeType() {
+		return ProductLocationAttribute.class;
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    public Location getLocation() {
-        return location;
-    }
+	public Location getLocation() {
+		return location;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public Product getProduct() {
+		return product;
+	}
 
-    public Relationship getRelationship() {
-        return relationship;
-    }
+	public Relationship getRelationship() {
+		return relationship;
+	}
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
+	public void setAgency(Agency agency2) {
+		agency = agency2;
+	}
 
-    @Override
-    public void setAttributes(Set<ProductLocationAttribute> productLocationAttributes) {
-        attributes = productLocationAttributes;
-    }
+	@Override
+	public void setAttributes(
+			Set<ProductLocationAttribute> productLocationAttributes) {
+		attributes = productLocationAttributes;
+	}
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
-    public void setRelationship(Relationship relationship) {
-        this.relationship = relationship;
-    }
+	public void setRelationship(Relationship relationship) {
+		this.relationship = relationship;
+	}
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        if (location != null) {
-            location = (Location) location.manageEntity(em, knownObjects);
-        }
-        if (relationship != null) {
-            relationship = (Relationship) relationship.manageEntity(em,
-                                                                    knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+	 * .EntityManager, java.util.Map)
+	 */
+	@Override
+	public void traverseForeignKeys(EntityManager em,
+			Map<Ruleform, Ruleform> knownObjects) {
+		if (product != null) {
+			product = (Product) product.manageEntity(em, knownObjects);
+		}
+		if (location != null) {
+			location = (Location) location.manageEntity(em, knownObjects);
+		}
+		if (relationship != null) {
+			relationship = (Relationship) relationship.manageEntity(em,
+					knownObjects);
+		}
+		if (agency != null) {
+			agency = (Agency) agency.manageEntity(em, knownObjects);
+		}
+		super.traverseForeignKeys(em, knownObjects);
 
-    }
+	}
 }

@@ -31,31 +31,32 @@ import org.junit.AfterClass;
  */
 public class TestBootstrap {
 
-    @AfterClass
-    public static void clean() throws Exception {
-        Class.forName("org.postgresql.Driver");
-        Properties props = new Properties();
-        props.load(TestBootstrap.class.getResourceAsStream("/load-sql.properties"));
-        Connection connection = DriverManager.getConnection(props.getProperty("url"),
-                                                            props.getProperty("username"),
-                                                            props.getProperty("password"));
-        connection.setAutoCommit(false);
-        Bootstrap bootstrap = new Bootstrap(connection);
-        bootstrap.clear();
-        connection.commit();
-    }
+	@AfterClass
+	public static void clean() throws Exception {
+		Class.forName("org.postgresql.Driver");
+		Properties props = new Properties();
+		props.load(TestBootstrap.class
+				.getResourceAsStream("/load-sql.properties"));
+		Connection connection = DriverManager.getConnection(
+				props.getProperty("url"), props.getProperty("username"),
+				props.getProperty("password"));
+		connection.setAutoCommit(false);
+		Bootstrap bootstrap = new Bootstrap(connection);
+		bootstrap.clear();
+		connection.commit();
+	}
 
-    // @Test
-    public void testBootstrap() throws Exception {
-        Class.forName("org.postgresql.Driver");
-        Properties props = new Properties();
-        props.load(getClass().getResourceAsStream("/load-sql.properties"));
-        Connection connection = DriverManager.getConnection(props.getProperty("url"),
-                                                            props.getProperty("username"),
-                                                            props.getProperty("password"));
-        connection.setAutoCommit(false);
-        Bootstrap bootstrap = new Bootstrap(connection);
-        bootstrap.bootstrap();
-        connection.commit();
-    }
+	// @Test
+	public void testBootstrap() throws Exception {
+		Class.forName("org.postgresql.Driver");
+		Properties props = new Properties();
+		props.load(getClass().getResourceAsStream("/load-sql.properties"));
+		Connection connection = DriverManager.getConnection(
+				props.getProperty("url"), props.getProperty("username"),
+				props.getProperty("password"));
+		connection.setAutoCommit(false);
+		Bootstrap bootstrap = new Bootstrap(connection);
+		bootstrap.bootstrap();
+		connection.commit();
+	}
 }

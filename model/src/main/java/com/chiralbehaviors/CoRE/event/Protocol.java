@@ -57,34 +57,35 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 		+ "    AND p.deliverTo = :deliverTo" + " ORDER BY p.sequenceNumber") })
 @NamedNativeQueries({ @NamedNativeQuery(name = GET_FOR_JOB, query = "WITH deliverFrom AS "
 		+ "(SELECT ln.child from ruleform.location_network ln "
-		+ "WHERE ln.parent = ? " //job.deliverFrom
-		+ "AND ln.relationship = ? " //metaprotocol.deliverFrom
+		+ "WHERE ln.parent = ? " // job.deliverFrom
+		+ "AND ln.relationship = ? " // metaprotocol.deliverFrom
 		+ "), "
 		+ "deliverTo AS "
 		+ "(SELECT ln.child from ruleform.location_network ln "
-		+ "WHERE ln.parent = ? " //job.deliverTo
-		+ "AND ln.relationship = ? " //metaprotocol.deliverTo
+		+ "WHERE ln.parent = ? " // job.deliverTo
+		+ "AND ln.relationship = ? " // metaprotocol.deliverTo
 		+ "), "
 		+ "productOrdered AS "
 		+ "(SELECT pn.child from ruleform.product_network pn "
-		+ "WHERE pn.parent = ? " //job.product
-		+ "AND pn.relationship = ? " //metaprotocol.productOrdered
+		+ "WHERE pn.parent = ? " // job.product
+		+ "AND pn.relationship = ? " // metaprotocol.productOrdered
 		+ "), "
 		+ "requestingAgency AS "
 		+ "(SELECT an.child from ruleform.agency_network an "
-		+ "WHERE an.parent = ? " //job.requester
-		+ "AND an.relationship = ? " //metaprotocol.requestingAgency
+		+ "WHERE an.parent = ? " // job.requester
+		+ "AND an.relationship = ? " // metaprotocol.requestingAgency
 		+ ") "
 		+ "SELECT * from ruleform.protocol p "
-		+ "WHERE p.requested_service = ? " //job.service
+		+ "WHERE p.requested_service = ? " // job.service
 		+ "AND (p.deliver_from IN (SELECT child FROM deliverFrom) "
-		+ "OR p.deliver_from IN (?, ?)) " //same, any
+		+ "OR p.deliver_from IN (?, ?)) " // same, any
 		+ "AND (p.deliver_to IN (SELECT child FROM deliverTo) "
-		+ "OR p.deliver_to IN (?, ?)) "//same, any
+		+ "OR p.deliver_to IN (?, ?)) "// same, any
 		+ "AND (p.product IN (SELECT child FROM productOrdered) "
-		+ "OR p.product IN (?, ?)) " //kernel.any, kernel.same
+		+ "OR p.product IN (?, ?)) " // kernel.any, kernel.same
 		+ "AND (p.requester IN (SELECT child FROM requestingAgency) "
-		+ "OR p.requester IN (?, ?))") }) //kernel.any, kernel.same
+		+ "OR p.requester IN (?, ?))") })
+// kernel.any, kernel.same
 @Entity
 @Table(name = "protocol", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_id_seq", sequenceName = "protocol_id_seq")
@@ -362,7 +363,8 @@ public class Protocol extends Ruleform {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+	 * @see
+	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
 	 * EntityManager, java.util.Map)
 	 */
 	@Override

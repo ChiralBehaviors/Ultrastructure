@@ -32,57 +32,55 @@ import com.chiralbehaviors.CoRE.product.access.ProductAccessAuthorization;
  */
 public class AccessAuthorizationGraphQuery {
 
-	private EntityManager em;
-	private AccessAuthorization<?, ?> authorization;
-	private List<AccessAuthorization<?, ?>> auths;
-	private ExistentialRuleform<?, ?> parent;
-	private Relationship relationship;
+    private AccessAuthorization<?, ?>       authorization;
+    private List<AccessAuthorization<?, ?>> auths;
+    private EntityManager                   em;
+    private ExistentialRuleform<?, ?>       parent;
+    private Relationship                    relationship;
 
-	public AccessAuthorizationGraphQuery(ExistentialRuleform<?, ?> parent,
-			Relationship rel, EntityManager em) {
-		this.parent = parent;
-		relationship = rel;
-		this.em = em;
-		auths = new LinkedList<AccessAuthorization<?, ?>>();
-		findAuthorizations();
-	}
+    public AccessAuthorizationGraphQuery(ExistentialRuleform<?, ?> parent,
+                                         Relationship rel, EntityManager em) {
+        this.parent = parent;
+        relationship = rel;
+        this.em = em;
+        auths = new LinkedList<AccessAuthorization<?, ?>>();
+        findAuthorizations();
+    }
 
-	/**
-	 * @return the authorization
-	 */
-	public AccessAuthorization<?, ?> getAuthorization() {
-		return authorization;
-	}
+    /**
+     * @return the authorization
+     */
+    public AccessAuthorization<?, ?> getAuthorization() {
+        return authorization;
+    }
 
-	public List<AccessAuthorization<?, ?>> getResults() {
-		return auths;
-	}
+    public List<AccessAuthorization<?, ?>> getResults() {
+        return auths;
+    }
 
-	/**
-	 * @param authorization
-	 *            the authorization to set
-	 */
-	public void setAuthorization(AccessAuthorization<?, ?> authorization) {
-		this.authorization = authorization;
-	}
+    /**
+     * @param authorization
+     *            the authorization to set
+     */
+    public void setAuthorization(AccessAuthorization<?, ?> authorization) {
+        this.authorization = authorization;
+    }
 
-	private void findAuthorizations() {
-		findProductAuthorizations();
-	}
+    private void findAuthorizations() {
+        findProductAuthorizations();
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
-	private void findProductAuthorizations() {
-		Query q = em
-				.createNamedQuery(
-						ProductAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP,
-						ProductAccessAuthorization.class);
-		q.setParameter("rf", parent);
-		q.setParameter("r", relationship);
-		auths.addAll(q.getResultList());
+    @SuppressWarnings("unchecked")
+    private void findProductAuthorizations() {
+        Query q = em.createNamedQuery(ProductAccessAuthorization.GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP,
+                                      ProductAccessAuthorization.class);
+        q.setParameter("rf", parent);
+        q.setParameter("r", relationship);
+        auths.addAll(q.getResultList());
 
-	}
+    }
 
 }

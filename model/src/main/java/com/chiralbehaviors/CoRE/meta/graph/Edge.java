@@ -22,10 +22,10 @@ package com.chiralbehaviors.CoRE.meta.graph;
  */
 public interface Edge<T> {
 
-	public Node<?> getChild();
+    public Node<?> getChild();
 
-	public T getEdgeObject();
+    public T getEdgeObject();
 
-	public Node<?> getParent();
+    public Node<?> getParent();
 
 }

@@ -34,95 +34,99 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 public class RelationshipTest extends DatabaseTest {
 
-	@Before
-	public void initData() {
-		beginTransaction();
-		Agency core = new Agency("CoRE");
-		core.setUpdatedBy(core);
-		em.persist(core);
+    @Before
+    public void initData() {
+        beginTransaction();
+        Agency core = new Agency("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
 
-		Relationship massList = new Relationship("mass-list",
-				"A is a member of the mass list B", core);
-		em.persist(massList);
+        Relationship massList = new Relationship(
+                                                 "mass-list",
+                                                 "A is a member of the mass list B",
+                                                 core);
+        em.persist(massList);
 
-		Relationship massListOf = new Relationship("mass-list-of",
-				"A is a mass list that has B as a member", core, massList);
-		em.persist(massListOf);
+        Relationship massListOf = new Relationship(
+                                                   "mass-list-of",
+                                                   "A is a mass list that has B as a member",
+                                                   core, massList);
+        em.persist(massListOf);
 
-		commitTransaction();
-		em.clear();
-	}
+        commitTransaction();
+        em.clear();
+    }
 
-	@Test
-	public void setInverseTest() {
-		Relationship r = new Relationship();
-		r.setName("Foo");
+    @Test
+    public void setInverseTest() {
+        Relationship r = new Relationship();
+        r.setName("Foo");
 
-		Relationship i = new Relationship();
-		i.setName("Bar");
+        Relationship i = new Relationship();
+        i.setName("Bar");
 
-		r.setInverse(i);
+        r.setInverse(i);
 
-		assertNotNull(r.getInverse());
-		assertEquals(r.getInverse(), i);
+        assertNotNull(r.getInverse());
+        assertEquals(r.getInverse(), i);
 
-		assertNotNull(i.getInverse());
-		assertEquals(i.getInverse(), r);
-	}
+        assertNotNull(i.getInverse());
+        assertEquals(i.getInverse(), r);
+    }
 
-	@Test
-	public void testInverseMerge() {
-		beginTransaction();
+    @Test
+    public void testInverseMerge() {
+        beginTransaction();
 
-		TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-				Agency.class);
-		query.setParameter("name", "CoRE");
-		Agency core = query.getSingleResult();
+        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+                                                       Agency.class);
+        query.setParameter("name", "CoRE");
+        Agency core = query.getSingleResult();
 
-		Relationship relationship = new Relationship();
-		relationship.setName("Foo");
-		relationship.setPreferred(true);
-		relationship.setUpdatedBy(core);
-		em.persist(relationship);
+        Relationship relationship = new Relationship();
+        relationship.setName("Foo");
+        relationship.setPreferred(true);
+        relationship.setUpdatedBy(core);
+        em.persist(relationship);
 
-		Relationship inverse = new Relationship();
-		inverse.setName("Bar");
-		inverse.setPreferred(false);
-		inverse.setUpdatedBy(core);
-		em.persist(inverse);
+        Relationship inverse = new Relationship();
+        inverse.setName("Bar");
+        inverse.setPreferred(false);
+        inverse.setUpdatedBy(core);
+        em.persist(inverse);
 
-		relationship.setInverse(inverse);
+        relationship.setInverse(inverse);
 
-		assertNotNull(relationship.getInverse());
-		assertEquals(inverse, relationship.getInverse());
+        assertNotNull(relationship.getInverse());
+        assertEquals(inverse, relationship.getInverse());
 
-		assertNotNull(inverse.getInverse());
-		assertEquals(relationship, inverse.getInverse());
+        assertNotNull(inverse.getInverse());
+        assertEquals(relationship, inverse.getInverse());
 
-		System.out.println("R: " + relationship);
-		System.out.println("I: " + relationship.getInverse());
+        System.out.println("R: " + relationship);
+        System.out.println("I: " + relationship.getInverse());
 
-		Relationship r1 = em.merge(relationship);
+        Relationship r1 = em.merge(relationship);
 
-		// Relationship i1 = dao.makePersistent(inverse);
+        // Relationship i1 = dao.makePersistent(inverse);
 
-		// assertFalse(relationship == r1);
-		// assertTrue(inverse == i1);
+        // assertFalse(relationship == r1);
+        // assertTrue(inverse == i1);
 
-		System.out.println("R1: " + r1);
-		System.out.println("I1: " + r1.getInverse());
+        System.out.println("R1: " + r1);
+        System.out.println("I1: " + r1.getInverse());
 
-		System.out.println("R1 Class: " + r1.getClass());
-		System.out.println("I1 Class: " + r1.getInverse().getClass());
+        System.out.println("R1 Class: " + r1.getClass());
+        System.out.println("I1 Class: " + r1.getInverse().getClass());
 
-		assertNotNull(r1.getInverse());
+        assertNotNull(r1.getInverse());
 
-		// assertEquals(r1.getInverse(), i1);
+        // assertEquals(r1.getInverse(), i1);
 
-		// assertNotNull(i1.getInverse());
-		// assertEquals(i1.getInverse(), r1);
+        // assertNotNull(i1.getInverse());
+        // assertEquals(i1.getInverse(), r1);
 
-		// dao.flush();
-		commitTransaction();
-	}
+        // dao.flush();
+        commitTransaction();
+    }
 }

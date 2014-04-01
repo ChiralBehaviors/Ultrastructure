@@ -38,50 +38,51 @@ import com.chiralbehaviors.CoRE.location.Location;
 @NamedQueries({
 
 @NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
-		+ "FROM LocationAccessAuthorization auth "
-		+ "WHERE auth.relationship = :r " + "AND auth.parent = :rf ") })
+                                                                               + "FROM LocationAccessAuthorization auth "
+                                                                               + "WHERE auth.relationship = :r "
+                                                                               + "AND auth.parent = :rf ") })
 @Entity
 public abstract class LocationAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
-		extends AccessAuthorization<Location, Child> {
-	public static final String LOCATION_ACCESS_AUTHORIZATION_PREFIX = "locationAccessAuthorization";
-	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = LOCATION_ACCESS_AUTHORIZATION_PREFIX
-			+ GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+        extends AccessAuthorization<Location, Child> {
+    public static final String LOCATION_ACCESS_AUTHORIZATION_PREFIX               = "locationAccessAuthorization";
+    public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = LOCATION_ACCESS_AUTHORIZATION_PREFIX
+                                                                                    + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID                                   = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "location1")
-	private Location parent;
+    @ManyToOne
+    @JoinColumn(name = "location1")
+    private Location           parent;
 
-	/**
-	 * @return the parent
-	 */
-	@Override
-	public Location getParent() {
-		return parent;
-	}
+    /**
+     * @return the parent
+     */
+    @Override
+    public Location getParent() {
+        return parent;
+    }
 
-	/**
-	 * @param parent
-	 *            the parent to set
-	 */
-	public void setParent(Location parent) {
-		this.parent = parent;
-	}
+    /**
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(Location parent) {
+        this.parent = parent;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-	 * EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (parent != null) {
-			parent = (Location) parent.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (parent != null) {
+            parent = (Location) parent.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 }

@@ -40,81 +40,82 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class ClassifiedAttributeAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>>
-		extends AttributeAuthorization {
+        extends AttributeAuthorization {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "classification")
-	private Relationship classification;
+    @ManyToOne
+    @JoinColumn(name = "classification")
+    private Relationship      classification;
 
-	public ClassifiedAttributeAuthorization() {
-		super();
-	}
+    public ClassifiedAttributeAuthorization() {
+        super();
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public ClassifiedAttributeAuthorization(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public ClassifiedAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param id
-	 */
-	public ClassifiedAttributeAuthorization(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public ClassifiedAttributeAuthorization(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @param classification
-	 * @param updatedBy
-	 */
-	public ClassifiedAttributeAuthorization(Relationship classification,
-			Agency updatedBy) {
-		this.classification = classification;
-		setUpdatedBy(updatedBy);
-	}
+    /**
+     * @param classification
+     * @param updatedBy
+     */
+    public ClassifiedAttributeAuthorization(Relationship classification,
+                                            Agency updatedBy) {
+        this.classification = classification;
+        setUpdatedBy(updatedBy);
+    }
 
-	/**
-	 * @param classification
-	 * @param authorized
-	 * @param updatedBy
-	 */
-	public ClassifiedAttributeAuthorization(Relationship classification,
-			Attribute authorized, Agency updatedBy) {
-		super(authorized, updatedBy);
-		this.classification = classification;
-	}
+    /**
+     * @param classification
+     * @param authorized
+     * @param updatedBy
+     */
+    public ClassifiedAttributeAuthorization(Relationship classification,
+                                            Attribute authorized,
+                                            Agency updatedBy) {
+        super(authorized, updatedBy);
+        this.classification = classification;
+    }
 
-	public Relationship getClassification() {
-		return classification;
-	}
+    public Relationship getClassification() {
+        return classification;
+    }
 
-	abstract public RuleForm getClassifier();
+    abstract public RuleForm getClassifier();
 
-	public void setClassification(Relationship classification) {
-		this.classification = classification;
-	}
+    public void setClassification(Relationship classification) {
+        this.classification = classification;
+    }
 
-	abstract public void setClassifier(RuleForm classifier);
+    abstract public void setClassifier(RuleForm classifier);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (classification != null) {
-			classification = (Relationship) classification.manageEntity(em,
-					knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (classification != null) {
+            classification = (Relationship) classification.manageEntity(em,
+                                                                        knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 
 }

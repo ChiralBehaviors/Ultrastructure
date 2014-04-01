@@ -46,166 +46,165 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Table(name = "coordinate_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "coordinate_attribute_id_seq", sequenceName = "coordinate_attribute_id_seq")
 public class CoordinateAttribute extends AttributeValue<Coordinate> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// bi-directional many-to-one association to Coordinate
-	@ManyToOne
-	@JoinColumn(name = "coordinate")
-	private Coordinate coordinate;
+    // bi-directional many-to-one association to Coordinate
+    @ManyToOne
+    @JoinColumn(name = "coordinate")
+    private Coordinate        coordinate;
 
-	@Id
-	@GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
 
-	// bi-directional many-to-one association to Product
-	@ManyToOne
-	@JoinColumn(name = "product_value")
-	private Product productValue;
+    // bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "product_value")
+    private Product           productValue;
 
-	public CoordinateAttribute() {
-	}
+    public CoordinateAttribute() {
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public CoordinateAttribute(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 */
-	public CoordinateAttribute(Attribute attribute) {
-		super(attribute);
-	}
+    /**
+     * @param attribute
+     */
+    public CoordinateAttribute(Attribute attribute) {
+        super(attribute);
+    }
 
-	/**
-	 * @param attribute
-	 * @param updatedBy
-	 */
-	public CoordinateAttribute(Attribute attribute, Agency updatedBy) {
-		super(attribute, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public CoordinateAttribute(Attribute attribute, BigDecimal value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Attribute attribute, BigDecimal value,
+                               Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public CoordinateAttribute(Attribute attribute, boolean value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Attribute attribute, boolean value,
+                               Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public CoordinateAttribute(Attribute attribute, int value, Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Attribute attribute, int value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public CoordinateAttribute(Attribute attribute, String value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public CoordinateAttribute(Attribute attribute, String value,
+                               Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param unit
-	 */
-	public CoordinateAttribute(Attribute attribute, Unit unit) {
-		super(attribute, unit);
-	}
+    /**
+     * @param attribute
+     * @param unit
+     */
+    public CoordinateAttribute(Attribute attribute, Unit unit) {
+        super(attribute, unit);
+    }
 
-	/**
-	 * @param id
-	 */
-	public CoordinateAttribute(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public CoordinateAttribute(Long id) {
+        super(id);
+    }
 
-	public Coordinate getCoordinate() {
-		return coordinate;
-	}
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Product getProductValue() {
-		return productValue;
-	}
+    public Product getProductValue() {
+        return productValue;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
-	 */
-	@Override
-	public SingularAttribute<CoordinateAttribute, Coordinate> getRuleformAttribute() {
-		return CoordinateAttribute_.coordinate;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+     */
+    @Override
+    public SingularAttribute<CoordinateAttribute, Coordinate> getRuleformAttribute() {
+        return CoordinateAttribute_.coordinate;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
-	 */
-	@Override
-	public Class<Coordinate> getRuleformClass() {
-		return Coordinate.class;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
+     */
+    @Override
+    public Class<Coordinate> getRuleformClass() {
+        return Coordinate.class;
+    }
 
-	public void setCoordinate(Coordinate coordinate) {
-		this.coordinate = coordinate;
-	}
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setProductValue(Product product) {
-		productValue = product;
-	}
+    public void setProductValue(Product product) {
+        productValue = product;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (coordinate != null) {
-			coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
-		}
-		if (productValue != null) {
-			productValue = (Product) productValue
-					.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (coordinate != null) {
+            coordinate = (Coordinate) coordinate.manageEntity(em, knownObjects);
+        }
+        if (productValue != null) {
+            productValue = (Product) productValue.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 }

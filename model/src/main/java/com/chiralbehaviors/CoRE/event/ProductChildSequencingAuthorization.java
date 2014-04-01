@@ -43,183 +43,185 @@ import com.chiralbehaviors.CoRE.product.Product;
  * 
  */
 @NamedQueries({
-		@NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
-				+ "WHERE seq.parent = :service"
-				+ "  AND seq.statusCode = :status "
-				+ "ORDER BY seq.sequenceNumber"),
-		@NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
-				+ " WHERE seq.parent = :service"
-				+ " ORDER BY seq.sequenceNumber") })
+               @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
+                                                             + "WHERE seq.parent = :service"
+                                                             + "  AND seq.statusCode = :status "
+                                                             + "ORDER BY seq.sequenceNumber"),
+               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
+                                                         + " WHERE seq.parent = :service"
+                                                         + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_child_sequencing_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_child_sequencing_authorization_id_seq", sequenceName = "product_child_sequencing_authorization_id_seq")
 public class ProductChildSequencingAuthorization extends Ruleform {
-	public static final String GET_CHILD_ACTIONS = "productChildSequencingAuthorization.getChildActions";
-	public static final String GET_SEQUENCES = "productChildSequencingAuthorization.getSequences";
-	private static final long serialVersionUID = 1L;
+    public static final String GET_CHILD_ACTIONS = "productChildSequencingAuthorization.getChildActions";
+    public static final String GET_SEQUENCES     = "productChildSequencingAuthorization.getSequences";
+    private static final long  serialVersionUID  = 1L;
 
-	@Id
-	@GeneratedValue(generator = "product_child_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "product_child_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
 
-	@ManyToOne
-	@JoinColumn(name = "next_child")
-	private Product nextChild;
+    @ManyToOne
+    @JoinColumn(name = "next_child")
+    private Product            nextChild;
 
-	@ManyToOne
-	@JoinColumn(name = "next_child_status")
-	private StatusCode nextChildStatus;
+    @ManyToOne
+    @JoinColumn(name = "next_child_status")
+    private StatusCode         nextChildStatus;
 
-	@ManyToOne
-	@JoinColumn(name = "parent")
-	private Product parent;
+    @ManyToOne
+    @JoinColumn(name = "parent")
+    private Product            parent;
 
-	@Column(name = "sequence_number")
-	private Integer sequenceNumber = 1;
+    @Column(name = "sequence_number")
+    private Integer            sequenceNumber    = 1;
 
-	@ManyToOne
-	@JoinColumn(name = "status_code")
-	private StatusCode statusCode;
+    @ManyToOne
+    @JoinColumn(name = "status_code")
+    private StatusCode         statusCode;
 
-	/**
+    /**
      * 
      */
-	public ProductChildSequencingAuthorization() {
-		super();
-	}
+    public ProductChildSequencingAuthorization() {
+        super();
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public ProductChildSequencingAuthorization(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public ProductChildSequencingAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param id
-	 */
-	public ProductChildSequencingAuthorization(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public ProductChildSequencingAuthorization(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @param id
-	 * @param updatedBy
-	 */
-	public ProductChildSequencingAuthorization(Long id, Agency updatedBy) {
-		super(id, updatedBy);
-	}
+    /**
+     * @param id
+     * @param updatedBy
+     */
+    public ProductChildSequencingAuthorization(Long id, Agency updatedBy) {
+        super(id, updatedBy);
+    }
 
-	public ProductChildSequencingAuthorization(Product parent,
-			StatusCode statusCode, Product nextChild,
-			StatusCode nextChildStatus, Agency updatedBy) {
-		super(updatedBy);
-		setParent(parent);
-		setStatusCode(statusCode);
-		setNextChild(nextChild);
-		setNextChildStatus(nextChildStatus);
-	}
+    public ProductChildSequencingAuthorization(Product parent,
+                                               StatusCode statusCode,
+                                               Product nextChild,
+                                               StatusCode nextChildStatus,
+                                               Agency updatedBy) {
+        super(updatedBy);
+        setParent(parent);
+        setStatusCode(statusCode);
+        setNextChild(nextChild);
+        setNextChildStatus(nextChildStatus);
+    }
 
-	/**
-	 * @param notes
-	 */
-	public ProductChildSequencingAuthorization(String notes) {
-		super(notes);
-	}
+    /**
+     * @param notes
+     */
+    public ProductChildSequencingAuthorization(String notes) {
+        super(notes);
+    }
 
-	/**
-	 * @param notes
-	 * @param updatedBy
-	 */
-	public ProductChildSequencingAuthorization(String notes, Agency updatedBy) {
-		super(notes, updatedBy);
-	}
+    /**
+     * @param notes
+     * @param updatedBy
+     */
+    public ProductChildSequencingAuthorization(String notes, Agency updatedBy) {
+        super(notes, updatedBy);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-	 */
-	@Override
-	public Long getId() {
-		return id;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+     */
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Product getNextChild() {
-		return nextChild;
-	}
+    public Product getNextChild() {
+        return nextChild;
+    }
 
-	public StatusCode getNextChildStatus() {
-		return nextChildStatus;
-	}
+    public StatusCode getNextChildStatus() {
+        return nextChildStatus;
+    }
 
-	public Product getParent() {
-		return parent;
-	}
+    public Product getParent() {
+        return parent;
+    }
 
-	public Integer getSequenceNumber() {
-		return sequenceNumber;
-	}
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
 
-	public StatusCode getStatusCode() {
-		return statusCode;
-	}
+    public StatusCode getStatusCode() {
+        return statusCode;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-	 */
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+     */
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setNextChild(Product nextChild) {
-		this.nextChild = nextChild;
-	}
+    public void setNextChild(Product nextChild) {
+        this.nextChild = nextChild;
+    }
 
-	public void setNextChildStatus(StatusCode nextChildStatus) {
-		this.nextChildStatus = nextChildStatus;
-	}
+    public void setNextChildStatus(StatusCode nextChildStatus) {
+        this.nextChildStatus = nextChildStatus;
+    }
 
-	public void setParent(Product parent) {
-		this.parent = parent;
-	}
+    public void setParent(Product parent) {
+        this.parent = parent;
+    }
 
-	public void setSequenceNumber(Integer sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
 
-	public void setStatusCode(StatusCode statusCode) {
-		this.statusCode = statusCode;
-	}
+    public void setStatusCode(StatusCode statusCode) {
+        this.statusCode = statusCode;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (nextChild != null) {
-			nextChild = (Product) nextChild.manageEntity(em, knownObjects);
-		}
-		if (nextChildStatus != null) {
-			nextChildStatus = (StatusCode) nextChildStatus.manageEntity(em,
-					knownObjects);
-		}
-		if (parent != null) {
-			parent = (Product) parent.manageEntity(em, knownObjects);
-		}
-		if (statusCode != null) {
-			statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (nextChild != null) {
+            nextChild = (Product) nextChild.manageEntity(em, knownObjects);
+        }
+        if (nextChildStatus != null) {
+            nextChildStatus = (StatusCode) nextChildStatus.manageEntity(em,
+                                                                        knownObjects);
+        }
+        if (parent != null) {
+            parent = (Product) parent.manageEntity(em, knownObjects);
+        }
+        if (statusCode != null) {
+            statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 
 }

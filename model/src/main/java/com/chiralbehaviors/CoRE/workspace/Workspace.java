@@ -34,25 +34,23 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public interface Workspace {
 
-	<T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntities(
-			Class<T> clazz);
+    <T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntities(Class<T> clazz);
 
-	Collection<MetaProtocol> getAllMetaProtocols();
+    Collection<MetaProtocol> getAllMetaProtocols();
 
-	Collection<Protocol> getAllProtocols();
+    Collection<Protocol> getAllProtocols();
 
-	<T extends ExistentialRuleform<?, ?>> T getEntityByName(Class<T> clazz,
-			String name);
+    <T extends ExistentialRuleform<?, ?>> T getEntityByName(Class<T> clazz,
+                                                            String name);
 
-	<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Graph<RuleForm, Network> getGraph(
-			RuleForm parent, Relationship relationship);
+    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Graph<RuleForm, Network> getGraph(RuleForm parent,
+                                                                                                                                           Relationship relationship);
 
-	List<MetaProtocol> getMetaProtocolsFor(Product service);
+    List<MetaProtocol> getMetaProtocolsFor(Product service);
 
-	List<Protocol> getProtocolsFor(Product service);
+    List<Protocol> getProtocolsFor(Product service);
 
-	<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Graph<RuleForm, Network>> getRootedNetworksFor(
-			RuleForm entity);
+    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Graph<RuleForm, Network>> getRootedNetworksFor(RuleForm entity);
 
-	Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product service);
+    Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product service);
 }

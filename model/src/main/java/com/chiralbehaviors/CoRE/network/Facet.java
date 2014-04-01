@@ -33,69 +33,69 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
  * 
  */
 abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeType extends AttributeValue<RuleForm>> {
-	private final Aspect<RuleForm> aspect;
-	private final Map<Attribute, AttributeType> attributeMap;
-	private final RuleForm instance;
+    private final Aspect<RuleForm>              aspect;
+    private final Map<Attribute, AttributeType> attributeMap;
+    private final RuleForm                      instance;
 
-	/**
-	 * @param aspect
-	 *            - the classifying aspect of this facet
-	 * @param instance
-	 *            - the underlying ruleform instance of this facet
-	 * @param attributeMap
-	 *            - the authorized attributeMap for this facet
-	 */
-	protected Facet(Aspect<RuleForm> aspect, RuleForm instance,
-			List<AttributeType> attributes) {
-		this.aspect = aspect;
-		this.instance = instance;
-		HashMap<Attribute, AttributeType> map = new HashMap<Attribute, AttributeType>(
-				attributes.size());
-		for (AttributeType value : attributes) {
-			map.put(value.getAttribute(), value);
-		}
-		attributeMap = Collections.unmodifiableMap(map);
-	}
+    /**
+     * @param aspect
+     *            - the classifying aspect of this facet
+     * @param instance
+     *            - the underlying ruleform instance of this facet
+     * @param attributeMap
+     *            - the authorized attributeMap for this facet
+     */
+    protected Facet(Aspect<RuleForm> aspect, RuleForm instance,
+                    List<AttributeType> attributes) {
+        this.aspect = aspect;
+        this.instance = instance;
+        HashMap<Attribute, AttributeType> map = new HashMap<Attribute, AttributeType>(
+                                                                                      attributes.size());
+        for (AttributeType value : attributes) {
+            map.put(value.getAttribute(), value);
+        }
+        attributeMap = Collections.unmodifiableMap(map);
+    }
 
-	/**
-	 * Convienence type erasure
-	 * 
-	 * @return the underlying instance as the type of RuleForm
-	 */
-	public RuleForm asRuleform() {
-		return instance;
-	}
+    /**
+     * Convienence type erasure
+     * 
+     * @return the underlying instance as the type of RuleForm
+     */
+    public RuleForm asRuleform() {
+        return instance;
+    }
 
-	/**
-	 * @return The aspect of this Facet
-	 */
-	public Aspect<RuleForm> getAspect() {
-		return aspect;
-	}
+    /**
+     * @return The aspect of this Facet
+     */
+    public Aspect<RuleForm> getAspect() {
+        return aspect;
+    }
 
-	/**
-	 * 
-	 * @return the authorized attribute values for this facet
-	 */
-	public Map<Attribute, AttributeType> getAttributes() {
-		return attributeMap;
-	}
+    /**
+     * 
+     * @return the authorized attribute values for this facet
+     */
+    public Map<Attribute, AttributeType> getAttributes() {
+        return attributeMap;
+    }
 
-	/**
-	 * Answer the attribute value for the attribute.
-	 * 
-	 * @param attribute
-	 * @return the attribute value for the attribute, or null if this is not an
-	 *         attribute of this facet
-	 */
-	public AttributeType getValue(Attribute attribute) {
-		return attributeMap.get(attribute);
-	}
+    /**
+     * Answer the attribute value for the attribute.
+     * 
+     * @param attribute
+     * @return the attribute value for the attribute, or null if this is not an
+     *         attribute of this facet
+     */
+    public AttributeType getValue(Attribute attribute) {
+        return attributeMap.get(attribute);
+    }
 
-	@Override
-	public String toString() {
-		return String.format("Facet [%s %s %s]", instance.getName(), aspect
-				.getClassification().getName(), aspect.getClassifier()
-				.getName());
-	}
+    @Override
+    public String toString() {
+        return String.format("Facet [%s %s %s]", instance.getName(),
+                             aspect.getClassification().getName(),
+                             aspect.getClassifier().getName());
+    }
 }

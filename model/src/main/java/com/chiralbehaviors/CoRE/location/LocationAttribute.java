@@ -44,180 +44,179 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Table(name = "location_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_attribute_id_seq", sequenceName = "location_attribute_id_seq")
 public class LocationAttribute extends AttributeValue<Location> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// bi-directional many-to-one association to Agency
-	@ManyToOne
-	@JoinColumn(name = "agency_value")
-	private Agency agencyValue;
+    // bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "agency_value")
+    private Agency            agencyValue;
 
-	@Id
-	@GeneratedValue(generator = "location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
-	// bi-directional many-to-one association to Location
-	@ManyToOne
-	@JoinColumn(name = "location")
-	private Location location;
+    @Id
+    @GeneratedValue(generator = "location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
+    // bi-directional many-to-one association to Location
+    @ManyToOne
+    @JoinColumn(name = "location")
+    private Location          location;
 
-	// bi-directional many-to-one association to Product
-	@ManyToOne
-	@JoinColumn(name = "product_value")
-	private Product productValue;
+    // bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "product_value")
+    private Product           productValue;
 
-	public LocationAttribute() {
-	}
+    public LocationAttribute() {
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public LocationAttribute(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public LocationAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 */
-	public LocationAttribute(Attribute attribute) {
-		super(attribute);
-	}
+    /**
+     * @param attribute
+     */
+    public LocationAttribute(Attribute attribute) {
+        super(attribute);
+    }
 
-	/**
-	 * @param attribute
-	 * @param updatedBy
-	 */
-	public LocationAttribute(Attribute attribute, Agency updatedBy) {
-		super(attribute, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public LocationAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public LocationAttribute(Attribute attribute, BigDecimal value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public LocationAttribute(Attribute attribute, BigDecimal value,
+                             Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public LocationAttribute(Attribute attribute, boolean value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public LocationAttribute(Attribute attribute, boolean value,
+                             Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public LocationAttribute(Attribute attribute, int value, Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public LocationAttribute(Attribute attribute, int value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public LocationAttribute(Attribute attribute, String value, Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public LocationAttribute(Attribute attribute, String value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param unit
-	 */
-	public LocationAttribute(Attribute attribute, Unit unit) {
-		super(attribute, unit);
-	}
+    /**
+     * @param attribute
+     * @param unit
+     */
+    public LocationAttribute(Attribute attribute, Unit unit) {
+        super(attribute, unit);
+    }
 
-	/**
-	 * @param id
-	 */
-	public LocationAttribute(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public LocationAttribute(Long id) {
+        super(id);
+    }
 
-	public Agency getAgencyValue() {
-		return agencyValue;
-	}
+    public Agency getAgencyValue() {
+        return agencyValue;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Location getLocation() {
-		return location;
-	}
+    public Location getLocation() {
+        return location;
+    }
 
-	public Product getProductValue() {
-		return productValue;
-	}
+    public Product getProductValue() {
+        return productValue;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
-	 */
-	@Override
-	public SingularAttribute<LocationAttribute, Location> getRuleformAttribute() {
-		return LocationAttribute_.location;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+     */
+    @Override
+    public SingularAttribute<LocationAttribute, Location> getRuleformAttribute() {
+        return LocationAttribute_.location;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
-	 */
-	@Override
-	public Class<Location> getRuleformClass() {
-		return Location.class;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
+     */
+    @Override
+    public Class<Location> getRuleformClass() {
+        return Location.class;
+    }
 
-	public void setAgencyValue(Agency agency2) {
-		agencyValue = agency2;
-	}
+    public void setAgencyValue(Agency agency2) {
+        agencyValue = agency2;
+    }
 
-	public void setEntityValue(Product product) {
-		productValue = product;
-	}
+    public void setEntityValue(Product product) {
+        productValue = product;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (productValue != null) {
-			productValue = (Product) productValue
-					.manageEntity(em, knownObjects);
-		}
-		if (location != null) {
-			location = (Location) location.manageEntity(em, knownObjects);
-		}
-		if (agencyValue != null) {
-			agencyValue = (Agency) agencyValue.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (productValue != null) {
+            productValue = (Product) productValue.manageEntity(em, knownObjects);
+        }
+        if (location != null) {
+            location = (Location) location.manageEntity(em, knownObjects);
+        }
+        if (agencyValue != null) {
+            agencyValue = (Agency) agencyValue.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 }

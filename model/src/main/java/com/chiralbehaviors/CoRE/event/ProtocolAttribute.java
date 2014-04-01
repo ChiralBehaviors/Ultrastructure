@@ -43,174 +43,174 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 @Table(name = "protocol_attribute", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "protocol_attribute_id_seq", sequenceName = "protocol_attribute_id_seq")
 public class ProtocolAttribute extends AttributeValue<Protocol> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(generator = "protocol_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "protocol_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
 
-	// bi-directional many-to-one association to Protocol
-	@ManyToOne
-	@JoinColumn(name = "protocol")
-	private Protocol protocol;
+    // bi-directional many-to-one association to Protocol
+    @ManyToOne
+    @JoinColumn(name = "protocol")
+    private Protocol          protocol;
 
-	public ProtocolAttribute() {
-	}
+    public ProtocolAttribute() {
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public ProtocolAttribute(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 */
-	public ProtocolAttribute(Attribute attribute) {
-		super(attribute);
-	}
+    /**
+     * @param attribute
+     */
+    public ProtocolAttribute(Attribute attribute) {
+        super(attribute);
+    }
 
-	/**
-	 * @param attribute
-	 * @param updatedBy
-	 */
-	public ProtocolAttribute(Attribute attribute, Agency updatedBy) {
-		super(attribute, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public ProtocolAttribute(Attribute attribute, BigDecimal value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Attribute attribute, BigDecimal value,
+                             Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public ProtocolAttribute(Attribute attribute, boolean value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Attribute attribute, boolean value,
+                             Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public ProtocolAttribute(Attribute attribute, int value, Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Attribute attribute, int value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param value
-	 * @param updatedBy
-	 */
-	public ProtocolAttribute(Attribute attribute, String value, Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    /**
+     * @param attribute
+     * @param value
+     * @param updatedBy
+     */
+    public ProtocolAttribute(Attribute attribute, String value, Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	/**
-	 * @param attribute
-	 * @param unit
-	 */
-	public ProtocolAttribute(Attribute attribute, Unit unit) {
-		super(attribute, unit);
-	}
+    /**
+     * @param attribute
+     * @param unit
+     */
+    public ProtocolAttribute(Attribute attribute, Unit unit) {
+        super(attribute, unit);
+    }
 
-	/**
-	 * @param id
-	 */
-	public ProtocolAttribute(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public ProtocolAttribute(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @return a new job attribute cloned from the receiver
-	 */
-	public JobAttribute createJobAttribute() {
-		JobAttribute clone = new JobAttribute();
-		clone.setAttribute(getAttribute());
-		copyInto(clone);
-		return clone;
-	}
+    /**
+     * @return a new job attribute cloned from the receiver
+     */
+    public JobAttribute createJobAttribute() {
+        JobAttribute clone = new JobAttribute();
+        clone.setAttribute(getAttribute());
+        copyInto(clone);
+        return clone;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Protocol getProtocol() {
-		return protocol;
-	}
+    public Protocol getProtocol() {
+        return protocol;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
-	 */
-	@Override
-	public SingularAttribute<? extends AttributeValue<Protocol>, Protocol> getRuleformAttribute() {
-		return ProtocolAttribute_.protocol;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends AttributeValue<Protocol>, Protocol> getRuleformAttribute() {
+        return ProtocolAttribute_.protocol;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
-	 */
-	@Override
-	public Class<Protocol> getRuleformClass() {
-		return Protocol.class;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
+     */
+    @Override
+    public Class<Protocol> getRuleformClass() {
+        return Protocol.class;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setNumericValue(double value) {
-		setNumericValue(BigDecimal.valueOf(value));
-	}
+    public void setNumericValue(double value) {
+        setNumericValue(BigDecimal.valueOf(value));
+    }
 
-	public void setNumericValue(float value) {
-		setNumericValue(BigDecimal.valueOf(value));
-	}
+    public void setNumericValue(float value) {
+        setNumericValue(BigDecimal.valueOf(value));
+    }
 
-	public void setNumericValue(int value) {
-		setNumericValue(BigDecimal.valueOf(value));
-	}
+    public void setNumericValue(int value) {
+        setNumericValue(BigDecimal.valueOf(value));
+    }
 
-	public void setNumericValue(long value) {
-		setNumericValue(BigDecimal.valueOf(value));
-	}
+    public void setNumericValue(long value) {
+        setNumericValue(BigDecimal.valueOf(value));
+    }
 
-	public void setProtocol(Protocol protocol) {
-		this.protocol = protocol;
-	}
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (protocol != null) {
-			protocol = (Protocol) protocol.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (protocol != null) {
+            protocol = (Protocol) protocol.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 }

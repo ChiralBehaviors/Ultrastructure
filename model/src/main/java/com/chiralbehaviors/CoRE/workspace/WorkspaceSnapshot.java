@@ -42,189 +42,186 @@ import com.chiralbehaviors.CoRE.time.Interval;
  */
 public class WorkspaceSnapshot implements Workspace {
 
-	private Map<String, Agency> agenciesByName;
-	private Map<String, Attribute> attributesByName;
-	private Map<String, Coordinate> coordinatesByName;
-	private Map<String, Interval> intervalsByName;
-	private Map<String, Location> locationsByName;
-	private Map<String, Product> productsByName;
-	private Map<String, Relationship> relationshipsByName;
-	private Map<String, StatusCode> statusCodesByName;
-	private Map<String, Unit> unitsByName;
+    private Map<String, Agency>                                   agenciesByName;
+    private Map<String, Attribute>                                attributesByName;
+    private Map<String, Coordinate>                               coordinatesByName;
+    private Map<String, Interval>                                 intervalsByName;
+    private Map<String, Location>                                 locationsByName;
+    private Map<Product, List<MetaProtocol>>                      metaProtocolsByProduct;
+    private Map<Object, Object>                                   networksByEntity;
+    private Map<String, Product>                                  productsByName;
+    private Map<Product, List<Protocol>>                          protocolsByProduct;
 
-	private Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct;
-	private Map<Product, List<Protocol>> protocolsByProduct;
-	private Map<Product, List<MetaProtocol>> metaProtocolsByProduct;
-	private Map<Object, Object> networksByEntity;
+    private Map<String, Relationship>                             relationshipsByName;
+    private Map<String, StatusCode>                               statusCodesByName;
+    private Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct;
+    private Map<String, Unit>                                     unitsByName;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getAllEntities(java.lang
-	 * .Class)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntities(
-			Class<T> clazz) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.workspace.Workspace#getAllEntities(java.lang
+     * .Class)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntities(Class<T> clazz) {
 
-		String rf = clazz.getSimpleName();
-		switch (rf) {
-		// On March 31, 2014 Hal and Hallie said this was ok because you can't
-		// put variable expressions in case statements
-		case "Agency":
-			return (Collection<T>) agenciesByName.values();
-		case "Attribute":
-			return (Collection<T>) attributesByName.values();
-		case "Coordinate":
-			return (Collection<T>) coordinatesByName.values();
-		case "Interval":
-			return (Collection<T>) intervalsByName.values();
-		case "Location":
-			return (Collection<T>) locationsByName.values();
-		case "Product":
-			return (Collection<T>) productsByName.values();
-		case "Relationship":
-			return (Collection<T>) relationshipsByName.values();
-		case "StatusCode":
-			return (Collection<T>) statusCodesByName.values();
-		case "Unit":
-			return (Collection<T>) unitsByName.values();
-		default:
-			return null;
-		}
-	}
+        String rf = clazz.getSimpleName();
+        switch (rf) {
+        // On March 31, 2014 Hal and Hallie said this was ok because you can't
+        // put variable expressions in case statements
+            case "Agency":
+                return (Collection<T>) agenciesByName.values();
+            case "Attribute":
+                return (Collection<T>) attributesByName.values();
+            case "Coordinate":
+                return (Collection<T>) coordinatesByName.values();
+            case "Interval":
+                return (Collection<T>) intervalsByName.values();
+            case "Location":
+                return (Collection<T>) locationsByName.values();
+            case "Product":
+                return (Collection<T>) productsByName.values();
+            case "Relationship":
+                return (Collection<T>) relationshipsByName.values();
+            case "StatusCode":
+                return (Collection<T>) statusCodesByName.values();
+            case "Unit":
+                return (Collection<T>) unitsByName.values();
+            default:
+                return null;
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllMetaProtocols()
-	 */
-	@Override
-	public Collection<MetaProtocol> getAllMetaProtocols() {
-		List<MetaProtocol> metaprotocols = new LinkedList<MetaProtocol>();
-		for (List<MetaProtocol> ps : metaProtocolsByProduct.values()) {
-			metaprotocols.addAll(ps);
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllMetaProtocols()
+     */
+    @Override
+    public Collection<MetaProtocol> getAllMetaProtocols() {
+        List<MetaProtocol> metaprotocols = new LinkedList<MetaProtocol>();
+        for (List<MetaProtocol> ps : metaProtocolsByProduct.values()) {
+            metaprotocols.addAll(ps);
+        }
 
-		return metaprotocols;
-	}
+        return metaprotocols;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllProtocols()
-	 */
-	@Override
-	public Collection<Protocol> getAllProtocols() {
-		List<Protocol> protocols = new LinkedList<Protocol>();
-		for (List<Protocol> ps : protocolsByProduct.values()) {
-			protocols.addAll(ps);
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllProtocols()
+     */
+    @Override
+    public Collection<Protocol> getAllProtocols() {
+        List<Protocol> protocols = new LinkedList<Protocol>();
+        for (List<Protocol> ps : protocolsByProduct.values()) {
+            protocols.addAll(ps);
+        }
 
-		return protocols;
-	}
+        return protocols;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getEntityByName(java.lang
-	 * .Class, java.lang.String)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends ExistentialRuleform<?, ?>> T getEntityByName(
-			Class<T> clazz, String name) {
-		String rf = clazz.getSimpleName();
-		switch (rf) {
-		// On March 31, 2014 Hal and Hallie said this was ok because you can't
-		// put variable expressions in case statements
-		case "Agency":
-			return (T) agenciesByName.get(name);
-		case "Attribute":
-			return (T) attributesByName.get(name);
-		case "Coordinate":
-			return (T) coordinatesByName.get(name);
-		case "Interval":
-			return (T) intervalsByName.get(name);
-		case "Location":
-			return (T) locationsByName.get(name);
-		case "Product":
-			return (T) productsByName.get(name);
-		case "Relationship":
-			return (T) relationshipsByName.get(name);
-		case "StatusCode":
-			return (T) statusCodesByName.get(name);
-		case "Unit":
-			return (T) unitsByName.get(name);
-		default:
-			return null;
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.workspace.Workspace#getEntityByName(java.lang
+     * .Class, java.lang.String)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ExistentialRuleform<?, ?>> T getEntityByName(Class<T> clazz,
+                                                                   String name) {
+        String rf = clazz.getSimpleName();
+        switch (rf) {
+        // On March 31, 2014 Hal and Hallie said this was ok because you can't
+        // put variable expressions in case statements
+            case "Agency":
+                return (T) agenciesByName.get(name);
+            case "Attribute":
+                return (T) attributesByName.get(name);
+            case "Coordinate":
+                return (T) coordinatesByName.get(name);
+            case "Interval":
+                return (T) intervalsByName.get(name);
+            case "Location":
+                return (T) locationsByName.get(name);
+            case "Product":
+                return (T) productsByName.get(name);
+            case "Relationship":
+                return (T) relationshipsByName.get(name);
+            case "StatusCode":
+                return (T) statusCodesByName.get(name);
+            case "Unit":
+                return (T) unitsByName.get(name);
+            default:
+                return null;
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getGraph(com.chiralbehaviors
-	 * .CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-	 */
-	@Override
-	public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Graph<RuleForm, Network> getGraph(
-			RuleForm parent, Relationship relationship) {
-		// TODO
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.workspace.Workspace#getGraph(com.chiralbehaviors
+     * .CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
+     */
+    @Override
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Graph<RuleForm, Network> getGraph(RuleForm parent,
+                                                                                                                                                  Relationship relationship) {
+        // TODO
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getMetaProtocolsFor(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public List<MetaProtocol> getMetaProtocolsFor(Product service) {
-		return metaProtocolsByProduct.get(service);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.workspace.Workspace#getMetaProtocolsFor(com.
+     * chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public List<MetaProtocol> getMetaProtocolsFor(Product service) {
+        return metaProtocolsByProduct.get(service);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getProtocolsFor(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public List<Protocol> getProtocolsFor(Product service) {
-		return protocolsByProduct.get(service);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#getProtocolsFor(com.
+     * chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public List<Protocol> getProtocolsFor(Product service) {
+        return protocolsByProduct.get(service);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getRootedNetworksFor(com
-	 * .chiralbehaviors.CoRE.ExistentialRuleform)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Graph<RuleForm, Network>> getRootedNetworksFor(
-			RuleForm entity) {
-		return (List<Graph<RuleForm, Network>>) networksByEntity.get(entity);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.workspace.Workspace#getRootedNetworksFor(com
+     * .chiralbehaviors.CoRE.ExistentialRuleform)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Graph<RuleForm, Network>> getRootedNetworksFor(RuleForm entity) {
+        return (List<Graph<RuleForm, Network>>) networksByEntity.get(entity);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getStatusCodeGraph(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(
-			Product service) {
-		return statusCodesByProduct.get(service);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#getStatusCodeGraph(com.
+     * chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product service) {
+        return statusCodesByProduct.get(service);
+    }
 
 }

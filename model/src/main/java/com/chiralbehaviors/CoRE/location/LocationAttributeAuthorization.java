@@ -44,121 +44,122 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Table(name = "location_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_attribute_authorization_id_seq", sequenceName = "location_attribute_authorization_id_seq")
 public class LocationAttributeAuthorization extends
-		ClassifiedAttributeAuthorization<Location> {
+        ClassifiedAttributeAuthorization<Location> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// bi-directional many-to-one association to Product
-	@ManyToOne
-	@JoinColumn(name = "classifier")
-	private Location classifier;
+    // bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "classifier")
+    private Location          classifier;
 
-	@Id
-	@GeneratedValue(generator = "location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
 
-	/**
+    /**
      * 
      */
-	public LocationAttributeAuthorization() {
-		super();
-	}
+    public LocationAttributeAuthorization() {
+        super();
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public LocationAttributeAuthorization(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public LocationAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param id
-	 */
-	public LocationAttributeAuthorization(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public LocationAttributeAuthorization(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @param classification
-	 * @param updatedBy
-	 */
-	public LocationAttributeAuthorization(Relationship classification,
-			Agency updatedBy) {
-		super(classification, updatedBy);
-	}
+    /**
+     * @param classification
+     * @param updatedBy
+     */
+    public LocationAttributeAuthorization(Relationship classification,
+                                          Agency updatedBy) {
+        super(classification, updatedBy);
+    }
 
-	/**
-	 * @param classification
-	 * @param authorized
-	 * @param updatedBy
-	 */
-	public LocationAttributeAuthorization(Relationship classification,
-			Attribute authorized, Agency updatedBy) {
-		super(classification, authorized, updatedBy);
-	}
+    /**
+     * @param classification
+     * @param authorized
+     * @param updatedBy
+     */
+    public LocationAttributeAuthorization(Relationship classification,
+                                          Attribute authorized, Agency updatedBy) {
+        super(classification, authorized, updatedBy);
+    }
 
-	public LocationAttributeAuthorization(Relationship classification,
-			Location classifier, Attribute authorized, Agency updatedBy) {
-		this(classification, authorized, updatedBy);
-		this.classifier = classifier;
-	}
+    public LocationAttributeAuthorization(Relationship classification,
+                                          Location classifier,
+                                          Attribute authorized, Agency updatedBy) {
+        this(classification, authorized, updatedBy);
+        this.classifier = classifier;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-	 * getClassifier()
-	 */
-	@Override
-	public Location getClassifier() {
-		return classifier;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * getClassifier()
+     */
+    @Override
+    public Location getClassifier() {
+        return classifier;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-	 */
-	@Override
-	public Long getId() {
-		return id;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+     */
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-	 * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
-	 */
-	@Override
-	public void setClassifier(Location classifier) {
-		this.classifier = classifier;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+     */
+    @Override
+    public void setClassifier(Location classifier) {
+        this.classifier = classifier;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-	 */
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+     */
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (classifier != null) {
-			classifier = (Location) classifier.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (classifier != null) {
+            classifier = (Location) classifier.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 }

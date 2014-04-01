@@ -6,6 +6,6 @@ package com.chiralbehaviors.CoRE.meta.graph;
  */
 public interface Node<T> {
 
-	T getNode();
+    T getNode();
 
 }

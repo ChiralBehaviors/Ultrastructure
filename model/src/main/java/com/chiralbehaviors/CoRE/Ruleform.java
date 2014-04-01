@@ -43,211 +43,213 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 abstract public class Ruleform implements Serializable, Cloneable {
-	public static final String FIND_BY_ID_SUFFIX = ".findById";
-	public static final String FIND_BY_NAME_SUFFIX = ".findByName";
-	public static final String FIND_ALL_SUFFIX = ".findAll";
-	public static final String FIND_FLAGGED_SUFFIX = ".findFlagged";
-	public static final String GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
-	public static final String NAME_SEARCH_SUFFIX = ".namesearch";
+    public static final Integer FALSE                 = Integer.valueOf((byte) 0);
+    public static final String  FIND_ALL_SUFFIX       = ".findAll";
+    public static final String  FIND_BY_ID_SUFFIX     = ".findById";
+    public static final String  FIND_BY_NAME_SUFFIX   = ".findByName";
+    public static final String  FIND_FLAGGED_SUFFIX   = ".findFlagged";
+    public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
 
-	private static final long serialVersionUID = 1L;
+    public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
 
-	private String notes;
+    public static final Integer TRUE                  = Integer.valueOf((byte) 1);
 
-	@Column(name = "update_date")
-	private Timestamp updateDate;
+    private static final long   serialVersionUID      = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "updated_by")
-	protected Agency updatedBy;
-	public static final Integer TRUE = Integer.valueOf((byte) 1);
-	public static final Integer FALSE = Integer.valueOf((byte) 0);
+    public static Boolean toBoolean(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        return value.equals(Integer.valueOf(0)) ? Boolean.FALSE : Boolean.TRUE;
+    }
 
-	public static Boolean toBoolean(Integer value) {
-		if (value == null) {
-			return null;
-		}
-		return value.equals(Integer.valueOf(0)) ? Boolean.FALSE : Boolean.TRUE;
-	}
+    public static Integer toInteger(Boolean value) {
+        if (value == null) {
+            return null;
+        }
+        return value ? TRUE : FALSE;
+    }
 
-	public static Integer toInteger(Boolean value) {
-		if (value == null) {
-			return null;
-		}
-		return value ? TRUE : FALSE;
-	}
+    private String    notes;
 
-	public Ruleform() {
-	}
+    @Column(name = "update_date")
+    private Timestamp updateDate;
 
-	public Ruleform(Agency updatedBy) {
-		this();
-		this.updatedBy = updatedBy;
-	}
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    protected Agency  updatedBy;
 
-	public Ruleform(Long id) {
-		this();
-		setId(id);
-	}
+    public Ruleform() {
+    }
 
-	public Ruleform(Long id, Agency updatedBy) {
-		this(id);
-		this.updatedBy = updatedBy;
-	}
+    public Ruleform(Agency updatedBy) {
+        this();
+        this.updatedBy = updatedBy;
+    }
 
-	public Ruleform(String notes) {
-		this.notes = notes;
-	}
+    public Ruleform(Long id) {
+        this();
+        setId(id);
+    }
 
-	public Ruleform(String notes, Agency updatedBy) {
-		this.notes = notes;
-		this.updatedBy = updatedBy;
-	}
+    public Ruleform(Long id, Agency updatedBy) {
+        this(id);
+        this.updatedBy = updatedBy;
+    }
 
-	@Override
-	public Ruleform clone() {
-		Ruleform clone;
-		try {
-			clone = (Ruleform) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new IllegalStateException("Unable to clone");
-		}
-		clone.setId(null);
-		return clone;
-	}
+    public Ruleform(String notes) {
+        this.notes = notes;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Ruleform other = (Ruleform) obj;
-		Long id = getId();
-		if (id == null) {
-			if (other.getId() != null) {
-				return false;
-			}
-		} else if (!id.equals(other.getId())) {
-			return false;
-		}
-		return true;
-	}
+    public Ruleform(String notes, Agency updatedBy) {
+        this.notes = notes;
+        this.updatedBy = updatedBy;
+    }
 
-	abstract public Long getId();
+    @Override
+    public Ruleform clone() {
+        Ruleform clone;
+        try {
+            clone = (Ruleform) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalStateException("Unable to clone");
+        }
+        clone.setId(null);
+        return clone;
+    }
 
-	/**
-	 * @return the notes
-	 */
-	public String getNotes() {
-		return notes;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Ruleform other = (Ruleform) obj;
+        Long id = getId();
+        if (id == null) {
+            if (other.getId() != null) {
+                return false;
+            }
+        } else if (!id.equals(other.getId())) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * @return the updateDate
-	 */
-	public Timestamp getUpdateDate() {
-		return updateDate;
-	}
+    abstract public Long getId();
 
-	/**
-	 * @return the updatedBy
-	 */
-	public Agency getUpdatedBy() {
-		return updatedBy;
-	}
+    /**
+     * @return the notes
+     */
+    public String getNotes() {
+        return notes;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		if (getId() == null) {
-			return 31;
-		}
-		return getId().hashCode();
-	}
+    /**
+     * @return the updateDate
+     */
+    public Timestamp getUpdateDate() {
+        return updateDate;
+    }
 
-	public Ruleform manageEntity(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (knownObjects.containsKey(this)) {
-			return knownObjects.get(this);
-		}
+    /**
+     * @return the updatedBy
+     */
+    public Agency getUpdatedBy() {
+        return updatedBy;
+    }
 
-		// need to traverse leaf nodes first, before persisting this entity.
-		knownObjects.put(this, this);
-		traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        if (getId() == null) {
+            return 31;
+        }
+        return getId().hashCode();
+    }
 
-		if (getId() != null
-				&& em.getReference(this.getClass(), getId()) != null) {
-			em.detach(this);
-			knownObjects.put(this, em.merge(this));
-		} else {
-			em.persist(this);
-			em.refresh(this);
-			knownObjects.put(this, this);
-		}
+    public Ruleform manageEntity(EntityManager em,
+                                 Map<Ruleform, Ruleform> knownObjects) {
+        if (knownObjects.containsKey(this)) {
+            return knownObjects.get(this);
+        }
 
-		return knownObjects.get(this);
-	}
+        // need to traverse leaf nodes first, before persisting this entity.
+        knownObjects.put(this, this);
+        traverseForeignKeys(em, knownObjects);
 
-	abstract public void setId(Long id);
+        if (getId() != null
+            && em.getReference(this.getClass(), getId()) != null) {
+            em.detach(this);
+            knownObjects.put(this, em.merge(this));
+        } else {
+            em.persist(this);
+            em.refresh(this);
+            knownObjects.put(this, this);
+        }
 
-	/**
-	 * @param notes
-	 *            the notes to set
-	 */
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+        return knownObjects.get(this);
+    }
 
-	/**
-	 * @param updateDate
-	 *            the updateDate to set
-	 */
-	public void setUpdateDate(Timestamp updateDate) {
-		this.updateDate = updateDate;
-	}
+    abstract public void setId(Long id);
 
-	/**
-	 * @param updatedBy
-	 *            the updatedBy to set
-	 */
-	public void setUpdatedBy(Agency updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    /**
+     * @param notes
+     *            the notes to set
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("%s[%s]", getClass(), getId());
-	}
+    /**
+     * @param updateDate
+     *            the updateDate to set
+     */
+    public void setUpdateDate(Timestamp updateDate) {
+        this.updateDate = updateDate;
+    }
 
-	// am I traversing the merged entity or the non-merged uploaded state?
-	// might as well make it merged
-	/**
-	 * Calls manageEntity on each foreign key and replaces non-managed foreign
-	 * key objects with managed objects
-	 * 
-	 * @param em
-	 * @param knownObjects
-	 */
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (updatedBy != null) {
-			updatedBy = (Agency) updatedBy.manageEntity(em, knownObjects);
-		}
+    /**
+     * @param updatedBy
+     *            the updatedBy to set
+     */
+    public void setUpdatedBy(Agency updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
-	}
+    @Override
+    public String toString() {
+        return String.format("%s[%s]", getClass(), getId());
+    }
+
+    // am I traversing the merged entity or the non-merged uploaded state?
+    // might as well make it merged
+    /**
+     * Calls manageEntity on each foreign key and replaces non-managed foreign
+     * key objects with managed objects
+     * 
+     * @param em
+     * @param knownObjects
+     */
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (updatedBy != null) {
+            updatedBy = (Agency) updatedBy.manageEntity(em, knownObjects);
+        }
+
+    }
 }

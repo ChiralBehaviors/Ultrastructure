@@ -43,141 +43,142 @@ import com.chiralbehaviors.CoRE.product.Product;
  * 
  */
 @NamedQueries({ @NamedQuery(name = GET_BY_EVENT, query = "SELECT tm FROM TransformationMetarule tm "
-		+ "WHERE tm.service = :service " + "ORDER BY tm.sequenceNumber") })
+                                                         + "WHERE tm.service = :service "
+                                                         + "ORDER BY tm.sequenceNumber") })
 @Entity
 @Table(name = "transformation_metarule", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "transformation_metarule_id_seq", sequenceName = "transformation_metarule_id_seq")
 public class TransformationMetarule extends Ruleform implements Serializable {
-	public static final String GET_BY_EVENT = "tranformationMetarule.getByEvent";
-	private static final long serialVersionUID = 1L;
+    public static final String GET_BY_EVENT     = "tranformationMetarule.getByEvent";
+    private static final long  serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "transformation_metarule_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
 
-	// bi-directional many-to-one association to Relationship
-	@ManyToOne
-	@JoinColumn(name = "product_map")
-	private Relationship productMap;
+    // bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "product_map")
+    private Relationship       productMap;
 
-	// bi-directional many-to-one association to Agency
-	@ManyToOne
-	@JoinColumn(name = "product_network_agency")
-	private Agency productNetworkAgency;
+    // bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "product_network_agency")
+    private Agency             productNetworkAgency;
 
-	// bi-directional many-to-one association to Relationship
-	@ManyToOne
-	@JoinColumn(name = "agency_map")
-	private Relationship relationshipMap;
+    // bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "agency_map")
+    private Relationship       relationshipMap;
 
-	@Column(name = "sequence_number")
-	private Integer sequenceNumber;
+    @Column(name = "sequence_number")
+    private Integer            sequenceNumber;
 
-	/**
-	 * The service performed
-	 */
-	@ManyToOne
-	@JoinColumn(name = "service")
-	private Product service;
+    /**
+     * The service performed
+     */
+    @ManyToOne
+    @JoinColumn(name = "service")
+    private Product            service;
 
-	@Column(name = "stop_on_match")
-	private Integer stopOnMatch;
+    @Column(name = "stop_on_match")
+    private Integer            stopOnMatch;
 
-	public TransformationMetarule() {
-	}
+    public TransformationMetarule() {
+    }
 
-	public Agency getEntityNetworkAgency() {
-		return productNetworkAgency;
-	}
+    public Agency getEntityNetworkAgency() {
+        return productNetworkAgency;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Relationship getProductMap() {
-		return productMap;
-	}
+    public Relationship getProductMap() {
+        return productMap;
+    }
 
-	public Relationship getRelationshipMap() {
-		return relationshipMap;
-	}
+    public Relationship getRelationshipMap() {
+        return relationshipMap;
+    }
 
-	public Integer getSequenceNumber() {
-		return sequenceNumber;
-	}
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
 
-	/**
-	 * @return the service
-	 */
-	public Product getService() {
-		return service;
-	}
+    /**
+     * @return the service
+     */
+    public Product getService() {
+        return service;
+    }
 
-	public Boolean getStopOnMatch() {
-		return toBoolean(stopOnMatch);
-	}
+    public Boolean getStopOnMatch() {
+        return toBoolean(stopOnMatch);
+    }
 
-	public void setEntityMap(Relationship relationship2) {
-		productMap = relationship2;
-	}
+    public void setEntityMap(Relationship relationship2) {
+        productMap = relationship2;
+    }
 
-	public void setEntityNetworkAgency(Agency agency) {
-		productNetworkAgency = agency;
-	}
+    public void setEntityNetworkAgency(Agency agency) {
+        productNetworkAgency = agency;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setRelationshipMap(Relationship relationship1) {
-		relationshipMap = relationship1;
-	}
+    public void setRelationshipMap(Relationship relationship1) {
+        relationshipMap = relationship1;
+    }
 
-	public void setSequenceNumber(Integer sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
 
-	/**
-	 * @param service
-	 *            the service to set
-	 */
-	public void setService(Product service) {
-		this.service = service;
-	}
+    /**
+     * @param service
+     *            the service to set
+     */
+    public void setService(Product service) {
+        this.service = service;
+    }
 
-	public void setStopOnMatch(Boolean stopOnMatch) {
-		this.stopOnMatch = toInteger(stopOnMatch);
-	}
+    public void setStopOnMatch(Boolean stopOnMatch) {
+        this.stopOnMatch = toInteger(stopOnMatch);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (productMap != null) {
-			productMap = (Relationship) productMap.manageEntity(em,
-					knownObjects);
-		}
-		if (productNetworkAgency != null) {
-			productNetworkAgency = (Agency) productNetworkAgency.manageEntity(
-					em, knownObjects);
-		}
-		if (relationshipMap != null) {
-			relationshipMap = (Relationship) relationshipMap.manageEntity(em,
-					knownObjects);
-		}
-		if (service != null) {
-			service = (Product) service.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (productMap != null) {
+            productMap = (Relationship) productMap.manageEntity(em,
+                                                                knownObjects);
+        }
+        if (productNetworkAgency != null) {
+            productNetworkAgency = (Agency) productNetworkAgency.manageEntity(em,
+                                                                              knownObjects);
+        }
+        if (relationshipMap != null) {
+            relationshipMap = (Relationship) relationshipMap.manageEntity(em,
+                                                                          knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 
 }

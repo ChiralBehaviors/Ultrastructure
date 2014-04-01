@@ -38,56 +38,57 @@ import com.chiralbehaviors.CoRE.authorization.AccessAuthorization;
 @NamedQueries({
 
 @NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
-		+ "FROM AgencyAccessAuthorization auth "
-		+ "WHERE auth.relationship = :r " + "AND auth.parent = :rf ") })
+                                                                               + "FROM AgencyAccessAuthorization auth "
+                                                                               + "WHERE auth.relationship = :r "
+                                                                               + "AND auth.parent = :rf ") })
 @Entity
 public abstract class AgencyAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
-		extends AccessAuthorization<Agency, Child> {
+        extends AccessAuthorization<Agency, Child> {
 
-	public static final String AGENCY_ACCESS_AUTHORIZATION_PREFIX = "agencyAccessAuthorization";
-	public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = AGENCY_ACCESS_AUTHORIZATION_PREFIX
-			+ GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+    public static final String AGENCY_ACCESS_AUTHORIZATION_PREFIX                 = "agencyAccessAuthorization";
+    public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = AGENCY_ACCESS_AUTHORIZATION_PREFIX
+                                                                                    + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID                                   = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "agency1")
-	private Agency parent;
+    @ManyToOne
+    @JoinColumn(name = "agency1")
+    private Agency             parent;
 
-	public AgencyAccessAuthorization() {
-		super();
-	}
+    public AgencyAccessAuthorization() {
+        super();
+    }
 
-	/**
-	 * @return the parent
-	 */
-	@Override
-	public Agency getParent() {
-		return parent;
-	}
+    /**
+     * @return the parent
+     */
+    @Override
+    public Agency getParent() {
+        return parent;
+    }
 
-	/**
-	 * @param parent
-	 *            the parent to set
-	 */
-	public void setParent(Agency parent) {
-		this.parent = parent;
-	}
+    /**
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(Agency parent) {
+        this.parent = parent;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-	 * EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (parent != null) {
-			parent = (Agency) parent.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
+     * EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (parent != null) {
+            parent = (Agency) parent.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+    }
 
 }

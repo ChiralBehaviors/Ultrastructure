@@ -45,109 +45,109 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 @SequenceGenerator(schema = "ruleform", name = "relationship_attribute_id_seq", sequenceName = "relationship_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from RelationshipAttribute ra where ra.relationship = :relationship and ra.attribute = :attribute") })
 public class RelationshipAttribute extends AttributeValue<Relationship> {
-	public static final String GET_ATTRIBUTE = "relationshipAttribute.getAttribute";
-	private static final long serialVersionUID = 1L;
+    public static final String GET_ATTRIBUTE    = "relationshipAttribute.getAttribute";
+    private static final long  serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(generator = "relationship_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "relationship_attribute_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
 
-	// bi-directional many-to-one association to Relationship
+    // bi-directional many-to-one association to Relationship
 
-	@ManyToOne
-	@JoinColumn(name = "relationship")
-	private Relationship relationship;
+    @ManyToOne
+    @JoinColumn(name = "relationship")
+    private Relationship       relationship;
 
-	public RelationshipAttribute() {
-		super();
-	}
+    public RelationshipAttribute() {
+        super();
+    }
 
-	public RelationshipAttribute(Agency updatedBy) {
-		super(updatedBy);
-	}
+    public RelationshipAttribute(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	public RelationshipAttribute(Attribute attribute) {
-		super(attribute);
-	}
+    public RelationshipAttribute(Attribute attribute) {
+        super(attribute);
+    }
 
-	public RelationshipAttribute(Attribute attribute, Agency updatedBy) {
-		super(attribute, updatedBy);
-	}
+    public RelationshipAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
 
-	public RelationshipAttribute(Attribute attribute, BigDecimal value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    public RelationshipAttribute(Attribute attribute, BigDecimal value,
+                                 Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	public RelationshipAttribute(Attribute attribute, boolean value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    public RelationshipAttribute(Attribute attribute, boolean value,
+                                 Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	public RelationshipAttribute(Attribute attribute, int value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    public RelationshipAttribute(Attribute attribute, int value,
+                                 Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	public RelationshipAttribute(Attribute attribute, String value,
-			Agency updatedBy) {
-		super(attribute, value, updatedBy);
-	}
+    public RelationshipAttribute(Attribute attribute, String value,
+                                 Agency updatedBy) {
+        super(attribute, value, updatedBy);
+    }
 
-	public RelationshipAttribute(Attribute attribute, Unit unit) {
-		super(attribute, unit);
-	}
+    public RelationshipAttribute(Attribute attribute, Unit unit) {
+        super(attribute, unit);
+    }
 
-	public RelationshipAttribute(Long id) {
-		super(id);
-	}
+    public RelationshipAttribute(Long id) {
+        super(id);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-	 */
-	@Override
-	public Long getId() {
-		return id;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
+     */
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Relationship getRelationship() {
-		return relationship;
-	}
+    public Relationship getRelationship() {
+        return relationship;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
-	 */
-	@Override
-	public SingularAttribute<? extends AttributeValue<Relationship>, Relationship> getRuleformAttribute() {
-		return RelationshipAttribute_.relationship;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends AttributeValue<Relationship>, Relationship> getRuleformAttribute() {
+        return RelationshipAttribute_.relationship;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
-	 */
-	@Override
-	public Class<Relationship> getRuleformClass() {
-		return Relationship.class;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
+     */
+    @Override
+    public Class<Relationship> getRuleformClass() {
+        return Relationship.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-	 */
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
+     */
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setRelationship(Relationship interval) {
-		relationship = interval;
-	}
+    public void setRelationship(Relationship interval) {
+        relationship = interval;
+    }
 }

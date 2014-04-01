@@ -32,60 +32,60 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 public class AgencyTest extends DatabaseTest {
 
-	@Before
-	public void initData() {
-		beginTransaction();
-		Agency core = new Agency("CoRE");
-		core.setUpdatedBy(core);
-		em.persist(core);
+    @Before
+    public void initData() {
+        beginTransaction();
+        Agency core = new Agency("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
 
-		Agency foo = new Agency("Foo", "More Foo", core);
-		em.persist(foo);
-		commitTransaction();
-		em.clear();
-	}
+        Agency foo = new Agency("Foo", "More Foo", core);
+        em.persist(foo);
+        commitTransaction();
+        em.clear();
+    }
 
-	@Test
-	public void testEquals() {
-		beginTransaction();
+    @Test
+    public void testEquals() {
+        beginTransaction();
 
-		TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-				Agency.class);
+        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+                                                       Agency.class);
 
-		query.setParameter("name", "CoRE");
-		Agency test = query.getSingleResult();
+        query.setParameter("name", "CoRE");
+        Agency test = query.getSingleResult();
 
-		query.setParameter("name", "Foo");
-		Agency foo = query.getSingleResult();
+        query.setParameter("name", "Foo");
+        Agency foo = query.getSingleResult();
 
-		System.out.println("Test Class: " + test.getClass());
-		System.out.println("Foo Updated By Class (Proxy): "
-				+ foo.getUpdatedBy().getClass());
+        System.out.println("Test Class: " + test.getClass());
+        System.out.println("Foo Updated By Class (Proxy): "
+                           + foo.getUpdatedBy().getClass());
 
-		// Assert.assertTrue(test.hashCode() == foo.getUpdatedBy().hashCode(),
-		// "Hashcodes aren't equal!");
-		// Assert.assertTrue(test.getName().equals(foo.getUpdatedBy().getName()),
-		// "Names aren't equal!");
-		// Assert.assertTrue(!test.getClass().equals(foo.getUpdatedBy().getClass()),
-		// "Classes are equal!  One should be a proxy");
-		//
-		// Assert.assertFalse(test == foo.getUpdatedBy(),
-		// "The objects shouldn't be identical!");
-		//
-		// Assert.assertTrue((Object)test.getClass() !=
-		// (Object)foo.getUpdatedBy().getClass());
-		// Assert.assertTrue((Object)foo.getUpdatedBy().getClass() !=
-		// (Object)test.getClass());
-		// System.out.println("Foo Updated By Class (Proxy): " +
-		// foo.getUpdatedBy().getClass());
-		//
-		// Assert.assertEquals(test, foo.getUpdatedBy(), "What the hell?");
-		Assert.assertEquals(test, foo.getUpdatedBy());
+        // Assert.assertTrue(test.hashCode() == foo.getUpdatedBy().hashCode(),
+        // "Hashcodes aren't equal!");
+        // Assert.assertTrue(test.getName().equals(foo.getUpdatedBy().getName()),
+        // "Names aren't equal!");
+        // Assert.assertTrue(!test.getClass().equals(foo.getUpdatedBy().getClass()),
+        // "Classes are equal!  One should be a proxy");
+        //
+        // Assert.assertFalse(test == foo.getUpdatedBy(),
+        // "The objects shouldn't be identical!");
+        //
+        // Assert.assertTrue((Object)test.getClass() !=
+        // (Object)foo.getUpdatedBy().getClass());
+        // Assert.assertTrue((Object)foo.getUpdatedBy().getClass() !=
+        // (Object)test.getClass());
+        // System.out.println("Foo Updated By Class (Proxy): " +
+        // foo.getUpdatedBy().getClass());
+        //
+        // Assert.assertEquals(test, foo.getUpdatedBy(), "What the hell?");
+        Assert.assertEquals(test, foo.getUpdatedBy());
 
-		Assert.assertTrue(test.equals(foo.getUpdatedBy()));
-		Assert.assertTrue(foo.getUpdatedBy().equals(test));
+        Assert.assertTrue(test.equals(foo.getUpdatedBy()));
+        Assert.assertTrue(foo.getUpdatedBy().equals(test));
 
-		commitTransaction();
-	}
+        commitTransaction();
+    }
 
 }

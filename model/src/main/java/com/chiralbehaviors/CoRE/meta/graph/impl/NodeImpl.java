@@ -27,15 +27,15 @@ import com.chiralbehaviors.CoRE.meta.graph.Node;
  */
 public class NodeImpl<T> implements Node<T> {
 
-	private T node;
+    private T node;
 
-	public NodeImpl(T node) {
-		this.node = node;
-	}
+    public NodeImpl(T node) {
+        this.node = node;
+    }
 
-	@Override
-	public T getNode() {
-		return node;
-	}
+    @Override
+    public T getNode() {
+        return node;
+    }
 
 }

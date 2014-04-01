@@ -43,107 +43,110 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Table(name = "status_code_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "status_code_attribute_authorization_id_seq", sequenceName = "status_code_attribute_authorization_id_seq")
 public class StatusCodeAttributeAuthorization extends
-		ClassifiedAttributeAuthorization<StatusCode> {
-	private static final long serialVersionUID = 1L;
+        ClassifiedAttributeAuthorization<StatusCode> {
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "classifier")
-	private StatusCode classifier;
+    @ManyToOne
+    @JoinColumn(name = "classifier")
+    private StatusCode        classifier;
 
-	@Id
-	@GeneratedValue(generator = "status_code_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "status_code_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
 
-	public StatusCodeAttributeAuthorization() {
-	}
+    public StatusCodeAttributeAuthorization() {
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public StatusCodeAttributeAuthorization(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public StatusCodeAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param id
-	 */
-	public StatusCodeAttributeAuthorization(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public StatusCodeAttributeAuthorization(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @param id
-	 * @param classification
-	 * @param updatedBy
-	 */
-	public StatusCodeAttributeAuthorization(Relationship classification,
-			Agency updatedBy) {
-		super(classification, updatedBy);
-	}
+    /**
+     * @param id
+     * @param classification
+     * @param updatedBy
+     */
+    public StatusCodeAttributeAuthorization(Relationship classification,
+                                            Agency updatedBy) {
+        super(classification, updatedBy);
+    }
 
-	/**
-	 * @param id
-	 * @param classification
-	 * @param authorized
-	 * @param updatedBy
-	 */
-	public StatusCodeAttributeAuthorization(Relationship classification,
-			Attribute authorized, Agency updatedBy) {
-		super(classification, authorized, updatedBy);
-	}
+    /**
+     * @param id
+     * @param classification
+     * @param authorized
+     * @param updatedBy
+     */
+    public StatusCodeAttributeAuthorization(Relationship classification,
+                                            Attribute authorized,
+                                            Agency updatedBy) {
+        super(classification, authorized, updatedBy);
+    }
 
-	public StatusCodeAttributeAuthorization(Relationship classification,
-			StatusCode classifier, Attribute authorized, Agency updatedBy) {
-		this(classification, authorized, updatedBy);
-		this.classifier = classifier;
-	}
+    public StatusCodeAttributeAuthorization(Relationship classification,
+                                            StatusCode classifier,
+                                            Attribute authorized,
+                                            Agency updatedBy) {
+        this(classification, authorized, updatedBy);
+        this.classifier = classifier;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-	 * getClassifier()
-	 */
-	@Override
-	public StatusCode getClassifier() {
-		return classifier;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * getClassifier()
+     */
+    @Override
+    public StatusCode getClassifier() {
+        return classifier;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-	 * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
-	 */
-	@Override
-	public void setClassifier(StatusCode classifier) {
-		this.classifier = classifier;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
+     * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+     */
+    @Override
+    public void setClassifier(StatusCode classifier) {
+        this.classifier = classifier;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (classifier != null) {
-			classifier = (StatusCode) classifier.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (classifier != null) {
+            classifier = (StatusCode) classifier.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 }

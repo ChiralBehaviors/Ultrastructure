@@ -20,7 +20,7 @@ package com.chiralbehaviors.CoRE;
  * 
  */
 public class NameSearchResult {
-	public String description;
-	public Long id;
-	public String name;
+    public String description;
+    public Long   id;
+    public String name;
 }

@@ -40,137 +40,137 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 @Table(name = "network_inference", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "network_inference_id_seq", sequenceName = "network_inference_id_seq")
 public class NetworkInference extends Ruleform {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(generator = "network_inference_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "network_inference_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
 
-	// bi-directional many-to-one association to Relationship
-	@ManyToOne
-	@JoinColumn(name = "inference")
-	private Relationship inference;
+    // bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "inference")
+    private Relationship      inference;
 
-	// bi-directional many-to-one association to Relationship
-	@ManyToOne
-	@JoinColumn(name = "premise1")
-	private Relationship premise1;
+    // bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "premise1")
+    private Relationship      premise1;
 
-	// bi-directional many-to-one association to Relationship
-	@ManyToOne
-	@JoinColumn(name = "premise2")
-	private Relationship premise2;
+    // bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "premise2")
+    private Relationship      premise2;
 
-	public NetworkInference() {
-	}
+    public NetworkInference() {
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public NetworkInference(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public NetworkInference(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param id
-	 */
-	public NetworkInference(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public NetworkInference(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @param id
-	 * @param updatedBy
-	 */
-	public NetworkInference(Long id, Agency updatedBy) {
-		super(id, updatedBy);
-	}
+    /**
+     * @param id
+     * @param updatedBy
+     */
+    public NetworkInference(Long id, Agency updatedBy) {
+        super(id, updatedBy);
+    }
 
-	public NetworkInference(Relationship premise1, Relationship premise2,
-			Relationship inference) {
-		super();
-		this.premise1 = premise1;
-		this.premise2 = premise2;
-		this.inference = inference;
-	}
+    public NetworkInference(Relationship premise1, Relationship premise2,
+                            Relationship inference) {
+        super();
+        this.premise1 = premise1;
+        this.premise2 = premise2;
+        this.inference = inference;
+    }
 
-	public NetworkInference(Relationship premise1, Relationship premise2,
-			Relationship inference, Agency updatedBy) {
-		super(updatedBy);
-		this.premise1 = premise1;
-		this.premise2 = premise2;
-		this.inference = inference;
-	}
+    public NetworkInference(Relationship premise1, Relationship premise2,
+                            Relationship inference, Agency updatedBy) {
+        super(updatedBy);
+        this.premise1 = premise1;
+        this.premise2 = premise2;
+        this.inference = inference;
+    }
 
-	/**
-	 * @param notes
-	 */
-	public NetworkInference(String notes) {
-		super(notes);
-	}
+    /**
+     * @param notes
+     */
+    public NetworkInference(String notes) {
+        super(notes);
+    }
 
-	/**
-	 * @param notes
-	 * @param updatedBy
-	 */
-	public NetworkInference(String notes, Agency updatedBy) {
-		super(notes, updatedBy);
-	}
+    /**
+     * @param notes
+     * @param updatedBy
+     */
+    public NetworkInference(String notes, Agency updatedBy) {
+        super(notes, updatedBy);
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Relationship getInference() {
-		return inference;
-	}
+    public Relationship getInference() {
+        return inference;
+    }
 
-	public Relationship getPremise1() {
-		return premise1;
-	}
+    public Relationship getPremise1() {
+        return premise1;
+    }
 
-	public Relationship getPremise2() {
-		return premise2;
-	}
+    public Relationship getPremise2() {
+        return premise2;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setInference(Relationship inference) {
-		this.inference = inference;
-	}
+    public void setInference(Relationship inference) {
+        this.inference = inference;
+    }
 
-	public void setPremise1(Relationship premise1) {
-		this.premise1 = premise1;
-	}
+    public void setPremise1(Relationship premise1) {
+        this.premise1 = premise1;
+    }
 
-	public void setPremise2(Relationship premise2) {
-		this.premise2 = premise2;
-	}
+    public void setPremise2(Relationship premise2) {
+        this.premise2 = premise2;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (inference != null) {
-			inference = (Relationship) inference.manageEntity(em, knownObjects);
-		}
-		if (premise1 != null) {
-			premise1 = (Relationship) premise1.manageEntity(em, knownObjects);
-		}
-		if (premise2 != null) {
-			premise2 = (Relationship) premise2.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (inference != null) {
+            inference = (Relationship) inference.manageEntity(em, knownObjects);
+        }
+        if (premise1 != null) {
+            premise1 = (Relationship) premise1.manageEntity(em, knownObjects);
+        }
+        if (premise2 != null) {
+            premise2 = (Relationship) premise2.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 }

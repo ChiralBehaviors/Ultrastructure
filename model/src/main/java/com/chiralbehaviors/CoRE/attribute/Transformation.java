@@ -43,209 +43,210 @@ import com.chiralbehaviors.CoRE.product.Product;
  * 
  */
 @NamedQueries({ @NamedQuery(name = GET, query = "SELECT t FROM Transformation t "
-		+ "WHERE t.service = :service "
-		+ "AND t.product = :product "
-		+ "AND t.agency = :agency " + "ORDER BY t.sequenceNumber") })
+                                                + "WHERE t.service = :service "
+                                                + "AND t.product = :product "
+                                                + "AND t.agency = :agency "
+                                                + "ORDER BY t.sequenceNumber") })
 @Entity
 @Table(name = "transformation", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "transformation_id_seq", sequenceName = "transformation_id_seq")
 public class Transformation extends Ruleform implements Serializable {
-	public final static String GET = "transformation.get";
-	private static final long serialVersionUID = 1L;
+    public final static String GET              = "transformation.get";
+    private static final long  serialVersionUID = 1L;
 
-	// bi-directional many-to-one association to Agency
-	@ManyToOne
-	@JoinColumn(name = "agency")
-	private Agency agency;
+    // bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "agency")
+    private Agency             agency;
 
-	// bi-directional many-to-one association to Agency
-	@ManyToOne
-	@JoinColumn(name = "agency_key")
-	private Agency agencyKey;
+    // bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "agency_key")
+    private Agency             agencyKey;
 
-	// bi-directional many-to-one association to Agency
-	@ManyToOne
-	@JoinColumn(name = "assign_to")
-	private Agency assignTo;
+    // bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "assign_to")
+    private Agency             assignTo;
 
-	// bi-directional many-to-one association to Attribute
-	@ManyToOne
-	@JoinColumn(name = "attribute")
-	private Attribute attribute;
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne
+    @JoinColumn(name = "attribute")
+    private Attribute          attribute;
 
-	@Id
-	@GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long               id;
 
-	// bi-directional many-to-one association to Product
-	@ManyToOne
-	@JoinColumn(name = "product")
-	private Product product;
+    // bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "product")
+    private Product            product;
 
-	// bi-directional many-to-one association to Agency
-	@ManyToOne
-	@JoinColumn(name = "product_attribute_agency")
-	private Agency productAttributeAgency;
+    // bi-directional many-to-one association to Agency
+    @ManyToOne
+    @JoinColumn(name = "product_attribute_agency")
+    private Agency             productAttributeAgency;
 
-	// bi-directional many-to-one association to Product
-	@ManyToOne
-	@JoinColumn(name = "product_key")
-	private Product productKey;
+    // bi-directional many-to-one association to Product
+    @ManyToOne
+    @JoinColumn(name = "product_key")
+    private Product            productKey;
 
-	// bi-directional many-to-one association to Relationship
-	@ManyToOne
-	@JoinColumn(name = "relationship_key")
-	private Relationship relationshipKey;
+    // bi-directional many-to-one association to Relationship
+    @ManyToOne
+    @JoinColumn(name = "relationship_key")
+    private Relationship       relationshipKey;
 
-	@Column(name = "sequence_number")
-	private Integer sequenceNumber;
+    @Column(name = "sequence_number")
+    private Integer            sequenceNumber;
 
-	// bi-directional many-to-one association to Event
-	@ManyToOne
-	@JoinColumn(name = "service")
-	private Product service;
+    // bi-directional many-to-one association to Event
+    @ManyToOne
+    @JoinColumn(name = "service")
+    private Product            service;
 
-	public Transformation() {
-	}
+    public Transformation() {
+    }
 
-	public Agency getAgency() {
-		return agency;
-	}
+    public Agency getAgency() {
+        return agency;
+    }
 
-	public Agency getAgencyKey() {
-		return agencyKey;
-	}
+    public Agency getAgencyKey() {
+        return agencyKey;
+    }
 
-	public Agency getAssignTo() {
-		return assignTo;
-	}
+    public Agency getAssignTo() {
+        return assignTo;
+    }
 
-	public Attribute getAttribute() {
-		return attribute;
-	}
+    public Attribute getAttribute() {
+        return attribute;
+    }
 
-	public Product getEntity() {
-		return product;
-	}
+    public Product getEntity() {
+        return product;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public Agency getProductAttributeAgency() {
-		return productAttributeAgency;
-	}
+    public Agency getProductAttributeAgency() {
+        return productAttributeAgency;
+    }
 
-	public Product getProductKey() {
-		return productKey;
-	}
+    public Product getProductKey() {
+        return productKey;
+    }
 
-	public Relationship getRelationshipKey() {
-		return relationshipKey;
-	}
+    public Relationship getRelationshipKey() {
+        return relationshipKey;
+    }
 
-	public Integer getSequenceNumber() {
-		return sequenceNumber;
-	}
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
 
-	/**
-	 * @return the service
-	 */
-	public Product getService() {
-		return service;
-	}
+    /**
+     * @return the service
+     */
+    public Product getService() {
+        return service;
+    }
 
-	public void setAgency(Agency agency2) {
-		agency = agency2;
-	}
+    public void setAgency(Agency agency2) {
+        agency = agency2;
+    }
 
-	public void setAgencyKey(Agency agency4) {
-		agencyKey = agency4;
-	}
+    public void setAgencyKey(Agency agency4) {
+        agencyKey = agency4;
+    }
 
-	public void setAssignTo(Agency agency1) {
-		assignTo = agency1;
-	}
+    public void setAssignTo(Agency agency1) {
+        assignTo = agency1;
+    }
 
-	public void setAttribute(Attribute attribute) {
-		this.attribute = attribute;
-	}
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
+    }
 
-	public void setEntity(Product product) {
-		this.product = product;
-	}
+    public void setEntity(Product product) {
+        this.product = product;
+    }
 
-	public void setEntityAttributeAgency(Agency agency3) {
-		productAttributeAgency = agency3;
-	}
+    public void setEntityAttributeAgency(Agency agency3) {
+        productAttributeAgency = agency3;
+    }
 
-	public void setEntityKey(Product productKey) {
-		this.productKey = productKey;
-	}
+    public void setEntityKey(Product productKey) {
+        this.productKey = productKey;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setRelationshipKey(Relationship relationship) {
-		relationshipKey = relationship;
-	}
+    public void setRelationshipKey(Relationship relationship) {
+        relationshipKey = relationship;
+    }
 
-	public void setSequenceNumber(Integer sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
 
-	/**
-	 * @param service
-	 *            the service to set
-	 */
-	public void setService(Product service) {
-		this.service = service;
-	}
+    /**
+     * @param service
+     *            the service to set
+     */
+    public void setService(Product service) {
+        this.service = service;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (assignTo != null) {
-			assignTo = (Agency) assignTo.manageEntity(em, knownObjects);
-		}
-		if (attribute != null) {
-			attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-		}
-		if (product != null) {
-			product = (Product) product.manageEntity(em, knownObjects);
-		}
-		if (productAttributeAgency != null) {
-			productAttributeAgency = (Agency) productAttributeAgency
-					.manageEntity(em, knownObjects);
-		}
-		if (productKey != null) {
-			productKey = (Product) productKey.manageEntity(em, knownObjects);
-		}
-		if (relationshipKey != null) {
-			relationshipKey = (Relationship) relationshipKey.manageEntity(em,
-					knownObjects);
-		}
-		if (agency != null) {
-			agency = (Agency) agency.manageEntity(em, knownObjects);
-		}
-		if (agencyKey != null) {
-			agencyKey = (Agency) agencyKey.manageEntity(em, knownObjects);
-		}
-		if (service != null) {
-			service = (Product) service.manageEntity(em, knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (assignTo != null) {
+            assignTo = (Agency) assignTo.manageEntity(em, knownObjects);
+        }
+        if (attribute != null) {
+            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
+        }
+        if (product != null) {
+            product = (Product) product.manageEntity(em, knownObjects);
+        }
+        if (productAttributeAgency != null) {
+            productAttributeAgency = (Agency) productAttributeAgency.manageEntity(em,
+                                                                                  knownObjects);
+        }
+        if (productKey != null) {
+            productKey = (Product) productKey.manageEntity(em, knownObjects);
+        }
+        if (relationshipKey != null) {
+            relationshipKey = (Relationship) relationshipKey.manageEntity(em,
+                                                                          knownObjects);
+        }
+        if (agency != null) {
+            agency = (Agency) agency.manageEntity(em, knownObjects);
+        }
+        if (agencyKey != null) {
+            agencyKey = (Agency) agencyKey.manageEntity(em, knownObjects);
+        }
+        if (service != null) {
+            service = (Product) service.manageEntity(em, knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 
 }

@@ -42,96 +42,96 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Table(name = "product_location_attribute_authorization", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_location_attribute_authorization_id_seq", sequenceName = "product_location_attribute_authorization_id_seq")
 public class ProductLocationAttributeAuthorization extends
-		AttributeAuthorization {
-	private static final long serialVersionUID = 1L;
+        AttributeAuthorization {
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "classification")
-	private Relationship classification;
+    @ManyToOne
+    @JoinColumn(name = "classification")
+    private Relationship      classification;
 
-	@ManyToOne
-	@JoinColumn(name = "classifier")
-	private Product classifier;
+    @ManyToOne
+    @JoinColumn(name = "classifier")
+    private Product           classifier;
 
-	@Id
-	@GeneratedValue(generator = "product_location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-	private Long id;
+    @Id
+    @GeneratedValue(generator = "product_location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
+    private Long              id;
 
-	public ProductLocationAttributeAuthorization() {
-	}
+    public ProductLocationAttributeAuthorization() {
+    }
 
-	/**
-	 * @param updatedBy
-	 */
-	public ProductLocationAttributeAuthorization(Agency updatedBy) {
-		super(updatedBy);
-	}
+    /**
+     * @param updatedBy
+     */
+    public ProductLocationAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
 
-	/**
-	 * @param id
-	 */
-	public ProductLocationAttributeAuthorization(Long id) {
-		super(id);
-	}
+    /**
+     * @param id
+     */
+    public ProductLocationAttributeAuthorization(Long id) {
+        super(id);
+    }
 
-	/**
-	 * @return the classification
-	 */
-	public Relationship getClassification() {
-		return classification;
-	}
+    /**
+     * @return the classification
+     */
+    public Relationship getClassification() {
+        return classification;
+    }
 
-	/**
-	 * @return the classifier
-	 */
-	public Product getClassifier() {
-		return classifier;
-	}
+    /**
+     * @return the classifier
+     */
+    public Product getClassifier() {
+        return classifier;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @param classification
-	 *            the classification to set
-	 */
-	public void setClassification(Relationship classification) {
-		this.classification = classification;
-	}
+    /**
+     * @param classification
+     *            the classification to set
+     */
+    public void setClassification(Relationship classification) {
+        this.classification = classification;
+    }
 
-	/**
-	 * @param classifier
-	 *            the classifier to set
-	 */
-	public void setClassifier(Product classifier) {
-		this.classifier = classifier;
-	}
+    /**
+     * @param classifier
+     *            the classifier to set
+     */
+    public void setClassifier(Product classifier) {
+        this.classifier = classifier;
+    }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-	 * .EntityManager, java.util.Map)
-	 */
-	@Override
-	public void traverseForeignKeys(EntityManager em,
-			Map<Ruleform, Ruleform> knownObjects) {
-		if (classifier != null) {
-			classifier = (Product) classifier.manageEntity(em, knownObjects);
-		}
-		if (classification != null) {
-			classification = (Relationship) classification.manageEntity(em,
-					knownObjects);
-		}
-		super.traverseForeignKeys(em, knownObjects);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (classifier != null) {
+            classifier = (Product) classifier.manageEntity(em, knownObjects);
+        }
+        if (classification != null) {
+            classification = (Relationship) classification.manageEntity(em,
+                                                                        knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
 
-	}
+    }
 }

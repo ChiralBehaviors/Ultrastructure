@@ -458,4 +458,16 @@ public interface JobModel {
 	 */
 	void ensureValidParentStatus(Job parent) throws SQLException;
 
+	/**
+	 * @param service
+	 * @return
+	 */
+	List<MetaProtocol> getMetaProtocolsFor(Product service);
+
+	/**
+	 * @param service
+	 * @return
+	 */
+	List<Protocol> getProtocolsFor(Product service);
+
 }

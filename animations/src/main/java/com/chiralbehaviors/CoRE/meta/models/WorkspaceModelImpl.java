@@ -252,10 +252,11 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return units;
     }
 
-    @Override
-    public Graph getStatusCodeGraph(Product product) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product product) {
         Map<StatusCode, Node<StatusCode>> nodes = new HashMap<StatusCode, Node<StatusCode>>();
-        List<Edge<?>> edges = new ArrayList<Edge<?>>();
+        List<Edge<StatusCodeSequencing>> edges = new ArrayList<Edge<StatusCodeSequencing>>();
         for (StatusCode currentCode : model.getJobModel().getStatusCodesFor(product)) {
             Node<StatusCode> parent = new NodeImpl<StatusCode>(currentCode);
             nodes.put(currentCode, parent);
@@ -274,12 +275,12 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                 edges.add(edge);
             }
         }
-        List<Node<?>> nodeList = new ArrayList<Node<?>>();
+        List<Node<StatusCode>> nodeList = new ArrayList<Node<StatusCode>>();
         nodeList.addAll(nodes.values());
-        return new GraphImpl(nodeList, edges);
+        return new GraphImpl<StatusCode, StatusCodeSequencing>(nodeList, edges);
     }
 
-    public Graph getStatusCodeSequencingGraph(Product product) {
+    public Graph<Product, ?> getStatusCodeSequencingAuthorizationGraph(Product product) {
         Map<Product, Node<Product>> nodes = new HashMap<Product, Node<Product>>();
         List<Edge<?>> edges = new ArrayList<Edge<?>>();
         Node<Product> current = new NodeImpl<Product>(product);

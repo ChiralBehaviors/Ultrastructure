@@ -38,4 +38,14 @@ public class NodeImpl<T> implements Node<T> {
         return node;
     }
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return node.equals(obj);
+	}
+    
+    
+
 }

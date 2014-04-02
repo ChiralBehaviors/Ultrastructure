@@ -659,9 +659,8 @@ public class JobModelImpl implements JobModel {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#getChronologyForJob(com.chiralbehaviors.
-	 * CoRE.jsp.Job)
+	 * @see com.chiralbehaviors.CoRE.meta.JobModel#getChronologyForJob(com.
+	 * chiralbehaviors. CoRE.jsp.Job)
 	 */
 	@Override
 	public List<JobChronology> getChronologyForJob(Job job) {
@@ -730,16 +729,15 @@ public class JobModelImpl implements JobModel {
 
 	@Override
 	public List<MetaProtocol> getMetaprotocols(Job job) {
-		return em.createNamedQuery(MetaProtocol.FOR_JOB, MetaProtocol.class)
-				.setParameter("service", job.getService()).getResultList();
+		return getMetaProtocolsFor(job.getService());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#getMostRecentChronologyEntry(com.chiralbehaviors
-	 * .CoRE.jsp.Job)
+	 * com.chiralbehaviors.CoRE.meta.JobModel#getMostRecentChronologyEntry(com
+	 * .chiralbehaviors .CoRE.jsp.Job)
 	 */
 	@Override
 	public JobChronology getMostRecentChronologyEntry(Job job) {
@@ -1037,8 +1035,8 @@ public class JobModelImpl implements JobModel {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#isTerminalState(com.chiralbehaviors.CoRE
-	 * .jsp.StatusCode, com.chiralbehaviors.CoRE.jsp.Event)
+	 * com.chiralbehaviors.CoRE.meta.JobModel#isTerminalState(com.chiralbehaviors
+	 * .CoRE .jsp.StatusCode, com.chiralbehaviors.CoRE.jsp.Event)
 	 */
 	@Override
 	public boolean isTerminalState(StatusCode sc, Product service) {
@@ -1064,7 +1062,8 @@ public class JobModelImpl implements JobModel {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.chiralbehaviors.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
+	 * @see
+	 * com.chiralbehaviors.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
 	 */
 	@Override
 	public void logModifiedService(Long scs) {
@@ -1297,7 +1296,7 @@ public class JobModelImpl implements JobModel {
 
 	/**
 	 * @param object
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	private void ensureValidParentStatus(Long parentId) throws SQLException {
 		ensureValidParentStatus(em.find(Job.class, parentId));
@@ -1589,8 +1588,8 @@ public class JobModelImpl implements JobModel {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#getParentActions(com.chiralbehaviors.CoRE
-	 * .product.Product)
+	 * com.chiralbehaviors.CoRE.meta.JobModel#getParentActions(com.chiralbehaviors
+	 * .CoRE .product.Product)
 	 */
 	@Override
 	public List<ProductParentSequencingAuthorization> getParentActions(
@@ -1607,8 +1606,8 @@ public class JobModelImpl implements JobModel {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#getSiblingActions(com.chiralbehaviors.CoRE
-	 * .product.Product)
+	 * com.chiralbehaviors.CoRE.meta.JobModel#getSiblingActions(com.chiralbehaviors
+	 * .CoRE .product.Product)
 	 */
 	@Override
 	public List<ProductSiblingSequencingAuthorization> getSiblingActions(
@@ -1625,8 +1624,8 @@ public class JobModelImpl implements JobModel {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.chiralbehaviors.CoRE.meta.JobModel#getChildActions(com.chiralbehaviors.CoRE
-	 * .product.Product)
+	 * com.chiralbehaviors.CoRE.meta.JobModel#getChildActions(com.chiralbehaviors
+	 * .CoRE .product.Product)
 	 */
 	@Override
 	public List<ProductChildSequencingAuthorization> getChildActions(
@@ -1637,6 +1636,31 @@ public class JobModelImpl implements JobModel {
 						ProductChildSequencingAuthorization.class);
 		query.setParameter("parent", parent);
 		return query.getResultList();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chiralbehaviors.CoRE.meta.JobModel#getMetaProtocolsFor(com.
+	 * chiralbehaviors.CoRE.product.Product)
+	 */
+	@Override
+	public List<MetaProtocol> getMetaProtocolsFor(Product service) {
+		return em.createNamedQuery(MetaProtocol.FOR_JOB, MetaProtocol.class)
+				.setParameter("service", service).getResultList();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chiralbehaviors.CoRE.meta.JobModel#getProtocolsFor(com.chiralbehaviors
+	 * .CoRE.product.Product)
+	 */
+	@Override
+	public List<Protocol> getProtocolsFor(Product service) {
+		return em.createNamedQuery(Protocol.GET_FOR_SERVICE, Protocol.class)
+				.setParameter("service", service).getResultList();
 	}
 
 }

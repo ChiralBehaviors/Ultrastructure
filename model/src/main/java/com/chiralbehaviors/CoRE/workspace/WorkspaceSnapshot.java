@@ -52,7 +52,52 @@ public class WorkspaceSnapshot implements Workspace {
     private Map<String, Product>                                  productsByName;
     private Map<Product, List<Protocol>>                          protocolsByProduct;
 
-    private Map<String, Relationship>                             relationshipsByName;
+    /**
+	 * @param agenciesByName
+	 * @param attributesByName
+	 * @param coordinatesByName
+	 * @param intervalsByName
+	 * @param locationsByName
+	 * @param metaProtocolsByProduct
+	 * @param networksByEntity
+	 * @param productsByName
+	 * @param protocolsByProduct
+	 * @param relationshipsByName
+	 * @param statusCodesByName
+	 * @param statusCodesByProduct
+	 * @param unitsByName
+	 */
+	public WorkspaceSnapshot(
+			Map<String, Agency> agenciesByName,
+			Map<String, Attribute> attributesByName,
+			Map<String, Coordinate> coordinatesByName,
+			Map<String, Interval> intervalsByName,
+			Map<String, Location> locationsByName,
+			Map<Product, List<MetaProtocol>> metaProtocolsByProduct,
+			Map<Object, Object> networksByEntity,
+			Map<String, Product> productsByName,
+			Map<Product, List<Protocol>> protocolsByProduct,
+			Map<String, Relationship> relationshipsByName,
+			Map<String, StatusCode> statusCodesByName,
+			Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct,
+			Map<String, Unit> unitsByName) {
+		super();
+		this.agenciesByName = agenciesByName;
+		this.attributesByName = attributesByName;
+		this.coordinatesByName = coordinatesByName;
+		this.intervalsByName = intervalsByName;
+		this.locationsByName = locationsByName;
+		this.metaProtocolsByProduct = metaProtocolsByProduct;
+		this.networksByEntity = networksByEntity;
+		this.productsByName = productsByName;
+		this.protocolsByProduct = protocolsByProduct;
+		this.relationshipsByName = relationshipsByName;
+		this.statusCodesByName = statusCodesByName;
+		this.statusCodesByProduct = statusCodesByProduct;
+		this.unitsByName = unitsByName;
+	}
+
+	private Map<String, Relationship>                             relationshipsByName;
     private Map<String, StatusCode>                               statusCodesByName;
     private Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct;
     private Map<String, Unit>                                     unitsByName;

@@ -8,7 +8,18 @@
 	<changeSet id="1" author="hhildebrand">
 		<sql><![CDATA[
             CREATE OR REPLACE VIEW readable.relationship_network AS 
-			 SELECT n.id, p.name AS parent, rel.name AS relationship, c.name AS child, n.ordering, n.inferred_from, n.premise1, n.premise2, n.inference_rule, n.notes, u.name AS updated_by, n.update_date
+			 SELECT n.id, 
+                    p.name AS parent, 
+                    rel.name AS relationship, 
+                    c.name AS child, 
+                    n.ordering, 
+                    n.inferred_from, 
+                    n.premise1, 
+                    n.premise2, 
+                    n.inference_rule, 
+                    n.notes, 
+                    u.name AS updated_by, 
+                    n.update_date
 			   FROM ruleform.relationship_network n
 			   JOIN ruleform.relationship p ON n.parent = p.id
 			   JOIN ruleform.relationship rel ON n.relationship = rel.id

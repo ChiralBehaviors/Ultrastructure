@@ -65,17 +65,12 @@ public class UnitModelImpl
         T call(UnitModelImpl productModel) throws Exception;
     }
 
-    private static final String UNIT_NETWORK_PROPAGATE = "unitNetwork.propagate";
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (!markPropagated(UNIT_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(UnitModelImpl agencyModel) throws Exception {
-                agencyModel.propagate();
+                agencyModel.propagate_network(data.getNew().getLong(1));
                 return null;
             }
         });

@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.agency;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -66,9 +65,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "agency_network_id_seq", sequenceName = "agency_network_id_seq")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES    = "agencyNetwork"
-                                                                  + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX; 
     public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
                                                                   + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "agencyNetwork"

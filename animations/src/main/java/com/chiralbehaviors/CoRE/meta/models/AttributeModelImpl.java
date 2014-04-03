@@ -71,8 +71,6 @@ public class AttributeModelImpl
         T call(AttributeModelImpl attributeModel) throws Exception;
     }
 
-    private static final String ATTRIBUTE_NETWORK_PROPAGATE = "AttributeNetwork.propagate";
-
     public static void network_edge_deleted(final TriggerData data)
                                                                    throws Exception {
         execute(new Procedure<Void>() {
@@ -92,14 +90,11 @@ public class AttributeModelImpl
 
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (!markPropagated(ATTRIBUTE_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(AttributeModelImpl attributrModel)
                                                                throws Exception {
-                attributrModel.propagate();
+                attributrModel.propagate_network(data.getNew().getLong(1));
                 return null;
             }
 

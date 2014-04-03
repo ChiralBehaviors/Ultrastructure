@@ -11,7 +11,6 @@
 			AFTER
 			INSERT OR UPDATE ON
 			ruleform.product_network
-			DEFERRABLE INITIALLY DEFERRED
 			FOR EACH ROW EXECUTE PROCEDURE
 			ruleform.propagate_product_network_deductions();
             ]]>

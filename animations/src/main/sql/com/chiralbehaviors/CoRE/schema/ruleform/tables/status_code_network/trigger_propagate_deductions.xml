@@ -11,7 +11,6 @@
             AFTER
             INSERT OR UPDATE ON
             ruleform.status_code_network
-            DEFERRABLE INITIALLY DEFERRED
             FOR EACH ROW
             EXECUTE PROCEDURE
             ruleform.propagate_status_code_network_deductions();

@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.time;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -53,9 +52,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public class IntervalNetwork extends NetworkRuleform<Interval> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "intervalNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "intervalNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX; 
     public static final String GENERATE_NETWORK_INVERSES     = "intervalNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "intervalNetwork"

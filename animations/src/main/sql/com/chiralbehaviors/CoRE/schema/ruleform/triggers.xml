@@ -33,8 +33,8 @@
 		file="tables/location_network/trigger_propagate_deductions.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/product_network/trigger_propagate_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/agency_network/trigger_propagate_deductions.xml" />
+	<!-- <include relativeToChangelogFile="true"
+		file="tables/agency_network/trigger_propagate_deductions.xml" /> -->
     <include relativeToChangelogFile="true"
         file="tables/relationship_network/trigger_propagate_deductions.xml" />
     <include relativeToChangelogFile="true"

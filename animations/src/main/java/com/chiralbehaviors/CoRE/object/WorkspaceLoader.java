@@ -16,19 +16,26 @@
 package com.chiralbehaviors.CoRE.object;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.authorization.AccessAuthorization;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.graph.Graph;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * Creates a workspace object from data in the database
@@ -36,130 +43,97 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  * @author hparry
  * 
  */
-public class WorkspaceLoader implements Workspace {
+public class WorkspaceLoader {
 
 	private Product workspaceProduct;
 	private Relationship workspaceOf;
 	private Model model;
+	private WorkspaceSnapshot workspace;
+
+	private Map<Product, List<MetaProtocol>> metaProtocolsByProduct;
+	private Map<String, Collection<NetworkRuleform<?>>> networksByEntity;
+	private Map<Product, List<Protocol>> protocolsByProduct;
+	private Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct;
+	private Map<String, Map<String, ExistentialRuleform<?, ?>>> existentialRuleforms;
+	private Map<Product, List<StatusCodeSequencing>> statusCodeSequencingByProduct;
 
 	public WorkspaceLoader(Product workspaceProduct, Relationship workspaceOf,
 			Model model) {
 		this.workspaceProduct = workspaceProduct;
 		this.workspaceOf = workspaceOf;
 		this.model = model;
+		load();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getAllEntities(java.lang
-	 * .Class)
+	/**
+	 * Reloads the workspace data from the database. Useful for refreshing the
+	 * entity map if you're changed something.
 	 */
-	@Override
-	public <T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntities(
-			Class<T> clazz) {
-		// TODO Auto-generated method stub
-		return null;
+	public void load() {
+
+		existentialRuleforms = new HashMap<String, Map<String, ExistentialRuleform<?, ?>>>();
+
+		List<Product> products = model.getProductModel().getChildren(
+				workspaceProduct, workspaceOf);
+		Map<String, ExistentialRuleform<?, ?>> productMap = new HashMap<String, ExistentialRuleform<?, ?>>();
+		for (Product p : products) {
+			if (!productMap.containsKey(p.getName())) {
+				productMap.put(p.getName(), p);
+			}
+		}
+
+		existentialRuleforms.put(Product.class.getSimpleName(), productMap);
+		List<AccessAuthorization<?, ?>> auths = new LinkedList<AccessAuthorization<?, ?>>();
+		auths.addAll(model.getProductModel().getAgencyAccessAuths(
+				workspaceProduct, workspaceOf));
+		existentialRuleforms.put(Agency.class.getSimpleName(), toMap(auths));
+
+		auths = new LinkedList<AccessAuthorization<?, ?>>();
+		auths.addAll(model.getProductModel().getAttributeAccessAuths(
+				workspaceProduct, workspaceOf));
+		existentialRuleforms.put(Attribute.class.getSimpleName(), toMap(auths));
+
+		auths = new LinkedList<AccessAuthorization<?, ?>>();
+		auths.addAll(model.getProductModel().getLocationAccessAuths(
+				workspaceProduct, workspaceOf));
+		existentialRuleforms.put(Location.class.getSimpleName(), toMap(auths));
+
+		auths = new LinkedList<AccessAuthorization<?, ?>>();
+		auths.addAll(model.getProductModel().getRelationshipAccessAuths(
+				workspaceProduct, workspaceOf));
+		existentialRuleforms.put(Relationship.class.getSimpleName(),
+				toMap(auths));
+
+		auths = new LinkedList<AccessAuthorization<?, ?>>();
+		auths.addAll(model.getProductModel().getStatusCodeAccessAuths(
+				workspaceProduct, workspaceOf));
+		existentialRuleforms
+				.put(StatusCode.class.getSimpleName(), toMap(auths));
+
+		workspace = new WorkspaceSnapshot(metaProtocolsByProduct, networksByEntity,
+				protocolsByProduct, statusCodesByProduct, existentialRuleforms,
+				statusCodeSequencingByProduct);
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllMetaProtocols()
+	/**
+	 * @param agencyAuths
 	 */
-	@Override
-	public Collection<MetaProtocol> getAllMetaProtocols() {
-		return model.getWorkspaceModel().getMetaProtocols(workspaceProduct,
-				workspaceOf);
-	}
+	private Map<String, ExistentialRuleform<?, ?>> toMap(
+			List<AccessAuthorization<?, ?>> auths) {
+		Map<String, ExistentialRuleform<?, ?>> map = new HashMap<String, ExistentialRuleform<?, ?>>();
+		for (AccessAuthorization<?, ?> auth : auths) {
+			if (!map.containsKey(auth.getChild().getName())) {
+				map.put(auth.getChild().getName(), auth.getChild());
+			}
+		}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllProtocols()
-	 */
-	@Override
-	public Collection<Protocol> getAllProtocols() {
-		return model.getWorkspaceModel().getProtocols(workspaceProduct,
-				workspaceOf);
-	}
+		return map;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getEntityByName(java.lang
-	 * .Class, java.lang.String)
-	 */
-	@Override
-	public <T extends ExistentialRuleform<?, ?>> T getEntityByName(
-			Class<T> clazz, String name) {
-		// TODO Auto-generated method stub
-		return null;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getGraph(com.chiralbehaviors
-	 * .CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-	 */
-	@Override
-	public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Graph<RuleForm, Network> getGraph(
-			RuleForm parent, Relationship relationship) {
-		//TODO
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getMetaProtocolsFor(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public List<MetaProtocol> getMetaProtocolsFor(Product service) {
-		return model.getJobModel().getMetaProtocolsFor(service);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getProtocolsFor(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public List<Protocol> getProtocolsFor(Product service) {
-		return model.getJobModel().getProtocolsFor(service);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getRootedNetworksFor(com
-	 * .chiralbehaviors.CoRE.ExistentialRuleform)
-	 */
-	@Override
-	public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Graph<RuleForm, Network>> getRootedNetworksFor(
-			RuleForm entity) {
-		//TODO
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getStatusCodeGraph(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(
-			Product service) {
-		return model.getWorkspaceModel().getStatusCodeGraph(service);
+	
+	public WorkspaceSnapshot getWorkspace() {
+		return workspace;
 	}
 
 }

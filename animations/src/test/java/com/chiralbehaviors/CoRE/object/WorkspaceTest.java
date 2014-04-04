@@ -27,13 +27,14 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.kernel.Bootstrap;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.object.Workspace;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hparry
@@ -58,12 +59,11 @@ public class WorkspaceTest extends DatabaseTest {
         beginTransaction();
         Product workspace = kernel.getWorkspace();
         Relationship workspaceOf = kernel.getWorkspaceOf();
+        Model model = new ModelImpl(em);
         Agency core = kernel.getCore();
         Product p1 = new Product("MyProduct", core);
         em.persist(p1);
-        ProductNetwork net = new ProductNetwork(workspace, workspaceOf, p1,
-                                                core);
-        em.persist(net);
+        model.getProductModel().link(workspace, workspaceOf, p1, core);
         ProductAgencyAccessAuthorization coreAuth = new ProductAgencyAccessAuthorization(
                                                                                          workspace,
                                                                                          workspaceOf,
@@ -77,12 +77,11 @@ public class WorkspaceTest extends DatabaseTest {
         em.persist(coreAuth);
         em.persist(locAuth);
         commitTransaction();
-
-        Workspace w = Workspace.loadWorkspace(workspace, workspaceOf, em);
-        assertEquals(2, w.getProducts().size());
-        assertTrue(w.getProducts().contains(p1));
-        assertEquals(2, w.getAccessAuths().size());
-        assertTrue(w.getAccessAuths().contains(coreAuth));
+        em.clear();
+        
+        Workspace w = new WorkspaceLoader(workspace, workspaceOf, new ModelImpl(em)).getWorkspace();
+        assertEquals(1, w.getAllEntitiesOfType(Product.class).size());
+        assertTrue(w.getAllEntitiesOfType(Product.class).contains(p1));
     }
 
 }

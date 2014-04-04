@@ -17,6 +17,7 @@ package com.chiralbehaviors.CoRE.workspace;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
@@ -33,12 +34,35 @@ import com.chiralbehaviors.CoRE.product.Product;
  * 
  */
 public interface Workspace {
+	
 
-    <T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntities(Class<T> clazz);
+	
+	
+	
+	//objects you need
+	
+
+	Map<String, Map<String, ExistentialRuleform<?, ?>>> getAllExistentialRuleforms();
+	
+	/**
+	 * networks in the workspace:
+	 * 	both parent and child must be workspace members
+	 * 	relationship must be a workspace member
+	 */
+	Map<String, Collection<NetworkRuleform<?>>>getAllNetworks();
 
     Collection<MetaProtocol> getAllMetaProtocols();
 
     Collection<Protocol> getAllProtocols();
+	
+	//sequencings of status codes in the workspace
+	Collection<StatusCodeSequencing> getAllStatusCodeSequencings();
+	
+	
+	//convenience methods
+
+    <T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntitiesOfType(Class<T> clazz);
+
 
     <T extends ExistentialRuleform<?, ?>> T getEntityByName(Class<T> clazz,
                                                             String name);
@@ -50,7 +74,6 @@ public interface Workspace {
 
     List<Protocol> getProtocolsFor(Product service);
 
-    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Graph<RuleForm, Network>> getRootedNetworksFor(RuleForm entity);
-
     Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product service);
+
 }

@@ -368,7 +368,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         TypedQuery<RuleForm> q = (TypedQuery<RuleForm>) em.createNamedQuery(prefix
                                                                                     + ExistentialRuleform.GET_CHILDREN_SUFFIX,
                                                                             parent.getClass());
-        return q.getResultList();
+        q.setParameter("parent", parent);
+        q.setParameter("relationship", relationship);
+        List<RuleForm> resultList = q.getResultList();
+		return resultList;
     }
 
     /*

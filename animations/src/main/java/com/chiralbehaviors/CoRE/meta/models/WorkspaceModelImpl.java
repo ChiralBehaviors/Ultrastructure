@@ -280,7 +280,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return new GraphImpl<StatusCode, StatusCodeSequencing>(nodeList, edges);
     }
 
-    public Graph<Product, ?> getStatusCodeSequencingAuthorizationGraph(Product product) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Graph<Product, ?> getStatusCodeSequencingAuthorizationGraph(Product product) {
         Map<Product, Node<Product>> nodes = new HashMap<Product, Node<Product>>();
         List<Edge<?>> edges = new ArrayList<Edge<?>>();
         Node<Product> current = new NodeImpl<Product>(product);

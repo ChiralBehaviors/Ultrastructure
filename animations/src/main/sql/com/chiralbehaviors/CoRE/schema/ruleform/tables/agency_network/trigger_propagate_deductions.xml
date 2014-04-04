@@ -11,6 +11,7 @@
 			AFTER
 			INSERT ON
 			ruleform.agency_network
+            DEFERRABLE INITIALLY DEFERRED
 			FOR EACH ROW
 			EXECUTE PROCEDURE
 			ruleform.propagate_agency_network_deductions();

@@ -64,7 +64,7 @@
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-380">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="coordinate_network_key"
+        <addUniqueConstraint columnNames="parent, relationship, child, inferred_from, inference_rule, premise1, premise2" constraintName="coordinate_network_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.coordinate_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-432">

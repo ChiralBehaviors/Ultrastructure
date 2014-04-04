@@ -46,15 +46,15 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-102">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.agency_network" constraintName="agency_network_child_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-103">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.agency_network" constraintName="agency_network_parent_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-104">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.agency_network"
-            constraintName="agency_network_relationship_fkey" deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+            constraintName="agency_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-105">
@@ -63,7 +63,7 @@
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-372">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="agency_network_parent_key"
+        <addUniqueConstraint columnNames="parent, relationship, child, inferred_from, inference_rule, premise1, premise2" constraintName="agency_network_parent_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.agency_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-428">

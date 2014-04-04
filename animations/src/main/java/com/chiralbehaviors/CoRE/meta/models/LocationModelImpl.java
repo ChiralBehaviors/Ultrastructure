@@ -82,7 +82,7 @@ public class LocationModelImpl
         execute(new Procedure<Void>() {
             @Override
             public Void call(LocationModelImpl locationModel) throws Exception {
-                locationModel.propagate_network(data.getNew().getLong(1));
+                locationModel.propagate(data.getNew().getLong(1));
                 return null;
             }
         });

@@ -111,12 +111,11 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeA = new AgencyNetwork(a, equals, b, core);
         em.persist(edgeA);
         AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
-        em.persist(edgeB);
-
+        em.persist(edgeB); 
         em.getTransaction().commit();
-        em.getTransaction().begin();
-        model.getAgencyModel().propagate(edgeA);
-        em.getTransaction().commit();
+//        em.getTransaction().begin();
+//        model.getAgencyModel().propagate(edgeB);
+//        em.getTransaction().commit();
         em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(2,

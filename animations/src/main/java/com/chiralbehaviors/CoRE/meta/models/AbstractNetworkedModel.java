@@ -22,7 +22,7 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRI
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX; 
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -187,10 +187,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter(1, kernel.getInverseSoftware().getId());
         long then = System.currentTimeMillis();
         int created = query.executeUpdate();
-        if (log.isInfoEnabled()) {
-            log.info(String.format("created %s inverse rules of %s in %s ms",
-                                   created, networkPrefix,
-                                   System.currentTimeMillis() - then));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("created %s inverse rules of %s in %s ms",
+                                    created, networkPrefix,
+                                    System.currentTimeMillis() - then));
         }
     }
 
@@ -519,22 +519,23 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     protected void propagate(Long edge) {
+        if (log.isInfoEnabled()) {
+            log.info(String.format("propagating %s edge %s",
+                                   network.getSimpleName(), edge));
+        }
         createDeductionTemporaryTables();
         boolean firstPass = true;
+        boolean derived = false;
         do {
             int newRules;
             // Deduce all possible rules
             if (firstPass) {
-                Query query = em.createNamedQuery(networkPrefix
-                                                  + INFERENCE_STEP_SUFFIX);
-                query.setParameter(1, edge);
-                newRules = query.executeUpdate();
+                newRules = em.createNamedQuery(networkPrefix
+                                                       + INFERENCE_STEP_SUFFIX).executeUpdate();
                 firstPass = false;
             } else {
-                Query query = em.createNamedQuery(networkPrefix
-                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX);
-                query.setParameter(1, edge);
-                newRules = query.executeUpdate();
+                newRules = em.createNamedQuery(networkPrefix
+                                                       + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
             }
             if (log.isInfoEnabled()) {
                 log.info(String.format("inferred %s new rules", newRules));
@@ -556,9 +557,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             if (log.isInfoEnabled()) {
                 log.info(String.format("inserted %s new rules", inserted));
             }
+            derived |= inserted > 0;
             alterDeductionTablesForNextPass();
-            generateInverses();
         } while (true);
+        if (derived) {
+            generateInverses();
+        }
     }
 
     private void addTransitiveRelationships(Network edge,
@@ -608,8 +612,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
                                      + "child BIGINT NOT NULL,"
-                                     + "inferred_from BIGINT NOT NULL,"
-                                     + "inference_rule BIGINT NOT NULL,"
                                      + "premise1 BIGINT NOT NULL,"
                                      + "premise2 BIGINT NOT NULL)").executeUpdate();
     }
@@ -629,8 +631,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
                                      + "child BIGINT NOT NULL,"
-                                     + "inferred_from BIGINT NOT NULL,"
-                                     + "inference_rule BIGINT NOT NULL,"
                                      + "premise1 BIGINT NOT NULL,"
                                      + "premise2 BIGINT NOT NULL)").executeUpdate();
     }
@@ -640,8 +640,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
                                      + "child BIGINT NOT NULL,"
-                                     + "inferred_from BIGINT NOT NULL,"
-                                     + "inference_rule BIGINT NOT NULL,"
                                      + "premise1 BIGINT NOT NULL,"
                                      + "premise2 BIGINT NOT NULL )").executeUpdate();
     }
@@ -761,9 +759,5 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
         }
         return allowedValues;
-    }
-
-    protected void propagate_network(long id) {
-        propagate(em.find(network, id));
     }
 }

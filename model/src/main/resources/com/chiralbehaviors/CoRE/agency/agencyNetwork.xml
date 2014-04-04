@@ -4,13 +4,11 @@
     <entity name="AgencyNetwork" class="com.chiralbehaviors.CoRE.agency.AgencyNetwork"> 
         <named-native-query name="agencyNetwork.inference">
             <query><![CDATA[
-            INSERT INTO working_memory(parent, relationship, child, inferred_from, inference_rule, premise1, premise2)
+            INSERT INTO working_memory(parent, relationship, child, premise1, premise2)
                  SELECT
                       p1.parent as parent,
                       deduction.inference as relationship,
                       p2.child as child,
-                      ?1 as inferred_from,
-                      deduction.id as inference_rule,
                       p1.id as premise1,
                       p2.id as premise2
                  FROM  (SELECT n.id, n.parent, n.relationship, n.child
@@ -27,20 +25,18 @@
         </named-native-query>
         <named-native-query name="agencyNetwork.inferenceStepFromLastPass">
             <query><![CDATA[
-            INSERT INTO working_memory(parent, relationship, child, inferred_from, inference_rule, premise1, premise2)
+            INSERT INTO working_memory(parent, relationship, child, premise1, premise2)
                 SELECT
                     p1.parent as parent,
                     deduction.inference as relationship,
                     p2.child as child,
-                    ? as inferred_from,
-                    deduction.id as inference_rule,
                     p1.id as premise1,
                     p2.id as premise2
                 FROM (SELECT n.id, n.parent, n.relationship, n.child
                         FROM last_pass_rules AS n) as p1
                 JOIN (SELECT n.id, n.parent, n.relationship, n.child
                         FROM ruleform.agency_network AS n
-                        WHERE n.inferred_from = 1) as p2
+                        WHERE n.premise1 = 1) as p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                 JOIN ruleform.network_inference AS deduction
@@ -54,34 +50,26 @@
                                            parent, 
                                            relationship, 
                                            child, 
-                                           inferred_from, 
-                                           inference_rule, 
                                            premise1, 
                                            premise2)
                 SELECT nextval('ruleform.agency_network_id_seq') as id, 
                        wm.parent as parent, 
                        wm.relationship as relationship, 
                        wm.child as child, 
-                       wm.inferred_from as inferred_from, 
-                       wm.inference_rule as inference_rule, 
                        wm.premise1 as premise1, 
                        wm.premise2 as premise2
-                FROM (SELECT parent, relationship, child, inferred_from, inference_rule, premise1, premise2
+                FROM (SELECT parent, relationship, child, premise1, premise2
                       FROM working_memory 
-                      GROUP BY parent, relationship, child, inferred_from, inference_rule, premise1, premise2) AS wm
+                      GROUP BY parent, relationship, child, premise1, premise2) AS wm
                 LEFT OUTER JOIN ruleform.agency_network AS exist
                      ON wm.parent = exist.parent
                      AND wm.relationship = exist.relationship
                      AND wm.child = exist.child
-                     AND wm.inferred_from = exist.inferred_from
-                     AND wm.inference_rule = exist.inference_rule
                      AND wm.premise1 = exist.premise1
                      AND wm.premise2 = exist.premise2
                 WHERE exist.parent IS NULL
                  AND exist.relationship IS NULL
                  AND exist.child IS NULL
-                 AND exist.inferred_from IS NULL
-                 AND exist.inference_rule IS NULL
                  AND exist.premise1 IS NULL
                  AND exist.premise2 IS NULL
             ]]></query>
@@ -91,18 +79,14 @@
            INSERT INTO ruleform.agency_network(id, 
                                                parent, 
                                                relationship, 
-                                               child, 
-                                               inferred_from, 
-                                               inference_rule, 
+                                               child,
                                                premise1, 
                                                premise2, 
                                                updated_by)
                SELECT cpr.id as id,
                       cpr.parent as parent, 
                       cpr.relationship as relationship, 
-                      cpr.child as child, 
-                      cpr.inferred_from as inferred_from, 
-                      cpr.inference_rule as inference_rule, 
+                      cpr.child as child,
                       cpr.premise1 as premise1, 
                       cpr.premise2 as premise2,
                       ?1 as updated_by
@@ -111,12 +95,10 @@
         </named-native-query>
         <named-native-query name="agencyNetwork.generateInverses">
             <query><![CDATA[
-            INSERT INTO ruleform.agency_network(parent, relationship, child, inferred_from, inference_rule, premise1, premise2, updated_by)
+            INSERT INTO ruleform.agency_network(parent, relationship, child, premise1, premise2, updated_by)
             SELECT net.child as parent,
                    rel.inverse as relationship,
                    net.parent as child,
-                   net.inferred_from as inferred_from,
-                   net.inference_rule as inference_rule,
                    net.premise1 as premise1,
                    net.premise2 as premise2,
                    ?1 as updated_by
@@ -126,15 +108,11 @@
                 ON net.child = exist.parent
                 AND rel.inverse = exist.relationship
                 AND net.parent = exist.child
-                AND net.inferred_from = exist.inferred_from
-                AND net.inference_rule = exist.inference_rule
                 AND net.premise1 = exist.premise1
                 AND net.premise2 = exist.premise2
             WHERE exist.parent IS NULL
               AND exist.relationship IS NULL
               AND exist.child IS NULL
-              AND exist.inferred_from is NULL
-              AND exist.inference_rule is NULL
               AND exist.premise1 is NULL
               AND exist.premise2 is NULL
             ]]></query>

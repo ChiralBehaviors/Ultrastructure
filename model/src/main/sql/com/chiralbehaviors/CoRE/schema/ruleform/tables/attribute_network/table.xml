@@ -63,7 +63,7 @@
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-376">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="attribute_network_parent_key"
+        <addUniqueConstraint columnNames="parent, relationship, child, inferred_from, inference_rule, premise1, premise2" constraintName="attribute_network_parent_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.attribute_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-442">

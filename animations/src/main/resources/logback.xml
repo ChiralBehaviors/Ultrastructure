@@ -9,6 +9,9 @@
 	<logger name="com.chiralbehaviors.CoRE">
 		<level value="${testing.logging.core}" />
 	</logger>
+    <logger name="com.chiralbehaviors.CoRE.meta.models">
+        <level value="TRACE" />
+    </logger>
 
 	<root>
 		<level value="INFO" />

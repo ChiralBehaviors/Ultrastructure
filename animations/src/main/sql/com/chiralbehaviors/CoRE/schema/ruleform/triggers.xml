@@ -1,47 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
-	<include relativeToChangelogFile="true"
-		file="tables/product_child_sequencing_authorization/trigger-valid_child_service_and_status_to_set.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/product_parent_sequencing_authorization/trigger-valid_parent_service_and_status_to_set.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/product_sibling_sequencing_authorization/trigger-valid_sibling_service_and_status_to_set.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/job/trigger-check_next_state_is_valid.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/job/trigger-create_implicit_jobs.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/job/trigger-log_inserts_in_job_chronology.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/job/trigger-process_job_state_change.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/job/trigger-set_inserted_status_code.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/status_code_sequencing/trigger-ensure_valid_state_graph_.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/status_code_sequencing/trigger-log_modified_service.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/attribute_network/trigger_propagate_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/interval_network/trigger_propagate_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/location_network/trigger_propagate_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/product_network/trigger_propagate_deductions.xml" />
-	<!-- <include relativeToChangelogFile="true"
-		file="tables/agency_network/trigger_propagate_deductions.xml" /> -->
     <include relativeToChangelogFile="true"
-        file="tables/relationship_network/trigger_propagate_deductions.xml" />
+        file="tables/product_child_sequencing_authorization/trigger-valid_child_service_and_status_to_set.xml" />
     <include relativeToChangelogFile="true"
-        file="tables/coordinate_network/trigger_propagate_deductions.xml" />
+        file="tables/product_parent_sequencing_authorization/trigger-valid_parent_service_and_status_to_set.xml" />
     <include relativeToChangelogFile="true"
-        file="tables/status_code_network/trigger_propagate_deductions.xml" />
-    <include relativeToChangelogFile="true"
-        file="tables/unit_network/trigger_propagate_deductions.xml" />
+        file="tables/product_sibling_sequencing_authorization/trigger-valid_sibling_service_and_status_to_set.xml" />
+    <include relativeToChangelogFile="true" file="tables/job/trigger-check_next_state_is_valid.xml" />
+    <include relativeToChangelogFile="true" file="tables/job/trigger-create_implicit_jobs.xml" />
+    <include relativeToChangelogFile="true" file="tables/job/trigger-log_inserts_in_job_chronology.xml" />
+    <include relativeToChangelogFile="true" file="tables/job/trigger-process_job_state_change.xml" />
+    <include relativeToChangelogFile="true" file="tables/job/trigger-set_inserted_status_code.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-ensure_valid_state_graph_.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-log_modified_service.xml" />
+    <include relativeToChangelogFile="true" file="tables/attribute_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/interval_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/relationship_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/coordinate_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_network/trigger_propagate_deductions.xml" />
+    <include relativeToChangelogFile="true" file="tables/unit_network/trigger_propagate_deductions.xml" />
 
 </databaseChangeLog>

@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.event.status;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -54,8 +53,6 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "statusCodeNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "statusCodeNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "statusCodeNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "statusCodeNetwork"
@@ -85,6 +82,14 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @ManyToOne
     @JoinColumn(name = "parent")
     private StatusCode         parent;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise1")
+    private StatusCodeNetwork  premise1;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise2")
+    private StatusCodeNetwork  premise2;
 
     /**
      * 
@@ -146,14 +151,28 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         return id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
     public StatusCode getParent() {
         return parent;
+    }
+
+    /**
+     * @return the premise1
+     */
+    @Override
+    public StatusCodeNetwork getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public StatusCodeNetwork getPremise2() {
+        return premise2;
     }
 
     /*
@@ -178,14 +197,29 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         this.id = id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
-     * chiralbehaviors.CoRE.ExistentialRuleform)
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
     @Override
     public void setParent(StatusCode parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(NetworkRuleform<StatusCode> premise1) {
+        this.premise1 = (StatusCodeNetwork) premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(NetworkRuleform<StatusCode> premise2) {
+        this.premise2 = (StatusCodeNetwork) premise2;
     }
 }

@@ -63,15 +63,10 @@ public class RelationshipModelImpl
 
     private static interface Procedure<T> {
         T call(RelationshipModelImpl productModel) throws Exception;
-    }
-
-    private static final String RELATIONSHIP_NETWORK_PROPAGATE = "relationshipNetwork.propagate";
+    } 
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
-        if (!markPropagated(RELATIONSHIP_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
+                                                                   throws Exception { 
         execute(new Procedure<Void>() {
             @Override
             public Void call(RelationshipModelImpl agencyModel)

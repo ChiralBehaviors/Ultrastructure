@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.location;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -61,8 +60,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public class LocationNetwork extends NetworkRuleform<Location> {
     public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "locationNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "locationNetwork"
@@ -82,15 +79,23 @@ public class LocationNetwork extends NetworkRuleform<Location> {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "child")
-    private Location child;
+    private Location        child;
 
     @Id
     @GeneratedValue(generator = "location_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long     id;
+    private Long            id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
-    private Location parent;
+    private Location        parent;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise1")
+    private LocationNetwork premise1;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise2")
+    private LocationNetwork premise2;
 
     public LocationNetwork() {
     }
@@ -143,6 +148,22 @@ public class LocationNetwork extends NetworkRuleform<Location> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public LocationNetwork getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public LocationNetwork getPremise2() {
+        return premise2;
+    }
+
     @Override
     public void setChild(Location child) {
         this.child = child;
@@ -158,12 +179,26 @@ public class LocationNetwork extends NetworkRuleform<Location> {
         this.parent = parent;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(NetworkRuleform<Location> premise1) {
+        this.premise1 = (LocationNetwork) premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(NetworkRuleform<Location> premise2) {
+        this.premise2 = (LocationNetwork) premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

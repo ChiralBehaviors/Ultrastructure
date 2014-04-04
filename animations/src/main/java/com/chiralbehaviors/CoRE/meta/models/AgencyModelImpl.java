@@ -65,13 +65,8 @@ public class AgencyModelImpl
         T call(AgencyModelImpl productModel) throws Exception;
     }
 
-    private static final String AGENCY_NETWORK_PROPAGATE = "agencyNetwork.propagate";
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (!markPropagated(AGENCY_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(AgencyModelImpl agencyModel) throws Exception {

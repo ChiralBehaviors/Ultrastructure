@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.coordinate;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -54,8 +53,6 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "coordinateNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "coordinateNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "coordinateNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "coordinateNetwork"
@@ -80,10 +77,18 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    // bi-directional many-to-one association to Agency
+    //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
     private Coordinate         parent;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise1")
+    private CoordinateNetwork  premise1;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise2")
+    private CoordinateNetwork  premise2;
 
     /**
      * 
@@ -147,12 +152,28 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
 
     /*
      * (non-Javadoc)
-     * 
+     *  
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
     public Coordinate getParent() {
         return parent;
+    }
+
+    /**
+     * @return the premise1
+     */
+    @Override
+    public CoordinateNetwork getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public CoordinateNetwork getPremise2() {
+        return premise2;
     }
 
     /*
@@ -177,14 +198,29 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         this.id = id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
-     * chiralbehaviors.CoRE.ExistentialRuleform)
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform) 
      */
     @Override
     public void setParent(Coordinate parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(NetworkRuleform<Coordinate> premise1) {
+        this.premise1 = (CoordinateNetwork) premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(NetworkRuleform<Coordinate> premise2) {
+        this.premise2 = (CoordinateNetwork) premise2;
     }
 }

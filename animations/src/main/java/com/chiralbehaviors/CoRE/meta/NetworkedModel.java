@@ -51,8 +51,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * 
      * @return the new instance
      */
-    public RuleForm create(String name, String description,
-                           Aspect<RuleForm> aspect, @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
+    public RuleForm create(String name,
+                           String description,
+                           Aspect<RuleForm> aspect,
+                           @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
 
     public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
@@ -86,7 +88,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return the new instance
      */
     RuleForm create(RuleForm prototype);
-    
+
     /**
      * @param id
      * @return the ruleform with the specified id

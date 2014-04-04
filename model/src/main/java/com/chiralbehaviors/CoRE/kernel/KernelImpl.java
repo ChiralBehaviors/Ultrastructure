@@ -19,8 +19,13 @@ package com.chiralbehaviors.CoRE.kernel;
 import javax.persistence.EntityManager;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
@@ -28,8 +33,12 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * Repository of immutable kernal rules
@@ -39,74 +48,84 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public class KernelImpl implements Kernel {
 
-    private final Agency       agency;
-    private final Agency       anyAgency;
-    private final Attribute    anyAttribute;
-    private final Location     anyLocation;
-    private final Product      anyProduct;
-    private final Relationship anyRelationship;
+    private static final Long         ONE = Long.valueOf(1);
+    private final Agency              agency;
+    private final Agency              anyAgency;
+    private final Attribute           anyAttribute;
+    private final Location            anyLocation;
+    private final Product             anyProduct;
+    private final Relationship        anyRelationship;
 
-    private final Attribute    attribute;
-    private final Relationship contains;
-    private final Agency       core;
-    private final Agency       coreAnimationSoftware;
-    private final Agency       coreModel;
-    private final Agency       coreUser;
+    private final Attribute           attribute;
+    private final Relationship        contains;
+    private final Agency              core;
+    private final Agency              coreAnimationSoftware;
+    private final Agency              coreModel;
+    private final Agency              coreUser;
 
-    private final Relationship developed;
-    private final Relationship developedBy;
-    private final Relationship equals;
-    private final Relationship formerMemberOf;
-    private final Relationship greaterThan;
+    private final Relationship        developed;
+    private final Relationship        developedBy;
+    private final Relationship        equals;
+    private final Relationship        formerMemberOf;
+    private final Relationship        greaterThan;
 
-    private final Relationship greaterThanOrEqual;
-    private final Relationship hadMember;
-    private final Relationship hasException;
-    private final Relationship hasHead;
-    private final Relationship hasMember;
-    private final Relationship hasVersion;
-    private final Relationship headOf;
-    private final Relationship includes;
-    private final Agency       inverseSoftware;
-    private final Relationship inWorkspace;
-    private final Relationship isA;
-    private final Relationship isContainedIn;
-    private final Relationship isExceptionTo;
+    private final Relationship        greaterThanOrEqual;
+    private final Relationship        hadMember;
+    private final Relationship        hasException;
+    private final Relationship        hasHead;
+    private final Relationship        hasMember;
+    private final Relationship        hasVersion;
+    private final Relationship        headOf;
+    private final Relationship        includes;
+    private final Agency              inverseSoftware;
+    private final Relationship        inWorkspace;
+    private final Relationship        isA;
+    private final Relationship        isContainedIn;
+    private final Relationship        isExceptionTo;
 
-    private final Relationship isLocationOf;
-    private final Relationship lessThan;
-    private final Relationship lessThanOrEqual;
-    private final Location     location;
-    private final Attribute    loginAttribute;
-    private final Relationship mapsToLocation;
-    private final Relationship memberOf;
-    private final Agency       notApplicableAgency;
-    private final Attribute    notApplicableAttribute;
-    private final Location     notApplicableLocation;
-    private final Product      notApplicableProduct;
-    private final Relationship notApplicableRelationship;
-    private final Agency       originalAgency;
-    private final Attribute    originalAttribute;
-    private final Location     originalLocation;
-    private final Product      originalProduct;
-    private final Relationship ownedBy;
-    private final Relationship owns;
-    private final Attribute    passwordHashAttribute;
-    private final Product      product;
-    private final Agency       propagationSoftware;
-    private final Relationship prototype;
-    private final Relationship prototypeOf;
-    private final Agency       sameAgency;
-    private final Location     sameLocation;
-    private final Product      sameProduct;
-    private final Relationship sameRelationship;
-    private final Agency       specialSystemAgency;
-    private final Agency       superUser;
-    private final StatusCode   unset;
-    private final Relationship versionOf;
-    private final Product      workspace;
+    private final Relationship        isLocationOf;
+    private final Relationship        lessThan;
+    private final Relationship        lessThanOrEqual;
+    private final Location            location;
+    private final Attribute           loginAttribute;
+    private final Relationship        mapsToLocation;
+    private final Relationship        memberOf;
+    private final Agency              notApplicableAgency;
+    private final Attribute           notApplicableAttribute;
+    private final Location            notApplicableLocation;
+    private final Product             notApplicableProduct;
+    private final Relationship        notApplicableRelationship;
+    private final Agency              originalAgency;
+    private final Attribute           originalAttribute;
+    private final Location            originalLocation;
+    private final Product             originalProduct;
+    private final Relationship        ownedBy;
+    private final Relationship        owns;
+    private final Attribute           passwordHashAttribute;
+    private final Product             product;
+    private final Agency              propagationSoftware;
+    private final Relationship        prototype;
+    private final Relationship        prototypeOf;
+    private final AgencyNetwork       rootAgencyNetwork;
+    private final AttributeNetwork    rootAttributeNetwork;
+    private final CoordinateNetwork   rootCoordinateNetwork;
+    private final IntervalNetwork     rootIntervalNetwork;
+    private final LocationNetwork     rootLocationNetwork;
+    private final ProductNetwork      rootProductNetwork;
+    private final RelationshipNetwork rootRelationshipNetwork;
+    private final StatusCodeNetwork   rootStatusCodeNetwork;
+    private final UnitNetwork         rootUnitNetwork;
+    private final Agency              sameAgency;
+    private final Location            sameLocation;
+    private final Product             sameProduct;
+    private final Relationship        sameRelationship;
+    private final Agency              specialSystemAgency;
+    private final Agency              superUser;
+    private final StatusCode          unset;
+    private final Relationship        versionOf;
+    private final Product             workspace;
 
-    private final Relationship workspaceOf;
+    private final Relationship        workspaceOf;
 
     public KernelImpl(EntityManager em) {
 
@@ -182,6 +201,15 @@ public class KernelImpl implements Kernel {
 
         unset = find(em, WellKnownStatusCode.UNSET);
 
+        rootAgencyNetwork = em.find(AgencyNetwork.class, ONE);
+        rootAttributeNetwork = em.find(AttributeNetwork.class, ONE);
+        rootCoordinateNetwork = em.find(CoordinateNetwork.class, ONE);
+        rootIntervalNetwork = em.find(IntervalNetwork.class, ONE);
+        rootLocationNetwork = em.find(LocationNetwork.class, ONE);
+        rootProductNetwork = em.find(ProductNetwork.class, ONE);
+        rootRelationshipNetwork = em.find(RelationshipNetwork.class, ONE);
+        rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ONE);
+        rootUnitNetwork = em.find(UnitNetwork.class, ONE);
     }
 
     /*
@@ -679,6 +707,78 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getPrototypeOf() {
         return prototypeOf;
+    }
+
+    /**
+     * @return the rootAgencyNetwork
+     */
+    @Override
+    public AgencyNetwork getRootAgencyNetwork() {
+        return rootAgencyNetwork;
+    }
+
+    /**
+     * @return the rootAttributeNetwork
+     */
+    @Override
+    public AttributeNetwork getRootAttributeNetwork() {
+        return rootAttributeNetwork;
+    }
+
+    /**
+     * @return the rootCoordinateNetwork
+     */
+    @Override
+    public CoordinateNetwork getRootCoordinateNetwork() {
+        return rootCoordinateNetwork;
+    }
+
+    /**
+     * @return the rootIntervalNetwork
+     */
+    @Override
+    public IntervalNetwork getRootIntervalNetwork() {
+        return rootIntervalNetwork;
+    }
+
+    /**
+     * @return the rootLocationNetwork
+     */
+    @Override
+    public LocationNetwork getRootLocationNetwork() {
+        return rootLocationNetwork;
+    }
+
+    /**
+     * @return the rootProductNetwork
+     */
+    @Override
+    public ProductNetwork getRootProductNetwork() {
+        return rootProductNetwork;
+    }
+
+    /**
+     * @return the rootRelationshipNetwork
+     */
+    @Override
+    public RelationshipNetwork getRootRelationshipNetwork() {
+        return rootRelationshipNetwork;
+    }
+
+    /**
+     * @return the rootStatusCodeNetwork
+     */
+    @Override
+    public StatusCodeNetwork getRootStatusCodeNetwork() {
+        return rootStatusCodeNetwork;
+    }
+
+    /**
+     * @return the rootUnitNetwork
+     */
+    @Override
+    public UnitNetwork getRootUnitNetwork() {
+        return rootUnitNetwork;
     }
 
     /**

@@ -98,6 +98,10 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     abstract public E getParent();
 
+    abstract public NetworkRuleform<E> getPremise1();
+
+    abstract public NetworkRuleform<E> getPremise2();
+
     /**
      * @return the relationship
      */
@@ -129,6 +133,10 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     }
 
     abstract public void setParent(E parent);
+
+    abstract public void setPremise1(NetworkRuleform<E> inferred);
+
+    abstract public void setPremise2(NetworkRuleform<E> inferred);
 
     /**
      * @param relationship

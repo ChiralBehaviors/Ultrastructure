@@ -43,7 +43,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public static final String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX     = ".findGroupedAttributeAuthorizationsForAttribute";
     public static final String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX                   = ".findGroupedAttributeAuthorizations";
     public static final String FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX                          = ".findGroupedAttributes";
-    public static final String GATHER_EXISTING_NETWORK_RULES_SUFFIX                          = ".gatherExistingNetworkRules";
     public static final String GENERATE_NETWORK_INVERSES_SUFFIX                              = ".generateInverses";
     public static final String GET_ALL_PARENT_RELATIONSHIPS_SUFFIX                           = ".getAllParentRelationships";
     public static final String GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX                        = ".getChildRulesByRelationship";

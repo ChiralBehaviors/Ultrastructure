@@ -100,8 +100,8 @@ public abstract class JSP {
                 }
                 throw e;
             } catch (Throwable e) {
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("Error during %s", call), e);
+                if (log.isInfoEnabled()) {
+                    log.info(String.format("Error during %s", call), e);
                 }
                 StringWriter string = new StringWriter();
                 PrintWriter writer = new PrintWriter(string);

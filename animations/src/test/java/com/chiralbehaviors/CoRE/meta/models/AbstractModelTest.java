@@ -19,6 +19,9 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -31,7 +34,6 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.chiralbehaviors.CoRE.meta.BootstrapLoader;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 
 /**
  * Common superclass for tests that need the initialized Kernel and model.
@@ -40,10 +42,11 @@ import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
  * 
  */
 public class AbstractModelTest {
+    private static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    protected Model         model;
-    protected Kernel        kernel;
-    protected EntityManager em;
+    protected Model             model;
+    protected Kernel            kernel;
+    protected EntityManager     em;
 
     public AbstractModelTest() {
         super();
@@ -68,6 +71,24 @@ public class AbstractModelTest {
 
         model = new ModelImpl(em);
         kernel = model.getKernel();
+    }
+
+    protected void alterTriggers(boolean enable) throws SQLException {
+        Connection connection = em.unwrap(Connection.class);
+        for (String table : new String[] { "ruleform.agency",
+                "ruleform.product", "ruleform.location" }) {
+            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
+                                         table, enable ? "ENABLE" : "DISABLE");
+            connection.createStatement().execute(query);
+        }
+        ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
+        while (r.next()) {
+            String table = r.getString("name");
+            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
+                                         table, enable ? "ENABLE" : "DISABLE");
+            connection.createStatement().execute(query);
+        }
+        r.close();
     }
 
 }

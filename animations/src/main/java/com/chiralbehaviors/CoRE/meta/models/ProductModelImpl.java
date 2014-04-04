@@ -74,12 +74,7 @@ public class ProductModelImpl
         T call(ProductModelImpl productModel) throws Exception;
     }
 
-    private static final String PRODUCT_NETWORK_PROPAGATE = "ProductNetwork.propagate";
-
-    public static void propagate_deductions(TriggerData data) throws Exception {
-        if (!markPropagated(PRODUCT_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
+    public static void propagate_deductions(final TriggerData data) throws Exception {
         execute(new Procedure<Void>() {
             @Override
             public Void call(ProductModelImpl productModel) throws Exception {

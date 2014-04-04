@@ -20,12 +20,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.access.resource.CollectionResource;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
+import com.chiralbehaviors.CoRE.meta.BootstrapLoader;
+import com.chiralbehaviors.CoRE.meta.models.ModelTest;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
@@ -137,7 +146,21 @@ public class CollectionResourceTest extends DatabaseTest {
 	}
 
 	@Test
-	public void testPost() throws JsonProcessingException {
+	public void testPost() throws IOException, SQLException {
+	        InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
+	        assertNotNull("jpa properties missing", is);
+	        Properties properties = new Properties();
+	        properties.load(is);
+	        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+	                                                                          properties);
+	        em = emf.createEntityManager();
+	        BootstrapLoader loader = new BootstrapLoader(em);
+	        em.getTransaction().begin();
+	        loader.clear();
+	        em.getTransaction().commit();
+	        em.getTransaction().begin();
+	        loader.bootstrap();
+	        em.getTransaction().commit();
 		resource = new CollectionResource(emf);
 		Agency core = new Agency("hparry", "test resource");
 		core.setUpdatedBy(core);

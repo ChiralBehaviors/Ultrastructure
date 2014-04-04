@@ -72,13 +72,8 @@ public class StatusCodeModelImpl
         T call(StatusCodeModelImpl productModel) throws Exception;
     }
 
-    private static final String STATUS_CODE_NETWORK_PROPAGATE = "statusCodeNetwork.propagate";
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (!markPropagated(STATUS_CODE_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(StatusCodeModelImpl agencyModel) throws Exception {

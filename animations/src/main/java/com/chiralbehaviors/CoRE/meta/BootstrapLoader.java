@@ -88,10 +88,7 @@ public class BootstrapLoader extends Bootstrap {
     public void bootstrap() throws SQLException {
         super.bootstrap();
         kernel = new KernelImpl(em);
-        constructProductNetworks();
         constructAgencyNetworks();
-        constructLocationNetworks();
-        constructAttributeNetworks();
         constructAspects();
         constructAgencyAttributes();
     }
@@ -118,32 +115,8 @@ public class BootstrapLoader extends Bootstrap {
     }
 
     public void constructAgencyNetworks() {
-        kernel.getAgency().link(kernel.getIsA(), kernel.getAgency(),
-                                kernel.getCore(), kernel.getCore(), em);
-        kernel.getCore().link(kernel.getIsA(), kernel.getAgency(),
-                              kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyAgency().link(kernel.getIsA(), kernel.getAgency(),
-                                   kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalAgency().link(kernel.getIsA(), kernel.getAgency(),
-                                        kernel.getCore(), kernel.getCore(), em);
-        kernel.getCoreAnimationSoftware().link(kernel.getIsA(),
-                                               kernel.getAgency(),
-                                               kernel.getCore(),
-                                               kernel.getCore(), em);
-        kernel.getPropagationSoftware().link(kernel.getIsA(),
-                                             kernel.getAgency(),
-                                             kernel.getCore(),
-                                             kernel.getCore(), em);
-        kernel.getSpecialSystemAgency().link(kernel.getIsA(),
-                                             kernel.getAgency(),
-                                             kernel.getCore(),
-                                             kernel.getCore(), em);
-        kernel.getCoreUser().link(kernel.getIsA(), kernel.getAgency(),
-                                  kernel.getCore(), kernel.getCore(), em);
         kernel.getSuperUser().link(kernel.getIsA(), kernel.getCoreUser(),
                                    kernel.getCore(), kernel.getCore(), em);
-        kernel.getInverseSoftware().link(kernel.getIsA(), kernel.getAgency(),
-                                         kernel.getCore(), kernel.getCore(), em);
     }
 
     public void constructAspects() {
@@ -160,42 +133,5 @@ public class BootstrapLoader extends Bootstrap {
                                                                                          kernel.getCore());
         em.persist(passwordHashAuth);
 
-    }
-
-    public void constructAttributeNetworks() {
-        kernel.getAttribute().link(kernel.getIsA(), kernel.getAttribute(),
-                                   kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyAttribute().link(kernel.getIsA(), kernel.getAttribute(),
-                                      kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalAttribute().link(kernel.getIsA(),
-                                           kernel.getAttribute(),
-                                           kernel.getCore(), kernel.getCore(),
-                                           em);
-        kernel.getLoginAttribute().link(kernel.getIsA(), kernel.getAttribute(),
-                                        kernel.getCore(), kernel.getCore(), em);
-        kernel.getPasswordHashAttribute().link(kernel.getIsA(),
-                                               kernel.getAttribute(),
-                                               kernel.getCore(),
-                                               kernel.getCore(), em);
-    }
-
-    public void constructLocationNetworks() {
-        kernel.getLocation().link(kernel.getIsA(), kernel.getLocation(),
-                                  kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyLocation().link(kernel.getIsA(), kernel.getLocation(),
-                                     kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalLocation().link(kernel.getIsA(),
-                                          kernel.getLocation(),
-                                          kernel.getCore(), kernel.getCore(),
-                                          em);
-    }
-
-    public void constructProductNetworks() {
-        kernel.getProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                 kernel.getCore(), kernel.getCore(), em);
-        kernel.getAnyProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                    kernel.getCore(), kernel.getCore(), em);
-        kernel.getOriginalProduct().link(kernel.getIsA(), kernel.getProduct(),
-                                         kernel.getCore(), kernel.getCore(), em);
     }
 }

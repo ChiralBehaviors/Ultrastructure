@@ -65,13 +65,8 @@ public class CoordinateModelImpl
         T call(CoordinateModelImpl productModel) throws Exception;
     }
 
-    private static final String COORDINATE_NETWORK_PROPAGATE = "coordinateNetwork.propagate";
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (!markPropagated(COORDINATE_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(CoordinateModelImpl agencyModel) throws Exception {

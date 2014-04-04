@@ -42,8 +42,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>model</artifactId>
-			<version>${project.version}</version>
+			<artifactId>model</artifactId> 
 			<exclusions>
 				<exclusion>
 					<artifactId>stax-api</artifactId>
@@ -55,13 +54,11 @@
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>model</artifactId>
 			<type>test-jar</type>
-			<scope>test</scope>
-			<version>${project.version}</version>
+			<scope>test</scope> 
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>configuration</artifactId>
-			<version>${project.version}</version>
+			<artifactId>configuration</artifactId> 
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
@@ -74,8 +71,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>animations</artifactId>
-			<version>${project.version}</version>
+			<artifactId>animations</artifactId> 
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-jdk14</artifactId>
@@ -87,13 +83,11 @@
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>animations</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
-            <version>${project.version}</version>
+            <scope>test</scope> 
         </dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>json</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<artifactId>json</artifactId> 
 		</dependency>
 	</dependencies>
 </project>

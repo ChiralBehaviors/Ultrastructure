@@ -17,11 +17,20 @@
 package com.chiralbehaviors.CoRE.kernel;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
@@ -134,6 +143,24 @@ public interface Kernel {
     Relationship getPrototype();
 
     Relationship getPrototypeOf();
+
+    AgencyNetwork getRootAgencyNetwork();
+
+    AttributeNetwork getRootAttributeNetwork();
+
+    CoordinateNetwork getRootCoordinateNetwork();
+
+    IntervalNetwork getRootIntervalNetwork();
+
+    LocationNetwork getRootLocationNetwork();
+
+    ProductNetwork getRootProductNetwork();
+
+    RelationshipNetwork getRootRelationshipNetwork();
+
+    StatusCodeNetwork getRootStatusCodeNetwork();
+
+    UnitNetwork getRootUnitNetwork();
 
     Agency getSameAgency();
 

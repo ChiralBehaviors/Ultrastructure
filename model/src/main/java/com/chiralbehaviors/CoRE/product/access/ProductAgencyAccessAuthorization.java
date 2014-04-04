@@ -131,6 +131,7 @@ public class ProductAgencyAccessAuthorization extends
 
     public static final String FIND_PARENT_CHILD_NETWORKS                                              = "test2";
     public static final String FIND_RULEFORMS_REFERENCED_BY_AUTH                                       = "test";
+
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

@@ -9,9 +9,9 @@
 		<sql><![CDATA[
 		    CREATE CONSTRAINT TRIGGER trigger_propagate_agency_network_deductions
 			AFTER
-			INSERT OR UPDATE ON
+			INSERT ON
 			ruleform.agency_network
-			DEFERRABLE INITIALLY DEFERRED
+            DEFERRABLE INITIALLY DEFERRED
 			FOR EACH ROW
 			EXECUTE PROCEDURE
 			ruleform.propagate_agency_network_deductions();

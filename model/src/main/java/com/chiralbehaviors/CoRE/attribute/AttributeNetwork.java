@@ -16,12 +16,13 @@
 package com.chiralbehaviors.CoRE.attribute;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
+import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.Map;
 
@@ -32,6 +33,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -47,14 +50,20 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * 
  */
 
+@NamedQueries({
+               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
+                                                                            + "WHERE n.parent = :attribute and n.inferred = 0 "
+                                                                            + "AND n.relationship.preferred = 0 "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "attribute_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "attributeNetwork"
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES    = "attributeNetwork"
-                                                                  + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES        = "attributeNetwork"
                                                                   + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "attributeNetwork"
@@ -78,10 +87,18 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @GeneratedValue(generator = "attribute_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    // bi-directional many-to-one association to Attribute
+    //bi-directional many-to-one association to Attribute 
     @ManyToOne
     @JoinColumn(name = "parent")
     private Attribute          parent;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise1")
+    private AttributeNetwork   premise1;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise2")
+    private AttributeNetwork   premise2;
 
     public AttributeNetwork() {
     }
@@ -134,6 +151,22 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public AttributeNetwork getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public AttributeNetwork getPremise2() {
+        return premise2;
+    }
+
     @Override
     public void setChild(Attribute child) {
         this.child = child;
@@ -149,12 +182,26 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
         this.parent = parent;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(NetworkRuleform<Attribute> premise1) {
+        this.premise1 = (AttributeNetwork) premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(NetworkRuleform<Attribute> premise2) {
+        this.premise2 = (AttributeNetwork) premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

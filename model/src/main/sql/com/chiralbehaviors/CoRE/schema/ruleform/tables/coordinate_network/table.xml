@@ -19,9 +19,15 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column> 
+            <column name="premise1" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
+            <column name="premise2" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column> 
             <column name="ordering" type="ruleform.ordinal_number" />
             <column name="notes" type="VARCHAR(10485760)" />
             <column name="updated_by" type="INT8">
@@ -37,8 +43,7 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-140">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.coordinate_network" constraintName="coordinate_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.coordinate" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.coordinate" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-141">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.coordinate_network"
@@ -50,14 +55,24 @@
             constraintName="coordinate_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-143">
+    <changeSet author="hhildebrand" id="390879803225-143">
         <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.coordinate_network"
             constraintName="coordinate_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-380">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="coordinate_network_key"
+    <changeSet author="hhildebrand" id="390879803225-380">
+        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="coordinate_network_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.coordinate_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="390879803225-431">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.coordinate_network"
+            constraintName="coordinate_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.coordinate_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="390879803225-433">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.coordinate_network"
+            constraintName="coordinate_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.coordinate_network" />
     </changeSet>
 
 

@@ -93,6 +93,7 @@ public class LocationAgencyAccessAuthorization extends
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = LOCATION_AGENCY_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

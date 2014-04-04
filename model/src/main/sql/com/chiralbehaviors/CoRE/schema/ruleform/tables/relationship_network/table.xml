@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+>
 
     <changeSet author="hhildebrand" id="1390879803225-51">
         <createTable tableName="ruleform.relationship_network">
             <column autoIncrement="true" name="id" type="BIGSERIAL">
-                <constraints primaryKey="true"
-                    primaryKeyName="relationship_network_pkey" />
+                <constraints primaryKey="true" primaryKeyName="relationship_network_pkey" />
             </column>
             <column name="parent" type="INT8">
                 <constraints nullable="false" />
@@ -20,7 +19,13 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise1" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise2" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="ordering" type="ruleform.ordinal_number" />
@@ -28,8 +33,7 @@
             <column name="updated_by" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone"
-                name="update_date" type="TIMESTAMPTZ">
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -38,42 +42,39 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-312">
-        <addForeignKeyConstraint
-            baseColumnNames="child" baseTableName="ruleform.relationship_network"
-            constraintName="relationship_network_child_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE"
+        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.relationship_network"
+            constraintName="relationship_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-313">
-        <addForeignKeyConstraint
-            baseColumnNames="parent" baseTableName="ruleform.relationship_network"
-            constraintName="relationship_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
+        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.relationship_network"
+            constraintName="relationship_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-314">
-        <addForeignKeyConstraint
-            baseColumnNames="relationship" baseTableName="ruleform.relationship_network"
-            constraintName="relationship_network_relationship_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
+        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.relationship_network"
+            constraintName="relationship_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-315">
-        <addForeignKeyConstraint
-            baseColumnNames="updated_by" baseTableName="ruleform.relationship_network"
-            constraintName="relationship_network_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.relationship_network"
+            constraintName="relationship_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-410">
-        <addUniqueConstraint columnNames="parent, relationship, child"
-            constraintName="relationship_network_key" deferrable="false"
-            disabled="false" initiallyDeferred="false"
-            tableName="ruleform.relationship_network" />
+        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="relationship_network_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.relationship_network" />
     </changeSet>
-
-
+    <changeSet author="hhildebrand" id="1390879803227-432">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.relationship_network"
+            constraintName="relationship_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803227-433">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.relationship_network"
+            constraintName="relationship_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.relationship_network" />
+    </changeSet>
     <changeSet id="2" author="hparry">
         <sql><![CDATA[
             GRANT ALL ON TABLE ruleform.relationship_network TO core;

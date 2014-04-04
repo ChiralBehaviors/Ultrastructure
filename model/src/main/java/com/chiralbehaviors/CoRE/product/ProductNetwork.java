@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.product;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -69,8 +68,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
     public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES = "productNetwork"
-                                                               + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "productNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "productNetwork"
@@ -103,10 +100,18 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @GeneratedValue(generator = "product_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                         id;
 
-    // bi-directional many-to-one association to Product
+    //bi-directional many-to-one association to Product 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
     private Product                      parent;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise1")
+    private ProductNetwork               premise1;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise2")
+    private ProductNetwork               premise2;
 
     public ProductNetwork() {
     }
@@ -187,6 +192,22 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         return parent;
     }
 
+    /**
+     * @return the premise1
+     */
+    @Override
+    public ProductNetwork getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public ProductNetwork getPremise2() {
+        return premise2;
+    }
+
     @Override
     public void setAttributes(Set<ProductNetworkAttribute> productNetworkAttributes) {
         attributes = productNetworkAttributes;
@@ -207,12 +228,34 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         this.parent = parent;
     }
 
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(NetworkRuleform<Product> premise1) {
+        this.premise1 = (ProductNetwork) premise1;
+    }
+
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(NetworkRuleform<Product> premise2) {
+        this.premise2 = (ProductNetwork) premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
+    =======
     /*
      * (non-Javadoc)
      * 
      * @see
      * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
      * .EntityManager, java.util.Map)
+    >>>>>>> refs/heads/master
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

@@ -19,6 +19,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Test;
@@ -88,7 +89,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testGetTransitiveRelationships() {
+    public void testGetTransitiveRelationships() throws SQLException {
         Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
 
@@ -110,9 +111,11 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeA = new AgencyNetwork(a, equals, b, core);
         em.persist(edgeA);
         AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
-        em.persist(edgeB);
-
+        em.persist(edgeB); 
         em.getTransaction().commit();
+//        em.getTransaction().begin();
+//        model.getAgencyModel().propagate(edgeB);
+//        em.getTransaction().commit();
         em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(2,

@@ -19,9 +19,15 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column> 
+            <column name="premise1" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
+            <column name="premise2" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column> 
             <column name="notes" type="VARCHAR(10485760)" />
             <column name="updated_by" type="INT8">
                 <constraints nullable="false" />
@@ -37,13 +43,11 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-258">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.product_network" constraintName="product_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-259">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.product_network" constraintName="product_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-260">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.product_network"
@@ -56,7 +60,7 @@
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-402">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="product_network_key" deferrable="false"
+        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="product_network_key" deferrable="false"
             disabled="false" initiallyDeferred="false" tableName="ruleform.product_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-503">
@@ -78,5 +82,15 @@
         <createIndex indexName="product_network_updated_by_fkey_idx" tableName="ruleform.product_network" unique="false">
             <column name="updated_by" />
         </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="2390879803225-432">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.product_network" constraintName="product_network_premise1_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.product_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803226-433">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.product_network" constraintName="product_network_premise2_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.product_network" />
     </changeSet>
 </databaseChangeLog>

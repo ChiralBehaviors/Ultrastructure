@@ -65,13 +65,8 @@ public class IntervalModelImpl
         T call(IntervalModelImpl productModel) throws Exception;
     }
 
-    private static final String INTERVAL_NETWORK_PROPAGATE = "intervalNetwork.propagate";
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (!markPropagated(INTERVAL_NETWORK_PROPAGATE)) {
-            return; // We be done
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(IntervalModelImpl agencyModel) throws Exception {

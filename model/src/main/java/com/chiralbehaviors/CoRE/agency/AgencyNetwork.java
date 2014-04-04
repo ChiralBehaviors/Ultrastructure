@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.agency;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -66,9 +65,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @SequenceGenerator(schema = "ruleform", name = "agency_network_id_seq", sequenceName = "agency_network_id_seq")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GATHER_EXISTING_NETWORK_RULES    = "agencyNetwork"
-                                                                  + GATHER_EXISTING_NETWORK_RULES_SUFFIX;
+                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX; 
     public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
                                                                   + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "agencyNetwork"
@@ -90,12 +87,20 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
 
     @Id
     @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
+    private Long               id; 
 
-    // bi-directional many-to-one association to Agency
+    //bi-directional many-to-one association to Agency 
     @ManyToOne
     @JoinColumn(name = "parent")
     private Agency             parent;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise1")
+    private AgencyNetwork      premise1;
+
+    @ManyToOne
+    @JoinColumn(insertable = false, name = "premise2")
+    private AgencyNetwork      premise2;
 
     public AgencyNetwork() {
     }
@@ -141,11 +146,27 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public Long getId() {
         return id;
-    }
+    } 
 
     @Override
     public Agency getParent() {
         return parent;
+    }
+
+    /**
+     * @return the premise1
+     */
+    @Override
+    public AgencyNetwork getPremise1() {
+        return premise1;
+    }
+
+    /**
+     * @return the premise2
+     */
+    @Override
+    public AgencyNetwork getPremise2() {
+        return premise2;
     }
 
     public List<Relationship> getUsedRelationships(EntityManager em) {
@@ -160,19 +181,33 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
+    } 
 
     @Override
     public void setParent(Agency agency2) {
         parent = agency2;
     }
+ 
+    /**
+     * @param premise1
+     *            the premise1 to set
+     */
+    @Override
+    public void setPremise1(NetworkRuleform<Agency> premise1) {
+        this.premise1 = (AgencyNetwork) premise1;
+    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
+    /**
+     * @param premise2
+     *            the premise2 to set
+     */
+    @Override
+    public void setPremise2(NetworkRuleform<Agency> premise2) {
+        this.premise2 = (AgencyNetwork) premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
      */
     @Override
     public void traverseForeignKeys(EntityManager em,

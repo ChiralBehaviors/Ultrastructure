@@ -23,7 +23,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRI
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GATHER_EXISTING_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
@@ -34,7 +33,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SU
 
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,9 +51,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 
-import org.postgresql.pljava.Session;
-import org.postgresql.pljava.SessionManager;
-import org.postgresql.pljava.TransactionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,34 +110,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
     }
 
-    public static boolean markPropagated(final String inPropagateKey)
-                                                                     throws SQLException {
-        final Session session = SessionManager.current();
-        Boolean propagated = (Boolean) session.getAttribute(inPropagateKey);
-        if (propagated != null) {
-            return false;
-        }
-        session.setAttribute(inPropagateKey, Boolean.TRUE);
-        session.addTransactionListener(new TransactionListener() {
-
-            @Override
-            public void onAbort(Session session) throws SQLException {
-                session.removeAttribute(inPropagateKey);
-            }
-
-            @Override
-            public void onCommit(Session session) throws SQLException {
-                session.removeAttribute(inPropagateKey);
-            }
-
-            @Override
-            public void onPrepare(Session session) throws SQLException {
-                // nothing to do
-            }
-        });
-        return true;
-    }
-
     /**
      * @param entity
      * @return
@@ -197,19 +164,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                    kernel.getInverseSoftware(), em);
     }
 
-    public void generateInverses() {
-        Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
-                                                        GENERATE_NETWORK_INVERSES_SUFFIX));
-        query.setParameter(1, kernel.getInverseSoftware().getId());
-        long then = System.currentTimeMillis();
-        int created = query.executeUpdate();
-        if (log.isInfoEnabled()) {
-            log.info(String.format("created %s inverse rules of %s in %s ms",
-                                   created, networkPrefix,
-                                   System.currentTimeMillis() - then));
-        }
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#find(long)
      */
@@ -225,6 +179,19 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         CriteriaQuery<RuleForm> cq = cb.createQuery(entity);
         cq.from(entity);
         return em.createQuery(cq).getResultList();
+    }
+
+    public void generateInverses() {
+        Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
+                                                        GENERATE_NETWORK_INVERSES_SUFFIX));
+        query.setParameter(1, kernel.getInverseSoftware().getId());
+        long then = System.currentTimeMillis();
+        int created = query.executeUpdate();
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("created %s inverse rules of %s in %s ms",
+                                    created, networkPrefix,
+                                    System.currentTimeMillis() - then));
+        }
     }
 
     @Override
@@ -553,6 +520,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void propagate() {
         createDeductionTemporaryTables();
         boolean firstPass = true;
+        boolean derived = false;
         do {
             int newRules;
             // Deduce all possible rules
@@ -564,35 +532,35 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                 newRules = em.createNamedQuery(networkPrefix
                                                        + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
             }
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("inferred %s new rules", newRules));
+            if (log.isInfoEnabled()) {
+                log.info(String.format("inferred %s new rules", newRules));
             }
             if (newRules == 0) {
                 break;
             }
-            // Gather all rules which exist
-            int existing = em.createNamedQuery(networkPrefix
-                                                       + GATHER_EXISTING_NETWORK_RULES_SUFFIX).executeUpdate();
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("gathered %s existing rules", existing));
-            }
             // Deduce the new rules
             int deduced = em.createNamedQuery(networkPrefix
                                                       + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("deduced %s rules", deduced));
+            if (log.isInfoEnabled()) {
+                log.info(String.format("deduced %s rules", deduced));
             }
             // Insert the new rules
             Query insert = em.createNamedQuery(networkPrefix
                                                + INSERT_NEW_NETWORK_RULES_SUFFIX);
             insert.setParameter(1, kernel.getPropagationSoftware().getId());
             int inserted = insert.executeUpdate();
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("inserted %s new rules", inserted));
+            if (log.isInfoEnabled()) {
+                log.info(String.format("inserted %s new rules", inserted));
+            }
+            derived |= inserted > 0;
+            if (inserted == 0) {
+                break;
             }
             alterDeductionTablesForNextPass();
-            generateInverses();
         } while (true);
+        if (derived) {
+            generateInverses();
+        }
     }
 
     private void addTransitiveRelationships(Network edge,
@@ -622,7 +590,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         em.createNativeQuery("ALTER TABLE current_pass_rules RENAME TO temp_last_pass_rules").executeUpdate();
         em.createNativeQuery("ALTER TABLE last_pass_rules RENAME TO current_pass_rules").executeUpdate();
         em.createNativeQuery("ALTER TABLE temp_last_pass_rules RENAME TO last_pass_rules").executeUpdate();
-        em.createNativeQuery("TRUNCATE current_pass_existing_rules").executeUpdate();
         em.createNativeQuery("TRUNCATE working_memory").executeUpdate();
     }
 
@@ -637,8 +604,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                + child.getClass().getSimpleName() + "AccessAuthorization";
     }
 
-    private void createCurrentPassExistingRules() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_existing_rules ("
+    private void createCurrentPassRules() {
+        em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
                                      + "id BIGINT NOT NULL,"
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
@@ -647,28 +614,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "premise2 BIGINT NOT NULL)").executeUpdate();
     }
 
-    private void createCurrentPassRules() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
-                                     + "id BIGINT NOT NULL,"
-                                     + "parent BIGINT NOT NULL,"
-                                     + "relationship BIGINT NOT NULL,"
-                                     + "child BIGINT NOT NULL)").executeUpdate();
-    }
-
     private void createDeductionTemporaryTables() {
-        Query exists = em.createNativeQuery("SELECT public.iftableexists('working_memory')",
-                                            Boolean.class);
-        if ((Boolean) exists.getSingleResult()) {
-            em.createNativeQuery("TRUNCATE last_pass_rules").executeUpdate();
-            em.createNativeQuery("TRUNCATE current_pass_rules").executeUpdate();
-            em.createNativeQuery("TRUNCATE last_pass_rules").executeUpdate();
-            em.createNativeQuery("TRUNCATE current_pass_existing_rules").executeUpdate();
-            em.createNativeQuery("TRUNCATE working_memory").executeUpdate();
-            return;
-        }
+        em.createNativeQuery("DROP TABLE IF EXISTS last_pass_rules").executeUpdate();
+        em.createNativeQuery("DROP TABLE IF EXISTS current_pass_rules").executeUpdate();
+        em.createNativeQuery("DROP TABLE IF EXISTS working_memory").executeUpdate();
         createWorkingMemory();
         createCurrentPassRules();
-        createCurrentPassExistingRules();
         createLastPassRules();
     }
 
@@ -677,7 +628,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "id BIGINT NOT NULL,"
                                      + "parent BIGINT NOT NULL,"
                                      + "relationship BIGINT NOT NULL,"
-                                     + "child BIGINT NOT NULL)").executeUpdate();
+                                     + "child BIGINT NOT NULL,"
+                                     + "premise1 BIGINT NOT NULL,"
+                                     + "premise2 BIGINT NOT NULL)").executeUpdate();
     }
 
     private void createWorkingMemory() {

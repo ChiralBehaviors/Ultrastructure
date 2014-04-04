@@ -19,7 +19,13 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="inferred" type="SMALLINT">
+            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column> 
+            <column name="premise1" type="INT8" defaultValueNumeric="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="premise2" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="ordering" type="ruleform.ordinal_number" />
@@ -37,13 +43,11 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-361">
         <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.unit_network" constraintName="unit_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-362">
         <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.unit_network" constraintName="unit_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-363">
         <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.unit_network"
@@ -56,8 +60,18 @@
             referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-421">
-        <addUniqueConstraint columnNames="parent, relationship, child" constraintName="unit_network_key" deferrable="false"
+        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="unit_network_key" deferrable="false"
             disabled="false" initiallyDeferred="false" tableName="ruleform.unit_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803229-430">
+        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.unit_network" constraintName="unit_network_premise1_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.unit_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803229-433">
+        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.unit_network" constraintName="unit_network_premise2_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="ruleform.unit_network" />
     </changeSet>
 
 

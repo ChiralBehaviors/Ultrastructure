@@ -19,18 +19,15 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column name="inferred_from" type="INT8" defaultValueNumeric="1">
+            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
                 <constraints nullable="false" />
-            </column>
+            </column> 
             <column name="premise1" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="premise2" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
-            </column>
-            <column name="inference_rule" type="INT8" defaultValueNumeric="1">
-                <constraints nullable="false" />
-            </column>
+            </column> 
             <column name="ordering" type="ruleform.ordinal_number" />
             <column name="notes" type="VARCHAR(10485760)" />
             <column name="updated_by" type="INT8">
@@ -64,13 +61,8 @@
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-380">
-        <addUniqueConstraint columnNames="parent, relationship, child, inferred_from, inference_rule, premise1, premise2" constraintName="coordinate_network_key"
+        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="coordinate_network_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.coordinate_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="390879803225-432">
-        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.coordinate_network"
-            constraintName="coordinate_network_inferred_from_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.coordinate_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="390879803225-431">
         <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.coordinate_network"
@@ -81,11 +73,6 @@
         <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.coordinate_network"
             constraintName="coordinate_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.coordinate_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="390879803225-434">
-        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.coordinate_network"
-            constraintName="coordinate_network_inference_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.network_inference" />
     </changeSet>
 
 

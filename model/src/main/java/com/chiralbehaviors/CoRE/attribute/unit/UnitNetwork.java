@@ -77,10 +77,6 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private UnitNetwork        inferredFrom;
-
     // bi-directional many-to-one association to Agency 
     @ManyToOne
     @JoinColumn(name = "parent")
@@ -154,20 +150,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         return id;
     }
 
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public UnitNetwork getInferredFrom() {
-        return inferredFrom;
-    }
-
     /* (non-Javadoc)
-    =======
-    /*
-     * (non-Javadoc)
-     * 
-    >>>>>>> refs/heads/master
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
@@ -213,24 +196,8 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         this.id = id;
     }
 
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<Unit> inferredFrom) {
-        this.inferredFrom = (UnitNetwork) inferredFrom;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-    =======
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
-     * chiralbehaviors.CoRE.ExistentialRuleform)
-    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(Unit parent) {

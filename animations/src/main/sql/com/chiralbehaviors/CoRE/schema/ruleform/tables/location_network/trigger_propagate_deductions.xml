@@ -11,6 +11,7 @@
 			AFTER 
 			INSERT OR UPDATE ON
 			ruleform.location_network
+            DEFERRABLE INITIALLY DEFERRED
 			FOR EACH ROW
 			EXECUTE PROCEDURE
 			ruleform.propagate_location_network_deductions()

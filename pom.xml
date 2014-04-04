@@ -44,7 +44,6 @@
         <module>service</module>
         <module>mixin-generator</module>
         <module>json</module>
-        <module>network-inference-generator</module>
     </modules>
 
     <dependencyManagement>

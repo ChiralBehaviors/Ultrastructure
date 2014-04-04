@@ -72,10 +72,6 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @GeneratedValue(generator = "relationship_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                id;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private RelationshipNetwork inferredFrom;
-
     // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
@@ -149,14 +145,6 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         return id;
     }
 
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public RelationshipNetwork getInferredFrom() {
-        return inferredFrom;
-    }
-
     /*
      * (non-Javadoc) 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
@@ -204,24 +192,8 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         this.id = id;
     }
 
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<Relationship> inferredFrom) {
-        this.inferredFrom = (RelationshipNetwork) inferredFrom;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-    =======
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
-     * chiralbehaviors.CoRE.ExistentialRuleform)
-    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(Relationship parent) {

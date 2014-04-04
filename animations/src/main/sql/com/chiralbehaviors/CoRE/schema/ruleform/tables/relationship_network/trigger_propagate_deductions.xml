@@ -11,6 +11,7 @@
             AFTER
             INSERT OR UPDATE ON
             ruleform.relationship_network
+            DEFERRABLE INITIALLY DEFERRED
             FOR EACH ROW
             EXECUTE PROCEDURE
             ruleform.propagate_relationship_network_deductions();

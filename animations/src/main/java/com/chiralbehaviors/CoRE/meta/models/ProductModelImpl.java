@@ -78,7 +78,7 @@ public class ProductModelImpl
         execute(new Procedure<Void>() {
             @Override
             public Void call(ProductModelImpl productModel) throws Exception {
-                productModel.propagate(data.getNew().getLong(1));
+                productModel.propagate();
                 return null;
             }
         });

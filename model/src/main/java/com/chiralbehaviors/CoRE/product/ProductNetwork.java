@@ -100,10 +100,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @GeneratedValue(generator = "product_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long                         id;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private ProductNetwork               inferredFrom;
-
     //bi-directional many-to-one association to Product 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
@@ -191,14 +187,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         return id;
     }
 
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public ProductNetwork getInferredFrom() {
-        return inferredFrom;
-    }
-
     @Override
     public Product getParent() {
         return parent;
@@ -233,15 +221,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<Product> inferredFrom) {
-        this.inferredFrom = (ProductNetwork) inferredFrom;
     }
 
     @Override

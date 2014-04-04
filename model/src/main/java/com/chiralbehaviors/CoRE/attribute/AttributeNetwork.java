@@ -52,7 +52,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
-                                                                            + "WHERE n.parent = :attribute and n.inferredFrom IS NULL "
+                                                                            + "WHERE n.parent = :attribute and n.inferred = 0 "
                                                                             + "AND n.relationship.preferred = 0 "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
@@ -86,10 +86,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @Id
     @GeneratedValue(generator = "attribute_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
-
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private AttributeNetwork   inferredFrom;
 
     //bi-directional many-to-one association to Attribute 
     @ManyToOne
@@ -150,14 +146,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
         return id;
     }
 
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public AttributeNetwork getInferredFrom() {
-        return inferredFrom;
-    }
-
     @Override
     public Attribute getParent() {
         return parent;
@@ -187,15 +175,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<Attribute> inferredFrom) {
-        this.inferredFrom = (AttributeNetwork) inferredFrom;
     }
 
     @Override

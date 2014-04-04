@@ -53,7 +53,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
                                                                             + "where n.parent = :agency "
-                                                                            + "and n.inferredFrom IS NULL "
+                                                                            + "and n.inferred = 0 "
                                                                             + "and n.relationship.preferred = 0 "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
@@ -87,11 +87,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
 
     @Id
     @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
- 
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private AgencyNetwork      inferredFrom;
+    private Long               id; 
 
     //bi-directional many-to-one association to Agency 
     @ManyToOne
@@ -150,15 +146,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public Long getId() {
         return id;
-    }
-
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public AgencyNetwork getInferredFrom() {
-        return inferredFrom;
-    }
+    } 
 
     @Override
     public Agency getParent() {
@@ -193,16 +181,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<Agency> inferredFrom) {
-        this.inferredFrom = (AgencyNetwork) inferredFrom;
-    }
+    } 
 
     @Override
     public void setParent(Agency agency2) {

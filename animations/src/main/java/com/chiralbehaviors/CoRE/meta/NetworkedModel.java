@@ -304,5 +304,5 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * 
      * @throws SQLException
      */
-    void propagate(NetworkRuleform<RuleForm> edge);
+    void propagate();
 }

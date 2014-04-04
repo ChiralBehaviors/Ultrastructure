@@ -94,7 +94,7 @@ public class AttributeModelImpl
             @Override
             public Void call(AttributeModelImpl attributrModel)
                                                                throws Exception {
-                attributrModel.propagate(data.getNew().getLong(1));
+                attributrModel.propagate();
                 return null;
             }
 

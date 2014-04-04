@@ -70,10 +70,7 @@ public class AgencyModelImpl
         execute(new Procedure<Void>() {
             @Override
             public Void call(AgencyModelImpl agencyModel) throws Exception {
-                if (data.getNew().getLong("inferred_from") != 1L) {
-                    return null;
-                }
-                agencyModel.propagate(data.getNew().getLong(1));
+                agencyModel.propagate();
                 return null;
             }
 

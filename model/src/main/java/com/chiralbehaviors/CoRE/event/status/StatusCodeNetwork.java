@@ -78,10 +78,6 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @GeneratedValue(generator = "status_code_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private StatusCodeNetwork  inferredFrom;
-
     // bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
@@ -155,20 +151,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         return id;
     }
 
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public StatusCodeNetwork getInferredFrom() {
-        return inferredFrom;
-    }
-
     /* (non-Javadoc)
-    =======
-    /*
-     * (non-Javadoc)
-     * 
-    >>>>>>> refs/heads/master
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
@@ -214,24 +197,8 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         this.id = id;
     }
 
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<StatusCode> inferredFrom) {
-        this.inferredFrom = (StatusCodeNetwork) inferredFrom;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-    =======
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
-     * chiralbehaviors.CoRE.ExistentialRuleform)
-    >>>>>>> refs/heads/master
      */
     @Override
     public void setParent(StatusCode parent) {

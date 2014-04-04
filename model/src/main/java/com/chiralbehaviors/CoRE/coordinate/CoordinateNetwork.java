@@ -77,10 +77,6 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private CoordinateNetwork  inferredFrom;
-
     //bi-directional many-to-one association to Agency
     @ManyToOne
     @JoinColumn(name = "parent")
@@ -154,14 +150,6 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         return id;
     }
 
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public CoordinateNetwork getInferredFrom() {
-        return inferredFrom;
-    }
-
     /*
      * (non-Javadoc)
      *  
@@ -210,24 +198,8 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
         this.id = id;
     }
 
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<Coordinate> inferredFrom) {
-        this.inferredFrom = (CoordinateNetwork) inferredFrom;
-    }
-
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-    =======
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
-     * chiralbehaviors.CoRE.ExistentialRuleform)
-    >>>>>>> refs/heads/master
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.ExistentialRuleform) 
      */
     @Override
     public void setParent(Coordinate parent) {

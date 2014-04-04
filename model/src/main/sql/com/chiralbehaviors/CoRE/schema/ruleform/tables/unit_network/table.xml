@@ -19,16 +19,13 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column name="inferred_from" type="INT8" defaultValueNumeric="1">
+            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
                 <constraints nullable="false" />
-            </column>
+            </column> 
             <column name="premise1" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="premise2" type="INT8" defaultValueNumeric="1">
-                <constraints nullable="false" />
-            </column>
-            <column name="inference_rule" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="ordering" type="ruleform.ordinal_number" />
@@ -63,13 +60,8 @@
             referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-421">
-        <addUniqueConstraint columnNames="parent, relationship, child, inferred_from, inference_rule, premise1, premise2" constraintName="unit_network_key" deferrable="false"
+        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="unit_network_key" deferrable="false"
             disabled="false" initiallyDeferred="false" tableName="ruleform.unit_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803229-429">
-        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.unit_network"
-            constraintName="unit_network_inferred_from_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.unit_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803229-430">
         <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.unit_network" constraintName="unit_network_premise1_fkey"
@@ -80,11 +72,6 @@
         <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.unit_network" constraintName="unit_network_premise2_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.unit_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803229-434">
-        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.unit_network"
-            constraintName="unit_network_inference_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.network_inference" />
     </changeSet>
 
 

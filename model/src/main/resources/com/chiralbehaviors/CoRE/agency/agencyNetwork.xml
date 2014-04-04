@@ -4,7 +4,11 @@
     <entity name="AgencyNetwork" class="com.chiralbehaviors.CoRE.agency.AgencyNetwork"> 
         <named-native-query name="agencyNetwork.inference">
             <query><![CDATA[
-            INSERT INTO working_memory(parent, relationship, child, premise1, premise2)
+            INSERT INTO working_memory(parent, 
+                                       relationship, 
+                                       child, 
+                                       premise1, 
+                                       premise2)
                  SELECT
                       p1.parent as parent,
                       deduction.inference as relationship,
@@ -15,7 +19,7 @@
                             FROM ruleform.agency_network AS n) as p1
                  JOIN  (SELECT n.id, n.parent, n.relationship, n.child
                             FROM ruleform.agency_network AS n
-                            WHERE n.inferred_from = 1) as p2
+                            WHERE n.inferred = 0) as p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                  JOIN ruleform.network_inference AS deduction
@@ -25,7 +29,11 @@
         </named-native-query>
         <named-native-query name="agencyNetwork.inferenceStepFromLastPass">
             <query><![CDATA[
-            INSERT INTO working_memory(parent, relationship, child, premise1, premise2)
+            INSERT INTO working_memory(parent, 
+                                       relationship, 
+                                       child, 
+                                       premise1, 
+                                       premise2)
                 SELECT
                     p1.parent as parent,
                     deduction.inference as relationship,
@@ -36,7 +44,7 @@
                         FROM last_pass_rules AS n) as p1
                 JOIN (SELECT n.id, n.parent, n.relationship, n.child
                         FROM ruleform.agency_network AS n
-                        WHERE n.premise1 = 1) as p2
+                        WHERE n.inferred = 0) as p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                 JOIN ruleform.network_inference AS deduction
@@ -76,29 +84,51 @@
         </named-native-query>
         <named-native-query name="agencyNetwork.insertNewNetworkRules">
             <query><![CDATA[
+           WITH existing_rules AS
+                   (SELECT n.parent, n.relationship, n.child 
+                    FROM ruleform.agency_network n,current_pass_rules cpr
+                    WHERE n.parent = cpr.parent
+                      AND n.relationship = cpr.relationship
+                      AND n.child = cpr.child)
            INSERT INTO ruleform.agency_network(id, 
                                                parent, 
                                                relationship, 
-                                               child,
+                                               child, 
+                                               inferred, 
                                                premise1, 
-                                               premise2, 
+                                               premise2,
                                                updated_by)
-               SELECT cpr.id as id,
+               SELECT cpr.id as id, 
                       cpr.parent as parent, 
                       cpr.relationship as relationship, 
-                      cpr.child as child,
-                      cpr.premise1 as premise1, 
-                      cpr.premise2 as premise2,
-                      ?1 as updated_by
+                      cpr.child as child, 
+                      1 as inferred, 
+                      premise1 as premise1, 
+                      premise2 as premise2, 
+                      ?1
                FROM current_pass_rules cpr
+               LEFT OUTER JOIN existing_rules AS exist
+                   ON cpr.parent = exist.parent
+                   AND cpr.relationship = exist.relationship
+                   AND cpr.child = exist.child
+               WHERE exist.parent IS NULL
+                   AND exist.relationship IS NULL
+                   AND exist.child IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="agencyNetwork.generateInverses">
             <query><![CDATA[
-            INSERT INTO ruleform.agency_network(parent, relationship, child, premise1, premise2, updated_by)
+            INSERT INTO ruleform.agency_network(parent, 
+                                                relationship, 
+                                                child, 
+                                                inferred, 
+                                                premise1, 
+                                                premise2, 
+                                                updated_by)
             SELECT net.child as parent,
                    rel.inverse as relationship,
                    net.parent as child,
+                   net.inferred as inferred,
                    net.premise1 as premise1,
                    net.premise2 as premise2,
                    ?1 as updated_by

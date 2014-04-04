@@ -514,15 +514,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public void propagate(NetworkRuleform<RuleForm> edge) {
-        propagate(edge.getId());
-    }
-
-    protected void propagate(Long edge) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("propagating %s edge %s",
-                                   network.getSimpleName(), edge));
-        }
+    public void propagate() {
         createDeductionTemporaryTables();
         boolean firstPass = true;
         boolean derived = false;
@@ -558,6 +550,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                 log.info(String.format("inserted %s new rules", inserted));
             }
             derived |= inserted > 0;
+            if (inserted == 0) {
+                break;
+            }
             alterDeductionTablesForNextPass();
         } while (true);
         if (derived) {

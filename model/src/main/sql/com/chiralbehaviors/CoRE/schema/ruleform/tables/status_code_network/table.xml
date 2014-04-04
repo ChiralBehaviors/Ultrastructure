@@ -19,16 +19,13 @@
             <column name="child" type="INT8">
                 <constraints nullable="false" />
             </column>
-            <column name="inferred_from" type="INT8" defaultValueNumeric="1">
+            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
                 <constraints nullable="false" />
             </column>
             <column name="premise1" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="premise2" type="INT8" defaultValueNumeric="1">
-                <constraints nullable="false" />
-            </column>
-            <column name="inference_rule" type="INT8" defaultValueNumeric="1">
                 <constraints nullable="false" />
             </column>
             <column name="ordering" type="ruleform.ordinal_number" />
@@ -64,15 +61,6 @@
             constraintName="status_code_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-414">
-        <addUniqueConstraint columnNames="parent, relationship, child, inferred_from, inference_rule, premise1, premise2" constraintName="status_code_network_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.status_code_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803228-431">
-        <addForeignKeyConstraint baseColumnNames="inferred_from" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_inferred_from_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.status_code_network" />
-    </changeSet>
     <changeSet author="hhildebrand" id="1390879803228-432">
         <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.status_code_network"
             constraintName="status_code_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
@@ -83,12 +71,6 @@
             constraintName="status_code_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="ruleform.status_code_network" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803228-434">
-        <addForeignKeyConstraint baseColumnNames="inference_rule" baseTableName="ruleform.status_code_network"
-            constraintName="status_code_network_inference_rule_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.network_inference" />
-    </changeSet>
-
 
     <changeSet id="2" author="hhildebrand">
         <sql><![CDATA[

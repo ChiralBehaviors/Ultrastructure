@@ -11,6 +11,7 @@
             AFTER
             INSERT OR UPDATE ON
             ruleform.coordinate_network
+            DEFERRABLE INITIALLY DEFERRED
             FOR EACH ROW
             EXECUTE PROCEDURE
             ruleform.propagate_coordinate_network_deductions();

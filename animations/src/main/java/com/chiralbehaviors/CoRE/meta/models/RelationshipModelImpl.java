@@ -71,7 +71,7 @@ public class RelationshipModelImpl
             @Override
             public Void call(RelationshipModelImpl agencyModel)
                                                                throws Exception {
-                agencyModel.propagate(data.getNew().getLong(1));
+                agencyModel.propagate();
                 return null;
             }
         });

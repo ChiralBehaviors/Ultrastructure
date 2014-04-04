@@ -70,7 +70,7 @@ public class CoordinateModelImpl
         execute(new Procedure<Void>() {
             @Override
             public Void call(CoordinateModelImpl agencyModel) throws Exception {
-                agencyModel.propagate(data.getNew().getLong(1));
+                agencyModel.propagate();
                 return null;
             }
 

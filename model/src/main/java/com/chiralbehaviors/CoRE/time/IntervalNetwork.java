@@ -52,7 +52,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public class IntervalNetwork extends NetworkRuleform<Interval> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "intervalNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX; 
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "intervalNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "intervalNetwork"
@@ -75,10 +75,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Id
     @GeneratedValue(generator = "interval_network_id_seq", strategy = GenerationType.SEQUENCE)
     private Long               id;
-
-    @ManyToOne
-    @JoinColumn(insertable = false, name = "inferred_from")
-    private IntervalNetwork    inferredFrom;
 
     //bi-directional many-to-one association to Agency 
     @ManyToOne
@@ -140,14 +136,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return id;
     }
 
-    /**
-     * @return the inferredFrom
-     */
-    @Override
-    public IntervalNetwork getInferredFrom() {
-        return inferredFrom;
-    }
-
     /* (non-Javadoc) 
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -194,24 +182,8 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         this.id = id;
     }
 
-    /**
-     * @param inferredFrom
-     *            the inferredFrom to set
-     */
-    @Override
-    public void setInferredFrom(NetworkRuleform<Interval> inferredFrom) {
-        this.inferredFrom = (IntervalNetwork) inferredFrom;
-    }
-
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.network.Networked)
-    =======
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.
-     * chiralbehaviors.CoRE.network.Networked)
-    >>>>>>> refs/heads/master
+     * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.network.Networked) 
      */
     @Override
     public void setParent(Interval parent) {

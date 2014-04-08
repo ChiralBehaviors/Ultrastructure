@@ -110,36 +110,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
     }
 
-    /**
-     * @param entity
-     * @return
-     */
-    private static String tableName(Class<?> product) {
-        StringBuilder builder = new StringBuilder();
-        boolean first = true;
-        for (char c : product.getSimpleName().toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                if (!first) {
-                    builder.append('_');
-                } else {
-                    first = false;
-                }
-                builder.append(Character.toLowerCase(c));
-            } else {
-                builder.append(c);
-            }
-        }
-        return builder.toString();
-    }
-
     private final Class<AttributeType>             attribute;
     private final Class<AttributeAuthorization>    authorization;
     private final Class<RuleForm>                  entity;
     private final Class<NetworkRuleform<RuleForm>> network;
     private final String                           networkPrefix;
-    private final String                           networkTable;
     private final String                           prefix;
-    private final String                           unqualifiedNetworkTable;
     protected final EntityManager                  em;
 
     protected final Kernel                         kernel;
@@ -154,8 +130,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         network = (Class<NetworkRuleform<RuleForm>>) extractedNetwork();
         prefix = ModelImpl.prefixFor(entity);
         networkPrefix = ModelImpl.prefixFor(network);
-        unqualifiedNetworkTable = tableName(network);
-        networkTable = String.format("ruleform.%s", unqualifiedNetworkTable);
     }
 
     public void createInverseRelationship(RuleForm parent, Relationship r,
@@ -338,7 +312,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         q.setParameter("parent", parent);
         q.setParameter("relationship", relationship);
         List<RuleForm> resultList = q.getResultList();
-		return resultList;
+        return resultList;
     }
 
     /*
@@ -507,13 +481,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void link(RuleForm parent, Relationship r, RuleForm child,
                      Agency updatedBy) {
         parent.link(r, child, updatedBy, kernel.getInverseSoftware(), em);
-    }
-
-    @Override
-    public void networkEdgeDeleted(long parent, long relationship) {
-        em.createNativeQuery(String.format("DELETE FROM %s WHERE parent = %s AND relationship = %s",
-                                           networkTable, parent, relationship));
-
     }
 
     @Override

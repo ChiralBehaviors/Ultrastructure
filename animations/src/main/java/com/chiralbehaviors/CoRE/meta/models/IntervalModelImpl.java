@@ -80,22 +80,6 @@ public class IntervalModelImpl
         });
     }
 
-    public static void track_network_deleted(final TriggerData data)
-                                                                    throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(IntervalModelImpl agencyModel) throws Exception {
-                agencyModel.networkEdgeDeleted(data.getOld().getLong("parent"),
-                                               data.getOld().getLong("relationship"));
-                return null;
-            }
-
-            public String toString() {
-                return "IntervalModel.track_network_deleted";
-            }
-        });
-    }
-
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }

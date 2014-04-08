@@ -291,14 +291,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void link(RuleForm parent, Relationship r, RuleForm child, Agency updatedBy);
 
     /**
-     * Track the deleted network edge
-     * 
-     * @param parent
-     * @param relationship
-     */
-    void networkEdgeDeleted(long parent, long relationship);
-
-    /**
      * Propagate the network inferences based on the tracked additions,
      * deletions and modifications
      * 

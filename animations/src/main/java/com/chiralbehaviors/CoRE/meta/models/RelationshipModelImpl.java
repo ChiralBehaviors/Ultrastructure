@@ -77,19 +77,6 @@ public class RelationshipModelImpl
         });
     }
 
-    public static void track_network_deleted(final TriggerData data)
-                                                                    throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(RelationshipModelImpl agencyModel)
-                                                               throws Exception {
-                agencyModel.networkEdgeDeleted(data.getOld().getLong("parent"),
-                                               data.getOld().getLong("relationship"));
-                return null;
-            }
-        });
-    }
-
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }

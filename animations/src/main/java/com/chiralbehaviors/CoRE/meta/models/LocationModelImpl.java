@@ -65,18 +65,6 @@ public class LocationModelImpl
         T call(LocationModelImpl locationModel) throws Exception;
     }
 
-    public static void network_edge_deleted(final TriggerData data)
-                                                                   throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(LocationModelImpl locationModel) throws Exception {
-                locationModel.networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                 data.getOld().getLong("relationship"));
-                return null;
-            }
-        });
-    }
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
         execute(new Procedure<Void>() {

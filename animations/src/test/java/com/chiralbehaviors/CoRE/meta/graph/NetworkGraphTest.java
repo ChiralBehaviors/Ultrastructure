@@ -27,8 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.meta.graph.Edge;
-import com.chiralbehaviors.CoRE.meta.graph.Node;
 import com.chiralbehaviors.CoRE.meta.graph.impl.GraphImpl;
 import com.chiralbehaviors.CoRE.product.Product;
 
@@ -38,35 +36,35 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public class NetworkGraphTest {
 
-    private TestNodeImpl        SONG_TYPE;
-    private TestNodeImpl        CHANNEL_TYPE;
-    private TestNodeImpl        USER_TYPE;
+    private TestNodeImpl            SONG_TYPE;
+    private TestNodeImpl            CHANNEL_TYPE;
+    private TestNodeImpl            USER_TYPE;
 
-    private TestNodeImpl        Tool;
-    private TestNodeImpl        Disturbed;
-    private TestNodeImpl        Alan_Parsons_Project;
-    private TestNodeImpl        Barry_Manilow;
+    private TestNodeImpl            Tool;
+    private TestNodeImpl            Disturbed;
+    private TestNodeImpl            Alan_Parsons_Project;
+    private TestNodeImpl            Barry_Manilow;
 
-    private TestNodeImpl        Pushit;
-    private TestNodeImpl        FortySixAndTwo;
-    private TestNodeImpl        Parabola;
-    private TestNodeImpl        Mistress;
-    private TestNodeImpl        Hell;
-    private TestNodeImpl        Ronnie;
-    private TestNodeImpl        CouldItBeMagic;
+    private TestNodeImpl            Pushit;
+    private TestNodeImpl            FortySixAndTwo;
+    private TestNodeImpl            Parabola;
+    private TestNodeImpl            Mistress;
+    private TestNodeImpl            Hell;
+    private TestNodeImpl            Ronnie;
+    private TestNodeImpl            CouldItBeMagic;
 
-    private TestNodeImpl        Michael;
-    private TestNodeImpl        Eris;
+    private TestNodeImpl            Michael;
+    private TestNodeImpl            Eris;
 
-    private static final String isA      = "is a";
-    private static final String contains = "contains";
-    private static final String owns     = "owns";
+    private static final String     isA      = "is a";
+    private static final String     contains = "contains";
+    private static final String     owns     = "owns";
 
-    private ArrayList<Node<?>>  erisNodes;
-    private ArrayList<Edge<?>>  erisEdges;
+    private ArrayList<Node<String>> erisNodes;
+    private ArrayList<Edge<String>> erisEdges;
 
-    private ArrayList<Node<?>>  michaelsNodes;
-    private ArrayList<Edge<?>>  michaelsEdges;
+    private ArrayList<Node<String>> michaelsNodes;
+    private ArrayList<Edge<String>> michaelsEdges;
 
     @Before
     public void setup() {
@@ -86,7 +84,7 @@ public class NetworkGraphTest {
         TestNodeImpl magic2 = new TestNodeImpl("Could It Be Magic");
         assertEquals(CouldItBeMagic, magic2);
 
-        List<Node<?>> list = new ArrayList<Node<?>>();
+        List<Node<String>> list = new ArrayList<Node<String>>();
         list.add(CouldItBeMagic);
         assertTrue(list.contains(CouldItBeMagic));
         assertTrue(list.contains(magic2));
@@ -94,13 +92,16 @@ public class NetworkGraphTest {
 
     @Test
     public void testIntersection() throws CloneNotSupportedException {
-        GraphImpl erisGraph = new GraphImpl(new ArrayList<Node<?>>(erisNodes),
-                                            new ArrayList<Edge<?>>(erisEdges));
-        GraphImpl michaelsGraph = new GraphImpl(
-                                                new ArrayList<Node<?>>(
-                                                                       michaelsNodes),
-                                                new ArrayList<Edge<?>>(
-                                                                       michaelsEdges));
+        GraphImpl<String, String> erisGraph = new GraphImpl<>(
+                                                              new ArrayList<Node<String>>(
+                                                                                          erisNodes),
+                                                              new ArrayList<Edge<String>>(
+                                                                                          erisEdges));
+        GraphImpl<String, String> michaelsGraph = new GraphImpl<>(
+                                                                  new ArrayList<Node<String>>(
+                                                                                              michaelsNodes),
+                                                                  new ArrayList<Edge<String>>(
+                                                                                              michaelsEdges));
         erisGraph.intersection(michaelsGraph);
         assertTrue(erisGraph.getNodes().contains(CouldItBeMagic));
         assertFalse(erisGraph.getNodes().contains(Parabola));
@@ -109,13 +110,16 @@ public class NetworkGraphTest {
 
     @Test
     public void testUnion() throws CloneNotSupportedException {
-        GraphImpl erisGraph = new GraphImpl(new ArrayList<Node<?>>(erisNodes),
-                                            new ArrayList<Edge<?>>(erisEdges));
-        GraphImpl michaelsGraph = new GraphImpl(
-                                                new ArrayList<Node<?>>(
-                                                                       michaelsNodes),
-                                                new ArrayList<Edge<?>>(
-                                                                       michaelsEdges));
+        GraphImpl<String, String> erisGraph = new GraphImpl<>(
+                                                              new ArrayList<Node<String>>(
+                                                                                          erisNodes),
+                                                              new ArrayList<Edge<String>>(
+                                                                                          erisEdges));
+        GraphImpl<String, String> michaelsGraph = new GraphImpl<>(
+                                                                  new ArrayList<Node<String>>(
+                                                                                              michaelsNodes),
+                                                                  new ArrayList<Edge<String>>(
+                                                                                              michaelsEdges));
         erisGraph.union(michaelsGraph);
         assertTrue(erisGraph.getNodes().contains(CouldItBeMagic));
         assertTrue(erisGraph.getNodes().contains(Parabola));
@@ -128,7 +132,7 @@ public class NetworkGraphTest {
      * double bass pedals.
      */
     private void createErisGraph() {
-        erisEdges = new ArrayList<Edge<?>>();
+        erisEdges = new ArrayList<Edge<String>>();
 
         erisEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Tool, isA));
         erisEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Disturbed, isA));
@@ -154,11 +158,12 @@ public class NetworkGraphTest {
         erisEdges.add(new TestEdgeImpl(Disturbed, Ronnie, contains));
         erisEdges.add(new TestEdgeImpl(Barry_Manilow, CouldItBeMagic, contains));
 
-        Node<?>[] tempNodes = new Node<?>[] { SONG_TYPE, CHANNEL_TYPE,
+        @SuppressWarnings("unchecked")
+        Node<String>[] tempNodes = new Node[] { SONG_TYPE, CHANNEL_TYPE,
                 USER_TYPE, Tool, Disturbed, Barry_Manilow, Pushit,
                 FortySixAndTwo, Parabola, Mistress, Hell, CouldItBeMagic, Eris };
-        erisNodes = new ArrayList<Node<?>>();
-        for (Node<?> node : tempNodes) {
+        erisNodes = new ArrayList<Node<String>>();
+        for (Node<String> node : tempNodes) {
             erisNodes.add(node);
         }
 
@@ -168,7 +173,7 @@ public class NetworkGraphTest {
 	 * 
 	 */
     private void createMichaelsGraph() {
-        michaelsEdges = new ArrayList<Edge<?>>();
+        michaelsEdges = new ArrayList<Edge<String>>();
 
         michaelsEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Alan_Parsons_Project,
                                            isA));
@@ -182,12 +187,13 @@ public class NetworkGraphTest {
         michaelsEdges.add(new TestEdgeImpl(Barry_Manilow, CouldItBeMagic,
                                            contains));
 
-        Node<?>[] tempNodes = new Node<?>[] { SONG_TYPE, CHANNEL_TYPE,
+        @SuppressWarnings("unchecked")
+        Node<String>[] tempNodes = new Node[] { SONG_TYPE, CHANNEL_TYPE,
                 USER_TYPE, Alan_Parsons_Project, Barry_Manilow, CouldItBeMagic,
                 Michael };
 
-        michaelsNodes = new ArrayList<Node<?>>();
-        for (Node<?> node : tempNodes) {
+        michaelsNodes = new ArrayList<Node<String>>();
+        for (Node<String> node : tempNodes) {
             michaelsNodes.add(node);
         }
 

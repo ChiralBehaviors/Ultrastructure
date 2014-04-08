@@ -84,18 +84,6 @@ public class ProductModelImpl
         });
     }
 
-    public static void track_network_deleted(final TriggerData data)
-                                                                    throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(ProductModelImpl productModel) throws Exception {
-                productModel.networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                data.getOld().getLong("relationship"));
-                return null;
-            }
-        });
-    }
-
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }

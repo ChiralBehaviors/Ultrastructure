@@ -71,23 +71,6 @@ public class AttributeModelImpl
         T call(AttributeModelImpl attributeModel) throws Exception;
     }
 
-    public static void network_edge_deleted(final TriggerData data)
-                                                                   throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(AttributeModelImpl attributeModel)
-                                                               throws Exception {
-                attributeModel.networkEdgeDeleted(data.getOld().getLong("parent"),
-                                                  data.getOld().getLong("relationship"));
-                return null;
-            }
-
-            public String toString() {
-                return "AttributeModel.track_network_deleted";
-            }
-        });
-    }
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
         execute(new Procedure<Void>() {

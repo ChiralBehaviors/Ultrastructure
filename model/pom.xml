@@ -378,23 +378,6 @@
                             <jdbcUrl>${jdbc.url}</jdbcUrl>
                             <username>${testing.db.login}</username>
                             <password>${testing.db.password}</password>
-                            <!-- excluded> <resource> <groupId>org.apache.openjpa</groupId> <artifactId>openjpa-all</artifactId>
-                                <version>2.2.1</version> </resource> </excluded -->
-                            <additional>
-                                <resource>
-                                    <groupId>org.slf4j</groupId>
-                                    <artifactId>slf4j-jdk14</artifactId>
-                                    <version>1.7.5</version>
-                                </resource>
-                            </additional>
-                            <excluded>
-                                <resource>
-                                    <groupId>org.apache.openjpa</groupId>
-                                    <artifactId>openjpa-all</artifactId>
-                                    <version>2.2.2</version>
-                                    <type>jar</type>
-                                </resource>
-                            </excluded>
                             <classpathProperty>pljavaClassPath</classpathProperty>
                         </configuration>
                         <executions>

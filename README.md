@@ -27,9 +27,9 @@ you have not modified this, then simply cut and paste the following:
             <profile>
                 <id>test-db</id>
                 <properties>
-                    <testing.db.server>192.168.56.101</testing.db.server>
+                    <testing.db.server>192.168.56.102</testing.db.server>
                     <testing.db.password>postgres</testing.db.password>
-                    <db.server>192.168.56.101</db.server>
+                    <db.server>192.168.56.102</db.server>
                 </properties>
             </profile>
         </profiles>

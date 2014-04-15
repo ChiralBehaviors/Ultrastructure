@@ -21,8 +21,6 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobAttribute;
@@ -35,6 +33,7 @@ import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -449,7 +448,7 @@ public interface JobModel {
 	 * @param updatedBy
 	 */
 	void createStatusCodeSequencings(Product service,
-			List<Pair<StatusCode, StatusCode>> codes,
+			List<Tuple<StatusCode, StatusCode>> codes,
 			int startingSequenceNumber, Agency updatedBy);
 
 	/**

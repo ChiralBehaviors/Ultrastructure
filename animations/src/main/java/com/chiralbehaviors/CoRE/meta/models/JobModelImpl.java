@@ -42,7 +42,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +72,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.hellblazer.utils.Tuple;
 
 /**
  * 
@@ -456,11 +456,11 @@ public class JobModelImpl implements JobModel {
 
 	@Override
 	public void createStatusCodeSequencings(Product service,
-			List<Pair<StatusCode, StatusCode>> codes,
+			List<Tuple<StatusCode, StatusCode>> codes,
 			int startingSequenceNumber, Agency updatedBy) {
-		for (Pair<StatusCode, StatusCode> p : codes) {
-			em.persist(new StatusCodeSequencing(service, p.getLeft(), p
-					.getRight(), startingSequenceNumber, updatedBy));
+		for (Tuple<StatusCode, StatusCode> p : codes) {
+			em.persist(new StatusCodeSequencing(service, p.a, p
+					.b, startingSequenceNumber, updatedBy));
 			startingSequenceNumber++;
 		}
 	}

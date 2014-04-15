@@ -20,8 +20,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -29,9 +27,9 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hparry
@@ -182,11 +180,11 @@ public class ProcessWorkflowLoader {
 	}
 
 	public void createStatusCodeSequencing() {
-		List<Pair<StatusCode, StatusCode>> pairs = new LinkedList<Pair<StatusCode, StatusCode>>();
+		List<Tuple<StatusCode, StatusCode>> pairs = new LinkedList<Tuple<StatusCode, StatusCode>>();
 
-		pairs.add(Pair.of(unset, started));
-		pairs.add(Pair.of(started, completed));
-		pairs.add(Pair.of(started, failed));
+		pairs.add(new Tuple<StatusCode, StatusCode>(unset, started));
+		pairs.add(new Tuple<StatusCode, StatusCode>(started, completed));
+		pairs.add(new Tuple<StatusCode, StatusCode>(started, failed));
 		model.getJobModel().createStatusCodeSequencings(deploySystem, pairs,
 				10, core);
 		model.getJobModel().createStatusCodeSequencings(createProcess, pairs,

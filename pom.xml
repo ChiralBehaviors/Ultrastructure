@@ -79,11 +79,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.3</version>
-            </dependency>
-            <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>animations</artifactId>
                 <version>${project.version}</version>
@@ -251,6 +246,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>1.7.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hellblazer</groupId>
+                <artifactId>utils</artifactId>
+                <version>0.0.2-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

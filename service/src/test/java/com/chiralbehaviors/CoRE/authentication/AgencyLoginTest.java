@@ -41,7 +41,7 @@ import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.chiralbehaviors.CoRE.utils.Util;
 import com.google.common.base.Optional;
-import com.yammer.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.auth.basic.BasicCredentials;
 
 /**
  * @author hhildebrand

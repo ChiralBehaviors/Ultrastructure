@@ -15,6 +15,12 @@
  */
 package com.chiralbehaviors.CoRE;
 
+import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.basic.BasicAuthProvider;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
@@ -30,17 +36,12 @@ import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.assets.AssetsBundle;
-import com.yammer.dropwizard.auth.basic.BasicAuthProvider;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
 
 /**
  * @author hhildebrand
  * 
  */
-public class CoREService extends Service<CoREServiceConfiguration> {
+public class CoREService extends Application<CoREServiceConfiguration> {
 
     public static void main(String[] argv) throws Exception {
         new CoREService().run(argv);
@@ -55,6 +56,7 @@ public class CoREService extends Service<CoREServiceConfiguration> {
         bootstrap.addBundle(new DataAccessBundle());
 
         //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
+       
         bootstrap.addBundle(new AssetsBundle("/ui/", "/ui/"));
         SimpleModule testModule = new SimpleModule("MyModule",
                                                    new Version(1, 0, 0, null,
@@ -62,11 +64,11 @@ public class CoREService extends Service<CoREServiceConfiguration> {
         testModule.addSerializer(new AttributeValueSerializer<AgencyAttribute>(
                                                                                AgencyAttribute.class,
                                                                                true)); // assuming serializer declares correct class to bind to
-        bootstrap.getObjectMapperFactory().registerModule(testModule);
+        bootstrap.getObjectMapper().registerModule(testModule);
     }
 
     /* (non-Javadoc)
-     * @see com.yammer.dropwizard.AbstractService#initialize(com.yammer.dropwizard.config.Configuration, com.yammer.dropwizard.config.Environment)
+     * @see io.dropwizard.AbstractService#initialize(io.dropwizard.config.Configuration, io.dropwizard.config.Environment)
      */
     @Override
     public void run(CoREServiceConfiguration configuration,
@@ -78,7 +80,7 @@ public class CoREService extends Service<CoREServiceConfiguration> {
         properties.put("openjpa.EntityManagerFactoryPool", "true");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
                                                                           properties);
-        environment.addProvider(new BasicAuthProvider<AuthenticatedPrincipal>(
+        environment.jersey().register(new BasicAuthProvider<AuthenticatedPrincipal>(
                                                                               new AgencyAuthenticator(
                                                                                                       new ModelImpl(
                                                                                                                     emf.createEntityManager())),

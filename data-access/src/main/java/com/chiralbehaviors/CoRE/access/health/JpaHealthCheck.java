@@ -17,7 +17,7 @@ package com.chiralbehaviors.CoRE.access.health;
 
 import javax.persistence.EntityManagerFactory;
 
-import com.yammer.metrics.core.HealthCheck;
+import com.codahale.metrics.health.HealthCheck;
 
 /**
  * @author hhildebrand
@@ -27,14 +27,14 @@ public class JpaHealthCheck extends HealthCheck {
 	private final EntityManagerFactory emf;
 
 	public JpaHealthCheck(EntityManagerFactory emf) {
-		super("CRUD");
+		super();
 		this.emf = emf;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.yammer.metrics.core.HealthCheck#check()
+	 * @see io.metrics.core.HealthCheck#check()
 	 */
 	@Override
 	protected Result check() throws Exception {

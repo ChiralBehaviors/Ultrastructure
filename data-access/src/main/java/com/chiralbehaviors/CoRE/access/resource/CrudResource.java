@@ -52,9 +52,9 @@ import org.apache.openjpa.util.ApplicationIds;
 import org.w3c.dom.Document;
 
 import com.chiralbehaviors.CoRE.access.formatting.ExceptionFormatter;
+import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.yammer.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand

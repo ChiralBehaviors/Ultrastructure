@@ -10,11 +10,11 @@
 	<artifactId>data-access</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>com.yammer.dropwizard</groupId>
+			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.yammer.dropwizard</groupId>
+			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-auth</artifactId>
 		</dependency>
 		<dependency>
@@ -88,6 +88,15 @@
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>json</artifactId> 
+		</dependency>
+		<dependency>
+		    <groupId>io.dropwizard</groupId>
+		    <artifactId>dropwizard-servlets</artifactId>
+		    <version>0.7.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.dropwizard</groupId>
+		    <artifactId>dropwizard-metrics</artifactId>
 		</dependency>
 	</dependencies>
 </project>

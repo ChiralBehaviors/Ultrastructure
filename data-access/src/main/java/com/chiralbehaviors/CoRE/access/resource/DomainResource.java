@@ -15,6 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.access.resource;
 
+import io.dropwizard.auth.Auth;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
@@ -40,12 +42,11 @@ import org.w3c.dom.Document;
 import com.chiralbehaviors.CoRE.access.formatting.PropertiesFormatter;
 import com.chiralbehaviors.CoRE.access.formatting.XMLFormatter;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
+import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yammer.dropwizard.auth.Auth;
-import com.yammer.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand

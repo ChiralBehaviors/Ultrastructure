@@ -15,12 +15,13 @@
  */
 package com.chiralbehaviors.CoRE.configuration;
 
+import io.dropwizard.Configuration;
+
 import java.util.Map;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yammer.dropwizard.config.Configuration;
 
 /**
  * @author hhildebrand

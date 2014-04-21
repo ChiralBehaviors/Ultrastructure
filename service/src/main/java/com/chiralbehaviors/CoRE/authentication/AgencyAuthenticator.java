@@ -16,6 +16,10 @@
 
 package com.chiralbehaviors.CoRE.authentication;
 
+import io.dropwizard.auth.AuthenticationException;
+import io.dropwizard.auth.Authenticator;
+import io.dropwizard.auth.basic.BasicCredentials;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -30,9 +34,6 @@ import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.chiralbehaviors.CoRE.utils.Util;
 import com.google.common.base.Optional;
-import com.yammer.dropwizard.auth.AuthenticationException;
-import com.yammer.dropwizard.auth.Authenticator;
-import com.yammer.dropwizard.auth.basic.BasicCredentials;
 
 /**
  * @author hhildebrand

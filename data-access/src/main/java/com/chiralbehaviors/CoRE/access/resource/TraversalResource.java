@@ -42,7 +42,7 @@ import org.apache.openjpa.kernel.OpenJPAStateManager;
 import org.reflections.Reflections;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.yammer.metrics.annotation.Timed;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand

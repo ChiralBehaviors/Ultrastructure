@@ -149,7 +149,7 @@ public class JobResource {
 	}
 
 	@GET
-	@Path("/{id}/terminal-statues")
+	@Path("/{id}/terminal-statuses")
 	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
 	public List<StatusCode> getTerminalStates(@PathParam("id") long jobId) {
 		Job job = em.find(Job.class, jobId);

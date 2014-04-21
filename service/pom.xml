@@ -14,16 +14,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.yammer.dropwizard</groupId>
+			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-core</artifactId>
 			<exclusions>
 				<exclusion>
 					<artifactId>asm</artifactId>
 					<groupId>asm</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>validation-api</artifactId>
-					<groupId>javax.validation</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -39,11 +35,21 @@
 					<artifactId>log4j</artifactId>
 					<groupId>log4j</groupId>
 				</exclusion>
+				<exclusion>
+				    <artifactId>guava</artifactId>
+				    <groupId>com.google.guava</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
+			<exclusions>
+			    <exclusion>
+			        <artifactId>guava</artifactId>
+			        <groupId>com.google.guava</groupId>
+			    </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
@@ -56,7 +62,7 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.yammer.dropwizard</groupId>
+			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-auth</artifactId>
 		</dependency>
 		<dependency>
@@ -68,6 +74,10 @@
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>io.dropwizard</groupId>
+		    <artifactId>dropwizard-assets</artifactId>
 		</dependency>
 	</dependencies>
 

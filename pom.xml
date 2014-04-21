@@ -281,7 +281,7 @@
         </repository>
         <repository>
             <id>hellblazer-snapshots</id>
-            <url>https://repository-hellblazer.forge.cloudbees.com/snapshot/</url>
+            <url>http://repository-hellblazer.forge.cloudbees.com/snapshot/</url>
         </repository>
     </repositories>
 
@@ -292,7 +292,7 @@
         </pluginRepository>
         <pluginRepository>
             <id>chiralbehaviors-snapshots</id>
-            <url>https://repository-hal900000.forge.cloudbees.com/snapshot/</url>
+            <url>http://repository-hal900000.forge.cloudbees.com/snapshot/</url>
         </pluginRepository>
         <pluginRepository>
             <id>reflections-repo</id>

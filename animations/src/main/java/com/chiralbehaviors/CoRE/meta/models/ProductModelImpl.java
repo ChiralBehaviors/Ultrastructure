@@ -165,15 +165,15 @@ public class ProductModelImpl
     final public Product create(String name, String description,
                                 Aspect<Product> aspect,
                                 Aspect<Product>... aspects) {
-        Product agency = new Product(name, description, kernel.getCoreModel());
-        em.persist(agency);
-        initialize(agency, aspect);
+        Product product = new Product(name, description, kernel.getCoreModel());
+        em.persist(product);
+        initialize(product, aspect);
         if (aspects != null) {
             for (Aspect<Product> a : aspects) {
-                initialize(agency, a);
+                initialize(product, a);
             }
         }
-        return agency;
+        return product;
     }
 
     /* (non-Javadoc)

@@ -154,16 +154,33 @@ public class RelationshipModelImpl
     public final Relationship create(String name, String description,
                                      Aspect<Relationship> aspect,
                                      Aspect<Relationship>... aspects) {
-        Relationship agency = new Relationship(name, description,
+        Relationship relationship = new Relationship(name, description,
                                                kernel.getCoreModel());
-        em.persist(agency);
-        initialize(agency, aspect);
+        em.persist(relationship);
+        initialize(relationship, aspect);
         if (aspects != null) {
             for (Aspect<Relationship> a : aspects) {
-                initialize(agency, a);
+                initialize(relationship, a);
             }
         }
-        return agency;
+        return relationship;
+    }
+    
+    @Override
+    public final Relationship create(String rel1Name, String rel1Description,
+                                     String rel2Name, String rel2Description) {
+        Relationship relationship = new Relationship(rel1Name, rel1Description,
+                                               kernel.getCoreModel());
+        
+        Relationship relationship2 = new Relationship(rel2Name, rel2Description,
+                                                     kernel.getCoreModel());
+        
+        relationship.setInverse(relationship2);
+        relationship2.setInverse(relationship);
+        em.persist(relationship);
+        em.persist(relationship2);
+        
+        return relationship;
     }
 
     /**

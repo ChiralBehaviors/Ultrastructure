@@ -15,52 +15,64 @@
  */
 package com.chiralbehaviors.CoRE.access.resource.ruleform.workflow;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityTransaction;
 
 import org.junit.Before;
+import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.access.resource.ruleform.workflow.JobResource;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ValueType;
+import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.OrderProcessingLoader;
 
 /**
  * @author hparry
- *
+ * 
  */
-public class JobResourceTest extends AbstractModelTest{
-	
-	private OrderProcessingLoader scenario;
-	@SuppressWarnings("unused")
-    private JobResource resource;
+public class JobResourceTest extends AbstractModelTest {
 
-	@Override
-	@Before
-	public void initialize() throws Exception {
-		super.initialize();
-		resource = new JobResource(model);
-		EntityTransaction txn = em.getTransaction();
-		scenario = new OrderProcessingLoader(em);
-		txn.begin();
-		scenario.load();
-		txn.commit();
-	}
-	
-	
-//        @Test
-//	public void testDeployShoggoth() {
-//		
-//		Job order = new Job(scenario.armyOfDarkness, scenario.admin,
-//				scenario.deploy, scenario.shoggoth, scenario.node21, kernel.getNotApplicableLocation(),
-//				scenario.core);
-//		
-//		order = resource.insertJob(order);
-//		assertNotNull(order.getId());
-//		
-//		resource.changeJobStatus(order.getId(), scenario.active, "activate job");
-//		order = resource.getJob(order.getId());
-//		
-//		assertEquals(scenario.active, order.getStatus());
-//		
-//	}
+    private OrderProcessingLoader scenario;
+    private JobResource           resource;
+
+    @Override
+    @Before
+    public void initialize() throws Exception {
+        super.initialize();
+        resource = new JobResource(model);
+        EntityTransaction txn = em.getTransaction();
+        scenario = new OrderProcessingLoader(em);
+        txn.begin();
+        scenario.load();
+        txn.commit();
+    }
+
+    @Test
+    public void testInsertAttributableJob() {
+        em.getTransaction().begin();
+        Attribute attr = new Attribute("attribute", null,
+                                       scenario.billingComputer);
+        attr.setValueType(ValueType.TEXT);
+        em.persist(attr);
+        em.getTransaction().commit();
+        em.refresh(attr);
+        Job job = new Job(scenario.billingComputer, scenario.billingComputer,
+                          kernel.getAnyProduct(), kernel.getAnyProduct(),
+                          kernel.getAnyLocation(), kernel.getAnyLocation(),
+                          kernel.getCore());
+        JobAttribute jobAttr = new JobAttribute(attr, "foo", kernel.getCore());
+        jobAttr.setJob(job);
+        Map<String, JobAttribute> map = new HashMap<>();
+        map.put(jobAttr.getAttribute().getName(), jobAttr);
+        AttributedJob attributedJob = new AttributedJob(job, map);
+        job = resource.insertJob(attributedJob);
+        assertNotNull(job.getId());
+    }
 
 }

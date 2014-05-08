@@ -16,7 +16,10 @@
 package com.chiralbehaviors.CoRE.access.resource.ruleform.workflow;
 
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -46,130 +49,158 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Path("/v{version : \\d+}/services/data/ruleform/Job")
 public class JobResource {
 
-	private EntityManager em;
-	private JobModel model;
+    private EntityManager em;
+    private JobModel      model;
 
-	public JobResource(Model model) {
-		this.model = new JobModelImpl(model);
-		em = model.getEntityManager();
-	}
+    public JobResource(Model model) {
+        this.model = new JobModelImpl(model);
+        em = model.getEntityManager();
+    }
 
-	@PUT
-	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public void changeJobStatus(@PathParam("id") long jobId, StatusCode status, String notes) {
-		Job job = em.find(Job.class, jobId);
-		if (job == null) {
-			throw new InvalidParameterException(String.format(
-					"No job with %d exists", jobId));
-		}
+    @PUT
+    @Path("/{id}")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public void changeJobStatus(@PathParam("id") long jobId, StatusCode status,
+                                String notes) {
+        Job job = em.find(Job.class, jobId);
+        if (job == null) {
+            throw new InvalidParameterException(
+                                                String.format("No job with %d exists",
+                                                              jobId));
+        }
 
-		em.getTransaction().begin();
+        em.getTransaction().begin();
 
-		model.changeStatus(job, status, notes);
-		em.getTransaction().commit();
+        model.changeStatus(job, status, notes);
+        em.getTransaction().commit();
 
-	}
+    }
 
-	@GET
-	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public Job getJob(@PathParam("id") long id) {
-		Job job = em.find(Job.class, id);
-		return job;
-	}
+    @GET
+    @Path("/{id}")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public AttributedJob getJob(@PathParam("id") long id) {
+        Job job = em.find(Job.class, id);
 
-	@GET
-	@Path("/{id}/subjobs")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public List<Job> getActiveSubJobs(@PathParam("id") long jobId,
-			@QueryParam("agencyId") Long agencyId) {
-		Job job = em.find(Job.class, jobId);
-		if (job == null) {
-			throw new InvalidParameterException(String.format(
-					"No job with %d exists", jobId));
-		}
+        return new AttributedJob(job, null);
+    }
 
-		if (agencyId == null) {
-			return model.getActiveSubJobsOf(job);
-		}
-		Agency agency = em.find(Agency.class, agencyId);
-		return model.getAllActiveSubJobsOf(job, agency);
-	}
-	
-	@GET
-	@Path("/{id}/attributes")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public List<JobAttribute> getAttributesForJob(@PathParam("id") long jobId) {
-		Job job = em.find(Job.class, jobId);
-		return model.getAttributesForJob(job);
-	}
+    @GET
+    @Path("/{id}/subjobs")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public List<AttributedJob> getActiveSubJobs(@PathParam("id") long jobId,
+                                                @QueryParam("agencyId") Long agencyId) {
+        List<Job> jobs;
+        List<AttributedJob> attributedJobs = new LinkedList<>();
+        Job parentJob = em.find(Job.class, jobId);
+        if (agencyId == null) {
+            jobs = model.getActiveSubJobsOf(parentJob);
+        } else {
+            Agency agency = em.find(Agency.class, agencyId);
+            if (agency == null) {
+                throw new InvalidParameterException(
+                                                    String.format("Agency with id %d does not exist",
+                                                                  agencyId));
+            }
+            jobs = model.getAllActiveSubJobsOf(parentJob, agency);
+        }
+        for (Job job : jobs) {
+            attributedJobs.add(new AttributedJob(
+                                                 job,
+                                                 createAttributeMap(model.getAttributesForJob(job))));
+        }
+        return attributedJobs;
+    }
 
-	@GET
-	@Path("/{id}/chronology")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public List<JobChronology> getChronology(@PathParam("id") long jobId) {
-		Job job = em.find(Job.class, jobId);
-		if (job == null) {
-			throw new InvalidParameterException(String.format(
-					"No job with %d exists", jobId));
-		}
+    @GET
+    @Path("/{id}/chronology")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public List<JobChronology> getChronology(@PathParam("id") long jobId) {
+        Job job = em.find(Job.class, jobId);
+        if (job == null) {
+            throw new InvalidParameterException(
+                                                String.format("No job with %d exists",
+                                                              jobId));
+        }
 
-		return model.getChronologyForJob(job);
-	}
+        return model.getChronologyForJob(job);
+    }
 
-	@GET
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public List<Job> getJobsForAgency(@QueryParam("agencyId") Long agencyId) {
-		if (agencyId == null) {
-			TypedQuery<Job> query = em.createQuery("select j from Job j",
-					Job.class);
-			return query.getResultList();
-		}
-		Agency agency = em.find(Agency.class, agencyId);
-		if (agency == null) {
-			throw new InvalidParameterException(String.format(
-					"Agency with id %d does not exist", agencyId));
-		}
-		return model.getActiveJobsFor(agency);
-	}
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public List<AttributedJob> getJobsForAgency(@QueryParam("agencyId") Long agencyId) {
+        List<Job> jobs;
+        List<AttributedJob> attributedJobs = new LinkedList<>();
+        if (agencyId == null) {
+            TypedQuery<Job> query = em.createQuery("select j from Job j",
+                                                   Job.class);
 
-	// TODO get chronology of all sub jobs
-	// get jobs for parent - loop until you get no more jobs. Then get the
-	// chronologies for all jobs in that set
+            jobs = query.getResultList();
+        } else {
+            Agency agency = em.find(Agency.class, agencyId);
+            if (agency == null) {
+                throw new InvalidParameterException(
+                                                    String.format("Agency with id %d does not exist",
+                                                                  agencyId));
+            }
+            jobs = model.getActiveJobsFor(agency);
+        }
+        for (Job job : jobs) {
+            attributedJobs.add(new AttributedJob(
+                                                 job,
+                                                 createAttributeMap(model.getAttributesForJob(job))));
+        }
+        return attributedJobs;
+    }
 
-	@GET
-	@Path("/status/{id}/next")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public List<StatusCode> getNextStatuses(@PathParam("id") long statusId,
-			@QueryParam("service") long serviceId) {
-		StatusCode status = em.find(StatusCode.class, statusId);
-		Product service = em.find(Product.class, serviceId);
-		return model.getNextStatusCodes(service, status);
-	}
+    // TODO get chronology of all sub jobs
+    // get jobs for parent - loop until you get no more jobs. Then get the
+    // chronologies for all jobs in that set
 
-	@GET
-	@Path("/{id}/terminal-statuses")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public List<StatusCode> getTerminalStates(@PathParam("id") long jobId) {
-		Job job = em.find(Job.class, jobId);
-		return model.getTerminalStates(job);
-	}
-	
+    /**
+     * @param attributesForJob
+     * @return
+     */
+    private Map<String, JobAttribute> createAttributeMap(List<JobAttribute> attributesForJob) {
+        Map<String, JobAttribute> map = new HashMap<>();
+        for (JobAttribute attribute : attributesForJob) {
+            map.put(attribute.getAttribute().getName(), attribute);
+        }
+        return map;
+    }
 
-	@POST
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	public Job insertJob(Job job) {
-		em.getTransaction().begin();
-		try {
-			em.persist(job);
-			em.getTransaction().commit();
-			em.refresh(job);
-			return job;
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw e;
-		}
-	}
+    @GET
+    @Path("/status/{id}/next")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public List<StatusCode> getNextStatuses(@PathParam("id") long statusId,
+                                            @QueryParam("service") long serviceId) {
+        StatusCode status = em.find(StatusCode.class, statusId);
+        Product service = em.find(Product.class, serviceId);
+        return model.getNextStatusCodes(service, status);
+    }
+
+    @GET
+    @Path("/{id}/terminal-statuses")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public List<StatusCode> getTerminalStates(@PathParam("id") long jobId) {
+        Job job = em.find(Job.class, jobId);
+        return model.getTerminalStates(job);
+    }
+
+    @POST
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    public Job insertJob(AttributedJob job) {
+        Job jobToInsert = job.getJob();
+
+        em.getTransaction().begin();
+        em.persist(jobToInsert);
+        for (Map.Entry<String, JobAttribute> e : job.getAttributes().entrySet()) {
+            em.persist(e.getValue());
+        }
+        em.getTransaction().commit();
+        em.refresh(jobToInsert);
+        return jobToInsert;
+
+    }
 
 }

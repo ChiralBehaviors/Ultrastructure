@@ -398,7 +398,8 @@ public class JobModelImpl implements JobModel {
 		JobChronology c = new JobChronology(kernel.getCoreAnimationSoftware());
 		c.setJob(job);
 		c.setNotes(notes);
-		c.setStatusCode(status);
+		c.setOldStatusCode(status);
+		c.setNewStatusCode(job.getStatus());
 		c.setTimeStamp(timestamp);
 		em.persist(c);
 	}

@@ -125,7 +125,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                    + "FROM ruleform.job_chronology AS jc "
                                                                    + "JOIN ruleform.job AS j ON jc.job = j.id "
                                                                    + " WHERE j.assign_to = $1 "
-                                                                   + "  AND NOT ruleform.is_terminal_state(j.event, jc.status) "
+                                                                   + "  AND NOT ruleform.is_terminal_state(j.event, jc.new_status) "
                                                                    + "  AND jc.time_stamp = "
                                                                    + "   (SELECT max(time_stamp) FROM ruleform.job_chronology WHERE job = jc.job)"),
                      @NamedNativeQuery(name = GET_ACTIVE_EXPLICIT_JOBS, query = "SELECT j.* "
@@ -136,7 +136,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                   + "FROM ruleform.job_chronology AS jc "
                                                                                   + "JOIN ruleform.job AS j ON jc.job = j.id "
                                                                                   + "WHERE j.assign_to = ? "
-                                                                                  + "  AND NOT ruleform.is_terminal_state(j.service, jc.status) "
+                                                                                  + "  AND NOT ruleform.is_terminal_state(j.service, jc.new_status) "
                                                                                   + "  AND jc.sequence = "
                                                                                   + "    (SELECT max(sequence) FROM ruleform.job_chronology WHERE job = jc.job)"),
                      // Probably a candidate for 8.4 WITH query...

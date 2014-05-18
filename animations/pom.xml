@@ -246,5 +246,51 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>generate-sql-init</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <configuration>
+                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                            <driver>org.postgresql.Driver</driver>
+                            <url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</url>
+                            <username>${testing.db.login}</username>
+                            <password>${testing.db.password}</password>
+                            <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml</changeLogFile>
+                            <verbose>false</verbose>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>generate update</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>updateSQL</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>create-deployment</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/sql.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

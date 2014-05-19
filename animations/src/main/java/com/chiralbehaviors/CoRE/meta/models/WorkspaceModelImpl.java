@@ -200,6 +200,34 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return relationships;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product product) {
+        Map<StatusCode, Node<StatusCode>> nodes = new HashMap<StatusCode, Node<StatusCode>>();
+        List<Edge<StatusCodeSequencing>> edges = new ArrayList<Edge<StatusCodeSequencing>>();
+        for (StatusCode currentCode : model.getJobModel().getStatusCodesFor(product)) {
+            Node<StatusCode> parent = new NodeImpl<StatusCode>(currentCode);
+            nodes.put(currentCode, parent);
+            for (StatusCodeSequencing sequence : model.getStatusCodeModel().getStatusCodeSequencingParent(product,
+                                                                                                          currentCode)) {
+                StatusCode childCode = sequence.getChildCode();
+                Node<StatusCode> child = nodes.get(childCode);
+                if (child == null) {
+                    child = new NodeImpl<StatusCode>(childCode);
+                    nodes.put(childCode, child);
+                }
+                Edge<StatusCodeSequencing> edge = new EdgeImpl<StatusCodeSequencing>(
+                                                                                     parent,
+                                                                                     sequence,
+                                                                                     child);
+                edges.add(edge);
+            }
+        }
+        List<Node<StatusCode>> nodeList = new ArrayList<Node<StatusCode>>();
+        nodeList.addAll(nodes.values());
+        return new GraphImpl<StatusCode, StatusCodeSequencing>(nodeList, edges);
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#getStatusCodes(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
      */
@@ -235,6 +263,17 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return sequences;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Graph<Product, ?> getStatusCodeSequencingAuthorizationGraph(Product product) {
+        Map<Product, Node<Product>> nodes = new HashMap<Product, Node<Product>>();
+        List<Edge<?>> edges = new ArrayList<Edge<?>>();
+        Node<Product> current = new NodeImpl<Product>(product);
+        traverseStatusCodeSequencing(current, nodes, edges);
+        List<Node<?>> nodeList = new ArrayList<Node<?>>();
+        nodeList.addAll(nodes.values());
+        return new GraphImpl(nodeList, edges);
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#getUnits(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
      */
@@ -250,45 +289,6 @@ public class WorkspaceModelImpl implements WorkspaceModel {
             }
         }
         return units;
-    }
-
-    @SuppressWarnings("unchecked")
-	@Override
-    public Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(Product product) {
-        Map<StatusCode, Node<StatusCode>> nodes = new HashMap<StatusCode, Node<StatusCode>>();
-        List<Edge<StatusCodeSequencing>> edges = new ArrayList<Edge<StatusCodeSequencing>>();
-        for (StatusCode currentCode : model.getJobModel().getStatusCodesFor(product)) {
-            Node<StatusCode> parent = new NodeImpl<StatusCode>(currentCode);
-            nodes.put(currentCode, parent);
-            for (StatusCodeSequencing sequence : model.getStatusCodeModel().getStatusCodeSequencingParent(product,
-                                                                                                          currentCode)) {
-                StatusCode childCode = sequence.getChildCode();
-                Node<StatusCode> child = nodes.get(childCode);
-                if (child == null) {
-                    child = new NodeImpl<StatusCode>(childCode);
-                    nodes.put(childCode, child);
-                }
-                Edge<StatusCodeSequencing> edge = new EdgeImpl<StatusCodeSequencing>(
-                                                                                     parent,
-                                                                                     sequence,
-                                                                                     child);
-                edges.add(edge);
-            }
-        }
-        List<Node<StatusCode>> nodeList = new ArrayList<Node<StatusCode>>();
-        nodeList.addAll(nodes.values());
-        return new GraphImpl<StatusCode, StatusCodeSequencing>(nodeList, edges);
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public Graph<Product, ?> getStatusCodeSequencingAuthorizationGraph(Product product) {
-        Map<Product, Node<Product>> nodes = new HashMap<Product, Node<Product>>();
-        List<Edge<?>> edges = new ArrayList<Edge<?>>();
-        Node<Product> current = new NodeImpl<Product>(product);
-        traverseStatusCodeSequencing(current, nodes, edges);
-        List<Node<?>> nodeList = new ArrayList<Node<?>>();
-        nodeList.addAll(nodes.values());
-        return new GraphImpl(nodeList, edges);
     }
 
     /**

@@ -24,64 +24,65 @@ import com.chiralbehaviors.CoRE.meta.graph.Node;
  */
 public class EdgeImpl<T> implements Edge<T> {
 
-	private final Node<?> child;
-	private final T model;
-	private final Node<?> parent;
+    private final Node<?> child;
+    private final T       model;
+    private final Node<?> parent;
 
-	public EdgeImpl(Node<?> parent, T model, Node<?> child) {
-		super();
-		this.parent = parent;
-		this.model = model;
-		this.child = child;
-	}
+    public EdgeImpl(Node<?> parent, T model, Node<?> child) {
+        super();
+        this.parent = parent;
+        this.model = model;
+        this.child = child;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getChild()
-	 */
-	@Override
-	public Node<?> getChild() {
-		return child;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof EdgeImpl) {
+            Node<?> child = ((EdgeImpl<?>) obj).getChild();
+            @SuppressWarnings("unchecked")
+            T model = (T) ((EdgeImpl<?>) obj).getEdgeObject();
+            Node<?> parent = ((EdgeImpl<?>) obj).getParent();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getEdgeObject()
-	 */
-	@Override
-	public T getEdgeObject() {
-		return model;
-	}
+            if (this.parent.equals(parent) && this.model.equals(model)
+                && this.child.equals(child)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getParent()
-	 */
-	@Override
-	public Node<?> getParent() {
-		return parent;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getChild()
+     */
+    @Override
+    public Node<?> getChild() {
+        return child;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof EdgeImpl) {
-			Node<?> child = ((EdgeImpl<?>)obj).getChild();
-			@SuppressWarnings("unchecked")
-			T model = (T) ((EdgeImpl<?>)obj).getEdgeObject();
-			Node<?> parent = ((EdgeImpl<?>)obj).getParent();
-			
-			if ((this.parent.equals(parent)) && (this.model.equals(model)) && (this.child.equals(child))) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getEdgeObject()
+     */
+    @Override
+    public T getEdgeObject() {
+        return model;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.chiralbehaviors.CoRE.meta.graph.Edge#getParent()
+     */
+    @Override
+    public Node<?> getParent() {
+        return parent;
+    }
 }

@@ -18,11 +18,13 @@ package com.chiralbehaviors.CoRE.product;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.chiralbehaviors.CoRE.product.ProductNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.product.ProductNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
 
 import java.util.List;
@@ -60,7 +62,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM ProductNetwork n "
                                                         + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship") })
+                                                        + "AND n.relationship = :relationship"),
+               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
+                                                        + "WHERE n.parent IN :parents "
+                                                        + "AND n.relationship IN :relationships "
+                                                        + "AND n.child IN :children") })
 @Entity
 @Table(name = "product_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "product_network_id_seq", sequenceName = "product_network_id_seq", allocationSize = 1)
@@ -72,6 +78,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "productNetwork"
                                                                + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS                  = "productNetwork"
+                                                               + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "productNetwork"
                                                                + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                = "productNetwork"

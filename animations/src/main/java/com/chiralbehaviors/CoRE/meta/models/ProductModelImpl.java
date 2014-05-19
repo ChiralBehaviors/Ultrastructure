@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -71,13 +72,14 @@ public class ProductModelImpl
     }
 
     private static interface Procedure<T> {
-        T call(ProductModelImpl productModel) throws Exception;
+        T call(ProductModel productModel) throws Exception;
     }
 
-    public static void propagate_deductions(final TriggerData data) throws Exception {
+    public static void propagate_deductions(final TriggerData data)
+                                                                   throws Exception {
         execute(new Procedure<Void>() {
             @Override
-            public Void call(ProductModelImpl productModel) throws Exception {
+            public Void call(ProductModel productModel) throws Exception {
                 productModel.propagate();
                 return null;
             }
@@ -194,6 +196,23 @@ public class ProductModelImpl
                                                                              Relationship relationship) {
         return em.createNamedQuery(ProductAttributeAccessAuthorization.FIND_AUTHORIZATION,
                                    ProductAttributeAccessAuthorization.class).getResultList();
+    }
+
+    @Override
+    public List<ProductNetwork> getInterconnections(List<Product> parents,
+                                                    List<Relationship> relationships,
+                                                    List<Product> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
+            return null;
+        }
+        TypedQuery<ProductNetwork> query = em.createNamedQuery(ProductNetwork.GET_NETWORKS,
+                                                               ProductNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationships", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     /* (non-Javadoc)

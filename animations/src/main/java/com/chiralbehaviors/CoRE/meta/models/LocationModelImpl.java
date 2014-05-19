@@ -17,8 +17,10 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -33,6 +35,7 @@ import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -163,6 +166,18 @@ public class LocationModelImpl
             }
         }
         return location;
+    }
+
+    @Override
+    public List<LocationNetwork> getInterconnections(List<Location> parents,
+                                                     List<Relationship> relationships,
+                                                     List<Location> children) {
+        TypedQuery<LocationNetwork> query = em.createNamedQuery(LocationNetwork.GET_NETWORKS,
+                                                                LocationNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationship", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     /**

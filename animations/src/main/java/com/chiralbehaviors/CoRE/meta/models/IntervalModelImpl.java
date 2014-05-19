@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -29,6 +30,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
@@ -74,6 +76,7 @@ public class IntervalModelImpl
                 return null;
             }
 
+            @Override
             public String toString() {
                 return "IntervalModel.propagate";
             }
@@ -166,6 +169,16 @@ public class IntervalModelImpl
             }
         }
         return agency;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
+     */
+    @Override
+    public List<IntervalNetwork> getInterconnections(List<Interval> parents,
+                                                     List<Relationship> relationships,
+                                                     List<Interval> children) {
+        throw new UnsupportedOperationException();
     }
 
     /**

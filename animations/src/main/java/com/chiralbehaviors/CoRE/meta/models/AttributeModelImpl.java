@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 
@@ -68,19 +69,19 @@ public class AttributeModelImpl
     }
 
     private static interface Procedure<T> {
-        T call(AttributeModelImpl attributeModel) throws Exception;
+        T call(AttributeModel attributeModel) throws Exception;
     }
 
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
         execute(new Procedure<Void>() {
             @Override
-            public Void call(AttributeModelImpl attributrModel)
-                                                               throws Exception {
+            public Void call(AttributeModel attributrModel) throws Exception {
                 attributrModel.propagate();
                 return null;
             }
 
+            @Override
             public String toString() {
                 return "AttributeModel.propagate";
             }
@@ -167,6 +168,23 @@ public class AttributeModelImpl
             }
         }
         return attribute;
+    }
+
+    @Override
+    public List<AttributeNetwork> getInterconnections(List<Attribute> parents,
+                                                      List<Relationship> relationships,
+                                                      List<Attribute> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
+            return null;
+        }
+        TypedQuery<AttributeNetwork> query = em.createNamedQuery(AttributeNetwork.GET_NETWORKS,
+                                                                 AttributeNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationships", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     public Attribute transform(Product service, Agency agency, Product product) {

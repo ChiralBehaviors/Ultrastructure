@@ -100,19 +100,8 @@ public class JobChronology extends Ruleform {
         return id;
     }
 
-    /**
-     * @return the oldStatusCode
-     */
-    public StatusCode getOldStatusCode() {
-        return oldStatusCode;
-    }
-
-    /**
-     * @param oldStatusCode
-     *            the oldStatusCode to set
-     */
-    public void setOldStatusCode(StatusCode oldStatusCode) {
-        this.oldStatusCode = oldStatusCode;
+    public Job getJob() {
+        return job;
     }
 
     /**
@@ -123,15 +112,10 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param newStatusCode
-     *            the newStatusCode to set
+     * @return the oldStatusCode
      */
-    public void setNewStatusCode(StatusCode newStatusCode) {
-        this.newStatusCode = newStatusCode;
-    }
-
-    public Job getJob() {
-        return job;
+    public StatusCode getOldStatusCode() {
+        return oldStatusCode;
     }
 
     public Long getSequence() {
@@ -149,6 +133,22 @@ public class JobChronology extends Ruleform {
 
     public void setJob(Job job) {
         this.job = job;
+    }
+
+    /**
+     * @param newStatusCode
+     *            the newStatusCode to set
+     */
+    public void setNewStatusCode(StatusCode newStatusCode) {
+        this.newStatusCode = newStatusCode;
+    }
+
+    /**
+     * @param oldStatusCode
+     *            the oldStatusCode to set
+     */
+    public void setOldStatusCode(StatusCode oldStatusCode) {
+        this.oldStatusCode = oldStatusCode;
     }
 
     public void setTimeStamp(Timestamp timeStamp) {

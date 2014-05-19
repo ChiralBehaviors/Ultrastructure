@@ -17,8 +17,10 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -63,10 +65,10 @@ public class RelationshipModelImpl
 
     private static interface Procedure<T> {
         T call(RelationshipModelImpl productModel) throws Exception;
-    } 
+    }
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception { 
+                                                                   throws Exception {
         execute(new Procedure<Void>() {
             @Override
             public Void call(RelationshipModelImpl agencyModel)
@@ -155,7 +157,7 @@ public class RelationshipModelImpl
                                      Aspect<Relationship> aspect,
                                      Aspect<Relationship>... aspects) {
         Relationship relationship = new Relationship(name, description,
-                                               kernel.getCoreModel());
+                                                     kernel.getCoreModel());
         em.persist(relationship);
         initialize(relationship, aspect);
         if (aspects != null) {
@@ -165,22 +167,43 @@ public class RelationshipModelImpl
         }
         return relationship;
     }
-    
+
     @Override
     public final Relationship create(String rel1Name, String rel1Description,
                                      String rel2Name, String rel2Description) {
         Relationship relationship = new Relationship(rel1Name, rel1Description,
-                                               kernel.getCoreModel());
-        
-        Relationship relationship2 = new Relationship(rel2Name, rel2Description,
                                                      kernel.getCoreModel());
-        
+
+        Relationship relationship2 = new Relationship(rel2Name,
+                                                      rel2Description,
+                                                      kernel.getCoreModel());
+
         relationship.setInverse(relationship2);
         relationship2.setInverse(relationship);
         em.persist(relationship);
         em.persist(relationship2);
-        
+
         return relationship;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
+     */
+    @Override
+    public List<RelationshipNetwork> getInterconnections(List<Relationship> parents,
+                                                         List<Relationship> relationships,
+                                                         List<Relationship> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
+            return null;
+        }
+        TypedQuery<RelationshipNetwork> query = em.createNamedQuery(RelationshipNetwork.GET_NETWORKS,
+                                                                    RelationshipNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationships", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     /**

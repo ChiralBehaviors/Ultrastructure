@@ -15,8 +15,6 @@
  */
 package com.chiralbehaviors.CoRE.meta.graph;
 
-import com.chiralbehaviors.CoRE.meta.graph.Edge;
-import com.chiralbehaviors.CoRE.meta.graph.Node;
 
 /**
  * @author hparry

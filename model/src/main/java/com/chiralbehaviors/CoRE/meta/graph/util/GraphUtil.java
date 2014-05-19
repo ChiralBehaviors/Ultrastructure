@@ -33,39 +33,38 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 /**
  * Put all the fucking graph boilerplate in one fucking place so I don't have to
  * fucking type this shit anymore.
+ * 
  * @author hparry
- *
+ * 
  */
 public class GraphUtil {
 
+    /**
+     * @param networks
+     * @return
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Graph<?, NetworkRuleform<?>> graphFromNetworks(Collection<NetworkRuleform<?>> networks) {
 
-	/**
-	 * @param networks
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Graph<?, NetworkRuleform<?>> graphFromNetworks(
-			Collection<NetworkRuleform<?>> networks) {
-		
-		//use sets to ensure no duplicates
-		Set<Node<?>> nodes = new HashSet<Node<?>>();
-		Set<Edge<NetworkRuleform<?>>> edges = new HashSet<Edge<NetworkRuleform<?>>>();
-		Iterator<NetworkRuleform<?>> i = networks.iterator();
-		
-		while (i.hasNext()) {
-			NetworkRuleform<?> net = i.next();
-			NodeImpl<?> parent = new NodeImpl(net.getParent());
-			nodes.add(parent);
-			NodeImpl<?> child = new NodeImpl(net.getChild());
-			nodes.add(child);
-			edges.add(new EdgeImpl<NetworkRuleform<?>>(parent, net, child));
-		}
-		
-		List<Node<?>> nodeList = new LinkedList<Node<?>>();
-		nodeList.addAll(nodes);
-		List<Edge<NetworkRuleform<?>>> edgeList = new LinkedList<Edge<NetworkRuleform<?>>>();
-		edgeList.addAll(edges);
-		return new GraphImpl(nodeList, edgeList);
-	}
+        //use sets to ensure no duplicates
+        Set<Node<?>> nodes = new HashSet<Node<?>>();
+        Set<Edge<NetworkRuleform<?>>> edges = new HashSet<Edge<NetworkRuleform<?>>>();
+        Iterator<NetworkRuleform<?>> i = networks.iterator();
+
+        while (i.hasNext()) {
+            NetworkRuleform<?> net = i.next();
+            NodeImpl<?> parent = new NodeImpl(net.getParent());
+            nodes.add(parent);
+            NodeImpl<?> child = new NodeImpl(net.getChild());
+            nodes.add(child);
+            edges.add(new EdgeImpl<NetworkRuleform<?>>(parent, net, child));
+        }
+
+        List<Node<?>> nodeList = new LinkedList<Node<?>>();
+        nodeList.addAll(nodes);
+        List<Edge<NetworkRuleform<?>>> edgeList = new LinkedList<Edge<NetworkRuleform<?>>>();
+        edgeList.addAll(edges);
+        return new GraphImpl(nodeList, edgeList);
+    }
 
 }

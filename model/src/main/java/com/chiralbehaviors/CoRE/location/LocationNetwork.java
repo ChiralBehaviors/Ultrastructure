@@ -18,10 +18,12 @@ package com.chiralbehaviors.CoRE.location;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.location.LocationNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.location.LocationNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.location.LocationNetwork.GET_USED_RELATIONSHIPS;
 
 import java.util.List;
@@ -53,7 +55,11 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM LocationNetwork n "
                                                         + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship") })
+                                                        + "AND n.relationship = :relationship"),
+               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM LocationNetwork n "
+                                                        + "WHERE n.parent IN :parents "
+                                                        + "AND n.relationship IN :relationships "
+                                                        + "AND n.child IN :children") })
 @Entity
 @Table(name = "location_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "location_network_id_seq", sequenceName = "location_network_id_seq")
@@ -64,6 +70,8 @@ public class LocationNetwork extends NetworkRuleform<Location> {
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "locationNetwork"
                                                                + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS                  = "locationNetwork"
+                                                               + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "locationNetwork.getUsedRelationships";
     public static final String INFERENCE_STEP                = "locationNetwork"
                                                                + INFERENCE_STEP_SUFFIX;

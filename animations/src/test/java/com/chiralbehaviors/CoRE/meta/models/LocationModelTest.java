@@ -29,7 +29,6 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.access.LocationAgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.location.access.LocationProductAccessAuthorization;
-import com.chiralbehaviors.CoRE.meta.models.LocationModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;

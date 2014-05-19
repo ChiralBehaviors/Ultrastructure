@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -170,6 +171,21 @@ public class StatusCodeModelImpl
             }
         }
         return agency;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
+     */
+    @Override
+    public List<StatusCodeNetwork> getInterconnections(List<StatusCode> parents,
+                                                       List<Relationship> relationships,
+                                                       List<StatusCode> children) {
+        TypedQuery<StatusCodeNetwork> query = em.createNamedQuery(StatusCodeNetwork.GET_NETWORKS,
+                                                                  StatusCodeNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationship", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     /* (non-Javadoc)

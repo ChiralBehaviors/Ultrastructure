@@ -295,19 +295,19 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.LOGIN;
-            }
-
-            /* (non-Javadoc)
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
              */
             @Override
             public ValueType valueType() {
                 return ValueType.TEXT;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.LOGIN;
             }
 
         },
@@ -351,19 +351,19 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.PASSWORD_HASH;
-            }
-
-            /* (non-Javadoc)
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
              */
             @Override
             public ValueType valueType() {
                 return ValueType.TEXT;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.PASSWORD_HASH;
             }
 
         };
@@ -386,6 +386,70 @@ public interface WellKnownObject {
 
         public ValueType valueType() {
             return ValueType.BOOLEAN;
+        }
+    }
+
+    public static enum WellKnownCoordinate implements WellKnownObject {
+        COORDINATE() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of a coordinate. All existential entities defined in the Coordinate ruleform are instances of 'Coordinate'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COORDINATE;
+            }
+
+        };
+
+        @Override
+        public Long id() {
+            return Long.valueOf(ordinal() + 1);
+        }
+
+        /* (non-Javadoc)
+         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
+         */
+        @Override
+        public String tableName() {
+            return "ruleform.coordinate";
+        }
+    }
+
+    public static enum WellKnownInterval implements WellKnownObject {
+        INTERVAL() {
+
+            @Override
+            public String description() {
+                return "The abstract notion of an interval. All existential entities defined in the Interval ruleform are instances of 'Interval'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.INTERVAL;
+            }
+
+        };
+
+        @Override
+        public Long id() {
+            return Long.valueOf(ordinal() + 1);
+        }
+
+        /* (non-Javadoc)
+         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
+         */
+        @Override
+        public String tableName() {
+            return "ruleform.interval";
         }
     }
 
@@ -1494,8 +1558,6 @@ public interface WellKnownObject {
         abstract boolean preferred();
     }
 
-    String STATUS_CODE = "Status Code";
-
     public static enum WellKnownStatusCode implements WellKnownObject {
         STATUS_CODE() {
 
@@ -1544,70 +1606,6 @@ public interface WellKnownObject {
         }
     }
 
-    public static enum WellKnownCoordinate implements WellKnownObject {
-        COORDINATE() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a coordinate. All existential entities defined in the Coordinate ruleform are instances of 'Coordinate'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.COORDINATE;
-            }
-
-        };
-
-        @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.coordinate";
-        }
-    }
-
-    public static enum WellKnownInterval implements WellKnownObject {
-        INTERVAL() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of an interval. All existential entities defined in the Interval ruleform are instances of 'Interval'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.INTERVAL;
-            }
-
-        };
-
-        @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.interval";
-        }
-    }
-
     public static enum WellKnownUnit implements WellKnownObject {
         UNIT() {
 
@@ -1639,6 +1637,8 @@ public interface WellKnownObject {
             return "ruleform.unit";
         }
     }
+
+    String STATUS_CODE               = "Status Code";
 
     String agency                    = "Agency";
     String ANY                       = "(ANY)";
@@ -1714,13 +1714,13 @@ public interface WellKnownObject {
 
     /**
      * 
-     * @return the name of the wko
-     */
-    String wkoName();
-
-    /**
-     * 
      * @return the table name of the class of wko
      */
     String tableName();
+
+    /**
+     * 
+     * @return the name of the wko
+     */
+    String wkoName();
 }

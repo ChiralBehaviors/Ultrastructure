@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -33,6 +34,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.CoordinateModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -74,6 +76,7 @@ public class CoordinateModelImpl
                 return null;
             }
 
+            @Override
             public String toString() {
                 return "CoordinateModel.propagate";
             }
@@ -167,6 +170,17 @@ public class CoordinateModelImpl
             }
         }
         return agency;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
+     */
+    @Override
+    public List<CoordinateNetwork> getInterconnections(List<Coordinate> parents,
+                                                       List<Relationship> relationships,
+                                                       List<Coordinate> children) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**

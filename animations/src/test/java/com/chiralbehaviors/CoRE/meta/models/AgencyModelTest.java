@@ -30,7 +30,7 @@ import com.chiralbehaviors.CoRE.agency.access.AgencyLocationAccessAuthorization;
 import com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
-import com.chiralbehaviors.CoRE.meta.models.AgencyModelImpl;
+import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -71,7 +71,7 @@ public class AgencyModelTest extends AbstractModelTest {
         em.persist(auth);
         em.getTransaction().commit();
 
-        AgencyModelImpl model = new AgencyModelImpl(em);
+        AgencyModel model = new AgencyModelImpl(em);
         assertTrue(model.isAccessible(a, null, equals, ag, null));
         assertTrue(model.isAccessible(b, isA, equals, ag, null));
         assertTrue(model.isAccessible(a, null, equals, ag2, isA));
@@ -108,7 +108,7 @@ public class AgencyModelTest extends AbstractModelTest {
         em.persist(auth);
         em.getTransaction().commit();
 
-        AgencyModelImpl model = new AgencyModelImpl(em);
+        AgencyModel model = new AgencyModelImpl(em);
         assertTrue(model.isAccessible(a, null, equals, ag, null));
         assertTrue(model.isAccessible(b, isA, equals, ag, null));
         assertTrue(model.isAccessible(a, null, equals, ag2, isA));

@@ -27,7 +27,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
-import com.chiralbehaviors.CoRE.meta.models.ProductModelImpl;
+import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -70,7 +70,7 @@ public class ProductModelTest extends AbstractModelTest {
         em.persist(auth);
         em.getTransaction().commit();
 
-        ProductModelImpl model = new ProductModelImpl(em);
+        ProductModel model = new ProductModelImpl(em);
         assertTrue(model.isAccessible(a, null, equals, ag, null));
         assertTrue(model.isAccessible(b, isA, equals, ag, null));
         assertTrue(model.isAccessible(a, null, equals, ag2, isA));
@@ -107,7 +107,7 @@ public class ProductModelTest extends AbstractModelTest {
         em.persist(auth);
         em.getTransaction().commit();
 
-        ProductModelImpl model = new ProductModelImpl(em);
+        ProductModel model = new ProductModelImpl(em);
         assertTrue(model.isAccessible(a, null, equals, ag, null));
         assertTrue(model.isAccessible(b, isA, equals, ag, null));
         assertTrue(model.isAccessible(a, null, equals, ag2, isA));
@@ -151,7 +151,7 @@ public class ProductModelTest extends AbstractModelTest {
         em.persist(auth);
         em.getTransaction().commit();
 
-        ProductModelImpl model = new ProductModelImpl(em);
+        ProductModel model = new ProductModelImpl(em);
         // assertTrue(model.isAccessible(a, null, equals, ag, null));
         //bug here. this should be false since the access auth doesn't have
         //authorizing relationships

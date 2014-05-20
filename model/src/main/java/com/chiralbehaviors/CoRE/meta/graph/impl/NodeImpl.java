@@ -33,19 +33,17 @@ public class NodeImpl<T> implements Node<T> {
         this.node = node;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return node.equals(obj);
+    }
+
     @Override
     public T getNode() {
         return node;
     }
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		return node.equals(obj);
-	}
-    
-    
 
 }

@@ -73,6 +73,36 @@ public interface JobModel {
     Job changeStatus(Job job, StatusCode newStatus, String notes);
 
     /**
+     * Creates and persist a StatusCodeSequencing object for each sequential
+     * pair of StatusCodes in the codes variable, starting with the
+     * startingSequenceNumber and autoincrementing it. So if codes is [A, B, C,]
+     * 2 StatusCodeSequencing objects will be created: A->B, B->C
+     * 
+     * @param service
+     *            the service with which these status codes are associated
+     * @param codes
+     *            the ordered list of codes to be sequenced
+     * @param startingSequenceNumber
+     *            the first sequence number to be used in the sequencing. If
+     *            you're unsure, use 1;
+     * @param updatedBy
+     * @return the highest sequence number used in the chain
+     */
+    int createStatusCodeChain(Product service, StatusCode[] codes,
+                              int startingSequenceNumber, Agency updatedBy);
+
+    /**
+     * @param service
+     * @param codes
+     * @param startingSequenceNumber
+     * @param updatedBy
+     */
+    void createStatusCodeSequencings(Product service,
+                                     List<Tuple<StatusCode, StatusCode>> codes,
+                                     int startingSequenceNumber,
+                                     Agency updatedBy);
+
+    /**
      * Ensure that the nextStatus is a valid status transition from the
      * currentStatus for the service
      * 
@@ -85,6 +115,12 @@ public interface JobModel {
     void ensureNextStateIsValid(Job job, Product service,
                                 StatusCode currentStatus, StatusCode nextStatus)
                                                                                 throws SQLException;
+
+    /**
+     * @param parent
+     * @throws SQLException
+     */
+    void ensureValidParentStatus(Job parent) throws SQLException;
 
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
@@ -156,6 +192,12 @@ public interface JobModel {
     Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
 
     /**
+     * @param job
+     * @return
+     */
+    List<JobAttribute> getAttributesForJob(Job job);
+
+    /**
      * Answer the list of sequencing authorizations that have the job's service
      * as parent
      * 
@@ -164,6 +206,12 @@ public interface JobModel {
      *         as parent
      */
     List<ProductChildSequencingAuthorization> getChildActions(Job job);
+
+    /**
+     * @param node
+     * @return
+     */
+    List<ProductChildSequencingAuthorization> getChildActions(Product node);
 
     /**
      * Returns an ordered list of all JobChronology rules for the given job.
@@ -212,6 +260,12 @@ public interface JobModel {
     List<MetaProtocol> getMetaprotocols(Job job);
 
     /**
+     * @param service
+     * @return
+     */
+    List<MetaProtocol> getMetaProtocolsFor(Product service);
+
+    /**
      * Returns the individual JobChronology rule that reflects the most recent
      * change to the given Job.
      * 
@@ -242,6 +296,12 @@ public interface JobModel {
     List<ProductParentSequencingAuthorization> getParentActions(Job job);
 
     /**
+     * @param node
+     * @return
+     */
+    List<ProductParentSequencingAuthorization> getParentActions(Product node);
+
+    /**
      * Answer the list of unique protocols applicable for a job
      * 
      * @param job
@@ -265,12 +325,24 @@ public interface JobModel {
                                 Location deliverFrom);
 
     /**
+     * @param service
+     * @return
+     */
+    List<Protocol> getProtocolsFor(Product service);
+
+    /**
      * Answer the list of sibling actions for the job
      * 
      * @param job
      * @return the list of sibling actions for the job
      */
     List<ProductSiblingSequencingAuthorization> getSiblingActions(Job job);
+
+    /**
+     * @param node
+     * @return
+     */
+    List<ProductSiblingSequencingAuthorization> getSiblingActions(Product node);
 
     /**
      * Answer the collection of status codes for a service
@@ -402,71 +474,5 @@ public interface JobModel {
      * @throws SQLException
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
-
-    /**
-     * @param node
-     * @return
-     */
-    List<ProductParentSequencingAuthorization> getParentActions(Product node);
-
-    /**
-     * @param node
-     * @return
-     */
-    List<ProductSiblingSequencingAuthorization> getSiblingActions(Product node);
-
-    /**
-     * @param node
-     * @return
-     */
-    List<ProductChildSequencingAuthorization> getChildActions(Product node);
-
-	/**
-	 * @param job
-	 * @return
-	 */
-	List<JobAttribute> getAttributesForJob(Job job);
-
-	/**
-	 * Creates and persist a StatusCodeSequencing object for each sequential pair
-	 * of StatusCodes in the codes variable, starting with the startingSequenceNumber
-	 * and autoincrementing it. So if codes is [A, B, C,] 2 StatusCodeSequencing objects
-	 * will be created: A->B, B->C
-	 * @param service the service with which these status codes are associated
-	 * @param codes the ordered list of codes to be sequenced
-	 * @param startingSequenceNumber the first sequence number to be used in the sequencing. If you're unsure, use 1;
-	 * @param updatedBy
-	 * @return the highest sequence number used in the chain
-	 */
-	int createStatusCodeChain(Product service, StatusCode[] codes,
-			int startingSequenceNumber, Agency updatedBy);
-
-	/**
-	 * @param service
-	 * @param codes
-	 * @param startingSequenceNumber
-	 * @param updatedBy
-	 */
-	void createStatusCodeSequencings(Product service,
-			List<Tuple<StatusCode, StatusCode>> codes,
-			int startingSequenceNumber, Agency updatedBy);
-
-	/**
-	 * @param parent
-	 * @throws SQLException
-	 */
-	void ensureValidParentStatus(Job parent) throws SQLException;
-
-	/**
-	 * @param service
-	 * @return
-	 */
-	List<MetaProtocol> getMetaProtocolsFor(Product service);
-
-	/**
-	 * @param service
-	 * @return
-	 */
-	List<Protocol> getProtocolsFor(Product service);
 
 }

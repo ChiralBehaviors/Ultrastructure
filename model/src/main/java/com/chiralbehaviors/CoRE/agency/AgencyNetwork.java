@@ -18,10 +18,12 @@ package com.chiralbehaviors.CoRE.agency;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_USED_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
@@ -59,17 +61,23 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
                                                         + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship") })
+                                                        + "AND n.relationship = :relationship"),
+               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AgencyNetwork n "
+                                                        + "WHERE n.parent IN :parents "
+                                                        + "AND n.relationship IN :relationships "
+                                                        + "AND n.child IN :children") })
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "agency_network_id_seq", sequenceName = "agency_network_id_seq")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX; 
+                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
                                                                   + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "agencyNetwork"
                                                                   + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS                     = "agencyNetwork"
+                                                                  + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
     public static final String INFERENCE_STEP                   = "agencyNetwork"
@@ -87,7 +95,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
 
     @Id
     @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id; 
+    private Long               id;
 
     //bi-directional many-to-one association to Agency 
     @ManyToOne
@@ -146,7 +154,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public Long getId() {
         return id;
-    } 
+    }
 
     @Override
     public Agency getParent() {
@@ -181,13 +189,13 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    } 
+    }
 
     @Override
     public void setParent(Agency agency2) {
         parent = agency2;
     }
- 
+
     /**
      * @param premise1
      *            the premise1 to set

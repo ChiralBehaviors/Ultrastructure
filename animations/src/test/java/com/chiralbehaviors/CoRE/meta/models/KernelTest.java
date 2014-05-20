@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.chiralbehaviors.CoRE.meta.BootstrapLoader;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 
 /**
  * @author hhildebrand

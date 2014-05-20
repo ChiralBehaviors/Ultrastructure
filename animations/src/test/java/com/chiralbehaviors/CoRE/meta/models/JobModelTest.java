@@ -62,6 +62,95 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testDeliverWithoutMetaProtocol() {
+        em.getTransaction().begin();
+
+        StatusCode startState = new StatusCode("begin", kernel.getCore());
+        startState.setPropagateChildren(true);
+        em.persist(startState);
+
+        StatusCode delivered = new StatusCode("delivered", kernel.getCore());
+        em.persist(delivered);
+
+        StatusCode shipState = new StatusCode("shipping", kernel.getCore());
+        em.persist(shipState);
+
+        Product kiki = new Product("Kiki's Delivery Service", kernel.getCore());
+        em.persist(kiki);
+
+        Product shipping = new Product("Kiki's Shipping Service",
+                                       kernel.getCore());
+        em.persist(shipping);
+
+        Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
+        em.persist(bento);
+
+        StatusCodeSequencing sequence = new StatusCodeSequencing(
+                                                                 kiki,
+                                                                 startState,
+                                                                 delivered,
+                                                                 kernel.getCore());
+        em.persist(sequence);
+
+        StatusCodeSequencing childSequence = new StatusCodeSequencing(
+                                                                      shipping,
+                                                                      shipState,
+                                                                      delivered,
+                                                                      kernel.getCore());
+        em.persist(childSequence);
+
+        Protocol p = new Protocol(kiki, kernel.getCore(), bento,
+                                  kernel.getAnyLocation(),
+                                  kernel.getAnyLocation(), kernel.getCore(),
+                                  shipping, bento, false, kernel.getCore());
+        em.persist(p);
+
+        em.getTransaction().commit();
+
+        em.getTransaction().begin();
+
+        Job job = new Job(kernel.getCore(), kernel.getCore(), kiki, bento,
+                          kernel.getAnyLocation(), kernel.getAnyLocation(),
+                          kernel.getCore());
+        em.persist(job);
+
+        em.getTransaction().commit();
+
+        em.getTransaction().begin();
+        job.setStatus(startState);
+        em.getTransaction().commit();
+
+        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
+                                               Job.class);
+        query.setParameter("service", shipping);
+        Job j = query.getSingleResult();
+        assertNotNull(j);
+    }
+
+    @Test
+    public void testEuOrder() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment, scenario.cafleurBon,
+                            scenario.deliver, scenario.abc486, scenario.rc31,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.available);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.active);
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(1, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        List<Job> jobs = findAllJobs();
+        assertEquals(7, jobs.size());
+    }
+
+    @Test
     public void testIsTerminalState() throws Exception {
         em.getTransaction().begin();
 
@@ -209,6 +298,29 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testNonExemptOrder() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment, scenario.orgA,
+                            scenario.deliver, scenario.abc486, scenario.bht378,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.available);
+        txn.commit();
+        txn.begin();
+        order.setStatus(scenario.active);
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(1, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        List<Job> jobs = findAllJobs();
+        assertEquals(7, jobs.size());
+    }
+
+    @Test
     public void testOrder() throws Exception {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
@@ -288,118 +400,6 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.deliver);
         Job deliver = query.getSingleResult();
         assertEquals(scenario.completed, deliver.getStatus());
-    }
-
-    @Test
-    public void testNonExemptOrder() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        Job order = new Job(scenario.orderFullfillment, scenario.orgA,
-                            scenario.deliver, scenario.abc486, scenario.bht378,
-                            scenario.factory1, scenario.core);
-        em.persist(order);
-        txn.commit();
-        txn.begin();
-        order.setStatus(scenario.available);
-        txn.commit();
-        txn.begin();
-        order.setStatus(scenario.active);
-        txn.commit();
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
-        assertEquals(1, metaProtocols.size());
-        List<Protocol> protocols = jobModel.getProtocols(order);
-        assertEquals(2, protocols.size());
-        List<Job> jobs = findAllJobs();
-        assertEquals(7, jobs.size());
-    }
-
-    @Test
-    public void testEuOrder() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        Job order = new Job(scenario.orderFullfillment, scenario.cafleurBon,
-                            scenario.deliver, scenario.abc486, scenario.rc31,
-                            scenario.factory1, scenario.core);
-        em.persist(order);
-        txn.commit();
-        txn.begin();
-        order.setStatus(scenario.available);
-        txn.commit();
-        txn.begin();
-        order.setStatus(scenario.active);
-        txn.commit();
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
-        assertEquals(1, metaProtocols.size());
-        List<Protocol> protocols = jobModel.getProtocols(order);
-        assertEquals(2, protocols.size());
-        List<Job> jobs = findAllJobs();
-        assertEquals(7, jobs.size());
-    }
-
-    @Test
-    public void testDeliverWithoutMetaProtocol() {
-        em.getTransaction().begin();
-
-        StatusCode startState = new StatusCode("begin", kernel.getCore());
-        startState.setPropagateChildren(true);
-        em.persist(startState);
-
-        StatusCode delivered = new StatusCode("delivered", kernel.getCore());
-        em.persist(delivered);
-
-        StatusCode shipState = new StatusCode("shipping", kernel.getCore());
-        em.persist(shipState);
-
-        Product kiki = new Product("Kiki's Delivery Service", kernel.getCore());
-        em.persist(kiki);
-
-        Product shipping = new Product("Kiki's Shipping Service",
-                                       kernel.getCore());
-        em.persist(shipping);
-
-        Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
-        em.persist(bento);
-
-        StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                 kiki,
-                                                                 startState,
-                                                                 delivered,
-                                                                 kernel.getCore());
-        em.persist(sequence);
-
-        StatusCodeSequencing childSequence = new StatusCodeSequencing(
-                                                                      shipping,
-                                                                      shipState,
-                                                                      delivered,
-                                                                      kernel.getCore());
-        em.persist(childSequence);
-
-        Protocol p = new Protocol(kiki, kernel.getCore(), bento,
-                                  kernel.getAnyLocation(),
-                                  kernel.getAnyLocation(), kernel.getCore(),
-                                  shipping, bento, false, kernel.getCore());
-        em.persist(p);
-
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
-
-        Job job = new Job(kernel.getCore(), kernel.getCore(), kiki, bento,
-                          kernel.getAnyLocation(), kernel.getAnyLocation(),
-                          kernel.getCore());
-        em.persist(job);
-
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
-        job.setStatus(startState);
-        em.getTransaction().commit();
-
-        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
-                                               Job.class);
-        query.setParameter("service", shipping);
-        Job j = query.getSingleResult();
-        assertNotNull(j);
     }
 
     private List<Job> findAllJobs() {

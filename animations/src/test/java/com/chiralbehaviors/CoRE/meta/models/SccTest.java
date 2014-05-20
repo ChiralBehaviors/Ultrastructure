@@ -27,7 +27,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.meta.models.SCC;
 
 /**
  * @author hhildebrand

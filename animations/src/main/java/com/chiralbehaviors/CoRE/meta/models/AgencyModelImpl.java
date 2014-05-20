@@ -17,8 +17,10 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -33,6 +35,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -62,18 +65,19 @@ public class AgencyModelImpl
     }
 
     private static interface Procedure<T> {
-        T call(AgencyModelImpl productModel) throws Exception;
+        T call(AgencyModel productModel) throws Exception;
     }
 
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
         execute(new Procedure<Void>() {
             @Override
-            public Void call(AgencyModelImpl agencyModel) throws Exception {
+            public Void call(AgencyModel agencyModel) throws Exception {
                 agencyModel.propagate();
                 return null;
             }
 
+            @Override
             public String toString() {
                 return "AgencyModel.propagate";
             }
@@ -165,6 +169,23 @@ public class AgencyModelImpl
             }
         }
         return agency;
+    }
+
+    @Override
+    public List<AgencyNetwork> getInterconnections(List<Agency> parents,
+                                                   List<Relationship> relationships,
+                                                   List<Agency> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
+            return null;
+        }
+        TypedQuery<AgencyNetwork> query = em.createNamedQuery(AgencyNetwork.GET_NETWORKS,
+                                                              AgencyNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationships", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     /**

@@ -146,6 +146,8 @@ public interface WorkspaceModel {
     Collection<Relationship> getRelationships(Product workspace,
                                               Relationship relationship);
 
+    <NodeType, EdgeType> Graph<NodeType, EdgeType> getStatusCodeGraph(Product product);
+
     /**
      * 
      * @param workspace
@@ -174,7 +176,5 @@ public interface WorkspaceModel {
      *         relationship
      */
     Collection<Unit> getUnits(Product workspace, Relationship relationship);
-
-    public abstract <NodeType, EdgeType> Graph<NodeType, EdgeType> getStatusCodeGraph(Product product);
 
 }

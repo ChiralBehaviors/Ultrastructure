@@ -18,11 +18,13 @@ package com.chiralbehaviors.CoRE.attribute.unit;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork.GET_NETWORKS;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,9 +45,14 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * @author hhildebrand
  * 
  */
-@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
-                                                         + "WHERE n.parent = :parent "
-                                                         + "AND n.relationship = :relationship") })
+@NamedQueries({
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship"),
+               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
+                                                        + "WHERE n.parent IN :parents "
+                                                        + "AND n.relationship IN :relationships "
+                                                        + "AND n.child IN :children") })
 @Entity
 @Table(name = "unit_network", schema = "ruleform")
 @SequenceGenerator(schema = "ruleform", name = "unit_network_id_seq", sequenceName = "unit_network_id_seq")
@@ -57,6 +64,8 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "unitNetwork"
                                                                + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS                  = "unitNetwork"
+                                                               + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "unitNetwork"
                                                                + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                = "unitNetwork"

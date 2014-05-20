@@ -15,204 +15,285 @@
  */
 package com.chiralbehaviors.CoRE.workspace;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.event.MetaProtocol;
-import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.meta.graph.Graph;
-import com.chiralbehaviors.CoRE.meta.graph.util.GraphUtil;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 
 /**
- * A util class useful for deserializing Workspace objects clientside. Comes with handy 
- * convenience methods. Read only. 
+ * A util class useful for de/serializing Workspace objects.
+ * 
  * @author hparry
  * 
  */
 public class WorkspaceSnapshot implements Workspace {
 
-	private Map<Product, List<MetaProtocol>> metaProtocolsByProduct;
-	private Map<String, Collection<NetworkRuleform<?>>> networksByEntity;
-	private Map<Product, List<Protocol>> protocolsByProduct;
-	private Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct;
-	private Map<String, Map<String, ExistentialRuleform<?, ?>>> existentialRuleforms;
-	private Map<Product, List<StatusCodeSequencing>> statusCodeSequencingByProduct;
-	
+    private Product                    workspaceProduct;
+    private Relationship               workspaceRelationship;
 
-	/**
-	 * @param metaProtocolsByProduct
-	 * @param networksByEntity
-	 * @param protocolsByProduct
-	 * @param statusCodesByProduct
-	 * @param existentialRuleforms
-	 */
-	public WorkspaceSnapshot(
-			Map<Product, List<MetaProtocol>> metaProtocolsByProduct,
-			Map<String, Collection<NetworkRuleform<?>>> networksByEntity,
-			Map<Product, List<Protocol>> protocolsByProduct,
-			Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct,
-			Map<String, Map<String, ExistentialRuleform<?, ?>>> existentialRuleforms,
-			Map<Product, List<StatusCodeSequencing>> statusCodeSequencingByProduct) {
-		super();
-		this.metaProtocolsByProduct = metaProtocolsByProduct;
-		this.networksByEntity = networksByEntity;
-		this.protocolsByProduct = protocolsByProduct;
-		this.statusCodesByProduct = statusCodesByProduct;
-		this.existentialRuleforms = existentialRuleforms;
-		this.statusCodeSequencingByProduct = statusCodeSequencingByProduct;
-	}
+    private List<Agency>               agencies;
+    private List<Attribute>            attributes;
+    private List<Location>             locations;
+    private List<Product>              products;
+    private List<Relationship>         relationships;
+    private List<ProductNetwork>       productNetworks;
+    private List<AgencyNetwork>        agencyNetworks;
+    private List<AttributeNetwork>     attributeNetworks;
+    private List<LocationNetwork>      locationNetworks;
+    private List<RelationshipNetwork>  relationshipNetworks;
+    private List<StatusCode>           statusCodes;
+    private List<StatusCodeSequencing> statusCodeSequencings;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getAllEntities(java.lang
-	 * .Class)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends ExistentialRuleform<?, ?>> Collection<T> getAllEntitiesOfType(
-			Class<T> clazz) {
+    public WorkspaceSnapshot() {
 
-		String rf = clazz.getSimpleName();
-		return (Collection<T>) existentialRuleforms.get(rf).values();
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllMetaProtocols()
-	 */
-	@Override
-	public Collection<MetaProtocol> getAllMetaProtocols() {
-		List<MetaProtocol> metaprotocols = new LinkedList<MetaProtocol>();
-		for (List<MetaProtocol> ps : metaProtocolsByProduct.values()) {
-			metaprotocols.addAll(ps);
-		}
+    /**
+     * @return the agencies
+     */
+    @Override
+    public List<Agency> getAgencies() {
+        return agencies;
+    }
 
-		return metaprotocols;
-	}
+    /**
+     * @return the agencyNetworks
+     */
+    @Override
+    public List<AgencyNetwork> getAgencyNetworks() {
+        return agencyNetworks;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllProtocols()
-	 */
-	@Override
-	public Collection<Protocol> getAllProtocols() {
-		List<Protocol> protocols = new LinkedList<Protocol>();
-		for (List<Protocol> ps : protocolsByProduct.values()) {
-			protocols.addAll(ps);
-		}
+    /**
+     * @return the attributeNetworks
+     */
+    @Override
+    public List<AttributeNetwork> getAttributeNetworks() {
+        return attributeNetworks;
+    }
 
-		return protocols;
-	}
+    /**
+     * @return the attributes
+     */
+    @Override
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getEntityByName(java.lang
-	 * .Class, java.lang.String)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends ExistentialRuleform<?, ?>> T getEntityByName(
-			Class<T> clazz, String name) {
-		String rf = clazz.getSimpleName();
-		return (T) existentialRuleforms.get(rf).get(name);
-	}
+    /**
+     * @return the locationNetworks
+     */
+    @Override
+    public List<LocationNetwork> getLocationNetworks() {
+        return locationNetworks;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getGraph(com.chiralbehaviors
-	 * .CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Graph<RuleForm, Network> getGraph(
-			RuleForm parent, Relationship relationship) {
-		List<NetworkRuleform<?>> edges = new LinkedList<NetworkRuleform<?>>();
-		
-		for (NetworkRuleform<?> e : networksByEntity.get(parent.getClass().getSimpleName())) {
-			if (e.getParent().equals(parent) && e.getRelationship().equals(relationship)) {
-				edges.add(e);
-			}
-		}
-		return (Graph<RuleForm, Network>) GraphUtil.graphFromNetworks(edges);
-	}
+    /**
+     * @return the locations
+     */
+    @Override
+    public List<Location> getLocations() {
+        return locations;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.workspace.Workspace#getMetaProtocolsFor(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public List<MetaProtocol> getMetaProtocolsFor(Product service) {
-		return metaProtocolsByProduct.get(service);
-	}
+    /**
+     * @return the productNetworks
+     */
+    @Override
+    public List<ProductNetwork> getProductNetworks() {
+        return productNetworks;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getProtocolsFor(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public List<Protocol> getProtocolsFor(Product service) {
-		return protocolsByProduct.get(service);
-	}
+    /**
+     * @return the products
+     */
+    @Override
+    public List<Product> getProducts() {
+        return products;
+    }
 
+    /**
+     * @return the relationshipNetworks
+     */
+    @Override
+    public List<RelationshipNetwork> getRelationshipNetworks() {
+        return relationshipNetworks;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getStatusCodeGraph(com.
-	 * chiralbehaviors.CoRE.product.Product)
-	 */
-	@Override
-	public Graph<StatusCode, StatusCodeSequencing> getStatusCodeGraph(
-			Product service) {
-		return statusCodesByProduct.get(service);
-	}
+    /**
+     * @return the relationships
+     */
+    @Override
+    public List<Relationship> getRelationships() {
+        return relationships;
+    }
 
-	@Override
-	public Map<String, Map<String, ExistentialRuleform<?, ?>>> getAllExistentialRuleforms() {
-		return existentialRuleforms;
-	}
+    /**
+     * @return the statusCodes
+     */
+    @Override
+    public List<StatusCode> getStatusCodes() {
+        return statusCodes;
+    }
 
-	/* (non-Javadoc)
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllNetworks()
-	 */
-	@Override
-	public Map<String, Collection<NetworkRuleform<?>>> getAllNetworks() {
-		return networksByEntity;
-	}
+    /**
+     * @return the statusCodeSequencings
+     */
+    @Override
+    public List<StatusCodeSequencing> getStatusCodeSequencings() {
+        return statusCodeSequencings;
+    }
 
-	/* (non-Javadoc)
-	 * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAllStatusCodeSequencings()
-	 */
-	@Override
-	public Collection<StatusCodeSequencing> getAllStatusCodeSequencings() {
-		List<StatusCodeSequencing> sequences = new LinkedList<StatusCodeSequencing>();
-		
-		for (List<StatusCodeSequencing> list : statusCodeSequencingByProduct.values()) {
-			sequences.addAll(list);
-		}
-		
-		return sequences;
-	}
+    /**
+     * @return the workspaceProduct
+     */
+    @Override
+    public Product getWorkspaceProduct() {
+        return workspaceProduct;
+    }
+
+    /**
+     * @return the workspaceRelationship
+     */
+    @Override
+    public Relationship getWorkspaceRelationship() {
+        return workspaceRelationship;
+    }
+
+    /**
+     * @param agencies
+     *            the agencies to set
+     */
+    @Override
+    public void setAgencies(List<Agency> agencies) {
+        this.agencies = agencies;
+    }
+
+    /**
+     * @param agencyNetworks
+     *            the agencyNetworks to set
+     */
+    @Override
+    public void setAgencyNetworks(List<AgencyNetwork> agencyNetworks) {
+        this.agencyNetworks = agencyNetworks;
+    }
+
+    /**
+     * @param attributeNetworks
+     *            the attributeNetworks to set
+     */
+    @Override
+    public void setAttributeNetworks(List<AttributeNetwork> attributeNetworks) {
+        this.attributeNetworks = attributeNetworks;
+    }
+
+    /**
+     * @param attributes
+     *            the attributes to set
+     */
+    @Override
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    /**
+     * @param locationNetworks
+     *            the locationNetworks to set
+     */
+    @Override
+    public void setLocationNetworks(List<LocationNetwork> locationNetworks) {
+        this.locationNetworks = locationNetworks;
+    }
+
+    /**
+     * @param locations
+     *            the locations to set
+     */
+    @Override
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
+
+    /**
+     * @param productNetworks
+     *            the productNetworks to set
+     */
+    @Override
+    public void setProductNetworks(List<ProductNetwork> productNetworks) {
+        this.productNetworks = productNetworks;
+    }
+
+    /**
+     * @param products
+     *            the products to set
+     */
+    @Override
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    /**
+     * @param relationshipNetworks
+     *            the relationshipNetworks to set
+     */
+    @Override
+    public void setRelationshipNetworks(List<RelationshipNetwork> relationshipNetworks) {
+        this.relationshipNetworks = relationshipNetworks;
+    }
+
+    /**
+     * @param relationships
+     *            the relationships to set
+     */
+    @Override
+    public void setRelationships(List<Relationship> relationships) {
+        this.relationships = relationships;
+    }
+
+    /**
+     * @param statusCodes
+     *            the statusCodes to set
+     */
+    @Override
+    public void setStatusCodes(List<StatusCode> statusCodes) {
+        this.statusCodes = statusCodes;
+    }
+
+    /**
+     * @param statusCodeSequencings
+     *            the statusCodeSequencings to set
+     */
+    @Override
+    public void setStatusCodeSequencings(List<StatusCodeSequencing> statusCodeSequencings) {
+        this.statusCodeSequencings = statusCodeSequencings;
+    }
+
+    /**
+     * @param workspaceProduct
+     *            the workspaceProduct to set
+     */
+    @Override
+    public void setWorkspaceProduct(Product workspaceProduct) {
+        this.workspaceProduct = workspaceProduct;
+    }
+
+    /**
+     * @param workspaceRelationship
+     *            the workspaceRelationship to set
+     */
+    @Override
+    public void setWorkspaceRelationship(Relationship workspaceRelationship) {
+        this.workspaceRelationship = workspaceRelationship;
+    }
 
 }

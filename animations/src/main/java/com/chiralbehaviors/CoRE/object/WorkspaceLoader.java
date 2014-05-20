@@ -15,26 +15,20 @@
  */
 package com.chiralbehaviors.CoRE.object;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.authorization.AccessAuthorization;
-import com.chiralbehaviors.CoRE.event.MetaProtocol;
-import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.graph.Graph;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductAttributeAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessAuthorization;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -45,95 +39,145 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class WorkspaceLoader {
 
-	private Product workspaceProduct;
-	private Relationship workspaceOf;
-	private Model model;
-	private WorkspaceSnapshot workspace;
+    private Product      workspaceProduct;
+    private Relationship workspaceOf;
+    private Model        model;
+    private Workspace    workspace;
 
-	private Map<Product, List<MetaProtocol>> metaProtocolsByProduct;
-	private Map<String, Collection<NetworkRuleform<?>>> networksByEntity;
-	private Map<Product, List<Protocol>> protocolsByProduct;
-	private Map<Product, Graph<StatusCode, StatusCodeSequencing>> statusCodesByProduct;
-	private Map<String, Map<String, ExistentialRuleform<?, ?>>> existentialRuleforms;
-	private Map<Product, List<StatusCodeSequencing>> statusCodeSequencingByProduct;
+    public WorkspaceLoader(Product workspaceProduct, Relationship workspaceOf,
+                           Model model) {
+        this.workspaceProduct = workspaceProduct;
+        this.workspaceOf = workspaceOf;
+        this.model = model;
+        workspace = new WorkspaceSnapshot();
+        load();
+    }
 
-	public WorkspaceLoader(Product workspaceProduct, Relationship workspaceOf,
-			Model model) {
-		this.workspaceProduct = workspaceProduct;
-		this.workspaceOf = workspaceOf;
-		this.model = model;
-		load();
-	}
+    public Workspace getWorkspace() {
+        return workspace;
+    }
 
-	/**
-	 * Reloads the workspace data from the database. Useful for refreshing the
-	 * entity map if you're changed something.
-	 */
-	public void load() {
+    /**
+     * Reloads the workspace data from the database. Useful for refreshing the
+     * entity map if you're changed something.
+     */
+    public void load() {
+        workspace.setWorkspaceProduct(workspaceProduct);
+        workspace.setWorkspaceRelationship(workspaceOf);
+        workspace.setProducts(model.getProductModel().getChildren(workspaceProduct,
+                                                                  workspaceOf));
 
-		existentialRuleforms = new HashMap<String, Map<String, ExistentialRuleform<?, ?>>>();
+        loadAgencies();
+        loadAttributes();
+        loadLocations();
+        loadRelationships();
+        loadStatusCodes();
+        loadAgencyNetworks();
+        loadAttributeNetworks();
+        loadRelationshipNetworks();
+        loadProductNetworks();
+    }
 
-		List<Product> products = model.getProductModel().getChildren(
-				workspaceProduct, workspaceOf);
-		Map<String, ExistentialRuleform<?, ?>> productMap = new HashMap<String, ExistentialRuleform<?, ?>>();
-		for (Product p : products) {
-			if (!productMap.containsKey(p.getName())) {
-				productMap.put(p.getName(), p);
-			}
-		}
+    /**
+     * 
+     */
+    private void loadAgencies() {
+        List<Agency> agencies = new LinkedList<>();
+        for (ProductAgencyAccessAuthorization auth : model.getProductModel().getAgencyAccessAuths(workspaceProduct,
+                                                                                                  workspaceOf)) {
+            if (!agencies.contains(auth.getChild())) {
+                agencies.add(auth.getChild());
+            }
+        }
+        workspace.setAgencies(agencies);
 
-		existentialRuleforms.put(Product.class.getSimpleName(), productMap);
-		List<AccessAuthorization<?, ?>> auths = new LinkedList<AccessAuthorization<?, ?>>();
-		auths.addAll(model.getProductModel().getAgencyAccessAuths(
-				workspaceProduct, workspaceOf));
-		existentialRuleforms.put(Agency.class.getSimpleName(), toMap(auths));
+    }
 
-		auths = new LinkedList<AccessAuthorization<?, ?>>();
-		auths.addAll(model.getProductModel().getAttributeAccessAuths(
-				workspaceProduct, workspaceOf));
-		existentialRuleforms.put(Attribute.class.getSimpleName(), toMap(auths));
+    /**
+     * 
+     */
+    private void loadAgencyNetworks() {
+        workspace.setAgencyNetworks(model.getAgencyModel().getInterconnections(workspace.getAgencies(),
+                                                                               workspace.getRelationships(),
+                                                                               workspace.getAgencies()));
 
-		auths = new LinkedList<AccessAuthorization<?, ?>>();
-		auths.addAll(model.getProductModel().getLocationAccessAuths(
-				workspaceProduct, workspaceOf));
-		existentialRuleforms.put(Location.class.getSimpleName(), toMap(auths));
+    }
 
-		auths = new LinkedList<AccessAuthorization<?, ?>>();
-		auths.addAll(model.getProductModel().getRelationshipAccessAuths(
-				workspaceProduct, workspaceOf));
-		existentialRuleforms.put(Relationship.class.getSimpleName(),
-				toMap(auths));
+    /**
+     * 
+     */
+    private void loadAttributeNetworks() {
+        workspace.setAttributeNetworks(model.getAttributeModel().getInterconnections(workspace.getAttributes(),
+                                                                                     workspace.getRelationships(),
+                                                                                     workspace.getAttributes()));
 
-		auths = new LinkedList<AccessAuthorization<?, ?>>();
-		auths.addAll(model.getProductModel().getStatusCodeAccessAuths(
-				workspaceProduct, workspaceOf));
-		existentialRuleforms
-				.put(StatusCode.class.getSimpleName(), toMap(auths));
+    }
 
-		workspace = new WorkspaceSnapshot(metaProtocolsByProduct, networksByEntity,
-				protocolsByProduct, statusCodesByProduct, existentialRuleforms,
-				statusCodeSequencingByProduct);
+    /**
+     * 
+     */
+    private void loadAttributes() {
+        List<Attribute> attributes = new LinkedList<>();
+        for (ProductAttributeAccessAuthorization auth : model.getProductModel().getAttributeAccessAuths(workspaceProduct,
+                                                                                                        workspaceOf)) {
+            if (!attributes.contains(auth.getChild())) {
+                attributes.add(auth.getChild());
+            }
+        }
+        workspace.setAttributes(attributes);
+    }
 
-	}
+    /**
+     * 
+     */
+    private void loadLocations() {
+        List<Location> locations = new LinkedList<>();
+        for (ProductLocationAccessAuthorization auth : model.getProductModel().getLocationAccessAuths(workspaceProduct,
+                                                                                                      workspaceOf)) {
+            if (!locations.contains(auth.getChild())) {
+                locations.add(auth.getChild());
+            }
+        }
+        workspace.setLocations(locations);
 
-	/**
-	 * @param agencyAuths
-	 */
-	private Map<String, ExistentialRuleform<?, ?>> toMap(
-			List<AccessAuthorization<?, ?>> auths) {
-		Map<String, ExistentialRuleform<?, ?>> map = new HashMap<String, ExistentialRuleform<?, ?>>();
-		for (AccessAuthorization<?, ?> auth : auths) {
-			if (!map.containsKey(auth.getChild().getName())) {
-				map.put(auth.getChild().getName(), auth.getChild());
-			}
-		}
+    }
 
-		return map;
+    /**
+     * 
+     */
+    private void loadProductNetworks() {
+        workspace.setProductNetworks(model.getProductModel().getInterconnections(workspace.getProducts(),
+                                                                                 workspace.getRelationships(),
+                                                                                 workspace.getProducts()));
+    }
 
-	}
-	
-	public WorkspaceSnapshot getWorkspace() {
-		return workspace;
-	}
+    /**
+     * 
+     */
+    private void loadRelationshipNetworks() {
+        workspace.setRelationshipNetworks(model.getRelationshipModel().getInterconnections(workspace.getRelationships(),
+                                                                                           workspace.getRelationships(),
+                                                                                           workspace.getRelationships()));
+
+    }
+
+    private void loadRelationships() {
+        List<Relationship> relationships = new LinkedList<Relationship>();
+        for (ProductRelationshipAccessAuthorization auth : model.getProductModel().getRelationshipAccessAuths(workspaceProduct,
+                                                                                                              workspaceOf)) {
+            if (!relationships.contains(auth.getChild())) {
+                relationships.add(auth.getChild());
+            }
+        }
+        workspace.setRelationships(relationships);
+    }
+
+    /**
+     * 
+     */
+    private void loadStatusCodes() {
+        //TODO
+
+    }
 
 }

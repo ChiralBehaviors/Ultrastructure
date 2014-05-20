@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand

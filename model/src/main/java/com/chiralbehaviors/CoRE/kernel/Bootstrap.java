@@ -200,7 +200,7 @@ public class Bootstrap {
         } catch (SQLException e) {
             throw new SQLException("Unable to insert null inference", e);
         }
-        PreparedStatement update = connection.prepareStatement( "SELECT setval('ruleform.network_inference_id_seq', 2)" );
+        PreparedStatement update = connection.prepareStatement("SELECT setval('ruleform.network_inference_id_seq', 2)");
         update.execute();
     }
 

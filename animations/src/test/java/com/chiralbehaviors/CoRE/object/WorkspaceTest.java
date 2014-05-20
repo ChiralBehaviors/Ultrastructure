@@ -78,10 +78,11 @@ public class WorkspaceTest extends DatabaseTest {
         em.persist(locAuth);
         commitTransaction();
         em.clear();
-        
-        Workspace w = new WorkspaceLoader(workspace, workspaceOf, new ModelImpl(em)).getWorkspace();
-        assertEquals(1, w.getAllEntitiesOfType(Product.class).size());
-        assertTrue(w.getAllEntitiesOfType(Product.class).contains(p1));
+
+        Workspace w = new WorkspaceLoader(workspace, workspaceOf,
+                                          new ModelImpl(em)).getWorkspace();
+        assertEquals(1, w.getProducts().size());
+        assertTrue(w.getProducts().contains(p1));
     }
 
 }

@@ -17,8 +17,10 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
@@ -33,6 +35,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
@@ -161,6 +164,21 @@ public class UnitModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
+     */
+    @Override
+    public List<UnitNetwork> getInterconnections(List<Unit> parents,
+                                                 List<Relationship> relationships,
+                                                 List<Unit> children) {
+        TypedQuery<UnitNetwork> query = em.createNamedQuery(UnitNetwork.GET_NETWORKS,
+                                                            UnitNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationship", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     /**

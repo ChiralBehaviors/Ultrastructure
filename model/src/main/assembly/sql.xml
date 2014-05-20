@@ -1,24 +1,29 @@
-<assembly
-    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd"
+>
     <id>sql</id>
     <formats>
         <format>jar</format>
     </formats>
-    <baseDirectory>/</baseDirectory>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <baseDirectory>${basedir/src/main/sql</baseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/src/main/sql</directory>
+            <includes>
+                <include>**/*.xml</include>
+            </includes>
+            <outputDirectory>/model</outputDirectory>
+        </fileSet>
+    </fileSets>
     <files>
         <file>
             <source>target/classes/create-roles.sql</source>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/model</outputDirectory>
         </file>
         <file>
             <source>target/classes/create-db.sql</source>
-            <outputDirectory>/</outputDirectory>
-        </file>
-        <file>
-            <source>target/liquibase/migrate.sql</source>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/model</outputDirectory>
         </file>
     </files>
 </assembly>

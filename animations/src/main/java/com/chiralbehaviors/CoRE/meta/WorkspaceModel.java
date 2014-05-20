@@ -30,8 +30,10 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.graph.Graph;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -176,5 +178,13 @@ public interface WorkspaceModel {
      *         relationship
      */
     Collection<Unit> getUnits(Product workspace, Relationship relationship);
+
+    /**
+     * This method takes a {@link #Workspace} object and inserts its members into the database. 
+     * It assumes that none of these objects exist already.
+     * @param workspace the workspace to be imported
+     * @return the {@link #Aspect} representing the workspace {@link #Product} and workspace {@link #Relationship}
+     */
+    Aspect<Product> importWorkspace(Workspace workspace);
 
 }

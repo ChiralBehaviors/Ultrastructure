@@ -21,7 +21,10 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
@@ -56,9 +59,15 @@ public interface Workspace {
 
     List<Relationship> getRelationships();
 
+    List<StatusCodeNetwork> getStatusCodeNetworks();
+
     List<StatusCode> getStatusCodes();
 
     List<StatusCodeSequencing> getStatusCodeSequencings();
+
+    List<UnitNetwork> getUnitNetworks();
+
+    List<Unit> getUnits();
 
     Product getWorkspaceProduct();
 
@@ -84,9 +93,15 @@ public interface Workspace {
 
     void setRelationships(List<Relationship> relationships);
 
+    void setStatusCodeNetworks(List<StatusCodeNetwork> statusCodeNetworks);
+
     void setStatusCodes(List<StatusCode> statusCodes);
 
     void setStatusCodeSequencings(List<StatusCodeSequencing> statusCodeSequencings);
+
+    void setUnitNetworks(List<UnitNetwork> unitNetworks);
+
+    void setUnits(List<Unit> units);
 
     void setWorkspaceProduct(Product workspaceProduct);
 

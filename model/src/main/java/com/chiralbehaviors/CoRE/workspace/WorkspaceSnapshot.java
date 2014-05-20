@@ -21,7 +21,10 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
@@ -52,7 +55,10 @@ public class WorkspaceSnapshot implements Workspace {
     private List<LocationNetwork>      locationNetworks;
     private List<RelationshipNetwork>  relationshipNetworks;
     private List<StatusCode>           statusCodes;
+    private List<StatusCodeNetwork>    statusCodeNetworks;
     private List<StatusCodeSequencing> statusCodeSequencings;
+    private List<Unit>                 units;
+    private List<UnitNetwork>          unitNetworks;
 
     public WorkspaceSnapshot() {
 
@@ -139,6 +145,14 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
+     * @return the statusCodeNetworks
+     */
+    @Override
+    public List<StatusCodeNetwork> getStatusCodeNetworks() {
+        return statusCodeNetworks;
+    }
+
+    /**
      * @return the statusCodes
      */
     @Override
@@ -152,6 +166,22 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<StatusCodeSequencing> getStatusCodeSequencings() {
         return statusCodeSequencings;
+    }
+
+    /**
+     * @return the unitNetworks
+     */
+    @Override
+    public List<UnitNetwork> getUnitNetworks() {
+        return unitNetworks;
+    }
+
+    /**
+     * @return the units
+     */
+    @Override
+    public List<Unit> getUnits() {
+        return units;
     }
 
     /**
@@ -261,6 +291,14 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
+     * @param statusCodeNetworks the statusCodeNetworks to set
+     */
+    @Override
+    public void setStatusCodeNetworks(List<StatusCodeNetwork> statusCodeNetworks) {
+        this.statusCodeNetworks = statusCodeNetworks;
+    }
+
+    /**
      * @param statusCodes
      *            the statusCodes to set
      */
@@ -276,6 +314,22 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public void setStatusCodeSequencings(List<StatusCodeSequencing> statusCodeSequencings) {
         this.statusCodeSequencings = statusCodeSequencings;
+    }
+
+    /**
+     * @param unitNetworks the unitNetworks to set
+     */
+    @Override
+    public void setUnitNetworks(List<UnitNetwork> unitNetworks) {
+        this.unitNetworks = unitNetworks;
+    }
+
+    /**
+     * @param units the units to set
+     */
+    @Override
+    public void setUnits(List<Unit> units) {
+        this.units = units;
     }
 
     /**

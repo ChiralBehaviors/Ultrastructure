@@ -173,10 +173,15 @@ public class UnitModelImpl
     public List<UnitNetwork> getInterconnections(List<Unit> parents,
                                                  List<Relationship> relationships,
                                                  List<Unit> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
+            return null;
+        }
         TypedQuery<UnitNetwork> query = em.createNamedQuery(UnitNetwork.GET_NETWORKS,
                                                             UnitNetwork.class);
         query.setParameter("parents", parents);
-        query.setParameter("relationship", relationships);
+        query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
     }

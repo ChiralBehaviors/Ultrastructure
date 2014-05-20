@@ -20,6 +20,8 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -28,6 +30,8 @@ import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.product.access.ProductAttributeAccessAuthorization;
 import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
 import com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductStatusCodeAccessAuthorization;
+import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
@@ -72,10 +76,37 @@ public class WorkspaceLoader {
         loadLocations();
         loadRelationships();
         loadStatusCodes();
+        loadUnits();
         loadAgencyNetworks();
         loadAttributeNetworks();
         loadRelationshipNetworks();
         loadProductNetworks();
+        loadUnitNetworks();
+    }
+
+    /**
+     * 
+     */
+    private void loadUnitNetworks() {
+        workspace.setUnitNetworks(model.getUnitModel().getInterconnections(workspace.getUnits(),
+                                                                                           workspace.getRelationships(),
+                                                                                           workspace.getUnits()));
+        
+    }
+
+    /**
+     * 
+     */
+    private void loadUnits() {
+        List<Unit> units = new LinkedList<>();
+        for (ProductUnitAccessAuthorization auth : model.getProductModel().getUnitAccessAuths(workspaceProduct,
+                                                                                                  workspaceOf)) {
+            if (!units.contains(auth.getChild())) {
+                units.add(auth.getChild());
+            }
+        }
+        workspace.setUnits(units);
+        
     }
 
     /**
@@ -176,8 +207,14 @@ public class WorkspaceLoader {
      * 
      */
     private void loadStatusCodes() {
-        //TODO
-
+        List<StatusCode> statusCodes = new LinkedList<>();
+        for (ProductStatusCodeAccessAuthorization auth : model.getProductModel().getStatusCodeAccessAuths(workspaceProduct,
+                                                                                                              workspaceOf)) {
+            if (!statusCodes.contains(auth.getChild())) {
+                statusCodes.add(auth.getChild());
+            }
+        }
+        workspace.setStatusCodes(statusCodes);
     }
 
 }

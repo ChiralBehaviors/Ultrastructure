@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.access.resource;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.object.WorkspaceLoader;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -62,6 +64,12 @@ public class WorkspaceResource {
 
 		WorkspaceLoader loader = new WorkspaceLoader(p, r, model);
 		return loader.getWorkspace();
+	}
+	
+	//TODO hparry this returns an Aspect 
+	@POST
+	public Aspect<Product> importWorkspace(Workspace workspace) {
+	    return model.getWorkspaceModel().importWorkspace(workspace);
 	}
 
 

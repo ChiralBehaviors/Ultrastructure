@@ -18,6 +18,9 @@
         <model.jar.file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</model.jar.file>
         <main.sql>${project.basedir}/src/main/sql</main.sql>
         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+
+        <jdbc.url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbc.url>
+        <jdbc.driver>org.postgresql.Driver</jdbc.driver>
     </properties>
 
     <dependencies>
@@ -90,6 +93,27 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-deployment</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/sql.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -207,6 +231,7 @@
                                             <goal>
                                                 unpack-dependencies
                                             </goal>
+                                            <goal>copy</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
@@ -315,6 +340,7 @@
                                         <versionRange>[2.0.4,)</versionRange>
                                         <goals>
                                             <goal>update</goal>
+                                            <goal>updateSQL</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
@@ -332,10 +358,6 @@
     <profiles>
         <profile>
             <id>database.active</id>
-            <properties>
-                <jdbc.url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbc.url>
-                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -364,7 +386,8 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <phase>process-resources</phase>
+                                <id>update database</id>
+                                <phase>process-sources</phase>
                                 <goals>
                                     <goal>update</goal>
                                 </goals>
@@ -374,6 +397,13 @@
                     <plugin>
                         <groupId>com.hellblazer</groupId>
                         <artifactId>pljava-loader</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgresql.driver.version}</version>
+                            </dependency>
+                        </dependencies>
                         <configuration>
                             <jdbcUrl>${jdbc.url}</jdbcUrl>
                             <username>${testing.db.login}</username>

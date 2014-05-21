@@ -30,19 +30,16 @@ import static com.chiralbehaviors.CoRE.agency.access.AgencyAttribute.GET_ATTRIBU
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -115,7 +112,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                      @NamedNativeQuery(name = "agency" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('agency', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "agency", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "agency_id_seq", sequenceName = "agency_id_seq")
 public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
         implements Attributable<AgencyAttribute> {
     public static final String                AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
@@ -151,10 +147,6 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     @JsonIgnore
     private Set<AgencyAttribute>              attributes;
 
-    @Id
-    @GeneratedValue(generator = "agency_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                              id;
-
     // bi-directional many-to-one association to AgencyNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -173,13 +165,6 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
      */
     public Agency(Agency updatedBy) {
         super(updatedBy);
-    }
-
-    /**
-     * @param id
-     */
-    public Agency(Long id) {
-        super(id);
     }
 
     /**
@@ -212,6 +197,13 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
      */
     public Agency(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Agency(UUID id) {
+        super(id);
     }
 
     public void addAttribute(AgencyAttribute attribute) {
@@ -287,11 +279,6 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     }
 
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
     public Set<AgencyNetwork> getNetworkByChild() {
         if (networkByChild == null) {
             return Collections.emptySet();
@@ -339,11 +326,6 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     @Override
     public void setAttributes(Set<AgencyAttribute> attributes) {
         this.attributes = attributes;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override

@@ -4,41 +4,41 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
-   
+
     <changeSet author="hhildebrand" id="1390879803225-1">
         <createTable remarks="Authorizations to join networks of ruleforms" catalogName="ruleform" tableName="ruleform.access_authorization">
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
+            <column name="id" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="access_authorization_pkey" />
             </column>
-            <column name="product1" type="INT8" />
-            <column name="agency1" type="INT8" />
-            <column name="location1" type="INT8" />
-            <column name="attribute1" type="INT8" />
-            <column name="coordinate1" type="INT8" />
-            <column name="interval1" type="INT8" />
-            <column name="relationship1" type="INT8" />
-            <column name="status_code1" type="INT8" />
-            <column name="unit1" type="INT8" />
+            <column name="product1" type="TEXT" />
+            <column name="agency1" type="TEXT" />
+            <column name="location1" type="TEXT" />
+            <column name="attribute1" type="TEXT" />
+            <column name="coordinate1" type="TEXT" />
+            <column name="interval1" type="TEXT" />
+            <column name="relationship1" type="TEXT" />
+            <column name="status_code1" type="TEXT" />
+            <column name="unit1" type="TEXT" />
             <column name="authorization_type" type="VARCHAR(10485760)">
                 <constraints nullable="false" />
             </column>
-            <column name="relationship" type="INT8">
+            <column name="relationship" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="product2" type="INT8" />
-            <column name="agency2" type="INT8" />
-            <column name="location2" type="INT8" />
-            <column name="attribute2" type="INT8" />
-            <column name="coordinate2" type="INT8" />
-            <column name="interval2" type="INT8" />
-            <column name="relationship2" type="INT8" />
-            <column name="status_code2" type="INT8" />
-            <column name="unit2" type="INT8" />
-            <column name="parent_transitive_relationship" type="INT8" />
-            <column name="child_transitive_relationship" type="INT8" />
+            <column name="product2" type="TEXT" />
+            <column name="agency2" type="TEXT" />
+            <column name="location2" type="TEXT" />
+            <column name="attribute2" type="TEXT" />
+            <column name="coordinate2" type="TEXT" />
+            <column name="interval2" type="TEXT" />
+            <column name="relationship2" type="TEXT" />
+            <column name="status_code2" type="TEXT" />
+            <column name="unit2" type="TEXT" />
+            <column name="parent_transitive_relationship" type="TEXT" />
+            <column name="child_transitive_relationship" type="TEXT" />
             <column name="description" type="VARCHAR(10485760)" />
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="INT8">
+            <column name="updated_by" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
@@ -46,29 +46,29 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.access_authorizations"/>
+            <dropTable tableName="ruleform.access_authorizations" />
         </rollback>
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-65">
-        <addForeignKeyConstraint baseColumnNames="agency1" baseTableName="ruleform.access_authorization" constraintName="access_authorization_agency1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+        <addForeignKeyConstraint baseColumnNames="agency1" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_agency1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-66">
-        <addForeignKeyConstraint baseColumnNames="agency2" baseTableName="ruleform.access_authorization" constraintName="access_authorization_agency2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+        <addForeignKeyConstraint baseColumnNames="agency2" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_agency2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-67">
-        <addForeignKeyConstraint baseColumnNames="attribute1" baseTableName="ruleform.access_authorization" constraintName="access_authorization_attribute1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.attribute" />
+        <addForeignKeyConstraint baseColumnNames="attribute1" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_attribute1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-68">
-        <addForeignKeyConstraint baseColumnNames="attribute2" baseTableName="ruleform.access_authorization" constraintName="access_authorization_attribute2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.attribute" />
+        <addForeignKeyConstraint baseColumnNames="attribute2" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_attribute2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-69">
         <addForeignKeyConstraint baseColumnNames="child_transitive_relationship" baseTableName="ruleform.access_authorization"
@@ -76,34 +76,34 @@
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-70">
-        <addForeignKeyConstraint baseColumnNames="coordinate1" baseTableName="ruleform.access_authorization" constraintName="access_authorization_coordinate1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.coordinate" />
+        <addForeignKeyConstraint baseColumnNames="coordinate1" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_coordinate1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.coordinate" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-71">
-        <addForeignKeyConstraint baseColumnNames="coordinate2" baseTableName="ruleform.access_authorization" constraintName="access_authorization_coordinate2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.coordinate" />
+        <addForeignKeyConstraint baseColumnNames="coordinate2" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_coordinate2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.coordinate" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-72">
-        <addForeignKeyConstraint baseColumnNames="interval1" baseTableName="ruleform.access_authorization" constraintName="access_authorization_interval1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.interval" />
+        <addForeignKeyConstraint baseColumnNames="interval1" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_interval1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.interval" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-73">
-        <addForeignKeyConstraint baseColumnNames="interval2" baseTableName="ruleform.access_authorization" constraintName="access_authorization_interval2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.interval" />
+        <addForeignKeyConstraint baseColumnNames="interval2" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_interval2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.interval" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-74">
-        <addForeignKeyConstraint baseColumnNames="location1" baseTableName="ruleform.access_authorization" constraintName="access_authorization_location1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.location" />
+        <addForeignKeyConstraint baseColumnNames="location1" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_location1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-75">
-        <addForeignKeyConstraint baseColumnNames="location2" baseTableName="ruleform.access_authorization" constraintName="access_authorization_location2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.location" />
+        <addForeignKeyConstraint baseColumnNames="location2" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_location2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-76">
         <addForeignKeyConstraint baseColumnNames="parent_transitive_relationship" baseTableName="ruleform.access_authorization"
@@ -111,14 +111,14 @@
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-77">
-        <addForeignKeyConstraint baseColumnNames="product1" baseTableName="ruleform.access_authorization" constraintName="access_authorization_product1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+        <addForeignKeyConstraint baseColumnNames="product1" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_product1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-78">
-        <addForeignKeyConstraint baseColumnNames="product2" baseTableName="ruleform.access_authorization" constraintName="access_authorization_product2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+        <addForeignKeyConstraint baseColumnNames="product2" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_product2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-79">
         <addForeignKeyConstraint baseColumnNames="relationship1" baseTableName="ruleform.access_authorization"
@@ -146,19 +146,19 @@
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-84">
-        <addForeignKeyConstraint baseColumnNames="unit1" baseTableName="ruleform.access_authorization" constraintName="access_authorization_unit1_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+        <addForeignKeyConstraint baseColumnNames="unit1" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_unit1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-85">
-        <addForeignKeyConstraint baseColumnNames="unit2" baseTableName="ruleform.access_authorization" constraintName="access_authorization_unit2_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+        <addForeignKeyConstraint baseColumnNames="unit2" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_unit2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-86">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.access_authorization" constraintName="access_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.access_authorization"
+            constraintName="access_authorization_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="ruleform.agency" />
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-423">

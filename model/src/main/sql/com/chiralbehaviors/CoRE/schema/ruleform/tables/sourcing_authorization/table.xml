@@ -7,23 +7,23 @@
 
     <changeSet author="hhildebrand" id="1390879803225-52">
         <createTable remarks="Defines rules stating what network relationships are authorized for particular agencys" tableName="ruleform.sourcing_authorization">
-            <column autoIncrement="true" name="owner" type="BIGSERIAL">
+            <column name="owner" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column autoIncrement="true" name="product" type="BIGSERIAL">
+            <column name="product" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column autoIncrement="true" name="location" type="BIGSERIAL">
+            <column name="location" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="quantity_on_hand" type="numeric" />
             <column name="quantity_committed" type="numeric" />
             <column name="reorder_threshold" type="numeric" />
-            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+            <column name="id" remarks="Unique identifier" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="sourcing_authorization_pkey" />
             </column>
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

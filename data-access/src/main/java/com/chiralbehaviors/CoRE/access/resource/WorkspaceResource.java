@@ -15,6 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.access.resource;
 
+import java.util.UUID;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
@@ -40,37 +42,36 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
 @Path("/v{version : \\d+}/services/data/workspace")
 public class WorkspaceResource {
 
-	EntityManager em;
-	Model model;
+    EntityManager em;
+    Model         model;
 
-	/**
-	 * @param emf
-	 */
-	public WorkspaceResource(EntityManagerFactory emf) {
-		em = emf.createEntityManager();
-		model = new ModelImpl(em);
-	}
+    /**
+     * @param emf
+     */
+    public WorkspaceResource(EntityManagerFactory emf) {
+        em = emf.createEntityManager();
+        model = new ModelImpl(em);
+    }
 
-	@GET
-	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Workspace get(@PathParam("id") long productId,
-			@QueryParam("relId") long relId) {
-		Product p = new Product();
-		p.setId(productId);
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Workspace get(@PathParam("id") UUID productId,
+                         @QueryParam("relId") UUID relId) {
+        Product p = new Product();
+        p.setId(productId);
 
-		Relationship r = new Relationship();
-		r.setId(relId);
+        Relationship r = new Relationship();
+        r.setId(relId);
 
-		WorkspaceLoader loader = new WorkspaceLoader(p, r, model);
-		return loader.getWorkspace();
-	}
-	
-	//TODO hparry this returns an Aspect 
-	@POST
-	public Aspect<Product> importWorkspace(Workspace workspace) {
-	    return model.getWorkspaceModel().importWorkspace(workspace);
-	}
+        WorkspaceLoader loader = new WorkspaceLoader(p, r, model);
+        return loader.getWorkspace();
+    }
 
+    //TODO hparry this returns an Aspect 
+    @POST
+    public Aspect<Product> importWorkspace(Workspace workspace) {
+        return model.getWorkspaceModel().importWorkspace(workspace);
+    }
 
 }

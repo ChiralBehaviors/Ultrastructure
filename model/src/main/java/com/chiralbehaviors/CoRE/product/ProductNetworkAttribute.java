@@ -17,15 +17,12 @@ package com.chiralbehaviors.CoRE.product;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -43,7 +40,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "product_network_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_network_attribute_id_seq", sequenceName = "product_network_attribute_id_seq")
 public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     private static final long serialVersionUID = 1L;
 
@@ -51,10 +47,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     @ManyToOne
     @JoinColumn(name = "agency")
     private Agency            agency;
-
-    @Id
-    @GeneratedValue(generator = "product_network_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to ProductNetwork
     @ManyToOne
@@ -142,17 +134,12 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     /**
      * @param id
      */
-    public ProductNetworkAttribute(Long id) {
+    public ProductNetworkAttribute(UUID id) {
         super(id);
     }
 
     public Agency getAgency() {
         return agency;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public ProductNetwork getProductNetwork() {
@@ -186,11 +173,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
 
     public void setAgency(Agency agency2) {
         agency = agency2;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setProductNetwork(ProductNetwork productNetwork) {

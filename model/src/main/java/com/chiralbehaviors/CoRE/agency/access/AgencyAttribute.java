@@ -19,17 +19,14 @@ import static com.chiralbehaviors.CoRE.agency.access.AgencyAttribute.GET_ATTRIBU
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -47,7 +44,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "agency_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "agency_attribute_id_seq", sequenceName = "agency_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from AgencyAttribute ra where ra.agency = :agency and ra.attribute = :attribute") })
 public class AgencyAttribute extends AttributeValue<Agency> {
     public static final String GET_ATTRIBUTE    = "agencyAttribute.getAttribute";
@@ -57,10 +53,6 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     @ManyToOne
     @JoinColumn(name = "agency")
     private Agency             agency;
-
-    @Id
-    @GeneratedValue(generator = "agency_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     public AgencyAttribute() {
         super();
@@ -136,17 +128,12 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     /**
      * @param id
      */
-    public AgencyAttribute(Long id) {
+    public AgencyAttribute(UUID id) {
         super(id);
     }
 
     public Agency getAgency() {
         return agency;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /*
@@ -172,11 +159,6 @@ public class AgencyAttribute extends AttributeValue<Agency> {
 
     public void setAgency(Agency agency2) {
         agency = agency2;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

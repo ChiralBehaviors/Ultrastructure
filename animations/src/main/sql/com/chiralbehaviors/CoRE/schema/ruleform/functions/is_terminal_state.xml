@@ -7,15 +7,15 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.is_terminal_state(service bigint, status bigint)
+            CREATE OR REPLACE FUNCTION ruleform.is_terminal_state(service text, status text)
                 RETURNS boolean
-                AS 'com.chiralbehaviors.CoRE.meta.models.JobModelImpl.is_terminal_state(java.lang.Long, java.lang.Long)'
+                AS 'com.chiralbehaviors.CoRE.meta.models.JobModelImpl.is_terminal_state(java.lang.String, java.lang.String)'
                 LANGUAGE javaU VOLATILE
               COST 100; 
-            ALTER FUNCTION ruleform.is_terminal_state(bigint, bigint)
+            ALTER FUNCTION ruleform.is_terminal_state(text, text)
               OWNER TO core;
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.is_terminal_state(bigint, bigint); </rollback>
+        <rollback> DROP FUNCTION ruleform.is_terminal_state(text, text); </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -17,6 +17,7 @@ package com.chiralbehaviors.CoRE.access.resource.ruleform;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -36,24 +37,24 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
  */
 public interface ExistentialRuleformResource<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> {
 
-	@Path("/")
-	@GET
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	List<RuleForm> getAll() throws ClassNotFoundException;
+    @Path("/")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    List<RuleForm> getAll() throws ClassNotFoundException;
 
-	@Path("/{id}/networks")
-	@GET
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	Collection<Network> getNetworks(@PathParam("id") long id);
+    @Path("/{id}/networks")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    Collection<Network> getNetworks(@PathParam("id") UUID id);
 
-	@Path("/{id}")
-	@GET
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	RuleForm getResource(@PathParam("id") long id)
-			throws ClassNotFoundException;
+    @Path("/{id}")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    RuleForm getResource(@PathParam("id") UUID id)
+                                                  throws ClassNotFoundException;
 
-	@Path("/")
-	@PUT
-	long insert(RuleForm rf);
+    @Path("/")
+    @PUT
+    UUID insert(RuleForm rf);
 
 }

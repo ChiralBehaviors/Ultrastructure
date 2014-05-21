@@ -19,6 +19,7 @@ package com.chiralbehaviors.CoRE.meta;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -93,7 +94,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param id
      * @return the ruleform with the specified id
      */
-    RuleForm find(long id);
+    RuleForm find(UUID id);
 
     /**
      * 

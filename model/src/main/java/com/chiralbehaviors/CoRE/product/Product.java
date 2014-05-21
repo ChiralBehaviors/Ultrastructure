@@ -35,19 +35,16 @@ import static com.chiralbehaviors.CoRE.product.Product.UPDATED_BY_NAME;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -122,7 +119,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "product", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_id_seq", sequenceName = "product_id_seq", allocationSize = 1)
 public class Product extends ExistentialRuleform<Product, ProductNetwork>
         implements Attributable<ProductAttribute> {
 
@@ -167,10 +163,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
     @JsonIgnore
     private Set<ProductAttribute> attributes;
 
-    @Id
-    @GeneratedValue(generator = "product_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                  id;
-
     // bi-directional many-to-one association to ProductLocation
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -200,15 +192,14 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
      * @param i
      * @param string
      */
-    public Product(long id, String name) {
-        setId(id);
-        setName(name);
+    public Product(UUID id, String name) {
+        super(id, name);
     }
 
     /**
      * @param id
      */
-    public Product(Long id) {
+    public Product(UUID id) {
         super(id);
     }
 
@@ -300,11 +291,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
         return ProductAttribute.class;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Set<ProductLocation> getLocations() {
         return locations;
     }
@@ -348,11 +334,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
     @Override
     public void setAttributes(Set<ProductAttribute> productAttributes1) {
         attributes = productAttributes1;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setLocations(Set<ProductLocation> productLocations) {

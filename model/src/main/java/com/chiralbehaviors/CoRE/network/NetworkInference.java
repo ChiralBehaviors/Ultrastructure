@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.network;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -38,13 +35,8 @@ import com.chiralbehaviors.CoRE.agency.Agency;
  */
 @Entity
 @Table(name = "network_inference", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "network_inference_id_seq", sequenceName = "network_inference_id_seq")
 public class NetworkInference extends Ruleform {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "network_inference_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne
@@ -74,7 +66,7 @@ public class NetworkInference extends Ruleform {
     /**
      * @param id
      */
-    public NetworkInference(Long id) {
+    public NetworkInference(UUID id) {
         super(id);
     }
 
@@ -82,7 +74,7 @@ public class NetworkInference extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public NetworkInference(Long id, Agency updatedBy) {
+    public NetworkInference(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -117,11 +109,6 @@ public class NetworkInference extends Ruleform {
         super(notes, updatedBy);
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Relationship getInference() {
         return inference;
     }
@@ -132,11 +119,6 @@ public class NetworkInference extends Ruleform {
 
     public Relationship getPremise2() {
         return premise2;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setInference(Relationship inference) {

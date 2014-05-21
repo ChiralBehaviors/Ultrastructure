@@ -52,7 +52,7 @@
                                            child, 
                                            premise1, 
                                            premise2)
-                SELECT nextval('ruleform.coordinate_network_id_seq') as id, 
+                SELECT ruleform.next_id() as id, 
                        wm.parent as parent, 
                        wm.relationship as relationship, 
                        wm.child as child,
@@ -110,8 +110,9 @@
         </named-native-query>
         <named-native-query name="coordinateNetwork.generateInverses">
             <query><![CDATA[
-            INSERT INTO ruleform.coordinate_network(parent, relationship, child, inferred, premise1, premise2, updated_by)
-            SELECT net.child as parent,
+            INSERT INTO ruleform.coordinate_network(id, parent, relationship, child, inferred, premise1, premise2, updated_by)
+            SELECT ruleform.next_id() as id,
+                   net.child as parent,
                    rel.inverse as relationship,
                    net.parent as child,
                    net.inferred as inferred,

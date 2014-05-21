@@ -26,15 +26,13 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SU
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork.GET_NETWORKS;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -55,7 +53,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                         + "AND n.child IN :children") })
 @Entity
 @Table(name = "status_code_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "status_code_network_id_seq", sequenceName = "status_code_network_id_seq")
 public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "statusCodeNetwork"
@@ -82,10 +79,6 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @ManyToOne
     @JoinColumn(name = "child")
     private StatusCode         child;
-
-    @Id
-    @GeneratedValue(generator = "status_code_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne
@@ -117,7 +110,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     /**
      * @param id
      */
-    public StatusCodeNetwork(Long id) {
+    public StatusCodeNetwork(UUID id) {
         super(id);
     }
 
@@ -148,16 +141,6 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @Override
     public StatusCode getChild() {
         return child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /* (non-Javadoc)
@@ -194,16 +177,6 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @Override
     public void setChild(StatusCode child) {
         this.child = child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /* (non-Javadoc)

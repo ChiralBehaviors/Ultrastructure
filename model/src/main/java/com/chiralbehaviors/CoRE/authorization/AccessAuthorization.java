@@ -21,14 +21,10 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -43,7 +39,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "access_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "access_authorization_id_seq", sequenceName = "access_authorization_id_seq")
 @DiscriminatorColumn(name = "authorization_type")
 public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Parent, ?>, Child extends ExistentialRuleform<Child, ?>>
         extends Ruleform {
@@ -73,10 +68,6 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
     @Column(name = "authorization_type")
     private String             authorizationType;
 
-    @Id
-    @GeneratedValue(generator = "access_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
-
     @ManyToOne
     @JoinColumn(name = "child_transitive_relationship")
     protected Relationship     childTransitiveRelationship;
@@ -97,11 +88,6 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
      */
     public Relationship getChildTransitiveRelationship() {
         return childTransitiveRelationship;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     abstract public Parent getParent();
@@ -126,16 +112,6 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
      */
     public void setChildTransitiveRelationship(Relationship childTransitiveRelationship) {
         this.childTransitiveRelationship = childTransitiveRelationship;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /**
@@ -184,5 +160,4 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
     protected void setAuthorizationType(String type) {
         authorizationType = type;
     }
-
 }

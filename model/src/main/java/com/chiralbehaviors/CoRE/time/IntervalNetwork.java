@@ -24,15 +24,13 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RU
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_CHILDREN;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -48,7 +46,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                          + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "interval_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "interval_network_id_seq", sequenceName = "interval_network_id_seq")
 public class IntervalNetwork extends NetworkRuleform<Interval> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "intervalNetwork"
@@ -71,10 +68,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @ManyToOne
     @JoinColumn(name = "child")
     private Interval           child;
-
-    @Id
-    @GeneratedValue(generator = "interval_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     //bi-directional many-to-one association to Agency 
     @ManyToOne
@@ -108,7 +101,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         this.child = child;
     }
 
-    public IntervalNetwork(Long id) {
+    public IntervalNetwork(UUID id) {
         super(id);
     }
 
@@ -124,16 +117,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public Interval getChild() {
         return child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /* (non-Javadoc) 
@@ -170,16 +153,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public void setChild(Interval child) {
         this.child = child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /* (non-Javadoc)

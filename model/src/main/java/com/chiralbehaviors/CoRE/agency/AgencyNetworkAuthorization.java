@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.agency;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -38,7 +35,6 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
  */
 @Entity
 @Table(name = "agency_network_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "agency_network_authorization_id_seq", sequenceName = "agency_network_authorization_id_seq")
 public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     private static final long serialVersionUID = 1L;
 
@@ -51,10 +47,6 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Agency            classifier;
-
-    @Id
-    @GeneratedValue(generator = "agency_network_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public AgencyNetworkAuthorization() {
         super();
@@ -70,7 +62,7 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     /**
      * @param id
      */
-    public AgencyNetworkAuthorization(Long id) {
+    public AgencyNetworkAuthorization(UUID id) {
         super(id);
     }
 
@@ -100,16 +92,6 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see
      * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent
      * (com.chiralbehaviors.CoRE.network.Networked)
@@ -129,16 +111,6 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     @Override
     public void setClassifier(Agency classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
@@ -102,16 +103,16 @@ public class JobModelImpl implements JobModel {
         T call(JobModelImpl jobModel) throws Exception;
     }
 
-    private static final Logger     log               = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final Logger       log               = LoggerFactory.getLogger(JobModelImpl.class);
 
-    private static final List<Long> MODIFIED_SERVICES = new ArrayList<Long>();
+    private static final List<String> MODIFIED_SERVICES = new ArrayList<>();
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getLong("id"));
+                jobModel.automaticallyGenerateImplicitJobsForExplicitJobs(triggerData.getNew().getString("id"));
                 return null;
             }
 
@@ -128,10 +129,10 @@ public class JobModelImpl implements JobModel {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
                 log.info("before ensure_next_status_is_valid");
-                jobModel.ensureNextStateIsValid(triggerData.getNew().getLong("id"),
-                                                triggerData.getNew().getLong("service"),
-                                                triggerData.getOld().getLong("status"),
-                                                triggerData.getNew().getLong("status"));
+                jobModel.ensureNextStateIsValid(triggerData.getNew().getString("id"),
+                                                triggerData.getNew().getString("service"),
+                                                triggerData.getOld().getString("status"),
+                                                triggerData.getNew().getString("status"));
                 log.info("completed ensure_next_status_is_valid");
                 return null;
             }
@@ -148,8 +149,8 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_child"),
-                                                     (Long) triggerData.getNew().getObject("next_child_status"));
+                jobModel.ensureValidServiceAndStatus(triggerData.getNew().getString("next_child"),
+                                                     triggerData.getNew().getString("next_child_status"));
                 return null;
             }
 
@@ -162,14 +163,14 @@ public class JobModelImpl implements JobModel {
 
     public static void ensure_valid_initial_state(TriggerData triggerData)
                                                                           throws SQLException {
-        long statusId = triggerData.getNew().getLong("status");
-        if (statusId == 0) {
+        String statusId = triggerData.getNew().getString("status");
+        if (statusId == null) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Setting status of job to unset (%s)",
                                         statusId));
             }
-            triggerData.getNew().updateLong("status",
-                                            WellKnownStatusCode.UNSET.id());
+            triggerData.getNew().updateString("status",
+                                              WellKnownStatusCode.UNSET.id());
         }
     }
 
@@ -178,8 +179,8 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("parent"),
-                                                     (Long) triggerData.getNew().getObject("parent_status_to_set"));
+                jobModel.ensureValidServiceAndStatus(triggerData.getNew().getString("parent"),
+                                                     triggerData.getNew().getString("parent_status_to_set"));
                 return null;
             }
 
@@ -195,7 +196,7 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.ensureValidParentStatus((Long) triggerData.getNew().getObject("parent"));
+                jobModel.ensureValidParentStatus(triggerData.getNew().getString("parent"));
                 return null;
             }
 
@@ -211,8 +212,8 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.ensureValidServiceAndStatus((Long) triggerData.getNew().getObject("next_sibling"),
-                                                     (Long) triggerData.getNew().getObject("next_sibling_status"));
+                jobModel.ensureValidServiceAndStatus(triggerData.getNew().getString("next_sibling"),
+                                                     triggerData.getNew().getString("next_sibling_status"));
                 return null;
             }
 
@@ -223,11 +224,11 @@ public class JobModelImpl implements JobModel {
         });
     }
 
-    public static Long get_initial_state(final Long service)
-                                                            throws SQLException {
-        return execute(new Procedure<Long>() {
+    public static UUID get_initial_state(final String service)
+                                                              throws SQLException {
+        return execute(new Procedure<UUID>() {
             @Override
-            public Long call(JobModelImpl jobModel) throws Exception {
+            public UUID call(JobModelImpl jobModel) throws Exception {
                 return jobModel.getInitialState(service);
             }
 
@@ -245,11 +246,12 @@ public class JobModelImpl implements JobModel {
      * @return
      * @throws SQLException
      */
-    public static Iterator<Long> get_status_code_ids_for_service(final Long serviceId)
-                                                                                      throws SQLException {
-        return execute(new Procedure<Iterator<Long>>() {
+    public static Iterator<String> get_status_code_ids_for_service(final String serviceId)
+                                                                                          throws SQLException {
+        return execute(new Procedure<Iterator<String>>() {
             @Override
-            public Iterator<Long> call(JobModelImpl jobModel) throws Exception {
+            public Iterator<String> call(JobModelImpl jobModel)
+                                                               throws Exception {
                 return new RuleformIdIterator(
                                               jobModel.getStatusCodeIdsForEvent(serviceId).iterator());
             }
@@ -296,7 +298,7 @@ public class JobModelImpl implements JobModel {
         return false;
     }
 
-    public static boolean is_job_active(final Long job) throws SQLException {
+    public static boolean is_job_active(final String job) throws SQLException {
         return execute(new Procedure<Boolean>() {
             @Override
             public Boolean call(JobModelImpl jobModel) throws Exception {
@@ -310,9 +312,9 @@ public class JobModelImpl implements JobModel {
         });
     }
 
-    public static boolean is_terminal_state(final Long service,
-                                            final Long statusCode)
-                                                                  throws SQLException {
+    public static boolean is_terminal_state(final String service,
+                                            final String statusCode)
+                                                                    throws SQLException {
         return execute(new Procedure<Boolean>() {
             @Override
             public Boolean call(JobModelImpl jobModel) throws Exception {
@@ -331,8 +333,8 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.logInsertsInJobChronology(triggerData.getNew().getLong("id"),
-                                                   triggerData.getNew().getLong("status"));
+                jobModel.logInsertsInJobChronology(triggerData.getNew().getString("id"),
+                                                   triggerData.getNew().getString("status"));
                 return null;
             }
 
@@ -346,7 +348,7 @@ public class JobModelImpl implements JobModel {
     public static void log_modified_product_status_code_sequencing(final TriggerData triggerData)
                                                                                                  throws SQLException {
 
-        MODIFIED_SERVICES.add(triggerData.getNew().getLong("service"));
+        MODIFIED_SERVICES.add(triggerData.getNew().getString("service"));
     }
 
     public static void process_job_change(final TriggerData triggerData)
@@ -354,7 +356,7 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.processJobChange(triggerData.getNew().getLong("id"));
+                jobModel.processJobChange(triggerData.getNew().getString("id"));
                 return null;
             }
 
@@ -463,23 +465,23 @@ public class JobModelImpl implements JobModel {
 
         TypedQuery<Protocol> tq = em.createNamedQuery(Protocol.GET_FOR_JOB,
                                                       Protocol.class);
-        tq.setParameter(1, job.getDeliverFrom().getId());
-        tq.setParameter(2, metaprotocol.getDeliverFrom().getId());
-        tq.setParameter(3, job.getDeliverTo().getId());
-        tq.setParameter(4, metaprotocol.getDeliverTo().getId());
-        tq.setParameter(5, job.getProduct().getId());
-        tq.setParameter(6, metaprotocol.getProductOrdered().getId());
-        tq.setParameter(7, job.getRequester().getId());
-        tq.setParameter(8, metaprotocol.getRequestingAgency().getId());
-        tq.setParameter(9, job.getService().getId());
-        tq.setParameter(10, kernel.getAnyLocation().getId());
-        tq.setParameter(11, kernel.getSameLocation().getId());
-        tq.setParameter(12, kernel.getAnyLocation().getId());
-        tq.setParameter(13, kernel.getSameLocation().getId());
-        tq.setParameter(14, kernel.getAnyProduct().getId());
-        tq.setParameter(15, kernel.getSameProduct().getId());
-        tq.setParameter(16, kernel.getAnyAgency().getId());
-        tq.setParameter(17, kernel.getSameAgency().getId());
+        tq.setParameter(1, job.getDeliverFrom().getPrimaryKey());
+        tq.setParameter(2, metaprotocol.getDeliverFrom().getPrimaryKey());
+        tq.setParameter(3, job.getDeliverTo().getPrimaryKey());
+        tq.setParameter(4, metaprotocol.getDeliverTo().getPrimaryKey());
+        tq.setParameter(5, job.getProduct().getPrimaryKey());
+        tq.setParameter(6, metaprotocol.getProductOrdered().getPrimaryKey());
+        tq.setParameter(7, job.getRequester().getPrimaryKey());
+        tq.setParameter(8, metaprotocol.getRequestingAgency().getPrimaryKey());
+        tq.setParameter(9, job.getService().getPrimaryKey());
+        tq.setParameter(10, kernel.getAnyLocation().getPrimaryKey());
+        tq.setParameter(11, kernel.getSameLocation().getPrimaryKey());
+        tq.setParameter(12, kernel.getAnyLocation().getPrimaryKey());
+        tq.setParameter(13, kernel.getSameLocation().getPrimaryKey());
+        tq.setParameter(14, kernel.getAnyProduct().getPrimaryKey());
+        tq.setParameter(15, kernel.getSameProduct().getPrimaryKey());
+        tq.setParameter(16, kernel.getAnyAgency().getPrimaryKey());
+        tq.setParameter(17, kernel.getSameAgency().getPrimaryKey());
         return tq;
     }
 
@@ -553,7 +555,7 @@ public class JobModelImpl implements JobModel {
         TypedQuery<Boolean> query = em.createNamedQuery(StatusCode.IS_TERMINAL_STATE,
                                                         Boolean.class);
         query.setParameter("service", parent.getService());
-        query.setParameter("sc.id", parent.getStatus().getId());
+        query.setParameter("sc.id", parent.getStatus().getPrimaryKey());
         if (query.getSingleResult()) {
             throw new SQLException(
                                    String.format("'Cannot insert a job because parent %s is in a terminal state %s.'",
@@ -600,7 +602,7 @@ public class JobModelImpl implements JobModel {
     public List<Job> getActiveJobsFor(Agency agency) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_JOBS_FOR_AGENCY,
                                                     Job.class);
-        query.setParameter(1, agency.getId());
+        query.setParameter(1, agency.getPrimaryKey());
         return query.getResultList();
     }
 
@@ -608,8 +610,8 @@ public class JobModelImpl implements JobModel {
     public List<Job> getActiveSubJobsForService(Job job, Product service) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE,
                                                     Job.class);
-        query.setParameter(1, job.getService().getId());
-        query.setParameter(2, job.getId());
+        query.setParameter(1, job.getService().getPrimaryKey());
+        query.setParameter(2, job.getPrimaryKey());
         return query.getResultList();
     }
 
@@ -617,7 +619,7 @@ public class JobModelImpl implements JobModel {
     public List<Job> getActiveSubJobsOf(Job job) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS,
                                                     Job.class);
-        query.setParameter(1, job.getId());
+        query.setParameter(1, job.getPrimaryKey());
         return query.getResultList();
     }
 
@@ -747,7 +749,7 @@ public class JobModelImpl implements JobModel {
     public StatusCode getInitialState(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
                                                            StatusCode.class);
-        query.setParameter(1, service.getId());
+        query.setParameter(1, service.getPrimaryKey());
         try {
             return query.getSingleResult();
         } catch (NonUniqueResultException e) {
@@ -768,10 +770,10 @@ public class JobModelImpl implements JobModel {
     public List<Job> getInitialSubJobs(Job job) {
         TypedQuery<Long> query = em.createNamedQuery(Job.GET_INITIAL_SUB_JOBS,
                                                      Long.class);
-        query.setParameter(1, job.getId());
-        query.setParameter(2, job.getId());
-        query.setParameter(3, kernel.getUnset().getId());
-        query.setParameter(4, job.getId());
+        query.setParameter(1, job.getPrimaryKey());
+        query.setParameter(2, job.getPrimaryKey());
+        query.setParameter(3, kernel.getUnset().getPrimaryKey());
+        query.setParameter(4, job.getPrimaryKey());
 
         List<Job> jobs = new ArrayList<Job>();
         for (Long id : query.getResultList()) {
@@ -979,7 +981,7 @@ public class JobModelImpl implements JobModel {
     public List<StatusCode> getTerminalStates(Job job) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES,
                                                            StatusCode.class);
-        query.setParameter(1, job.getService().getId());
+        query.setParameter(1, job.getService().getPrimaryKey());
         return query.getResultList();
     }
 
@@ -1030,7 +1032,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public boolean hasActiveSiblings(Job job) {
         Query query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS);
-        query.setParameter(1, job.getParent().getId());
+        query.setParameter(1, job.getParent().getPrimaryKey());
         query.setMaxResults(1);
         return !query.getResultList().isEmpty();
     }
@@ -1039,7 +1041,7 @@ public class JobModelImpl implements JobModel {
     public boolean hasInitialState(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
                                                            StatusCode.class);
-        query.setParameter(1, service.getId());
+        query.setParameter(1, service.getPrimaryKey());
         query.setMaxResults(1);
         return !query.getResultList().isEmpty();
     }
@@ -1118,8 +1120,8 @@ public class JobModelImpl implements JobModel {
     public boolean isTerminalState(StatusCode sc, Product service) {
         TypedQuery<Boolean> query = em.createNamedQuery(StatusCode.IS_TERMINAL_STATE,
                                                         Boolean.class);
-        query.setParameter(1, service.getId());
-        query.setParameter(2, sc.getId());
+        query.setParameter(1, service.getPrimaryKey());
+        query.setParameter(2, sc.getPrimaryKey());
 
         return query.getSingleResult();
     }
@@ -1129,9 +1131,9 @@ public class JobModelImpl implements JobModel {
                                      StatusCode next) {
         TypedQuery<Integer> query = em.createNamedQuery(StatusCodeSequencing.IS_VALID_NEXT_STATUS,
                                                         Integer.class);
-        query.setParameter(1, service.getId());
-        query.setParameter(2, parent.getId());
-        query.setParameter(3, next.getId());
+        query.setParameter(1, service.getPrimaryKey());
+        query.setParameter(2, parent.getPrimaryKey());
+        query.setParameter(3, next.getPrimaryKey());
         return query.getSingleResult() > 0;
     }
 
@@ -1142,8 +1144,8 @@ public class JobModelImpl implements JobModel {
      * com.chiralbehaviors.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
      */
     @Override
-    public void logModifiedService(Long scs) {
-        MODIFIED_SERVICES.add(scs);
+    public void logModifiedService(UUID scs) {
+        MODIFIED_SERVICES.add(scs.toString());
     }
 
     @Override
@@ -1251,7 +1253,7 @@ public class JobModelImpl implements JobModel {
     /**
      * @param job
      */
-    private void automaticallyGenerateImplicitJobsForExplicitJobs(long job) {
+    private void automaticallyGenerateImplicitJobsForExplicitJobs(String job) {
         automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
     }
 
@@ -1352,9 +1354,9 @@ public class JobModelImpl implements JobModel {
      * @param nextStatus
      * @throws SQLException
      */
-    private void ensureNextStateIsValid(long job, long service,
-                                        long currentStatus, long nextStatus)
-                                                                            throws SQLException {
+    private void ensureNextStateIsValid(String job, String service,
+                                        String currentStatus, String nextStatus)
+                                                                                throws SQLException {
         ensureNextStateIsValid(em.find(Job.class, job),
                                em.find(Product.class, service),
                                em.find(StatusCode.class, currentStatus),
@@ -1365,12 +1367,12 @@ public class JobModelImpl implements JobModel {
      * @param object
      * @throws SQLException
      */
-    private void ensureValidParentStatus(Long parentId) throws SQLException {
+    private void ensureValidParentStatus(String parentId) throws SQLException {
         ensureValidParentStatus(em.find(Job.class, parentId));
     }
 
-    private void ensureValidServiceAndStatus(Long service, Long status)
-                                                                       throws SQLException {
+    private void ensureValidServiceAndStatus(String service, String status)
+                                                                           throws SQLException {
         ensureValidServiceAndStatus(em.find(Product.class, service),
                                     em.find(StatusCode.class, status));
     }
@@ -1379,7 +1381,7 @@ public class JobModelImpl implements JobModel {
      * @param service
      * @return
      */
-    private Long getInitialState(Long service) {
+    private UUID getInitialState(String service) {
         return getInitialState(em.find(Product.class, service)).getId();
     }
 
@@ -1387,7 +1389,7 @@ public class JobModelImpl implements JobModel {
      * @param serviceId
      * @return
      */
-    private Collection<StatusCode> getStatusCodeIdsForEvent(Long serviceId) {
+    private Collection<StatusCode> getStatusCodeIdsForEvent(String serviceId) {
         return getStatusCodesFor(em.find(Product.class, serviceId));
     }
 
@@ -1395,7 +1397,7 @@ public class JobModelImpl implements JobModel {
      * @param job
      * @return
      */
-    private boolean isJobActive(Long job) {
+    private boolean isJobActive(String job) {
         return isActive(em.find(Job.class, job));
     }
 
@@ -1404,19 +1406,19 @@ public class JobModelImpl implements JobModel {
      * @param statusCode
      * @return
      */
-    private boolean isTerminalState(Long service, Long statusCode) {
+    private boolean isTerminalState(String service, String statusCode) {
         return isTerminalState(em.find(StatusCode.class, statusCode),
                                em.find(Product.class, service));
     }
 
-    private void logInsertsInJobChronology(long jobId, long statusId) {
+    private void logInsertsInJobChronology(String jobId, String statusId) {
         addJobChronology(em.find(Job.class, jobId),
                          new Timestamp(System.currentTimeMillis()),
                          em.find(StatusCode.class, statusId),
                          "Initial insertion of job");
     }
 
-    private void processJobChange(long jobId) {
+    private void processJobChange(String jobId) {
         processJobChange(em.find(Job.class, jobId));
     }
 
@@ -1635,10 +1637,10 @@ public class JobModelImpl implements JobModel {
      * @param modifiedServices
      * @throws SQLException
      */
-    private void validate_State_Graph(List<Long> modifiedServices)
-                                                                  throws SQLException {
+    private void validate_State_Graph(List<String> modifiedServices)
+                                                                    throws SQLException {
         List<Product> modified = new ArrayList<Product>(modifiedServices.size());
-        for (Long id : modifiedServices) {
+        for (String id : modifiedServices) {
             modified.add(em.find(Product.class, id));
         }
         validateStateGraph(modified);

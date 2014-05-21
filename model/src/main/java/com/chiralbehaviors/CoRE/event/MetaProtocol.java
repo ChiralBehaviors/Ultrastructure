@@ -18,18 +18,15 @@ package com.chiralbehaviors.CoRE.event;
 import static com.chiralbehaviors.CoRE.event.MetaProtocol.FOR_JOB;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -43,7 +40,6 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 @Entity
 @Table(name = "meta_protocol", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "meta_protocol_id_seq", sequenceName = "meta_protocol_id_seq")
 @NamedQueries({ @NamedQuery(name = FOR_JOB, query = "SELECT mp from MetaProtocol mp "
                                                     + "WHERE mp.service = :service "
                                                     + "ORDER BY mp.sequenceNumber") })
@@ -60,10 +56,6 @@ public class MetaProtocol extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
-
-    @Id
-    @GeneratedValue(generator = "meta_protocol_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     /**
      * The relationship that transforms the product ordered
@@ -115,7 +107,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * @param id
      */
-    public MetaProtocol(Long id) {
+    public MetaProtocol(UUID id) {
         super(id);
     }
 
@@ -157,11 +149,6 @@ public class MetaProtocol extends Ruleform {
      */
     public Relationship getDeliverTo() {
         return deliverTo;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /**
@@ -217,11 +204,6 @@ public class MetaProtocol extends Ruleform {
      */
     public void setDeliverTo(Relationship deliverTo) {
         this.deliverTo = deliverTo;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /**
@@ -303,4 +285,5 @@ public class MetaProtocol extends Ruleform {
         super.traverseForeignKeys(em, knownObjects);
 
     }
+
 }

@@ -9,7 +9,7 @@
         <createTable remarks="Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes."
             tableName="ruleform.attribute"
         >
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
+            <column name="id" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="attribute_pkey" />
             </column>
             <column name="name" type="VARCHAR(10485760)">
@@ -17,7 +17,7 @@
             </column>
             <column name="description" type="VARCHAR(10485760)" />
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="INT8">
+            <column name="updated_by" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

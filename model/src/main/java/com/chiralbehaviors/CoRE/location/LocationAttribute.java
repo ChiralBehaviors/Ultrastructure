@@ -17,15 +17,12 @@ package com.chiralbehaviors.CoRE.location;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -42,7 +39,6 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 @Entity
 @Table(name = "location_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "location_attribute_id_seq", sequenceName = "location_attribute_id_seq")
 public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
@@ -51,9 +47,6 @@ public class LocationAttribute extends AttributeValue<Location> {
     @JoinColumn(name = "agency_value")
     private Agency            agencyValue;
 
-    @Id
-    @GeneratedValue(generator = "location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
     // bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "location")
@@ -138,17 +131,12 @@ public class LocationAttribute extends AttributeValue<Location> {
     /**
      * @param id
      */
-    public LocationAttribute(Long id) {
+    public LocationAttribute(UUID id) {
         super(id);
     }
 
     public Agency getAgencyValue() {
         return agencyValue;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Location getLocation() {
@@ -186,11 +174,6 @@ public class LocationAttribute extends AttributeValue<Location> {
 
     public void setEntityValue(Product product) {
         productValue = product;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setLocation(Location location) {

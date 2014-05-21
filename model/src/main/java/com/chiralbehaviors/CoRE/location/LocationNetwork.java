@@ -28,18 +28,15 @@ import static com.chiralbehaviors.CoRE.location.LocationNetwork.GET_USED_RELATIO
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -62,7 +59,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                         + "AND n.child IN :children") })
 @Entity
 @Table(name = "location_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "location_network_id_seq", sequenceName = "location_network_id_seq")
 public class LocationNetwork extends NetworkRuleform<Location> {
     public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
@@ -88,10 +84,6 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "child")
     private Location        child;
-
-    @Id
-    @GeneratedValue(generator = "location_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long            id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
@@ -129,7 +121,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     /**
      * @param id
      */
-    public LocationNetwork(Long id) {
+    public LocationNetwork(UUID id) {
         super(id);
     }
 
@@ -144,11 +136,6 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @Override
     public Location getChild() {
         return child;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     @Override
@@ -175,11 +162,6 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @Override
     public void setChild(Location child) {
         this.child = child;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override

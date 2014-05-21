@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.network;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -40,7 +37,6 @@ import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
  */
 @Entity
 @Table(name = "agency_attribute_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "relationship_attribute_authorization_id_seq", sequenceName = "relationship_attribute_authorization_id_seq")
 public class RelationshipAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Relationship> {
     private static final long serialVersionUID = 1L;
@@ -48,10 +44,6 @@ public class RelationshipAttributeAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Relationship      classifier;
-
-    @Id
-    @GeneratedValue(generator = "relationship_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public RelationshipAttributeAuthorization() {
     }
@@ -66,7 +58,7 @@ public class RelationshipAttributeAuthorization extends
     /**
      * @param id
      */
-    public RelationshipAttributeAuthorization(Long id) {
+    public RelationshipAttributeAuthorization(UUID id) {
         super(id);
     }
 
@@ -111,11 +103,6 @@ public class RelationshipAttributeAuthorization extends
         return classifier;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -125,11 +112,6 @@ public class RelationshipAttributeAuthorization extends
     @Override
     public void setClassifier(Relationship classifier) {
         this.classifier = classifier;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

@@ -27,17 +27,14 @@ import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -66,7 +63,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                         + "AND n.child IN :children") })
 @Entity
 @Table(name = "attribute_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "attribute_network_id_seq", sequenceName = "attribute_network_id_seq")
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "attributeNetwork"
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
@@ -90,10 +86,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @ManyToOne
     @JoinColumn(name = "child")
     private Attribute          child;
-
-    @Id
-    @GeneratedValue(generator = "attribute_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     //bi-directional many-to-one association to Attribute 
     @ManyToOne
@@ -132,7 +124,7 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     /**
      * @param id
      */
-    public AttributeNetwork(Long id) {
+    public AttributeNetwork(UUID id) {
         super(id);
     }
 
@@ -147,11 +139,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @Override
     public Attribute getChild() {
         return child;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     @Override
@@ -178,11 +165,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @Override
     public void setChild(Attribute child) {
         this.child = child;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override

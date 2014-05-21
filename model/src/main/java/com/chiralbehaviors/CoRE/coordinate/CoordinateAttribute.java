@@ -17,15 +17,12 @@ package com.chiralbehaviors.CoRE.coordinate;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -44,7 +41,6 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 @Entity
 @Table(name = "coordinate_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "coordinate_attribute_id_seq", sequenceName = "coordinate_attribute_id_seq")
 public class CoordinateAttribute extends AttributeValue<Coordinate> {
     private static final long serialVersionUID = 1L;
 
@@ -52,10 +48,6 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     @ManyToOne
     @JoinColumn(name = "coordinate")
     private Coordinate        coordinate;
-
-    @Id
-    @GeneratedValue(generator = "coordinate_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to Product
     @ManyToOne
@@ -137,17 +129,12 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     /**
      * @param id
      */
-    public CoordinateAttribute(Long id) {
+    public CoordinateAttribute(UUID id) {
         super(id);
     }
 
     public Coordinate getCoordinate() {
         return coordinate;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Product getProductValue() {
@@ -177,11 +164,6 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
 
     public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setProductValue(Product product) {

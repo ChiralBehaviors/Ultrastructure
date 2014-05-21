@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
@@ -35,52 +36,51 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
  * 
  */
 public abstract class AbstractRuleformResource<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>>
-		implements
-		ExistentialRuleformResource<RuleForm, Network, AttributeAuthorization, AttributeType> {
+        implements
+        ExistentialRuleformResource<RuleForm, Network, AttributeAuthorization, AttributeType> {
 
-	protected final NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> model;
-	protected final EntityManager em;
+    protected final NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> model;
+    protected final EntityManager                                                            em;
 
-	/**
-	 * @param emf
-	 */
-	public AbstractRuleformResource(
-			EntityManager em,
-			NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> model) {
-		this.em = em;
-		this.model = model;
-	}
+    /**
+     * @param emf
+     */
+    public AbstractRuleformResource(EntityManager em,
+                                    NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> model) {
+        this.em = em;
+        this.model = model;
+    }
 
-	@Override
-	public List<RuleForm> getAll() throws ClassNotFoundException {
-		return model.findAll();
-	}
+    @Override
+    public List<RuleForm> getAll() throws ClassNotFoundException {
+        return model.findAll();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chiralbehaviors.CoRE.access.resource.ruleform.ExistentialRuleformResource
-	 * #getNetworks(long)
-	 */
-	@Override
-	public Collection<Network> getNetworks(long id) {
-		return model.getImmediateNetworkEdges(model.find(id));
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.access.resource.ruleform.ExistentialRuleformResource
+     * #getNetworks(long)
+     */
+    @Override
+    public Collection<Network> getNetworks(UUID id) {
+        return model.getImmediateNetworkEdges(model.find(id));
+    }
 
-	@Override
-	public RuleForm getResource(long id) throws ClassNotFoundException {
-		return model.find(id);
-	}
+    @Override
+    public RuleForm getResource(UUID id) throws ClassNotFoundException {
+        return model.find(id);
+    }
 
-	@Override
-	public final long insert(RuleForm rf) {
-		em.getTransaction().begin();
-		Map<Ruleform, Ruleform> map = new HashMap<Ruleform, Ruleform>();
-		rf.manageEntity(em, map);
-		em.getTransaction().commit();
-		em.refresh(rf);
-		return rf.getId();
-	}
+    @Override
+    public final UUID insert(RuleForm rf) {
+        em.getTransaction().begin();
+        Map<Ruleform, Ruleform> map = new HashMap<Ruleform, Ruleform>();
+        rf.manageEntity(em, map);
+        em.getTransaction().commit();
+        em.refresh(rf);
+        return rf.getId();
+    }
 
 }

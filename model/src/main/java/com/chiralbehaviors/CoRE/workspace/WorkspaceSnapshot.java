@@ -291,7 +291,8 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
-     * @param statusCodeNetworks the statusCodeNetworks to set
+     * @param statusCodeNetworks
+     *            the statusCodeNetworks to set
      */
     @Override
     public void setStatusCodeNetworks(List<StatusCodeNetwork> statusCodeNetworks) {
@@ -317,7 +318,8 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
-     * @param unitNetworks the unitNetworks to set
+     * @param unitNetworks
+     *            the unitNetworks to set
      */
     @Override
     public void setUnitNetworks(List<UnitNetwork> unitNetworks) {
@@ -325,7 +327,8 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
-     * @param units the units to set
+     * @param units
+     *            the units to set
      */
     @Override
     public void setUnits(List<Unit> units) {

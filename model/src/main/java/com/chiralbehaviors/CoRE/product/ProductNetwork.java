@@ -30,19 +30,16 @@ import static com.chiralbehaviors.CoRE.product.ProductNetwork.GET_USED_RELATIONS
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -69,7 +66,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                         + "AND n.child IN :children") })
 @Entity
 @Table(name = "product_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_network_id_seq", sequenceName = "product_network_id_seq", allocationSize = 1)
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
     public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
@@ -104,10 +100,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JoinColumn(name = "child")
     private Product                      child;
 
-    @Id
-    @GeneratedValue(generator = "product_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                         id;
-
     //bi-directional many-to-one association to Product 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
@@ -134,7 +126,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     /**
      * @param id
      */
-    public ProductNetwork(Long id) {
+    public ProductNetwork(UUID id) {
         super(id);
     }
 
@@ -142,7 +134,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      * @param relationship
      * @param updatedBy
      */
-    public ProductNetwork(Long id, Product parent, Relationship relationship,
+    public ProductNetwork(UUID id, Product parent, Relationship relationship,
                           Product child) {
         super(id);
         this.parent = parent;
@@ -191,11 +183,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
     public Product getParent() {
         return parent;
     }
@@ -224,11 +211,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @Override
     public void setChild(Product child) {
         this.child = child;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override

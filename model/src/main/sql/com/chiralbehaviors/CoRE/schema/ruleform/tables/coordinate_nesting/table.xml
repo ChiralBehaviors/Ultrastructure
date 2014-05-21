@@ -7,10 +7,10 @@
 
     <changeSet author="hhildebrand" id="1390879803225-15">
         <createTable remarks="Defines rules for navigating nested coordinates" tableName="ruleform.coordinate_nesting">
-            <column autoIncrement="true" name="id" remarks="Otherwise meaningless identifier for a rule" type="BIGSERIAL">
+            <column name="id" remarks="Otherwise meaningless identifier for a rule" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="coordinate_nesting_pkey" />
             </column>
-            <column name="attribute" remarks="The attribute to be calculated" type="INT8">
+            <column name="attribute" remarks="The attribute to be calculated" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="The ordering of these nesting rules for a given CoordinateKind and Attribute"
@@ -18,17 +18,17 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="inner_attribute" remarks="The attribute of the &quot;inner&quot; Coordinate to manipulate" type="INT8">
+            <column name="inner_attribute" remarks="The attribute of the &quot;inner&quot; Coordinate to manipulate" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="operation" remarks="The operation to perform on both attribute values" type="VARCHAR(10485760)">
                 <constraints nullable="false" />
             </column>
-            <column name="outer_attribute" remarks="The attribute of the &quot;outer&quot; Coordinate to manipulate" type="INT8">
+            <column name="outer_attribute" remarks="The attribute of the &quot;outer&quot; Coordinate to manipulate" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Usage notes for this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"

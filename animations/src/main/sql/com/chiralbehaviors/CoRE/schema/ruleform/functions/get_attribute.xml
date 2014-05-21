@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.get_attribute(the_agency bigint, the_product bigint, the_attribute bigint)
+            CREATE OR REPLACE FUNCTION ruleform.get_attribute(the_agency text, the_product text, the_attribute text)
               RETURNS SETOF ruleform.product_attribute AS
             $BODY$
             DECLARE
@@ -92,10 +92,10 @@
               LANGUAGE plpgsql STABLE
               COST 100
               ROWS 1000;
-            ALTER FUNCTION ruleform.get_attribute(bigint, bigint, bigint)
+            ALTER FUNCTION ruleform.get_attribute(text, text, text)
               OWNER TO core;
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.get_attribute(bigint, bigint, bigint); </rollback>
+        <rollback> DROP FUNCTION ruleform.get_attribute(text, text, text); </rollback>
     </changeSet>
 </databaseChangeLog>

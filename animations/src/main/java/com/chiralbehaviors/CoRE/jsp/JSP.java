@@ -28,6 +28,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.RollbackException;
 
+import org.apache.openjpa.jdbc.sql.SQLExceptions;
 import org.apache.openjpa.util.StoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public abstract class JSP {
     static {
         ClassLoader classLoader = JSP.class.getClassLoader();
         Thread.currentThread().setContextClassLoader(classLoader);
+        SQLExceptions.class.toString();
         StoreException.class.toString();
         InputStream is = JSP.class.getResourceAsStream("jpa.properties");
         if (is == null) {

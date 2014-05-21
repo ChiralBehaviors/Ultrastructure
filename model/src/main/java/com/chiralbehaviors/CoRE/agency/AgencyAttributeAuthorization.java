@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.agency;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -40,7 +37,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 @Entity
 @Table(name = "agency_attribute_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "agency_attribute_authorization_id_seq", sequenceName = "agency_attribute_authorization_id_seq")
 public class AgencyAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Agency> {
     private static final long serialVersionUID = 1L;
@@ -49,10 +45,6 @@ public class AgencyAttributeAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Agency            classifier;
-
-    @Id
-    @GeneratedValue(generator = "agency_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public AgencyAttributeAuthorization() {
     }
@@ -67,7 +59,7 @@ public class AgencyAttributeAuthorization extends
     /**
      * @param id
      */
-    public AgencyAttributeAuthorization(Long id) {
+    public AgencyAttributeAuthorization(UUID id) {
         super(id);
     }
 
@@ -110,11 +102,6 @@ public class AgencyAttributeAuthorization extends
         return classifier;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -124,11 +111,6 @@ public class AgencyAttributeAuthorization extends
     @Override
     public void setClassifier(Agency classifier) {
         this.classifier = classifier;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

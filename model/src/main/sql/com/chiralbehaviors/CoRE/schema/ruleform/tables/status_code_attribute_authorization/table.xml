@@ -9,22 +9,22 @@
         <createTable remarks="Defines rules stating what attributes (and values thereof) are authorized for particular status_codes"
             tableName="ruleform.status_code_attribute_authorization"
         >
-            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+            <column name="id" remarks="Unique identifier" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="status_code_attribute_authorization_pkey" />
             </column>
             <column name="classification"
                 remarks="In conjunction with the 'status_code' column, determines the classification criteria for selecting attributes a certain status_code must have"
-                type="INT8"
+                type="TEXT"
             >
                 <constraints nullable="false" />
             </column>
             <column name="classifier"
                 remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting attributes a certain status_code must have"
-                type="INT8"
+                type="TEXT"
             >
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_attribute" remarks="An Attribute a status_code is expected to have" type="INT8">
+            <column name="authorized_attribute" remarks="An Attribute a status_code is expected to have" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
@@ -39,9 +39,9 @@
             <column name="integer_value" type="INT4" />
             <column name="numeric_value" type="numeric" />
             <column name="timestamp_value" type="TIMESTAMPTZ" />
-            <column name="grouping_agency" type="INT8" />
+            <column name="grouping_agency" type="TEXT" />
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The status_code that last updated this rule" type="INT8">
+            <column name="updated_by" remarks="The status_code that last updated this rule" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

@@ -29,20 +29,17 @@ import static com.chiralbehaviors.CoRE.event.status.StatusCode.UNLINKED;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -58,7 +55,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "status_code", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "status_code_id_seq", sequenceName = "status_code_id_seq")
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM statusCode AS unlinked "
@@ -155,10 +151,6 @@ public class StatusCode extends
     @Column(name = "fail_parent")
     private Integer                  failParent                               = TRUE;
 
-    @Id
-    @GeneratedValue(generator = "status_code_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                     id;
-
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<StatusCodeNetwork>   networkByChild;
@@ -180,15 +172,14 @@ public class StatusCode extends
         super(updatedBy);
     }
 
-    public StatusCode(long l, String name) {
-        super(name);
-        id = l;
+    public StatusCode(UUID l, String name) {
+        super(l, name);
     }
 
     /**
      * @param id
      */
-    public StatusCode(Long id) {
+    public StatusCode(UUID id) {
         super(id);
     }
 
@@ -267,11 +258,6 @@ public class StatusCode extends
         return toBoolean(failParent);
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -333,11 +319,6 @@ public class StatusCode extends
 
     public void setFailParent(Boolean failParent) {
         this.failParent = toInteger(failParent);
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

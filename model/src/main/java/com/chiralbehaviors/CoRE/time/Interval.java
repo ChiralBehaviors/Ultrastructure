@@ -29,19 +29,16 @@ import static com.chiralbehaviors.CoRE.time.Interval.UNLINKED;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -107,7 +104,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "interval", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "interval_id_seq", sequenceName = "interval_id_seq")
 public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         implements Attributable<IntervalAttribute> {
 
@@ -141,10 +137,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     private BigDecimal             duration;
 
-    @Id
-    @GeneratedValue(generator = "interval_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                   id;
-
     // bi-directional many-to-one association to IntervalNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -175,11 +167,11 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         this(name, description, updatedBy);
     }
 
-    public Interval(Long id) {
+    public Interval(UUID id) {
         super(id);
     }
 
-    public Interval(Long id, Agency updatedBy) {
+    public Interval(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -263,16 +255,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see com.chiralbehaviors.CoRE.network.Networked#getNetworkByChild()
      */
     @Override
@@ -345,16 +327,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      */
     public void setDuration(BigDecimal duration) {
         this.duration = duration;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

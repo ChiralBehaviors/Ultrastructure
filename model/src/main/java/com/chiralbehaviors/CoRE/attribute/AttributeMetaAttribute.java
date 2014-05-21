@@ -17,16 +17,13 @@ package com.chiralbehaviors.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -40,7 +37,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "attribute_meta_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "attribute_meta_attribute_id_seq", sequenceName = "attribute_meta_attribute_id_seq")
 public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private static final long serialVersionUID = 1L;
 
@@ -53,10 +49,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     @ManyToOne
     @JoinColumn(name = "attribute_value")
     private Attribute         attributeValue;
-
-    @Id
-    @GeneratedValue(generator = "attribute_meta_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne
@@ -115,7 +107,7 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     /**
      * @param id
      */
-    public AttributeMetaAttribute(Long id) {
+    public AttributeMetaAttribute(UUID id) {
         super(id);
     }
 
@@ -126,11 +118,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
 
     public Attribute getAttributeValue() {
         return attributeValue;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Attribute getMetaAttribute() {
@@ -170,11 +157,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
 
     public void setAttributeValue(Attribute attribute2) {
         attributeValue = attribute2;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setMetaAttribute(Attribute attribute3) {

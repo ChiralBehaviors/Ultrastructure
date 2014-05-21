@@ -353,10 +353,6 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     public Aspect<Product> importWorkspace(Workspace workspace) {
         Product parent = workspace.getWorkspaceProduct();
         Relationship rel = workspace.getWorkspaceRelationship();
-        if (parent.getId() != null || rel.getId() != null) {
-            throw new UnsupportedOperationException(
-                                                    "Cannot import to an existing workspace product or workspace relationship");
-        }
 
         em.persist(parent);
         em.persist(rel);
@@ -449,7 +445,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
             return;
         }
         for (Agency c : children) {
-            if (c.getId() == null || em.find(Agency.class, c.getId()) == null) {
+            if (c.getId() == null
+                || em.find(Agency.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -470,7 +467,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Attribute c : children) {
             if (c.getId() == null
-                || em.find(Attribute.class, c.getId()) == null) {
+                || em.find(Attribute.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -490,7 +487,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
             return;
         }
         for (Location c : children) {
-            if (c.getId() == null || em.find(Location.class, c.getId()) == null) {
+            if (c.getId() == null
+                || em.find(Location.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -511,7 +509,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Relationship c : children) {
             if (c.getId() == null
-                || em.find(Relationship.class, c.getId()) == null) {
+                || em.find(Relationship.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -532,7 +530,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (StatusCode c : children) {
 
-            if (c.getId() == null || em.find(Agency.class, c.getId()) == null) {
+            if (c.getId() == null
+                || em.find(Agency.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -551,7 +550,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
             return;
         }
         for (Unit c : children) {
-            if (c.getId() == null || em.find(Unit.class, c.getId()) == null) {
+            if (c.getId() == null
+                || em.find(Unit.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -571,7 +571,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
             return;
         }
         for (Product p : products) {
-            if (p.getId() == null || em.find(Product.class, p.getId()) == null) {
+            if (p.getId() == null
+                || em.find(Product.class, p.getPrimaryKey()) == null) {
                 em.persist(p);
             } else {
                 p = em.merge(p);

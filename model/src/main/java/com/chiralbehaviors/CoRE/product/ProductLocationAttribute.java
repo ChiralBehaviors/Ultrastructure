@@ -17,15 +17,12 @@ package com.chiralbehaviors.CoRE.product;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -42,7 +39,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  * 
  */
 @Entity
-@SequenceGenerator(schema = "ruleform", name = "product_location_attribute_id_seq", sequenceName = "product_location_attribute_id_seq")
 @Table(name = "product_location_attribute", schema = "ruleform")
 public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     private static final long serialVersionUID = 1L;
@@ -51,10 +47,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     @ManyToOne
     @JoinColumn(name = "agency")
     private Agency            agency;
-
-    @Id
-    @GeneratedValue(generator = "product_location_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to ProductLocation
     @ManyToOne
@@ -142,7 +134,7 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     /**
      * @param id
      */
-    public ProductLocationAttribute(Long id) {
+    public ProductLocationAttribute(UUID id) {
         super(id);
     }
 
@@ -156,11 +148,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
 
     public Product getEntityValue() {
         return productValue;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /*
@@ -194,11 +181,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
 
     public void setEntityValue(Product product) {
         productValue = product;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

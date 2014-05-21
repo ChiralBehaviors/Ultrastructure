@@ -18,16 +18,13 @@ package com.chiralbehaviors.CoRE.time;
 import static com.chiralbehaviors.CoRE.time.IntervalAttribute.GET_ATTRIBUTE;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -42,15 +39,10 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "interval_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "interval_attribute_id_seq", sequenceName = "interval_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from IntervalAttribute ra where ra.interval = :inteval and ra.attribute = :attribute") })
 public class IntervalAttribute extends AttributeValue<Interval> {
     public static final String GET_ATTRIBUTE    = "intervalAttribute.intervalAttribute";
     private static final long  serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "interval_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to Interval
     @ManyToOne
@@ -95,18 +87,8 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         super(attribute, unit);
     }
 
-    public IntervalAttribute(Long id) {
+    public IntervalAttribute(UUID id) {
         super(id);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Interval getInterval() {
@@ -132,16 +114,6 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     @Override
     public Class<Interval> getRuleformClass() {
         return Interval.class;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setInterval(Interval interval) {

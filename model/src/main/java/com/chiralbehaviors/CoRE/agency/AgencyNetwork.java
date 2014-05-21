@@ -1,5 +1,5 @@
 /** 
- * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
+s * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,17 +29,14 @@ import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.IMMEDIATE_CHILDREN_N
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -68,7 +65,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                         + "AND n.child IN :children") })
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "agency_network_id_seq", sequenceName = "agency_network_id_seq")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
                                                                   + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
@@ -92,10 +88,6 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @ManyToOne
     @JoinColumn(name = "child")
     private Agency             child;
-
-    @Id
-    @GeneratedValue(generator = "agency_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     //bi-directional many-to-one association to Agency 
     @ManyToOne
@@ -134,7 +126,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     /**
      * @param id
      */
-    public AgencyNetwork(Long id) {
+    public AgencyNetwork(UUID id) {
         super(id);
     }
 
@@ -149,11 +141,6 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public Agency getChild() {
         return child;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     @Override
@@ -184,11 +171,6 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setChild(Agency agency3) {
         child = agency3;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override

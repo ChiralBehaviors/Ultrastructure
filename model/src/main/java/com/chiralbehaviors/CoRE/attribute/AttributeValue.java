@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.attribute;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
@@ -127,7 +128,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     /**
      * @param id
      */
-    public AttributeValue(Long id) {
+    public AttributeValue(UUID id) {
         super(id);
     }
 

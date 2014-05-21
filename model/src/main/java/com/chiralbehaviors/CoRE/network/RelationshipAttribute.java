@@ -18,16 +18,13 @@ package com.chiralbehaviors.CoRE.network;
 import static com.chiralbehaviors.CoRE.network.RelationshipAttribute.GET_ATTRIBUTE;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -42,15 +39,10 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "relationship_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "relationship_attribute_id_seq", sequenceName = "relationship_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from RelationshipAttribute ra where ra.relationship = :relationship and ra.attribute = :attribute") })
 public class RelationshipAttribute extends AttributeValue<Relationship> {
     public static final String GET_ATTRIBUTE    = "relationshipAttribute.getAttribute";
     private static final long  serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "relationship_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to Relationship
 
@@ -98,18 +90,8 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         super(attribute, unit);
     }
 
-    public RelationshipAttribute(Long id) {
+    public RelationshipAttribute(UUID id) {
         super(id);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Relationship getRelationship() {
@@ -135,16 +117,6 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     @Override
     public Class<Relationship> getRuleformClass() {
         return Relationship.class;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setRelationship(Relationship interval) {

@@ -18,16 +18,13 @@ package com.chiralbehaviors.CoRE.attribute.unit;
 import static com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute.GET_ATTRIBUTE;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -41,15 +38,10 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
  */
 @Entity
 @Table(name = "unit_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "unit_attribute_id_seq", sequenceName = "unit_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from UnitAttribute ra where ra.unitRf = :unit and ra.attribute = :attribute") })
 public class UnitAttribute extends AttributeValue<Unit> {
     public static final String GET_ATTRIBUTE    = "unitAttribute.intervalAttribute";
     private static final long  serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "unit_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to Unit
     @ManyToOne
@@ -92,18 +84,8 @@ public class UnitAttribute extends AttributeValue<Unit> {
         super(attribute, unit);
     }
 
-    public UnitAttribute(Long id) {
+    public UnitAttribute(UUID id) {
         super(id);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /*
@@ -129,16 +111,6 @@ public class UnitAttribute extends AttributeValue<Unit> {
 
     public Unit getUnitRf() {
         return unitRf;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setUnitRf(Unit unit) {

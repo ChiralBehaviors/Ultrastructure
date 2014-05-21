@@ -16,6 +16,7 @@
 package com.chiralbehaviors.CoRE.network;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -63,7 +64,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     /**
      * @param id
      */
-    public NetworkRuleform(Long id) {
+    public NetworkRuleform(UUID id) {
         super(id);
     }
 

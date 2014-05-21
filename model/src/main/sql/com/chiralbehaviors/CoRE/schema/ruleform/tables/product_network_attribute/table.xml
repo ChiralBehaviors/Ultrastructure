@@ -10,16 +10,16 @@
             remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
             tableName="ruleform.product_network_attribute"
         >
-            <column autoIncrement="true" name="id" remarks="Unique identifier for a Product Network Attribute rule" type="BIGSERIAL">
+            <column name="id" remarks="Unique identifier for a Product Network Attribute rule" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="product_network_attribute_pkey" />
             </column>
-            <column name="agency" remarks="The agency that the information in this rule comes from" type="INT8">
+            <column name="agency" remarks="The agency that the information in this rule comes from" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="network_rule" remarks="The Product Network rule whose attribute is being defined" type="INT8">
+            <column name="network_rule" remarks="The Product Network rule whose attribute is being defined" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" remarks="The Attribute of the Product Network rule being defined" type="INT8">
+            <column name="attribute" remarks="The Attribute of the Product Network rule being defined" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="text_value" remarks="If the Attribute has a text value, it is stored in this column" type="VARCHAR(10485760)" />
@@ -28,10 +28,10 @@
             <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="SMALLINT" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column name="product_value" remarks="If the Attribute has a Product value, it is stored in this column" type="INT8" />
-            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="INT8" />
+            <column name="product_value" remarks="If the Attribute has a Product value, it is stored in this column" type="TEXT" />
+            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="TEXT" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The time of the last update to this rule"

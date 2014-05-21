@@ -21,12 +21,10 @@ import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
@@ -34,7 +32,6 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -92,7 +89,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                     + "OR p.requester IN (?, ?))") })
 @Entity
 @Table(name = "protocol", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "protocol_id_seq", sequenceName = "protocol_id_seq")
 public class Protocol extends Ruleform {
     public static final String     GET              = "protocol.get";
     public static final String     GET_FOR_JOB      = "protocol.getForJob";
@@ -130,10 +126,6 @@ public class Protocol extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Location               deliverTo;
-
-    @Id
-    @GeneratedValue(generator = "protocol_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                   id;
 
     /**
      * The product of the service
@@ -186,7 +178,7 @@ public class Protocol extends Ruleform {
     /**
      * @param id
      */
-    public Protocol(Long id) {
+    public Protocol(UUID id) {
         super(id);
     }
 
@@ -246,11 +238,6 @@ public class Protocol extends Ruleform {
      */
     public Location getDeliverTo() {
         return deliverTo;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /**
@@ -321,11 +308,6 @@ public class Protocol extends Ruleform {
         this.deliverTo = deliverTo;
     }
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /**
      * @param product
      *            the product to set
@@ -365,5 +347,4 @@ public class Protocol extends Ruleform {
     public void setService(Product service) {
         this.service = service;
     }
-
 }

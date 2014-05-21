@@ -7,13 +7,13 @@
 
     <changeSet author="hhildebrand" id="1390879803225-33">
         <createTable tableName="ruleform.product_attribute">
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
+            <column name="id" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="product_attribute_pkey" />
             </column>
-            <column name="product" type="INT8">
+            <column name="product" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" type="INT8">
+            <column name="attribute" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="numeric_value" type="numeric" />
@@ -25,9 +25,9 @@
             <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
                 <constraints nullable="false" />
             </column>
-            <column name="unit" type="INT8" />
+            <column name="unit" type="TEXT" />
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="INT8">
+            <column name="updated_by" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

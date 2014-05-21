@@ -7,15 +7,15 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.is_job_active(job text)
-                RETURNS boolean
-                AS 'com.chiralbehaviors.CoRE.meta.models.JobModelImpl.is_job_active(java.lang.String)'
+            CREATE OR REPLACE FUNCTION ruleform.next_id()
+                RETURNS text
+                AS 'com.chiralbehaviors.CoRE.Ruleform.nextId'
                 LANGUAGE javaU VOLATILE
               COST 100; 
-            ALTER FUNCTION ruleform.is_job_active(text)
+            ALTER FUNCTION ruleform.next_id()
               OWNER TO core;
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.is_job_active(text); </rollback>
+        <rollback> DROP FUNCTION ruleform.next_id(); </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -28,19 +28,16 @@ import static com.chiralbehaviors.CoRE.location.Location.LOCATION_NAME;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -58,7 +55,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "location", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "location_id_seq", sequenceName = "location_id_seq")
 @NamedQueries({
                @NamedQuery(name = "location" + FIND_BY_NAME_SUFFIX, query = "select l from Location l where l.name = :name"),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
@@ -128,10 +124,6 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     @JsonIgnore
     private Set<ProductLocation>   entities;
 
-    @Id
-    @GeneratedValue(generator = "location_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                   id;
-
     // bi-directional many-to-one association to LocationNetwork
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -155,7 +147,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     /**
      * @param id
      */
-    public Location(Long id) {
+    public Location(UUID id) {
         super(id);
     }
 
@@ -246,11 +238,6 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
         return entities;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -304,11 +291,6 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
         entities = productLocations;
     }
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -328,5 +310,4 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     public void setNetworkByParent(Set<LocationNetwork> theNetworkByParent) {
         networkByParent = theNetworkByParent;
     }
-
 }

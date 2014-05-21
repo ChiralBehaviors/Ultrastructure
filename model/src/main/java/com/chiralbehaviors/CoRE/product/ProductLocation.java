@@ -17,16 +17,13 @@ package com.chiralbehaviors.CoRE.product;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -45,7 +42,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "product_location", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_location_id_seq", sequenceName = "product_location_id_seq")
 public class ProductLocation extends Ruleform implements
         Attributable<ProductLocationAttribute> {
     private static final long             serialVersionUID = 1L;
@@ -59,10 +55,6 @@ public class ProductLocation extends Ruleform implements
     @OneToMany(mappedBy = "productLocation")
     @JsonIgnore
     private Set<ProductLocationAttribute> attributes;
-
-    @Id
-    @GeneratedValue(generator = "product_location_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                          id;
 
     // bi-directional many-to-one association to Location
     @ManyToOne
@@ -92,7 +84,7 @@ public class ProductLocation extends Ruleform implements
     /**
      * @param id
      */
-    public ProductLocation(Long id) {
+    public ProductLocation(UUID id) {
         super(id);
     }
 
@@ -115,11 +107,6 @@ public class ProductLocation extends Ruleform implements
         return ProductLocationAttribute.class;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Location getLocation() {
         return location;
     }
@@ -139,11 +126,6 @@ public class ProductLocation extends Ruleform implements
     @Override
     public void setAttributes(Set<ProductLocationAttribute> productLocationAttributes) {
         attributes = productLocationAttributes;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setLocation(Location location) {

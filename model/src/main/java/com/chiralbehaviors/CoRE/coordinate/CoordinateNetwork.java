@@ -24,15 +24,13 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RU
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork.GET_CHILDREN;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -48,7 +46,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                          + "AND n.relationship = :relationship") })
 @Entity
 @Table(name = "coordinate_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "coordinate_network_id_seq", sequenceName = "coordinate_network_id_seq")
 public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "coordinateNetwork"
@@ -72,10 +69,6 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     @ManyToOne
     @JoinColumn(name = "child")
     private Coordinate         child;
-
-    @Id
-    @GeneratedValue(generator = "coordinate_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne
@@ -118,7 +111,7 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     /**
      * @param id
      */
-    public CoordinateNetwork(Long id) {
+    public CoordinateNetwork(UUID id) {
         super(id);
     }
 
@@ -138,16 +131,6 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     @Override
     public Coordinate getChild() {
         return child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /*
@@ -186,16 +169,6 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     @Override
     public void setChild(Coordinate child) {
         this.child = child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /* (non-Javadoc)

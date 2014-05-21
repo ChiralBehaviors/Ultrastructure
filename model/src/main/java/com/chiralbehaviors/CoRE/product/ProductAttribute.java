@@ -19,17 +19,14 @@ import static com.chiralbehaviors.CoRE.product.ProductAttribute.FIND_ATTRIBUTE_V
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -50,14 +47,9 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
                                                                              + "   AND ea.attribute = :attribute") })
 @Entity
 @Table(name = "product_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_attribute_id_seq", sequenceName = "product_attribute_id_seq")
 public class ProductAttribute extends AttributeValue<Product> {
     public final static String FIND_ATTRIBUTE_VALUE_FROM_AGENCY = "productAttribute.findAttributeValueFromAgency";
     private static final long  serialVersionUID                 = 1L;
-
-    @Id
-    @GeneratedValue(generator = "product_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to Product
     @ManyToOne
@@ -137,13 +129,8 @@ public class ProductAttribute extends AttributeValue<Product> {
     /**
      * @param id
      */
-    public ProductAttribute(Long id) {
+    public ProductAttribute(UUID id) {
         super(id);
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Product getProduct() {
@@ -169,11 +156,6 @@ public class ProductAttribute extends AttributeValue<Product> {
     @Override
     public Class<Product> getRuleformClass() {
         return Product.class;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setProduct(Product product2) {

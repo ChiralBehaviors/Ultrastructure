@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.coordinate;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -42,7 +39,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 @Entity
 @Table(name = "coordinate_attribute_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "coordinate_attribute_authorization_id_seq", sequenceName = "coordinate_attribute_authorization_id_seq")
 public class CoordinateAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Coordinate> {
 
@@ -52,10 +48,6 @@ public class CoordinateAttributeAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Coordinate        classifier;
-
-    @Id
-    @GeneratedValue(generator = "coordinate_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     /**
      * 
@@ -74,7 +66,7 @@ public class CoordinateAttributeAuthorization extends
     /**
      * @param id
      */
-    public CoordinateAttributeAuthorization(Long id) {
+    public CoordinateAttributeAuthorization(UUID id) {
         super(id);
     }
 
@@ -118,16 +110,6 @@ public class CoordinateAttributeAuthorization extends
         return classifier;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public void setClassificationCoordinate(Coordinate classificationCoordinate) {
         classifier = classificationCoordinate;
     }
@@ -141,16 +123,6 @@ public class CoordinateAttributeAuthorization extends
     @Override
     public void setClassifier(Coordinate classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

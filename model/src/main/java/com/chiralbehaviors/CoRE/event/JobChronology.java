@@ -17,13 +17,13 @@ package com.chiralbehaviors.CoRE.event;
 
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -39,13 +39,8 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
  */
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "job_chronology_id_seq", sequenceName = "job_chronology_id_seq")
 public class JobChronology extends Ruleform {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "job_chronology_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to Job
     @ManyToOne
@@ -91,13 +86,8 @@ public class JobChronology extends Ruleform {
     /**
      * @param id
      */
-    public JobChronology(Long id) {
+    public JobChronology(UUID id) {
         super(id);
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Job getJob() {
@@ -124,11 +114,6 @@ public class JobChronology extends Ruleform {
 
     public Timestamp getTimeStamp() {
         return timeStamp;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setJob(Job job) {

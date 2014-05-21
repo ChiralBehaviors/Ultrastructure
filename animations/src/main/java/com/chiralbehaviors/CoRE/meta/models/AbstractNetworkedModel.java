@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -142,8 +143,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#find(long)
      */
     @Override
-    public RuleForm find(long id) {
-        RuleForm rf = em.find(entity, id);
+    public RuleForm find(UUID id) {
+        RuleForm rf = em.find(entity, id.toString());
         return rf;
     }
 
@@ -158,7 +159,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void generateInverses() {
         Query query = em.createNamedQuery(String.format("%s%s", networkPrefix,
                                                         GENERATE_NETWORK_INVERSES_SUFFIX));
-        query.setParameter(1, kernel.getInverseSoftware().getId());
+        query.setParameter(1, kernel.getInverseSoftware().getPrimaryKey());
         long then = System.currentTimeMillis();
         int created = query.executeUpdate();
         if (log.isTraceEnabled()) {
@@ -514,7 +515,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             // Insert the new rules
             Query insert = em.createNamedQuery(networkPrefix
                                                + INSERT_NEW_NETWORK_RULES_SUFFIX);
-            insert.setParameter(1, kernel.getPropagationSoftware().getId());
+            insert.setParameter(1,
+                                kernel.getPropagationSoftware().getPrimaryKey());
             int inserted = insert.executeUpdate();
             if (log.isInfoEnabled()) {
                 log.info(String.format("inserted %s new rules", inserted));
@@ -573,12 +575,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     private void createCurrentPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
-                                     + "id BIGINT NOT NULL,"
-                                     + "parent BIGINT NOT NULL,"
-                                     + "relationship BIGINT NOT NULL,"
-                                     + "child BIGINT NOT NULL,"
-                                     + "premise1 BIGINT NOT NULL,"
-                                     + "premise2 BIGINT NOT NULL)").executeUpdate();
+                                     + "id TEXT NOT NULL,"
+                                     + "parent TEXT NOT NULL,"
+                                     + "relationship TEXT NOT NULL,"
+                                     + "child TEXT NOT NULL,"
+                                     + "premise1 TEXT NOT NULL,"
+                                     + "premise2 TEXT NOT NULL)").executeUpdate();
     }
 
     private void createDeductionTemporaryTables() {
@@ -592,21 +594,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     private void createLastPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE last_pass_rules ("
-                                     + "id BIGINT NOT NULL,"
-                                     + "parent BIGINT NOT NULL,"
-                                     + "relationship BIGINT NOT NULL,"
-                                     + "child BIGINT NOT NULL,"
-                                     + "premise1 BIGINT NOT NULL,"
-                                     + "premise2 BIGINT NOT NULL)").executeUpdate();
+                                     + "id TEXT NOT NULL,"
+                                     + "parent TEXT NOT NULL,"
+                                     + "relationship TEXT NOT NULL,"
+                                     + "child TEXT NOT NULL,"
+                                     + "premise1 TEXT NOT NULL,"
+                                     + "premise2 TEXT NOT NULL)").executeUpdate();
     }
 
     private void createWorkingMemory() {
         em.createNativeQuery("CREATE TEMPORARY TABLE working_memory("
-                                     + "parent BIGINT NOT NULL,"
-                                     + "relationship BIGINT NOT NULL,"
-                                     + "child BIGINT NOT NULL,"
-                                     + "premise1 BIGINT NOT NULL,"
-                                     + "premise2 BIGINT NOT NULL )").executeUpdate();
+                                     + "parent TEXT NOT NULL,"
+                                     + "relationship TEXT NOT NULL,"
+                                     + "child TEXT NOT NULL,"
+                                     + "premise1 TEXT NOT NULL,"
+                                     + "premise2 TEXT NOT NULL )").executeUpdate();
     }
 
     @SuppressWarnings("unchecked")

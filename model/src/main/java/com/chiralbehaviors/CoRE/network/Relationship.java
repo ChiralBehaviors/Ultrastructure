@@ -29,13 +29,11 @@ import static com.chiralbehaviors.CoRE.network.Relationship.UNLINKED;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
@@ -43,7 +41,6 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -61,7 +58,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "relationship", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "relationship_id_seq", sequenceName = "relationship_id_seq", allocationSize = 1)
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM relationship AS unlinked "
@@ -142,10 +138,6 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @Id
-    @GeneratedValue(generator = "relationship_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                       id;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "inverse")
     @JsonIgnore
@@ -176,7 +168,7 @@ public class Relationship extends
     /**
      * @param id
      */
-    public Relationship(Long id) {
+    public Relationship(UUID id) {
         super(id);
     }
 
@@ -275,11 +267,6 @@ public class Relationship extends
         return attributes;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Relationship getInverse() {
         return inverse;
     }
@@ -349,11 +336,6 @@ public class Relationship extends
         this.attributes = attributes;
     }
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setInverse(Relationship relationship) {
         inverse = relationship;
         relationship.inverse = this;
@@ -407,5 +389,4 @@ public class Relationship extends
         super.traverseForeignKeys(em, knownObjects);
 
     }
-
 }

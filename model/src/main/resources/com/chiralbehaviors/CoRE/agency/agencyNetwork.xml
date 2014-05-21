@@ -60,7 +60,7 @@
                                            child, 
                                            premise1, 
                                            premise2)
-                SELECT nextval('ruleform.agency_network_id_seq') as id, 
+                SELECT ruleform.next_id() as id, 
                        wm.parent as parent, 
                        wm.relationship as relationship, 
                        wm.child as child, 
@@ -118,14 +118,16 @@
         </named-native-query>
         <named-native-query name="agencyNetwork.generateInverses">
             <query><![CDATA[
-            INSERT INTO ruleform.agency_network(parent, 
+            INSERT INTO ruleform.agency_network(id,
+                                                parent, 
                                                 relationship, 
                                                 child, 
                                                 inferred, 
                                                 premise1, 
                                                 premise2, 
                                                 updated_by)
-            SELECT net.child as parent,
+            SELECT ruleform.next_id() as id,
+                   net.child as parent,
                    rel.inverse as relationship,
                    net.parent as child,
                    net.inferred as inferred,

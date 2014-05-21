@@ -7,7 +7,7 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.get_attribute_type(attribute_id bigint)
+            CREATE OR REPLACE FUNCTION ruleform.get_attribute_type(attribute_id text)
               RETURNS character varying AS
             $BODY$
             DECLARE
@@ -19,10 +19,10 @@
             $BODY$
               LANGUAGE plpgsql STABLE STRICT
               COST 100;
-            ALTER FUNCTION ruleform.get_attribute_type(bigint)
+            ALTER FUNCTION ruleform.get_attribute_type(text)
               OWNER TO core;
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.get_attribute_type(bigint); </rollback>
+        <rollback> DROP FUNCTION ruleform.get_attribute_type(text); </rollback>
     </changeSet>
 </databaseChangeLog>

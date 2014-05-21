@@ -23,14 +23,10 @@ import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -49,7 +45,6 @@ import com.chiralbehaviors.CoRE.product.Product;
                                                 + "ORDER BY t.sequenceNumber") })
 @Entity
 @Table(name = "transformation", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "transformation_id_seq", sequenceName = "transformation_id_seq")
 public class Transformation extends Ruleform implements Serializable {
     public final static String GET              = "transformation.get";
     private static final long  serialVersionUID = 1L;
@@ -73,10 +68,6 @@ public class Transformation extends Ruleform implements Serializable {
     @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute          attribute;
-
-    @Id
-    @GeneratedValue(generator = "transformation_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to Product
     @ManyToOne
@@ -129,11 +120,6 @@ public class Transformation extends Ruleform implements Serializable {
         return product;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Agency getProductAttributeAgency() {
         return productAttributeAgency;
     }
@@ -183,11 +169,6 @@ public class Transformation extends Ruleform implements Serializable {
 
     public void setEntityKey(Product productKey) {
         this.productKey = productKey;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setRelationshipKey(Relationship relationship) {
@@ -248,5 +229,4 @@ public class Transformation extends Ruleform implements Serializable {
         super.traverseForeignKeys(em, knownObjects);
 
     }
-
 }

@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.location;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -37,7 +34,6 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
  */
 @Entity
 @Table(name = "location_network_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "location_network_authorization_id_seq", sequenceName = "location_network_authorization_id_seq")
 public class LocationNetworkAuthorization extends
         NetworkAuthorization<Location> {
     private static final long serialVersionUID = 1L;
@@ -51,10 +47,6 @@ public class LocationNetworkAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Location          classifier;
-
-    @Id
-    @GeneratedValue(generator = "location_network_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     /**
      * 
@@ -73,7 +65,7 @@ public class LocationNetworkAuthorization extends
     /**
      * @param id
      */
-    public LocationNetworkAuthorization(Long id) {
+    public LocationNetworkAuthorization(UUID id) {
         super(id);
     }
 
@@ -103,16 +95,6 @@ public class LocationNetworkAuthorization extends
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see
      * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent
      * (com.chiralbehaviors.CoRE.network.Networked)
@@ -132,16 +114,6 @@ public class LocationNetworkAuthorization extends
     @Override
     public void setClassifier(Location classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

@@ -26,19 +26,16 @@ import static com.chiralbehaviors.CoRE.attribute.unit.Unit.UNLINKED;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -98,7 +95,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                      @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "unit", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "unit_id_seq", sequenceName = "unit_id_seq")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     public static final String FIND_BY_NAME                             = "unit.findByName";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "unit"
@@ -125,10 +121,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     private Integer            enumerated                               = FALSE;
 
-    @Id
-    @GeneratedValue(generator = "unit_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
-
     private BigDecimal         max;
 
     private BigDecimal         min;
@@ -148,11 +140,11 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         super(updatedBy);
     }
 
-    public Unit(Long id) {
+    public Unit(UUID id) {
         super(id);
     }
 
-    public Unit(Long id, Agency updatedBy) {
+    public Unit(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -228,11 +220,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         return toBoolean(enumerated);
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public BigDecimal getMax() {
         return max;
     }
@@ -306,11 +293,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     public void setEnumerated(Boolean enumerated) {
         this.enumerated = toInteger(enumerated);
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setMax(BigDecimal max) {

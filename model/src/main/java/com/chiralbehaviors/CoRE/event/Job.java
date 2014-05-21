@@ -37,14 +37,12 @@ import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
@@ -52,7 +50,6 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -172,7 +169,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                      + " AND seq.service = ?") })
 @Entity
 @Table(name = "job", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "job_id_seq", sequenceName = "job_id_seq")
 public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String ACTIVE_JOBS                       = "job.getActiveJobs";
     public static final String CHANGE_STATUS                     = "job.changeStatus";
@@ -241,10 +237,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
-
-    @Id
-    @GeneratedValue(generator = "job_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     /**
      * The parent of this job
@@ -317,7 +309,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * @param id
      */
-    public Job(Long id) {
+    public Job(UUID id) {
         super(id);
     }
 
@@ -360,11 +352,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
      */
     public Location getDeliverTo() {
         return deliverTo;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Job getParent() {
@@ -436,11 +423,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         this.deliverTo = deliverTo;
     }
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setParent(Job job) {
         parent = job;
     }
@@ -483,7 +465,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
 
     @Override
     public String toString() {
-        return "Job [id=" + id + ", sequenceNumber=" + sequenceNumber
+        return "Job [id=" + getId() + ", sequenceNumber=" + sequenceNumber
                + ", status=" + status + ", parent="
                + (parent == null ? null : parent.getId()) + ", assignTo="
                + assignTo + ", service=" + service + ", product=" + product

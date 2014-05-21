@@ -17,15 +17,12 @@ package com.chiralbehaviors.CoRE.event;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -41,13 +38,8 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "protocol_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "protocol_attribute_id_seq", sequenceName = "protocol_attribute_id_seq")
 public class ProtocolAttribute extends AttributeValue<Protocol> {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "protocol_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to Protocol
     @ManyToOne
@@ -128,7 +120,7 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     /**
      * @param id
      */
-    public ProtocolAttribute(Long id) {
+    public ProtocolAttribute(UUID id) {
         super(id);
     }
 
@@ -140,11 +132,6 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
         clone.setAttribute(getAttribute());
         copyInto(clone);
         return clone;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Protocol getProtocol() {
@@ -170,11 +157,6 @@ public class ProtocolAttribute extends AttributeValue<Protocol> {
     @Override
     public Class<Protocol> getRuleformClass() {
         return Protocol.class;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setNumericValue(double value) {

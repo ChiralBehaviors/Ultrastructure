@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.attribute.unit;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -41,7 +38,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 @Entity
 @Table(name = "unit_attribute_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "unit_attribute_authorization_id_seq", sequenceName = "unit_attribute_authorization_id_seq")
 public class UnitAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Unit> {
     private static final long serialVersionUID = 1L;
@@ -49,10 +45,6 @@ public class UnitAttributeAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Unit              classifier;
-
-    @Id
-    @GeneratedValue(generator = "unit_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public UnitAttributeAuthorization() {
     }
@@ -67,7 +59,7 @@ public class UnitAttributeAuthorization extends
     /**
      * @param id
      */
-    public UnitAttributeAuthorization(Long id) {
+    public UnitAttributeAuthorization(UUID id) {
         super(id);
     }
 
@@ -110,11 +102,6 @@ public class UnitAttributeAuthorization extends
         return classifier;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -124,11 +111,6 @@ public class UnitAttributeAuthorization extends
     @Override
     public void setClassifier(Unit classifier) {
         this.classifier = classifier;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

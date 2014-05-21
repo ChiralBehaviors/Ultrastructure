@@ -7,7 +7,7 @@
 
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.product_by_attribute_value(p_attribute bigint, p_value character varying)
+            CREATE OR REPLACE FUNCTION ruleform.product_by_attribute_value(p_attribute text, p_value character varying)
               RETURNS SETOF ruleform.product AS
             $BODY$
             DECLARE
@@ -41,11 +41,11 @@
               LANGUAGE plpgsql STABLE
               COST 100
               ROWS 1000;
-            ALTER FUNCTION ruleform.product_by_attribute_value(bigint, character varying)
+            ALTER FUNCTION ruleform.product_by_attribute_value(text, character varying)
               OWNER TO core;
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.product_by_attribute_value(bigint, character varying);
+        <rollback> DROP FUNCTION ruleform.product_by_attribute_value(text, character varying);
         </rollback>
     </changeSet>
 </databaseChangeLog>

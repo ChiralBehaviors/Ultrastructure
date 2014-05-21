@@ -18,9 +18,11 @@ package com.chiralbehaviors.CoRE;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -31,6 +33,8 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.NoArgGenerator;
 
 /**
  * The superclass of all rule forms.
@@ -43,18 +47,20 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 abstract public class Ruleform implements Serializable, Cloneable {
-    public static final Integer FALSE                 = Integer.valueOf((byte) 0);
-    public static final String  FIND_ALL_SUFFIX       = ".findAll";
-    public static final String  FIND_BY_ID_SUFFIX     = ".findById";
-    public static final String  FIND_BY_NAME_SUFFIX   = ".findByName";
-    public static final String  FIND_FLAGGED_SUFFIX   = ".findFlagged";
-    public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+    protected final static NoArgGenerator ID_GENERATOR          = Generators.timeBasedGenerator();
+    public static final Integer           FALSE                 = Integer.valueOf((byte) 0);
+    public static final String            FIND_ALL_SUFFIX       = ".findAll";
+    public static final String            FIND_BY_ID_SUFFIX     = ".findById";
+    public static final String            FIND_BY_NAME_SUFFIX   = ".findByName";
+    public static final String            FIND_FLAGGED_SUFFIX   = ".findFlagged";
+    public static final String            GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+    public static final String            NAME_SEARCH_SUFFIX    = ".namesearch";
+    public static final Integer           TRUE                  = Integer.valueOf((byte) 1);
+    private static final long             serialVersionUID      = 1L;
 
-    public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
-
-    public static final Integer TRUE                  = Integer.valueOf((byte) 1);
-
-    private static final long   serialVersionUID      = 1L;
+    public static String nextId() {
+        return ID_GENERATOR.generate().toString();
+    }
 
     public static Boolean toBoolean(Integer value) {
         if (value == null) {
@@ -69,6 +75,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
         }
         return value ? TRUE : FALSE;
     }
+
+    @Id
+    private String    id = ID_GENERATOR.generate().toString();
 
     private String    notes;
 
@@ -87,22 +96,22 @@ abstract public class Ruleform implements Serializable, Cloneable {
         this.updatedBy = updatedBy;
     }
 
-    public Ruleform(Long id) {
-        this();
-        setId(id);
-    }
-
-    public Ruleform(Long id, Agency updatedBy) {
-        this(id);
-        this.updatedBy = updatedBy;
-    }
-
     public Ruleform(String notes) {
         this.notes = notes;
     }
 
     public Ruleform(String notes, Agency updatedBy) {
         this.notes = notes;
+        this.updatedBy = updatedBy;
+    }
+
+    public Ruleform(UUID id) {
+        this();
+        setId(id);
+    }
+
+    public Ruleform(UUID id, Agency updatedBy) {
+        this(id);
         this.updatedBy = updatedBy;
     }
 
@@ -135,24 +144,30 @@ abstract public class Ruleform implements Serializable, Cloneable {
             return false;
         }
         Ruleform other = (Ruleform) obj;
-        Long id = getId();
+        String id = getPrimaryKey();
         if (id == null) {
-            if (other.getId() != null) {
+            if (other.getPrimaryKey() != null) {
                 return false;
             }
-        } else if (!id.equals(other.getId())) {
+        } else if (!id.equals(other.getPrimaryKey())) {
             return false;
         }
         return true;
     }
 
-    abstract public Long getId();
+    public final UUID getId() {
+        return UUID.fromString(getPrimaryKey());
+    }
 
     /**
      * @return the notes
      */
     public String getNotes() {
         return notes;
+    }
+
+    public final String getPrimaryKey() {
+        return id;
     }
 
     /**
@@ -176,10 +191,10 @@ abstract public class Ruleform implements Serializable, Cloneable {
      */
     @Override
     public int hashCode() {
-        if (getId() == null) {
+        if (getPrimaryKey() == null) {
             return 31;
         }
-        return getId().hashCode();
+        return getPrimaryKey().hashCode();
     }
 
     public Ruleform manageEntity(EntityManager em,
@@ -205,7 +220,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return knownObjects.get(this);
     }
 
-    abstract public void setId(Long id);
+    public void setId(UUID id) {
+        setPrimaryKey(id.toString());
+    }
 
     /**
      * @param notes
@@ -251,5 +268,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
             updatedBy = (Agency) updatedBy.manageEntity(em, knownObjects);
         }
 
+    }
+
+    protected final void setPrimaryKey(String id) {
+        this.id = id;
     }
 }

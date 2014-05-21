@@ -30,19 +30,16 @@ import static com.chiralbehaviors.CoRE.coordinate.Coordinate.UNLINKED;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -60,7 +57,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "coordinate", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "coordinate_id_seq", sequenceName = "coordinate_id_seq")
 @NamedNativeQueries({
                      @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
                                                                 + "FROM coordinate AS unlinked "
@@ -145,10 +141,6 @@ public class Coordinate extends
     @JsonIgnore
     private Set<CoordinateAttribute> attributes;
 
-    @Id
-    @GeneratedValue(generator = "coordinate_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                     id;
-
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<CoordinateNetwork>   networkByChild;
@@ -170,7 +162,7 @@ public class Coordinate extends
     /**
      * @param id
      */
-    public Coordinate(Long id) {
+    public Coordinate(UUID id) {
         super(id);
     }
 
@@ -259,11 +251,6 @@ public class Coordinate extends
     @Override
     public Class<CoordinateAttribute> getAttributeType() {
         return CoordinateAttribute.class;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /*
@@ -362,11 +349,6 @@ public class Coordinate extends
     @Override
     public void setAttributes(Set<CoordinateAttribute> coordinateAttributes) {
         attributes = coordinateAttributes;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

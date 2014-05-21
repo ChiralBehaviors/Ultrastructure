@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.product;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -40,7 +37,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 @Entity
 @Table(name = "product_location_attribute_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_location_attribute_authorization_id_seq", sequenceName = "product_location_attribute_authorization_id_seq")
 public class ProductLocationAttributeAuthorization extends
         AttributeAuthorization {
     private static final long serialVersionUID = 1L;
@@ -52,10 +48,6 @@ public class ProductLocationAttributeAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Product           classifier;
-
-    @Id
-    @GeneratedValue(generator = "product_location_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public ProductLocationAttributeAuthorization() {
     }
@@ -70,7 +62,7 @@ public class ProductLocationAttributeAuthorization extends
     /**
      * @param id
      */
-    public ProductLocationAttributeAuthorization(Long id) {
+    public ProductLocationAttributeAuthorization(UUID id) {
         super(id);
     }
 
@@ -88,11 +80,6 @@ public class ProductLocationAttributeAuthorization extends
         return classifier;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /**
      * @param classification
      *            the classification to set
@@ -107,11 +94,6 @@ public class ProductLocationAttributeAuthorization extends
      */
     public void setClassifier(Product classifier) {
         this.classifier = classifier;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

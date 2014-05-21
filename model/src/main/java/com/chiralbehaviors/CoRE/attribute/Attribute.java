@@ -25,21 +25,18 @@ import static com.chiralbehaviors.CoRE.attribute.Attribute.UNLINKED;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -99,7 +96,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                      @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "attribute_id_seq", sequenceName = "attribute_id_seq")
 public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
         implements Attributable<AttributeMetaAttribute> {
     public static final String          FIND_BY_NAME                             = "attribute.findByName";
@@ -121,10 +117,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     @OneToMany(mappedBy = "attribute")
     @JsonIgnore
     private Set<AttributeMetaAttribute> attributes;
-
-    @Id
-    @GeneratedValue(generator = "attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                        id;
 
     private Integer                     inheritable                              = FALSE;
 
@@ -155,7 +147,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     /**
      * @param id
      */
-    public Attribute(Long id) {
+    public Attribute(UUID id) {
         super(id);
     }
 
@@ -269,11 +261,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
         return AttributeMetaAttribute.class;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Boolean getInheritable() {
         return toBoolean(inheritable);
     }
@@ -321,11 +308,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
         attributes = attributeMetaAttributes1;
     }
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setInheritable(Boolean inheritable) {
         this.inheritable = toInteger(inheritable);
     }
@@ -343,5 +325,4 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     public void setValueType(ValueType valueType) {
         this.valueType = valueType;
     }
-
 }

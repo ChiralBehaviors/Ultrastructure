@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -71,10 +72,16 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     @Test
     public void testHasNoTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] { new StatusCode(0L),
-                new StatusCode(1L), new StatusCode(2L), new StatusCode(3L),
-                new StatusCode(4L), new StatusCode(5L), new StatusCode(6L),
-                new StatusCode(7L), new StatusCode(8L) };
+        StatusCode[] codes = new StatusCode[] {
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -184,10 +191,16 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     @Test
     public void testHasTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] { new StatusCode(0L),
-                new StatusCode(1L), new StatusCode(2L), new StatusCode(3L),
-                new StatusCode(4L), new StatusCode(5L), new StatusCode(6L),
-                new StatusCode(7L), new StatusCode(8L) };
+        StatusCode[] codes = new StatusCode[] {
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -199,10 +212,16 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     @Test
     public void testLoop() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] { new StatusCode(0L),
-                new StatusCode(1L), new StatusCode(2L), new StatusCode(3L),
-                new StatusCode(4L), new StatusCode(5L), new StatusCode(6L),
-                new StatusCode(7L), new StatusCode(8L) };
+        StatusCode[] codes = new StatusCode[] {
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[3]));

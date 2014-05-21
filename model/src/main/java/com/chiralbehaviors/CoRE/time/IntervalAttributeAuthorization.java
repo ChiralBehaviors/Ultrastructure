@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.time;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -41,7 +38,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 @Entity
 @Table(name = "interval_attribute_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "interval_attribute_authorization_id_seq", sequenceName = "interval_attribute_authorization_id_seq")
 public class IntervalAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Interval> {
     private static final long serialVersionUID = 1L;
@@ -49,10 +45,6 @@ public class IntervalAttributeAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Interval          classifier;
-
-    @Id
-    @GeneratedValue(generator = "interval_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public IntervalAttributeAuthorization() {
     }
@@ -67,7 +59,7 @@ public class IntervalAttributeAuthorization extends
     /**
      * @param id
      */
-    public IntervalAttributeAuthorization(Long id) {
+    public IntervalAttributeAuthorization(UUID id) {
         super(id);
     }
 
@@ -110,11 +102,6 @@ public class IntervalAttributeAuthorization extends
         return classifier;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -124,11 +111,6 @@ public class IntervalAttributeAuthorization extends
     @Override
     public void setClassifier(Interval classifier) {
         this.classifier = classifier;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

@@ -16,6 +16,7 @@
 package com.chiralbehaviors.CoRE;
 
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
@@ -70,14 +71,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
         super(updatedBy);
     }
 
-    public ExistentialRuleform(Long id) {
-        super(id);
-    }
-
-    public ExistentialRuleform(Long id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
-
     public ExistentialRuleform(String name) {
         this.name = name;
     }
@@ -95,6 +88,19 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public ExistentialRuleform(String name, String description, Agency updatedBy) {
         this(name, updatedBy);
         this.description = description;
+    }
+
+    public ExistentialRuleform(UUID id) {
+        super(id);
+    }
+
+    public ExistentialRuleform(UUID id, String name) {
+        super(id);
+        this.name = name;
+    }
+
+    public ExistentialRuleform(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     abstract public void addChildRelationship(Network relationship);

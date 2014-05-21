@@ -27,19 +27,16 @@ import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.IS_VALI
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -84,7 +81,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                           + " WHERE scs.service = :service") })
 @Entity
 @Table(name = "status_code_sequencing", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "status_code_sequencing_id_seq", sequenceName = "status_code_sequencing_id_seq")
 public class StatusCodeSequencing extends Ruleform {
     public static final String  ENSURE_VALID_SERVICE_STATUS               = "statusCodeSequencing.ensureValidServiceAndStatus";
     public static final String  GET_ALL_STATUS_CODE_SEQUENCING            = "statusCodeSequencing.getAllStatusCodeSequencing";
@@ -102,10 +98,6 @@ public class StatusCodeSequencing extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "child_code")
     private StatusCode          childCode;
-
-    @Id
-    @GeneratedValue(generator = "status_code_sequencing_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long                id;
 
     // bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -143,7 +135,7 @@ public class StatusCodeSequencing extends Ruleform {
     /**
      * @param id
      */
-    public StatusCodeSequencing(Long id) {
+    public StatusCodeSequencing(UUID id) {
         super(id);
     }
 
@@ -151,7 +143,7 @@ public class StatusCodeSequencing extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public StatusCodeSequencing(Long id, Agency updatedBy) {
+    public StatusCodeSequencing(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -189,11 +181,6 @@ public class StatusCodeSequencing extends Ruleform {
         return childCode;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public StatusCode getParentCode() {
         return parentCode;
     }
@@ -225,11 +212,6 @@ public class StatusCodeSequencing extends Ruleform {
 
     public void setChildCode(StatusCode statusCode1) {
         childCode = statusCode1;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setParentCode(StatusCode statusCode2) {

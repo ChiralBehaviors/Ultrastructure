@@ -16,6 +16,8 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import java.util.UUID;
+
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 
 /**
@@ -241,8 +243,8 @@ public interface WellKnownObject {
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -372,8 +374,8 @@ public interface WellKnownObject {
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -408,8 +410,8 @@ public interface WellKnownObject {
         };
 
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -440,8 +442,8 @@ public interface WellKnownObject {
         };
 
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -539,8 +541,8 @@ public interface WellKnownObject {
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -668,8 +670,8 @@ public interface WellKnownObject {
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -1541,8 +1543,8 @@ public interface WellKnownObject {
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         abstract public WellKnownRelationship inverse();
@@ -1593,8 +1595,8 @@ public interface WellKnownObject {
         };
 
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -1625,8 +1627,8 @@ public interface WellKnownObject {
         };
 
         @Override
-        public Long id() {
-            return Long.valueOf(ordinal() + 1);
+        public String id() {
+            return new UUID(0, ordinal() + 1).toString();
         }
 
         /* (non-Javadoc)
@@ -1710,7 +1712,7 @@ public interface WellKnownObject {
      * 
      * @return the id of the wko
      */
-    Long id();
+    String id();
 
     /**
      * 

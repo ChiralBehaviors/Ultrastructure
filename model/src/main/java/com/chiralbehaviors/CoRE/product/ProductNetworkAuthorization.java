@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.product;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -39,7 +36,6 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
  */
 @Entity
 @Table(name = "product_network_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_network_authorization_id_seq", sequenceName = "product_network_authorization_id_seq")
 public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     private static final long serialVersionUID = 1L;
 
@@ -52,10 +48,6 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Product           classifier;
-
-    @Id
-    @GeneratedValue(generator = "product_network_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     /**
      * 
@@ -74,7 +66,7 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     /**
      * @param id
      */
-    public ProductNetworkAuthorization(Long id) {
+    public ProductNetworkAuthorization(UUID id) {
         super(id);
     }
 
@@ -104,16 +96,6 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     /*
      * (non-Javadoc)
      * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see
      * com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent
      * (com.chiralbehaviors.CoRE.network.Networked)
@@ -133,16 +115,6 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     @Override
     public void setClassifier(Product classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

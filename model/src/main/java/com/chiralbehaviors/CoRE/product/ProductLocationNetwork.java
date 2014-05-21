@@ -18,17 +18,14 @@ package com.chiralbehaviors.CoRE.product;
 import static com.chiralbehaviors.CoRE.product.ProductLocationNetwork.LOCATION_RULES;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -43,7 +40,6 @@ import com.chiralbehaviors.CoRE.coordinate.Coordinate;
  */
 @Entity
 @Table(name = "product_location_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_location_network_id_seq", sequenceName = "product_location_network_id_seq")
 @NamedQueries({ @NamedQuery(name = LOCATION_RULES, query = "select n from ProductLocationNetwork n where n.product = :product") })
 public class ProductLocationNetwork extends Ruleform {
     public static final String LOCATION_RULES   = "productLocationNetwork.locationRules";
@@ -64,10 +60,6 @@ public class ProductLocationNetwork extends Ruleform {
     @JoinColumn(name = "coordinate")
     private Coordinate         coordinate;
 
-    @Id
-    @GeneratedValue(generator = "product_location_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
-
     // bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "product")
@@ -86,7 +78,7 @@ public class ProductLocationNetwork extends Ruleform {
     /**
      * @param id
      */
-    public ProductLocationNetwork(Long id) {
+    public ProductLocationNetwork(UUID id) {
         super(id);
     }
 
@@ -100,11 +92,6 @@ public class ProductLocationNetwork extends Ruleform {
 
     public Coordinate getCoordinate() {
         return coordinate;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Product getProdut() {
@@ -121,11 +108,6 @@ public class ProductLocationNetwork extends Ruleform {
 
     public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setProduct(Product product2) {

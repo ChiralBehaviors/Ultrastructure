@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
@@ -76,15 +77,6 @@ public class Bootstrap {
         for (WellKnownObject wko : WellKnownUnit.values()) {
             insert(wko);
         }
-        adjustIdSeq(WellKnownAgency.ANY);
-        adjustIdSeq(WellKnownAttribute.ANY);
-        adjustIdSeq(WellKnownCoordinate.COORDINATE);
-        adjustIdSeq(WellKnownInterval.INTERVAL);
-        adjustIdSeq(WellKnownLocation.ANY);
-        adjustIdSeq(WellKnownProduct.ANY);
-        adjustIdSeq(WellKnownRelationship.ANY);
-        adjustIdSeq(WellKnownStatusCode.UNSET);
-        adjustIdSeq(WellKnownUnit.UNIT);
         createNullInference();
         createRootNetworks();
         alterTriggers(true);
@@ -106,11 +98,11 @@ public class Bootstrap {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, pinned, updated_by, value_type) VALUES (?, ?, ?, ?, ?, ?)",
                                                                         wko.tableName()));
         try {
-            s.setLong(1, wko.id());
+            s.setString(1, wko.id());
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setByte(4, (byte) 1);
-            s.setLong(5, WellKnownAgency.CORE.id());
+            s.setString(5, WellKnownAgency.CORE.id());
             s.setInt(6, wko.valueType().ordinal());
             s.execute();
         } catch (SQLException e) {
@@ -122,11 +114,11 @@ public class Bootstrap {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, pinned, updated_by) VALUES (?, ?, ?, ?, ?)",
                                                                         wkl.tableName()));
         try {
-            s.setLong(1, wkl.id());
+            s.setString(1, wkl.id());
             s.setString(2, wkl.wkoName());
             s.setString(3, wkl.description());
             s.setByte(4, (byte) 1);
-            s.setLong(5, WellKnownAgency.CORE.id());
+            s.setString(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert  %s", wkl),
@@ -138,11 +130,11 @@ public class Bootstrap {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, pinned, updated_by) VALUES (?, ?, ?, ?, ?)",
                                                                         wko.tableName()));
         try {
-            s.setLong(1, wko.id());
+            s.setString(1, wko.id());
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setByte(4, (byte) 1);
-            s.setLong(5, WellKnownAgency.CORE.id());
+            s.setString(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko), e);
@@ -153,12 +145,12 @@ public class Bootstrap {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, pinned, updated_by, inverse, preferred) VALUES (?, ?, ?, ?, ?, ?, ?)",
                                                                         wko.tableName()));
         try {
-            s.setLong(1, wko.id());
+            s.setString(1, wko.id());
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setByte(4, (byte) 1);
-            s.setLong(5, WellKnownAgency.CORE.id());
-            s.setLong(6, wko.inverse().id());
+            s.setString(5, WellKnownAgency.CORE.id());
+            s.setString(6, wko.inverse().id());
             s.setByte(7, (byte) (wko.preferred() ? 1 : 0));
             s.execute();
         } catch (SQLException e) {
@@ -172,36 +164,29 @@ public class Bootstrap {
                                                                         tableName));
         try {
             s.setLong(1, 1);
-            s.setLong(2, wko.id());
-            s.setLong(3, WellKnownRelationship.RELATIONSHIP.id());
-            s.setLong(4, wko.id());
-            s.setLong(5, WellKnownAgency.CORE.id());
+            s.setString(2, wko.id());
+            s.setString(3, WellKnownRelationship.RELATIONSHIP.id());
+            s.setString(4, wko.id());
+            s.setString(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert root %s",
                                                  tableName), e);
         }
-
-        PreparedStatement update = connection.prepareStatement(String.format("SELECT setval('%s_id_seq', 2)",
-                                                                             tableName,
-                                                                             tableName));
-        update.execute();
     }
 
     private void createNullInference() throws SQLException {
         PreparedStatement s = connection.prepareStatement("INSERT into ruleform.network_inference (id, premise1, premise2, inference, updated_by) VALUES (?, ?, ?, ?, ?)");
         try {
-            s.setLong(1, 1);
-            s.setLong(2, WellKnownRelationship.RELATIONSHIP.id());
-            s.setLong(3, WellKnownRelationship.RELATIONSHIP.id());
-            s.setLong(4, WellKnownRelationship.RELATIONSHIP.id());
-            s.setLong(5, WellKnownAgency.CORE.id());
+            s.setString(1, new UUID(0, 0).toString());
+            s.setString(2, WellKnownRelationship.RELATIONSHIP.id());
+            s.setString(3, WellKnownRelationship.RELATIONSHIP.id());
+            s.setString(4, WellKnownRelationship.RELATIONSHIP.id());
+            s.setString(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException("Unable to insert null inference", e);
         }
-        PreparedStatement update = connection.prepareStatement("SELECT setval('ruleform.network_inference_id_seq', 2)");
-        update.execute();
     }
 
     private void createRootNetworks() throws SQLException {
@@ -213,14 +198,6 @@ public class Bootstrap {
                 WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
             insertNetwork(wko);
         }
-    }
-
-    protected void adjustIdSeq(WellKnownObject wko) throws SQLException {
-
-        PreparedStatement update = connection.prepareStatement(String.format("SELECT setval('%s_id_seq', (SELECT max(net.id) FROM %s as net))",
-                                                                             wko.tableName(),
-                                                                             wko.tableName()));
-        update.execute();
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {

@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.attribute;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
@@ -92,14 +93,14 @@ abstract public class AttributeAuthorization extends Ruleform {
     /**
      * @param id
      */
-    public AttributeAuthorization(Long id) {
+    public AttributeAuthorization(UUID id) {
         super(id);
     }
 
     /**
      * @param updatedBy
      */
-    public AttributeAuthorization(Long id, Agency updatedBy) {
+    public AttributeAuthorization(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 

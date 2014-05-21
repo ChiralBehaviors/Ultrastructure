@@ -7,25 +7,25 @@
 
     <changeSet author="hhildebrand" id="1390879803225-59">
         <createTable tableName="ruleform.transformation_metarule">
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
+            <column name="id" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="transformation_metarule_pkey" />
             </column>
-            <column name="service" type="INT8">
+            <column name="service" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" type="ruleform.sequence_number">
                 <constraints nullable="false" />
             </column>
-            <column name="agency_map" type="INT8">
+            <column name="agency_map" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="product_map" type="INT8">
+            <column name="product_map" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="product_network_agency" type="INT8" />
+            <column name="product_network_agency" type="TEXT" />
             <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="INT8">
+            <column name="updated_by" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

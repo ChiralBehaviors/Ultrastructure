@@ -16,6 +16,7 @@
 package com.chiralbehaviors.CoRE.network;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
@@ -73,7 +74,7 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     /**
      * @param id
      */
-    public NetworkAuthorization(Long id) {
+    public NetworkAuthorization(UUID id) {
         super(id);
     }
 

@@ -76,8 +76,8 @@ public class AttributeModelImpl
                                                                    throws Exception {
         execute(new Procedure<Void>() {
             @Override
-            public Void call(AttributeModel attributrModel) throws Exception {
-                attributrModel.propagate();
+            public Void call(AttributeModel attributeModel) throws Exception {
+                attributeModel.propagate();
                 return null;
             }
 

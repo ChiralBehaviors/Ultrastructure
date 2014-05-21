@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -436,7 +437,7 @@ public interface JobModel {
     boolean isValidNextStatus(Product service, StatusCode parent,
                               StatusCode next);
 
-    void logModifiedService(Long scs);
+    void logModifiedService(UUID scs);
 
     /**
      * Process all the implicit status changes of the children of a job

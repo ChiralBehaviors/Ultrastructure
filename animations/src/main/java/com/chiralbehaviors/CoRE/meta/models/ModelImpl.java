@@ -88,9 +88,9 @@ public class ModelImpl implements Model {
      *             if the activeRoleRelationships.length !=
      *             activeRoleAgencys.length
      */
-    public static void setPrincipal(Long agency,
-                                    Long[] activeRoleRelationships,
-                                    Long[] activeRoleAgencys) {
+    public static void setPrincipal(String agency,
+                                    String[] activeRoleRelationships,
+                                    String[] activeRoleAgencys) {
         /*
          * EntityManager em = JSP.getEm(); if (activeRoleRelationships == null
          * || activeRoleAgencys == null) { principal = new

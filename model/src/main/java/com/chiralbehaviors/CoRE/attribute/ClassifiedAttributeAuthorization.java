@@ -16,6 +16,7 @@
 package com.chiralbehaviors.CoRE.attribute;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
@@ -62,7 +63,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
     /**
      * @param id
      */
-    public ClassifiedAttributeAuthorization(Long id) {
+    public ClassifiedAttributeAuthorization(UUID id) {
         super(id);
     }
 

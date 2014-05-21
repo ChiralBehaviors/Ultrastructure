@@ -26,15 +26,13 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SU
 import static com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork.GET_NETWORKS;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -55,7 +53,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                         + "AND n.child IN :children") })
 @Entity
 @Table(name = "unit_network", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "unit_network_id_seq", sequenceName = "unit_network_id_seq")
 public class UnitNetwork extends NetworkRuleform<Unit> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "unitNetwork"
@@ -81,10 +78,6 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @ManyToOne
     @JoinColumn(name = "child")
     private Unit               child;
-
-    @Id
-    @GeneratedValue(generator = "unit_network_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to Agency 
     @ManyToOne
@@ -116,7 +109,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     /**
      * @param id
      */
-    public UnitNetwork(Long id) {
+    public UnitNetwork(UUID id) {
         super(id);
     }
 
@@ -147,16 +140,6 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @Override
     public Unit getChild() {
         return child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /* (non-Javadoc)
@@ -193,16 +176,6 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @Override
     public void setChild(Unit child) {
         this.child = child;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /* (non-Javadoc)

@@ -7,10 +7,10 @@
 
     <changeSet author="hhildebrand" id="1390879803225-30">
         <createTable remarks="Rules for generating masks for the protocol ruleform" tableName="ruleform.meta_protocol">
-            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+            <column name="id" remarks="Unique identifier" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="meta_protocol_pkey" />
             </column>
-            <column name="service" remarks="The service we are creating a mask for" type="INT8">
+            <column name="service" remarks="The service we are creating a mask for" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when a service can have multiple meta-protocol rules"
@@ -18,24 +18,24 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="requesting_agency" type="INT8">
+            <column name="requesting_agency" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="service_type" remarks="Used to select a mapped value from a Product" type="INT8">
+            <column name="service_type" remarks="Used to select a mapped value from a Product" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="product_ordered" remarks="Used to select a mapped value from a Product" type="INT8">
+            <column name="product_ordered" remarks="Used to select a mapped value from a Product" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to" type="INT8">
+            <column name="deliver_to" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from" type="INT8">
+            <column name="deliver_from" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
             <column name="notes" remarks="Additional notes regarding usage of the attribute" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

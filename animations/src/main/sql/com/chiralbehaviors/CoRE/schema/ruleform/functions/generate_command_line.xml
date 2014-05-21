@@ -7,7 +7,7 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.generate_command_line(p_event_rule bigint)
+            CREATE OR REPLACE FUNCTION ruleform.generate_command_line(p_event_rule text)
               RETURNS text AS
             $BODY$
             DECLARE
@@ -66,10 +66,10 @@
             $BODY$
               LANGUAGE plpgsql STABLE
               COST 100;
-            ALTER FUNCTION ruleform.generate_command_line(bigint)
+            ALTER FUNCTION ruleform.generate_command_line(text)
               OWNER TO core;
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.generate_command_line(bigint); </rollback>
+        <rollback> DROP FUNCTION ruleform.generate_command_line(text); </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -18,16 +18,13 @@ package com.chiralbehaviors.CoRE.event.status;
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute.GET_ATTRIBUTE;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -42,15 +39,10 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "status_code_attribute", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "status_code_attribute_id_seq", sequenceName = "status_code_attribute_id_seq")
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from StatusCodeAttribute ra where ra.statusCode = :inteval and ra.attribute = :attribute") })
 public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     public static final String GET_ATTRIBUTE    = "statusCodeAttribute.intervalAttribute";
     private static final long  serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "status_code_attribute_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     // bi-directional many-to-one association to StatusCode
     @ManyToOne
@@ -96,18 +88,8 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         super(attribute, unit);
     }
 
-    public StatusCodeAttribute(Long id) {
+    public StatusCodeAttribute(UUID id) {
         super(id);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
     }
 
     /*
@@ -133,16 +115,6 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
 
     public StatusCode getStatusCode() {
         return statusCode;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setStatusCode(StatusCode interval) {

@@ -16,16 +16,13 @@
 package com.chiralbehaviors.CoRE.coordinate;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -38,7 +35,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
  */
 @Entity
 @Table(name = "coordinate_nesting", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "coordinate_nesting_id_seq", sequenceName = "coordinate_nesting_id_seq")
 public class CoordinateNesting extends Ruleform {
     private static final long serialVersionUID = 1L;
 
@@ -46,10 +42,6 @@ public class CoordinateNesting extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
-
-    @Id
-    @GeneratedValue(generator = "coordinate_nesting_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne
@@ -79,17 +71,12 @@ public class CoordinateNesting extends Ruleform {
     /**
      * @param id
      */
-    public CoordinateNesting(Long id) {
+    public CoordinateNesting(UUID id) {
         super(id);
     }
 
     public Attribute getAttribute() {
         return attribute;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
     public Attribute getInnerAttribute() {
@@ -110,11 +97,6 @@ public class CoordinateNesting extends Ruleform {
 
     public void setAttribute(Attribute attribute3) {
         attribute = attribute3;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setInnerAttribute(Attribute attribute2) {
@@ -157,5 +139,4 @@ public class CoordinateNesting extends Ruleform {
         super.traverseForeignKeys(em, knownObjects);
 
     }
-
 }

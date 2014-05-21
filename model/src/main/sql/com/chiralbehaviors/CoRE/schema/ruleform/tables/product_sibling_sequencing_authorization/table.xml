@@ -9,13 +9,13 @@
         <createTable remarks="Determines what the next available product should be, based on the status code returned for the previous product"
             tableName="ruleform.product_sibling_sequencing_authorization"
         >
-            <column autoIncrement="true" name="id" remarks="Unique identifier" type="BIGSERIAL">
+            <column name="id" remarks="Unique identifier" type="TEXT">
                 <constraints primaryKey="true" primaryKeyName="product_sibling_sequencing_authorization_pkey" />
             </column>
-            <column name="parent" remarks="The last product of a given protocol that was completed" type="INT8">
+            <column name="parent" remarks="The last product of a given protocol that was completed" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="status_code" remarks="The status of the last product completed" type="INT8">
+            <column name="status_code" remarks="The status of the last product completed" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
@@ -23,11 +23,11 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="next_sibling" remarks="A sibling job with an product equal to this can have its status changed" type="INT8" />
+            <column name="next_sibling" remarks="A sibling job with an product equal to this can have its status changed" type="TEXT" />
             <column name="next_sibling_status" remarks="The status to set for the sibling job referred to by &quot;next_sibling&quot;"
-                type="INT8" />
+                type="TEXT" />
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="INT8">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

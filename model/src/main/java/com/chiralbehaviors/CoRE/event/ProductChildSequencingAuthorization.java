@@ -19,18 +19,15 @@ import static com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization
 import static com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization.GET_SEQUENCES;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -52,15 +49,10 @@ import com.chiralbehaviors.CoRE.product.Product;
                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_child_sequencing_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_child_sequencing_authorization_id_seq", sequenceName = "product_child_sequencing_authorization_id_seq")
 public class ProductChildSequencingAuthorization extends Ruleform {
     public static final String GET_CHILD_ACTIONS = "productChildSequencingAuthorization.getChildActions";
     public static final String GET_SEQUENCES     = "productChildSequencingAuthorization.getSequences";
     private static final long  serialVersionUID  = 1L;
-
-    @Id
-    @GeneratedValue(generator = "product_child_sequencing_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long               id;
 
     @ManyToOne
     @JoinColumn(name = "next_child")
@@ -98,7 +90,7 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     /**
      * @param id
      */
-    public ProductChildSequencingAuthorization(Long id) {
+    public ProductChildSequencingAuthorization(UUID id) {
         super(id);
     }
 
@@ -106,7 +98,7 @@ public class ProductChildSequencingAuthorization extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public ProductChildSequencingAuthorization(Long id, Agency updatedBy) {
+    public ProductChildSequencingAuthorization(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -137,16 +129,6 @@ public class ProductChildSequencingAuthorization extends Ruleform {
         super(notes, updatedBy);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#getId()
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Product getNextChild() {
         return nextChild;
     }
@@ -165,16 +147,6 @@ public class ProductChildSequencingAuthorization extends Ruleform {
 
     public StatusCode getStatusCode() {
         return statusCode;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.Ruleform#setId(java.lang.Long)
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setNextChild(Product nextChild) {
@@ -223,5 +195,4 @@ public class ProductChildSequencingAuthorization extends Ruleform {
         super.traverseForeignKeys(em, knownObjects);
 
     }
-
 }

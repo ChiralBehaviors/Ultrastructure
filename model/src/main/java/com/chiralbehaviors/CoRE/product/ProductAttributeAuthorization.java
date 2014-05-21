@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.product;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -41,7 +38,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 @Entity
 @Table(name = "product_attribute_authorization", schema = "ruleform")
-@SequenceGenerator(schema = "ruleform", name = "product_attribute_authorization_id_seq", sequenceName = "product_attribute_authorization_id_seq")
 public class ProductAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Product> {
     private static final long serialVersionUID = 1L;
@@ -50,10 +46,6 @@ public class ProductAttributeAuthorization extends
     @ManyToOne
     @JoinColumn(name = "classifier")
     private Product           classifier;
-
-    @Id
-    @GeneratedValue(generator = "product_attribute_authorization_id_seq", strategy = GenerationType.SEQUENCE)
-    private Long              id;
 
     public ProductAttributeAuthorization() {
     }
@@ -68,7 +60,7 @@ public class ProductAttributeAuthorization extends
     /**
      * @param id
      */
-    public ProductAttributeAuthorization(Long id) {
+    public ProductAttributeAuthorization(UUID id) {
         super(id);
     }
 
@@ -109,11 +101,6 @@ public class ProductAttributeAuthorization extends
         return classifier;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -123,11 +110,6 @@ public class ProductAttributeAuthorization extends
     @Override
     public void setClassifier(Product classifier) {
         this.classifier = classifier;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /*

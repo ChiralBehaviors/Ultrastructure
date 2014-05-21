@@ -26,7 +26,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
  * @author hhildebrand
  * 
  */
-public class RuleformIdIterator implements Iterator<Long> {
+public class RuleformIdIterator implements Iterator<String> {
 
     private final Iterator<? extends Ruleform> list;
 
@@ -49,9 +49,9 @@ public class RuleformIdIterator implements Iterator<Long> {
      * @see java.util.Iterator#next()
      */
     @Override
-    public Long next() {
+    public String next() {
         Ruleform next = list.next();
-        return next.getId();
+        return next.getPrimaryKey();
     }
 
     /* (non-Javadoc)

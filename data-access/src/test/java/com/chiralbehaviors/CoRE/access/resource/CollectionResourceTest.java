@@ -87,7 +87,7 @@ public class CollectionResourceTest extends DatabaseTest {
         core.setUpdatedBy(core);
 
         core = (Agency) resource.post(core);
-        UUID id = core.getId();
+        UUID id = core.getUUID();
         core.setName("new name");
         Relationship owns = new Relationship("owns", null, core);
         Relationship ownedBy = new Relationship("ownedBy", null, core);
@@ -97,8 +97,8 @@ public class CollectionResourceTest extends DatabaseTest {
         Relationship graph = (Relationship) resource.post(owns);
         assertNotNull(graph.getId());
         assertNotNull(graph.getInverse().getId());
-        assertEquals("new name", graph.getUpdatedBy().getName());
-        assertTrue(id.equals(graph.getUpdatedBy().getId()));
+        assertEquals(core.getName(), graph.getUpdatedBy().getName());
+        assertEquals(id, graph.getUpdatedBy().getUUID());
     }
 
     /**

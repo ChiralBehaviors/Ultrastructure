@@ -17,9 +17,12 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,16 +41,11 @@ public class SccTest {
     @Test
     public void testScc() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+        StatusCode[] codes = new StatusCode[] { new StatusCode(new UUID(0, 1)),
+                new StatusCode(new UUID(0, 2)), new StatusCode(new UUID(0, 3)),
+                new StatusCode(new UUID(0, 4)), new StatusCode(new UUID(0, 5)),
+                new StatusCode(new UUID(0, 6)), new StatusCode(new UUID(0, 7)),
+                new StatusCode(new UUID(0, 8)), new StatusCode(new UUID(0, 9)) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -60,17 +58,32 @@ public class SccTest {
         List<StatusCode[]> sccs = new SCC(graph).getStronglyConnectedComponents();
         assertNotNull(sccs);
         assertEquals(3, sccs.size());
-        int i = 0;
-        for (StatusCode n : asList(codes[6], codes[7], codes[8])) {
-            assertEquals(n, sccs.get(0)[i++]);
-        }
-        i = 0;
-        for (StatusCode n : asList(codes[0], codes[1], codes[2])) {
-            assertEquals(n, sccs.get(1)[i++]);
-        }
-        i = 0;
-        for (StatusCode n : asList(codes[3], codes[4], codes[5])) {
-            assertEquals(n, sccs.get(2)[i++]);
-        }
+        Comparator<StatusCode> scComparator = new Comparator<StatusCode>() {
+
+            @Override
+            public int compare(StatusCode o1, StatusCode o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        };
+
+        StatusCode[] expected = new StatusCode[] { codes[6], codes[7], codes[8] };
+        Arrays.sort(expected, scComparator);
+        StatusCode[] got = sccs.get(0);
+        Arrays.sort(got, scComparator);
+        assertArrayEquals(expected, got);
+
+        expected = new StatusCode[] { codes[0], codes[1], codes[2] };
+        Arrays.sort(expected, scComparator);
+
+        got = sccs.get(1);
+        Arrays.sort(got, scComparator);
+        assertArrayEquals(expected, got);
+
+        expected = new StatusCode[] { codes[4], codes[5], codes[3] };
+        Arrays.sort(expected, scComparator);
+
+        got = sccs.get(2);
+        Arrays.sort(got, scComparator);
+        assertArrayEquals(expected, got);
     }
 }

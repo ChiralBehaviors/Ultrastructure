@@ -80,7 +80,7 @@ public abstract class AbstractRuleformResource<RuleForm extends ExistentialRulef
         rf.manageEntity(em, map);
         em.getTransaction().commit();
         em.refresh(rf);
-        return rf.getId();
+        return rf.getUUID();
     }
 
 }

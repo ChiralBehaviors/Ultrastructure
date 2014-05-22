@@ -3,9 +3,9 @@ package com.chiralbehaviors.CoRE.object;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.meta.graph.query.NetworkGraphQuery;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -29,11 +29,11 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 
     public class GraphEdge {
-        private UUID source;
-        private UUID target;
-        private UUID relationship;
+        private String source;
+        private String target;
+        private String relationship;
 
-        GraphEdge(UUID source, UUID relationship, UUID target) {
+        GraphEdge(String source, String relationship, String target) {
             this.source = source;
             this.target = target;
             this.relationship = relationship;
@@ -42,21 +42,21 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
         /**
          * @return the relationship id
          */
-        public UUID getRelationship() {
+        public String getRelationship() {
             return relationship;
         }
 
         /**
          * @return the source id
          */
-        public UUID getSource() {
+        public String getSource() {
             return source;
         }
 
         /**
          * @return the target id
          */
-        public UUID getTarget() {
+        public String getTarget() {
             return target;
         }
     }
@@ -69,7 +69,7 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 
     public SerializableGraph(List<NetworkRuleform<T>> net) {
 
-        Map<T, UUID> indices = new HashMap<>();
+        Map<T, String> indices = new HashMap<>();
         populateGraphFromNetwork(net, indices);
         this.origin = indices.entrySet().iterator().next().getKey();
     }
@@ -78,9 +78,9 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
         this.relationships = ng.getRelationships();
         this.nodes = ng.getNodes();
         this.origin = ng.getOrigin();
-        Map<T, UUID> indices = new HashMap<>();
+        Map<T, String> indices = new HashMap<>();
         for (int i = 0; i < nodes.size(); i++) {
-            indices.put(nodes.get(i), UUID.randomUUID());
+            indices.put(nodes.get(i), UuidGenerator.nextId());
         }
 
         populateGraphFromNetwork(ng.getEdges(), indices);
@@ -108,12 +108,12 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
      * @param indices
      */
     private void populateGraphFromNetwork(List<NetworkRuleform<T>> net,
-                                          Map<T, UUID> indices) {
+                                          Map<T, String> indices) {
         for (NetworkRuleform<T> n : net) {
-            UUID source, target;
-            UUID relationship;
+            String source, target;
+            String relationship;
             if (indices.get(n.getParent()) == null) {
-                source = UUID.randomUUID();
+                source = UuidGenerator.nextId();
                 nodes.add(n.getParent());
                 indices.put(n.getParent(), source);
             } else {
@@ -121,7 +121,7 @@ public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
             }
 
             if (indices.get(n.getChild()) == null) {
-                target = UUID.randomUUID();
+                target = UuidGenerator.nextId();
                 nodes.add(n.getChild());
                 indices.put(n.getChild(), target);
             } else {

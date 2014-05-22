@@ -224,11 +224,11 @@ public class JobModelImpl implements JobModel {
         });
     }
 
-    public static UUID get_initial_state(final String service)
-                                                              throws SQLException {
-        return execute(new Procedure<UUID>() {
+    public static String get_initial_state(final String service)
+                                                                throws SQLException {
+        return execute(new Procedure<String>() {
             @Override
-            public UUID call(JobModelImpl jobModel) throws Exception {
+            public String call(JobModelImpl jobModel) throws Exception {
                 return jobModel.getInitialState(service);
             }
 
@@ -1381,7 +1381,7 @@ public class JobModelImpl implements JobModel {
      * @param service
      * @return
      */
-    private UUID getInitialState(String service) {
+    private String getInitialState(String service) {
         return getInitialState(em.find(Product.class, service)).getId();
     }
 

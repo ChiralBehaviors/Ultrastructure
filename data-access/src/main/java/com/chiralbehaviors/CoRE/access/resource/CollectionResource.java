@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -61,8 +60,8 @@ public class CollectionResource {
     @POST
     @Path("/{parentId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Product createNewProduct(@PathParam("parentId") UUID parentId,
-                                    @QueryParam("relId") UUID relId,
+    public Product createNewProduct(@PathParam("parentId") String parentId,
+                                    @QueryParam("relId") String relId,
                                     Product child)
                                                   throws JsonProcessingException {
         em.getTransaction().begin();
@@ -107,7 +106,7 @@ public class CollectionResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> get(@PathParam("id") UUID id,
+    public List<Product> get(@PathParam("id") String id,
                              @QueryParam("relId") List<String> relIds)
                                                                       throws JsonProcessingException {
 
@@ -116,7 +115,6 @@ public class CollectionResource {
         List<Ruleform> nodes = new LinkedList<Ruleform>();
         nodes.add(p);
         List<Relationship> rels = new LinkedList<Relationship>();
-        rels.add(em.find(Relationship.class, 6L));
         for (String rid : relIds) {
             Relationship r = em.find(Relationship.class, rid);
             rels.add(r);

@@ -22,19 +22,20 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.NoArgGenerator;
 
 /**
  * The superclass of all rule forms.
@@ -47,20 +48,15 @@ import com.fasterxml.uuid.NoArgGenerator;
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 abstract public class Ruleform implements Serializable, Cloneable {
-    protected final static NoArgGenerator ID_GENERATOR          = Generators.timeBasedGenerator();
-    public static final Integer           FALSE                 = Integer.valueOf((byte) 0);
-    public static final String            FIND_ALL_SUFFIX       = ".findAll";
-    public static final String            FIND_BY_ID_SUFFIX     = ".findById";
-    public static final String            FIND_BY_NAME_SUFFIX   = ".findByName";
-    public static final String            FIND_FLAGGED_SUFFIX   = ".findFlagged";
-    public static final String            GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
-    public static final String            NAME_SEARCH_SUFFIX    = ".namesearch";
-    public static final Integer           TRUE                  = Integer.valueOf((byte) 1);
-    private static final long             serialVersionUID      = 1L;
-
-    public static String nextId() {
-        return ID_GENERATOR.generate().toString();
-    }
+    public static final Integer FALSE                 = Integer.valueOf((byte) 0);
+    public static final String  FIND_ALL_SUFFIX       = ".findAll";
+    public static final String  FIND_BY_ID_SUFFIX     = ".findById";
+    public static final String  FIND_BY_NAME_SUFFIX   = ".findByName";
+    public static final String  FIND_FLAGGED_SUFFIX   = ".findFlagged";
+    public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+    public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
+    public static final Integer TRUE                  = Integer.valueOf((byte) 1);
+    private static final long   serialVersionUID      = 1L;
 
     public static Boolean toBoolean(Integer value) {
         if (value == null) {
@@ -77,7 +73,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     @Id
-    private String    id = ID_GENERATOR.generate().toString();
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid_seq")
+    @SequenceGenerator(name = "uuid_seq", sequenceName = "com.chiralbehaviors.CoRE.UuidGenerator()")
+    private String    id;
 
     private String    notes;
 
@@ -123,7 +121,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new IllegalStateException("Unable to clone");
         }
-        clone.setId(null);
+        clone.setId((String) null);
         return clone;
     }
 
@@ -155,8 +153,13 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return true;
     }
 
-    public final UUID getId() {
-        return UUID.fromString(getPrimaryKey());
+    public final UUID getUUID() {
+        String primaryKey = getPrimaryKey();
+        return primaryKey == null ? null : UuidGenerator.fromBase64(primaryKey);
+    }
+
+    public final String getId() {
+        return getPrimaryKey();
     }
 
     /**
@@ -221,7 +224,11 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     public void setId(UUID id) {
-        setPrimaryKey(id.toString());
+        setPrimaryKey(UuidGenerator.toBase64(id));
+    }
+
+    public void setId(String id) {
+        setPrimaryKey(id);
     }
 
     /**

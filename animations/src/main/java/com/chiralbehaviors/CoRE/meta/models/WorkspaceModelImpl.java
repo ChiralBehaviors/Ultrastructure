@@ -364,6 +364,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         addRelationships(parent, rel, workspace.getRelationships());
         addStatusCodes(parent, rel, workspace.getStatusCodes());
         addUnits(parent, rel, workspace.getUnits());
+        
         addAgencyNetworks(workspace.getAgencyNetworks());
         addAttributeNetworks(workspace.getAttributeNetworks());
         addLocationNetworks(workspace.getLocationNetworks());
@@ -575,6 +576,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                 || em.find(Product.class, p.getPrimaryKey()) == null) {
                 em.persist(p);
             } else {
+                System.out.println("found an existing product: " + p);
                 p = em.merge(p);
             }
             model.getProductModel().link(parent,

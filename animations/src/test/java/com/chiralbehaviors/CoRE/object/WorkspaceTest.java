@@ -61,8 +61,9 @@ public class WorkspaceTest extends DatabaseTest {
         kernel = new KernelImpl(em);
     }
 
-   // @Test
+    @Test
     public void testLoadWorkspace() {
+        em.clear();
         beginTransaction();
         Product workspace = kernel.getWorkspace();
         Relationship workspaceOf = kernel.getWorkspaceOf();
@@ -94,6 +95,7 @@ public class WorkspaceTest extends DatabaseTest {
 
     @Test
     public void testJavaReferences() {
+        em.clear();
         //create ws with agencies, agency networks. See what happens
         Product workspace = new Product("Workspace", "workspace",
                                         kernel.getCoreAnimationSoftware());
@@ -129,6 +131,7 @@ public class WorkspaceTest extends DatabaseTest {
         w.setAgencies(agencies);
         w.setRelationships(rels);
         w.setAgencyNetworks(nets);
+        em.clear();
         em.getTransaction().begin();
         Model model = new ModelImpl(em);
         Aspect<Product> aspect = model.getWorkspaceModel().importWorkspace(w);
@@ -138,8 +141,9 @@ public class WorkspaceTest extends DatabaseTest {
 
     }
 
-    //@Test
+    @Test
     public void testEntityManagerCrap() {
+        em.clear();
         beginTransaction();
         Product a = new Product("Workspace", "workspace",
                                 kernel.getCoreAnimationSoftware());

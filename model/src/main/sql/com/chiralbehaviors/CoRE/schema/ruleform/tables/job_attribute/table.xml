@@ -7,13 +7,13 @@
 
     <changeSet author="hhildebrand" id="1390879803225-22">
         <createTable remarks="Attributes attached to a specific invocation of an Event" tableName="ruleform.job_attribute">
-            <column name="id" remarks="Unique identifier" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="job_attribute_pkey" />
             </column>
-            <column name="job" remarks="The Job whose attributes are being specified" type="TEXT">
+            <column name="job" remarks="The Job whose attributes are being specified" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" remarks="The Attribute or facet of the given Job being declared" type="TEXT">
+            <column name="attribute" remarks="The Attribute or facet of the given Job being declared" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when a Job can have multiple values for a given Attribute"
@@ -30,9 +30,9 @@
                 type="INT4" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column name="unit" remarks="The unit of measure (if any) associated with the given value" type="TEXT" />
+            <column name="unit" remarks="The unit of measure (if any) associated with the given value" type="CHAR(22)" />
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

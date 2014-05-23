@@ -7,29 +7,29 @@
 
     <changeSet author="hhildebrand" id="1390879803225-11">
         <createTable tableName="ruleform.attribute_network">
-            <column name="id" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="attribute_network_pkey" />
             </column>
-            <column name="parent" type="TEXT">
+            <column name="parent" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="relationship" type="TEXT">
+            <column name="relationship" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="child" type="TEXT">
+            <column name="child" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
                 <constraints nullable="false" />
             </column> 
-            <column name="premise1" type="TEXT" defaultValueNumeric="1">
+            <column name="premise1" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>
-            <column name="premise2" type="TEXT" defaultValueNumeric="1">
+            <column name="premise2" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="TEXT">
+            <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

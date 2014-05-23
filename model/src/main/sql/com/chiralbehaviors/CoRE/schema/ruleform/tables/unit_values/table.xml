@@ -7,10 +7,10 @@
 
     <changeSet author="hhildebrand" id="1390879803225-64">
         <createTable tableName="ruleform.unit_values">
-            <column name="id" remarks="Otherwise meaningless identifier for a rule" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="unit_values_pkey" />
             </column>
-            <column name="unit" remarks="The unit whose values are being enumerated" type="TEXT">
+            <column name="unit" remarks="The unit whose values are being enumerated" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="The ordering of this value in the set of values for the given unit" type="ruleform.sequence_number">
@@ -18,11 +18,11 @@
             </column>
             <column name="integer_value" remarks="A permitted integer value for this unit" type="INT4" />
             <column name="numeric_value" remarks="A permitted numeric value for this unit" type="numeric" />
-            <column name="text_value" remarks="A permitted text value for this unit" type="TEXT" />
+            <column name="text_value" remarks="A permitted text value for this unit" type="CHAR(22)" />
             <column name="boolean_value" remarks="A permitted boolean value for this unit" type="SMALLINT" />
-            <column name="product_value" remarks="A permitted Product value for this unit" type="TEXT" />
+            <column name="product_value" remarks="A permitted Product value for this unit" type="CHAR(22)" />
             <column name="notes" remarks="Usage notes for this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"

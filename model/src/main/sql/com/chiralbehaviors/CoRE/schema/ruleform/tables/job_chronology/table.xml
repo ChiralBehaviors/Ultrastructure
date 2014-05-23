@@ -7,10 +7,10 @@
 
     <changeSet author="hhildebrand" id="1390879803225-23">
         <createTable remarks="Tracks when status changes occur on any given job" tableName="ruleform.job_chronology">
-            <column name="id" remarks="Unique identifier" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="job_chronology_pkey" />
             </column>
-            <column name="job" remarks="The Job whose chronology is being specified" type="TEXT">
+            <column name="job" remarks="The Job whose chronology is being specified" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="time_stamp" remarks="The time at which a status change occurs"
@@ -18,16 +18,16 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="old_status" remarks="The previous status of the job" type="TEXT">
+            <column name="old_status" remarks="The previous status of the job" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="new_status" remarks="The status the job changed to at the specified time" type="TEXT">
+            <column name="new_status" remarks="The status the job changed to at the specified time" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Indicates any additional information about the status change" type="VARCHAR(10485760)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
@@ -35,7 +35,7 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="sequence" type="TEXT">
+            <column name="sequence" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
         </createTable>

@@ -7,16 +7,16 @@
 
     <changeSet author="hhildebrand" id="1390879803225-25">
         <createTable tableName="ruleform.location_attribute">
-            <column name="id" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="location_attribute_pkey" />
             </column>
-            <column name="location" type="TEXT">
+            <column name="location" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" type="TEXT">
+            <column name="attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product_value" type="TEXT" />
+            <column name="product_value" type="CHAR(22)" />
             <column name="numeric_value" type="numeric" />
             <column name="integer_value" type="INT4" />
             <column name="boolean_value" type="SMALLINT" />
@@ -26,15 +26,15 @@
             <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
                 <constraints nullable="false" />
             </column>
-            <column name="unit" type="TEXT" />
-            <column name="updated_by" type="TEXT">
+            <column name="unit" type="CHAR(22)" />
+            <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="agency_value" type="TEXT" />
+            <column name="agency_value" type="CHAR(22)" />
         </createTable>
         <rollback>
             <dropTable tableName="ruleform.location_attribute" />

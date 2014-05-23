@@ -7,25 +7,25 @@
 
     <changeSet author="hhildebrand" id="1390879803225-45">
         <createTable remarks="Defines protocol rules for carrying out tasks" tableName="ruleform.protocol">
-            <column name="id" remarks="Unique identifier" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="protocol_pkey" />
             </column>
-            <column name="requested_service" type="TEXT">
+            <column name="requested_service" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="requested_product" type="TEXT">
+            <column name="requested_product" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to" type="TEXT">
+            <column name="deliver_to" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from" type="TEXT">
+            <column name="deliver_from" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="service" remarks="The service whose steps are being specified" type="TEXT">
+            <column name="service" remarks="The service whose steps are being specified" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product" type="TEXT">
+            <column name="product" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueNumeric="0" name="copy_attributes" type="SMALLINT" />
@@ -34,14 +34,14 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="assign_to" remarks="The agency that should perform the task" type="TEXT">
+            <column name="assign_to" remarks="The agency that should perform the task" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="requester" type="TEXT">
+            <column name="requester" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Additional notes regarding usage of the attribute" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

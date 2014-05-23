@@ -9,22 +9,22 @@
         <createTable remarks="Defines rules stating what attributes (and values thereof) are authorized for particular coordinates"
             tableName="ruleform.coordinate_attribute_authorization"
         >
-            <column name="id" remarks="Unique identifier" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="coordinate_attribute_authorization_pkey" />
             </column>
             <column name="classification"
                 remarks="In conjunction with the 'coordinate' column, determines the classification criteria for selecting attributes a certain coordinate must have"
-                type="TEXT"
+                type="CHAR(22)"
             >
                 <constraints nullable="false" />
             </column>
             <column name="classifier"
                 remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting attributes a certain coordinate must have"
-                type="TEXT"
+                type="CHAR(22)"
             >
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_attribute" remarks="An Attribute a coordinate is expected to have" type="TEXT">
+            <column name="authorized_attribute" remarks="An Attribute a coordinate is expected to have" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
@@ -39,9 +39,9 @@
             <column name="integer_value" type="INT4" />
             <column name="numeric_value" type="numeric" />
             <column name="timestamp_value" type="TIMESTAMPTZ" />
-            <column name="grouping_agency" type="TEXT" />
+            <column name="grouping_agency" type="CHAR(22)" />
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The coordinate that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The coordinate that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

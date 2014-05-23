@@ -53,7 +53,7 @@ public class UuidGenerator implements Seq {
     }
 
     public static String nextId() {
-        return GENERATOR.generate().toString();
+        return toBase64(GENERATOR.generate());
     }
 
     public static String toBase64(UUID id) {

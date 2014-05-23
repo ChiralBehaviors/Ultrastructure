@@ -7,7 +7,7 @@
 
     <changeSet author="hhildebrand" id="1390879803225-53">
         <createTable remarks="Existential ruleform for all status codes (event outcomes)" tableName="ruleform.status_code">
-            <column name="id" remarks="Unique identifier" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="status_code_pkey" />
             </column>
             <column name="name" remarks="The unique name of a status code" type="VARCHAR(10485760)">
@@ -30,7 +30,7 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

@@ -7,16 +7,16 @@
 
     <changeSet author="hhildebrand" id="1390879803225-13">
         <createTable remarks="Describes the details of a specific coordinate" tableName="ruleform.coordinate_attribute">
-            <column name="id" remarks="Otherwise meaningless identifier for a definition rule" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="coordinate_attribute_pkey" />
             </column>
-            <column name="coordinate" remarks="The specific coordinate this rule pertains to" type="TEXT">
+            <column name="coordinate" remarks="The specific coordinate this rule pertains to" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" remarks="The attribute of the given coordinate this rule defines" type="TEXT">
+            <column name="attribute" remarks="The attribute of the given coordinate this rule defines" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product_value" remarks="If the Attribute is Product-valued, the value is stored in this column" type="TEXT" />
+            <column name="product_value" remarks="If the Attribute is Product-valued, the value is stored in this column" type="CHAR(22)" />
             <column name="integer_value" remarks="If the Attribute is integer-valued, the value is stored in this column" type="INT4" />
             <column name="numeric_value" remarks="If the Attribute is numerically-valued (i.e. non-integer), the value is stored in this column"
                 type="numeric" />
@@ -27,9 +27,9 @@
             <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
                 <constraints nullable="false" />
             </column>
-            <column name="unit" type="TEXT" />
+            <column name="unit" type="CHAR(22)" />
             <column name="notes" remarks="Usage notes for this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"

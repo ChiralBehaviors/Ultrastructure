@@ -7,31 +7,31 @@
 
     <changeSet author="hhildebrand" id="1390879803225-29">
         <createTable tableName="ruleform.location_relationship">
-            <column name="id" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="location_relationship_pkey" />
             </column>
-            <column name="relationship" type="TEXT">
+            <column name="relationship" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="target_context" type="TEXT">
+            <column name="target_context" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product_mapped_value" type="TEXT">
+            <column name="product_mapped_value" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
-            <column name="location_1_attribute" type="TEXT">
+            <column name="location_1_attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute_relationship" type="TEXT">
+            <column name="attribute_relationship" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="location_2_attribute" type="TEXT">
+            <column name="location_2_attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" type="TEXT">
+            <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

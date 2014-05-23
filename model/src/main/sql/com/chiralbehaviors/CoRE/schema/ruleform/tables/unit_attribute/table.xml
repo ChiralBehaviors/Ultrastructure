@@ -7,13 +7,13 @@
 
     <changeSet author="hhildebrand" id="1390879803225-61">
         <createTable tableName="ruleform.unit_attribute">
-            <column name="id" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="unit_attribute_pkey" />
             </column>
-            <column name="unit_rf" type="TEXT">
+            <column name="unit_rf" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" type="TEXT">
+            <column name="attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="numeric_value" type="numeric" />
@@ -22,12 +22,12 @@
             <column name="text_value" type="VARCHAR(10485760)" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column name="unit" type="TEXT" />
+            <column name="unit" type="CHAR(22)" />
             <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="TEXT">
+            <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

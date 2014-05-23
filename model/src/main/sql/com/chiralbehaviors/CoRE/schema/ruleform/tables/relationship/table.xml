@@ -7,7 +7,7 @@
 
     <changeSet author="hhildebrand" id="1390879803225-48">
         <createTable tableName="ruleform.relationship">
-            <column name="id" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="relationship_pkey" />
             </column>
             <column name="name" type="VARCHAR(10485760)">
@@ -17,11 +17,11 @@
             <column name="preferred" type="SMALLINT">
                 <constraints nullable="false" />
             </column>
-            <column name="inverse" type="TEXT">
+            <column name="inverse" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="TEXT">
+            <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

@@ -7,22 +7,22 @@
 
     <changeSet author="hhildebrand" id="1390879803225-36">
         <createTable tableName="ruleform.product_location">
-            <column name="id" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_location_pkey" />
             </column>
-            <column name="agency" type="TEXT">
+            <column name="agency" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product" type="TEXT">
+            <column name="product" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="relationship" type="TEXT">
+            <column name="relationship" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="location" type="TEXT">
+            <column name="location" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" type="TEXT">
+            <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

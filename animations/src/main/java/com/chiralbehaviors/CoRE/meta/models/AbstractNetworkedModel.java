@@ -575,12 +575,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     private void createCurrentPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
-                                     + "id TEXT NOT NULL,"
-                                     + "parent TEXT NOT NULL,"
-                                     + "relationship TEXT NOT NULL,"
-                                     + "child TEXT NOT NULL,"
-                                     + "premise1 TEXT NOT NULL,"
-                                     + "premise2 TEXT NOT NULL)").executeUpdate();
+                                     + "id CHAR(22) NOT NULL,"
+                                     + "parent CHAR(22) NOT NULL,"
+                                     + "relationship CHAR(22) NOT NULL,"
+                                     + "child CHAR(22) NOT NULL,"
+                                     + "premise1 CHAR(22) NOT NULL,"
+                                     + "premise2 CHAR(22) NOT NULL)").executeUpdate();
     }
 
     private void createDeductionTemporaryTables() {
@@ -594,21 +594,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     private void createLastPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE last_pass_rules ("
-                                     + "id TEXT NOT NULL,"
-                                     + "parent TEXT NOT NULL,"
-                                     + "relationship TEXT NOT NULL,"
-                                     + "child TEXT NOT NULL,"
-                                     + "premise1 TEXT NOT NULL,"
-                                     + "premise2 TEXT NOT NULL)").executeUpdate();
+                                     + "id CHAR(22) NOT NULL,"
+                                     + "parent CHAR(22) NOT NULL,"
+                                     + "relationship CHAR(22) NOT NULL,"
+                                     + "child CHAR(22) NOT NULL,"
+                                     + "premise1 CHAR(22) NOT NULL,"
+                                     + "premise2 CHAR(22) NOT NULL)").executeUpdate();
     }
 
     private void createWorkingMemory() {
         em.createNativeQuery("CREATE TEMPORARY TABLE working_memory("
-                                     + "parent TEXT NOT NULL,"
-                                     + "relationship TEXT NOT NULL,"
-                                     + "child TEXT NOT NULL,"
-                                     + "premise1 TEXT NOT NULL,"
-                                     + "premise2 TEXT NOT NULL )").executeUpdate();
+                                     + "parent CHAR(22) NOT NULL,"
+                                     + "relationship CHAR(22) NOT NULL,"
+                                     + "child CHAR(22) NOT NULL,"
+                                     + "premise1 CHAR(22) NOT NULL,"
+                                     + "premise2 CHAR(22) NOT NULL )").executeUpdate();
     }
 
     @SuppressWarnings("unchecked")

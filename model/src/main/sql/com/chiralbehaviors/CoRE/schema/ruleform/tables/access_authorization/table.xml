@@ -7,38 +7,38 @@
 
     <changeSet author="hhildebrand" id="1390879803225-1">
         <createTable remarks="Authorizations to join networks of ruleforms" catalogName="ruleform" tableName="ruleform.access_authorization">
-            <column name="id" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="access_authorization_pkey" />
             </column>
-            <column name="product1" type="TEXT" />
-            <column name="agency1" type="TEXT" />
-            <column name="location1" type="TEXT" />
-            <column name="attribute1" type="TEXT" />
-            <column name="coordinate1" type="TEXT" />
-            <column name="interval1" type="TEXT" />
-            <column name="relationship1" type="TEXT" />
-            <column name="status_code1" type="TEXT" />
-            <column name="unit1" type="TEXT" />
+            <column name="product1" type="CHAR(22)" />
+            <column name="agency1" type="CHAR(22)" />
+            <column name="location1" type="CHAR(22)" />
+            <column name="attribute1" type="CHAR(22)" />
+            <column name="coordinate1" type="CHAR(22)" />
+            <column name="interval1" type="CHAR(22)" />
+            <column name="relationship1" type="CHAR(22)" />
+            <column name="status_code1" type="CHAR(22)" />
+            <column name="unit1" type="CHAR(22)" />
             <column name="authorization_type" type="VARCHAR(10485760)">
                 <constraints nullable="false" />
             </column>
-            <column name="relationship" type="TEXT">
+            <column name="relationship" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product2" type="TEXT" />
-            <column name="agency2" type="TEXT" />
-            <column name="location2" type="TEXT" />
-            <column name="attribute2" type="TEXT" />
-            <column name="coordinate2" type="TEXT" />
-            <column name="interval2" type="TEXT" />
-            <column name="relationship2" type="TEXT" />
-            <column name="status_code2" type="TEXT" />
-            <column name="unit2" type="TEXT" />
-            <column name="parent_transitive_relationship" type="TEXT" />
-            <column name="child_transitive_relationship" type="TEXT" />
+            <column name="product2" type="CHAR(22)" />
+            <column name="agency2" type="CHAR(22)" />
+            <column name="location2" type="CHAR(22)" />
+            <column name="attribute2" type="CHAR(22)" />
+            <column name="coordinate2" type="CHAR(22)" />
+            <column name="interval2" type="CHAR(22)" />
+            <column name="relationship2" type="CHAR(22)" />
+            <column name="status_code2" type="CHAR(22)" />
+            <column name="unit2" type="CHAR(22)" />
+            <column name="parent_transitive_relationship" type="CHAR(22)" />
+            <column name="child_transitive_relationship" type="CHAR(22)" />
             <column name="description" type="VARCHAR(10485760)" />
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="TEXT">
+            <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

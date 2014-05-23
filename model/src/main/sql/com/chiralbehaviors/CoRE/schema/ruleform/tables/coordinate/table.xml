@@ -7,7 +7,7 @@
 
     <changeSet author="hhildebrand" id="1390879803225-12">
         <createTable remarks="Specific location coordinates within the system" tableName="ruleform.coordinate">
-            <column name="id" remarks="Otherwise meaningless identifier for a coordinate" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="coordinate_pkey" />
             </column>
             <column name="name" remarks="The unique name of a coordinate" type="VARCHAR(10485760)">
@@ -20,7 +20,7 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"

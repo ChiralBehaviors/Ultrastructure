@@ -7,23 +7,23 @@
 
     <changeSet author="hhildebrand" id="1390879803225-39">
         <createTable remarks="Specifies locational relationships that exist between Entities" tableName="ruleform.product_location_network">
-            <column name="id" remarks="Otherwise meaningless identifier for a rule" type="TEXT">
+            <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_location_network_pkey" />
             </column>
-            <column name="product" remarks="The specific Product being located." type="TEXT">
+            <column name="product" remarks="The specific Product being located." type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="contextual_product"
                 remarks="The Product that is being used as a frame of reference; the one from the 'product' column is located relative to this Product in some way."
-                type="TEXT"
+                type="CHAR(22)"
             >
                 <constraints nullable="false" />
             </column>
-            <column name="coordinate" remarks="The address of 'product' relative to 'contextual_product'." type="TEXT">
+            <column name="coordinate" remarks="The address of 'product' relative to 'contextual_product'." type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Usage notes for this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="TEXT">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"
@@ -31,7 +31,7 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="agency" type="TEXT">
+            <column name="agency" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
         </createTable>

@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownCoordinate;
@@ -163,7 +164,7 @@ public class Bootstrap {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, parent, relationship, child, updated_by) VALUES (?, ?, ?, ?, ?)",
                                                                         tableName));
         try {
-            s.setLong(1, 1);
+            s.setString(1, UuidGenerator.toBase64(new UUID(0, 0)));
             s.setString(2, wko.id());
             s.setString(3, WellKnownRelationship.RELATIONSHIP.id());
             s.setString(4, wko.id());
@@ -178,7 +179,7 @@ public class Bootstrap {
     private void createNullInference() throws SQLException {
         PreparedStatement s = connection.prepareStatement("INSERT into ruleform.network_inference (id, premise1, premise2, inference, updated_by) VALUES (?, ?, ?, ?, ?)");
         try {
-            s.setString(1, new UUID(0, 0).toString());
+            s.setString(1, UuidGenerator.toBase64(new UUID(0, 0)));
             s.setString(2, WellKnownRelationship.RELATIONSHIP.id());
             s.setString(3, WellKnownRelationship.RELATIONSHIP.id());
             s.setString(4, WellKnownRelationship.RELATIONSHIP.id());

@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.kernel;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 
 /**
@@ -28,6 +29,11 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
  * 
  */
 public interface WellKnownObject {
+
+    public static enum WellKnownTypes {
+        AGENCY, ATTRIBUTE, COORDINATE, INTERVAL, LOCATION, PRODUCT,
+        RELATIONSHIP, STATUS_CODE, UNIT;
+    }
 
     public static enum WellKnownAgency implements WellKnownObject {
         CORE() {
@@ -244,7 +250,9 @@ public interface WellKnownObject {
          */
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.AGENCY.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)
@@ -375,7 +383,9 @@ public interface WellKnownObject {
          */
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.ATTRIBUTE.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)
@@ -411,7 +421,9 @@ public interface WellKnownObject {
 
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.COORDINATE.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)
@@ -443,7 +455,9 @@ public interface WellKnownObject {
 
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.INTERVAL.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)
@@ -542,7 +556,9 @@ public interface WellKnownObject {
          */
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.LOCATION.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)
@@ -671,7 +687,9 @@ public interface WellKnownObject {
          */
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.PRODUCT.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)
@@ -1544,7 +1562,9 @@ public interface WellKnownObject {
          */
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.RELATIONSHIP.ordinal(),
+                                                   ordinal() + 1));
         }
 
         abstract public WellKnownRelationship inverse();
@@ -1596,7 +1616,9 @@ public interface WellKnownObject {
 
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.STATUS_CODE.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)
@@ -1628,7 +1650,7 @@ public interface WellKnownObject {
 
         @Override
         public String id() {
-            return new UUID(0, ordinal() + 1).toString();
+            return UuidGenerator.toBase64(new UUID(WellKnownTypes.UNIT.ordinal(), ordinal() + 1));
         }
 
         /* (non-Javadoc)

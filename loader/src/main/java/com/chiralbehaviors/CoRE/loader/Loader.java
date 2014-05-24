@@ -42,19 +42,14 @@ import com.hellblazer.utils.Utils;
  */
 public class Loader {
 
-    /**
-     * 
-     */
-    private static final String CREATE_ROLES_SQL                                                    = "/create-roles.sql";
-    /**
-     * 
-     */
-    private static final String CREATE_DB_SQL                                                       = "/create-db.sql";
     private static final String ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML = "/animations/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml";
     private static final String ANIMATIONS_JAR;
     private static final String ANIMATIONS_JAR_NAME;
+    private static final String CREATE_DB_SQL                                                       = "/create-db.sql";
+    private static final String CREATE_ROLES_SQL                                                    = "/create-roles.sql";
     private static final Logger log                                                                 = LoggerFactory.getLogger(Loader.class);
     private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML                     = "/model/com/chiralbehaviors/CoRE/schema/core.xml";
+    private static final String SQLJ_INIT_SQL                                                       = "/sqlj-init.sql";
 
     static {
         String version;
@@ -69,34 +64,43 @@ public class Loader {
     }
 
     public static void main(String[] argv) throws Exception {
-        Loader loader = new Loader(
-                                   Configuration.fromYaml(Utils.resolveResource(Loader.class,
-                                                                                argv[0])).getConnection());
+        Loader loader = Configuration.fromYaml(Utils.resolveResource(Loader.class,
+                                                                     argv[0])).construct();
         loader.bootstrap();
     }
 
     private final Connection connection;
+    private final boolean    createDb;
+    private final boolean    initSqlJ;
 
-    public Loader(Connection connection) throws Exception {
+    public Loader(Connection connection, boolean createDb, boolean initSqlJ)
+                                                                            throws Exception {
         this.connection = connection;
+        this.createDb = createDb;
+        this.initSqlJ = initSqlJ;
     }
 
     public void bootstrap() throws Exception {
-        createDb();
-        createRoles();
+        if (createDb) {
+            createDb();
+            createRoles();
+        }
+        if (initSqlJ) {
+            initSqlJ();
+        }
         loadAnimations();
         load(MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML);
         load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML);
         new Bootstrap(connection).bootstrap();
     }
 
-    private void createDb() throws Exception, IOException {
+    private void createDb() throws Exception {
         connection.setAutoCommit(false);
         execute(Utils.getDocument(getClass().getResourceAsStream(CREATE_DB_SQL)));
         connection.commit();
     }
 
-    private void createRoles() throws Exception, IOException {
+    private void createRoles() throws Exception {
         connection.setAutoCommit(true);
         execute(Utils.getDocument(getClass().getResourceAsStream(CREATE_ROLES_SQL)));
         connection.commit();
@@ -141,6 +145,12 @@ public class Loader {
             is.close();
         }
         return baos.toByteArray();
+    }
+
+    private void initSqlJ() throws Exception {
+        connection.setAutoCommit(true);
+        execute(Utils.getDocument(getClass().getResourceAsStream(SQLJ_INIT_SQL)));
+        connection.commit();
     }
 
     private void load(PreparedStatement load) throws IOException, SQLException {

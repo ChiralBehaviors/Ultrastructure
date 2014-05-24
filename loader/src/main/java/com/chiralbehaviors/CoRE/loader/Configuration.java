@@ -40,11 +40,18 @@ public class Configuration {
         return mapper.readValue(yaml, Configuration.class);
     }
 
+    public boolean createDatabase = false;
+    public boolean dropDatabase   = false;
+    public boolean initializeSqlJ = false;
+    public String  jdbcUrl;
+    public String  password;
+    public String  username;
+
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, username, password);
     }
 
-    public String username;
-    public String password;
-    public String jdbcUrl;
+    public Loader construct() throws Exception {
+        return new Loader(getConnection(), createDatabase, initializeSqlJ);
+    }
 }

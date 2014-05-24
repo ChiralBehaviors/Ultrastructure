@@ -51,15 +51,10 @@ public class JobChronology extends Ruleform {
     @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
     private Long              sequence;
 
-    // bi-directional many-to-one association to StatusCode
+    //bi-directional many-to-one association to StatusCode
     @ManyToOne
-    @JoinColumn(name = "old_status")
-    private StatusCode        oldStatusCode;
-
-    // bi-directional many-to-one association to StatusCode
-    @ManyToOne
-    @JoinColumn(name = "new_status")
-    private StatusCode        newStatusCode;
+    @JoinColumn(name = "status")
+    private StatusCode        status;
 
     @Column(name = "time_stamp")
     private Timestamp         timeStamp;
@@ -74,12 +69,11 @@ public class JobChronology extends Ruleform {
         super(updatedBy);
     }
 
-    public JobChronology(Job job, StatusCode oldStatus, StatusCode newStatus,
-                         Timestamp timeStamp, String notes, Agency updatedBy) {
+    public JobChronology(Job job, StatusCode status, Timestamp timeStamp,
+                         String notes, Agency updatedBy) {
         super(notes, updatedBy);
         this.job = job;
-        oldStatusCode = oldStatus;
-        newStatusCode = newStatus;
+        this.status = status;
         this.timeStamp = timeStamp;
     }
 
@@ -94,22 +88,15 @@ public class JobChronology extends Ruleform {
         return job;
     }
 
-    /**
-     * @return the newStatusCode
-     */
-    public StatusCode getNewStatusCode() {
-        return newStatusCode;
-    }
-
-    /**
-     * @return the oldStatusCode
-     */
-    public StatusCode getOldStatusCode() {
-        return oldStatusCode;
-    }
-
     public Long getSequence() {
         return sequence;
+    }
+
+    /**
+     * @return the status
+     */
+    public StatusCode getStatus() {
+        return status;
     }
 
     public Timestamp getTimeStamp() {
@@ -121,19 +108,19 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param newStatusCode
-     *            the newStatusCode to set
+     * @param sequence
+     *            the sequence to set
      */
-    public void setNewStatusCode(StatusCode newStatusCode) {
-        this.newStatusCode = newStatusCode;
+    public void setSequence(Long sequence) {
+        this.sequence = sequence;
     }
 
     /**
-     * @param oldStatusCode
-     *            the oldStatusCode to set
+     * @param status
+     *            the status to set
      */
-    public void setOldStatusCode(StatusCode oldStatusCode) {
-        this.oldStatusCode = oldStatusCode;
+    public void setStatus(StatusCode status) {
+        this.status = status;
     }
 
     public void setTimeStamp(Timestamp timeStamp) {
@@ -153,9 +140,8 @@ public class JobChronology extends Ruleform {
         if (job != null) {
             job = (Job) job.manageEntity(em, knownObjects);
         }
-        if (oldStatusCode != null) {
-            oldStatusCode = (StatusCode) oldStatusCode.manageEntity(em,
-                                                                    knownObjects);
+        if (status != null) {
+            status = (StatusCode) status.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

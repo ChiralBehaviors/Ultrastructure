@@ -18,10 +18,7 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="old_status" remarks="The previous status of the job" type="CHAR(22)">
-                <constraints nullable="false" />
-            </column>
-            <column name="new_status" remarks="The status the job changed to at the specified time" type="CHAR(22)">
+            <column name="status" remarks="The status the job changed to at the specified time" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Indicates any additional information about the status change" type="VARCHAR(10485760)">
@@ -49,12 +46,7 @@
             referencedTableName="ruleform.job" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-165">
-        <addForeignKeyConstraint baseColumnNames="old_status" baseTableName="ruleform.job_chronology" constraintName="job_chronology_old_status_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.status_code" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-167">
-        <addForeignKeyConstraint baseColumnNames="new_status" baseTableName="ruleform.job_chronology" constraintName="job_chronology_new_status_fkey"
+        <addForeignKeyConstraint baseColumnNames="status" baseTableName="ruleform.job_chronology" constraintName="job_chronology_old_status_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="ruleform.status_code" />
     </changeSet>

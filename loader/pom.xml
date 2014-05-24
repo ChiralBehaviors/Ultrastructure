@@ -8,8 +8,8 @@
         <version>0.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>loader</artifactId>
-    <name>Bootstrap</name>
-    <description>A stand alone bootstrapper for Ultrastructure</description>
+    <name>Loader</name>
+    <description>A stand alone loader for Ultrastructure</description>
     <dependencies>
         <dependency>
             <groupId>org.liquibase</groupId>
@@ -22,11 +22,31 @@
         </dependency>
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>animations</artifactId>
             <classifier>sql</classifier>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hellblazer</groupId>
+            <artifactId>utils</artifactId>
+        </dependency>
     </dependencies>
-    
+
     <properties>
         <main.class>com.chiralbehaviors.CoRE.loader.Loader</main.class>
     </properties>
@@ -44,7 +64,7 @@
                 <executions>
                     <execution>
                         <id>copy</id>
-                        <phase>package</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
@@ -66,5 +86,34 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[2.8,)</versionRange>
+                                        <goals>
+                                            <goal>copy</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

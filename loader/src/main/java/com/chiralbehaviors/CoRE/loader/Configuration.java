@@ -16,13 +16,35 @@
 
 package com.chiralbehaviors.CoRE.loader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
 /**
  * @author hhildebrand
- *
+ * 
  */
 public class Configuration {
-    public String login;
+    public static Configuration fromYaml(InputStream yaml)
+                                                          throws JsonParseException,
+                                                          JsonMappingException,
+                                                          IOException {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        return mapper.readValue(yaml, Configuration.class);
+    }
+
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(jdbcUrl, username, password);
+    }
+
+    public String username;
     public String password;
-    public String host;
-    public String port;
+    public String jdbcUrl;
 }

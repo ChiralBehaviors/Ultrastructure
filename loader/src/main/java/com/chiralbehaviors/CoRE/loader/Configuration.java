@@ -46,12 +46,21 @@ public class Configuration {
     public String  jdbcUrl;
     public String  password;
     public String  username;
+    public String  coreJdbcUrl;
+    public String  corePassword;
+    public String  coreUsername;
 
-    public Connection getConnection() throws SQLException {
+    public Connection getPostgresConnection() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, username, password);
     }
 
+    public Connection getCoreConnection() throws SQLException {
+        return DriverManager.getConnection(coreJdbcUrl, coreUsername,
+                                           corePassword);
+    }
+
     public Loader construct() throws Exception {
-        return new Loader(getConnection(), createDatabase, initializeSqlJ);
+        return new Loader(dropDatabase, getPostgresConnection(),
+                          createDatabase, getCoreConnection(), initializeSqlJ);
     }
 }

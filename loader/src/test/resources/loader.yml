@@ -1,0 +1,9 @@
+jdbcUrl: jdbc:postgresql://${testing.db.server}:${testing.db.port}/postgres
+username: ${testing.db.password}
+password: ${testing.db.login}
+
+coreJdbcUrl: jdbc:postgresql://${db.server}:${db.port}/core
+coreUsername: ${db.login}
+corePassword: ${db.password}
+
+dropDatabase: true

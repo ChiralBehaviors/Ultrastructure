@@ -172,17 +172,6 @@ public class StatusCode extends
         super(updatedBy);
     }
 
-    public StatusCode(UUID l, String name) {
-        super(l, name);
-    }
-
-    /**
-     * @param id
-     */
-    public StatusCode(UUID id) {
-        super(id);
-    }
-
     /**
      * @param name
      */
@@ -213,6 +202,17 @@ public class StatusCode extends
      */
     public StatusCode(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public StatusCode(UUID id) {
+        super(id);
+    }
+
+    public StatusCode(UUID l, String name) {
+        super(l, name);
     }
 
     /*

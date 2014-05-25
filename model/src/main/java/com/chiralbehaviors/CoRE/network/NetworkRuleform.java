@@ -62,19 +62,19 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     }
 
     /**
-     * @param id
-     */
-    public NetworkRuleform(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
     public NetworkRuleform(Relationship relationship, Agency updatedBy) {
         super(updatedBy);
         this.relationship = relationship;
+    }
+
+    /**
+     * @param id
+     */
+    public NetworkRuleform(UUID id) {
+        super(id);
     }
 
     @Override

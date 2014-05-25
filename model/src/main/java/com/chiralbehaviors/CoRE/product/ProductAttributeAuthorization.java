@@ -58,13 +58,6 @@ public class ProductAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public ProductAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param classification
      * @param updatedBy
      */
@@ -88,6 +81,13 @@ public class ProductAttributeAuthorization extends
                                          Attribute authorized, Agency updatedBy) {
         super(classification, authorized, updatedBy);
         this.classifier = classifier;
+    }
+
+    /**
+     * @param id
+     */
+    public ProductAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

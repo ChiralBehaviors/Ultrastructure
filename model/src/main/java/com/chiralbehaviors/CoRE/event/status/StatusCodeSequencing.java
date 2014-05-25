@@ -132,21 +132,6 @@ public class StatusCodeSequencing extends Ruleform {
         super(updatedBy);
     }
 
-    /**
-     * @param id
-     */
-    public StatusCodeSequencing(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
-     * @param updatedBy
-     */
-    public StatusCodeSequencing(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
-
     public StatusCodeSequencing(Product service, StatusCode parent,
                                 StatusCode child, Agency updatedBy) {
         super(updatedBy);
@@ -175,6 +160,21 @@ public class StatusCodeSequencing extends Ruleform {
      */
     public StatusCodeSequencing(String notes, Agency updatedBy) {
         super(notes, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public StatusCodeSequencing(UUID id) {
+        super(id);
+    }
+
+    /**
+     * @param id
+     * @param updatedBy
+     */
+    public StatusCodeSequencing(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     public StatusCode getChildCode() {

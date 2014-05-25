@@ -63,21 +63,6 @@ public class NetworkInference extends Ruleform {
         super(updatedBy);
     }
 
-    /**
-     * @param id
-     */
-    public NetworkInference(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
-     * @param updatedBy
-     */
-    public NetworkInference(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
-
     public NetworkInference(Relationship premise1, Relationship premise2,
                             Relationship inference) {
         super();
@@ -107,6 +92,21 @@ public class NetworkInference extends Ruleform {
      */
     public NetworkInference(String notes, Agency updatedBy) {
         super(notes, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public NetworkInference(UUID id) {
+        super(id);
+    }
+
+    /**
+     * @param id
+     * @param updatedBy
+     */
+    public NetworkInference(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     public Relationship getInference() {

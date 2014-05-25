@@ -145,13 +145,6 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     }
 
     /**
-     * @param id
-     */
-    public Location(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param name
      */
     public Location(String name) {
@@ -181,6 +174,13 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
      */
     public Location(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Location(UUID id) {
+        super(id);
     }
 
     /*

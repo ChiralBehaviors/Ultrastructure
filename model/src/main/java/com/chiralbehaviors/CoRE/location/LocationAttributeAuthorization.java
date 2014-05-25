@@ -64,13 +64,6 @@ public class LocationAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public LocationAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param classification
      * @param updatedBy
      */
@@ -94,6 +87,13 @@ public class LocationAttributeAuthorization extends
                                           Attribute authorized, Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
+    }
+
+    /**
+     * @param id
+     */
+    public LocationAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

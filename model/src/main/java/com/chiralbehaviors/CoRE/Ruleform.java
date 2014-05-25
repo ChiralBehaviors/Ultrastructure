@@ -153,11 +153,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return true;
     }
 
-    public final UUID getUUID() {
-        String primaryKey = getPrimaryKey();
-        return primaryKey == null ? null : UuidGenerator.fromBase64(primaryKey);
-    }
-
     public final String getId() {
         return getPrimaryKey();
     }
@@ -185,6 +180,11 @@ abstract public class Ruleform implements Serializable, Cloneable {
      */
     public Agency getUpdatedBy() {
         return updatedBy;
+    }
+
+    public final UUID getUUID() {
+        String primaryKey = getPrimaryKey();
+        return primaryKey == null ? null : UuidGenerator.fromBase64(primaryKey);
     }
 
     /*
@@ -223,12 +223,12 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return knownObjects.get(this);
     }
 
-    public void setId(UUID id) {
-        setPrimaryKey(UuidGenerator.toBase64(id));
-    }
-
     public void setId(String id) {
         setPrimaryKey(id);
+    }
+
+    public void setId(UUID id) {
+        setPrimaryKey(UuidGenerator.toBase64(id));
     }
 
     /**

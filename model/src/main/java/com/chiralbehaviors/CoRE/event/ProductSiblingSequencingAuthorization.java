@@ -87,21 +87,6 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
         super(updatedBy);
     }
 
-    /**
-     * @param id
-     */
-    public ProductSiblingSequencingAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
-     * @param updatedBy
-     */
-    public ProductSiblingSequencingAuthorization(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
-
     public ProductSiblingSequencingAuthorization(Product parent,
                                                  StatusCode statusCode,
                                                  Product nextSibling,
@@ -127,6 +112,21 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      */
     public ProductSiblingSequencingAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public ProductSiblingSequencingAuthorization(UUID id) {
+        super(id);
+    }
+
+    /**
+     * @param id
+     * @param updatedBy
+     */
+    public ProductSiblingSequencingAuthorization(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     public Product getNextSibling() {

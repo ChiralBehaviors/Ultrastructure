@@ -94,13 +94,13 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
         super(id);
     }
 
+    public ExistentialRuleform(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
+    }
+
     public ExistentialRuleform(UUID id, String name) {
         super(id);
         this.name = name;
-    }
-
-    public ExistentialRuleform(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
     }
 
     abstract public void addChildRelationship(Network relationship);

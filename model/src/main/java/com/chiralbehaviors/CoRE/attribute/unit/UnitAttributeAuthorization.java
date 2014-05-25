@@ -58,13 +58,6 @@ public class UnitAttributeAuthorization extends
 
     /**
      * @param id
-     */
-    public UnitAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
      * @param classification
      * @param updatedBy
      */
@@ -89,6 +82,13 @@ public class UnitAttributeAuthorization extends
                                       Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
+    }
+
+    /**
+     * @param id
+     */
+    public UnitAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

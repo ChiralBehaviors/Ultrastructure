@@ -119,18 +119,18 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     }
 
     /**
-     * @param id
-     */
-    public LocationNetwork(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
     public LocationNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public LocationNetwork(UUID id) {
+        super(id);
     }
 
     @Override

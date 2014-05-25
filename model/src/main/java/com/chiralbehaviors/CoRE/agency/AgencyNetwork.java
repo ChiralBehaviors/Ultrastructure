@@ -124,18 +124,18 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     }
 
     /**
-     * @param id
-     */
-    public AgencyNetwork(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
     public AgencyNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public AgencyNetwork(UUID id) {
+        super(id);
     }
 
     @Override

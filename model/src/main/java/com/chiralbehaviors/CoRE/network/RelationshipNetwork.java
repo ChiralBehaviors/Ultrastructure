@@ -102,13 +102,6 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     }
 
     /**
-     * @param id
-     */
-    public RelationshipNetwork(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
@@ -125,6 +118,13 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;
+    }
+
+    /**
+     * @param id
+     */
+    public RelationshipNetwork(UUID id) {
+        super(id);
     }
 
     /*

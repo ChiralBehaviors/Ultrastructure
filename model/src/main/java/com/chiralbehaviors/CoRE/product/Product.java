@@ -189,21 +189,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
     }
 
     /**
-     * @param i
-     * @param string
-     */
-    public Product(UUID id, String name) {
-        super(id, name);
-    }
-
-    /**
-     * @param id
-     */
-    public Product(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param name
      */
     public Product(String name) {
@@ -233,6 +218,21 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
      */
     public Product(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Product(UUID id) {
+        super(id);
+    }
+
+    /**
+     * @param i
+     * @param string
+     */
+    public Product(UUID id, String name) {
+        super(id, name);
     }
 
     public void addAttribute(ProductAttribute attribute) {

@@ -14,6 +14,8 @@
         <postgresql.driver.version>9.1-901.jdbc4</postgresql.driver.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.version>0.0.2-SNAPSHOT</project.version>
+        <core.java.login>core_java</core.java.login>
+        <core.java.password>password</core.java.password>
         <db.login>core</db.login>
         <db.password>password</db.password>
         <db.server>localhost</db.server>

@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-36">
-        <createTable tableName="ruleform.product_location">
+        <createTable schemaName="ruleform" tableName="product_location">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_location_pkey" />
             </column>
@@ -31,55 +31,55 @@
             <column name="notes" type="VARCHAR(10485760)" />
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.product_location" />
+            <dropTable tableName="product_location" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-226">
-        <addForeignKeyConstraint baseColumnNames="agency" baseTableName="ruleform.product_location" constraintName="product_location_agency_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency" baseTableName="product_location" constraintName="product_location_agency_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-237">
-        <addForeignKeyConstraint baseColumnNames="location" baseTableName="ruleform.product_location"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location" baseTableName="product_location"
             constraintName="product_location_location_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.location" />
+            referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-243">
-        <addForeignKeyConstraint baseColumnNames="product" baseTableName="ruleform.product_location" constraintName="product_location_product_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product" baseTableName="product_location" constraintName="product_location_product_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+            referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-244">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.product_location"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="product_location"
             constraintName="product_location_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-245">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.product_location"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product_location"
             constraintName="product_location_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-397">
-        <addUniqueConstraint columnNames="agency, product, relationship, location" constraintName="product_location_agency_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.product_location" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, product, relationship, location" constraintName="product_location_agency_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="product_location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-489">
-        <createIndex indexName="product_location_location_fkey_idx" tableName="ruleform.product_location" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_location_location_fkey_idx" tableName="product_location" unique="false">
             <column name="location" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-493">
-        <createIndex indexName="product_location_product_fkey_idx" tableName="ruleform.product_location" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_location_product_fkey_idx" tableName="product_location" unique="false">
             <column name="product" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-494">
-        <createIndex indexName="product_location_relationship_fkey_idx" tableName="ruleform.product_location" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_location_relationship_fkey_idx" tableName="product_location" unique="false">
             <column name="relationship" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-495">
-        <createIndex indexName="product_location_updated_by_fkey_idx" tableName="ruleform.product_location" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_location_updated_by_fkey_idx" tableName="product_location" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

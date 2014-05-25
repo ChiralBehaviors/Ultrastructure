@@ -20,8 +20,8 @@
 			     b.pinned, 
 			     up.name AS updated_by,
 			     b.update_date
-			   FROM ruleform.unit b
-			   JOIN ruleform.agency up ON b.updated_by = up.id;
+			   FROM unit b
+			   JOIN agency up ON b.updated_by = up.id;
 			
 			ALTER TABLE readable.unit
 			  OWNER TO core;

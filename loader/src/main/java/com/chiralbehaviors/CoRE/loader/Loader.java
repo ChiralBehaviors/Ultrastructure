@@ -222,7 +222,7 @@ public class Loader {
     }
 
     private void setClassPath() throws SQLException {
-        Connection connection = configuration.getPostgresConnection();
+        Connection connection = configuration.getCoreConnection();
         connection.setAutoCommit(true);
         PreparedStatement statement = connection.prepareStatement(String.format("SELECT sqlj.set_classpath('ruleform', '%s')",
                                                                                 ANIMATIONS_JAR_NAME));

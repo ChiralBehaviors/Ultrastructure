@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-39">
-        <createTable remarks="Specifies locational relationships that exist between Entities" tableName="ruleform.product_location_network">
+        <createTable schemaName="ruleform" remarks="Specifies locational relationships that exist between Entities" tableName="product_location_network">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_location_network_pkey" />
             </column>
@@ -36,54 +36,54 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.product_location_network" />
+            <dropTable tableName="product_location_network" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-238">
-        <addForeignKeyConstraint baseColumnNames="agency" baseTableName="ruleform.product_location_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency" baseTableName="product_location_network"
             constraintName="product_location_network_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-239">
-        <addForeignKeyConstraint baseColumnNames="contextual_product" baseTableName="ruleform.product_location_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="contextual_product" baseTableName="product_location_network"
             constraintName="product_location_network_contextual_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-240">
-        <addForeignKeyConstraint baseColumnNames="coordinate" baseTableName="ruleform.product_location_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="coordinate" baseTableName="product_location_network"
             constraintName="product_location_network_coordinate_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.coordinate" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="coordinate" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-241">
-        <addForeignKeyConstraint baseColumnNames="product" baseTableName="ruleform.product_location_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product" baseTableName="product_location_network"
             constraintName="product_location_network_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-242">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.product_location_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product_location_network"
             constraintName="product_location_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-400">
-        <addUniqueConstraint columnNames="agency, product, contextual_product, coordinate" constraintName="product_location_network_product_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.product_location_network" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, product, contextual_product, coordinate" constraintName="product_location_network_product_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="product_location_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-490">
-        <createIndex indexName="product_location_network_contextual_product_fkey_idx" tableName="ruleform.product_location_network"
+        <createIndex schemaName="ruleform" indexName="product_location_network_contextual_product_fkey_idx" tableName="product_location_network"
             unique="false"
         >
             <column name="contextual_product" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-491">
-        <createIndex indexName="product_location_network_coordinate_fkey_idx" tableName="ruleform.product_location_network"
+        <createIndex schemaName="ruleform" indexName="product_location_network_coordinate_fkey_idx" tableName="product_location_network"
             unique="false"
         >
             <column name="coordinate" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-492">
-        <createIndex indexName="product_location_network_updated_by_fkey_idx" tableName="ruleform.product_location_network"
+        <createIndex schemaName="ruleform" indexName="product_location_network_updated_by_fkey_idx" tableName="product_location_network"
             unique="false"
         >
             <column name="updated_by" />

@@ -9,8 +9,8 @@
 		<sql><![CDATA[
             CREATE OR REPLACE VIEW readable.coordinate AS 
 			 SELECT c.id, c.name, c.description, c.notes, c.pinned, up.name AS updated_by, c.update_date
-			   FROM ruleform.coordinate c
-			   JOIN ruleform.agency up ON up.id = c.updated_by;
+			   FROM coordinate c
+			   JOIN agency up ON up.id = c.updated_by;
 			
 			ALTER TABLE readable.coordinate
 			  OWNER TO core;

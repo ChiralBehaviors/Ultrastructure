@@ -6,7 +6,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="1" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.job_chronology OWNER TO core; </sql>
+        <sql> ALTER TABLE job_chronology OWNER TO core; </sql>
         <rollback/>
     </changeSet>
 </databaseChangeLog>

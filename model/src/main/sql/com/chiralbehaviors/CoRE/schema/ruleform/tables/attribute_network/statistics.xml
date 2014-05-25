@@ -7,9 +7,9 @@
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
-            ALTER TABLE ruleform.attribute_network ALTER COLUMN parent SET STATISTICS 100;
-            ALTER TABLE ruleform.attribute_network ALTER COLUMN relationship SET STATISTICS 100;
-            ALTER TABLE ruleform.attribute_network ALTER COLUMN child SET STATISTICS 100;
+            ALTER TABLE attribute_network ALTER COLUMN parent SET STATISTICS 100;
+            ALTER TABLE attribute_network ALTER COLUMN relationship SET STATISTICS 100;
+            ALTER TABLE attribute_network ALTER COLUMN child SET STATISTICS 100;
             ]]>
         </sql>
         <rollback/>

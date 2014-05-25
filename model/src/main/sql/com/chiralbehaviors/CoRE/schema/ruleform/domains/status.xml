@@ -7,16 +7,16 @@
 
     <changeSet id="4" author="hhildebrand">
         <sql><![CDATA[
-            CREATE DOMAIN ruleform.status
+            CREATE DOMAIN status
               AS character(1)
               COLLATE pg_catalog."default"
               DEFAULT 'U'::bpchar
               NOT NULL
                CONSTRAINT status_check CHECK ((VALUE = ANY (ARRAY['U'::bpchar, 'A'::bpchar, 'F'::bpchar, 'S'::bpchar])));
-            ALTER DOMAIN ruleform.status
+            ALTER DOMAIN status
               OWNER TO core;
              ]]>
         </sql>
-        <rollback> DROP DOMAIN ruleform.status; </rollback>
+        <rollback> DROP DOMAIN status; </rollback>
     </changeSet>
 </databaseChangeLog>

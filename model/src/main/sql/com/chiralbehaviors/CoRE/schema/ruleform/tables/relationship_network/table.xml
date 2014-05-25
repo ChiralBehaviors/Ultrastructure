@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-51">
-        <createTable tableName="ruleform.relationship_network">
+        <createTable schemaName="ruleform" tableName="relationship_network">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="relationship_network_pkey" />
             </column>
@@ -28,7 +28,7 @@
             <column name="premise2" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>
-            <column name="ordering" type="ruleform.ordinal_number" />
+            <column name="ordering" type="ordinal_number" />
             <column name="notes" type="VARCHAR(10485760)" />
             <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -38,54 +38,54 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.relationship_network" />
+            <dropTable tableName="relationship_network" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-312">
-        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.relationship_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="child" baseTableName="relationship_network"
             constraintName="relationship_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-313">
-        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.relationship_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="parent" baseTableName="relationship_network"
             constraintName="relationship_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-314">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.relationship_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="relationship_network"
             constraintName="relationship_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-315">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.relationship_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="relationship_network"
             constraintName="relationship_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-410">
-        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="relationship_network_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.relationship_network" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2" constraintName="relationship_network_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="relationship_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803227-432">
-        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.relationship_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise1" baseTableName="relationship_network"
             constraintName="relationship_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship_network" />
+            referencedColumnNames="id" referencedTableName="relationship_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803227-433">
-        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.relationship_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise2" baseTableName="relationship_network"
             constraintName="relationship_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship_network" />
+            referencedColumnNames="id" referencedTableName="relationship_network" />
     </changeSet>
     <changeSet id="2" author="hparry">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.relationship_network TO core;
-            GRANT SELECT ON TABLE ruleform.relationship_network TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.relationship_network TO core_read_write;
+            GRANT ALL ON TABLE relationship_network TO core;
+            GRANT SELECT ON TABLE relationship_network TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE relationship_network TO core_read_write;
             ]]>
         </sql>
         <rollback />
     </changeSet>
     <changeSet id="3" author="hparry">
-        <sql> ALTER TABLE ruleform.relationship_network OWNER TO core;
+        <sql> ALTER TABLE relationship_network OWNER TO core;
         </sql>
         <rollback />
     </changeSet>

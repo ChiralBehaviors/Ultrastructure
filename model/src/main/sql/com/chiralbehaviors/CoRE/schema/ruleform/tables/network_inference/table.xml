@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-31">
-        <createTable tableName="ruleform.network_inference">
+        <createTable schemaName="ruleform" tableName="network_inference">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="network_inference_pkey" />
             </column>
@@ -28,35 +28,35 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.network_inference" />
+            <dropTable tableName="network_inference" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="879803225-208">
-        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.network_inference"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise1" baseTableName="network_inference"
             constraintName="network_inference_relationship1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="879803225-209">
-        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.network_inference"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise2" baseTableName="network_inference"
             constraintName="network_inference_relationship2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="879803225-210">
-        <addForeignKeyConstraint baseColumnNames="inference" baseTableName="ruleform.network_inference"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="inference" baseTableName="network_inference"
             constraintName="network_inference_relationship3_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="879803225-211">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.network_inference"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="network_inference"
             constraintName="network_inference_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="879803225-392">
-        <addUniqueConstraint columnNames="premise1, premise2" constraintName="network_inference_relationship1_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.network_inference" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="premise1, premise2" constraintName="network_inference_relationship1_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="network_inference" />
     </changeSet>
     <changeSet author="hhildebrand" id="879803225-480">
-        <createIndex indexName="network_inference_updated_by_fkey_idx" tableName="ruleform.network_inference" unique="false">
+        <createIndex schemaName="ruleform" indexName="network_inference_updated_by_fkey_idx" tableName="network_inference" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-3">
-        <createTable tableName="ruleform.agency_attribute">
+        <createTable schemaName="ruleform" tableName="agency_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="agency_attribute_pkey" />
             </column>
@@ -23,7 +23,7 @@
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
             <column name="unit" type="CHAR(22)" />
-            <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -35,35 +35,35 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.agency_attribute" />
+            <dropTable tableName="agency_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-87">
-        <addForeignKeyConstraint baseColumnNames="agency" baseTableName="ruleform.agency_attribute" constraintName="agency_attribute_agency_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency" baseTableName="agency_attribute" constraintName="agency_attribute_agency_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-88">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.agency_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="agency_attribute"
             constraintName="agency_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-95">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.agency_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="agency_attribute"
             constraintName="agency_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-94">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.agency_attribute" constraintName="agency_attribute_unit_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="agency_attribute" constraintName="agency_attribute_unit_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-369">
-        <addUniqueConstraint columnNames="agency, attribute" constraintName="agency_attribute_agency_key" deferrable="false"
-            disabled="false" initiallyDeferred="false" tableName="ruleform.agency_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, attribute" constraintName="agency_attribute_agency_key" deferrable="false"
+            disabled="false" initiallyDeferred="false" tableName="agency_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-426">
-        <createIndex indexName="agency_attribute_updated_by_fkey_idx" tableName="ruleform.agency_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="agency_attribute_updated_by_fkey_idx" tableName="agency_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

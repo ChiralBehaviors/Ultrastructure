@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-25">
-        <createTable tableName="ruleform.location_attribute">
+        <createTable schemaName="ruleform" tableName="location_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="location_attribute_pkey" />
             </column>
@@ -23,7 +23,7 @@
             <column name="text_value" type="VARCHAR(10485760)" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="unit" type="CHAR(22)" />
@@ -37,60 +37,60 @@
             <column name="agency_value" type="CHAR(22)" />
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.location_attribute" />
+            <dropTable tableName="location_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-175">
-        <addForeignKeyConstraint baseColumnNames="agency_value" baseTableName="ruleform.location_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency_value" baseTableName="location_attribute"
             constraintName="location_attribute_agency_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-176">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.location_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="location_attribute"
             constraintName="location_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-183">
-        <addForeignKeyConstraint baseColumnNames="location" baseTableName="ruleform.location_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location" baseTableName="location_attribute"
             constraintName="location_attribute_location_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.location" />
+            referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-184">
-        <addForeignKeyConstraint baseColumnNames="product_value" baseTableName="ruleform.location_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_value" baseTableName="location_attribute"
             constraintName="location_attribute_product_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-185">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="location_attribute"
             constraintName="location_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-219">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.location_attribute" constraintName="product_attribute_unit_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="location_attribute" constraintName="product_attribute_unit_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-388">
-        <addUniqueConstraint columnNames="location, attribute, sequence_number" constraintName="location_attribute_location_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.location_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="location, attribute, sequence_number" constraintName="location_attribute_location_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="location_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-468">
-        <createIndex indexName="location_attribute_integer_idx" tableName="ruleform.location_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="location_attribute_integer_idx" tableName="location_attribute" unique="false">
             <column name="integer_value" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-469">
-        <createIndex indexName="location_attribute_product_value_fkey_idx" tableName="ruleform.location_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="location_attribute_product_value_fkey_idx" tableName="location_attribute" unique="false">
             <column name="product_value" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-470">
-        <createIndex indexName="location_attribute_text_idx" tableName="ruleform.location_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="location_attribute_text_idx" tableName="location_attribute" unique="false">
             <column name="text_value" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-471">
-        <createIndex indexName="location_attribute_updated_by_fkey_idx" tableName="ruleform.location_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="location_attribute_updated_by_fkey_idx" tableName="location_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

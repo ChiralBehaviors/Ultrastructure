@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-32">
-        <createTable tableName="ruleform.product">
+        <createTable schemaName="ruleform" tableName="product">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_pkey" />
             </column>
@@ -26,21 +26,21 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.product" />
+            <dropTable tableName="product" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-272">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.product" constraintName="product_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product" constraintName="product_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-447">
-        <createIndex indexName="case_insensitive_product_name_idx" tableName="ruleform.product" unique="false">
+        <createIndex schemaName="ruleform" indexName="case_insensitive_product_name_idx" tableName="product" unique="false">
             <column name="lower((name)::text)" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-509">
-        <createIndex indexName="product_updated_by_fkey_idx" tableName="ruleform.product" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_updated_by_fkey_idx" tableName="product" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

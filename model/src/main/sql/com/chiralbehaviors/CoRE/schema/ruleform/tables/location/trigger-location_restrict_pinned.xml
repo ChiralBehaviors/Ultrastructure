@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER location_restrict_pinned BEFORE UPDATE OR DELETE ON
-            ruleform.location FOR EACH ROW EXECUTE PROCEDURE ruleform.restrict_pinned(); </sql>
-        <rollback> DROP TRIGGER location_restrict_pinned ON ruleform.location; </rollback>
+            location FOR EACH ROW EXECUTE PROCEDURE restrict_pinned(); </sql>
+        <rollback> DROP TRIGGER location_restrict_pinned ON location; </rollback>
     </changeSet>
 </databaseChangeLog>

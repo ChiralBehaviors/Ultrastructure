@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER product_attribute_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.product_attribute FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER product_attribute_update_date ON ruleform.product_attribute; </rollback>
+            product_attribute FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER product_attribute_update_date ON product_attribute; </rollback>
     </changeSet>
 </databaseChangeLog>

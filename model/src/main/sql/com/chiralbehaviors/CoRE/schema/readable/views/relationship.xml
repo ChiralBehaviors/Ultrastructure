@@ -9,9 +9,9 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.relationship AS 
 			 SELECT rel.id, rel.name, rel.description, rel.preferred, inv.name AS inverse, rel.notes, rel.pinned, up.name AS updated_by
-			   FROM ruleform.relationship rel
-			   JOIN ruleform.relationship inv ON rel.inverse = inv.id
-			   JOIN ruleform.agency up ON rel.updated_by = up.id;
+			   FROM relationship rel
+			   JOIN relationship inv ON rel.inverse = inv.id
+			   JOIN agency up ON rel.updated_by = up.id;
 			
 			ALTER TABLE readable.relationship
 			  OWNER TO core;

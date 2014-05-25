@@ -6,8 +6,8 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-8">
-        <createTable remarks="Defines rules stating what attributes (and values thereof) are authorized for particular Entities"
-            tableName="ruleform.attr_meta_attr_auth"
+        <createTable schemaName="ruleform" remarks="Defines rules stating what attributes (and values thereof) are authorized for particular Entities"
+            tableName="attr_meta_attr_auth"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="attr_meta_attr_auth_pkey" />
@@ -28,7 +28,7 @@
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when a meta Attribute can have multiple acceptable values" type="ruleform.sequence_number"
+                remarks="Ordering and uniqueness, for when a meta Attribute can have multiple acceptable values" type="sequence_number"
             >
                 <constraints nullable="false" />
             </column>
@@ -54,41 +54,41 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.attr_meta_attr_auth" />
+            <dropTable tableName="attr_meta_attr_auth" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-111">
-        <addForeignKeyConstraint baseColumnNames="authorized_attribute" baseTableName="ruleform.attr_meta_attr_auth"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_attribute" baseTableName="attr_meta_attr_auth"
             constraintName="attr_meta_attr_auth_authorized_attribute_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-112">
-        <addForeignKeyConstraint baseColumnNames="classification" baseTableName="ruleform.attr_meta_attr_auth"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="attr_meta_attr_auth"
             constraintName="attr_meta_attr_auth_classification_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-113">
-        <addForeignKeyConstraint baseColumnNames="classifier" baseTableName="ruleform.attr_meta_attr_auth"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="attr_meta_attr_auth"
             constraintName="attr_meta_attr_auth_classifier_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-114">
-        <addForeignKeyConstraint baseColumnNames="grouping_agency" baseTableName="ruleform.attr_meta_attr_auth"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="attr_meta_attr_auth"
             constraintName="attr_meta_attr_auth_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-115">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.attr_meta_attr_auth"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="attr_meta_attr_auth"
             constraintName="attr_meta_attr_auth_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-374">
-        <addUniqueConstraint columnNames="grouping_agency, classification, classifier, authorized_attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="grouping_agency, classification, classifier, authorized_attribute, sequence_number"
             constraintName="attr_meta_attr_auth_classification_attri_key" deferrable="false" disabled="false" initiallyDeferred="false"
-            tableName="ruleform.attr_meta_attr_auth" />
+            tableName="attr_meta_attr_auth" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-437">
-        <createIndex indexName="attr_meta_attr_auth_updated_by_fkey_idx" tableName="ruleform.attr_meta_attr_auth" unique="false">
+        <createIndex schemaName="ruleform" indexName="attr_meta_attr_auth_updated_by_fkey_idx" tableName="attr_meta_attr_auth" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

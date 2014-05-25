@@ -7,13 +7,13 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
-            CREATE DOMAIN ruleform.ordinal_number
+            CREATE DOMAIN ordinal_number
               AS integer
                CONSTRAINT valid_ordinal_number CHECK ((VALUE > 0));
-            ALTER DOMAIN ruleform.ordinal_number
+            ALTER DOMAIN ordinal_number
               OWNER TO core;
              ]]>
         </sql>
-        <rollback> DROP DOMAIN ruleform.ordinal_number; </rollback>
+        <rollback> DROP DOMAIN ordinal_number; </rollback>
     </changeSet>
 </databaseChangeLog>

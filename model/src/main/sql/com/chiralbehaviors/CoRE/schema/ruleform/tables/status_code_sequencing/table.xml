@@ -6,8 +6,8 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-57">
-        <createTable remarks="Defines the possible states that an Event can be in, as well as the path through those states"
-            tableName="ruleform.status_code_sequencing"
+        <createTable schemaName="ruleform" remarks="Defines the possible states that an Event can be in, as well as the path through those states"
+            tableName="status_code_sequencing"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="status_code_sequencing_pkey" />
@@ -22,7 +22,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when a Event can transition into one of a number of states"
-                type="ruleform.sequence_number"
+                type="sequence_number"
             >
                 <constraints nullable="false" />
             </column>
@@ -43,35 +43,35 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.status_code_sequencing" />
+            <dropTable tableName="status_code_sequencing" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-334">
-        <addForeignKeyConstraint baseColumnNames="child_code" baseTableName="ruleform.status_code_sequencing"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="child_code" baseTableName="status_code_sequencing"
             constraintName="status_code_sequencing_child_code_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.status_code" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-335">
-        <addForeignKeyConstraint baseColumnNames="parent_code" baseTableName="ruleform.status_code_sequencing"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="parent_code" baseTableName="status_code_sequencing"
             constraintName="status_code_sequencing_parent_code_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.status_code" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-336">
-        <addForeignKeyConstraint baseColumnNames="service" baseTableName="ruleform.status_code_sequencing"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="service" baseTableName="status_code_sequencing"
             constraintName="status_code_sequencing_service_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.product" />
+            referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-337">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.status_code_sequencing"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="status_code_sequencing"
             constraintName="status_code_sequencing_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-415">
-        <addUniqueConstraint columnNames="service, parent_code, child_code, sequence_number" constraintName="status_code_sequencing_service_parent_code_sequence_number_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.status_code_sequencing" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, parent_code, child_code, sequence_number" constraintName="status_code_sequencing_service_parent_code_sequence_number_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="status_code_sequencing" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-520">
-        <createIndex indexName="status_code_sequencing_updated_by_fkey_idx" tableName="ruleform.status_code_sequencing" unique="false">
+        <createIndex schemaName="ruleform" indexName="status_code_sequencing_updated_by_fkey_idx" tableName="status_code_sequencing" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

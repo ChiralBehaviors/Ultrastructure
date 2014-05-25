@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-18">
-        <createTable tableName="ruleform.interval_attribute">
+        <createTable schemaName="ruleform" tableName="interval_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="interval_attribute_pkey" />
             </column>
@@ -23,7 +23,7 @@
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
             <column name="unit" type="CHAR(22)" />
-            <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -35,35 +35,35 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.interval_attribute" />
+            <dropTable tableName="interval_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-145">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.interval_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="interval_attribute"
             constraintName="interval_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-151">
-        <addForeignKeyConstraint baseColumnNames="interval" baseTableName="ruleform.interval_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="interval" baseTableName="interval_attribute"
             constraintName="interval_attribute_interval_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.interval" />
+            referencedColumnNames="id" referencedTableName="interval" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-152">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.interval_attribute" constraintName="interval_attribute_unit_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="interval_attribute" constraintName="interval_attribute_unit_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-153">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.interval_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="interval_attribute"
             constraintName="interval_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-382">
-        <addUniqueConstraint columnNames="interval, attribute" constraintName="interval_attribute_interval_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.interval_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="interval, attribute" constraintName="interval_attribute_interval_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="interval_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-457">
-        <createIndex indexName="interval_attribute_updated_by_fkey_idx" tableName="ruleform.interval_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="interval_attribute_updated_by_fkey_idx" tableName="interval_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

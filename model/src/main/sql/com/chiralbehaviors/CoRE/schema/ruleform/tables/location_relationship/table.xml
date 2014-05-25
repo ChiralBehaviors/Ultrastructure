@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-29">
-        <createTable tableName="ruleform.location_relationship">
+        <createTable schemaName="ruleform" tableName="location_relationship">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="location_relationship_pkey" />
             </column>
@@ -40,45 +40,45 @@
             <column name="notes" type="VARCHAR(10485760)" />
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.location_relationship" />
+            <dropTable tableName="location_relationship" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-194">
-        <addForeignKeyConstraint baseColumnNames="attribute_relationship" baseTableName="ruleform.location_relationship"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute_relationship" baseTableName="location_relationship"
             constraintName="location_relationship_attribute_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-195">
-        <addForeignKeyConstraint baseColumnNames="location_1_attribute" baseTableName="ruleform.location_relationship"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location_1_attribute" baseTableName="location_relationship"
             constraintName="location_relationship_location_1_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-196">
-        <addForeignKeyConstraint baseColumnNames="location_2_attribute" baseTableName="ruleform.location_relationship"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location_2_attribute" baseTableName="location_relationship"
             constraintName="location_relationship_location_2_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-197">
-        <addForeignKeyConstraint baseColumnNames="product_mapped_value" baseTableName="ruleform.location_relationship"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_mapped_value" baseTableName="location_relationship"
             constraintName="location_relationship_product_mapped_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-198">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.location_relationship"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="location_relationship"
             constraintName="location_relationship_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-199">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location_relationship"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="location_relationship"
             constraintName="location_relationship_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-390">
-        <addUniqueConstraint columnNames="relationship, product_mapped_value, sequence_number" constraintName="location_relationship_context_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.location_relationship" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="relationship, product_mapped_value, sequence_number" constraintName="location_relationship_context_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="location_relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-477">
-        <createIndex indexName="location_relationship_updated_by_fkey_idx" tableName="ruleform.location_relationship" unique="false">
+        <createIndex schemaName="ruleform" indexName="location_relationship_updated_by_fkey_idx" tableName="location_relationship" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

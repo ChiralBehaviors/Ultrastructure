@@ -6,8 +6,8 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-19">
-        <createTable remarks="Defines rules stating what attributes (and values thereof) are authorized for particular intervals"
-            tableName="ruleform.interval_attribute_authorization"
+        <createTable schemaName="ruleform" remarks="Defines rules stating what attributes (and values thereof) are authorized for particular intervals"
+            tableName="interval_attribute_authorization"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="interval_attribute_authorization_pkey" />
@@ -28,7 +28,7 @@
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="ruleform.sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
             >
                 <constraints nullable="false" />
             </column>
@@ -51,56 +51,56 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.interval_attribute_authorization" />
+            <dropTable tableName="interval_attribute_authorization" />
         </rollback>
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-146">
-        <addForeignKeyConstraint baseColumnNames="authorized_attribute" baseTableName="ruleform.interval_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_attribute" baseTableName="interval_attribute_authorization"
             constraintName="interval_attribute_authorization_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-147">
-        <addForeignKeyConstraint baseColumnNames="classification" baseTableName="ruleform.interval_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="interval_attribute_authorization"
             constraintName="interval_attribute_authorization_classification_attribute_fkey" deferrable="true" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-148">
-        <addForeignKeyConstraint baseColumnNames="classifier" baseTableName="ruleform.interval_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="interval_attribute_authorization"
             constraintName="interval_attribute_authorization_classifier_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.interval" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="interval" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-149">
-        <addForeignKeyConstraint baseColumnNames="grouping_agency" baseTableName="ruleform.interval_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="interval_attribute_authorization"
             constraintName="interval_attribute_authorization_grouping_interval_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-150">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.interval_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="interval_attribute_authorization"
             constraintName="interval_attribute_authorization_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-381">
-        <addUniqueConstraint columnNames="classification, classifier, authorized_attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_attribute, sequence_number"
             constraintName="interval_attribute_authorizat_classification_attribute_clas_key" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="ruleform.interval_attribute_authorization" />
+            initiallyDeferred="false" tableName="interval_attribute_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-456">
-        <createIndex indexName="interval_attribute_authorization_updated_by_fkey_idx" tableName="ruleform.interval_attribute_authorization"
+        <createIndex schemaName="ruleform" indexName="interval_attribute_authorization_updated_by_fkey_idx" tableName="interval_attribute_authorization"
             unique="false"
         >
             <column name="updated_by" />
         </createIndex>
     </changeSet>
     <changeSet id="20" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.interval_attribute_authorization OWNER TO core; </sql>
+        <sql> ALTER TABLE interval_attribute_authorization OWNER TO core; </sql>
         <rollback />
     </changeSet>
     <changeSet id="30" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.interval_attribute_authorization TO core;
-            GRANT SELECT ON TABLE ruleform.interval_attribute_authorization TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.interval_attribute_authorization TO core_read_write;
+            GRANT ALL ON TABLE interval_attribute_authorization TO core;
+            GRANT SELECT ON TABLE interval_attribute_authorization TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE interval_attribute_authorization TO core_read_write;
             ]]>
         </sql>
         <rollback />

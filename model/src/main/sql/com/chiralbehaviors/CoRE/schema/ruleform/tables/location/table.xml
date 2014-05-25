@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-24">
-        <createTable tableName="ruleform.location">
+        <createTable schemaName="ruleform" tableName="location">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="location_pkey" />
             </column>
@@ -26,16 +26,16 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.location" />
+            <dropTable tableName="location" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-200">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.location" constraintName="location_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="location" constraintName="location_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-478">
-        <createIndex indexName="location_updated_by_fkey_idx" tableName="ruleform.location" unique="false">
+        <createIndex schemaName="ruleform" indexName="location_updated_by_fkey_idx" tableName="location" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-63">
-        <createTable tableName="ruleform.unit_network">
+        <createTable schemaName="ruleform" tableName="unit_network">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="unit_network_pkey" />
             </column>
@@ -28,7 +28,7 @@
             <column name="premise2" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>
-            <column name="ordering" type="ruleform.ordinal_number" />
+            <column name="ordering" type="ordinal_number" />
             <column name="notes" type="VARCHAR(10485760)" />
             <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -38,54 +38,54 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.unit_network" />
+            <dropTable tableName="unit_network" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-361">
-        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.unit_network" constraintName="unit_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="child" baseTableName="unit_network" constraintName="unit_network_child_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-362">
-        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.unit_network" constraintName="unit_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="parent" baseTableName="unit_network" constraintName="unit_network_parent_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-363">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.unit_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="unit_network"
             constraintName="unit_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-364">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.unit_network" constraintName="unit_network_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="unit_network" constraintName="unit_network_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-421">
-        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="unit_network_key" deferrable="false"
-            disabled="false" initiallyDeferred="false" tableName="ruleform.unit_network" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2" constraintName="unit_network_key" deferrable="false"
+            disabled="false" initiallyDeferred="false" tableName="unit_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803229-430">
-        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.unit_network" constraintName="unit_network_premise1_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise1" baseTableName="unit_network" constraintName="unit_network_premise1_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit_network" />
+            referencedTableName="unit_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803229-433">
-        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.unit_network" constraintName="unit_network_premise2_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise2" baseTableName="unit_network" constraintName="unit_network_premise2_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit_network" />
+            referencedTableName="unit_network" />
     </changeSet>
 
 
     <changeSet id="2" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.unit_network TO core;
-            GRANT SELECT ON TABLE ruleform.unit_network TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.unit_network TO core_read_write;
+            GRANT ALL ON TABLE unit_network TO core;
+            GRANT SELECT ON TABLE unit_network TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE unit_network TO core_read_write;
             ]]>
         </sql>
         <rollback />
     </changeSet>
     <changeSet id="3" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.unit_network OWNER TO core; </sql>
+        <sql> ALTER TABLE unit_network OWNER TO core; </sql>
         <rollback />
     </changeSet>
 

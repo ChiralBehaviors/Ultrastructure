@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-10">
-        <createTable tableName="ruleform.attribute_meta_attribute">
+        <createTable schemaName="ruleform" tableName="attribute_meta_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="attribute_attribute_pkey" />
             </column>
@@ -32,69 +32,69 @@
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.attribute_meta_attribute_kind" />
+            <dropTable tableName="attribute_meta_attribute_kind" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-116">
-        <addForeignKeyConstraint baseColumnNames="meta_attribute" baseTableName="ruleform.attribute_meta_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="meta_attribute" baseTableName="attribute_meta_attribute"
             constraintName="attribute_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-117">
-        <addForeignKeyConstraint baseColumnNames="attribute_value" baseTableName="ruleform.attribute_meta_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute_value" baseTableName="attribute_meta_attribute"
             constraintName="attribute_attribute_attribute_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-118">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.attribute_meta_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="attribute_meta_attribute"
             constraintName="attribute_attribute_base_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-119">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.attribute_meta_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="attribute_meta_attribute"
             constraintName="attribute_attribute_unit_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.unit" />
+            referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-120">
-        <addForeignKeyConstraint baseColumnNames="unit_value" baseTableName="ruleform.attribute_meta_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit_value" baseTableName="attribute_meta_attribute"
             constraintName="attribute_attribute_unit_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.unit" />
+            referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-121">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.attribute_meta_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="attribute_meta_attribute"
             constraintName="attribute_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-375">
-        <addUniqueConstraint columnNames="attribute, meta_attribute, sequence_number" constraintName="attribute_attribute_base_attribute_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.attribute_meta_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="attribute, meta_attribute, sequence_number" constraintName="attribute_attribute_base_attribute_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="attribute_meta_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-438">
-        <createIndex indexName="attribute_attribute_attribute_fkey_idx" tableName="ruleform.attribute_meta_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="attribute_attribute_attribute_fkey_idx" tableName="attribute_meta_attribute" unique="false">
             <column name="meta_attribute" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-439">
-        <createIndex indexName="attribute_attribute_attribute_value_fkey_idx" tableName="ruleform.attribute_meta_attribute"
+        <createIndex schemaName="ruleform" indexName="attribute_attribute_attribute_value_fkey_idx" tableName="attribute_meta_attribute"
             unique="false"
         >
             <column name="attribute_value" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-440">
-        <createIndex indexName="attribute_attribute_base_attribute_fkey_idx" tableName="ruleform.attribute_meta_attribute"
+        <createIndex schemaName="ruleform" indexName="attribute_attribute_base_attribute_fkey_idx" tableName="attribute_meta_attribute"
             unique="false"
         >
             <column name="attribute" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-441">
-        <createIndex indexName="attribute_meta_attribute_updated_by_fkey_idx" tableName="ruleform.attribute_meta_attribute"
+        <createIndex schemaName="ruleform" indexName="attribute_meta_attribute_updated_by_fkey_idx" tableName="attribute_meta_attribute"
             unique="false"
         >
             <column name="updated_by" />

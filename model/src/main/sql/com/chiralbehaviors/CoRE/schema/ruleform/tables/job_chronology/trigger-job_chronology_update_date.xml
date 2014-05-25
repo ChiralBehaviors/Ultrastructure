@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER job_chronology_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.job_chronology FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER job_chronology_update_date ON ruleform.job_chronology; </rollback>
+            job_chronology FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER job_chronology_update_date ON job_chronology; </rollback>
     </changeSet>
 </databaseChangeLog>

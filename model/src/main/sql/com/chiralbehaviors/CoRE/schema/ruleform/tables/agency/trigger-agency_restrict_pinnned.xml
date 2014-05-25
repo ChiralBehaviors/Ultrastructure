@@ -7,8 +7,8 @@
 
     <changeSet id="1"
         author="hhildebrand">
-        <sql> CREATE TRIGGER agency_restrict_pinned BEFORE UPDATE OR DELETE ON ruleform.agency
-            FOR EACH ROW EXECUTE PROCEDURE ruleform.restrict_pinned(); </sql>
-        <rollback> DROP TRIGGER agency_restrict_pinned ON ruleform.agency; </rollback>
+        <sql> CREATE TRIGGER agency_restrict_pinned BEFORE UPDATE OR DELETE ON agency
+            FOR EACH ROW EXECUTE PROCEDURE restrict_pinned(); </sql>
+        <rollback> DROP TRIGGER agency_restrict_pinned ON agency; </rollback>
     </changeSet>
 </databaseChangeLog>

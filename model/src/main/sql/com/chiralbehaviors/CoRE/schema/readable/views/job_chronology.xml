@@ -16,9 +16,9 @@
                     base.notes, 
                     up.name AS updated_by, 
                     base.update_date
-			   FROM ruleform.job_chronology base
-			   JOIN ruleform.status_code s ON base.status = s.id
-			   JOIN ruleform.agency up ON base.updated_by = up.id;
+			   FROM job_chronology base
+			   JOIN status_code s ON base.status = s.id
+			   JOIN agency up ON base.updated_by = up.id;
 			
 			ALTER TABLE readable.job_chronology
 			  OWNER TO core;

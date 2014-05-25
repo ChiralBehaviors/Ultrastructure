@@ -202,9 +202,9 @@
                         <configuration>
                             <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                             <driver>org.postgresql.Driver</driver>
-                            <url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</url>
-                            <username>${testing.db.login}</username>
-                            <password>${testing.db.password}</password>
+                            <url>jdbc:postgresql://${db.server}:${db.port}/core</url>
+                            <username>${db.login}</username>
+                            <password>${db.password}</password>
                             <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml</changeLogFile>
                             <verbose>false</verbose>
                         </configuration>
@@ -228,9 +228,9 @@
                             </dependency>
                         </dependencies>
                         <configuration>
-                            <jdbcUrl>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbcUrl>
-                            <username>${testing.db.login}</username>
-                            <password>${testing.db.password}</password>
+                            <jdbcUrl>jdbc:postgresql://${db.server}:${db.port}/core</jdbcUrl>
+                            <username>${db.login}</username>
+                            <password>${db.password}</password>
                             <excluded>
                                 <resource>
                                     <groupId>com.hellblazer</groupId>
@@ -268,9 +268,9 @@
                                 </goals>
                                 <configuration>
                                     <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</url>
-                                    <username>${testing.db.login}</username>
-                                    <password>${testing.db.password}</password>
+                                    <url>jdbc:postgresql://${db.server}:${db.port}/core</url>
+                                    <username>${db.login}</username>
+                                    <password>${db.password}</password>
                                     <autocommit>true</autocommit>
                                     <sqlCommand>SELECT sqlj.set_classpath('ruleform',
                                         '${pljavaClassPath}');</sqlCommand>

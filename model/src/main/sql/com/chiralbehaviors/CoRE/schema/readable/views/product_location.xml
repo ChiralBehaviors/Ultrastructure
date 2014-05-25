@@ -9,12 +9,12 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.product_location AS 
 			 SELECT bl.id, res.name AS agency, b.name AS product, rel.name AS relationship, l.name AS location, bl.notes, up.name AS updated_by, bl.update_date
-			   FROM ruleform.product_location bl
-			   JOIN ruleform.agency res ON bl.agency = res.id
-			   JOIN ruleform.product b ON bl.product = b.id
-			   JOIN ruleform.relationship rel ON bl.relationship = rel.id
-			   JOIN ruleform.location l ON bl.location = l.id
-			   JOIN ruleform.agency up ON bl.updated_by = up.id;
+			   FROM product_location bl
+			   JOIN agency res ON bl.agency = res.id
+			   JOIN product b ON bl.product = b.id
+			   JOIN relationship rel ON bl.relationship = rel.id
+			   JOIN location l ON bl.location = l.id
+			   JOIN agency up ON bl.updated_by = up.id;
 			
 			ALTER TABLE readable.product_location
 			  OWNER TO core;

@@ -20,12 +20,12 @@
 			     aa.notes, 
 			     up.name AS updated_by, 
 			     aa.update_date
-			   FROM ruleform.attribute_meta_attribute aa
-			   JOIN ruleform.attribute ba ON ba.id = aa.attribute
-			   JOIN ruleform.attribute a ON aa.meta_attribute = a.id
-			   LEFT JOIN ruleform.attribute av ON aa.attribute_value = av.id
-			   LEFT JOIN ruleform.unit u ON aa.unit_value = u.id
-			   JOIN ruleform.agency up ON aa.updated_by = up.id;
+			   FROM attribute_meta_attribute aa
+			   JOIN attribute ba ON ba.id = aa.attribute
+			   JOIN attribute a ON aa.meta_attribute = a.id
+			   LEFT JOIN attribute av ON aa.attribute_value = av.id
+			   LEFT JOIN unit u ON aa.unit_value = u.id
+			   JOIN agency up ON aa.updated_by = up.id;
 			
 			ALTER TABLE readable.attribute_meta_attribute
 			  OWNER TO core;

@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-46">
-        <createTable remarks="Attributes attached to a specific invocation of an Event" tableName="ruleform.protocol_attribute">
+        <createTable schemaName="ruleform" remarks="Attributes attached to a specific invocation of an Event" tableName="protocol_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="protocol_attribute_pkey" />
             </column>
@@ -20,7 +20,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when a protocol can have multiple values for a given Attribute"
-                type="ruleform.sequence_number"
+                type="sequence_number"
             >
                 <constraints nullable="false" />
             </column>
@@ -45,50 +45,50 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.protocol_attribute" />
+            <dropTable tableName="protocol_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-274">
-        <addForeignKeyConstraint baseColumnNames="agency_value" baseTableName="ruleform.protocol_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency_value" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-275">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.protocol_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-289">
-        <addForeignKeyConstraint baseColumnNames="location_value" baseTableName="ruleform.protocol_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location_value" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_location_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.location" />
+            referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-290">
-        <addForeignKeyConstraint baseColumnNames="product_value" baseTableName="ruleform.protocol_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_value" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.product" />
+            referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-291">
-        <addForeignKeyConstraint baseColumnNames="protocol" baseTableName="ruleform.protocol_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="protocol" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_protocol_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.protocol" />
+            referencedColumnNames="id" referencedTableName="protocol" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-292">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.protocol_attribute" constraintName="protocol_attribute_units_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="protocol_attribute" constraintName="protocol_attribute_units_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-293">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.protocol_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-406">
-        <addUniqueConstraint columnNames="protocol, attribute, sequence_number" constraintName="protocol_attribute_sequence_number_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.protocol_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="protocol, attribute, sequence_number" constraintName="protocol_attribute_sequence_number_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="protocol_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-511">
-        <createIndex indexName="protocol_attribute_updated_by_fkey_idx" tableName="ruleform.protocol_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="protocol_attribute_updated_by_fkey_idx" tableName="protocol_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

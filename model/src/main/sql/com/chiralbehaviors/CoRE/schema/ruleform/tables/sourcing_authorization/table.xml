@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-52">
-        <createTable remarks="Defines rules stating what network relationships are authorized for particular agencys" tableName="ruleform.sourcing_authorization">
+        <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular agencys" tableName="sourcing_authorization">
             <column name="owner" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -33,35 +33,35 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.sourcing_authorization" />
+            <dropTable tableName="sourcing_authorization" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-317">
-        <addForeignKeyConstraint baseColumnNames="owner" baseTableName="ruleform.sourcing_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="owner" baseTableName="sourcing_authorization"
             constraintName="sourcing_authorization_consumer_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-318">
-        <addForeignKeyConstraint baseColumnNames="location" baseTableName="ruleform.sourcing_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location" baseTableName="sourcing_authorization"
             constraintName="sourcing_authorization_location_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.location" />
+            referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-319">
-        <addForeignKeyConstraint baseColumnNames="product" baseTableName="ruleform.sourcing_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product" baseTableName="sourcing_authorization"
             constraintName="sourcing_authorization_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.product" />
+            referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-320">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.sourcing_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="sourcing_authorization"
             constraintName="sourcing_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-411">
-        <addUniqueConstraint columnNames="owner, product, location" constraintName="sourcing_athorization_classification_attri_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.sourcing_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="owner, product, location" constraintName="sourcing_athorization_classification_attri_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="sourcing_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-517">
-        <createIndex indexName="sourcing_authorization_updated_by_fkey_idx" tableName="ruleform.sourcing_authorization" unique="false">
+        <createIndex schemaName="ruleform" indexName="sourcing_authorization_updated_by_fkey_idx" tableName="sourcing_authorization" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

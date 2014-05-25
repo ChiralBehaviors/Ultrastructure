@@ -7,14 +7,14 @@
 
     <changeSet id="3" author="hhildebrand">
         <sql><![CDATA[
-            CREATE DOMAIN ruleform.sequence_number
+            CREATE DOMAIN sequence_number
               AS integer
               DEFAULT 1
                CONSTRAINT sequence_number_check CHECK ((VALUE >= 1));
-            ALTER DOMAIN ruleform.sequence_number
+            ALTER DOMAIN sequence_number
               OWNER TO core;
              ]]>
         </sql>
-        <rollback> DROP DOMAIN ruleform.sequence_number; </rollback>
+        <rollback> DROP DOMAIN sequence_number; </rollback>
     </changeSet>
 </databaseChangeLog>

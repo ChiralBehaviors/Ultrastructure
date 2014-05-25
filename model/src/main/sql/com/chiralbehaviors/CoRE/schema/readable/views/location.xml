@@ -9,8 +9,8 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.location AS 
 			 SELECT l.id, l.name, l.description, l.notes, l.pinned, r.name AS updated_by, l.update_date
-			   FROM ruleform.location l
-			   JOIN ruleform.agency r ON l.updated_by = r.id;
+			   FROM location l
+			   JOIN agency r ON l.updated_by = r.id;
 			
 			ALTER TABLE readable.location
 			  OWNER TO core;

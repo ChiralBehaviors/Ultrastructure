@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-23">
-        <createTable remarks="Tracks when status changes occur on any given job" tableName="ruleform.job_chronology">
+        <createTable schemaName="ruleform" remarks="Tracks when status changes occur on any given job" tableName="job_chronology">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="job_chronology_pkey" />
             </column>
@@ -37,30 +37,30 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.job_chronology" />
+            <dropTable tableName="job_chronology" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-164">
-        <addForeignKeyConstraint baseColumnNames="job" baseTableName="ruleform.job_chronology" constraintName="job_chronology_job_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="job" baseTableName="job_chronology" constraintName="job_chronology_job_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.job" />
+            referencedTableName="job" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-165">
-        <addForeignKeyConstraint baseColumnNames="status" baseTableName="ruleform.job_chronology" constraintName="job_chronology_old_status_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="status" baseTableName="job_chronology" constraintName="job_chronology_old_status_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.status_code" />
+            referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-166">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.job_chronology"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="job_chronology"
             constraintName="job_chronology_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-385">
-        <addUniqueConstraint columnNames="job, sequence" constraintName="job_chronology_job_sequence_key" deferrable="false"
-            disabled="false" initiallyDeferred="false" tableName="ruleform.job_chronology" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="job, sequence" constraintName="job_chronology_job_sequence_key" deferrable="false"
+            disabled="false" initiallyDeferred="false" tableName="job_chronology" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-465">
-        <createIndex indexName="job_chronology_updated_by_fkey_idx" tableName="ruleform.job_chronology" unique="false">
+        <createIndex schemaName="ruleform" indexName="job_chronology_updated_by_fkey_idx" tableName="job_chronology" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-12">
-        <createTable remarks="Specific location coordinates within the system" tableName="ruleform.coordinate">
+        <createTable schemaName="ruleform" remarks="Specific location coordinates within the system" tableName="coordinate">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="coordinate_pkey" />
             </column>
@@ -30,16 +30,16 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.coordinate" />
+            <dropTable tableName="coordinate" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-144">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.coordinate" constraintName="coordinate_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="coordinate" constraintName="coordinate_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-455">
-        <createIndex indexName="coordinate_updated_by_fkey_idx" tableName="ruleform.coordinate" unique="false">
+        <createIndex schemaName="ruleform" indexName="coordinate_updated_by_fkey_idx" tableName="coordinate" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

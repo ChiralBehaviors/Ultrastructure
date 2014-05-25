@@ -13,12 +13,12 @@
 			        mps.name AS parent_status_to_set, base_table.set_if_active_siblings, 
 			        base_table.notes,
 			        up.name AS updated_by, base_table.update_date
-			   FROM ruleform.product_parent_sequencing_authorization base_table
-			   JOIN ruleform.product p ON base_table.service = p.id
-			   JOIN ruleform.status_code sc ON base_table.status_code = sc.id
-			   LEFT JOIN ruleform.product mp ON base_table.parent = mp.id
-			   LEFT JOIN ruleform.status_code mps ON base_table.parent_status_to_set = mps.id
-			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			   FROM product_parent_sequencing_authorization base_table
+			   JOIN product p ON base_table.service = p.id
+			   JOIN status_code sc ON base_table.status_code = sc.id
+			   LEFT JOIN product mp ON base_table.parent = mp.id
+			   LEFT JOIN status_code mps ON base_table.parent_status_to_set = mps.id
+			   JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.product_parent_sequencing_authorization
 			  OWNER TO core;

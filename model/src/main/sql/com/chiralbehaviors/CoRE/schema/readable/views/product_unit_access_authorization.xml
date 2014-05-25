@@ -10,12 +10,12 @@
             CREATE OR REPLACE VIEW readable.product_unit_access_authorization AS 
              SELECT a.id, p.name AS product, ptr.name AS product_relationship, r.name AS relationship,
                     l.name AS unit, ctr.name AS unit_relationship
-               FROM ruleform.access_authorization a
-               JOIN ruleform.product p ON a.product1 = p.id
-               JOIN ruleform.relationship ptr ON a.parent_transitive_relationship = ptr.id
-               JOIN ruleform.relationship r ON a.relationship = r.id
-               JOIN ruleform.unit l ON a.unit2 = l.id
-               JOIN ruleform.relationship ctr ON a.child_transitive_relationship = ctr.id
+               FROM access_authorization a
+               JOIN product p ON a.product1 = p.id
+               JOIN relationship ptr ON a.parent_transitive_relationship = ptr.id
+               JOIN relationship r ON a.relationship = r.id
+               JOIN unit l ON a.unit2 = l.id
+               JOIN relationship ctr ON a.child_transitive_relationship = ctr.id
                WHERE a.authorization_type = '9';
             
             ALTER TABLE readable.product_unit_access_authorization

@@ -19,7 +19,7 @@
         <main.sql>${project.basedir}/src/main/sql</main.sql>
         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
 
-        <jdbc.url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/core</jdbc.url>
+        <jdbc.url>jdbc:postgresql://${db.server}:${db.port}/core</jdbc.url>
         <jdbc.driver>org.postgresql.Driver</jdbc.driver>
     </properties>
 
@@ -390,8 +390,8 @@
                             <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                             <driver>${jdbc.driver}</driver>
                             <url>${jdbc.url}</url>
-                            <username>${testing.db.login}</username>
-                            <password>${testing.db.password}</password>
+                            <username>${db.login}</username>
+                            <password>${db.password}</password>
                             <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
                             <verbose>false</verbose>
                         </configuration>
@@ -417,8 +417,8 @@
                         </dependencies>
                         <configuration>
                             <jdbcUrl>${jdbc.url}</jdbcUrl>
-                            <username>${testing.db.login}</username>
-                            <password>${testing.db.password}</password>
+                            <username>${db.login}</username>
+                            <password>${db.password}</password>
                             <classpathProperty>pljavaClassPath</classpathProperty>
                         </configuration>
                         <executions>
@@ -450,8 +450,8 @@
                                 <configuration>
                                     <driver>org.postgresql.Driver</driver>
                                     <url>${jdbc.url}</url>
-                                    <username>${testing.db.login}</username>
-                                    <password>${testing.db.password}</password>
+                                    <username>${db.login}</username>
+                                    <password>${db.password}</password>
                                     <autocommit>true</autocommit>
                                     <sqlCommand>SELECT sqlj.set_classpath('ruleform',
                                         '${pljavaClassPath}');</sqlCommand>

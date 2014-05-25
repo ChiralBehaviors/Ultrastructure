@@ -7,14 +7,14 @@
 
 	<changeSet id="1" author="hhildebrand">
 		<sql>
-			CREATE SEQUENCE ruleform.job_chronology_seq
+			CREATE SEQUENCE job_chronology_seq
 			INCREMENT 1
 			MINVALUE 1
 			MAXVALUE 9223372036854775807
 			START 4
 			CACHE 1;
 			ALTER TABLE
-			ruleform.job_chronology_seq
+			job_chronology_seq
 			OWNER TO core;
 		</sql>
 	</changeSet>

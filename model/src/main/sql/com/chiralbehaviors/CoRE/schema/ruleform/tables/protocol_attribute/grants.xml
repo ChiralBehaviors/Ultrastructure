@@ -7,9 +7,9 @@
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.protocol_attribute TO core;
-            GRANT SELECT ON TABLE ruleform.protocol_attribute TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.protocol_attribute TO core_read_write;
+            GRANT ALL ON TABLE protocol_attribute TO core;
+            GRANT SELECT ON TABLE protocol_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE protocol_attribute TO core_read_write;
             ]]>
         </sql>
         <rollback/>

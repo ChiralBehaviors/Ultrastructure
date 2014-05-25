@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER agency_network_authorization_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.agency_network_authorization FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER agency_network_authorization_update_date ON ruleform.agency_network_authorization; </rollback>
+            agency_network_authorization FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER agency_network_authorization_update_date ON agency_network_authorization; </rollback>
     </changeSet>
 </databaseChangeLog>

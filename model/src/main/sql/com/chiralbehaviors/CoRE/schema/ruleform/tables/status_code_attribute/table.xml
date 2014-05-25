@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-54">
-        <createTable tableName="ruleform.status_code_attribute">
+        <createTable schemaName="ruleform" tableName="status_code_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="status_code_attribute_pkey" />
             </column>
@@ -23,7 +23,7 @@
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
             <column name="unit" type="CHAR(22)" />
-            <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -35,49 +35,49 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.status_code_attribute" />
+            <dropTable tableName="status_code_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-321">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.status_code_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="status_code_attribute"
             constraintName="status_code_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-327">
-        <addForeignKeyConstraint baseColumnNames="status_code" baseTableName="ruleform.status_code_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="status_code" baseTableName="status_code_attribute"
             constraintName="status_code_attribute_status_code_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.status_code" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-328">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.status_code_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="status_code_attribute"
             constraintName="status_code_attribute_unit_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.unit" />
+            referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-329">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.status_code_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="status_code_attribute"
             constraintName="status_code_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-413">
-        <addUniqueConstraint columnNames="status_code, attribute" constraintName="status_code_attribute_status_code_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.status_code_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="status_code, attribute" constraintName="status_code_attribute_status_code_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="status_code_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-519">
-        <createIndex indexName="status_code_attribute_updated_by_fkey_idx" tableName="ruleform.status_code_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="status_code_attribute_updated_by_fkey_idx" tableName="status_code_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>
 
 
     <changeSet id="2" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.status_code_attribute OWNER TO core; </sql>
+        <sql> ALTER TABLE status_code_attribute OWNER TO core; </sql>
         <rollback />
     </changeSet>
     <changeSet id="4" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.status_code_attribute TO core;
-            GRANT SELECT ON TABLE ruleform.status_code_attribute TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.status_code_attribute TO core_read_write;
+            GRANT ALL ON TABLE status_code_attribute TO core;
+            GRANT SELECT ON TABLE status_code_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE status_code_attribute TO core_read_write;
             ]]>
         </sql>
         <rollback />

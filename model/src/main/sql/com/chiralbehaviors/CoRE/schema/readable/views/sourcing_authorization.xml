@@ -11,11 +11,11 @@
              SELECT sa.id, owner.name as owner, product.name as product, location.name as location,
                     sa.notes,
                     up.name AS updated_by, sa.update_date
-               FROM ruleform.sourcing_authorization sa
-               JOIN ruleform.agency owner ON sa.owner = owner.id
-               JOIN ruleform.product product ON sa.product = product.id
-               JOIN ruleform.location location ON sa.location = location.id
-               JOIN ruleform.agency up ON sa.updated_by = up.id;
+               FROM sourcing_authorization sa
+               JOIN agency owner ON sa.owner = owner.id
+               JOIN product product ON sa.product = product.id
+               JOIN location location ON sa.location = location.id
+               JOIN agency up ON sa.updated_by = up.id;
             
             ALTER TABLE readable.sourcing_authorization
               OWNER TO core;

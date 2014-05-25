@@ -19,11 +19,11 @@
 			     ra.notes,
 			     up.name AS updated_by, 
 			     ra.update_date
-			   FROM ruleform.agency_attribute ra
-			   JOIN ruleform.agency r ON ra.agency = r.id
-			   JOIN ruleform.attribute a ON ra.attribute = a.id
-			   LEFT JOIN ruleform.unit u ON ra.unit = u.id
-			   JOIN ruleform.agency up ON ra.updated_by = up.id;
+			   FROM agency_attribute ra
+			   JOIN agency r ON ra.agency = r.id
+			   JOIN attribute a ON ra.attribute = a.id
+			   LEFT JOIN unit u ON ra.unit = u.id
+			   JOIN agency up ON ra.updated_by = up.id;
 			
 			ALTER TABLE readable.agency_attribute
 			  OWNER TO core;

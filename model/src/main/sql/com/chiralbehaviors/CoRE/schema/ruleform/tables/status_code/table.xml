@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-53">
-        <createTable remarks="Existential ruleform for all status codes (event outcomes)" tableName="ruleform.status_code">
+        <createTable schemaName="ruleform" remarks="Existential ruleform for all status codes (event outcomes)" tableName="status_code">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="status_code_pkey" />
             </column>
@@ -40,16 +40,16 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.status_code" />
+            <dropTable tableName="status_code" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-338">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.status_code" constraintName="status_code_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="status_code" constraintName="status_code_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-521">
-        <createIndex indexName="status_code_updated_by_fkey_idx" tableName="ruleform.status_code" unique="false">
+        <createIndex schemaName="ruleform" indexName="status_code_updated_by_fkey_idx" tableName="status_code" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

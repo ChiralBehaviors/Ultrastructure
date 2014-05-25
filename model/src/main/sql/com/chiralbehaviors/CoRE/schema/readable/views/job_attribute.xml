@@ -13,10 +13,10 @@
 			        base_table.text_value, base_table.numeric_value, 
 			        base_table.integer_value, u.name AS unit,
 			        up.name AS updated_by, base_table.update_date
-			   FROM ruleform.job_attribute base_table
-			   JOIN ruleform.attribute at ON base_table.attribute = at.id
-			   LEFT JOIN ruleform.unit u ON base_table.unit = u.id
-			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			   FROM job_attribute base_table
+			   JOIN attribute at ON base_table.attribute = at.id
+			   LEFT JOIN unit u ON base_table.unit = u.id
+			   JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.job_attribute
 			  OWNER TO core;

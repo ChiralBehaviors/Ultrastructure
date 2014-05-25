@@ -10,12 +10,12 @@
             CREATE OR REPLACE VIEW readable.agency_location_access_authorization AS 
              SELECT a.id, rsc.name AS agency, ptr.name AS agency_relationship, r.name AS relationship,
                     l.name AS location, ctr.name AS location_relationship
-               FROM ruleform.access_authorization a
-               JOIN ruleform.agency rsc ON a.agency1 = rsc.id
-               JOIN ruleform.relationship ptr ON a.parent_transitive_relationship = ptr.id
-               JOIN ruleform.relationship r ON a.relationship = r.id
-               JOIN ruleform.location l ON a.location2 = l.id
-               JOIN ruleform.relationship ctr ON a.child_transitive_relationship = ctr.id
+               FROM access_authorization a
+               JOIN agency rsc ON a.agency1 = rsc.id
+               JOIN relationship ptr ON a.parent_transitive_relationship = ptr.id
+               JOIN relationship r ON a.relationship = r.id
+               JOIN location l ON a.location2 = l.id
+               JOIN relationship ctr ON a.child_transitive_relationship = ctr.id
                WHERE a.authorization_type = '1';
             
             ALTER TABLE readable.agency_location_access_authorization

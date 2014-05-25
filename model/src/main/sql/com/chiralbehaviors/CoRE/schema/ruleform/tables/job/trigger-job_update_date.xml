@@ -6,8 +6,8 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="1" author="hhildebrand">
-        <sql> CREATE TRIGGER job_update_date BEFORE INSERT OR UPDATE ON ruleform.job FOR EACH ROW
-            EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER job_update_date ON ruleform.job; </rollback>
+        <sql> CREATE TRIGGER job_update_date BEFORE INSERT OR UPDATE ON job FOR EACH ROW
+            EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER job_update_date ON job; </rollback>
     </changeSet>
 </databaseChangeLog>

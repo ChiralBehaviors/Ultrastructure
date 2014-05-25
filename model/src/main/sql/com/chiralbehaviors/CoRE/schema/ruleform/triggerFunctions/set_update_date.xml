@@ -7,7 +7,7 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.set_update_date()
+            CREATE OR REPLACE FUNCTION set_update_date()
               RETURNS trigger AS
             $BODY$
             BEGIN
@@ -17,11 +17,11 @@
             $BODY$
               LANGUAGE plpgsql VOLATILE
               COST 100;
-            ALTER FUNCTION ruleform.set_update_date()
+            ALTER FUNCTION set_update_date()
               OWNER TO core;
-            COMMENT ON FUNCTION ruleform.set_update_date() IS 'Trigger function used to automatically set the update_date field of a ruleform to the current time.';
+            COMMENT ON FUNCTION set_update_date() IS 'Trigger function used to automatically set the update_date field of a ruleform to the current time.';
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.set_update_date(); </rollback>
+        <rollback> DROP FUNCTION set_update_date(); </rollback>
     </changeSet>
 </databaseChangeLog>

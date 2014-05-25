@@ -13,14 +13,14 @@
 	                    po.name AS product_ordered, dt.name AS deliver_to, 
 	                    df.name AS deliver_from, base_table.stop_on_match,
 	                    up.name AS updated_by, base_table.update_date
-				   FROM ruleform.meta_protocol base_table
-				   JOIN ruleform.product s ON base_table.service = s.id
-                   LEFT JOIN ruleform.relationship rr ON base_table.requesting_agency = rr.id
-				   LEFT JOIN ruleform.relationship st ON base_table.service_type = st.id
-				   LEFT JOIN ruleform.relationship po ON base_table.product_ordered = po.id
-                   LEFT JOIN ruleform.relationship dt ON base_table.deliver_to= dt.id
-                   LEFT JOIN ruleform.relationship df ON base_table.deliver_from = df.id
-				   JOIN ruleform.agency up ON base_table.updated_by = up.id;
+				   FROM meta_protocol base_table
+				   JOIN product s ON base_table.service = s.id
+                   LEFT JOIN relationship rr ON base_table.requesting_agency = rr.id
+				   LEFT JOIN relationship st ON base_table.service_type = st.id
+				   LEFT JOIN relationship po ON base_table.product_ordered = po.id
+                   LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
+                   LEFT JOIN relationship df ON base_table.deliver_from = df.id
+				   JOIN agency up ON base_table.updated_by = up.id;
 				
 				ALTER TABLE readable.meta_protocol
 				  OWNER TO core;

@@ -7,7 +7,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet author="hhildebrand" id="1390879803225-7">
-        <createTable tableName="ruleform.agency_product">
+        <createTable schemaName="ruleform" tableName="agency_product">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="agency_product_pkey"/>
             </column>
@@ -29,41 +29,41 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.agency_product"/>
+            <dropTable tableName="agency_product"/>
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-106">
-        <addForeignKeyConstraint baseColumnNames="agency" baseTableName="ruleform.agency_product" constraintName="agency_product_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency"/>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency" baseTableName="agency_product" constraintName="agency_product_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency"/>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-107">
-        <addForeignKeyConstraint baseColumnNames="product" baseTableName="ruleform.agency_product" constraintName="agency_product_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product"/>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product" baseTableName="agency_product" constraintName="agency_product_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product"/>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-108">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.agency_product" constraintName="agency_product_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship"/>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="agency_product" constraintName="agency_product_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship"/>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-109">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.agency_product" constraintName="agency_product_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency"/>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="agency_product" constraintName="agency_product_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency"/>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-373">
-        <addUniqueConstraint columnNames="agency, relationship, product" constraintName="agency_product_agency_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.agency_product"/>
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, relationship, product" constraintName="agency_product_agency_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="agency_product"/>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-432">
-        <createIndex indexName="agency_product_agency_fkey_idx" tableName="ruleform.agency_product" unique="false">
+        <createIndex schemaName="ruleform" indexName="agency_product_agency_fkey_idx" tableName="agency_product" unique="false">
             <column name="agency"/>
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-433">
-        <createIndex indexName="agency_product_product_fkey_idx" tableName="ruleform.agency_product" unique="false">
+        <createIndex schemaName="ruleform" indexName="agency_product_product_fkey_idx" tableName="agency_product" unique="false">
             <column name="product"/>
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-434">
-        <createIndex indexName="agency_product_relationship_fkey_idx" tableName="ruleform.agency_product" unique="false">
+        <createIndex schemaName="ruleform" indexName="agency_product_relationship_fkey_idx" tableName="agency_product" unique="false">
             <column name="relationship"/>
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-435">
-        <createIndex indexName="agency_product_updated_by_fkey_idx" tableName="ruleform.agency_product" unique="false">
+        <createIndex schemaName="ruleform" indexName="agency_product_updated_by_fkey_idx" tableName="agency_product" unique="false">
             <column name="updated_by"/>
         </createIndex>
     </changeSet>

@@ -13,11 +13,11 @@
 			        ba.text_value, u.name AS unit, ba.notes, 
 			        up.name AS updated_by, 
 			        ba.update_date
-			   FROM ruleform.product_attribute ba
-			   JOIN ruleform.product b ON ba.product = b.id
-			   JOIN ruleform.attribute a ON ba.attribute = a.id
-			   LEFT JOIN ruleform.unit u ON ba.unit = u.id
-			   JOIN ruleform.agency up ON ba.updated_by = up.id;
+			   FROM product_attribute ba
+			   JOIN product b ON ba.product = b.id
+			   JOIN attribute a ON ba.attribute = a.id
+			   LEFT JOIN unit u ON ba.unit = u.id
+			   JOIN agency up ON ba.updated_by = up.id;
 			
 			ALTER TABLE readable.product_attribute
 			  OWNER TO core;

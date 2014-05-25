@@ -9,8 +9,8 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.product AS 
 			 SELECT b.id, b.name, b.description, b.notes, b.pinned, up.name AS updated_by, b.update_date
-			   FROM ruleform.product b
-			   JOIN ruleform.agency up ON b.updated_by = up.id;
+			   FROM product b
+			   JOIN agency up ON b.updated_by = up.id;
 			
 			ALTER TABLE readable.product
 			  OWNER TO core;

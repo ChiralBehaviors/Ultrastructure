@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-22">
-        <createTable remarks="Attributes attached to a specific invocation of an Event" tableName="ruleform.job_attribute">
+        <createTable schemaName="ruleform" remarks="Attributes attached to a specific invocation of an Event" tableName="job_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="job_attribute_pkey" />
             </column>
@@ -17,7 +17,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when a Job can have multiple values for a given Attribute"
-                type="ruleform.sequence_number"
+                type="sequence_number"
             >
                 <constraints nullable="false" />
             </column>
@@ -42,35 +42,35 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.job_attribute" />
+            <dropTable tableName="job_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-160">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.job_attribute" constraintName="job_attribute_attribute_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="job_attribute" constraintName="job_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.attribute" />
+            referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-161">
-        <addForeignKeyConstraint baseColumnNames="job" baseTableName="ruleform.job_attribute" constraintName="job_attribute_job_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="job" baseTableName="job_attribute" constraintName="job_attribute_job_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.job" />
+            referencedTableName="job" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-162">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.job_attribute" constraintName="job_attribute_units_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="job_attribute" constraintName="job_attribute_units_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-163">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.job_attribute" constraintName="job_attribute_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="job_attribute" constraintName="job_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-384">
-        <addUniqueConstraint columnNames="job, attribute, sequence_number" constraintName="job_attribute_sequence_number_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.job_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="job, attribute, sequence_number" constraintName="job_attribute_sequence_number_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="job_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-464">
-        <createIndex indexName="job_attribute_updated_by_fkey_idx" tableName="ruleform.job_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="job_attribute_updated_by_fkey_idx" tableName="job_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

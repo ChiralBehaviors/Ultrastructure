@@ -9,8 +9,8 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.interval AS 
 			 SELECT r.id, r.name, r.description, r.notes, r.pinned, up.name AS updated_by, r.update_date
-			   FROM ruleform.interval r
-			   JOIN ruleform.interval up ON r.updated_by = up.id;
+			   FROM interval r
+			   JOIN interval up ON r.updated_by = up.id;
 			
 			ALTER TABLE readable.interval
 			  OWNER TO core;

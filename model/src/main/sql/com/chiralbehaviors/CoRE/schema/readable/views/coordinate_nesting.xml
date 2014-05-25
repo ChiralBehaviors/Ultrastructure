@@ -9,11 +9,11 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.coordinate_nesting AS 
 			 SELECT n.id, a.name AS attribute, n.sequence_number, ia.name AS inner_attribute, n.operation, oa.name AS outer_attribute, n.notes, up.name AS updated_by, n.update_date
-			   FROM ruleform.coordinate_nesting n
-			   JOIN ruleform.attribute a ON a.id = n.attribute
-			   JOIN ruleform.attribute ia ON ia.id = n.inner_attribute
-			   JOIN ruleform.attribute oa ON oa.id = n.outer_attribute
-			   JOIN ruleform.agency up ON up.id = n.updated_by;
+			   FROM coordinate_nesting n
+			   JOIN attribute a ON a.id = n.attribute
+			   JOIN attribute ia ON ia.id = n.inner_attribute
+			   JOIN attribute oa ON oa.id = n.outer_attribute
+			   JOIN agency up ON up.id = n.updated_by;
 			
 			ALTER TABLE readable.coordinate_nesting
 			  OWNER TO core;

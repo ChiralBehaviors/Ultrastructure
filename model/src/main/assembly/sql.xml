@@ -16,14 +16,4 @@
             <outputDirectory>/model</outputDirectory>
         </fileSet>
     </fileSets>
-    <files>
-        <file>
-            <source>target/classes/create-roles.sql</source>
-            <outputDirectory>/model</outputDirectory>
-        </file>
-        <file>
-            <source>target/classes/create-db.sql</source>
-            <outputDirectory>/model</outputDirectory>
-        </file>
-    </files>
 </assembly>

@@ -14,10 +14,10 @@
 			        base_table.integer_value, u.name AS unit, 
 			        base_table.notes,
 			        up.name AS updated_by, base_table.update_date
-			   FROM ruleform.protocol_attribute base_table
-			   JOIN ruleform.attribute at ON base_table.attribute = at.id
-			   LEFT JOIN ruleform.unit u ON base_table.unit = u.id
-			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			   FROM protocol_attribute base_table
+			   JOIN attribute at ON base_table.attribute = at.id
+			   LEFT JOIN unit u ON base_table.unit = u.id
+			   JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.protocol_attribute
 			  OWNER TO core;

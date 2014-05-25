@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-49">
-        <createTable tableName="ruleform.relationship_attribute">
+        <createTable schemaName="ruleform" tableName="relationship_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="relationship_attribute_pkey" />
             </column>
@@ -23,7 +23,7 @@
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
             <column name="unit" type="CHAR(22)" />
-            <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -35,53 +35,53 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.relationship_attribute" />
+            <dropTable tableName="relationship_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-302">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.relationship_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="relationship_attribute"
             constraintName="relationship_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-308">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.relationship_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="relationship_attribute"
             constraintName="relationship_attribute_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-309">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.relationship_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="relationship_attribute"
             constraintName="relationship_attribute_unit_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.unit" />
+            referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-310">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.relationship_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="relationship_attribute"
             constraintName="relationship_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-311">
-        <addForeignKeyConstraint baseColumnNames="inverse" baseTableName="ruleform.relationship" constraintName="relationship_inverse_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="inverse" baseTableName="relationship" constraintName="relationship_inverse_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.relationship" />
+            referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-408">
-        <addUniqueConstraint columnNames="relationship, attribute" constraintName="relationship_attribute_relationship_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.relationship_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="relationship, attribute" constraintName="relationship_attribute_relationship_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="relationship_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-514">
-        <createIndex indexName="relationship_attribute_updated_by_fkey_idx" tableName="ruleform.relationship_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="relationship_attribute_updated_by_fkey_idx" tableName="relationship_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>
 
     <changeSet id="2" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.relationship_attribute OWNER TO core; </sql>
+        <sql> ALTER TABLE relationship_attribute OWNER TO core; </sql>
         <rollback />
     </changeSet>
     <changeSet id="4" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.relationship_attribute TO core;
-            GRANT SELECT ON TABLE ruleform.relationship_attribute TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.relationship_attribute TO core_read_write;
+            GRANT ALL ON TABLE relationship_attribute TO core;
+            GRANT SELECT ON TABLE relationship_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE relationship_attribute TO core_read_write;
             ]]>
         </sql>
         <rollback />

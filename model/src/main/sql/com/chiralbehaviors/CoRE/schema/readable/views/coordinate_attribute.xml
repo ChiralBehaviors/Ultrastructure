@@ -19,11 +19,11 @@
 			     ca.notes,
 			     up.name AS updated_by, 
 			     ca.update_date
-			   FROM ruleform.coordinate_attribute ca
-			   JOIN ruleform.coordinate c ON c.id = ca.coordinate
-			   JOIN ruleform.attribute a ON a.id = ca.attribute
-			   LEFT JOIN ruleform.product bv ON bv.id = ca.product_value
-			   JOIN ruleform.agency up ON up.id = ca.updated_by;
+			   FROM coordinate_attribute ca
+			   JOIN coordinate c ON c.id = ca.coordinate
+			   JOIN attribute a ON a.id = ca.attribute
+			   LEFT JOIN product bv ON bv.id = ca.product_value
+			   JOIN agency up ON up.id = ca.updated_by;
 			
 			ALTER TABLE readable.coordinate_attribute
 			  OWNER TO core;

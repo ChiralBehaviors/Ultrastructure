@@ -10,12 +10,12 @@
             CREATE OR REPLACE VIEW readable.location_product_access_authorization AS 
              SELECT a.id, l.name AS location, ptr.name AS location_relationship, r.name AS relationship,
                     p.name AS product, ctr.name AS product_relationship
-               FROM ruleform.access_authorization a
-               JOIN ruleform.location l ON a.location1 = l.id
-               JOIN ruleform.relationship ptr ON a.parent_transitive_relationship = ptr.id
-               JOIN ruleform.relationship r ON a.relationship = r.id
-               JOIN ruleform.product p ON a.product2 = p.id
-               JOIN ruleform.relationship ctr ON a.child_transitive_relationship = ctr.id
+               FROM access_authorization a
+               JOIN location l ON a.location1 = l.id
+               JOIN relationship ptr ON a.parent_transitive_relationship = ptr.id
+               JOIN relationship r ON a.relationship = r.id
+               JOIN product p ON a.product2 = p.id
+               JOIN relationship ctr ON a.child_transitive_relationship = ctr.id
                WHERE a.authorization_type = '5';
             
             ALTER TABLE readable.location_product_access_authorization

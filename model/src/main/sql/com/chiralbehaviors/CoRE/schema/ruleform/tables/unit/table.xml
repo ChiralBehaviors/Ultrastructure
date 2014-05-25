@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-60">
-        <createTable tableName="ruleform.unit">
+        <createTable schemaName="ruleform" tableName="unit">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="unit_pkey" />
             </column>
@@ -32,20 +32,20 @@
                 remarks="If the allowable values of the unit constitute an enumerated set, then this should be TRUE." type="SMALLINT" />
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.unit" />
+            <dropTable tableName="unit" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-365">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.unit" constraintName="unit_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="unit" constraintName="unit_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-420">
-        <addUniqueConstraint columnNames="name" constraintName="unit_name_key" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="ruleform.unit" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="unit_name_key" deferrable="false" disabled="false"
+            initiallyDeferred="false" tableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-526">
-        <createIndex indexName="unit_updated_by_fkey_idx" tableName="ruleform.unit" unique="false">
+        <createIndex schemaName="ruleform" indexName="unit_updated_by_fkey_idx" tableName="unit" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

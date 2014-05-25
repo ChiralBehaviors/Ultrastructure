@@ -6,8 +6,8 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-38">
-        <createTable remarks="Defines rules stating what attributes (and values thereof) are authorized for particular ProductLocation Locations"
-            tableName="ruleform.product_location_attribute_authorization"
+        <createTable schemaName="ruleform" remarks="Defines rules stating what attributes (and values thereof) are authorized for particular ProductLocation Locations"
+            tableName="product_location_attribute_authorization"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_location_attribute_authorization_pkey" />
@@ -28,7 +28,7 @@
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="ruleform.sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
             >
                 <constraints nullable="false" />
             </column>
@@ -55,41 +55,41 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.product_location_attribute_authorization" />
+            <dropTable tableName="product_location_attribute_authorization" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-229">
-        <addForeignKeyConstraint baseColumnNames="authorized_attribute" baseTableName="ruleform.product_location_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_attribute" baseTableName="product_location_attribute_authorization"
             constraintName="product_location_attribute_authorization_authorized_attribute_f" deferrable="false" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-230">
-        <addForeignKeyConstraint baseColumnNames="classification" baseTableName="ruleform.product_location_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="product_location_attribute_authorization"
             constraintName="product_location_attribute_authorization_classification_fkey" deferrable="false" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-231">
-        <addForeignKeyConstraint baseColumnNames="classifier" baseTableName="ruleform.product_location_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="product_location_attribute_authorization"
             constraintName="product_location_attribute_authorization_classifier_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-232">
-        <addForeignKeyConstraint baseColumnNames="grouping_agency" baseTableName="ruleform.product_location_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="product_location_attribute_authorization"
             constraintName="product_location_attribute_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-233">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.product_location_attribute_authorization"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product_location_attribute_authorization"
             constraintName="product_location_attribute_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-399">
-        <addUniqueConstraint columnNames="grouping_agency, classification, classifier, authorized_attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="grouping_agency, classification, classifier, authorized_attribute, sequence_number"
             constraintName="product_location_attribute_auth_classification_attri_key" deferrable="false" disabled="false" initiallyDeferred="false"
-            tableName="ruleform.product_location_attribute_authorization" />
+            tableName="product_location_attribute_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-487">
-        <createIndex indexName="product_location_attribute_authorization_updated_by_fkey_idx" tableName="ruleform.product_location_attribute_authorization"
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_authorization_updated_by_fkey_idx" tableName="product_location_attribute_authorization"
             unique="false"
         >
             <column name="updated_by" />

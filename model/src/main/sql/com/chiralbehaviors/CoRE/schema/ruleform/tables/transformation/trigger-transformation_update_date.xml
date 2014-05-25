@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER transformation_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.transformation FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER transformation_update_date ON ruleform.transformation; </rollback>
+            transformation FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER transformation_update_date ON transformation; </rollback>
     </changeSet>
 </databaseChangeLog>

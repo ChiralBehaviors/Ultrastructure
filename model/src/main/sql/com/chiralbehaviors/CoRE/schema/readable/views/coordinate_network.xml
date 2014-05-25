@@ -19,11 +19,11 @@
 			     n.notes, 
 			     u.name AS updated_by, 
 			     n.update_date
-			   FROM ruleform.coordinate_network n
-			   JOIN ruleform.coordinate p ON n.parent = p.id
-			   JOIN ruleform.relationship rel ON n.relationship = rel.id
-			   JOIN ruleform.coordinate c ON n.child = c.id
-			   JOIN ruleform.agency u ON n.updated_by = u.id;
+			   FROM coordinate_network n
+			   JOIN coordinate p ON n.parent = p.id
+			   JOIN relationship rel ON n.relationship = rel.id
+			   JOIN coordinate c ON n.child = c.id
+			   JOIN agency u ON n.updated_by = u.id;
 			
 			ALTER TABLE readable.coordinate_network
 			  OWNER TO core;

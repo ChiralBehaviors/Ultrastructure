@@ -16,12 +16,12 @@
                     n.notes, 
                     up.name AS updated_by, 
                     n.update_date
-			   FROM ruleform.product_location_network n
-			   JOIN ruleform.agency res ON res.id = n.agency
-			   JOIN ruleform.product b ON b.id = n.product
-			   JOIN ruleform.product cb ON cb.id = n.contextual_product
-			   JOIN ruleform.coordinate c ON c.id = n.coordinate
-			   JOIN ruleform.agency up ON up.id = n.updated_by;
+			   FROM product_location_network n
+			   JOIN agency res ON res.id = n.agency
+			   JOIN product b ON b.id = n.product
+			   JOIN product cb ON cb.id = n.contextual_product
+			   JOIN coordinate c ON c.id = n.coordinate
+			   JOIN agency up ON up.id = n.updated_by;
 			
 			ALTER TABLE readable.product_location_network
 			  OWNER TO core;

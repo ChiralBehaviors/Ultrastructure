@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-56">
-        <createTable tableName="ruleform.status_code_network">
+        <createTable schemaName="ruleform" tableName="status_code_network">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="status_code_network_pkey" />
             </column>
@@ -28,7 +28,7 @@
             <column name="premise2" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>
-            <column name="ordering" type="ruleform.ordinal_number" />
+            <column name="ordering" type="ordinal_number" />
             <column name="notes" type="VARCHAR(10485760)" />
             <column name="updated_by" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -38,51 +38,51 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.status_code_network" />
+            <dropTable tableName="status_code_network" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-330">
-        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.status_code_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="child" baseTableName="status_code_network"
             constraintName="status_code_network_child_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.status_code" />
+            referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-331">
-        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.status_code_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="parent" baseTableName="status_code_network"
             constraintName="status_code_network_parent_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.status_code" />
+            referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-332">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.status_code_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="status_code_network"
             constraintName="status_code_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-333">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.status_code_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="status_code_network"
             constraintName="status_code_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803228-432">
-        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.status_code_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise1" baseTableName="status_code_network"
             constraintName="status_code_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.status_code_network" />
+            referencedColumnNames="id" referencedTableName="status_code_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803228-433">
-        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.status_code_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise2" baseTableName="status_code_network"
             constraintName="status_code_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.status_code_network" />
+            referencedColumnNames="id" referencedTableName="status_code_network" />
     </changeSet>
 
     <changeSet id="2" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.status_code_network TO core;
-            GRANT SELECT ON TABLE ruleform.status_code_network TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.status_code_network TO core_read_write;
+            GRANT ALL ON TABLE status_code_network TO core;
+            GRANT SELECT ON TABLE status_code_network TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE status_code_network TO core_read_write;
             ]]>
         </sql>
         <rollback />
     </changeSet>
     <changeSet id="3" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.status_code_network OWNER TO core;
+        <sql> ALTER TABLE status_code_network OWNER TO core;
         </sql>
         <rollback />
     </changeSet>

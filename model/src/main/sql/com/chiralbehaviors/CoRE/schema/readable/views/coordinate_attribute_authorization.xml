@@ -20,12 +20,12 @@
 			    base_table.notes, 
 			    up.name AS updated_by, 
 			    base_table.update_date
-			 FROM ruleform.coordinate_attribute_authorization base_table
-			 LEFT JOIN ruleform.agency res ON base_table.grouping_agency = res.id
-			 JOIN ruleform.relationship cls ON base_table.classification = cls.id
-			 JOIN ruleform.coordinate b ON base_table.classifier = b.id
-			 JOIN ruleform.attribute att ON base_table.authorized_attribute = att.id
-			 JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			 FROM coordinate_attribute_authorization base_table
+			 LEFT JOIN agency res ON base_table.grouping_agency = res.id
+			 JOIN relationship cls ON base_table.classification = cls.id
+			 JOIN coordinate b ON base_table.classifier = b.id
+			 JOIN attribute att ON base_table.authorized_attribute = att.id
+			 JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.coordinate_attribute_authorization
 			  OWNER TO core;

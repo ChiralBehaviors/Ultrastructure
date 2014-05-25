@@ -7,8 +7,8 @@
     <changeSet id="4"
         author="hhildebrand">
         <sql> CREATE TRIGGER coordinate_network_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.coordinate_network FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER coordinate_network_update_date ON ruleform.coordinate_network; </rollback>
+            coordinate_network FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER coordinate_network_update_date ON coordinate_network; </rollback>
     </changeSet>
     
 </databaseChangeLog>

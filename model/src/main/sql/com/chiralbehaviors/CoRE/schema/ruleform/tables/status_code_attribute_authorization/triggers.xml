@@ -8,7 +8,7 @@
     <changeSet id="5"
         author="hhildebrand">
         <sql> CREATE TRIGGER status_code_attribute_authorization_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.status_code_attribute_authorization FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER status_code_attribute_authorization_update_date ON ruleform.status_code_attribute_authorization; </rollback>
+            status_code_attribute_authorization FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER status_code_attribute_authorization_update_date ON status_code_attribute_authorization; </rollback>
     </changeSet>
 </databaseChangeLog>

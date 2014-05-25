@@ -6,14 +6,14 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-59">
-        <createTable tableName="ruleform.transformation_metarule">
+        <createTable schemaName="ruleform" tableName="transformation_metarule">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="transformation_metarule_pkey" />
             </column>
             <column name="service" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="sequence_number" type="ruleform.sequence_number">
+            <column name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="agency_map" type="CHAR(22)">
@@ -33,35 +33,35 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.transformation_metarule" />
+            <dropTable tableName="transformation_metarule" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-343">
-        <addForeignKeyConstraint baseColumnNames="agency_map" baseTableName="ruleform.transformation_metarule"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency_map" baseTableName="transformation_metarule"
             constraintName="transformation_metarule_agency_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-344">
-        <addForeignKeyConstraint baseColumnNames="product_map" baseTableName="ruleform.transformation_metarule"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_map" baseTableName="transformation_metarule"
             constraintName="transformation_metarule_product_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-345">
-        <addForeignKeyConstraint baseColumnNames="product_network_agency" baseTableName="ruleform.transformation_metarule"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_network_agency" baseTableName="transformation_metarule"
             constraintName="transformation_metarule_product_network_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-346">
-        <addForeignKeyConstraint baseColumnNames="service" baseTableName="ruleform.transformation_metarule"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="service" baseTableName="transformation_metarule"
             constraintName="transformation_metarule_service_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.product" />
+            referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-416">
-        <addUniqueConstraint columnNames="service, sequence_number" constraintName="transformation_metarule_service_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.transformation_metarule" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, sequence_number" constraintName="transformation_metarule_service_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="transformation_metarule" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-522">
-        <createIndex indexName="transformation_metarule_updated_by_fkey_idx" tableName="ruleform.transformation_metarule"
+        <createIndex schemaName="ruleform" indexName="transformation_metarule_updated_by_fkey_idx" tableName="transformation_metarule"
             unique="false"
         >
             <column name="updated_by" />

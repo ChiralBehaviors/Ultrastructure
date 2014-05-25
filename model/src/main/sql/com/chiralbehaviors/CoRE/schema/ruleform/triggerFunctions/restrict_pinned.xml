@@ -7,7 +7,7 @@
     
     <changeSet id="1" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.restrict_pinned()
+            CREATE OR REPLACE FUNCTION restrict_pinned()
               RETURNS trigger AS
             $BODY$
             BEGIN
@@ -34,11 +34,11 @@
             $BODY$
               LANGUAGE plpgsql VOLATILE
               COST 100;
-            ALTER FUNCTION ruleform.restrict_pinned()
+            ALTER FUNCTION restrict_pinned()
               OWNER TO core;
-            COMMENT ON FUNCTION ruleform.restrict_pinned() IS 'Trigger function used to ensure that pinned rules are not erroneously modified or deleted';
+            COMMENT ON FUNCTION restrict_pinned() IS 'Trigger function used to ensure that pinned rules are not erroneously modified or deleted';
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.restrict_pinned(); </rollback>
+        <rollback> DROP FUNCTION restrict_pinned(); </rollback>
     </changeSet>
 </databaseChangeLog>

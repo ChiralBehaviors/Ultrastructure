@@ -6,8 +6,9 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-9">
-        <createTable remarks="Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes."
-            tableName="ruleform.attribute"
+        <createTable schemaName="ruleform"
+            remarks="Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes."
+            tableName="attribute"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="attribute_pkey" />
@@ -34,17 +35,17 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.attribute" />
+            <dropTable tableName="attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-126">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.attribute" constraintName="attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="attribute" constraintName="attribute_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-446">
-        <createIndex indexName="attribute_updated_by_fkey_idx" tableName="ruleform.attribute" unique="false">
-            <column name="updated_by"/>
+        <createIndex schemaName="ruleform" indexName="attribute_updated_by_fkey_idx" tableName="attribute" unique="false">
+            <column name="updated_by" />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

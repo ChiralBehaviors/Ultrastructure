@@ -5,8 +5,8 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
     <changeSet author="hhildebrand" id="1390879803225-2">
-        <createTable remarks="A agency is an actor in the system.  It has the ability to do work, produce and consume products"
-            tableName="agency" schemaName="ruleform"
+        <createTable schemaName="ruleform"
+            remarks="A agency is an actor in the system.  It has the ability to do work, produce and consume products" tableName="agency"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="agency_pkey" />
@@ -32,13 +32,13 @@
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-110">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableSchemaName="ruleform " baseTableName="agency"
-            constraintName="agency_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableSchemaName="ruleform" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="agency" constraintName="agency_updated_by_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-436">
-        <createIndex indexName="agency_updated_by_fkey_idx" schemaName="ruleform" tableName="agency" unique="false">
+        <createIndex schemaName="ruleform" indexName="agency_updated_by_fkey_idx" tableName="agency" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

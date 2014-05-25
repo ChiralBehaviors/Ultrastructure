@@ -14,8 +14,8 @@
 			     r.notes, r.pinned,
 			     up.name AS updated_by, 
 			     r.update_date
-			   FROM ruleform.agency r
-			   JOIN ruleform.agency up ON r.updated_by = up.id;
+			   FROM agency r
+			   JOIN agency up ON r.updated_by = up.id;
 			
 			ALTER TABLE readable.agency
 			  OWNER TO core;

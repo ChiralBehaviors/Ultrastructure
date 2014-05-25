@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hparry">
         <sql> CREATE TRIGGER access_authorization_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.access_authorization FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER access_authorization_update_date ON ruleform.access_authorization; </rollback>
+            access_authorization FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER access_authorization_update_date ON access_authorization; </rollback>
     </changeSet>
 </databaseChangeLog>

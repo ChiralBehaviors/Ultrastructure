@@ -11,11 +11,11 @@
 			 SELECT tm.id, s.name AS service, tm.sequence_number, 
 			        rm.name AS agency_map, bm.name AS product_map, 
 			        bnr.name AS product_network_agency, tm.stop_on_match
-			   FROM ruleform.transformation_metarule tm
-			   JOIN ruleform.product s ON tm.service = s.id
-			   JOIN ruleform.relationship rm ON tm.agency_map = rm.id
-			   JOIN ruleform.relationship bm ON tm.product_map = bm.id
-			   LEFT JOIN ruleform.agency bnr ON tm.product_network_agency = bnr.id;
+			   FROM transformation_metarule tm
+			   JOIN product s ON tm.service = s.id
+			   JOIN relationship rm ON tm.agency_map = rm.id
+			   JOIN relationship bm ON tm.product_map = bm.id
+			   LEFT JOIN agency bnr ON tm.product_network_agency = bnr.id;
 			
 			ALTER TABLE readable.transformation_metarule
 			  OWNER TO core;

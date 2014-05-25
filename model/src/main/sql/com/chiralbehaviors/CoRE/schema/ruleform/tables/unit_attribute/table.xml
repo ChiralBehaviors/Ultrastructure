@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-61">
-        <createTable tableName="ruleform.unit_attribute">
+        <createTable schemaName="ruleform" tableName="unit_attribute">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="unit_attribute_pkey" />
             </column>
@@ -23,7 +23,7 @@
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
             <column name="unit" type="CHAR(22)" />
-            <column defaultValueComputed="1" name="sequence_number" type="ruleform.sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
@@ -35,48 +35,48 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.unit_attribute" />
+            <dropTable tableName="unit_attribute" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-358">
-        <addForeignKeyConstraint baseColumnNames="unit" baseTableName="ruleform.unit_attribute" constraintName="unit_attribute_unit_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="unit_attribute" constraintName="unit_attribute_unit_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-359">
-        <addForeignKeyConstraint baseColumnNames="unit_rf" baseTableName="ruleform.unit_attribute" constraintName="unit_attribute_unit_rf_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit_rf" baseTableName="unit_attribute" constraintName="unit_attribute_unit_rf_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.unit" />
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-352">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.unit_attribute" constraintName="unit_attribute_attribute_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="unit_attribute" constraintName="unit_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.attribute" />
+            referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-360">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.unit_attribute"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="unit_attribute"
             constraintName="unit_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-419">
-        <addUniqueConstraint columnNames="unit, attribute" constraintName="unit_attribute_unit_key" deferrable="false"
-            disabled="false" initiallyDeferred="false" tableName="ruleform.unit_attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="unit, attribute" constraintName="unit_attribute_unit_key" deferrable="false"
+            disabled="false" initiallyDeferred="false" tableName="unit_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-525">
-        <createIndex indexName="unit_attribute_updated_by_fkey_idx" tableName="ruleform.unit_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="unit_attribute_updated_by_fkey_idx" tableName="unit_attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>
 
     <changeSet id="2" author="hhildebrand">
-        <sql> ALTER TABLE ruleform.unit_attribute OWNER TO core; </sql>
+        <sql> ALTER TABLE unit_attribute OWNER TO core; </sql>
         <rollback />
     </changeSet>
     <changeSet id="4" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.unit_attribute TO core;
-            GRANT SELECT ON TABLE ruleform.unit_attribute TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.unit_attribute TO core_read_write;
+            GRANT ALL ON TABLE unit_attribute TO core;
+            GRANT SELECT ON TABLE unit_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE unit_attribute TO core_read_write;
             ]]>
         </sql>
         <rollback />

@@ -6,8 +6,8 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="1" author="hhildebrand">
-        <sql> CREATE TRIGGER coordinate_update_date BEFORE INSERT OR UPDATE ON ruleform.coordinate
-            FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER coordinate_update_date ON ruleform.coordinate; </rollback>
+        <sql> CREATE TRIGGER coordinate_update_date BEFORE INSERT OR UPDATE ON coordinate
+            FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER coordinate_update_date ON coordinate; </rollback>
     </changeSet>
 </databaseChangeLog>

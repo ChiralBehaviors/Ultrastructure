@@ -12,12 +12,12 @@
 			        base_table.sequence_number, nss.name AS next_sibling, 
 			        nss.name AS next_sibling_status, base_table.notes,
 			        up.name AS updated_by, base_table.update_date
-			   FROM ruleform.product_sibling_sequencing_authorization base_table
-			   JOIN ruleform.product p ON base_table.parent = p.id
-			   JOIN ruleform.status_code sc ON base_table.status_code = sc.id
-			   LEFT JOIN ruleform.product ns ON base_table.next_sibling = ns.id
-			   LEFT JOIN ruleform.status_code nss ON base_table.next_sibling_status = nss.id
-			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			   FROM product_sibling_sequencing_authorization base_table
+			   JOIN product p ON base_table.parent = p.id
+			   JOIN status_code sc ON base_table.status_code = sc.id
+			   LEFT JOIN product ns ON base_table.next_sibling = ns.id
+			   LEFT JOIN status_code nss ON base_table.next_sibling_status = nss.id
+			   JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.product_sibling_sequencing_authorization
 			  OWNER TO core;

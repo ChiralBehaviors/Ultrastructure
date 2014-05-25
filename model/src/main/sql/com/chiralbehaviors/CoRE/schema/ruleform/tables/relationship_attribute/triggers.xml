@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER relationship_attribute_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.relationship_attribute FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER relationship_attribute_update_date ON ruleform.relationship_attribute; </rollback>
+            relationship_attribute FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER relationship_attribute_update_date ON relationship_attribute; </rollback>
     </changeSet>
 </databaseChangeLog>

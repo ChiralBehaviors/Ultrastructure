@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-48">
-        <createTable tableName="ruleform.relationship">
+        <createTable schemaName="ruleform" tableName="relationship">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="relationship_pkey" />
             </column>
@@ -30,28 +30,28 @@
             <column defaultValueNumeric="0" name="pinned" type="SMALLINT">
                 <constraints nullable="false" />
             </column>
-            <column name="operator" type="ruleform.relational_operator" />
+            <column name="operator" type="relational_operator" />
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.relationship" />
+            <dropTable tableName="relationship" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-316">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.relationship" constraintName="relationship_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="relationship" constraintName="relationship_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-409">
-        <addUniqueConstraint columnNames="name" constraintName="relationship_name" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="ruleform.relationship" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="relationship_name" deferrable="false" disabled="false"
+            initiallyDeferred="false" tableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-515">
-        <createIndex indexName="relationship_inverse_fkey_idx" tableName="ruleform.relationship" unique="false">
+        <createIndex schemaName="ruleform" indexName="relationship_inverse_fkey_idx" tableName="relationship" unique="false">
             <column name="inverse" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-516">
-        <createIndex indexName="relationship_updated_by_fkey_idx" tableName="ruleform.relationship" unique="false">
+        <createIndex schemaName="ruleform" indexName="relationship_updated_by_fkey_idx" tableName="relationship" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

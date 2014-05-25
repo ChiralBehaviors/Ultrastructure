@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER product_location_attribute_authorization_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.product_location_attribute_authorization FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER product_location_attribute_authorization_update_date ON ruleform.product_location_attribute_authorization; </rollback>
+            product_location_attribute_authorization FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER product_location_attribute_authorization_update_date ON product_location_attribute_authorization; </rollback>
     </changeSet>
 </databaseChangeLog>

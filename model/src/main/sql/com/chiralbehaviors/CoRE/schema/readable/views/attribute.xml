@@ -17,8 +17,8 @@
 			     a.value_type, 
 			     up.name AS updated_by, 
 			     a.update_date
-			   FROM ruleform.attribute a
-			   JOIN ruleform.agency up ON a.updated_by = up.id;
+			   FROM attribute a
+			   JOIN agency up ON a.updated_by = up.id;
 			
 			ALTER TABLE readable.attribute
 			  OWNER TO core;

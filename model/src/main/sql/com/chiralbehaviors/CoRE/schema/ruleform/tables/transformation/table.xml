@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-58">
-        <createTable tableName="ruleform.transformation">
+        <createTable schemaName="ruleform" tableName="transformation">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="transformation_pkey" />
             </column>
@@ -19,7 +19,7 @@
             <column name="product" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="sequence_number" type="ruleform.sequence_number">
+            <column name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="assign_to" type="CHAR(22)">
@@ -49,60 +49,60 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.transformation" />
+            <dropTable tableName="transformation" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-339">
-        <addForeignKeyConstraint baseColumnNames="agency" baseTableName="ruleform.transformation" constraintName="transformation_agency_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency" baseTableName="transformation" constraintName="transformation_agency_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-340">
-        <addForeignKeyConstraint baseColumnNames="agency_key" baseTableName="ruleform.transformation"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency_key" baseTableName="transformation"
             constraintName="transformation_agency_key_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-341">
-        <addForeignKeyConstraint baseColumnNames="assign_to" baseTableName="ruleform.transformation" constraintName="transformation_assign_to_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="assign_to" baseTableName="transformation" constraintName="transformation_assign_to_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-342">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.transformation" constraintName="transformation_attribute_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="transformation" constraintName="transformation_attribute_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.attribute" />
+            referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-347">
-        <addForeignKeyConstraint baseColumnNames="product_attribute_agency" baseTableName="ruleform.transformation"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_attribute_agency" baseTableName="transformation"
             constraintName="transformation_product_attribute_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-348">
-        <addForeignKeyConstraint baseColumnNames="product" baseTableName="ruleform.transformation" constraintName="transformation_product_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product" baseTableName="transformation" constraintName="transformation_product_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+            referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-349">
-        <addForeignKeyConstraint baseColumnNames="product_key" baseTableName="ruleform.transformation"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_key" baseTableName="transformation"
             constraintName="transformation_product_key_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.product" />
+            referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-350">
-        <addForeignKeyConstraint baseColumnNames="relationship_key" baseTableName="ruleform.transformation"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship_key" baseTableName="transformation"
             constraintName="transformation_relationship_key_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-351">
-        <addForeignKeyConstraint baseColumnNames="service" baseTableName="ruleform.transformation" constraintName="transformation_service_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="service" baseTableName="transformation" constraintName="transformation_service_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product" />
+            referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-417">
-        <addUniqueConstraint columnNames="service, agency, product, sequence_number" constraintName="transformation_service_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.transformation" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, agency, product, sequence_number" constraintName="transformation_service_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="transformation" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-523">
-        <createIndex indexName="transformation_updated_by_fkey_idx" tableName="ruleform.transformation" unique="false">
+        <createIndex schemaName="ruleform" indexName="transformation_updated_by_fkey_idx" tableName="transformation" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

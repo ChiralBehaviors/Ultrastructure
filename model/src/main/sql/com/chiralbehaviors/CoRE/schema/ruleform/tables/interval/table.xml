@@ -7,8 +7,9 @@
 
     <changeSet author="hhildebrand" id="1390879803225-17">
         <createTable
+            schemaName="ruleform"
             remarks="A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and products in time"
-            tableName="ruleform.interval"
+            tableName="interval"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="interval_pkey" />
@@ -31,16 +32,16 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.interval" />
+            <dropTable tableName="interval" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-158">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.interval" constraintName="interval_updated_by_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="interval" constraintName="interval_updated_by_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-462">
-        <createIndex indexName="interval_updated_by_fkey_idx" tableName="ruleform.interval" unique="false">
+        <createIndex schemaName="ruleform" indexName="interval_updated_by_fkey_idx" tableName="interval" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

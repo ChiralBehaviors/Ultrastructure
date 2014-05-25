@@ -8,7 +8,7 @@
     <changeSet id="1"
         author="hhildebrand">
         <sql> CREATE TRIGGER attribute_meta_attribute_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.attribute_meta_attribute FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER attribute_meta_attribute_update_date ON ruleform.attribute_meta_attribute; </rollback>
+            attribute_meta_attribute FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER attribute_meta_attribute_update_date ON attribute_meta_attribute; </rollback>
     </changeSet>
 </databaseChangeLog>

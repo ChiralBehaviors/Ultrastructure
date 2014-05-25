@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <ruleform.agency 
+  <agency 
     id="1"
     name="CoRE" 
     description="The CoRE Ultra-Structure system"

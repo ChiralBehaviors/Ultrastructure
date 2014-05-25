@@ -7,7 +7,7 @@
     
     <changeSet id="1" author="hparry">
         <sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION ruleform.forbid_foreign_key_updates()
+            CREATE OR REPLACE FUNCTION forbid_foreign_key_updates()
               RETURNS trigger AS
             $BODY$
             BEGIN
@@ -21,11 +21,11 @@
             $BODY$
               LANGUAGE plpgsql VOLATILE
               COST 100;
-            ALTER FUNCTION ruleform.forbid_foreign_key_updates()
+            ALTER FUNCTION forbid_foreign_key_updates()
               OWNER TO core;
-            COMMENT ON FUNCTION ruleform.forbid_foreign_key_updates() IS 'Prevents network foreign keys from being updated.';
+            COMMENT ON FUNCTION forbid_foreign_key_updates() IS 'Prevents network foreign keys from being updated.';
             ]]>
         </sql>
-        <rollback> DROP FUNCTION ruleform.forbid_foreign_key_updates(); </rollback>
+        <rollback> DROP FUNCTION forbid_foreign_key_updates(); </rollback>
     </changeSet>
 </databaseChangeLog>

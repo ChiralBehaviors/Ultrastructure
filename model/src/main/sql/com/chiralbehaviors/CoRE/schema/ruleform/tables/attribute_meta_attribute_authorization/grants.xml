@@ -7,9 +7,9 @@
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.attr_meta_attr_auth TO core;
-            GRANT SELECT ON TABLE ruleform.attr_meta_attr_auth TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.attr_meta_attr_auth TO core_read_write;
+            GRANT ALL ON TABLE attr_meta_attr_auth TO core;
+            GRANT SELECT ON TABLE attr_meta_attr_auth TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE attr_meta_attr_auth TO core_read_write;
             ]]>
         </sql>
         <rollback/>

@@ -7,8 +7,8 @@
     <changeSet id="4"
         author="hhildebrand">
         <sql> CREATE TRIGGER unit_network_update_date BEFORE INSERT OR UPDATE ON
-            ruleform.unit_network FOR EACH ROW EXECUTE PROCEDURE ruleform.set_update_date(); </sql>
-        <rollback> DROP TRIGGER unit_network_update_date ON ruleform.unit_network; </rollback>
+            unit_network FOR EACH ROW EXECUTE PROCEDURE set_update_date(); </sql>
+        <rollback> DROP TRIGGER unit_network_update_date ON unit_network; </rollback>
     </changeSet>
     
 </databaseChangeLog>

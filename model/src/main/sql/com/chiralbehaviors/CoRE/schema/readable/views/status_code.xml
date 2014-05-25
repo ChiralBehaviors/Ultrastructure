@@ -9,8 +9,8 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.status_code AS 
 			 SELECT base_table.id, base_table.name, base_table.description, base_table.notes, base_table.pinned, base_table.fail_parent, base_table.propagate_children, up.name AS updated_by, base_table.update_date
-			   FROM ruleform.status_code base_table
-			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			   FROM status_code base_table
+			   JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.status_code
 			  OWNER TO core;

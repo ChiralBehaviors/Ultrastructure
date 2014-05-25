@@ -7,9 +7,9 @@
 
     <changeSet id="1" author="hparry">
         <sql><![CDATA[
-            GRANT ALL ON TABLE ruleform.agency_product TO core;
-            GRANT SELECT ON TABLE ruleform.agency_product TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruleform.agency_product TO core_read_write;
+            GRANT ALL ON TABLE agency_product TO core;
+            GRANT SELECT ON TABLE agency_product TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE agency_product TO core_read_write;
             ]]>
         </sql>
         <rollback/>

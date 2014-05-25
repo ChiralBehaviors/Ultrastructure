@@ -14,16 +14,16 @@
                assign.name AS assign_to, s.name AS service, p.name AS product,
 			   base_table.copy_attributes, base_table.sequence_number, base_table.notes, 
 			   up.name AS updated_by, base_table.update_date
-			   FROM ruleform.protocol base_table
-               JOIN ruleform.product rs ON base_table.requested_service = rs.id
-			   JOIN ruleform.product rp ON base_table.requested_product = rp.id
-               JOIN ruleform.product s ON base_table.service = s.id
-               JOIN ruleform.product p ON base_table.product = p.id
-               JOIN ruleform.location dt ON base_table.deliver_to = dt.id
-               JOIN ruleform.location df ON base_table.deliver_from = df.id
-			   JOIN ruleform.agency assign ON base_table.assign_to = assign.id
-               JOIN ruleform.agency r ON base_table.requester = r.id
-			   JOIN ruleform.agency up ON base_table.updated_by = up.id;
+			   FROM protocol base_table
+               JOIN product rs ON base_table.requested_service = rs.id
+			   JOIN product rp ON base_table.requested_product = rp.id
+               JOIN product s ON base_table.service = s.id
+               JOIN product p ON base_table.product = p.id
+               JOIN location dt ON base_table.deliver_to = dt.id
+               JOIN location df ON base_table.deliver_from = df.id
+			   JOIN agency assign ON base_table.assign_to = assign.id
+               JOIN agency r ON base_table.requester = r.id
+			   JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.protocol
 			  OWNER TO core;

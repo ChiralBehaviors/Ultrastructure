@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-15">
-        <createTable remarks="Defines rules for navigating nested coordinates" tableName="ruleform.coordinate_nesting">
+        <createTable schemaName="ruleform" remarks="Defines rules for navigating nested coordinates" tableName="coordinate_nesting">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="coordinate_nesting_pkey" />
             </column>
@@ -14,7 +14,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="The ordering of these nesting rules for a given CoordinateKind and Attribute"
-                type="ruleform.sequence_number"
+                type="sequence_number"
             >
                 <constraints nullable="false" />
             </column>
@@ -38,50 +38,50 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.coordinate_nesting" />
+            <dropTable tableName="coordinate_nesting" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-136">
-        <addForeignKeyConstraint baseColumnNames="attribute" baseTableName="ruleform.coordinate_nesting"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="coordinate_nesting"
             constraintName="coordinate_nesting_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-137">
-        <addForeignKeyConstraint baseColumnNames="inner_attribute" baseTableName="ruleform.coordinate_nesting"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="inner_attribute" baseTableName="coordinate_nesting"
             constraintName="coordinate_nesting_inner_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-138">
-        <addForeignKeyConstraint baseColumnNames="outer_attribute" baseTableName="ruleform.coordinate_nesting"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="outer_attribute" baseTableName="coordinate_nesting"
             constraintName="coordinate_nesting_outer_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.attribute" />
+            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-139">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.coordinate_nesting"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="coordinate_nesting"
             constraintName="coordinate_nesting_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-379">
-        <addUniqueConstraint columnNames="attribute, sequence_number" constraintName="coordinate_nesting_kind_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="ruleform.coordinate_nesting" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="attribute, sequence_number" constraintName="coordinate_nesting_kind_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="coordinate_nesting" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-451">
-        <createIndex indexName="coordinate_nesting_attribute_fkey_idx" tableName="ruleform.coordinate_nesting" unique="false">
+        <createIndex schemaName="ruleform" indexName="coordinate_nesting_attribute_fkey_idx" tableName="coordinate_nesting" unique="false">
             <column name="attribute" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-452">
-        <createIndex indexName="coordinate_nesting_inner_attribute_fkey_idx" tableName="ruleform.coordinate_nesting" unique="false">
+        <createIndex schemaName="ruleform" indexName="coordinate_nesting_inner_attribute_fkey_idx" tableName="coordinate_nesting" unique="false">
             <column name="inner_attribute" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-453">
-        <createIndex indexName="coordinate_nesting_outer_attribute_fkey_idx" tableName="ruleform.coordinate_nesting" unique="false">
+        <createIndex schemaName="ruleform" indexName="coordinate_nesting_outer_attribute_fkey_idx" tableName="coordinate_nesting" unique="false">
             <column name="outer_attribute" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-454">
-        <createIndex indexName="coordinate_nesting_updated_by_fkey_idx" tableName="ruleform.coordinate_nesting" unique="false">
+        <createIndex schemaName="ruleform" indexName="coordinate_nesting_updated_by_fkey_idx" tableName="coordinate_nesting" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

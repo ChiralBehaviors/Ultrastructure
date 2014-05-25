@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="1390879803225-40">
-        <createTable tableName="ruleform.product_network">
+        <createTable schemaName="ruleform" tableName="product_network">
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_network_pkey" />
             </column>
@@ -35,62 +35,62 @@
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
-            <column name="ordering" type="ruleform.ordinal_number" />
+            <column name="ordering" type="ordinal_number" />
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.product_network" />
+            <dropTable tableName="product_network" />
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-258">
-        <addForeignKeyConstraint baseColumnNames="child" baseTableName="ruleform.product_network" constraintName="product_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="child" baseTableName="product_network" constraintName="product_network_child_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-259">
-        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="ruleform.product_network" constraintName="product_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="ruleform.product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="parent" baseTableName="product_network" constraintName="product_network_parent_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-260">
-        <addForeignKeyConstraint baseColumnNames="relationship" baseTableName="ruleform.product_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="product_network"
             constraintName="product_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.relationship" />
+            referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-261">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.product_network"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product_network"
             constraintName="product_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="ruleform.agency" />
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-402">
-        <addUniqueConstraint columnNames="parent, relationship, child, premise1, premise2" constraintName="product_network_key" deferrable="false"
-            disabled="false" initiallyDeferred="false" tableName="ruleform.product_network" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2" constraintName="product_network_key" deferrable="false"
+            disabled="false" initiallyDeferred="false" tableName="product_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-503">
-        <createIndex indexName="product_network_child_fkey_idx" tableName="ruleform.product_network" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_network_child_fkey_idx" tableName="product_network" unique="false">
             <column name="child" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-504">
-        <createIndex indexName="product_network_parent_fkey_idx" tableName="ruleform.product_network" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_network_parent_fkey_idx" tableName="product_network" unique="false">
             <column name="parent" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-505">
-        <createIndex indexName="product_network_relationship_fkey_idx" tableName="ruleform.product_network" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_network_relationship_fkey_idx" tableName="product_network" unique="false">
             <column name="relationship" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-506">
-        <createIndex indexName="product_network_updated_by_fkey_idx" tableName="ruleform.product_network" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_network_updated_by_fkey_idx" tableName="product_network" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="2390879803225-432">
-        <addForeignKeyConstraint baseColumnNames="premise1" baseTableName="ruleform.product_network" constraintName="product_network_premise1_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise1" baseTableName="product_network" constraintName="product_network_premise1_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product_network" />
+            referencedTableName="product_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803226-433">
-        <addForeignKeyConstraint baseColumnNames="premise2" baseTableName="ruleform.product_network" constraintName="product_network_premise2_fkey"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise2" baseTableName="product_network" constraintName="product_network_premise2_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.product_network" />
+            referencedTableName="product_network" />
     </changeSet>
 </databaseChangeLog>

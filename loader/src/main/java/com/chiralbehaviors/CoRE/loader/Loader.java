@@ -42,16 +42,15 @@ import com.hellblazer.utils.Utils;
  */
 public class Loader {
 
-    private static final String ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML = "/animations/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml";
+    private static final String ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML = "animations/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml";
     private static final String ANIMATIONS_JAR;
     private static final String ANIMATIONS_JAR_NAME;
-    private static final String CREATE_DB_SQL                                                       = "/create-db.sql";
-    private static final String CREATE_ROLES_SQL                                                    = "/create-roles.sql";
+    private static final String CREATE_DATABASE_XML                                                 = "create-database.xml";
     private static final String DROP_DATABASE_SQL                                                   = "/drop-database.sql";
     private static final String DROP_LIQUIBASE_SQL                                                  = "/drop-liquibase.sql";
     private static final String DROP_ROLES_SQL                                                      = "/drop-roles.sql";
     private static final Logger log                                                                 = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML                     = "/model/com/chiralbehaviors/CoRE/schema/core.xml";
+    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML                     = "model/com/chiralbehaviors/CoRE/schema/core.xml";
     private static final String SQLJ_INIT_SQL                                                       = "/sqlj-init.sql";
 
     static {
@@ -68,53 +67,49 @@ public class Loader {
     }
 
     public static void main(String[] argv) throws Exception {
-        Loader loader = Configuration.fromYaml(Utils.resolveResource(Loader.class,
-                                                                     argv[0])).construct();
+        Loader loader = new Loader(
+                                   Configuration.fromYaml(Utils.resolveResource(Loader.class,
+                                                                                argv[0])));
         loader.bootstrap();
     }
 
-    private final Connection postgresConnection;
-    private final Connection coreConnection;
-    private final boolean    createDb;
-    private final boolean    drop;
-    private final boolean    initSqlJ;
+    private final Configuration configuration;
 
-    public Loader(boolean dropDatabase, Connection connection,
-                  boolean createDb, Connection coreConnection, boolean initSqlJ)
-                                                                                throws Exception {
-        this.postgresConnection = connection;
-        this.createDb = createDb;
-        this.initSqlJ = initSqlJ;
-        this.drop = dropDatabase;
-        this.coreConnection = coreConnection;
+    public Loader(Configuration configuration) throws Exception {
+        this.configuration = configuration;
     }
 
     public void bootstrap() throws Exception {
-        if (drop) {
+        if (configuration.dropDatabase) {
             dropDatabase();
         }
-        if (drop || createDb) {
-            createDb();
-            createRoles();
-        }
-        if (initSqlJ) {
+        if (configuration.initializeSqlJ) {
             initSqlJ();
         }
+        createDatabase();
+        loadAnimationsJar();
+        loadModel();
         loadAnimations();
-        load(MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML);
-        load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML);
         setClassPath();
-        new Bootstrap(postgresConnection).bootstrap();
+        bootstrapCoRE();
     }
 
-    private void createDb() throws Exception {
-        postgresConnection.setAutoCommit(true);
-        execute(Utils.getDocument(getClass().getResourceAsStream(CREATE_DB_SQL)));
+    protected void createDatabase() throws Exception, SQLException {
+        load(CREATE_DATABASE_XML, configuration.getPostgresConnection());
     }
 
-    private void createRoles() throws Exception {
-        postgresConnection.setAutoCommit(false);
-        execute(Utils.getDocument(getClass().getResourceAsStream(CREATE_ROLES_SQL)));
+    protected void bootstrapCoRE() throws SQLException {
+        new Bootstrap(configuration.getCoreConnection()).bootstrap();
+    }
+
+    protected void loadAnimations() throws Exception, SQLException {
+        load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML,
+             configuration.getCoreConnection());
+    }
+
+    protected void loadModel() throws Exception, SQLException {
+        load(MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML,
+             configuration.getCoreConnection());
     }
 
     private void drop(PreparedStatement drop, String name,
@@ -136,29 +131,22 @@ public class Loader {
     }
 
     private void dropDatabase() throws Exception {
-        postgresConnection.setAutoCommit(true);
-        try {
-            execute(Utils.getDocument(getClass().getResourceAsStream(DROP_DATABASE_SQL)));
-        } catch (SQLException e) {
-            // ignored
-        }
-        try {
-            execute(Utils.getDocument(getClass().getResourceAsStream(DROP_LIQUIBASE_SQL)));
-        } catch (SQLException e) {
-            // ignored
-        }
-        try {
-            execute(Utils.getDocument(getClass().getResourceAsStream(DROP_ROLES_SQL)));
-        } catch (SQLException e) {
-            // ignored
-        }
+        Connection connection = configuration.getPostgresConnection();
+        connection.setAutoCommit(true);
+        execute(connection,
+                Utils.getDocument(getClass().getResourceAsStream(DROP_DATABASE_SQL)));
+        execute(connection,
+                Utils.getDocument(getClass().getResourceAsStream(DROP_LIQUIBASE_SQL)));
+        execute(connection,
+                Utils.getDocument(getClass().getResourceAsStream(DROP_ROLES_SQL)));
     }
 
-    private void execute(String sqlFile) throws Exception {
+    private void execute(Connection connection, String sqlFile)
+                                                               throws Exception {
         StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
         while (tokes.hasMoreTokens()) {
             String line = tokes.nextToken();
-            PreparedStatement exec = postgresConnection.prepareStatement(line);
+            PreparedStatement exec = connection.prepareStatement(line);
             try {
                 exec.execute();
             } catch (SQLException e) {
@@ -182,9 +170,11 @@ public class Loader {
     }
 
     private void initSqlJ() throws Exception {
-        postgresConnection.setAutoCommit(true);
-        execute(Utils.getDocument(getClass().getResourceAsStream(SQLJ_INIT_SQL)));
-        postgresConnection.commit();
+        Connection connection = configuration.getCoreConnection();
+        connection.setAutoCommit(true);
+        execute(connection,
+                Utils.getDocument(getClass().getResourceAsStream(SQLJ_INIT_SQL)));
+        connection.commit();
     }
 
     private void load(PreparedStatement load) throws IOException, SQLException {
@@ -195,11 +185,11 @@ public class Loader {
         load.execute();
     }
 
-    private void load(String changeLog) throws Exception {
+    private void load(String changeLog, Connection connection) throws Exception {
         Liquibase liquibase = null;
         try {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(
-                                                                                                                   coreConnection));
+                                                                                                                   connection));
             liquibase = new Liquibase(
                                       changeLog,
                                       new ClassLoaderResourceAccessor(
@@ -212,27 +202,30 @@ public class Loader {
                 liquibase.forceReleaseLocks();
             }
             try {
-                coreConnection.rollback();
-                coreConnection.close();
+                connection.rollback();
+                connection.close();
             } catch (SQLException e) {
                 //nothing to do
             }
         }
     }
 
-    private void loadAnimations() throws Exception {
-        coreConnection.setAutoCommit(true);
-        PreparedStatement drop = coreConnection.prepareStatement("SELECT sqlj.remove_jar(?, ?)");
-        PreparedStatement load = coreConnection.prepareStatement("SELECT sqlj.install_jar(?, ?, ?)");
-        PreparedStatement validate = coreConnection.prepareStatement("SELECT jarid from sqlj.jar_repository where jarname=?");
+    private void loadAnimationsJar() throws Exception {
+        Connection connection = configuration.getCoreConnection();
+        connection.setAutoCommit(true);
+        PreparedStatement drop = connection.prepareStatement("SELECT sqlj.remove_jar(?, ?)");
+        PreparedStatement load = connection.prepareStatement("SELECT sqlj.install_jar(?, ?, ?)");
+        PreparedStatement validate = connection.prepareStatement("SELECT jarid from sqlj.jar_repository where jarname=?");
         drop(drop, ANIMATIONS_JAR_NAME, validate);
         log.info(String.format("loading artifact %s", ANIMATIONS_JAR));
         load(load);
     }
 
     private void setClassPath() throws SQLException {
-        PreparedStatement statement = coreConnection.prepareStatement(String.format("SELECT sqlj.set_classpath('ruleform', '%s')",
-                                                                                    ANIMATIONS_JAR_NAME));
+        Connection connection = configuration.getPostgresConnection();
+        connection.setAutoCommit(true);
+        PreparedStatement statement = connection.prepareStatement(String.format("SELECT sqlj.set_classpath('ruleform', '%s')",
+                                                                                ANIMATIONS_JAR_NAME));
         statement.execute();
     }
 }

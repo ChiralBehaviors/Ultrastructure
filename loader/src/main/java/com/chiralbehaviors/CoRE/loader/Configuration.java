@@ -40,7 +40,6 @@ public class Configuration {
         return mapper.readValue(yaml, Configuration.class);
     }
 
-    public boolean createDatabase = false;
     public boolean dropDatabase   = false;
     public boolean initializeSqlJ = false;
     public String  jdbcUrl;
@@ -57,10 +56,5 @@ public class Configuration {
     public Connection getCoreConnection() throws SQLException {
         return DriverManager.getConnection(coreJdbcUrl, coreUsername,
                                            corePassword);
-    }
-
-    public Loader construct() throws Exception {
-        return new Loader(dropDatabase, getPostgresConnection(),
-                          createDatabase, getCoreConnection(), initializeSqlJ);
     }
 }

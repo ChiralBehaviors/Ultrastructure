@@ -6,7 +6,7 @@
 >
     <changeSet author="hhildebrand" id="1390879803225-2">
         <createTable remarks="A agency is an actor in the system.  It has the ability to do work, produce and consume products"
-            tableName="ruleform.agency"
+            tableName="agency" schemaName="ruleform"
         >
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="agency_pkey" />
@@ -27,18 +27,18 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ruleform.agency" />
+            <dropTable schemaName="ruleform" tableName="agency" />
         </rollback>
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-110">
-        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableName="ruleform.agency" constraintName="agency_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="ruleform.agency" />
+        <addForeignKeyConstraint baseColumnNames="updated_by" baseTableSchemaName="ruleform " baseTableName="agency"
+            constraintName="agency_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableSchemaName="ruleform" referencedTableName="agency" />
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-436">
-        <createIndex indexName="agency_updated_by_fkey_idx" tableName="ruleform.agency" unique="false">
+        <createIndex indexName="agency_updated_by_fkey_idx" schemaName="ruleform" tableName="agency" unique="false">
             <column name="updated_by" />
         </createIndex>
     </changeSet>

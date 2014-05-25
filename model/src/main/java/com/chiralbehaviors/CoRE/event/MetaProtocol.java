@@ -104,13 +104,6 @@ public class MetaProtocol extends Ruleform {
         super(updatedBy);
     }
 
-    /**
-     * @param id
-     */
-    public MetaProtocol(UUID id) {
-        super(id);
-    }
-
     public MetaProtocol(Product service, int sequenceNumber,
                         Relationship productOrdered,
                         Relationship requestingAgency,
@@ -135,6 +128,13 @@ public class MetaProtocol extends Ruleform {
         setServiceType(serviceType);
         setDeliverTo(deliverTo);
         setDeliverFrom(deliverFrom);
+    }
+
+    /**
+     * @param id
+     */
+    public MetaProtocol(UUID id) {
+        super(id);
     }
 
     /**

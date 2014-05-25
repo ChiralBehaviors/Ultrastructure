@@ -108,13 +108,6 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     }
 
     /**
-     * @param id
-     */
-    public StatusCodeNetwork(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
@@ -131,6 +124,13 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;
+    }
+
+    /**
+     * @param id
+     */
+    public StatusCodeNetwork(UUID id) {
+        super(id);
     }
 
     /*

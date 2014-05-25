@@ -175,13 +175,6 @@ public class Protocol extends Ruleform {
         super(updatedBy);
     }
 
-    /**
-     * @param id
-     */
-    public Protocol(UUID id) {
-        super(id);
-    }
-
     public Protocol(Product requestedService, Agency requester,
                     Product requestedProduct, Location deliverTo,
                     Location deliverFrom, Agency assignTo, Product service,
@@ -213,6 +206,13 @@ public class Protocol extends Ruleform {
         this(requestedService, requester, requestedProduct, deliverTo,
              deliverFrom, assignTo, service, product, updatedBy);
         setCopyAttributes(copyAttributes);
+    }
+
+    /**
+     * @param id
+     */
+    public Protocol(UUID id) {
+        super(id);
     }
 
     public Agency getAssignTo() {

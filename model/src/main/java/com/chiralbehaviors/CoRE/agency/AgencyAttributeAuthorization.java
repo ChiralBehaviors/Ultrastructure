@@ -58,13 +58,6 @@ public class AgencyAttributeAuthorization extends
 
     /**
      * @param id
-     */
-    public AgencyAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
      * @param classification
      * @param updatedBy
      */
@@ -89,6 +82,13 @@ public class AgencyAttributeAuthorization extends
     public AgencyAttributeAuthorization(Relationship classification,
                                         Attribute authorized, Agency updatedBy) {
         super(classification, authorized, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public AgencyAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

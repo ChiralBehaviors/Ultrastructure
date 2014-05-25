@@ -75,13 +75,6 @@ public class AttributeMetaAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public AttributeMetaAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param classification
      * @param updatedBy
      */
@@ -99,6 +92,13 @@ public class AttributeMetaAttributeAuthorization extends
                                                Attribute authorized,
                                                Agency updatedBy) {
         super(classification, authorized, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public AttributeMetaAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

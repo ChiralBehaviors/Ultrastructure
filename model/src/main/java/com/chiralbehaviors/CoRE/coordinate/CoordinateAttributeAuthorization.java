@@ -63,13 +63,6 @@ public class CoordinateAttributeAuthorization extends
         super(updatedBy);
     }
 
-    /**
-     * @param id
-     */
-    public CoordinateAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
     public CoordinateAttributeAuthorization(Relationship classification,
                                             Agency updatedBy) {
         super(classification, updatedBy);
@@ -93,6 +86,13 @@ public class CoordinateAttributeAuthorization extends
                                             Agency updatedBy) {
         this(classification, attribute, updatedBy);
         this.classifier = classifier;
+    }
+
+    /**
+     * @param id
+     */
+    public CoordinateAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     public Coordinate getClassificationCoordinate() {

@@ -109,18 +109,18 @@ public class CoordinateNetwork extends NetworkRuleform<Coordinate> {
     }
 
     /**
-     * @param id
-     */
-    public CoordinateNetwork(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
     public CoordinateNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public CoordinateNetwork(UUID id) {
+        super(id);
     }
 
     /*

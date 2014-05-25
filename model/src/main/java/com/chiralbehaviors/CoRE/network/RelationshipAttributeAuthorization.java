@@ -57,13 +57,6 @@ public class RelationshipAttributeAuthorization extends
 
     /**
      * @param id
-     */
-    public RelationshipAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
      * @param classification
      * @param updatedBy
      */
@@ -90,6 +83,13 @@ public class RelationshipAttributeAuthorization extends
                                               Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
+    }
+
+    /**
+     * @param id
+     */
+    public RelationshipAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

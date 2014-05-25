@@ -160,13 +160,6 @@ public class Coordinate extends
     }
 
     /**
-     * @param id
-     */
-    public Coordinate(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param name
      */
     public Coordinate(String name) {
@@ -196,6 +189,13 @@ public class Coordinate extends
      */
     public Coordinate(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public Coordinate(UUID id) {
+        super(id);
     }
 
     public void addAttribute(CoordinateAttribute attribute) {

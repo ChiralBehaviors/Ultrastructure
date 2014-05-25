@@ -167,14 +167,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         this(name, description, updatedBy);
     }
 
-    public Interval(UUID id) {
-        super(id);
-    }
-
-    public Interval(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
-
     public Interval(String name) {
         super(name);
     }
@@ -189,6 +181,14 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     public Interval(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
+    }
+
+    public Interval(UUID id) {
+        super(id);
+    }
+
+    public Interval(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     /*

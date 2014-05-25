@@ -122,18 +122,18 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     }
 
     /**
-     * @param id
-     */
-    public AttributeNetwork(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
     public AttributeNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public AttributeNetwork(UUID id) {
+        super(id);
     }
 
     @Override

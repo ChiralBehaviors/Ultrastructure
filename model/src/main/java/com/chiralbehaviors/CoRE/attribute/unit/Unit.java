@@ -140,14 +140,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         super(updatedBy);
     }
 
-    public Unit(UUID id) {
-        super(id);
-    }
-
-    public Unit(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
-
     public Unit(String name) {
         setName(name);
     }
@@ -167,6 +159,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         super(notes, updatedBy);
         setName(name);
         setDescription(description);
+    }
+
+    public Unit(UUID id) {
+        super(id);
+    }
+
+    public Unit(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     /*

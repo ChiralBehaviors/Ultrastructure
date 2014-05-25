@@ -124,25 +124,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     /**
-     * @param id
-     */
-    public ProductNetwork(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param relationship
-     * @param updatedBy
-     */
-    public ProductNetwork(UUID id, Product parent, Relationship relationship,
-                          Product child) {
-        super(id);
-        this.parent = parent;
-        this.child = child;
-        setRelationship(relationship);
-    }
-
-    /**
      * @param relationship
      * @param updatedBy
      */
@@ -160,6 +141,25 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
      */
     public ProductNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public ProductNetwork(UUID id) {
+        super(id);
+    }
+
+    /**
+     * @param relationship
+     * @param updatedBy
+     */
+    public ProductNetwork(UUID id, Product parent, Relationship relationship,
+                          Product child) {
+        super(id);
+        this.parent = parent;
+        this.child = child;
+        setRelationship(relationship);
     }
 
     @Override

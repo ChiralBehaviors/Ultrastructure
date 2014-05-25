@@ -101,12 +101,12 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         this.child = child;
     }
 
-    public IntervalNetwork(UUID id) {
-        super(id);
-    }
-
     public IntervalNetwork(Relationship relationship, Agency updatedBy) {
         super(relationship, updatedBy);
+    }
+
+    public IntervalNetwork(UUID id) {
+        super(id);
     }
 
     /*

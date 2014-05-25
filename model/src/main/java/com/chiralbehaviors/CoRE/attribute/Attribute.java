@@ -145,13 +145,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
     }
 
     /**
-     * @param id
-     */
-    public Attribute(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param name
      */
     public Attribute(String name) {
@@ -204,6 +197,13 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
                      Agency updatedBy) {
         this(name, description, updatedBy);
         this.valueType = valueType;
+    }
+
+    /**
+     * @param id
+     */
+    public Attribute(UUID id) {
+        super(id);
     }
 
     public void addAttribute(AttributeMetaAttribute attribute) {

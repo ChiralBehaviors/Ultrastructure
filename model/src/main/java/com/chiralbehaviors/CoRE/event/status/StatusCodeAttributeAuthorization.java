@@ -58,13 +58,6 @@ public class StatusCodeAttributeAuthorization extends
 
     /**
      * @param id
-     */
-    public StatusCodeAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
      * @param classification
      * @param updatedBy
      */
@@ -91,6 +84,13 @@ public class StatusCodeAttributeAuthorization extends
                                             Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
+    }
+
+    /**
+     * @param id
+     */
+    public StatusCodeAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

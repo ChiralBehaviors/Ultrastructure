@@ -61,13 +61,6 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
     }
 
     /**
-     * @param id
-     */
-    public ClassifiedAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param classification
      * @param updatedBy
      */
@@ -87,6 +80,13 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
                                             Agency updatedBy) {
         super(authorized, updatedBy);
         this.classification = classification;
+    }
+
+    /**
+     * @param id
+     */
+    public ClassifiedAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     public Relationship getClassification() {

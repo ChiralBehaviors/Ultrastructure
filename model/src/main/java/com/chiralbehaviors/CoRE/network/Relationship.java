@@ -166,13 +166,6 @@ public class Relationship extends
     }
 
     /**
-     * @param id
-     */
-    public Relationship(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param name
      */
     public Relationship(String name) {
@@ -226,6 +219,13 @@ public class Relationship extends
                         Relationship inverse) {
         super(name, description, updatedBy);
         setInverse(inverse);
+    }
+
+    /**
+     * @param id
+     */
+    public Relationship(UUID id) {
+        super(id);
     }
 
     /*

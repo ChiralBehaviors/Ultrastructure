@@ -58,13 +58,6 @@ public class IntervalAttributeAuthorization extends
 
     /**
      * @param id
-     */
-    public IntervalAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
      * @param classification
      * @param updatedBy
      */
@@ -89,6 +82,13 @@ public class IntervalAttributeAuthorization extends
                                           Attribute authorized, Agency updatedBy) {
         this(classification, authorized, updatedBy);
         this.classifier = classifier;
+    }
+
+    /**
+     * @param id
+     */
+    public IntervalAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     /*

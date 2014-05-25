@@ -30,11 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
  */
 public interface WellKnownObject {
 
-    public static enum WellKnownTypes {
-        AGENCY, ATTRIBUTE, COORDINATE, INTERVAL, LOCATION, PRODUCT,
-        RELATIONSHIP, STATUS_CODE, UNIT;
-    }
-
     public static enum WellKnownAgency implements WellKnownObject {
         CORE() {
 
@@ -1630,6 +1625,11 @@ public interface WellKnownObject {
         }
     }
 
+    public static enum WellKnownTypes {
+        AGENCY, ATTRIBUTE, COORDINATE, INTERVAL, LOCATION, PRODUCT,
+        RELATIONSHIP, STATUS_CODE, UNIT;
+    }
+
     public static enum WellKnownUnit implements WellKnownObject {
         UNIT() {
 
@@ -1650,7 +1650,9 @@ public interface WellKnownObject {
 
         @Override
         public String id() {
-            return UuidGenerator.toBase64(new UUID(WellKnownTypes.UNIT.ordinal(), ordinal() + 1));
+            return UuidGenerator.toBase64(new UUID(
+                                                   WellKnownTypes.UNIT.ordinal(),
+                                                   ordinal() + 1));
         }
 
         /* (non-Javadoc)

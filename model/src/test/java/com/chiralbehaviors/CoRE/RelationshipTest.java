@@ -20,6 +20,7 @@ import static junit.framework.Assert.assertNotNull;
 
 import javax.persistence.TypedQuery;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,8 +53,11 @@ public class RelationshipTest extends DatabaseTest {
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
         em.persist(massListOf);
+    }
 
-        commitTransaction();
+    @After
+    public void after() {
+        em.getTransaction().rollback();
         em.clear();
     }
 
@@ -76,8 +80,6 @@ public class RelationshipTest extends DatabaseTest {
 
     @Test
     public void testInverseMerge() {
-        beginTransaction();
-
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
                                                        Agency.class);
         query.setParameter("name", "CoRE");
@@ -108,11 +110,6 @@ public class RelationshipTest extends DatabaseTest {
 
         Relationship r1 = em.merge(relationship);
 
-        // Relationship i1 = dao.makePersistent(inverse);
-
-        // assertFalse(relationship == r1);
-        // assertTrue(inverse == i1);
-
         System.out.println("R1: " + r1);
         System.out.println("I1: " + r1.getInverse());
 
@@ -120,13 +117,5 @@ public class RelationshipTest extends DatabaseTest {
         System.out.println("I1 Class: " + r1.getInverse().getClass());
 
         assertNotNull(r1.getInverse());
-
-        // assertEquals(r1.getInverse(), i1);
-
-        // assertNotNull(i1.getInverse());
-        // assertEquals(i1.getInverse(), r1);
-
-        // dao.flush();
-        commitTransaction();
     }
 }

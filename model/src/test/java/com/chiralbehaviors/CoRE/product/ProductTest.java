@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.persistence.TypedQuery;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -48,8 +49,6 @@ public class ProductTest extends DatabaseTest {
 
     @Test
     public void createEntity() {
-        beginTransaction();
-
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
                                                        Agency.class).setParameter("name",
                                                                                   "CoRE");
@@ -69,7 +68,7 @@ public class ProductTest extends DatabaseTest {
         b.setPinned(false);
 
         em.persist(b);
-        commitTransaction();
+        em.flush();
 
         // Now check to see that the Product you just made actually got into
         // the database.
@@ -85,6 +84,12 @@ public class ProductTest extends DatabaseTest {
         assertNotNull("Retrieved Product was null!", b2);
         assertTrue(b != b2);
         assertEquals(b, b2);
+    }
+    
+    @After
+    public void after() {
+        em.getTransaction().rollback();
+        em.clear();
     }
 
     @Before
@@ -137,8 +142,7 @@ public class ProductTest extends DatabaseTest {
                                                  "Taxonomic relationship defining membership in a group or category.  In 'A includes B', A is the more general product, while B is some specialization or grouping of A",
                                                  core, isA);
         em.persist(includes);
-
-        commitTransaction();
+        em.flush();
         em.clear();
     }
 

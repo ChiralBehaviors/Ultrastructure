@@ -17,6 +17,7 @@ package com.chiralbehaviors.CoRE.resource;
 
 import java.sql.SQLException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,21 +41,26 @@ public class AgencyAccessAuthTest extends DatabaseTest {
         Bootstrap bt = new Bootstrap(connection);
         bt.clear();
         bt.bootstrap();
-        commitTransaction();
         kernel = new KernelImpl(em);
+        em.flush();
+        em.clear();
+    }
+
+    @After
+    public void after() {
+        em.getTransaction().rollback();
+        em.clear();
     }
 
     @Test
-    public void testClassHierarchy() {
-        beginTransaction();
+    public void testClassHierarchy() { 
         AgencyProductAccessAuthorization auth = new AgencyProductAccessAuthorization(
                                                                                      kernel.getAnyAgency(),
                                                                                      kernel.getAnyRelationship(),
                                                                                      kernel.getAnyProduct(),
                                                                                      kernel.getCoreUser());
-        em.persist(auth);
-        commitTransaction();
-
+        em.persist(auth);  
+        em.flush();
     }
 
 }

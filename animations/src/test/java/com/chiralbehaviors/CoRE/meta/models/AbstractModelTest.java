@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,7 +29,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
@@ -42,25 +43,19 @@ import com.chiralbehaviors.CoRE.meta.Model;
  * 
  */
 public class AbstractModelTest {
-    private static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    private static final String    SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    protected Model             model;
-    protected Kernel            kernel;
-    protected EntityManager     em;
+    protected static Model         model;
+    protected static Kernel        kernel;
+    protected static EntityManager em;
 
     public AbstractModelTest() {
         super();
     }
 
-    @Before
-    public void initialize() throws Exception {
-        InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
-        assertNotNull("jpa properties missing", is);
-        Properties properties = new Properties();
-        properties.load(is);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
-        em = emf.createEntityManager();
+    @BeforeClass
+    public static void initializeDatabase() throws IOException, SQLException {
+        em = getEntityManager();
         BootstrapLoader loader = new BootstrapLoader(em);
         em.getTransaction().begin();
         loader.clear();
@@ -68,9 +63,19 @@ public class AbstractModelTest {
         em.getTransaction().begin();
         loader.bootstrap();
         em.getTransaction().commit();
-
         model = new ModelImpl(em);
         kernel = model.getKernel();
+    }
+
+    private static EntityManager getEntityManager() throws IOException {
+        InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
+        assertNotNull("jpa properties missing", is);
+        Properties properties = new Properties();
+        properties.load(is);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                                          properties);
+        EntityManager em = emf.createEntityManager();
+        return em;
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {

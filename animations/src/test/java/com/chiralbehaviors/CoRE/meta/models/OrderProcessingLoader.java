@@ -39,92 +39,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  * 
  */
-public class OrderProcessingLoader {
-
-    public Relationship         area;
-    public Relationship         areaOf;
-    public Relationship         city;
-    public Relationship         cityOf;
-    public Relationship         customerType;
-    public Relationship         customerTypeOf;
-    public Relationship         region;
-    public Relationship         regionOf;
-    public Relationship         state;
-    public Relationship         stateOf;
-    public Relationship         salesTaxStatus;
-    public Relationship         salesTaxStatusOf;
-    public Relationship         storageType;
-    public Relationship         storageTypeOf;
-    public Relationship         street;
-    public Relationship         streetOf;
-    private Relationship        notApplicableRelationship;
-    private Relationship        sameRelationship;
-    private Relationship        anyRelationship;
-
-    public StatusCode           unset;
-    public StatusCode           abandoned;
-    public StatusCode           completed;
-    public StatusCode           failure;
-    public StatusCode           active;
-    public StatusCode           available;
-    public StatusCode           pickCompleted;
-    public StatusCode           waitingOnFee;
-    public StatusCode           waitingOnPricing;
-    public StatusCode           waitingOnPurchaseOrder;
-    public StatusCode           waitingOnCreditCheck;
-
-    public Product              abc486;
-    public Product              checkCredit;
-    public Product              checkLetterOfCredit;
-    public Product              chemB;
-    public Product              deliver;
-    public Product              discount;
-    public Product              frozen;
-    public Product              fee;
-    public Product              printCustomsDeclaration;
-    public Product              printPurchaseOrder;
-    public Product              roomTemp;
-    public Product              pick;
-    public Product              salesTax;
-    public Product              ship;
-    public Product              nonExempt;
-    private Product             anyProduct;
-    private Product             sameProduct;
-
-    public Location             bht378;
-    public Location             bin1;
-    public Location             bin15;
-    public Location             dc;
-    public Location             east_coast;
-    public Location             euro;
-    public Location             france;
-    public Location             paris;
-    public Location             rc31;
-    public Location             rsb225;
-    public Location             factory1;
-    public Location             us;
-    private Location            anyLocation;
-
-    public Agency               billingComputer;
-    public Agency               cafleurBon;
-    public Agency               core;
-    public Agency               cpu;
-    public Agency               creditDept;
-    public Agency               exempt;
-    public Agency               externalCust;
-    public Agency               factory1Agency;
-    public Agency               georgeTownUniversity;
-    public Agency               manufacturer;
-    public Agency               nonExemptAgency;
-    public Agency               orderFullfillment;
-    public Agency               orgA;
-    private Agency              anyAgency;
-
-    public Attribute            priceAttribute;
-    public Attribute            taxRateAttribute;
-    public Attribute            discountAttribute;
-
-    public ProtocolAttribute    price;
+public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     private final EntityManager em;
     private final Kernel        kernel;
@@ -143,7 +58,7 @@ public class OrderProcessingLoader {
         anyRelationship = kernel.getAnyRelationship();
         notApplicableRelationship = kernel.getNotApplicableRelationship();
         unset = kernel.getUnset();
-    }
+    } 
 
     public void createAgencyNetworks() {
         model.getAgencyModel().link(georgeTownUniversity, customerType,

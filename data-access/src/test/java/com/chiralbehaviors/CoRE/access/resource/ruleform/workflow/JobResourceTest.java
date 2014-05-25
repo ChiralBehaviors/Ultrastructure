@@ -20,8 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityTransaction;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +28,6 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.models.OrderProcessingLoader;
 
 /**
  * @author hparry
@@ -38,31 +35,22 @@ import com.chiralbehaviors.CoRE.meta.models.OrderProcessingLoader;
  */
 public class JobResourceTest extends AbstractModelTest {
 
-    private OrderProcessingLoader scenario;
-    private JobResource           resource;
+    private JobResource resource;
 
-    @Override
     @Before
     public void initialize() throws Exception {
-        super.initialize();
         resource = new JobResource(model);
-        EntityTransaction txn = em.getTransaction();
-        scenario = new OrderProcessingLoader(em);
-        txn.begin();
-        scenario.load();
-        txn.commit();
     }
 
     @Test
     public void testInsertAttributableJob() {
         em.getTransaction().begin();
-        Attribute attr = new Attribute("attribute", null,
-                                       scenario.billingComputer);
+        Attribute attr = new Attribute("attribute", null, kernel.getCore());
         attr.setValueType(ValueType.TEXT);
         em.persist(attr);
         em.getTransaction().commit();
         em.refresh(attr);
-        Job job = new Job(scenario.billingComputer, scenario.billingComputer,
+        Job job = new Job(kernel.getCore(), kernel.getCore(),
                           kernel.getAnyProduct(), kernel.getAnyProduct(),
                           kernel.getAnyLocation(), kernel.getAnyLocation(),
                           kernel.getCore());

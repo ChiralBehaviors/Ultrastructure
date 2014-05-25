@@ -24,7 +24,7 @@ import java.util.Set;
 
 import javax.persistence.EntityTransaction;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -39,13 +39,11 @@ import com.chiralbehaviors.CoRE.meta.graph.Node;
  */
 public class WorkspaceModelTest extends AbstractModelTest {
 
-    private WorkspaceModel        workspaceModel;
-    private OrderProcessingLoader scenario;
-
-    @Override
-    @Before
-    public void initialize() throws Exception {
-        super.initialize();
+    private static WorkspaceModel        workspaceModel;
+    private static OrderProcessingLoader scenario;
+ 
+    @BeforeClass
+    public static void init() throws Exception { 
         workspaceModel = model.getWorkspaceModel();
         EntityTransaction txn = em.getTransaction();
         scenario = new OrderProcessingLoader(em);

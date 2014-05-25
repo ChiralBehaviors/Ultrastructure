@@ -75,7 +75,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
         em.getTransaction().begin();
 
-        Relationship equals2 = new Relationship("equals 2",
+        Relationship equals2 = new Relationship("equals too",
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);

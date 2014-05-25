@@ -22,13 +22,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.event.Job;
@@ -46,19 +48,17 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private JobModel              jobModel;
-    private OrderProcessingLoader scenario;
+    private static JobModel              jobModel;
+    private static OrderProcessingLoader scenario;
 
-    @Override
-    @Before
-    public void initialize() throws Exception {
-        super.initialize();
-        jobModel = model.getJobModel();
+    @BeforeClass
+    public static void before() throws Exception {
         EntityTransaction txn = em.getTransaction();
         scenario = new OrderProcessingLoader(em);
         txn.begin();
         scenario.load();
         txn.commit();
+        jobModel = model.getJobModel();
     }
 
     @Test
@@ -129,6 +129,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testEuOrder() throws Exception {
+        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = new Job(scenario.orderFullfillment, scenario.cafleurBon,
@@ -148,6 +149,18 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(2, protocols.size());
         List<Job> jobs = findAllJobs();
         assertEquals(7, jobs.size());
+    }
+
+    private void clearJobs() throws SQLException {
+        Connection connection = em.unwrap(Connection.class);
+        boolean prev = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        alterTriggers(false);
+        String query = "DELETE FROM ruleform.job";
+        connection.createStatement().execute(query);
+        alterTriggers(true);
+        connection.commit();
+        connection.setAutoCommit(prev);
     }
 
     @Test
@@ -299,6 +312,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testNonExemptOrder() throws Exception {
+        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = new Job(scenario.orderFullfillment, scenario.orgA,
@@ -322,6 +336,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testOrder() throws Exception {
+        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = new Job(scenario.orderFullfillment,

@@ -543,10 +543,7 @@
                         <version>2.7.2</version>
                         <configuration>
                             <skipTests>false</skipTests>
-                            <forkCount>4</forkCount>
-                            <reuseForks>true</reuseForks>
                             <argLine>-Xmx2024m -XX:MaxPermSize=256m</argLine>
-                            <forkMode>always</forkMode>
                         </configuration>
                     </plugin>
                 </plugins>

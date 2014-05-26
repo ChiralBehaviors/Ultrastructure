@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
@@ -43,7 +44,7 @@ public class JobChronology extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Job
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     private Job               job;
 
@@ -52,7 +53,7 @@ public class JobChronology extends Ruleform {
     private Long              sequence;
 
     //bi-directional many-to-one association to StatusCode
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode        status;
 

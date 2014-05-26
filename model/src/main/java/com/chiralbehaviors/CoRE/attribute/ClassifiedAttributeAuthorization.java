@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -45,7 +46,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classification")
     private Relationship      classification;
 

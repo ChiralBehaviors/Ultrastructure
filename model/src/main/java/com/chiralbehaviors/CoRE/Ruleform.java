@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -82,7 +83,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Column(name = "update_date")
     private Timestamp updateDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
     protected Agency  updatedBy;
 

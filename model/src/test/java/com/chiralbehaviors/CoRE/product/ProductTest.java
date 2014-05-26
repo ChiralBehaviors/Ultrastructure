@@ -93,9 +93,7 @@ public class ProductTest extends DatabaseTest {
     }
 
     @Before
-    public void initData() {
-        beginTransaction();
-
+    public void initData() { 
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);

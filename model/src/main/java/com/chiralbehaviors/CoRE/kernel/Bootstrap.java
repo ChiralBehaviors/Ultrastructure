@@ -44,8 +44,10 @@ public class Bootstrap {
 
     /**
      * @param connection
+     * @throws SQLException
      */
-    public Bootstrap(Connection connection) {
+    public Bootstrap(Connection connection) throws SQLException {
+        connection.setAutoCommit(false);
         this.connection = connection;
     }
 

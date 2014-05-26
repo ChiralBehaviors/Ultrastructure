@@ -27,6 +27,7 @@ import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_CHILDREN;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -74,11 +75,11 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(name = "parent")
     private Interval           parent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise1")
     private IntervalNetwork    premise1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise2")
     private IntervalNetwork    premise2;
 

@@ -21,6 +21,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -68,16 +69,16 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
     @Column(name = "authorization_type")
     private String             authorizationType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_transitive_relationship")
     protected Relationship     childTransitiveRelationship;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_transitive_relationship")
     protected Relationship     parentTransitiveRelationship;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
     protected Relationship     relationship;
 

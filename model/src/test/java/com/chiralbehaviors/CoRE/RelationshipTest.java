@@ -20,7 +20,6 @@ import static junit.framework.Assert.assertNotNull;
 
 import javax.persistence.TypedQuery;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +36,6 @@ public class RelationshipTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        beginTransaction();
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
@@ -53,11 +51,7 @@ public class RelationshipTest extends DatabaseTest {
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
         em.persist(massListOf);
-    }
-
-    @After
-    public void after() {
-        em.getTransaction().rollback();
+        em.flush();
         em.clear();
     }
 

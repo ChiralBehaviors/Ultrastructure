@@ -49,11 +49,10 @@ public class DeserializerTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        beginTransaction();
         core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
-        commitTransaction();
+        em.flush();
         em.clear();
     }
 
@@ -88,9 +87,6 @@ public class DeserializerTest extends DatabaseTest {
         InputStream is = new ByteArrayInputStream(baos.toByteArray());
 
         mapper.readValue(is, Agency.class);
-        beginTransaction();
-        //em.persist(p2);
-        commitTransaction();
     }
 
 }

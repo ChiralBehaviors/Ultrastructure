@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -41,17 +42,17 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_value")
     private Attribute         attributeValue;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meta_attribute")
     private Attribute         metaAttribute;
 

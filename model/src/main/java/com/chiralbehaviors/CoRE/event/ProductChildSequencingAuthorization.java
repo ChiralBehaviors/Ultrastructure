@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -54,22 +55,22 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     public static final String GET_SEQUENCES     = "productChildSequencingAuthorization.getSequences";
     private static final long  serialVersionUID  = 1L;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_child")
     private Product            nextChild;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_child_status")
     private StatusCode         nextChildStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
     private Product            parent;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber    = 1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 

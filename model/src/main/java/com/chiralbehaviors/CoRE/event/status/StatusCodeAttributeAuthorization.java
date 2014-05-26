@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -42,7 +43,7 @@ public class StatusCodeAttributeAuthorization extends
         ClassifiedAttributeAuthorization<StatusCode> {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classifier")
     private StatusCode        classifier;
 

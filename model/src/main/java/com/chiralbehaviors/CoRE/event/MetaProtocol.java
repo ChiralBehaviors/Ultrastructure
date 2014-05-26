@@ -23,6 +23,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -49,25 +50,25 @@ public class MetaProtocol extends Ruleform {
 
     private static final long  serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
 
     /**
      * The relationship that transforms the product ordered
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_ordered")
     private Relationship       productOrdered;
 
     /**
      * the relationship that transforms the requesting agency
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requesting_agency")
     private Relationship       requestingAgency;
 
@@ -77,7 +78,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * The service factor for this rule
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service")
     private Product            service;
 

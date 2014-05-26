@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
  * 
  */
 public class StatusCodeSequencingTest extends DatabaseTest {
+
     @AfterClass
     public static void teardown() throws SQLException {
         alterTrigger(true);
@@ -62,10 +63,8 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.test.DatabaseTest#clear()
      */
-    @Override
     @Before
-    public void clear() throws SQLException {
-        super.clear();
+    public void disableTriggers() throws SQLException {
         alterTrigger(false);
     }
 
@@ -96,9 +95,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     }
 
     @Test
-    public void testHasSccs() throws SQLException {
-        em.getTransaction().begin();
-
+    public void testHasNoSccs() throws Exception {
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
@@ -120,6 +117,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
 
         Product service = new Product("My Service", core);
         em.persist(service);
+        em.flush();
 
         StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
                                                                   startState,
@@ -138,9 +136,76 @@ public class StatusCodeSequencingTest extends DatabaseTest {
                                                                   core);
         em.persist(sequence3);
 
-        em.getTransaction().commit();
+        StatusCode loopState = new StatusCode("loop-state", core);
+        em.persist(loopState);
 
-        em.getTransaction().begin();
+        StatusCodeSequencing loop = new StatusCodeSequencing(service, state2,
+                                                             loopState, core);
+        loop.setSequenceNumber(2);
+        em.persist(loop);
+
+        StatusCodeSequencing terminate = new StatusCodeSequencing(
+                                                                  service,
+                                                                  loopState,
+                                                                  terminalState,
+                                                                  core);
+        em.persist(terminate);
+
+        StatusCodeSequencing back = new StatusCodeSequencing(service,
+                                                             loopState, state1,
+                                                             core);
+        back.setSequenceNumber(2);
+        em.persist(back);
+        em.persist(terminate);
+        em.flush();
+        assertTrue(jobModel.hasScs(service));
+        jobModel.validateStateGraph(Arrays.asList(service));
+    }
+
+    @Test
+    public void testHasSccs() throws SQLException {
+        Agency core = new Agency("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
+
+        Model model = new ModelImpl(em);
+        JobModel jobModel = model.getJobModel();
+
+        StatusCode startState = new StatusCode("top-level", core);
+        em.persist(startState);
+
+        StatusCode state1 = new StatusCode("state-1", core);
+        em.persist(state1);
+
+        StatusCode state2 = new StatusCode("state-2", core);
+        em.persist(state2);
+
+        StatusCode terminalState = new StatusCode("terminal state", core);
+        em.persist(terminalState);
+
+        Product service = new Product("My Service", core);
+        em.persist(service);
+        em.flush();
+
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
+                                                                  startState,
+                                                                  state1, core);
+        em.persist(sequence1);
+
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
+                                                                  state1,
+                                                                  state2, core);
+        em.persist(sequence2);
+
+        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
+                                                                  service,
+                                                                  state2,
+                                                                  terminalState,
+                                                                  core);
+        em.persist(sequence3);
+
+        em.flush();
+        em.clear();
 
         StatusCodeSequencing loop = new StatusCodeSequencing(service,
                                                              terminalState,
@@ -158,34 +223,6 @@ public class StatusCodeSequencingTest extends DatabaseTest {
             // expected 
             assertTrue(e.getMessage().endsWith("has at least one terminal SCC defined in its status code graph"));
         }
-
-        em.getTransaction().rollback();
-
-        em.getTransaction().begin();
-
-        StatusCode loopState = new StatusCode("loop-state", core);
-        em.persist(loopState);
-
-        loop = new StatusCodeSequencing(service, state2, loopState, core);
-        loop.setSequenceNumber(2);
-        em.persist(loop);
-
-        StatusCodeSequencing terminate = new StatusCodeSequencing(
-                                                                  service,
-                                                                  loopState,
-                                                                  terminalState,
-                                                                  core);
-        em.persist(terminate);
-
-        StatusCodeSequencing back = new StatusCodeSequencing(service,
-                                                             loopState, state1,
-                                                             core);
-        back.setSequenceNumber(2);
-        em.persist(back);
-        em.persist(terminate);
-        assertTrue(jobModel.hasScs(service));
-        jobModel.validateStateGraph(Arrays.asList(service));
-        em.getTransaction().commit();
     }
 
     @Test

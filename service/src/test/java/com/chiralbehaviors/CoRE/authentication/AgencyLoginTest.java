@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +42,7 @@ import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.chiralbehaviors.CoRE.utils.Util;
 import com.google.common.base.Optional;
+
 import io.dropwizard.auth.basic.BasicCredentials;
 
 /**
@@ -59,22 +61,25 @@ public class AgencyLoginTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         em = emf.createEntityManager();
-        BootstrapLoader loader = new BootstrapLoader(em);
-        em.getTransaction().begin();
-        loader.clear();
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        loader.bootstrap();
-        em.getTransaction().commit();
-
+        BootstrapLoader loader = new BootstrapLoader(em); 
+        loader.clear(); 
+        loader.bootstrap(); 
         model = new ModelImpl(em);
+        em.getTransaction().begin();
+        em.flush();
+        em.clear();
+    }
+    
+    @After
+    public void rollback() {
+        em.getTransaction().rollback();
+        em.clear();
     }
 
     @Test
     public void testGoodUser() throws Exception {
         String username = "bob@slack.com";
-        String password = "give me food or give me slack or kill me";
-        em.getTransaction().begin();
+        String password = "give me food or give me slack or kill me"; 
         Aspect<Agency> loginAspect = new Aspect<Agency>(
                                                         model.getKernel().getIsA(),
                                                         model.getKernel().getCoreUser());
@@ -82,8 +87,8 @@ public class AgencyLoginTest {
         Agency bob = model.getAgencyModel().create("Bob", "Test Dummy",
                                                    loginAspect);
         em.persist(bob);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
+        em.clear();
         Facet<Agency, AgencyAttribute> loginFacet = model.getAgencyModel().getFacet(bob,
                                                                                     loginAspect);
 
@@ -93,7 +98,7 @@ public class AgencyLoginTest {
         assertNotNull(passwordHashValue);
         usernameValue.setTextValue(username);
         passwordHashValue.setTextValue(Util.md5Hash(password));
-        em.getTransaction().commit();
+        em.flush();
 
         AgencyAuthenticator authenticator = new AgencyAuthenticator(model);
         Optional<AuthenticatedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(

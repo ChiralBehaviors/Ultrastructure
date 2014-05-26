@@ -43,6 +43,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
@@ -199,63 +200,63 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The agency assigned to this job
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "assign_to")
     private Agency             assignTo;
 
     /**
      * The attributes of this job
      */
-    @OneToMany(mappedBy = "job")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "job")
     @JsonIgnore
     private Set<JobAttribute>  attributes;
 
     /**
      * The children of this job
      */
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<Job>           childJobs;
 
     /**
      * The chronology of this job
      */
-    @OneToMany(mappedBy = "job")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "job")
     @JsonIgnore
     private Set<JobChronology> chronology;
 
     /**
      * The location where the product will be delivered from
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "deliver_from")
     private Location           deliverFrom;
 
     /**
      * The location to deliver the product of this job
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
 
     /**
      * The parent of this job
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "parent")
     private Job                parent;
 
     /**
      * The end product of this job
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product")
     private Product            product;
 
     /**
      * The consumer of this job's product
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "requester")
     private Agency             requester;
 
@@ -265,14 +266,14 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The service this job is performing
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "service")
     private Product            service;
 
     /**
      * This job's status
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode         status;
 

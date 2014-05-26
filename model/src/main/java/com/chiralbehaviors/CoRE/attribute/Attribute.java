@@ -32,6 +32,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -122,12 +123,12 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
-    @OneToMany(mappedBy = "child")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     private Set<AttributeNetwork>       networkByChild;
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private Set<AttributeNetwork>       networkByParent;
 
     @Column(name = "value_type")

@@ -79,7 +79,7 @@ public class BootstrapLoader extends Bootstrap {
     private final EntityManager em;
     private KernelImpl          kernel;
 
-    public BootstrapLoader(EntityManager em) {
+    public BootstrapLoader(EntityManager em) throws SQLException {
         super(em.unwrap(Connection.class));
         this.em = em;
     }

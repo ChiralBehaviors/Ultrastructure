@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -42,7 +43,7 @@ public class JobAttribute extends AttributeValue<Job> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Job
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     private Job               job;
 

@@ -29,6 +29,7 @@ import static com.chiralbehaviors.CoRE.network.RelationshipNetwork.GET_NETWORKS;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -79,11 +80,11 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @JoinColumn(name = "parent")
     private Relationship        parent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise1")
     private RelationshipNetwork premise1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise2")
     private RelationshipNetwork premise2;
 

@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -50,7 +51,7 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agency")
     private Agency             agency;
 

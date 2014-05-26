@@ -112,9 +112,9 @@ public class CollectionResource {
 
         Product p = new Product();
         p.setId(id);
-        List<Ruleform> nodes = new LinkedList<Ruleform>();
+        List<Ruleform> nodes = new LinkedList<>();
         nodes.add(p);
-        List<Relationship> rels = new LinkedList<Relationship>();
+        List<Relationship> rels = new LinkedList<>();
         for (String rid : relIds) {
             Relationship r = em.find(Relationship.class, rid);
             rels.add(r);
@@ -131,7 +131,7 @@ public class CollectionResource {
         em.getTransaction().begin();
         try {
 
-            Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
+            Map<Ruleform, Ruleform> knownObjects = new HashMap<>();
             graph.manageEntity(em, knownObjects);
 
             em.getTransaction().commit();

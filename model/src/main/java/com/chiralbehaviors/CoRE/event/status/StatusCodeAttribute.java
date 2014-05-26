@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -45,7 +46,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 

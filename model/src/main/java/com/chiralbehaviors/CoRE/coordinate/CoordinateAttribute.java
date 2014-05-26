@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -45,12 +46,12 @@ public class CoordinateAttribute extends AttributeValue<Coordinate> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Coordinate
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coordinate")
     private Coordinate        coordinate;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_value")
     private Product           productValue;
 

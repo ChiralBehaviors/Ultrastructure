@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,15 +41,22 @@ public class JobResourceTest extends AbstractModelTest {
     @Before
     public void initialize() throws Exception {
         resource = new JobResource(model);
+        em.getTransaction().begin();
+    }
+
+    @After
+    public void after() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+        }
     }
 
     @Test
     public void testInsertAttributableJob() {
-        em.getTransaction().begin();
         Attribute attr = new Attribute("attribute", null, kernel.getCore());
         attr.setValueType(ValueType.TEXT);
         em.persist(attr);
-        em.getTransaction().commit();
+        em.flush();
         em.refresh(attr);
         Job job = new Job(kernel.getCore(), kernel.getCore(),
                           kernel.getAnyProduct(), kernel.getAnyProduct(),
@@ -59,6 +67,7 @@ public class JobResourceTest extends AbstractModelTest {
         Map<String, JobAttribute> map = new HashMap<>();
         map.put(jobAttr.getAttribute().getName(), jobAttr);
         AttributedJob attributedJob = new AttributedJob(job, map);
+        em.getTransaction().commit();
         job = resource.insertJob(attributedJob);
         assertNotNull(job.getId());
     }

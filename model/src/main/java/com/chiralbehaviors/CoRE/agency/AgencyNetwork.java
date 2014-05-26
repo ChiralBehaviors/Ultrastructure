@@ -33,6 +33,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -94,11 +95,11 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @JoinColumn(name = "parent")
     private Agency             parent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise1")
     private AgencyNetwork      premise1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise2")
     private AgencyNetwork      premise2;
 

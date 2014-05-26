@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -44,7 +45,7 @@ abstract public class AttributeAuthorization extends Ruleform {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authorized_attribute")
     private Attribute         authorizedAttribute;
 
@@ -55,7 +56,7 @@ abstract public class AttributeAuthorization extends Ruleform {
     private Integer           booleanValue;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grouping_agency")
     private Agency            groupingAgency;
 

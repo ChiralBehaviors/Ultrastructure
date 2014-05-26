@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -55,21 +56,21 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
 
     private static final long  serialVersionUID    = 1L;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_sibling")
     private Product            nextSibling;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_sibling_status")
     private StatusCode         nextSiblingStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
     private Product            parent;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 

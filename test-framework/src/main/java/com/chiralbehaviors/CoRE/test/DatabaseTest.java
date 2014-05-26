@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -40,12 +41,34 @@ abstract public class DatabaseTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        System.out.println("DT Before");
         Properties properties = new Properties();
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
         connection = em.unwrap(Connection.class);
+        alterAllTriggers(false);
+        ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
+        while (r.next()) {
+            String table = r.getString("name");
+            String query = String.format("DELETE FROM %s", table);
+            connection.createStatement().execute(query);
+        }
+        r.close();
+        alterAllTriggers(true);
+    }
+
+    @Before
+    public void before() {
+        beginTransaction();
+        em.clear();
+    }
+
+    @After
+    public void after() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+        }
+        em.clear();
     }
 
     protected static void alterAllTriggers(boolean enable) throws SQLException {
@@ -57,19 +80,6 @@ abstract public class DatabaseTest {
             connection.createStatement().execute(query);
         }
         r.close();
-    }
-
-    @Before
-    public void clear() throws SQLException {
-        alterAllTriggers(false);
-        ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
-        while (r.next()) {
-            String table = r.getString("name");
-            String query = String.format("DELETE FROM %s", table);
-            connection.createStatement().execute(query);
-        }
-        r.close();
-        alterAllTriggers(true);
     }
 
     /**

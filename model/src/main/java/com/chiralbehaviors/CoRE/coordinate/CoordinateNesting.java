@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -39,19 +40,19 @@ public class CoordinateNesting extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inner_attribute")
     private Attribute         innerAttribute;
 
     private String            operation;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "outer_attribute")
     private Attribute         outerAttribute;
 

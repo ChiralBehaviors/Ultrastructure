@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,14 +56,6 @@ public class WorkspaceTest extends DatabaseTest {
         Bootstrap bt = new Bootstrap(connection);
         bt.bootstrap();
         kernel = new KernelImpl(em);
-        em.clear();
-        beginTransaction();
-    }
-
-    @After
-    public void cleanup() {
-        em.getTransaction().rollback();
-        em.clear();
     }
 
     @Test

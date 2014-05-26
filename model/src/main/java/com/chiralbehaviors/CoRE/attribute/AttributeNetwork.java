@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -83,20 +84,20 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child")
     private Attribute          child;
 
     //bi-directional many-to-one association to Attribute 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
     private Attribute          parent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise1")
     private AttributeNetwork   premise1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise2")
     private AttributeNetwork   premise2;
 

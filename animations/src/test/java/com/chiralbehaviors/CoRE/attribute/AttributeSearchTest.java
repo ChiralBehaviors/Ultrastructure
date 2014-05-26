@@ -35,8 +35,6 @@ public class AttributeSearchTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        beginTransaction();
-
         Agency core = new Agency("core");
         core.setUpdatedBy(core);
         em.persist(core);
@@ -48,8 +46,7 @@ public class AttributeSearchTest extends DatabaseTest {
         Attribute a2 = new Attribute("Wooziness", core);
         a2.setValueType(ValueType.INTEGER);
         em.persist(a2);
-
-        commitTransaction();
+        em.flush();
     }
 
     @Test

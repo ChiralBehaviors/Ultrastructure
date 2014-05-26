@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -44,7 +45,7 @@ public class UnitAttribute extends AttributeValue<Unit> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_rf")
     private Unit               unitRf;
 

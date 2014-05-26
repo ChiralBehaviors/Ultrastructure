@@ -58,9 +58,7 @@ public class AbstractModelTest {
         em = getEntityManager();
         BootstrapLoader loader = new BootstrapLoader(em);
         em.getTransaction().begin();
-        loader.clear();
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        loader.clear(); 
         loader.bootstrap();
         em.getTransaction().commit();
         model = new ModelImpl(em);

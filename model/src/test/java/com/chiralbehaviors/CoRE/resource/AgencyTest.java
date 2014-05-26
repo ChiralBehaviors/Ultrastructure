@@ -19,7 +19,6 @@ import javax.persistence.TypedQuery;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +34,6 @@ public class AgencyTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        beginTransaction();
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
@@ -43,12 +41,6 @@ public class AgencyTest extends DatabaseTest {
         Agency foo = new Agency("Foo", "More Foo", core);
         em.persist(foo);
         em.flush();
-        em.clear();
-    }
-
-    @After
-    public void after() {
-        em.getTransaction().rollback();
         em.clear();
     }
 

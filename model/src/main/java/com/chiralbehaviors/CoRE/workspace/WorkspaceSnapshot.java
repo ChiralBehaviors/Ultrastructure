@@ -15,8 +15,18 @@
  */
 package com.chiralbehaviors.CoRE.workspace;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.persistence.EntityManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
@@ -83,71 +93,68 @@ import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
  * 
  */
 public class WorkspaceSnapshot implements Workspace {
+    private static Logger                                log                                     = LoggerFactory.getLogger(WorkspaceSnapshot.class);
 
     private Product                                      workspaceProduct;
     private Relationship                                 workspaceRelationship;
-    private List<Agency>                                 agencies;
-    private List<AgencyAttribute>                        agencyAttributes;
-    private List<AgencyLocationAccessAuthorization>      agencyLocationAccessAuthorizations;
-    private List<AgencyProductAccessAuthorization>       agencyProductAccessAuthorizations;
-    private List<AgencyAttributeAuthorization>           agencyAttributeAuthorizations;
-    private List<AgencyNetwork>                          agencyNetworks;
-    private List<AgencyNetworkAuthorization>             agencyNetworkAuthorizations;
-    private List<Attribute>                              attributes;
-    private List<Unit>                                   units;
-    private List<UnitNetwork>                            unitNetworks;
-    private List<UnitAttribute>                          unitAttributes;
-    private List<UnitAttributeAuthorization>             unitAttributeAuthorizations;
-    private List<UnitValue>                              unitValues;
-    private List<AttributeMetaAttribute>                 attributeMetaAttributes;
-    private List<AttributeMetaAttributeAuthorization>    attributeMetaAttributeAuthorizations;
-    private List<AttributeNetwork>                       attributeNetworks;
-    private List<StatusCode>                             statusCodes;
-    private List<StatusCodeNetwork>                      statusCodeNetworks;
-    private List<StatusCodeSequencing>                   statusCodeSequencings;
-    private List<StatusCodeAttribute>                    statusCodeAttributes;
-    private List<StatusCodeAttributeAuthorization>       statusCodeAttributeAuthorizations;
-    private List<Job>                                    jobs;
-    private List<JobAttribute>                           jobAttributes;
-    private List<JobChronology>                          jobChronologies;
-    private List<MetaProtocol>                           metaProtocols;
-    private List<ProductChildSequencingAuthorization>    productChildSequencingAuthorizations;
-    private List<ProductParentSequencingAuthorization>   productParentSequencingAuthorizations;
-    private List<ProductSiblingSequencingAuthorization>  productSiblingSequencingAuthorizations;
-    private List<Protocol>                               protocols;
-    private List<ProtocolAttribute>                      protocolAttributes;
-    private List<Location>                               locations;
-    private List<LocationNetwork>                        locationNetworks;
-    private List<LocationAgencyAccessAuthorization>      locationAgencyAccessAuthorizations;
-    private List<LocationProductAccessAuthorization>     locationProductAccessAuthorizations;
-    private List<LocationAttribute>                      locationAttributes;
-    private List<LocationAttributeAuthorization>         locationAttributeAuthorizations;
-    private List<LocationNetworkAuthorization>           locationNetworkAuthorizations;
-    private List<LocationRelationship>                   locationRelationships;
-    private List<Relationship>                           relationships;
-    private List<RelationshipAttribute>                  relationshipAttributes;
-    private List<RelationshipAttributeAuthorization>     relationshipAttributeAuthorizations;
-    private List<RelationshipNetwork>                    relationshipNetworks;
-    private List<Product>                                products;
-    private List<ProductNetwork>                         productNetworks;
-    private List<ProductAgencyAccessAuthorization>       productAgencyAccessAuthorizations;
-    private List<ProductAttributeAccessAuthorization>    productAttributeAccessAuthorizations;
-    private List<ProductLocationAccessAuthorization>     productLocationAccessAuthorizations;
-    private List<ProductRelationshipAccessAuthorization> productRelationshipAccessAuthorizations;
-    private List<ProductStatusCodeAccessAuthorization>   productStatusCodeAccessAuthorizations;
-    private List<ProductUnitAccessAuthorization>         productUnitAccessAuthorizations;
-    private List<ProductAttribute>                       productAttributes;
-    private List<ProductAttributeAuthorization>          productAttributeAuthorizations;
-    private List<ProductLocation>                        productLocations;
-    private List<ProductLocationAttribute>               productLocationAttributes;
-    private List<ProductLocationAttributeAuthorization>  productLocationAttributeAuthorizations;
-    private List<ProductLocationNetwork>                 productLocationNetworks;
-    private List<ProductNetworkAttribute>                productNetworkAttributes;
-    private List<ProductNetworkAuthorization>            productNetworkAuthorizations;
-
-    public WorkspaceSnapshot() {
-
-    }
+    private List<Agency>                                 agencies                                = new ArrayList<>();
+    private List<AgencyAttribute>                        agencyAttributes                        = new ArrayList<>();
+    private List<AgencyLocationAccessAuthorization>      agencyLocationAccessAuthorizations      = new ArrayList<>();
+    private List<AgencyProductAccessAuthorization>       agencyProductAccessAuthorizations       = new ArrayList<>();
+    private List<AgencyAttributeAuthorization>           agencyAttributeAuthorizations           = new ArrayList<>();
+    private List<AgencyNetwork>                          agencyNetworks                          = new ArrayList<>();
+    private List<AgencyNetworkAuthorization>             agencyNetworkAuthorizations             = new ArrayList<>();
+    private List<Attribute>                              attributes                              = new ArrayList<>();
+    private List<Unit>                                   units                                   = new ArrayList<>();
+    private List<UnitNetwork>                            unitNetworks                            = new ArrayList<>();
+    private List<UnitAttribute>                          unitAttributes                          = new ArrayList<>();
+    private List<UnitAttributeAuthorization>             unitAttributeAuthorizations             = new ArrayList<>();
+    private List<UnitValue>                              unitValues                              = new ArrayList<>();
+    private List<AttributeMetaAttribute>                 attributeMetaAttributes                 = new ArrayList<>();
+    private List<AttributeMetaAttributeAuthorization>    attributeMetaAttributeAuthorizations    = new ArrayList<>();
+    private List<AttributeNetwork>                       attributeNetworks                       = new ArrayList<>();
+    private List<StatusCode>                             statusCodes                             = new ArrayList<>();
+    private List<StatusCodeNetwork>                      statusCodeNetworks                      = new ArrayList<>();
+    private List<StatusCodeSequencing>                   statusCodeSequencings                   = new ArrayList<>();
+    private List<StatusCodeAttribute>                    statusCodeAttributes                    = new ArrayList<>();
+    private List<StatusCodeAttributeAuthorization>       statusCodeAttributeAuthorizations       = new ArrayList<>();
+    private List<Job>                                    jobs                                    = new ArrayList<>();
+    private List<JobAttribute>                           jobAttributes                           = new ArrayList<>();
+    private List<JobChronology>                          jobChronologies                         = new ArrayList<>();
+    private List<MetaProtocol>                           metaProtocols                           = new ArrayList<>();
+    private List<ProductChildSequencingAuthorization>    productChildSequencingAuthorizations    = new ArrayList<>();
+    private List<ProductParentSequencingAuthorization>   productParentSequencingAuthorizations   = new ArrayList<>();
+    private List<ProductSiblingSequencingAuthorization>  productSiblingSequencingAuthorizations  = new ArrayList<>();
+    private List<Protocol>                               protocols                               = new ArrayList<>();
+    private List<ProtocolAttribute>                      protocolAttributes                      = new ArrayList<>();
+    private List<Location>                               locations                               = new ArrayList<>();
+    private List<LocationNetwork>                        locationNetworks                        = new ArrayList<>();
+    private List<LocationAgencyAccessAuthorization>      locationAgencyAccessAuthorizations      = new ArrayList<>();
+    private List<LocationProductAccessAuthorization>     locationProductAccessAuthorizations     = new ArrayList<>();
+    private List<LocationAttribute>                      locationAttributes                      = new ArrayList<>();
+    private List<LocationAttributeAuthorization>         locationAttributeAuthorizations         = new ArrayList<>();
+    private List<LocationNetworkAuthorization>           locationNetworkAuthorizations           = new ArrayList<>();
+    private List<LocationRelationship>                   locationRelationships                   = new ArrayList<>();
+    private List<Relationship>                           relationships                           = new ArrayList<>();
+    private List<RelationshipAttribute>                  relationshipAttributes                  = new ArrayList<>();
+    private List<RelationshipAttributeAuthorization>     relationshipAttributeAuthorizations     = new ArrayList<>();
+    private List<RelationshipNetwork>                    relationshipNetworks                    = new ArrayList<>();
+    private List<Product>                                products                                = new ArrayList<>();
+    private List<ProductNetwork>                         productNetworks                         = new ArrayList<>();
+    private List<ProductAgencyAccessAuthorization>       productAgencyAccessAuthorizations       = new ArrayList<>();
+    private List<ProductAttributeAccessAuthorization>    productAttributeAccessAuthorizations    = new ArrayList<>();
+    private List<ProductLocationAccessAuthorization>     productLocationAccessAuthorizations     = new ArrayList<>();
+    private List<ProductRelationshipAccessAuthorization> productRelationshipAccessAuthorizations = new ArrayList<>();
+    private List<ProductStatusCodeAccessAuthorization>   productStatusCodeAccessAuthorizations   = new ArrayList<>();
+    private List<ProductUnitAccessAuthorization>         productUnitAccessAuthorizations         = new ArrayList<>();
+    private List<ProductAttribute>                       productAttributes                       = new ArrayList<>();
+    private List<ProductAttributeAuthorization>          productAttributeAuthorizations          = new ArrayList<>();
+    private List<ProductLocation>                        productLocations                        = new ArrayList<>();
+    private List<ProductLocationAttribute>               productLocationAttributes               = new ArrayList<>();
+    private List<ProductLocationAttributeAuthorization>  productLocationAttributeAuthorizations  = new ArrayList<>();
+    private List<ProductLocationNetwork>                 productLocationNetworks                 = new ArrayList<>();
+    private List<ProductNetworkAttribute>                productNetworkAttributes                = new ArrayList<>();
+    private List<ProductNetworkAuthorization>            productNetworkAuthorizations            = new ArrayList<>();
 
     /**
      * @return the agencies
@@ -627,6 +634,27 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public Relationship getWorkspaceRelationship() {
         return workspaceRelationship;
+    }
+
+    /**
+     * Merge this workspace into the supplied enterprise manager
+     * 
+     * @param em
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     */
+    public void merge(EntityManager em) throws IllegalArgumentException,
+                                       IllegalAccessException {
+
+        Map<Ruleform, Ruleform> merged = new HashMap<>();
+        for (Field field : WorkspaceSnapshot.class.getDeclaredFields()) {
+            log.debug(String.format("Merging: %s", field.getName()));
+            if (List.class.isAssignableFrom(field.getType())) {
+                mergeList(em, merged, field);
+            } else {
+                mergeEntity(em, merged, field);
+            }
+        }
     }
 
     /**
@@ -1167,6 +1195,22 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public void setWorkspaceRelationship(Relationship workspaceRelationship) {
         this.workspaceRelationship = workspaceRelationship;
+    }
+
+    private void mergeEntity(EntityManager em, Map<Ruleform, Ruleform> merged,
+                             Field field) throws IllegalAccessException {
+        field.set(this, ((Ruleform) field.get(this)).manageEntity(em, merged));
+    }
+
+    private void mergeList(EntityManager em, Map<Ruleform, Ruleform> merged,
+                           Field field) throws IllegalArgumentException,
+                                       IllegalAccessException {
+        @SuppressWarnings("unchecked")
+        List<Object> oldList = (List<Object>) field.get(this);
+        List<Object> newList = new ArrayList<>(oldList.size());
+        for (Object entity : oldList) {
+            newList.add(((Ruleform) entity).manageEntity(em, merged));
+        }
     }
 
 }

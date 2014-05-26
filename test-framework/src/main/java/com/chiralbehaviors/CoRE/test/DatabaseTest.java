@@ -40,7 +40,7 @@ abstract public class DatabaseTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-
+        System.out.println("DT Before");
         Properties properties = new Properties();
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
@@ -75,14 +75,14 @@ abstract public class DatabaseTest {
     /**
      * Initiates a database transaction.
      */
-    protected void beginTransaction() {
+    protected static void beginTransaction() {
         em.getTransaction().begin();
     }
 
     /**
      * Commits the current transaction, if it is still active.
      */
-    protected final void commitTransaction() {
+    protected static final void commitTransaction() {
         em.getTransaction().commit();
     }
 }

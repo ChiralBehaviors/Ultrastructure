@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,18 +54,21 @@ public class WorkspaceTest extends DatabaseTest {
 
     @Before
     public void initKernel() throws SQLException {
-        beginTransaction();
         Bootstrap bt = new Bootstrap(connection);
-        bt.clear();
         bt.bootstrap();
-        commitTransaction();
         kernel = new KernelImpl(em);
+        em.clear();
+        beginTransaction();
+    }
+
+    @After
+    public void cleanup() {
+        em.getTransaction().rollback();
+        em.clear();
     }
 
     @Test
     public void testLoadWorkspace() {
-        em.clear();
-        beginTransaction();
         Product workspace = kernel.getWorkspace();
         Relationship workspaceOf = kernel.getWorkspaceOf();
         Model model = new ModelImpl(em);
@@ -84,8 +88,7 @@ public class WorkspaceTest extends DatabaseTest {
                                                                                             core);
         em.persist(coreAuth);
         em.persist(locAuth);
-        em.getTransaction().commit();
-       
+        em.flush();
 
         Workspace w = new WorkspaceLoader(workspace, workspaceOf,
                                           new ModelImpl(em)).getWorkspace();
@@ -132,11 +135,11 @@ public class WorkspaceTest extends DatabaseTest {
         w.setRelationships(rels);
         w.setAgencyNetworks(nets);
         em.clear();
-        em.getTransaction().begin();
+        em.flush();
         Model model = new ModelImpl(em);
         Aspect<Product> aspect = model.getWorkspaceModel().importWorkspace(w);
 
-        em.getTransaction().commit();
+        em.flush();
         assertNotNull(aspect.getClassifier().getId());
 
     }
@@ -144,7 +147,6 @@ public class WorkspaceTest extends DatabaseTest {
     @Test
     public void testEntityManagerCrap() {
         em.clear();
-        beginTransaction();
         Product a = new Product("Workspace", "workspace",
                                 kernel.getCoreAnimationSoftware());
         Relationship workspaceOf = new Relationship(
@@ -172,7 +174,7 @@ public class WorkspaceTest extends DatabaseTest {
                                                                                      agency,
                                                                                      kernel.getCore());
         em.persist(auth);
-        commitTransaction();
+        em.flush();
     }
 
 }

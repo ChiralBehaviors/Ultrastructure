@@ -12,9 +12,6 @@
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="location_attribute_authorization_pkey" />
             </column>
-            <column name="agency" remarks="The agency that declares a particular classification" type="CHAR(22)">
-                <constraints nullable="false" />
-            </column>
             <column name="classification"
                 remarks="In conjunction with the 'classifier' column, determines the classification criteria for selecting attributes a certain Location must have"
                 type="CHAR(22)"
@@ -60,12 +57,7 @@
         <rollback>
             <dropTable tableName="location_attribute_authorization" />
         </rollback>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-177">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency" baseTableName="location_attribute_authorization"
-            constraintName="location_attribute_authorization_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
-    </changeSet>
+    </changeSet> 
     <changeSet author="hhildebrand" id="1390879803225-178">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_attribute" baseTableName="location_attribute_authorization"
             constraintName="location_attribute_authorization_authorized_attribute_fkey" deferrable="false" initiallyDeferred="false"

@@ -84,14 +84,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                  + "FROM StatusCodeSequencing AS sequencing, StatusCode AS code "
                                                                  + "WHERE sequencing.childCode = code "
                                                                  + "AND sequencing.service = :service "
-                                                                 + "  AND sequencing.parentCode = :parent "
-                                                                 + "ORDER BY sequencing.sequenceNumber"),
+                                                                 + "  AND sequencing.parentCode = :parent "),
                @NamedQuery(name = GET_STATUS_CODE_SEQUENCES, query = "SELECT sequencing "
                                                                      + " FROM StatusCodeSequencing AS sequencing"
                                                                      + " WHERE sequencing.childCode = :code "
                                                                      + " AND sequencing.service = :service "
-                                                                     + "   AND sequencing.parentCode = :parent "
-                                                                     + " ORDER BY sequencing.sequenceNumber"),
+                                                                     + "   AND sequencing.parentCode = :parent "),
                @NamedQuery(name = GET_UNSET_SIBLINGS, query = "SELECT j FROM Job AS j "
                                                               + "WHERE j.service = :service "
                                                               + "  AND j.status = :unset "

@@ -240,7 +240,6 @@ public class JobModelTest extends AbstractModelTest {
 
         loop = new StatusCodeSequencing(service, state2, loopState,
                                         kernel.getCore());
-        loop.setSequenceNumber(2);
         em.persist(loop);
 
         StatusCodeSequencing terminate = new StatusCodeSequencing(
@@ -253,7 +252,6 @@ public class JobModelTest extends AbstractModelTest {
         StatusCodeSequencing back = new StatusCodeSequencing(service,
                                                              loopState, state1,
                                                              kernel.getCore());
-        back.setSequenceNumber(2);
         em.persist(back);
         em.persist(terminate);
         em.getTransaction().commit();

@@ -141,7 +141,6 @@ public class StatusCodeSequencingTest extends DatabaseTest {
 
         StatusCodeSequencing loop = new StatusCodeSequencing(service, state2,
                                                              loopState, core);
-        loop.setSequenceNumber(2);
         em.persist(loop);
 
         StatusCodeSequencing terminate = new StatusCodeSequencing(
@@ -154,7 +153,6 @@ public class StatusCodeSequencingTest extends DatabaseTest {
         StatusCodeSequencing back = new StatusCodeSequencing(service,
                                                              loopState, state1,
                                                              core);
-        back.setSequenceNumber(2);
         em.persist(back);
         em.persist(terminate);
         em.flush();

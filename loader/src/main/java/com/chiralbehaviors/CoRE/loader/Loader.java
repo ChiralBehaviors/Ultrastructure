@@ -99,7 +99,10 @@ public class Loader {
     }
 
     protected void bootstrapCoRE() throws SQLException {
-        new Bootstrap(configuration.getCoreConnection()).bootstrap();
+        Connection connection = configuration.getCoreConnection();
+        connection.setAutoCommit(false);
+        new Bootstrap(connection).bootstrap();
+        connection.commit();
     }
 
     protected void loadAnimations() throws Exception, SQLException {

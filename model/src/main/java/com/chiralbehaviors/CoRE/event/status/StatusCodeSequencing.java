@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -104,9 +103,6 @@ public class StatusCodeSequencing extends Ruleform {
     @JoinColumn(name = "parent_code")
     private StatusCode          parentCode;
 
-    @Column(name = "sequence_number")
-    private Integer             sequenceNumber                            = 1;
-
     // bi-directional many-to-one association to Event
     @ManyToOne(optional = false)
     @JoinColumn(name = "service")
@@ -138,13 +134,6 @@ public class StatusCodeSequencing extends Ruleform {
         this.service = service;
         parentCode = parent;
         childCode = child;
-    }
-
-    public StatusCodeSequencing(Product service, StatusCode parent,
-                                StatusCode child, int sequenceNumber,
-                                Agency updatedBy) {
-        this(service, parent, child, updatedBy);
-        this.sequenceNumber = sequenceNumber;
     }
 
     /**
@@ -185,10 +174,6 @@ public class StatusCodeSequencing extends Ruleform {
         return parentCode;
     }
 
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     /**
      * @return the service
      */
@@ -216,10 +201,6 @@ public class StatusCodeSequencing extends Ruleform {
 
     public void setParentCode(StatusCode statusCode2) {
         parentCode = statusCode2;
-    }
-
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     /**

@@ -75,32 +75,25 @@ public interface JobModel {
 
     /**
      * Creates and persist a StatusCodeSequencing object for each sequential
-     * pair of StatusCodes in the codes variable, starting with the
-     * startingSequenceNumber and autoincrementing it. So if codes is [A, B, C,]
+     * pair of StatusCodes in the codes variable. So if codes is [A, B, C,]
      * 2 StatusCodeSequencing objects will be created: A->B, B->C
      * 
      * @param service
      *            the service with which these status codes are associated
      * @param codes
      *            the ordered list of codes to be sequenced
-     * @param startingSequenceNumber
-     *            the first sequence number to be used in the sequencing. If
-     *            you're unsure, use 1;
      * @param updatedBy
-     * @return the highest sequence number used in the chain
      */
-    int createStatusCodeChain(Product service, StatusCode[] codes,
-                              int startingSequenceNumber, Agency updatedBy);
+    void createStatusCodeChain(Product service, StatusCode[] codes,
+                              Agency updatedBy);
 
     /**
      * @param service
      * @param codes
-     * @param startingSequenceNumber
      * @param updatedBy
      */
     void createStatusCodeSequencings(Product service,
                                      List<Tuple<StatusCode, StatusCode>> codes,
-                                     int startingSequenceNumber,
                                      Agency updatedBy);
 
     /**

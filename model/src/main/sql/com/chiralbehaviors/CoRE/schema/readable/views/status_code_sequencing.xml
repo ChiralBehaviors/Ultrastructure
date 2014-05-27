@@ -8,7 +8,7 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.status_code_sequencing AS 
-			 SELECT base_table.id, s.name AS service, pc.name AS parent_code, base_table.sequence_number, cc.name AS child_code, base_table.notes, up.name AS updated_by, base_table.update_date
+			 SELECT base_table.id, s.name AS service, pc.name AS parent_code, cc.name AS child_code, base_table.notes, up.name AS updated_by, base_table.update_date
 			   FROM status_code_sequencing base_table
 			   JOIN product s ON base_table.service = s.id
 			   JOIN status_code pc ON base_table.parent_code = pc.id

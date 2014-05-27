@@ -21,11 +21,6 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="sequence_number" remarks="Ordering and uniqueness, for when a Event can transition into one of a number of states"
-                type="sequence_number"
-            >
-                <constraints nullable="false" />
-            </column>
             <column name="child_code"
                 remarks="The &quot;to&quot; state to which one may transition from the state listed in the &quot;parent_code&quot; column"
                 type="CHAR(22)"
@@ -67,7 +62,7 @@
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-415">
-        <addUniqueConstraint schemaName="ruleform" columnNames="service, parent_code, child_code, sequence_number" constraintName="status_code_sequencing_service_parent_code_sequence_number_key"
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, parent_code, child_code" constraintName="status_code_sequencing_service_parent_code_sequence_number_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="status_code_sequencing" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-520">

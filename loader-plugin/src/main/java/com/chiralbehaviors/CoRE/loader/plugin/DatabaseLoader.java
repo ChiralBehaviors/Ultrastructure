@@ -52,8 +52,23 @@ import com.chiralbehaviors.CoRE.loader.Loader;
  */
 public class DatabaseLoader extends AbstractMojo {
     public static class JdbcConnection {
+        /**
+         * the JDBC URL to connect
+         * 
+         * @parameter
+         */
         public String jdbcUrl;
+        /**
+         * the password
+         * 
+         * @parameter
+         */
         public String password;
+        /**
+         * the dataabse user
+         * 
+         * @parameter
+         */
         public String username;
     }
 
@@ -91,8 +106,8 @@ public class DatabaseLoader extends AbstractMojo {
         config.username = dbaConnection.username;
         config.password = dbaConnection.password;
         config.coreJdbcUrl = coreConnection.jdbcUrl;
-        config.username = coreConnection.username;
-        config.password = coreConnection.password;
+        config.coreUsername = coreConnection.username;
+        config.corePassword = coreConnection.password;
         config.dropDatabase = dropDatabase;
         config.initializeSqlJ = initializeSqlJ;
         return config;
@@ -103,6 +118,7 @@ public class DatabaseLoader extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        getLog().info("Loading database");
         try {
             new Loader(constructConfiguration()).bootstrap();
         } catch (Exception e) {

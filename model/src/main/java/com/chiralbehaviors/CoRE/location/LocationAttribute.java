@@ -31,7 +31,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * The persistent class for the location_attribute database table.
@@ -42,20 +41,10 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Agency
-    @ManyToOne
-    @JoinColumn(name = "agency_value")
-    private Agency            agencyValue;
-
     // bi-directional many-to-one association to Location
     @ManyToOne
     @JoinColumn(name = "location")
     private Location          location;
-
-    // bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           productValue;
 
     public LocationAttribute() {
     }
@@ -135,16 +124,8 @@ public class LocationAttribute extends AttributeValue<Location> {
         super(id);
     }
 
-    public Agency getAgencyValue() {
-        return agencyValue;
-    }
-
     public Location getLocation() {
         return location;
-    }
-
-    public Product getProductValue() {
-        return productValue;
     }
 
     /*
@@ -168,14 +149,6 @@ public class LocationAttribute extends AttributeValue<Location> {
         return Location.class;
     }
 
-    public void setAgencyValue(Agency agency2) {
-        agencyValue = agency2;
-    }
-
-    public void setEntityValue(Product product) {
-        productValue = product;
-    }
-
     public void setLocation(Location location) {
         this.location = location;
     }
@@ -190,14 +163,8 @@ public class LocationAttribute extends AttributeValue<Location> {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (productValue != null) {
-            productValue = (Product) productValue.manageEntity(em, knownObjects);
-        }
         if (location != null) {
             location = (Location) location.manageEntity(em, knownObjects);
-        }
-        if (agencyValue != null) {
-            agencyValue = (Agency) agencyValue.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
 

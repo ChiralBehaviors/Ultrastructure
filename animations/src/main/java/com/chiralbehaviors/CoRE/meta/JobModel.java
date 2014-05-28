@@ -71,7 +71,7 @@ public interface JobModel {
      *            circumstances surrounding the change, etc.
      * @return the merged job
      */
-    Job changeStatus(Job job, StatusCode newStatus, String notes);
+    Job changeStatus(Job job, StatusCode newStatus, Agency updagedBy, String notes);
 
     /**
      * Creates and persist a StatusCodeSequencing object for each sequential

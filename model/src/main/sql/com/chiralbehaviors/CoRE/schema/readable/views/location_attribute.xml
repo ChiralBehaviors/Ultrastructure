@@ -8,11 +8,10 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.location_attribute AS 
-			 SELECT la.id, l.name AS location, a.name AS attribute, b.name AS product_value, la.text_value, la.integer_value, r.name AS updated_by, la.update_date
+			 SELECT la.id, l.name AS location, a.name AS attribute, la.text_value, la.integer_value, r.name AS updated_by, la.update_date
 			   FROM location_attribute la
 			   JOIN location l ON la.location = l.id
 			   JOIN attribute a ON la.attribute = a.id
-			   LEFT JOIN product b ON la.product_value = b.id
 			   JOIN agency r ON la.updated_by = r.id;
 			
 			ALTER TABLE readable.location_attribute

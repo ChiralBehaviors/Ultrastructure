@@ -404,7 +404,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public void addJobChronology(Job job, Timestamp timestamp,
                                  StatusCode status, String notes) {
-        JobChronology c = new JobChronology(kernel.getCoreAnimationSoftware());
+        JobChronology c = new JobChronology(job.getUpdatedBy());
         c.setJob(job);
         if (notes != null) {
             c.setNotes(notes);

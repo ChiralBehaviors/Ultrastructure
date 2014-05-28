@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.access.resource.ruleform.workflow;
 
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.event.AttributedJob;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.event.JobChronology;
@@ -82,7 +83,7 @@ public class JobResource {
     public AttributedJob getJob(@PathParam("id") long id) {
         Job job = em.find(Job.class, id);
 
-        return new AttributedJob(job, null);
+        return new AttributedJob(job);
     }
 
     @GET
@@ -105,9 +106,7 @@ public class JobResource {
             jobs = model.getAllActiveSubJobsOf(parentJob, agency);
         }
         for (Job job : jobs) {
-            attributedJobs.add(new AttributedJob(
-                                                 job,
-                                                 createAttributeMap(model.getAttributesForJob(job))));
+            attributedJobs.add(new AttributedJob(job));
         }
         return attributedJobs;
     }
@@ -146,9 +145,7 @@ public class JobResource {
             jobs = model.getActiveJobsFor(agency);
         }
         for (Job job : jobs) {
-            attributedJobs.add(new AttributedJob(
-                                                 job,
-                                                 createAttributeMap(model.getAttributesForJob(job))));
+            attributedJobs.add(new AttributedJob(job));
         }
         return attributedJobs;
     }
@@ -156,18 +153,6 @@ public class JobResource {
     // TODO get chronology of all sub jobs
     // get jobs for parent - loop until you get no more jobs. Then get the
     // chronologies for all jobs in that set
-
-    /**
-     * @param attributesForJob
-     * @return
-     */
-    private Map<String, JobAttribute> createAttributeMap(List<JobAttribute> attributesForJob) {
-        Map<String, JobAttribute> map = new HashMap<>();
-        for (JobAttribute attribute : attributesForJob) {
-            map.put(attribute.getAttribute().getName(), attribute);
-        }
-        return map;
-    }
 
     @GET
     @Path("/status/{id}/next")
@@ -194,7 +179,7 @@ public class JobResource {
 
         em.getTransaction().begin();
         em.persist(jobToInsert);
-        for (Map.Entry<String, JobAttribute> e : job.getAttributes().entrySet()) {
+        for (Map.Entry<Attribute, JobAttribute> e : job.getAttributes().entrySet()) {
             em.persist(e.getValue());
         }
         em.getTransaction().commit();

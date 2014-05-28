@@ -13,44 +13,53 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.access.resource.ruleform.workflow;
+package com.chiralbehaviors.CoRE.event;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 
 /**
  * @author hparry
- *
+ * 
  */
 public class AttributedJob {
-    
-    private final Job job;
-    private final Map<String, JobAttribute> attributes;
-    
-    /**
-     * @param job
-     * @param attributes
-     */
-    public AttributedJob(Job job, Map<String, JobAttribute> attributes) {
-        super();
-        this.job = job;
-        this.attributes = attributes;
+
+    private Map<Attribute, JobAttribute> attributes;
+    private Job                          job;
+
+    public AttributedJob() {
     }
+
+    public AttributedJob(Job job) {
+        this.job = job;
+        attributes = new HashMap<>();
+        Set<JobAttribute> attrs = job.getAttributes();
+        if (attrs != null) {
+            for (JobAttribute value : attrs) {
+                attributes.put(value.getAttribute(), value);
+            }
+        }
+    }
+
+    /**
+     * @return the attributes
+     */
+    public Map<Attribute, JobAttribute> getAttributes() {
+        return attributes;
+    }
+
     /**
      * @return the job
      */
     public Job getJob() {
         return job;
     }
-    /**
-     * @return the attributes
-     */
-    public Map<String, JobAttribute> getAttributes() {
-        return attributes;
+
+    public JobAttribute getValue(Attribute attribute) {
+        return attributes.get(attribute);
     }
-    
-    
 
 }

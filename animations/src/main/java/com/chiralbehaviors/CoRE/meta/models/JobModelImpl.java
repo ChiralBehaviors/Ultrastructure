@@ -406,7 +406,9 @@ public class JobModelImpl implements JobModel {
                                  StatusCode status, String notes) {
         JobChronology c = new JobChronology(kernel.getCoreAnimationSoftware());
         c.setJob(job);
-        c.setNotes(notes);
+        if (notes != null) {
+            c.setNotes(notes);
+        }
         c.setStatus(status);
         c.setTimeStamp(timestamp);
         em.persist(c);
@@ -420,6 +422,7 @@ public class JobModelImpl implements JobModel {
             }
             for (Job subJob : generateImplicitJobs(job)) {
                 changeStatus(subJob, getInitialState(subJob.getService()),
+                             null,
                              "Initially available job (automatically set)");
             }
         } else {
@@ -431,7 +434,8 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public Job changeStatus(Job job, StatusCode newStatus, String notes) {
+    public Job changeStatus(Job job, StatusCode newStatus, Agency updatedBy,
+                            String notes) {
         StatusCode oldStatus = job.getStatus();
         if (oldStatus.equals(newStatus)) {
             if (log.isInfoEnabled()) {
@@ -445,6 +449,9 @@ public class JobModelImpl implements JobModel {
             log.info(String.format("Setting %s status to %s", job, newStatus));
         }
         job.setStatus(newStatus);
+        if (updatedBy != null) {
+            job.setUpdatedBy(updatedBy);
+        }
         Job j = em.merge(job);
         addJobChronology(job, now, oldStatus, notes);
         return j;
@@ -486,11 +493,10 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void createStatusCodeChain(Product service, StatusCode[] codes,
-                                     Agency updatedBy) {
+                                      Agency updatedBy) {
         for (int i = 0; i < codes.length - 1; i++) {
             em.persist(new StatusCodeSequencing(service, codes[i],
-                                                codes[i + 1],
-                                                updatedBy));
+                                                codes[i + 1], updatedBy));
         }
     }
 
@@ -499,8 +505,7 @@ public class JobModelImpl implements JobModel {
                                             List<Tuple<StatusCode, StatusCode>> codes,
                                             Agency updatedBy) {
         for (Tuple<StatusCode, StatusCode> p : codes) {
-            em.persist(new StatusCodeSequencing(service, p.a, p.b,
-                                                updatedBy));
+            em.persist(new StatusCodeSequencing(service, p.a, p.b, updatedBy));
         }
     }
 
@@ -1156,6 +1161,7 @@ public class JobModelImpl implements JobModel {
             for (Job child : getActiveSubJobsOf(job)) {
                 changeStatus(child,
                              seq.getNextChildStatus(),
+                             null,
                              String.format("Automatically switching to %s via direct communication from parent job %s",
                                            seq.getNextChildStatus().getName(),
                                            job));
@@ -1185,12 +1191,14 @@ public class JobModelImpl implements JobModel {
                     && seq.getService().equals(job.getParent().getService())) {
                     changeStatus(job.getParent(),
                                  seq.getParentStatusToSet(),
+                                 null,
                                  String.format("'Automatically switching to %s via direct communication from child job %s",
                                                seq.getParentStatusToSet(), job));
                     break;
                 } else if (seq.getParent().equals(job.getParent().getService())) {
                     changeStatus(job.getParent(),
                                  seq.getParentStatusToSet(),
+                                 null,
                                  String.format("'Automatically switching to %s via direct communication from child job %s",
                                                seq.getParentStatusToSet(), job));
                     break;
@@ -1210,6 +1218,7 @@ public class JobModelImpl implements JobModel {
                                                 seq.getNextSibling())) {
                 changeStatus(sibling,
                              seq.getNextSiblingStatus(),
+                             null,
                              String.format("Automatically switching to %s via direct communication from sibling job %s",
                                            seq.getNextSiblingStatus().getName(),
                                            job));

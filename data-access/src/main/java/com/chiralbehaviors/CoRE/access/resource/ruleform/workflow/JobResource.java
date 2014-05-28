@@ -71,7 +71,7 @@ public class JobResource {
 
         em.getTransaction().begin();
 
-        model.changeStatus(job, status, notes);
+        model.changeStatus(job, status, null, notes);
         em.getTransaction().commit();
 
     }

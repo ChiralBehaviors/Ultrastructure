@@ -84,7 +84,7 @@
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-387">
-        <addUniqueConstraint schemaName="ruleform" columnNames="agency, classification, classifier, authorized_attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_attribute, sequence_number"
             constraintName="location_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
             initiallyDeferred="false" tableName="location_attribute_authorization" />
     </changeSet>

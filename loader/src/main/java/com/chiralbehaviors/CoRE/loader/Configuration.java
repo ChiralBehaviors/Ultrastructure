@@ -32,6 +32,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  * 
  */
 public class Configuration {
+    public static String JDBC_URL = "jdbc:postgresql://%s:%s/%s";
+
     public static Configuration fromYaml(InputStream yaml)
                                                           throws JsonParseException,
                                                           JsonMappingException,
@@ -40,21 +42,87 @@ public class Configuration {
         return mapper.readValue(yaml, Configuration.class);
     }
 
-    public boolean dropDatabase   = false;
-    public boolean initializeSqlJ = false;
-    public String  jdbcUrl;
-    public String  password;
-    public String  username;
-    public String  coreJdbcUrl;
+    /**
+     * the name the core database
+     * 
+     * @parameter
+     */
+    public String  coreDb       = "core";
+
+    /**
+     * the password of the core user
+     * 
+     * @parameter
+     */
     public String  corePassword;
+
+    /**
+     * the port of the core database
+     * 
+     * @parameter
+     */
+    public String  corePort;
+
+    /**
+     * the server host of the core database
+     * 
+     * @parameter
+     */
+    public String  coreServer;
+
+    /**
+     * the core user name
+     * 
+     * @parameter
+     */
     public String  coreUsername;
 
-    public Connection getPostgresConnection() throws SQLException {
-        return DriverManager.getConnection(jdbcUrl, username, password);
-    }
+    /**
+     * the dba database
+     * 
+     * @parameter
+     */
+    public String  dbaDb        = "postgres";
+    /**
+     * the dba password
+     * 
+     * @parameter
+     */
+    public String  dbaPassword;
+    /**
+     * the port of the dba database
+     * 
+     * @parameter
+     */
+    public String  dbaPort;
+    /**
+     * the host name of the dba database
+     * 
+     * @parameter
+     */
+    public String  dbaServer;
+    /**
+     * the dba username
+     * 
+     * @parameter
+     */
+    public String  dbaUsername;
+    /**
+     * drop the database
+     * 
+     * @parameter
+     */
+    public boolean dropDatabase = false;
 
     public Connection getCoreConnection() throws SQLException {
-        return DriverManager.getConnection(coreJdbcUrl, coreUsername,
-                                           corePassword);
+        return DriverManager.getConnection(String.format(JDBC_URL, coreServer,
+                                                         corePort, coreDb),
+                                           coreUsername, corePassword);
+    }
+
+    public Connection getDbaConnection() throws SQLException {
+        return DriverManager.getConnection(String.format(JDBC_URL, dbaServer,
+                                                         dbaPort, dbaDb),
+                                           dbaUsername, dbaPassword);
     }
 }

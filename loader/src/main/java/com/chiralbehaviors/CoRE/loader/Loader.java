@@ -51,7 +51,6 @@ public class Loader {
     private static final String DROP_ROLES_SQL                                                      = "/drop-roles.sql";
     private static final Logger log                                                                 = LoggerFactory.getLogger(Loader.class);
     private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML                     = "model/com/chiralbehaviors/CoRE/schema/core.xml";
-    private static final String SQLJ_INIT_SQL                                                       = "/sqlj-init.sql";
 
     static {
         String version;
@@ -83,36 +82,12 @@ public class Loader {
         if (configuration.dropDatabase) {
             dropDatabase();
         }
-        if (configuration.initializeSqlJ) {
-            initSqlJ();
-        }
         createDatabase();
-        loadAnimationsJar();
         loadModel();
+        loadAnimationsJar();
         loadAnimations();
         setClassPath();
         bootstrapCoRE();
-    }
-
-    protected void createDatabase() throws Exception, SQLException {
-        load(CREATE_DATABASE_XML, configuration.getPostgresConnection());
-    }
-
-    protected void bootstrapCoRE() throws SQLException {
-        Connection connection = configuration.getCoreConnection();
-        connection.setAutoCommit(false);
-        new Bootstrap(connection).bootstrap();
-        connection.commit();
-    }
-
-    protected void loadAnimations() throws Exception, SQLException {
-        load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML,
-             configuration.getCoreConnection());
-    }
-
-    protected void loadModel() throws Exception, SQLException {
-        load(MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML,
-             configuration.getCoreConnection());
     }
 
     private void drop(PreparedStatement drop, String name,
@@ -134,12 +109,16 @@ public class Loader {
     }
 
     private void dropDatabase() throws Exception {
-        Connection connection = configuration.getPostgresConnection();
+        Connection connection = configuration.getDbaConnection();
         connection.setAutoCommit(true);
+        log.info(String.format("Dropping db %s", configuration.coreDb));
         execute(connection,
                 Utils.getDocument(getClass().getResourceAsStream(DROP_DATABASE_SQL)));
+        log.info(String.format("Dropping liquibase metadata in db %s",
+                               configuration.dbaDb));
         execute(connection,
                 Utils.getDocument(getClass().getResourceAsStream(DROP_LIQUIBASE_SQL)));
+        log.info(String.format("Dropping roles in db %s", configuration.coreDb));
         execute(connection,
                 Utils.getDocument(getClass().getResourceAsStream(DROP_ROLES_SQL)));
     }
@@ -170,14 +149,6 @@ public class Loader {
             is.close();
         }
         return baos.toByteArray();
-    }
-
-    private void initSqlJ() throws Exception {
-        Connection connection = configuration.getCoreConnection();
-        connection.setAutoCommit(true);
-        execute(connection,
-                Utils.getDocument(getClass().getResourceAsStream(SQLJ_INIT_SQL)));
-        connection.commit();
     }
 
     private void load(PreparedStatement load) throws IOException, SQLException {
@@ -214,6 +185,8 @@ public class Loader {
     }
 
     private void loadAnimationsJar() throws Exception {
+        log.info(String.format("loading animations code in core db %s",
+                               configuration.coreDb));
         Connection connection = configuration.getCoreConnection();
         connection.setAutoCommit(true);
         PreparedStatement drop = connection.prepareStatement("SELECT sqlj.remove_jar(?, ?)");
@@ -225,10 +198,40 @@ public class Loader {
     }
 
     private void setClassPath() throws SQLException {
+        log.info(String.format("setting the pl/java classpath in core db %s",
+                               configuration.coreDb));
         Connection connection = configuration.getCoreConnection();
         connection.setAutoCommit(true);
         PreparedStatement statement = connection.prepareStatement(String.format("SELECT sqlj.set_classpath('ruleform', '%s')",
                                                                                 ANIMATIONS_JAR_NAME));
         statement.execute();
+    }
+
+    protected void bootstrapCoRE() throws SQLException {
+        log.info(String.format("Bootstrapping core in db %s",
+                               configuration.coreDb));
+        Connection connection = configuration.getCoreConnection();
+        connection.setAutoCommit(false);
+        new Bootstrap(connection).bootstrap();
+        connection.commit();
+    }
+
+    protected void createDatabase() throws Exception, SQLException {
+        log.info(String.format("Creating core db %s", configuration.coreDb));
+        load(CREATE_DATABASE_XML, configuration.getDbaConnection());
+    }
+
+    protected void loadAnimations() throws Exception, SQLException {
+        log.info(String.format("loading animations sql in core db %s",
+                               configuration.coreDb));
+        load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML,
+             configuration.getCoreConnection());
+    }
+
+    protected void loadModel() throws Exception, SQLException {
+        log.info(String.format("loading model sql in core db %s",
+                               configuration.coreDb));
+        load(MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML,
+             configuration.getCoreConnection());
     }
 }

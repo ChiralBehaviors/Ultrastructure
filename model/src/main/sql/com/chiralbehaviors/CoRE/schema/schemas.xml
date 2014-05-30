@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
+    <include relativeToChangelogFile="true" file="create-sqlj.xml" />
 
-    <changeSet
-        id="core_admin postgresql schema"
-        author="hhildebrand"
-    >
+    <changeSet id="core_admin postgresql schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="postgresql" />
         </preConditions>
@@ -25,10 +21,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet
-        id="core_admin derby schema"
-        author="hhildebrand"
-    >
+    <changeSet id="core_admin derby schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="derby" />
         </preConditions>
@@ -42,10 +35,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet
-        id="readable postresql schema"
-        author="hhildebrand"
-    >
+    <changeSet id="readable postresql schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="postgresql" />
         </preConditions>
@@ -60,10 +50,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet
-        id="readable derby schema"
-        author="hhildebrand"
-    >
+    <changeSet id="readable derby schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="derby" />
         </preConditions>
@@ -77,10 +64,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet
-        id="ruleform posgresql schema"
-        author="hhildebrand"
-    >
+    <changeSet id="ruleform posgresql schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="postgresql" />
         </preConditions>
@@ -95,10 +79,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet
-        id="ruleform derby schema"
-        author="hhildebrand"
-    >
+    <changeSet id="ruleform derby schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="derby" />
         </preConditions>
@@ -112,10 +93,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet
-        id="sysadmin postgresql schema"
-        author="hhildebrand"
-    >
+    <changeSet id="sysadmin postgresql schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="postgresql" />
         </preConditions>
@@ -130,10 +108,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet
-        id="sysadmin derby schema"
-        author="hhildebrand"
-    >
+    <changeSet id="sysadmin derby schema" author="hhildebrand">
         <preConditions onFail="MARK_RAN">
             <dbms type="derby" />
         </preConditions>

@@ -53,6 +53,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.hellblazer</groupId>
+                <artifactId>utils</artifactId>
+                <version>0.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>loader</artifactId>
                 <version>${project.version}</version>

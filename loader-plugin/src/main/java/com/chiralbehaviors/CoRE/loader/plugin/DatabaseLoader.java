@@ -51,67 +51,12 @@ import com.chiralbehaviors.CoRE.loader.Loader;
  * @phase package
  */
 public class DatabaseLoader extends AbstractMojo {
-    public static class JdbcConnection {
-        /**
-         * the JDBC URL to connect
-         * 
-         * @parameter
-         */
-        public String jdbcUrl;
-        /**
-         * the password
-         * 
-         * @parameter
-         */
-        public String password;
-        /**
-         * the dataabse user
-         * 
-         * @parameter
-         */
-        public String username;
-    }
-
     /**
-     * Drop the database before loading
+     * the loading configuration
      * 
      * @parameter
      */
-    private boolean        dropDatabase   = false;
-
-    /**
-     * Initialize the sqlj schema
-     * 
-     * @parameter
-     */
-    private boolean        initializeSqlJ = false;
-
-    /**
-     * Super user connect information for creating core database
-     * 
-     * @parameter
-     */
-    private JdbcConnection dbaConnection;
-
-    /**
-     * Core user connect information for schemas in the core database
-     * 
-     * @parameter
-     */
-    private JdbcConnection coreConnection;
-
-    private Configuration constructConfiguration() {
-        Configuration config = new Configuration();
-        config.jdbcUrl = dbaConnection.jdbcUrl;
-        config.username = dbaConnection.username;
-        config.password = dbaConnection.password;
-        config.coreJdbcUrl = coreConnection.jdbcUrl;
-        config.coreUsername = coreConnection.username;
-        config.corePassword = coreConnection.password;
-        config.dropDatabase = dropDatabase;
-        config.initializeSqlJ = initializeSqlJ;
-        return config;
-    }
+    private Configuration loader;
 
     /* (non-Javadoc)
      * @see org.apache.maven.plugin.Mojo#execute()
@@ -120,7 +65,7 @@ public class DatabaseLoader extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Loading database");
         try {
-            new Loader(constructConfiguration()).bootstrap();
+            new Loader(loader).bootstrap();
         } catch (Exception e) {
             MojoFailureException ex = new MojoFailureException(
                                                                "Unable to load database");

@@ -509,7 +509,6 @@
                                 <exclude>classworlds:classworlds</exclude>
                             </excludes>
                         </artifactSet>
-                        <generateUniqueDependencyReducedPom>true</generateUniqueDependencyReducedPom>
                     </configuration>
                     <executions>
                         <execution>

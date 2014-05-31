@@ -18,10 +18,10 @@ package com.chiralbehaviors.CoRE.workspace;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
-import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.access.AgencyLocationAccessAuthorization;
 import com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;

@@ -20,6 +20,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -37,7 +38,6 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  * 
  */
 public interface Kernel {
-
     Agency getAgency();
 
     Agency getAnyAgency();
@@ -175,6 +175,8 @@ public interface Kernel {
     Agency getSuperUser();
 
     StatusCode getUnset();
+
+    Unit getUnsetUnit();
 
     Relationship getVersionOf();
 

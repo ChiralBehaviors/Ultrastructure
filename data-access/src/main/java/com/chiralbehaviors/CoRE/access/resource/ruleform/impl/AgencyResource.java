@@ -19,9 +19,9 @@ import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
 import com.chiralbehaviors.CoRE.meta.models.AgencyModelImpl;
 
 /**

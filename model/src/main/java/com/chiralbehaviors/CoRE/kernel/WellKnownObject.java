@@ -462,6 +462,13 @@ public interface WellKnownObject {
         public String tableName() {
             return "ruleform.interval";
         }
+
+        /**
+         * @return
+         */
+        public WellKnownUnit unit() {
+            return WellKnownUnit.UNIT;
+        }
     }
 
     public static enum WellKnownLocation implements WellKnownObject {
@@ -1644,6 +1651,22 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.UNIT;
+            }
+
+        },
+        UNSET() {
+
+            @Override
+            public String description() {
+                return "The undefined unit";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.UNSET;
             }
 
         };

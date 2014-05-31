@@ -16,12 +16,16 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import java.util.UUID;
+
 import javax.persistence.EntityManager;
 
+import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -32,6 +36,7 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -48,7 +53,8 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  */
 public class KernelImpl implements Kernel {
 
-    private static final Long         ONE = Long.valueOf(1);
+    private static final String       ZERO = UuidGenerator.toBase64(new UUID(0,
+                                                                             0));
     private final Agency              agency;
     private final Agency              anyAgency;
     private final Attribute           anyAttribute;
@@ -122,6 +128,7 @@ public class KernelImpl implements Kernel {
     private final Agency              specialSystemAgency;
     private final Agency              superUser;
     private final StatusCode          unset;
+    private final Unit                unsetUnit;
     private final Relationship        versionOf;
     private final Product             workspace;
 
@@ -200,16 +207,17 @@ public class KernelImpl implements Kernel {
         workspaceOf = find(em, WellKnownRelationship.WORKSPACE_OF);
 
         unset = find(em, WellKnownStatusCode.UNSET);
+        unsetUnit = find(em, WellKnownUnit.UNSET);
 
-        rootAgencyNetwork = em.find(AgencyNetwork.class, ONE);
-        rootAttributeNetwork = em.find(AttributeNetwork.class, ONE);
-        rootCoordinateNetwork = em.find(CoordinateNetwork.class, ONE);
-        rootIntervalNetwork = em.find(IntervalNetwork.class, ONE);
-        rootLocationNetwork = em.find(LocationNetwork.class, ONE);
-        rootProductNetwork = em.find(ProductNetwork.class, ONE);
-        rootRelationshipNetwork = em.find(RelationshipNetwork.class, ONE);
-        rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ONE);
-        rootUnitNetwork = em.find(UnitNetwork.class, ONE);
+        rootAgencyNetwork = em.find(AgencyNetwork.class, ZERO);
+        rootAttributeNetwork = em.find(AttributeNetwork.class, ZERO);
+        rootCoordinateNetwork = em.find(CoordinateNetwork.class, ZERO);
+        rootIntervalNetwork = em.find(IntervalNetwork.class, ZERO);
+        rootLocationNetwork = em.find(LocationNetwork.class, ZERO);
+        rootProductNetwork = em.find(ProductNetwork.class, ZERO);
+        rootRelationshipNetwork = em.find(RelationshipNetwork.class, ZERO);
+        rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ZERO);
+        rootUnitNetwork = em.find(UnitNetwork.class, ZERO);
     }
 
     /*
@@ -847,6 +855,14 @@ public class KernelImpl implements Kernel {
         return unset;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.kernel.Kernel#getUnsetUnit()
+     */
+    @Override
+    public Unit getUnsetUnit() {
+        return unsetUnit;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -924,6 +940,10 @@ public class KernelImpl implements Kernel {
      */
     StatusCode find(EntityManager em, WellKnownStatusCode wko) {
         return em.find(StatusCode.class, wko.id());
+    }
+
+    Unit find(EntityManager em, WellKnownUnit wko) {
+        return em.find(Unit.class, wko.id());
     }
 
 }

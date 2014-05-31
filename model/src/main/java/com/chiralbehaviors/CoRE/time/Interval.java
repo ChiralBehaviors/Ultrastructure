@@ -34,6 +34,9 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -45,6 +48,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -131,23 +135,28 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     private static final long      serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to IntervalAttribute
-    @OneToMany(mappedBy = "interval", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "interval", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<IntervalAttribute> attributes;
 
     private BigDecimal             duration;
 
     // bi-directional many-to-one association to IntervalNetwork
-    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<IntervalNetwork>   networkByChild;
 
     // bi-directional many-to-one association to IntervalNetwork
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<IntervalNetwork>   networkByParent;
 
     private BigDecimal             start;
+
+    // bi-directional many-to-one association to Unit
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit")
+    private Unit                   unit;
 
     public Interval() {
         super();
@@ -157,14 +166,15 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         super(updatedBy);
     }
 
-    public Interval(BigDecimal start, BigDecimal duration, String name,
-                    Agency updatedBy) {
-        this(start, duration, name, null, updatedBy);
+    public Interval(BigDecimal start, BigDecimal duration, Unit unit,
+                    String name, Agency updatedBy) {
+        this(name, start, unit, duration, null, updatedBy);
     }
 
-    public Interval(BigDecimal start, BigDecimal duration, String name,
-                    String description, Agency updatedBy) {
+    public Interval(String name, BigDecimal start, Unit unit,
+                    BigDecimal duration, String description, Agency updatedBy) {
         this(name, description, updatedBy);
+        setUnit(unit);
     }
 
     public Interval(String name) {
@@ -285,6 +295,13 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         return start;
     }
 
+    /**
+     * @return the unit
+     */
+    public Unit getUnit() {
+        return unit;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -359,5 +376,13 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      */
     public void setStart(BigDecimal start) {
         this.start = start;
+    }
+
+    /**
+     * @param unit
+     *            the unit to set
+     */
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 }

@@ -64,7 +64,7 @@
         <class>com.chiralbehaviors.CoRE.network.NetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkRuleform</class>
         <class>com.chiralbehaviors.CoRE.agency.Agency</class>
-        <class>com.chiralbehaviors.CoRE.agency.access.AgencyAttribute</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyAttribute</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.agency.access.AgencyAccessAuthorization</class>
         <class>com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization</class>

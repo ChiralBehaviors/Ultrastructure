@@ -49,13 +49,16 @@ public class IntervalModelTest extends AbstractModelTest {
                                                          equals, core);
         em.persist(aEqualsA);
         Interval a = new Interval(BigDecimal.valueOf(0),
-                                  BigDecimal.valueOf(100), "A", core);
+                                  BigDecimal.valueOf(100),
+                                  kernel.getUnsetUnit(), "A", core);
         em.persist(a);
         Interval b = new Interval(BigDecimal.valueOf(0),
-                                  BigDecimal.valueOf(100), "B", core);
+                                  BigDecimal.valueOf(100),
+                                  kernel.getUnsetUnit(), "B", core);
         em.persist(b);
         Interval c = new Interval(BigDecimal.valueOf(0),
-                                  BigDecimal.valueOf(100), "C", core);
+                                  BigDecimal.valueOf(100),
+                                  kernel.getUnsetUnit(), "C", core);
         em.persist(c);
         IntervalNetwork edgeA = new IntervalNetwork(a, equals, b, core);
         em.persist(edgeA);

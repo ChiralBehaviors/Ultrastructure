@@ -27,7 +27,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.chiralbehaviors.CoRE.access.DataAccessBundle;
-import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
+import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.authentication.AgencyAuthenticator;
 import com.chiralbehaviors.CoRE.configuration.CoREServiceConfiguration;
 import com.chiralbehaviors.CoRE.configuration.JpaConfiguration;

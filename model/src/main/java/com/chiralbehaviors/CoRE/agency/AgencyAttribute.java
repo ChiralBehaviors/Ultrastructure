@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.agency.access;
+package com.chiralbehaviors.CoRE.agency;
 
-import static com.chiralbehaviors.CoRE.agency.access.AgencyAttribute.GET_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.agency.AgencyAttribute.GET_ATTRIBUTE;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -31,8 +31,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.Ruleform; 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;

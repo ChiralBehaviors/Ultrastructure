@@ -25,7 +25,7 @@ import static com.chiralbehaviors.CoRE.agency.Agency.GET_ALL_PARENT_RELATIONSHIP
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_CHILD;
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.chiralbehaviors.CoRE.agency.Agency.UNLINKED;
-import static com.chiralbehaviors.CoRE.agency.access.AgencyAttribute.GET_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.agency.AgencyAttribute.GET_ATTRIBUTE;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +47,6 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.access.AgencyAccessAuthorization;
-import com.chiralbehaviors.CoRE.agency.access.AgencyAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.network.Relationship;

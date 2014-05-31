@@ -53,31 +53,31 @@ public class Bootstrap {
 
     public void bootstrap() throws SQLException {
         alterTriggers(false);
-        for (WellKnownObject wko : WellKnownAgency.values()) {
+        for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
         for (WellKnownAttribute wko : WellKnownAttribute.values()) {
             insert(wko);
         }
-        for (WellKnownObject wko : WellKnownCoordinate.values()) {
+        for (WellKnownCoordinate wko : WellKnownCoordinate.values()) {
             insert(wko);
         }
-        for (WellKnownObject wko : WellKnownInterval.values()) {
+        for (WellKnownInterval wko : WellKnownInterval.values()) {
             insert(wko);
         }
         for (WellKnownLocation wko : WellKnownLocation.values()) {
             insert(wko);
         }
-        for (WellKnownObject wko : WellKnownProduct.values()) {
+        for (WellKnownProduct wko : WellKnownProduct.values()) {
             insert(wko);
         }
         for (WellKnownRelationship wko : WellKnownRelationship.values()) {
             insert(wko);
         }
-        for (WellKnownObject wko : WellKnownStatusCode.values()) {
+        for (WellKnownStatusCode wko : WellKnownStatusCode.values()) {
             insert(wko);
         }
-        for (WellKnownObject wko : WellKnownUnit.values()) {
+        for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
         createNullInference();
@@ -141,6 +141,22 @@ public class Bootstrap {
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko), e);
+        }
+    }
+
+    public void insert(WellKnownInterval wki) throws SQLException {
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, unit, description, pinned, updated_by) VALUES (?, ?, ?, ?, ?, ?)",
+                                                                        wki.tableName()));
+        try {
+            s.setString(1, wki.id());
+            s.setString(2, wki.wkoName());
+            s.setString(3, wki.unit().id());
+            s.setString(4, wki.description());
+            s.setByte(5, (byte) 1);
+            s.setString(6, WellKnownAgency.CORE.id());
+            s.execute();
+        } catch (SQLException e) {
+            throw new SQLException(String.format("Unable to insert %s", wki), e);
         }
     }
 

@@ -59,7 +59,7 @@ public class Loader {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        ANIMATIONS_JAR = String.format("/animations/animations-%s.jar", version);
+        ANIMATIONS_JAR = String.format("/animations/animations-%s-phat.jar", version);
         ANIMATIONS_JAR_NAME = String.format("animations_%s",
                                             version.replace('.', '_').replace("-",
                                                                               "_"));

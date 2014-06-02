@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>animations</artifactId>
         </dependency>
     </dependencies>

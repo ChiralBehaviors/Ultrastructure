@@ -180,10 +180,13 @@ public interface WorkspaceModel {
     Collection<Unit> getUnits(Product workspace, Relationship relationship);
 
     /**
-     * This method takes a {@link #Workspace} object and inserts its members into the database. 
-     * It assumes that none of these objects exist already.
-     * @param workspace the workspace to be imported
-     * @return the {@link #Aspect} representing the workspace {@link #Product} and workspace {@link #Relationship}
+     * This method takes a {@link #Workspace} object and inserts its members
+     * into the database. It assumes that none of these objects exist already.
+     * 
+     * @param workspace
+     *            the workspace to be imported
+     * @return the {@link #Aspect} representing the workspace {@link #Product}
+     *         and workspace {@link #Relationship}
      */
     Aspect<Product> importWorkspace(Workspace workspace);
 

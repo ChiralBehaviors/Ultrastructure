@@ -71,12 +71,13 @@ public interface JobModel {
      *            circumstances surrounding the change, etc.
      * @return the merged job
      */
-    Job changeStatus(Job job, StatusCode newStatus, Agency updagedBy, String notes);
+    Job changeStatus(Job job, StatusCode newStatus, Agency updagedBy,
+                     String notes);
 
     /**
      * Creates and persist a StatusCodeSequencing object for each sequential
-     * pair of StatusCodes in the codes variable. So if codes is [A, B, C,]
-     * 2 StatusCodeSequencing objects will be created: A->B, B->C
+     * pair of StatusCodes in the codes variable. So if codes is [A, B, C,] 2
+     * StatusCodeSequencing objects will be created: A->B, B->C
      * 
      * @param service
      *            the service with which these status codes are associated
@@ -85,7 +86,7 @@ public interface JobModel {
      * @param updatedBy
      */
     void createStatusCodeChain(Product service, StatusCode[] codes,
-                              Agency updatedBy);
+                               Agency updatedBy);
 
     /**
      * @param service

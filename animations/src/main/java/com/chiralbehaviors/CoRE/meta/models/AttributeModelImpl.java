@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -37,6 +38,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
@@ -151,6 +153,25 @@ public class AttributeModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Attribute, AttributeMetaAttribute> create(String name,
+                                                           String description,
+                                                           Aspect<Attribute> aspect) {
+
+        Attribute attribute = new Attribute(name, description,
+                                            kernel.getCoreModel());
+        em.persist(attribute);
+        return new Facet<Attribute, AttributeMetaAttribute>(
+                                                            aspect,
+                                                            attribute,
+                                                            initialize(attribute,
+                                                                       aspect)) {
+        };
     }
 
     @SafeVarargs
@@ -330,16 +351,20 @@ public class AttributeModelImpl
      * @param attribute
      * @param aspect
      */
-    protected void initialize(Attribute attribute, Aspect<Attribute> aspect) {
+    protected List<AttributeMetaAttribute> initialize(Attribute attribute,
+                                                      Aspect<Attribute> aspect) {
+        List<AttributeMetaAttribute> attrs = new ArrayList<>();
         attribute.link(aspect.getClassification(), aspect.getClassifier(),
                        kernel.getCoreModel(), kernel.getInverseSoftware(), em);
         for (AttributeMetaAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             AttributeMetaAttribute attr = new AttributeMetaAttribute(
                                                                      authorization.getAuthorizedAttribute(),
                                                                      kernel.getCoreModel());
+            attrs.add(attr);
             attr.setAttribute(attribute);
             defaultValue(attr);
             em.persist(attr);
         }
+        return attrs;
     }
 }

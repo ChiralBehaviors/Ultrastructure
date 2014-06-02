@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -30,6 +31,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
@@ -148,6 +150,22 @@ public class IntervalModelImpl
         return copy;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Interval, IntervalAttribute> create(String name,
+                                                     String description,
+                                                     Aspect<Interval> aspect) {
+        Interval interval = new Interval(name, description,
+                                         kernel.getCoreModel());
+        em.persist(interval);
+        return new Facet<Interval, IntervalAttribute>(aspect, interval,
+                                                      initialize(interval,
+                                                                 aspect)) {
+        };
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -185,16 +203,20 @@ public class IntervalModelImpl
      * @param agency
      * @param aspect
      */
-    protected void initialize(Interval agency, Aspect<Interval> aspect) {
+    protected List<IntervalAttribute> initialize(Interval agency,
+                                                 Aspect<Interval> aspect) {
         agency.link(aspect.getClassification(), aspect.getClassifier(),
                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        List<IntervalAttribute> attributes = new ArrayList<>();
         for (IntervalAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             IntervalAttribute attribute = new IntervalAttribute(
                                                                 authorization.getAuthorizedAttribute(),
                                                                 kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setInterval(agency);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

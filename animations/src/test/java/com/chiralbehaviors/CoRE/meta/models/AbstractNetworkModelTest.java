@@ -119,9 +119,8 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
                                        kernel.getCore());
         em.persist(classifier);
         Aspect<Agency> myAspect = new Aspect<Agency>(classification, classifier);
-        @SuppressWarnings("unchecked")
         Agency testAgency = model.getAgencyModel().create("test agency in group",
-                                                          "test", myAspect);
+                                                          "test", myAspect).asRuleform();
         em.persist(testAgency);
         em.getTransaction().commit();
         List<Agency> inGroup = model.getAgencyModel().getInGroup(classifier,

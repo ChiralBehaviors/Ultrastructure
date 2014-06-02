@@ -74,7 +74,216 @@ public class WorkspaceModelImpl implements WorkspaceModel {
 
     public WorkspaceModelImpl(Model model) {
         this.model = model;
-        this.em = model.getEntityManager();
+        em = model.getEntityManager();
+    }
+
+    public void addAgencies(Product parent, Relationship rel,
+                            List<Agency> children) {
+        if (children == null) {
+            return;
+        }
+        for (Agency c : children) {
+            if (c.getId() == null
+                || em.find(Agency.class, c.getPrimaryKey()) == null) {
+                em.persist(c);
+            } else {
+                c = em.merge(c);
+            }
+            ProductAgencyAccessAuthorization auth = new ProductAgencyAccessAuthorization(
+                                                                                         parent,
+                                                                                         rel,
+                                                                                         c,
+                                                                                         model.getKernel().getCoreAnimationSoftware());
+            em.persist(auth);
+        }
+    }
+
+    public void addAgencyNetworks(List<AgencyNetwork> networks) {
+        if (networks == null) {
+            return;
+        }
+        for (AgencyNetwork n : networks) {
+            em.persist(n);
+        }
+    }
+
+    public void addAttributeNetworks(List<AttributeNetwork> networks) {
+        if (networks == null) {
+            return;
+        }
+        for (AttributeNetwork n : networks) {
+            em.persist(n);
+        }
+    }
+
+    public void addAttributes(Product parent, Relationship rel,
+                              List<Attribute> children) {
+        if (children == null) {
+            return;
+        }
+        for (Attribute c : children) {
+            if (c.getId() == null
+                || em.find(Attribute.class, c.getPrimaryKey()) == null) {
+                em.persist(c);
+            } else {
+                c = em.merge(c);
+            }
+            ProductAttributeAccessAuthorization auth = new ProductAttributeAccessAuthorization(
+                                                                                               parent,
+                                                                                               rel,
+                                                                                               c,
+                                                                                               model.getKernel().getCoreAnimationSoftware());
+            em.persist(auth);
+        }
+    }
+
+    public void addLocationNetworks(List<LocationNetwork> networks) {
+        if (networks == null) {
+            return;
+        }
+        for (LocationNetwork n : networks) {
+            em.persist(n);
+        }
+    }
+
+    public void addLocations(Product parent, Relationship rel,
+                             List<Location> children) {
+        if (children == null) {
+            return;
+        }
+        for (Location c : children) {
+            if (c.getId() == null
+                || em.find(Location.class, c.getPrimaryKey()) == null) {
+                em.persist(c);
+            } else {
+                c = em.merge(c);
+            }
+            ProductLocationAccessAuthorization auth = new ProductLocationAccessAuthorization(
+                                                                                             parent,
+                                                                                             rel,
+                                                                                             c,
+                                                                                             model.getKernel().getCoreAnimationSoftware());
+            em.persist(auth);
+        }
+    }
+
+    public void addProductNetworks(List<ProductNetwork> networks) {
+        if (networks == null) {
+            return;
+        }
+        for (ProductNetwork n : networks) {
+            em.persist(n);
+        }
+    }
+
+    public void addProducts(Product parent, Relationship rel,
+                            List<Product> products) {
+        if (products == null) {
+            return;
+        }
+        for (Product p : products) {
+            if (p.getId() == null
+                || em.find(Product.class, p.getPrimaryKey()) == null) {
+                em.persist(p);
+            } else {
+                System.out.println("found an existing product: " + p);
+                p = em.merge(p);
+            }
+            model.getProductModel().link(parent,
+                                         rel,
+                                         p,
+                                         model.getKernel().getCoreAnimationSoftware());
+        }
+    }
+
+    public void addRelationshipNetworks(List<RelationshipNetwork> networks) {
+        if (networks == null) {
+            return;
+        }
+        for (RelationshipNetwork n : networks) {
+            em.persist(n);
+        }
+    }
+
+    public void addRelationships(Product parent, Relationship rel,
+                                 List<Relationship> children) {
+        if (children == null) {
+            return;
+        }
+        for (Relationship c : children) {
+            if (c.getId() == null
+                || em.find(Relationship.class, c.getPrimaryKey()) == null) {
+                em.persist(c);
+            } else {
+                c = em.merge(c);
+            }
+            ProductRelationshipAccessAuthorization auth = new ProductRelationshipAccessAuthorization(
+                                                                                                     parent,
+                                                                                                     rel,
+                                                                                                     c,
+                                                                                                     model.getKernel().getCoreAnimationSoftware());
+            em.persist(auth);
+        }
+    }
+
+    public void addStatusCodeNetworks(List<StatusCodeNetwork> networks) {
+        if (networks == null) {
+            return;
+        }
+        for (StatusCodeNetwork n : networks) {
+            em.persist(n);
+        }
+    }
+
+    public void addStatusCodes(Product parent, Relationship rel,
+                               List<StatusCode> children) {
+        if (children == null) {
+            return;
+        }
+        for (StatusCode c : children) {
+
+            if (c.getId() == null
+                || em.find(Agency.class, c.getPrimaryKey()) == null) {
+                em.persist(c);
+            } else {
+                c = em.merge(c);
+            }
+            ProductStatusCodeAccessAuthorization auth = new ProductStatusCodeAccessAuthorization(
+                                                                                                 parent,
+                                                                                                 rel,
+                                                                                                 c,
+                                                                                                 model.getKernel().getCoreAnimationSoftware());
+            em.persist(auth);
+        }
+    }
+
+    public void addUnitNetworks(List<UnitNetwork> networks) {
+        if (networks == null) {
+            return;
+        }
+        for (UnitNetwork n : networks) {
+            em.persist(n);
+        }
+    }
+
+    public void addUnits(Product parent, Relationship rel, List<Unit> children) {
+        if (children == null) {
+            return;
+        }
+        for (Unit c : children) {
+            if (c.getId() == null
+                || em.find(Unit.class, c.getPrimaryKey()) == null) {
+                em.persist(c);
+            } else {
+                c = em.merge(c);
+            }
+            ProductUnitAccessAuthorization auth = new ProductUnitAccessAuthorization(
+                                                                                     parent,
+                                                                                     rel,
+                                                                                     c,
+                                                                                     model.getKernel().getCoreAnimationSoftware());
+            em.persist(auth);
+        }
     }
 
     /* (non-Javadoc)
@@ -304,6 +513,37 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return units;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#importWorkspace(com.chiralbehaviors.CoRE.workspace.Workspace)
+     */
+    @Override
+    public Aspect<Product> importWorkspace(Workspace workspace) {
+        Product parent = workspace.getWorkspaceProduct();
+        Relationship rel = workspace.getWorkspaceRelationship();
+
+        em.persist(parent);
+        em.persist(rel);
+
+        addAgencies(parent, rel, workspace.getAgencies());
+        addAttributes(parent, rel, workspace.getAttributes());
+        addLocations(parent, rel, workspace.getLocations());
+        addProducts(parent, rel, workspace.getProducts());
+        addRelationships(parent, rel, workspace.getRelationships());
+        addStatusCodes(parent, rel, workspace.getStatusCodes());
+        addUnits(parent, rel, workspace.getUnits());
+
+        addAgencyNetworks(workspace.getAgencyNetworks());
+        addAttributeNetworks(workspace.getAttributeNetworks());
+        addLocationNetworks(workspace.getLocationNetworks());
+        addProductNetworks(workspace.getProductNetworks());
+        addRelationshipNetworks(workspace.getRelationshipNetworks());
+        addStatusCodeNetworks(workspace.getStatusCodeNetworks());
+        addUnitNetworks(workspace.getUnitNetworks());
+
+        return new Aspect<Product>(rel, parent);
+
+    }
+
     /**
      * @param current
      * @param nodes
@@ -343,246 +583,6 @@ public class WorkspaceModelImpl implements WorkspaceModel {
             edges.add(new EdgeImpl<ProductChildSequencingAuthorization>(
                                                                         current,
                                                                         auth, p));
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#importWorkspace(com.chiralbehaviors.CoRE.workspace.Workspace)
-     */
-    @Override
-    public Aspect<Product> importWorkspace(Workspace workspace) {
-        Product parent = workspace.getWorkspaceProduct();
-        Relationship rel = workspace.getWorkspaceRelationship();
-
-        em.persist(parent);
-        em.persist(rel);
-
-        addAgencies(parent, rel, workspace.getAgencies());
-        addAttributes(parent, rel, workspace.getAttributes());
-        addLocations(parent, rel, workspace.getLocations());
-        addProducts(parent, rel, workspace.getProducts());
-        addRelationships(parent, rel, workspace.getRelationships());
-        addStatusCodes(parent, rel, workspace.getStatusCodes());
-        addUnits(parent, rel, workspace.getUnits());
-        
-        addAgencyNetworks(workspace.getAgencyNetworks());
-        addAttributeNetworks(workspace.getAttributeNetworks());
-        addLocationNetworks(workspace.getLocationNetworks());
-        addProductNetworks(workspace.getProductNetworks());
-        addRelationshipNetworks(workspace.getRelationshipNetworks());
-        addStatusCodeNetworks(workspace.getStatusCodeNetworks());
-        addUnitNetworks(workspace.getUnitNetworks());
-
-        return new Aspect<Product>(rel, parent);
-
-    }
-
-    public void addAgencyNetworks(List<AgencyNetwork> networks) {
-        if (networks == null) {
-            return;
-        }
-        for (AgencyNetwork n : networks) {
-            em.persist(n);
-        }
-    }
-
-    public void addAttributeNetworks(List<AttributeNetwork> networks) {
-        if (networks == null) {
-            return;
-        }
-        for (AttributeNetwork n : networks) {
-            em.persist(n);
-        }
-    }
-
-    public void addLocationNetworks(List<LocationNetwork> networks) {
-        if (networks == null) {
-            return;
-        }
-        for (LocationNetwork n : networks) {
-            em.persist(n);
-        }
-    }
-
-    public void addProductNetworks(List<ProductNetwork> networks) {
-        if (networks == null) {
-            return;
-        }
-        for (ProductNetwork n : networks) {
-            em.persist(n);
-        }
-    }
-
-    public void addRelationshipNetworks(List<RelationshipNetwork> networks) {
-        if (networks == null) {
-            return;
-        }
-        for (RelationshipNetwork n : networks) {
-            em.persist(n);
-        }
-    }
-
-    public void addStatusCodeNetworks(List<StatusCodeNetwork> networks) {
-        if (networks == null) {
-            return;
-        }
-        for (StatusCodeNetwork n : networks) {
-            em.persist(n);
-        }
-    }
-
-    public void addUnitNetworks(List<UnitNetwork> networks) {
-        if (networks == null) {
-            return;
-        }
-        for (UnitNetwork n : networks) {
-            em.persist(n);
-        }
-    }
-
-    public void addAgencies(Product parent, Relationship rel,
-                            List<Agency> children) {
-        if (children == null) {
-            return;
-        }
-        for (Agency c : children) {
-            if (c.getId() == null
-                || em.find(Agency.class, c.getPrimaryKey()) == null) {
-                em.persist(c);
-            } else {
-                c = em.merge(c);
-            }
-            ProductAgencyAccessAuthorization auth = new ProductAgencyAccessAuthorization(
-                                                                                         parent,
-                                                                                         rel,
-                                                                                         c,
-                                                                                         model.getKernel().getCoreAnimationSoftware());
-            em.persist(auth);
-        }
-    }
-
-    public void addAttributes(Product parent, Relationship rel,
-                              List<Attribute> children) {
-        if (children == null) {
-            return;
-        }
-        for (Attribute c : children) {
-            if (c.getId() == null
-                || em.find(Attribute.class, c.getPrimaryKey()) == null) {
-                em.persist(c);
-            } else {
-                c = em.merge(c);
-            }
-            ProductAttributeAccessAuthorization auth = new ProductAttributeAccessAuthorization(
-                                                                                               parent,
-                                                                                               rel,
-                                                                                               c,
-                                                                                               model.getKernel().getCoreAnimationSoftware());
-            em.persist(auth);
-        }
-    }
-
-    public void addLocations(Product parent, Relationship rel,
-                             List<Location> children) {
-        if (children == null) {
-            return;
-        }
-        for (Location c : children) {
-            if (c.getId() == null
-                || em.find(Location.class, c.getPrimaryKey()) == null) {
-                em.persist(c);
-            } else {
-                c = em.merge(c);
-            }
-            ProductLocationAccessAuthorization auth = new ProductLocationAccessAuthorization(
-                                                                                             parent,
-                                                                                             rel,
-                                                                                             c,
-                                                                                             model.getKernel().getCoreAnimationSoftware());
-            em.persist(auth);
-        }
-    }
-
-    public void addRelationships(Product parent, Relationship rel,
-                                 List<Relationship> children) {
-        if (children == null) {
-            return;
-        }
-        for (Relationship c : children) {
-            if (c.getId() == null
-                || em.find(Relationship.class, c.getPrimaryKey()) == null) {
-                em.persist(c);
-            } else {
-                c = em.merge(c);
-            }
-            ProductRelationshipAccessAuthorization auth = new ProductRelationshipAccessAuthorization(
-                                                                                                     parent,
-                                                                                                     rel,
-                                                                                                     c,
-                                                                                                     model.getKernel().getCoreAnimationSoftware());
-            em.persist(auth);
-        }
-    }
-
-    public void addStatusCodes(Product parent, Relationship rel,
-                               List<StatusCode> children) {
-        if (children == null) {
-            return;
-        }
-        for (StatusCode c : children) {
-
-            if (c.getId() == null
-                || em.find(Agency.class, c.getPrimaryKey()) == null) {
-                em.persist(c);
-            } else {
-                c = em.merge(c);
-            }
-            ProductStatusCodeAccessAuthorization auth = new ProductStatusCodeAccessAuthorization(
-                                                                                                 parent,
-                                                                                                 rel,
-                                                                                                 c,
-                                                                                                 model.getKernel().getCoreAnimationSoftware());
-            em.persist(auth);
-        }
-    }
-
-    public void addUnits(Product parent, Relationship rel, List<Unit> children) {
-        if (children == null) {
-            return;
-        }
-        for (Unit c : children) {
-            if (c.getId() == null
-                || em.find(Unit.class, c.getPrimaryKey()) == null) {
-                em.persist(c);
-            } else {
-                c = em.merge(c);
-            }
-            ProductUnitAccessAuthorization auth = new ProductUnitAccessAuthorization(
-                                                                                     parent,
-                                                                                     rel,
-                                                                                     c,
-                                                                                     model.getKernel().getCoreAnimationSoftware());
-            em.persist(auth);
-        }
-    }
-
-    public void addProducts(Product parent, Relationship rel,
-                            List<Product> products) {
-        if (products == null) {
-            return;
-        }
-        for (Product p : products) {
-            if (p.getId() == null
-                || em.find(Product.class, p.getPrimaryKey()) == null) {
-                em.persist(p);
-            } else {
-                System.out.println("found an existing product: " + p);
-                p = em.merge(p);
-            }
-            model.getProductModel().link(parent,
-                                         rel,
-                                         p,
-                                         model.getKernel().getCoreAnimationSoftware());
         }
     }
 }

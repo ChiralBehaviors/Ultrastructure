@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -35,6 +36,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
@@ -116,6 +118,19 @@ public class UnitModelImpl
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Unit, UnitAttribute> create(String name, String description,
+                                             Aspect<Unit> aspect) {
+        Unit unit = new Unit(name, description, kernel.getCoreModel());
+        em.persist(unit);
+        return new Facet<Unit, UnitAttribute>(aspect, unit, initialize(unit,
+                                                                       aspect)) {
+        };
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -190,16 +205,19 @@ public class UnitModelImpl
      * @param agency
      * @param aspect
      */
-    protected void initialize(Unit agency, Aspect<Unit> aspect) {
+    protected List<UnitAttribute> initialize(Unit agency, Aspect<Unit> aspect) {
         agency.link(aspect.getClassification(), aspect.getClassifier(),
                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        List<UnitAttribute> attributes = new ArrayList<>();
         for (UnitAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             UnitAttribute attribute = new UnitAttribute(
                                                         authorization.getAuthorizedAttribute(),
                                                         kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setUnit(agency);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

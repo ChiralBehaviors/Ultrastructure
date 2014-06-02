@@ -87,31 +87,6 @@ public class WorkspaceLoader {
     /**
      * 
      */
-    private void loadUnitNetworks() {
-        workspace.setUnitNetworks(model.getUnitModel().getInterconnections(workspace.getUnits(),
-                                                                                           workspace.getRelationships(),
-                                                                                           workspace.getUnits()));
-        
-    }
-
-    /**
-     * 
-     */
-    private void loadUnits() {
-        List<Unit> units = new LinkedList<>();
-        for (ProductUnitAccessAuthorization auth : model.getProductModel().getUnitAccessAuths(workspaceProduct,
-                                                                                                  workspaceOf)) {
-            if (!units.contains(auth.getChild())) {
-                units.add(auth.getChild());
-            }
-        }
-        workspace.setUnits(units);
-        
-    }
-
-    /**
-     * 
-     */
     private void loadAgencies() {
         List<Agency> agencies = new LinkedList<>();
         for (ProductAgencyAccessAuthorization auth : model.getProductModel().getAgencyAccessAuths(workspaceProduct,
@@ -209,12 +184,37 @@ public class WorkspaceLoader {
     private void loadStatusCodes() {
         List<StatusCode> statusCodes = new LinkedList<>();
         for (ProductStatusCodeAccessAuthorization auth : model.getProductModel().getStatusCodeAccessAuths(workspaceProduct,
-                                                                                                              workspaceOf)) {
+                                                                                                          workspaceOf)) {
             if (!statusCodes.contains(auth.getChild())) {
                 statusCodes.add(auth.getChild());
             }
         }
         workspace.setStatusCodes(statusCodes);
+    }
+
+    /**
+     * 
+     */
+    private void loadUnitNetworks() {
+        workspace.setUnitNetworks(model.getUnitModel().getInterconnections(workspace.getUnits(),
+                                                                           workspace.getRelationships(),
+                                                                           workspace.getUnits()));
+
+    }
+
+    /**
+     * 
+     */
+    private void loadUnits() {
+        List<Unit> units = new LinkedList<>();
+        for (ProductUnitAccessAuthorization auth : model.getProductModel().getUnitAccessAuths(workspaceProduct,
+                                                                                              workspaceOf)) {
+            if (!units.contains(auth.getChild())) {
+                units.add(auth.getChild());
+            }
+        }
+        workspace.setUnits(units);
+
     }
 
 }

@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -34,6 +35,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.CoordinateModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
@@ -148,6 +150,25 @@ public class CoordinateModelImpl
         return copy;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Coordinate, CoordinateAttribute> create(String name,
+                                                         String description,
+                                                         Aspect<Coordinate> aspect) {
+
+        Coordinate coordinate = new Coordinate(name, description,
+                                               kernel.getCoreModel());
+        em.persist(coordinate);
+        return new Facet<Coordinate, CoordinateAttribute>(
+                                                          aspect,
+                                                          coordinate,
+                                                          initialize(coordinate,
+                                                                     aspect)) {
+        };
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -187,16 +208,20 @@ public class CoordinateModelImpl
      * @param agency
      * @param aspect
      */
-    protected void initialize(Coordinate agency, Aspect<Coordinate> aspect) {
+    protected List<CoordinateAttribute> initialize(Coordinate agency,
+                                                   Aspect<Coordinate> aspect) {
         agency.link(aspect.getClassification(), aspect.getClassifier(),
                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        List<CoordinateAttribute> attributes = new ArrayList<>();
         for (CoordinateAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             CoordinateAttribute attribute = new CoordinateAttribute(
                                                                     authorization.getAuthorizedAttribute(),
                                                                     kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setCoordinate(agency);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

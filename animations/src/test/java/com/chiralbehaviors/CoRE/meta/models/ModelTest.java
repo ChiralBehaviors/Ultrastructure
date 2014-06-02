@@ -59,9 +59,8 @@ public class ModelTest extends AbstractModelTest {
 
         em.getTransaction().begin();
 
-        @SuppressWarnings("unchecked")
         Agency agency = model.getAgencyModel().create("aspect test", "testy",
-                                                      aspect);
+                                                      aspect).asRuleform();
 
         em.getTransaction().commit();
 

@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -32,6 +33,7 @@ import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
@@ -155,6 +157,20 @@ public class ProductModelImpl
         return copy;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Product, ProductAttribute> create(String name,
+                                                   String description,
+                                                   Aspect<Product> aspect) {
+        Product product = new Product(name, description, kernel.getCoreModel());
+        em.persist(product);
+        return new Facet<Product, ProductAttribute>(aspect, product,
+                                                    initialize(product, aspect)) {
+        };
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -259,16 +275,20 @@ public class ProductModelImpl
      * @param product
      * @param aspect
      */
-    protected void initialize(Product product, Aspect<Product> aspect) {
+    protected List<ProductAttribute> initialize(Product product,
+                                                Aspect<Product> aspect) {
         product.link(aspect.getClassification(), aspect.getClassifier(),
                      kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        List<ProductAttribute> attributes = new ArrayList<>();
         for (ProductAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             ProductAttribute attribute = new ProductAttribute(
                                                               authorization.getAuthorizedAttribute(),
                                                               kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setProduct(product);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

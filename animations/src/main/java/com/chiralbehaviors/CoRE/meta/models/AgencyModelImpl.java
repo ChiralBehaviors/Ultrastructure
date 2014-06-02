@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -35,6 +36,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
@@ -149,6 +151,20 @@ public class AgencyModelImpl
         return copy;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Agency, AgencyAttribute> create(String name,
+                                                 String description,
+                                                 Aspect<Agency> aspect) {
+        Agency agency = new Agency(name, description, kernel.getCoreModel());
+        em.persist(agency);
+        return new Facet<Agency, AgencyAttribute>(aspect, agency,
+                                                  initialize(agency, aspect)) {
+        };
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -192,16 +208,20 @@ public class AgencyModelImpl
      * @param agency
      * @param aspect
      */
-    protected void initialize(Agency agency, Aspect<Agency> aspect) {
+    protected List<AgencyAttribute> initialize(Agency agency,
+                                               Aspect<Agency> aspect) {
+        List<AgencyAttribute> attributes = new ArrayList<>();
         agency.link(aspect.getClassification(), aspect.getClassifier(),
                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
         for (AgencyAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             AgencyAttribute attribute = new AgencyAttribute(
                                                             authorization.getAuthorizedAttribute(),
                                                             kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setAgency(agency);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 
@@ -147,6 +149,24 @@ public class StatusCodeModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<StatusCode, StatusCodeAttribute> create(String name,
+                                                         String description,
+                                                         Aspect<StatusCode> aspect) {
+        StatusCode statusCode = new StatusCode(name, description,
+                                               kernel.getCoreModel());
+        em.persist(statusCode);
+        return new Facet<StatusCode, StatusCodeAttribute>(
+                                                          aspect,
+                                                          statusCode,
+                                                          initialize(statusCode,
+                                                                     aspect)) {
+        };
     }
 
     /*
@@ -268,16 +288,20 @@ public class StatusCodeModelImpl
      * @param agency
      * @param aspect
      */
-    protected void initialize(StatusCode agency, Aspect<StatusCode> aspect) {
+    protected List<StatusCodeAttribute> initialize(StatusCode agency,
+                                                   Aspect<StatusCode> aspect) {
         agency.link(aspect.getClassification(), aspect.getClassifier(),
                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        List<StatusCodeAttribute> attributes = new ArrayList<>();
         for (StatusCodeAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             StatusCodeAttribute attribute = new StatusCodeAttribute(
                                                                     authorization.getAuthorizedAttribute(),
                                                                     kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setStatusCode(agency);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

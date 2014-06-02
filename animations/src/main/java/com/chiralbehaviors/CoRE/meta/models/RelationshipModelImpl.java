@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -31,6 +32,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
@@ -144,6 +146,24 @@ public class RelationshipModelImpl
         return copy;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Relationship, RelationshipAttribute> create(String name,
+                                                             String description,
+                                                             Aspect<Relationship> aspect) {
+        Relationship relationship = new Relationship(name, description,
+                                                     kernel.getCoreModel());
+        em.persist(relationship);
+        return new Facet<Relationship, RelationshipAttribute>(
+                                                              aspect,
+                                                              relationship,
+                                                              initialize(relationship,
+                                                                         aspect)) {
+        };
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -210,16 +230,20 @@ public class RelationshipModelImpl
      * @param agency
      * @param aspect
      */
-    protected void initialize(Relationship agency, Aspect<Relationship> aspect) {
+    protected List<RelationshipAttribute> initialize(Relationship agency,
+                                                     Aspect<Relationship> aspect) {
         agency.link(aspect.getClassification(), aspect.getClassifier(),
                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        List<RelationshipAttribute> attributes = new ArrayList<>();
         for (RelationshipAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             RelationshipAttribute attribute = new RelationshipAttribute(
                                                                         authorization.getAuthorizedAttribute(),
                                                                         kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setRelationship(agency);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

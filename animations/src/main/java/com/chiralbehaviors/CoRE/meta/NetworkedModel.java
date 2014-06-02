@@ -41,6 +41,22 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> {
 
     /**
+     * Create a new instance with the supplied aspect
+     * 
+     * @param name
+     *            The name of the new instance
+     * @param description
+     *            the description of the new instance
+     * @param aspect
+     *            - the initial aspect of the instance
+     * 
+     * @return the new instance
+     */
+    public Facet<RuleForm, AttributeType> create(String name,
+                                                 String description,
+                                                 Aspect<RuleForm> aspect);
+
+    /**
      * Create a new instance with the supplied aspects
      * 
      * @param name

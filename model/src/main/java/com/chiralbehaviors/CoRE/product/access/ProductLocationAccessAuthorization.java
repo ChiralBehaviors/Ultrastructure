@@ -15,7 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.product.access;
 
-import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
+import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.*;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
@@ -82,7 +82,11 @@ import com.chiralbehaviors.CoRE.product.Product;
                @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
                                                               + "FROM ProductLocationAccessAuthorization auth "
                                                               + "WHERE auth.parent = :parent "
-                                                              + "AND auth.relationship = :relationship ") })
+                                                              + "AND auth.relationship = :relationship "),
+               @NamedQuery(name = FIND_PRODUCTS_IN_LOCATION, query = "SELECT auth.parent "
+                                                                     + "FROM ProductLocationAccessAuthorization auth "
+                                                                     + "WHERE auth.child = :location "
+                                                                     + "AND auth.relationship = :relationship") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_LOCATION)
 public class ProductLocationAccessAuthorization extends
@@ -101,7 +105,8 @@ public class ProductLocationAccessAuthorization extends
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
                                                                                                          + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
-
+    public static final String FIND_PRODUCTS_IN_LOCATION                                               = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
+                                                                                                         + ".findProductsInLocation";
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

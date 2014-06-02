@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.authentication;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import io.dropwizard.auth.basic.BasicCredentials;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -32,7 +33,6 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.authentication.AgencyAuthenticator;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.chiralbehaviors.CoRE.meta.BootstrapLoader;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -42,8 +42,6 @@ import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 import com.chiralbehaviors.CoRE.utils.Util;
 import com.google.common.base.Optional;
-
-import io.dropwizard.auth.basic.BasicCredentials;
 
 /**
  * @author hhildebrand
@@ -61,15 +59,15 @@ public class AgencyLoginTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         em = emf.createEntityManager();
-        BootstrapLoader loader = new BootstrapLoader(em); 
-        loader.clear(); 
-        loader.bootstrap(); 
+        BootstrapLoader loader = new BootstrapLoader(em);
+        loader.clear();
+        loader.bootstrap();
         model = new ModelImpl(em);
         em.getTransaction().begin();
         em.flush();
         em.clear();
     }
-    
+
     @After
     public void rollback() {
         em.getTransaction().rollback();
@@ -79,13 +77,12 @@ public class AgencyLoginTest {
     @Test
     public void testGoodUser() throws Exception {
         String username = "bob@slack.com";
-        String password = "give me food or give me slack or kill me"; 
+        String password = "give me food or give me slack or kill me";
         Aspect<Agency> loginAspect = new Aspect<Agency>(
                                                         model.getKernel().getIsA(),
                                                         model.getKernel().getCoreUser());
-        @SuppressWarnings("unchecked")
         Agency bob = model.getAgencyModel().create("Bob", "Test Dummy",
-                                                   loginAspect);
+                                                   loginAspect).asRuleform();
         em.persist(bob);
         em.flush();
         em.clear();

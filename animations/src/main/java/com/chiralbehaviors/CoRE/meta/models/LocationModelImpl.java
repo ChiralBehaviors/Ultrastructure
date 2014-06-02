@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -35,6 +36,7 @@ import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
@@ -144,6 +146,22 @@ public class LocationModelImpl
         return copy;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
+     */
+    @Override
+    public Facet<Location, LocationAttribute> create(String name,
+                                                     String description,
+                                                     Aspect<Location> aspect) {
+        Location location = new Location(name, description,
+                                         kernel.getCoreModel());
+        em.persist(location);
+        return new Facet<Location, LocationAttribute>(aspect, location,
+                                                      initialize(location,
+                                                                 aspect)) {
+        };
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -184,16 +202,20 @@ public class LocationModelImpl
      * @param location
      * @param aspect
      */
-    protected void initialize(Location location, Aspect<Location> aspect) {
+    protected List<LocationAttribute> initialize(Location location,
+                                                 Aspect<Location> aspect) {
         location.link(aspect.getClassification(), aspect.getClassifier(),
                       kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+        List<LocationAttribute> attributes = new ArrayList<>();
         for (LocationAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
             LocationAttribute attribute = new LocationAttribute(
                                                                 authorization.getAuthorizedAttribute(),
                                                                 kernel.getCoreModel());
+            attributes.add(attribute);
             attribute.setLocation(location);
             defaultValue(attribute);
             em.persist(attribute);
         }
+        return attributes;
     }
 }

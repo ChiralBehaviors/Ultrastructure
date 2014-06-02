@@ -10,8 +10,8 @@
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="product_location_pkey" />
             </column>
-            <column name="agency" type="CHAR(22)">
-                <constraints nullable="false" />
+            <column name="agency" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ">
+                <constraints nullable="false" /> 
             </column>
             <column name="product" type="CHAR(22)">
                 <constraints nullable="false" />

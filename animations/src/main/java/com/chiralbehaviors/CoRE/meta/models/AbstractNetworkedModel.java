@@ -49,6 +49,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 
@@ -298,16 +299,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getChild(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
      */
-    @SuppressWarnings("unchecked")
     @Override
     public RuleForm getChild(RuleForm parent, Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
         Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
-        query.select((Selection<? extends RuleForm>) networkRoot.get("child")).where(cb.and(cb.equal(networkRoot.get("parent"),
-                                                                                                     parent),
-                                                                                            cb.equal(networkRoot.get("relationship"),
-                                                                                                     relationship)));
+        Path<RuleForm> path;
+        try {
+            path = networkRoot.get("child");
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                 parent),
+                                        cb.equal(networkRoot.get("relationship"),
+                                                 relationship)));
         TypedQuery<RuleForm> q = em.createQuery(query);
         return q.getSingleResult();
     }

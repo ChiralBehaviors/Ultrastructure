@@ -112,13 +112,13 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private final Class<AttributeType>             attribute;
+
     private final Class<AttributeAuthorization>    authorization;
     private final Class<RuleForm>                  entity;
     private final Class<NetworkRuleform<RuleForm>> network;
     private final String                           networkPrefix;
     private final String                           prefix;
     protected final EntityManager                  em;
-
     protected final Kernel                         kernel;
 
     @SuppressWarnings("unchecked")
@@ -293,6 +293,23 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter("ruleform", ruleform);
         query.setParameter("agency", groupingAgency);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getChild(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public RuleForm getChild(RuleForm parent, Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
+        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        query.select((Selection<? extends RuleForm>) networkRoot.get("child")).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                                                                     parent),
+                                                                                            cb.equal(networkRoot.get("relationship"),
+                                                                                                     relationship)));
+        TypedQuery<RuleForm> q = em.createQuery(query);
+        return q.getSingleResult();
     }
 
     /*

@@ -318,4 +318,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @throws SQLException
      */
     void propagate();
+
+    /**
+     * Answer the child that is connected to the parent via the relationship
+     * 
+     * @param parent
+     * @param relationship
+     * @return the child that is connected to the parent via the relationship
+     */
+    RuleForm getChild(RuleForm parent, Relationship relationship);
 }

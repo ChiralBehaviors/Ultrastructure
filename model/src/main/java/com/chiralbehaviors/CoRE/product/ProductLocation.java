@@ -15,6 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.product;
 
+import static com.chiralbehaviors.CoRE.product.ProductLocation.PRODUCTS_AT_LOCATION;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -23,6 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -42,9 +46,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "product_location", schema = "ruleform")
+@NamedQueries({ @NamedQuery(name = PRODUCTS_AT_LOCATION, query = "SELECT n.product "
+                                                                 + "FROM ProductLocation n "
+                                                                 + "WHERE n.relationship = :relationship "
+                                                                 + "AND n.location = :location"), })
 public class ProductLocation extends Ruleform implements
         Attributable<ProductLocationAttribute> {
-    private static final long             serialVersionUID = 1L;
+    public static final String            PRODUCTS_AT_LOCATION = "productLocation.productsAtLocation";
+    private static final long             serialVersionUID     = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne
@@ -79,6 +88,16 @@ public class ProductLocation extends Ruleform implements
      */
     public ProductLocation(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    public ProductLocation(Agency agency, Product product,
+                           Relationship relationship, Location location,
+                           Agency updatedBy) {
+        super(updatedBy);
+        this.product = product;
+        this.relationship = relationship;
+        this.location = location;
+        this.agency = agency;
     }
 
     /**

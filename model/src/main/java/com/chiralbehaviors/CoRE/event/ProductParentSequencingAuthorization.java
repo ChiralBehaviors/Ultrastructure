@@ -64,6 +64,9 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "parent_status_to_set")
     private StatusCode         parentStatusToSet;
 
+    @Column(name = "replace_product")
+    private Integer            replaceProduct      = FALSE;
+
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
 
@@ -158,12 +161,27 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         return statusCode;
     }
 
+    /**
+     * @return the replaceProduct
+     */
+    public boolean isReplaceProduct() {
+        return replaceProduct.equals(TRUE);
+    }
+
     public void setParent(Product myParent) {
         parent = myParent;
     }
 
     public void setParentStatusToSet(StatusCode parentStatusToSet) {
         this.parentStatusToSet = parentStatusToSet;
+    }
+
+    /**
+     * @param replaceProduct
+     *            the replaceProduct to set
+     */
+    public void setReplaceProduct(boolean replaceProduct) {
+        this.replaceProduct = replaceProduct ? TRUE : FALSE;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {

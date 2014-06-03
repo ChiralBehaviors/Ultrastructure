@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Parameter;
 import javax.persistence.Query;
@@ -519,7 +520,15 @@ public class JobModelImpl implements JobModel {
                                     currentStatus, nextStatus));
         }
         if (kernel.getUnset().equals(currentStatus)) {
-            StatusCode initialState = getInitialState(service);
+            StatusCode initialState;
+            try {
+                initialState = getInitialState(service);
+            } catch (NoResultException e) {
+                throw new SQLException(
+                                       String.format("%s is not allowed as a next state for Service %s coming from %s.  There is no initial state defined for the service.  Please consult the Status Code Sequencing rules.",
+                                                     nextStatus, service,
+                                                     currentStatus));
+            }
             if (!nextStatus.equals(initialState)) {
                 throw new SQLException(
                                        String.format("%s is not allowed as a next state for Service %s coming from %s.  The only allowable state is the initial state of %s  Please consult the Status Code Sequencing rules.",
@@ -1149,22 +1158,16 @@ public class JobModelImpl implements JobModel {
         }
         List<ProductChildSequencingAuthorization> childActions = getChildActions(job);
         for (ProductChildSequencingAuthorization seq : childActions) {
-            // This can be merged into the same outer query... just doing quick
-            // and dirty now
-
-            // for each child job that is active (not UNSET or terminal) update
-            // their status to this one
-            // Should probably have a constraint that the given status should be
-            // terminal for the event,
-            // and that it can be transitioned to from any non-terminal state
-            // for that event
             for (Job child : getActiveSubJobsOf(job)) {
                 changeStatus(child,
                              seq.getNextChildStatus(),
-                             null,
+                             kernel.getCoreAnimationSoftware(),
                              String.format("Automatically switching to %s via direct communication from parent job %s",
                                            seq.getNextChildStatus().getName(),
                                            job));
+                if (seq.isReplaceProduct()) {
+                    child.setProduct(job.getProduct());
+                }
             }
         }
     }
@@ -1191,16 +1194,22 @@ public class JobModelImpl implements JobModel {
                     && seq.getService().equals(job.getParent().getService())) {
                     changeStatus(job.getParent(),
                                  seq.getParentStatusToSet(),
-                                 null,
+                                 kernel.getCoreAnimationSoftware(),
                                  String.format("'Automatically switching to %s via direct communication from child job %s",
                                                seq.getParentStatusToSet(), job));
+                    if (seq.isReplaceProduct()) {
+                        job.getParent().setProduct(job.getProduct());
+                    }
                     break;
                 } else if (seq.getParent().equals(job.getParent().getService())) {
                     changeStatus(job.getParent(),
                                  seq.getParentStatusToSet(),
-                                 null,
+                                 kernel.getCoreAnimationSoftware(),
                                  String.format("'Automatically switching to %s via direct communication from child job %s",
                                                seq.getParentStatusToSet(), job));
+                    if (seq.isReplaceProduct()) {
+                        job.getParent().setProduct(job.getProduct());
+                    }
                     break;
                 }
             }
@@ -1222,6 +1231,9 @@ public class JobModelImpl implements JobModel {
                              String.format("Automatically switching to %s via direct communication from sibling job %s",
                                            seq.getNextSiblingStatus().getName(),
                                            job));
+                if (seq.isReplaceProduct()) {
+                    sibling.setProduct(job.getProduct());
+                }
             }
         }
     }

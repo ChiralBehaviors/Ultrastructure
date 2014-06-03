@@ -67,6 +67,9 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "parent")
     private Product            parent;
 
+    @Column(name = "replace_product")
+    private Integer            replaceProduct    = FALSE;
+
     @Column(name = "sequence_number")
     private Integer            sequenceNumber    = 1;
 
@@ -150,6 +153,13 @@ public class ProductChildSequencingAuthorization extends Ruleform {
         return statusCode;
     }
 
+    /**
+     * @return the replaceProduct
+     */
+    public boolean isReplaceProduct() {
+        return replaceProduct.equals(TRUE);
+    }
+
     public void setNextChild(Product nextChild) {
         this.nextChild = nextChild;
     }
@@ -160,6 +170,14 @@ public class ProductChildSequencingAuthorization extends Ruleform {
 
     public void setParent(Product parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param replaceProduct
+     *            the replaceProduct to set
+     */
+    public void setReplaceProduct(boolean replaceProduct) {
+        this.replaceProduct = replaceProduct ? TRUE : FALSE;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {

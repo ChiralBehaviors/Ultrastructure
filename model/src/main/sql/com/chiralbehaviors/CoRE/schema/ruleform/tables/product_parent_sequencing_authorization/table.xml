@@ -31,6 +31,9 @@
             <column name="set_if_active_siblings"
                 remarks="Determines if we set the parent job to the status denoted by &quot;parent_status_to_set&quot; if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say those sibling jobs might have."
                 type="SMALLINT" />
+            <column name="replace_product" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="VARCHAR(10485760)" />
             <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />

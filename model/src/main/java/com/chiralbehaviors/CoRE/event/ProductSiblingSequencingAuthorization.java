@@ -70,15 +70,15 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
-    /**
-     * 
-     */
+    @Column(name = "replace_product")
+    private Integer            replaceProduct      = FALSE;
+
     public ProductSiblingSequencingAuthorization() {
-        super();
     }
 
     /**
@@ -150,6 +150,13 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
         return statusCode;
     }
 
+    /**
+     * @return the replaceProduct
+     */
+    public boolean isReplaceProduct() {
+        return replaceProduct.equals(TRUE);
+    }
+
     public void setNextSibling(Product nextSibling) {
         this.nextSibling = nextSibling;
     }
@@ -160,6 +167,14 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
 
     public void setParent(Product parent) {
         this.parent = parent;
+    }
+
+    /**
+     * @param replaceProduct
+     *            the replaceProduct to set
+     */
+    public void setReplaceProduct(boolean replaceProduct) {
+        this.replaceProduct = replaceProduct ? TRUE : FALSE;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {

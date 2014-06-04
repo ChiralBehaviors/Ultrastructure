@@ -130,10 +130,15 @@ public class JobModelImpl implements JobModel {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
                 log.info("before ensure_next_status_is_valid");
+                String oldStatus = triggerData.getOld().getString("status");
+                String newStatus = triggerData.getNew().getString("status");
+                if (oldStatus != null && oldStatus.equals(newStatus)) {
+                    //  Not a status change ;)
+                    return null;
+                }
                 jobModel.ensureNextStateIsValid(triggerData.getNew().getString("id"),
                                                 triggerData.getNew().getString("service"),
-                                                triggerData.getOld().getString("status"),
-                                                triggerData.getNew().getString("status"));
+                                                oldStatus, newStatus);
                 log.info("completed ensure_next_status_is_valid");
                 return null;
             }

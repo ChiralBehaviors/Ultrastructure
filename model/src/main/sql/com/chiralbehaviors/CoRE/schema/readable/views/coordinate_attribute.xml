@@ -11,7 +11,7 @@
 			 SELECT ca.id, 
 			     c.name AS coordinate, 
 			     a.name AS attribute,
-			     bv.name AS product_value, 
+                 ca.key AS key,
 			     ca.integer_value, 
 			     ca.numeric_value, 
 			     ca.boolean_value, 
@@ -22,7 +22,6 @@
 			   FROM coordinate_attribute ca
 			   JOIN coordinate c ON c.id = ca.coordinate
 			   JOIN attribute a ON a.id = ca.attribute
-			   LEFT JOIN product bv ON bv.id = ca.product_value
 			   JOIN agency up ON up.id = ca.updated_by;
 			
 			ALTER TABLE readable.coordinate_attribute

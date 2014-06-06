@@ -12,10 +12,7 @@
             </column>
             <column name="protocol" remarks="The protocol whose attributes are being specified" type="CHAR(22)">
                 <constraints nullable="false" />
-            </column>
-            <column name="location_value" type="CHAR(22)" />
-            <column name="product_value" type="CHAR(22)" />
-            <column name="agency_value" type="CHAR(22)" />
+            </column> 
             <column name="attribute" remarks="The Attribute or facet of the given protocol being declared" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -24,6 +21,7 @@
             >
                 <constraints nullable="false" />
             </column>
+            <column name="key" type="VARCHAR(10485760)" />
             <column name="text_value" remarks="If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL"
                 type="VARCHAR(10485760)" />
             <column name="numeric_value" remarks="If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL"
@@ -48,26 +46,11 @@
             <dropTable tableName="protocol_attribute" />
         </rollback>
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-274">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency_value" baseTableName="protocol_attribute"
-            constraintName="protocol_attribute_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="agency" />
-    </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-275">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="attribute" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-289">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location_value" baseTableName="protocol_attribute"
-            constraintName="protocol_attribute_location_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="location" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-290">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_value" baseTableName="protocol_attribute"
-            constraintName="protocol_attribute_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="product" />
-    </changeSet>
+    </changeSet>  
     <changeSet author="hhildebrand" id="1390879803225-291">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="protocol" baseTableName="protocol_attribute"
             constraintName="protocol_attribute_protocol_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"

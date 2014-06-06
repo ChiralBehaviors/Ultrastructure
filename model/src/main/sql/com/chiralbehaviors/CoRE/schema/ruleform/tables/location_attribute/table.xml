@@ -16,6 +16,7 @@
             <column name="attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column> 
+            <column name="key" type="VARCHAR(10485760)" />
             <column name="numeric_value" type="numeric" />
             <column name="integer_value" type="INT4" />
             <column name="boolean_value" type="SMALLINT" />

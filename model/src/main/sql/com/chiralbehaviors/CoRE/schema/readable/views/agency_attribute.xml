@@ -11,6 +11,7 @@
 			 SELECT ra.id, 
 			     r.name AS agency, 
 			     a.name AS attribute, 
+                 ra.key AS key,
 			     ra.numeric_value, 
 			     ra.integer_value, 
 			     ra.boolean_value, 

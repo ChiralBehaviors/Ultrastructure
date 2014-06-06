@@ -270,9 +270,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<RuleForm> getInGroup(RuleForm parent, Relationship relationship);
 
-    List<Network> getInterconnections(List<RuleForm> parents,
-                                      List<Relationship> relationships,
-                                      List<RuleForm> children);
+    List<Network> getInterconnections(Collection<RuleForm> parents,
+                                      Collection<Relationship> relationships,
+                                      Collection<RuleForm> children);
 
     /**
      * 

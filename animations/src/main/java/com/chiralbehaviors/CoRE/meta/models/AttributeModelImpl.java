@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -192,9 +193,9 @@ public class AttributeModelImpl
     }
 
     @Override
-    public List<AttributeNetwork> getInterconnections(List<Attribute> parents,
-                                                      List<Relationship> relationships,
-                                                      List<Attribute> children) {
+    public List<AttributeNetwork> getInterconnections(Collection<Attribute> parents,
+                                                      Collection<Relationship> relationships,
+                                                      Collection<Attribute> children) {
         if (parents == null || parents.size() == 0 || relationships == null
             || relationships.size() == 0 || children == null
             || children.size() == 0) {

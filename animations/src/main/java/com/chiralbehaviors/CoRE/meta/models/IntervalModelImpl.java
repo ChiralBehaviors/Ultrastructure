@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -193,9 +194,9 @@ public class IntervalModelImpl
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
      */
     @Override
-    public List<IntervalNetwork> getInterconnections(List<Interval> parents,
-                                                     List<Relationship> relationships,
-                                                     List<Interval> children) {
+    public List<IntervalNetwork> getInterconnections(Collection<Interval> parents,
+                                                     Collection<Relationship> relationships,
+                                                     Collection<Interval> children) {
         throw new UnsupportedOperationException();
     }
 

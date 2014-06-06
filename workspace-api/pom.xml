@@ -16,6 +16,10 @@
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>animations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,5 +1,5 @@
 /** 
- * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
+ * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.workspace.api;
+package com.chiralbehaviors.CoRE.workspace;
 
-import java.util.List;
-
-import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.agency.Agency;
 
 /**
  * @author hparry
  * 
  */
-public interface WorkspaceApi {
+public interface RogueKernel {
 
-    public List<Product> getProducts();
+    Agency getRogueAgency();
 
 }

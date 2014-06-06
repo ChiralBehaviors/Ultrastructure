@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.product_attribute AS 
-			 SELECT ba.id, b.name AS product, a.name AS attribute, 
-			        ba.numeric_value, ba.integer_value, ba.boolean_value, 
-			        ba.text_value, u.name AS unit, ba.notes, 
+			 SELECT ba.id, 
+                    b.name AS product, 
+                    a.name AS attribute, 
+                    ba.key AS key,
+			        ba.numeric_value, 
+                    ba.integer_value, 
+                    ba.boolean_value, 
+			        ba.text_value, 
+                    u.name AS unit, 
+                    ba.notes, 
 			        up.name AS updated_by, 
 			        ba.update_date
 			   FROM product_attribute ba

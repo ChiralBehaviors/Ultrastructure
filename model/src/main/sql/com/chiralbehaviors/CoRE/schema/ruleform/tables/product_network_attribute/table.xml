@@ -22,6 +22,7 @@
             <column name="attribute" remarks="The Attribute of the Product Network rule being defined" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
+            <column name="key" type="VARCHAR(10485760)" />
             <column name="text_value" remarks="If the Attribute has a text value, it is stored in this column" type="VARCHAR(10485760)" />
             <column name="numeric_value" remarks="If the Attribute has a numeric (real) value, it is stored in this column" type="numeric" />
             <column name="integer_value" remarks="If the Attribute has an integer value, it is stored in this column" type="INT4" />

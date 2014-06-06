@@ -50,6 +50,11 @@ public abstract class JSP {
     static {
         ClassLoader classLoader = JSP.class.getClassLoader();
         Thread.currentThread().setContextClassLoader(classLoader);
+        try {
+            Class.forName("org.apache.commons.collections.iterators.IteratorChain");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
         SQLExceptions.class.toString();
         StoreException.class.toString();
         InputStream is = JSP.class.getResourceAsStream("jpa.properties");

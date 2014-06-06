@@ -8,10 +8,15 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.job_attribute AS 
-			 SELECT base_table.id, base_table.job, at.name AS attribute, 
+			 SELECT base_table.id, 
+                    base_table.job, 
+                    at.name AS attribute, 
 			        base_table.sequence_number,
-			        base_table.text_value, base_table.numeric_value, 
-			        base_table.integer_value, u.name AS unit,
+                    base_table.key AS key,
+			        base_table.text_value, 
+                    base_table.numeric_value, 
+			        base_table.integer_value, 
+                    u.name AS unit,
 			        up.name AS updated_by, base_table.update_date
 			   FROM job_attribute base_table
 			   JOIN attribute at ON base_table.attribute = at.id

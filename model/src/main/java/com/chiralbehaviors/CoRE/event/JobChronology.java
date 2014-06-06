@@ -33,6 +33,7 @@ import javax.persistence.Table;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -47,6 +48,11 @@ public class JobChronology extends Ruleform {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     private Job               job;
+
+    // bi-directional many-to-one association to Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product")
+    private Product           product;
 
     @SequenceGenerator(schema = "ruleform", name = "job_chronology_seq", sequenceName = "job_chronology_seq")
     @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
@@ -74,6 +80,7 @@ public class JobChronology extends Ruleform {
                          String notes, Agency updatedBy) {
         super(notes, updatedBy);
         this.job = job;
+        this.product = job.getProduct();
         this.status = status;
         this.timeStamp = timeStamp;
     }
@@ -87,6 +94,13 @@ public class JobChronology extends Ruleform {
 
     public Job getJob() {
         return job;
+    }
+
+    /**
+     * @return the product
+     */
+    public Product getProduct() {
+        return product;
     }
 
     public Long getSequence() {
@@ -106,6 +120,15 @@ public class JobChronology extends Ruleform {
 
     public void setJob(Job job) {
         this.job = job;
+        this.product = job.getProduct();
+    }
+
+    /**
+     * @param product
+     *            the product to set
+     */
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     /**

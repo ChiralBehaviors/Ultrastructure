@@ -52,31 +52,35 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "binary_value")
     private byte[]            binaryValue;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "boolean_value")
     private Integer           booleanValue;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "integer_value")
     private Integer           integerValue;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "key")
+    private String            key;
+
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "numeric_value")
     private BigDecimal        numericValue;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "sequence_number")
     private Integer           sequenceNumber   = 1;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "text_value")
     private String            textValue;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "timestamp_value")
     private Timestamp         timestampValue;
 
@@ -205,6 +209,13 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return integerValue;
     }
 
+    /**
+     * @return the key
+     */
+    public String getKey() {
+        return key;
+    }
+
     public BigDecimal getNumericValue() {
         if (attribute.getValueType() != ValueType.NUMERIC) {
             throw new UnsupportedOperationException(
@@ -278,6 +289,14 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
                                                                   attribute.getValueType()));
         }
         this.integerValue = integerValue;
+    }
+
+    /**
+     * @param key
+     *            the key to set
+     */
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void setNumericValue(BigDecimal numericValue) {

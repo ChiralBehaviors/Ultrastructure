@@ -11,6 +11,7 @@
 			 SELECT aa.id, 
 			     ba.name AS base_attribute, 
 			     a.name AS attribute, 
+                 aa.key AS key,
 			     aa.integer_value, 
 			     aa.numeric_value, 
 			     aa.boolean_value, 

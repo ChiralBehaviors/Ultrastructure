@@ -21,6 +21,7 @@
             >
                 <constraints nullable="false" />
             </column>
+            <column name="key" type="VARCHAR(10485760)" />
             <column name="text_value" remarks="If the Attribute is text-valued, the value goes in this column; all other value columns should be NULL"
                 type="VARCHAR(10485760)" />
             <column name="numeric_value" remarks="If the Attribute is numeric-valued, the value goes in this column; all other value columns should be NULL"

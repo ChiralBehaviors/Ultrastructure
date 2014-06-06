@@ -16,7 +16,7 @@
             <column name="attribute" remarks="The attribute of the given coordinate this rule defines" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product_value" remarks="If the Attribute is Product-valued, the value is stored in this column" type="CHAR(22)" />
+            <column name="key" type="VARCHAR(10485760)" />
             <column name="integer_value" remarks="If the Attribute is integer-valued, the value is stored in this column" type="INT4" />
             <column name="numeric_value" remarks="If the Attribute is numerically-valued (i.e. non-integer), the value is stored in this column"
                 type="numeric" />
@@ -52,11 +52,6 @@
             constraintName="coordinate_attribute_coordinate_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="coordinate" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-134">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_value" baseTableName="coordinate_attribute"
-            constraintName="coordinate_attribute_product_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
-    </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-135">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="coordinate_attribute"
             constraintName="coordinate_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
@@ -65,11 +60,6 @@
     <changeSet author="hhildebrand" id="1390879803225-378">
         <addUniqueConstraint schemaName="ruleform" columnNames="coordinate, attribute" constraintName="coordinate_attribute_coordinate_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="coordinate_attribute" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-449">
-        <createIndex schemaName="ruleform" indexName="coordinate_attribute_product_value_fkey_idx" tableName="coordinate_attribute" unique="false">
-            <column name="product_value" />
-        </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-450">
         <createIndex schemaName="ruleform" indexName="coordinate_attribute_updated_by_fkey_idx" tableName="coordinate_attribute" unique="false">

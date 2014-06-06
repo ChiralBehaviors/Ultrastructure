@@ -35,8 +35,6 @@
         <class>com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.product.ProductLocation</class>
         <class>com.chiralbehaviors.CoRE.product.ProductLocationAttribute</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductLocationNetwork</class>
         <class>com.chiralbehaviors.CoRE.product.ProductNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization</class>

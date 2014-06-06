@@ -65,8 +65,6 @@ import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
-import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductLocationNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
@@ -141,11 +139,7 @@ public interface Workspace {
 
     List<ProductLocationAccessAuthorization> getProductLocationAccessAuthorizations();
 
-    List<ProductLocationAttributeAuthorization> getProductLocationAttributeAuthorizations();
-
     List<ProductLocationAttribute> getProductLocationAttributes();
-
-    List<ProductLocationNetwork> getProductLocationNetworks();
 
     List<ProductLocation> getProductLocations();
 
@@ -261,11 +255,7 @@ public interface Workspace {
 
     void setProductLocationAccessAuthorizations(List<ProductLocationAccessAuthorization> productLocationAccessAuthorizations);
 
-    void setProductLocationAttributeAuthorizations(List<ProductLocationAttributeAuthorization> productLocationAttributeAuthorizations);
-
     void setProductLocationAttributes(List<ProductLocationAttribute> productLocationAttributes);
-
-    void setProductLocationNetworks(List<ProductLocationNetwork> productLocationNetworks);
 
     void setProductLocations(List<ProductLocation> productLocations);
 

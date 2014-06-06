@@ -33,6 +33,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -115,22 +116,22 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     private static final long      serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to LocationAttribute
-    @OneToMany(mappedBy = "location")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "location")
     @JsonIgnore
     private Set<LocationAttribute> attributes;
 
     // bi-directional many-to-one association to ProductLocation
-    @OneToMany(mappedBy = "location")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "location")
     @JsonIgnore
     private Set<ProductLocation>   entities;
 
     // bi-directional many-to-one association to LocationNetwork
-    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<LocationNetwork>   networkByChild;
 
     // bi-directional many-to-one association to LocationNetwork
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<LocationNetwork>   networkByParent;
 

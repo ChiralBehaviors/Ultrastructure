@@ -28,7 +28,6 @@
             <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="SMALLINT" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column name="product_value" remarks="If the Attribute has a Product value, it is stored in this column" type="CHAR(22)" />
             <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="CHAR(22)" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="VARCHAR(10485760)" />
             <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
@@ -65,12 +64,6 @@
             deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_network" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-249">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_value" baseTableName="product_network_attribute" constraintName="product_network_attribute_product_value_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product" />
-    </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-250">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="unit" baseTableName="product_network_attribute" constraintName="product_network_attribute_unit_fkey"
@@ -106,13 +99,6 @@
             unique="false"
         >
             <column name="network_rule" />
-        </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-499">
-        <createIndex schemaName="ruleform" indexName="product_network_attribute_product_value_fkey_idx" tableName="product_network_attribute"
-            unique="false"
-        >
-            <column name="product_value" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-500">

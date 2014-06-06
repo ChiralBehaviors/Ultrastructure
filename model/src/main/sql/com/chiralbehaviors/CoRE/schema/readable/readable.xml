@@ -49,10 +49,10 @@
         file="views/product_location.xml" />
     <include
         relativeToChangelogFile="true"
-        file="views/product_location_network.xml" />
+        file="views/product_network.xml" />
     <include
         relativeToChangelogFile="true"
-        file="views/product_network.xml" />
+        file="views/product_network_attribute.xml" />
     <include
         relativeToChangelogFile="true"
         file="views/product_child_sequencing_authorization.xml" />

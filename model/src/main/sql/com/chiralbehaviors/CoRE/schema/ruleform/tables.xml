@@ -31,7 +31,6 @@
     <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/coordinate_nesting-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location_attribute-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_location_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/location_attribute-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/location_attribute_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/location_network_authorization-0.0.1.xml" />
@@ -41,7 +40,6 @@
     <include relativeToChangelogFile="true" file="tables/agency_attribute_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_network_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_attribute_authorization-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_location_attribute_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_network_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job_attribute-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/meta_protocol-0.0.1.xml" />

@@ -53,11 +53,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     @JoinColumn(name = "network_rule")
     private ProductNetwork    productNetwork;
 
-    // bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           productValue;
-
     public ProductNetworkAttribute() {
     }
 
@@ -146,10 +141,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         return productNetwork;
     }
 
-    public Product getProductValue() {
-        return productValue;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -179,10 +170,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         this.productNetwork = productNetwork;
     }
 
-    public void setProductValue(Product product) {
-        productValue = product;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -196,9 +183,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         if (productNetwork != null) {
             productNetwork = (ProductNetwork) productNetwork.manageEntity(em,
                                                                           knownObjects);
-        }
-        if (productValue != null) {
-            productValue = (Product) productValue.manageEntity(em, knownObjects);
         }
         if (agency != null) {
             agency = (Agency) agency.manageEntity(em, knownObjects);

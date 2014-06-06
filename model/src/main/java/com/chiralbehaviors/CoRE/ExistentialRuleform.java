@@ -18,7 +18,9 @@ package com.chiralbehaviors.CoRE;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
@@ -57,8 +59,11 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     private static final long  serialVersionUID                                              = 1L;
 
+    @Basic(fetch = FetchType.LAZY)
     private String             description;
+    @Basic(fetch = FetchType.LAZY)
     private String             name;
+    @Basic(fetch = FetchType.LAZY)
     private Integer            pinned                                                        = FALSE;
 
     public ExistentialRuleform() {

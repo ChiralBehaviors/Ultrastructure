@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -51,24 +52,31 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "binary_value")
     private byte[]            binaryValue;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "boolean_value")
     private Integer           booleanValue;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "integer_value")
     private Integer           integerValue;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "numeric_value")
     private BigDecimal        numericValue;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "sequence_number")
     private Integer           sequenceNumber   = 1;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "text_value")
     private String            textValue;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "timestamp_value")
     private Timestamp         timestampValue;
 

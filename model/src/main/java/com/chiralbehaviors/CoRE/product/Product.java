@@ -40,6 +40,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -159,22 +160,22 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
     private static final long     serialVersionUID                                       = 1L;
 
     // bi-directional many-to-one association to ProductAttribute
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductAttribute> attributes;
 
     // bi-directional many-to-one association to ProductLocation
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductLocation>  locations;
 
     // bi-directional many-to-one association to ProductNetwork
-    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetwork>   networkByChild;
 
     // bi-directional many-to-one association to ProductNetwork
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetwork>   networkByParent;
 

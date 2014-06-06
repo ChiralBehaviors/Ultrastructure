@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -61,7 +62,7 @@ public class ProductLocation extends Ruleform implements
     private Agency                        agency;
 
     // bi-directional many-to-one association to ProductLocationAttribute
-    @OneToMany(mappedBy = "productLocation")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "productLocation")
     @JsonIgnore
     private Set<ProductLocationAttribute> attributes;
 

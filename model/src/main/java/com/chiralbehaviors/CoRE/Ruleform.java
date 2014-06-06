@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -78,8 +79,10 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @SequenceGenerator(name = "uuid_seq", sequenceName = "com.chiralbehaviors.CoRE.UuidGenerator()")
     private String    id;
 
+    @Basic(fetch=FetchType.LAZY)
     private String    notes;
 
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "update_date")
     private Timestamp updateDate;
 

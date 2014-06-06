@@ -74,8 +74,6 @@ import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
-import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductLocationNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
@@ -151,8 +149,6 @@ public class WorkspaceSnapshot implements Workspace {
     private List<ProductAttributeAuthorization>          productAttributeAuthorizations          = new ArrayList<>();
     private List<ProductLocation>                        productLocations                        = new ArrayList<>();
     private List<ProductLocationAttribute>               productLocationAttributes               = new ArrayList<>();
-    private List<ProductLocationAttributeAuthorization>  productLocationAttributeAuthorizations  = new ArrayList<>();
-    private List<ProductLocationNetwork>                 productLocationNetworks                 = new ArrayList<>();
     private List<ProductNetworkAttribute>                productNetworkAttributes                = new ArrayList<>();
     private List<ProductNetworkAuthorization>            productNetworkAuthorizations            = new ArrayList<>();
 
@@ -389,27 +385,11 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
-     * @return the productLocationAttributeAuthorizations
-     */
-    @Override
-    public List<ProductLocationAttributeAuthorization> getProductLocationAttributeAuthorizations() {
-        return productLocationAttributeAuthorizations;
-    }
-
-    /**
      * @return the productLocationAttributes
      */
     @Override
     public List<ProductLocationAttribute> getProductLocationAttributes() {
         return productLocationAttributes;
-    }
-
-    /**
-     * @return the productLocationNetworks
-     */
-    @Override
-    public List<ProductLocationNetwork> getProductLocationNetworks() {
-        return productLocationNetworks;
     }
 
     /**
@@ -919,30 +899,12 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
-     * @param productLocationAttributeAuthorizations
-     *            the productLocationAttributeAuthorizations to set
-     */
-    @Override
-    public void setProductLocationAttributeAuthorizations(List<ProductLocationAttributeAuthorization> productLocationAttributeAuthorizations) {
-        this.productLocationAttributeAuthorizations = productLocationAttributeAuthorizations;
-    }
-
-    /**
      * @param productLocationAttributes
      *            the productLocationAttributes to set
      */
     @Override
     public void setProductLocationAttributes(List<ProductLocationAttribute> productLocationAttributes) {
         this.productLocationAttributes = productLocationAttributes;
-    }
-
-    /**
-     * @param productLocationNetworks
-     *            the productLocationNetworks to set
-     */
-    @Override
-    public void setProductLocationNetworks(List<ProductLocationNetwork> productLocationNetworks) {
-        this.productLocationNetworks = productLocationNetworks;
     }
 
     /**

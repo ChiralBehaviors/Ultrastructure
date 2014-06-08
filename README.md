@@ -50,6 +50,10 @@ The default build does do any DB activity, nor tests.  To run tests, you need 
 
     $ mvn -P database.active clean install
 
+If you want to rebuild the database and skip all the tests:
+
+    $ mvn clean install -Ddrop -P database.active -Dtest=foo -DfailIfNoTests=false
+    
 Now you can work directly with the database:
 
     $ cd schema

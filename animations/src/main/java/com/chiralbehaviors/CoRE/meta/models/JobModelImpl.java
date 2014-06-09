@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -915,6 +916,24 @@ public class JobModelImpl implements JobModel {
             }
             return Collections.emptyList();
         }
+    }
+    
+    @Override
+    public List<Job> getAllChildren(Job job) {
+        List<Job> jobs = getActiveSubJobsOf(job);
+        if (jobs == null || jobs.size() == 0) {
+            return null;
+        }
+        
+        List<Job> children = new LinkedList<>();
+        for (Job j : jobs) {
+            List<Job> temp = getAllChildren(j);
+            if (temp != null && temp.size() > 0) {
+                children.addAll(temp);
+            }
+        }
+        children.addAll(jobs);
+        return children;
     }
 
     @Override

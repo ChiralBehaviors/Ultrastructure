@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -188,9 +189,9 @@ public class AgencyModelImpl
     }
 
     @Override
-    public List<AgencyNetwork> getInterconnections(List<Agency> parents,
-                                                   List<Relationship> relationships,
-                                                   List<Agency> children) {
+    public List<AgencyNetwork> getInterconnections(Collection<Agency> parents,
+                                                   Collection<Relationship> relationships,
+                                                   Collection<Agency> children) {
         if (parents == null || parents.size() == 0 || relationships == null
             || relationships.size() == 0 || children == null
             || children.size() == 0) {

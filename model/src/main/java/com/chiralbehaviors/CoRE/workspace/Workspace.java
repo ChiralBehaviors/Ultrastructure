@@ -15,6 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.workspace;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -80,7 +81,7 @@ import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
  */
 public interface Workspace {
 
-    List<Agency> getAgencies();
+    Collection<Agency> getAgencies();
 
     List<AgencyAttributeAuthorization> getAgencyAttributeAuthorizations();
 
@@ -100,7 +101,7 @@ public interface Workspace {
 
     List<AttributeNetwork> getAttributeNetworks();
 
-    List<Attribute> getAttributes();
+    Collection<Attribute> getAttributes();
 
     List<JobAttribute> getJobAttributes();
 
@@ -122,7 +123,7 @@ public interface Workspace {
 
     List<LocationRelationship> getLocationRelationships();
 
-    List<Location> getLocations();
+    Collection<Location> getLocations();
 
     List<MetaProtocol> getMetaProtocols();
 
@@ -152,7 +153,7 @@ public interface Workspace {
 
     List<ProductRelationshipAccessAuthorization> getProductRelationshipAccessAuthorizations();
 
-    List<Product> getProducts();
+    Collection<Product> getProducts();
 
     List<ProductSiblingSequencingAuthorization> getProductSiblingSequencingAuthorizations();
 
@@ -170,7 +171,7 @@ public interface Workspace {
 
     List<RelationshipNetwork> getRelationshipNetworks();
 
-    List<Relationship> getRelationships();
+    Collection<Relationship> getRelationships();
 
     List<StatusCodeAttributeAuthorization> getStatusCodeAttributeAuthorizations();
 
@@ -178,7 +179,7 @@ public interface Workspace {
 
     List<StatusCodeNetwork> getStatusCodeNetworks();
 
-    List<StatusCode> getStatusCodes();
+    Collection<StatusCode> getStatusCodes();
 
     List<StatusCodeSequencing> getStatusCodeSequencings();
 
@@ -188,7 +189,7 @@ public interface Workspace {
 
     List<UnitNetwork> getUnitNetworks();
 
-    List<Unit> getUnits();
+    Collection<Unit> getUnits();
 
     List<UnitValue> getUnitValues();
 

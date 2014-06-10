@@ -470,4 +470,11 @@ public interface JobModel {
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
 
+    /**
+     * Get all direct and indirect child jobs of this job, regardless of status
+     * @param job
+     * @return
+     */
+    List<Job> getAllChildren(Job job);
+
 }

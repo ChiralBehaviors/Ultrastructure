@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -197,9 +198,9 @@ public class CoordinateModelImpl
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
      */
     @Override
-    public List<CoordinateNetwork> getInterconnections(List<Coordinate> parents,
-                                                       List<Relationship> relationships,
-                                                       List<Coordinate> children) {
+    public List<CoordinateNetwork> getInterconnections(Collection<Coordinate> parents,
+                                                       Collection<Relationship> relationships,
+                                                       Collection<Coordinate> children) {
         // TODO Auto-generated method stub
         return null;
     }

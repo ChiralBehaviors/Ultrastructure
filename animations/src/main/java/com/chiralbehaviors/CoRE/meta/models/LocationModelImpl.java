@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -187,9 +188,9 @@ public class LocationModelImpl
     }
 
     @Override
-    public List<LocationNetwork> getInterconnections(List<Location> parents,
-                                                     List<Relationship> relationships,
-                                                     List<Location> children) {
+    public List<LocationNetwork> getInterconnections(Collection<Location> parents,
+                                                     Collection<Relationship> relationships,
+                                                     Collection<Location> children) {
         TypedQuery<LocationNetwork> query = em.createNamedQuery(LocationNetwork.GET_NETWORKS,
                                                                 LocationNetwork.class);
         query.setParameter("parents", parents);

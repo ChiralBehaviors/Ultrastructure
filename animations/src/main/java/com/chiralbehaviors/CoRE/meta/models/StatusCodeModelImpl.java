@@ -197,9 +197,9 @@ public class StatusCodeModelImpl
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
      */
     @Override
-    public List<StatusCodeNetwork> getInterconnections(List<StatusCode> parents,
-                                                       List<Relationship> relationships,
-                                                       List<StatusCode> children) {
+    public List<StatusCodeNetwork> getInterconnections(Collection<StatusCode> parents,
+                                                       Collection<Relationship> relationships,
+                                                       Collection<StatusCode> children) {
         TypedQuery<StatusCodeNetwork> query = em.createNamedQuery(StatusCodeNetwork.GET_NETWORKS,
                                                                   StatusCodeNetwork.class);
         query.setParameter("parents", parents);

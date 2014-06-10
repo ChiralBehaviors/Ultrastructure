@@ -78,11 +78,11 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     public void addAgencies(Product parent, Relationship rel,
-                            List<Agency> children) {
-        if (children == null) {
+                            Collection<Agency> collection) {
+        if (collection == null) {
             return;
         }
-        for (Agency c : children) {
+        for (Agency c : collection) {
             if (c.getId() == null
                 || em.find(Agency.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
@@ -117,7 +117,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     public void addAttributes(Product parent, Relationship rel,
-                              List<Attribute> children) {
+                              Collection<Attribute> children) {
         if (children == null) {
             return;
         }
@@ -147,7 +147,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     public void addLocations(Product parent, Relationship rel,
-                             List<Location> children) {
+                             Collection<Location> children) {
         if (children == null) {
             return;
         }
@@ -177,11 +177,11 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     public void addProducts(Product parent, Relationship rel,
-                            List<Product> products) {
-        if (products == null) {
+                            Collection<Product> children) {
+        if (children == null) {
             return;
         }
-        for (Product p : products) {
+        for (Product p : children) {
             if (p.getId() == null
                 || em.find(Product.class, p.getPrimaryKey()) == null) {
                 em.persist(p);
@@ -206,7 +206,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     public void addRelationships(Product parent, Relationship rel,
-                                 List<Relationship> children) {
+                                 Collection<Relationship> children) {
         if (children == null) {
             return;
         }
@@ -236,7 +236,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     public void addStatusCodes(Product parent, Relationship rel,
-                               List<StatusCode> children) {
+                               Collection<StatusCode> children) {
         if (children == null) {
             return;
         }
@@ -266,7 +266,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
     }
 
-    public void addUnits(Product parent, Relationship rel, List<Unit> children) {
+    public void addUnits(Product parent, Relationship rel,
+                         Collection<Unit> children) {
         if (children == null) {
             return;
         }

@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -215,9 +216,9 @@ public class ProductModelImpl
     }
 
     @Override
-    public List<ProductNetwork> getInterconnections(List<Product> parents,
-                                                    List<Relationship> relationships,
-                                                    List<Product> children) {
+    public List<ProductNetwork> getInterconnections(Collection<Product> parents,
+                                                    Collection<Relationship> relationships,
+                                                    Collection<Product> children) {
         if (parents == null || parents.size() == 0 || relationships == null
             || relationships.size() == 0 || children == null
             || children.size() == 0) {

@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -210,9 +211,9 @@ public class RelationshipModelImpl
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
      */
     @Override
-    public List<RelationshipNetwork> getInterconnections(List<Relationship> parents,
-                                                         List<Relationship> relationships,
-                                                         List<Relationship> children) {
+    public List<RelationshipNetwork> getInterconnections(Collection<Relationship> parents,
+                                                         Collection<Relationship> relationships,
+                                                         Collection<Relationship> children) {
         if (parents == null || parents.size() == 0 || relationships == null
             || relationships.size() == 0 || children == null
             || children.size() == 0) {

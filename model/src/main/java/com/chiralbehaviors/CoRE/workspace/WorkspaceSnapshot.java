@@ -17,6 +17,7 @@ package com.chiralbehaviors.CoRE.workspace;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,15 +96,15 @@ public class WorkspaceSnapshot implements Workspace {
 
     private Product                                      workspaceProduct;
     private Relationship                                 workspaceRelationship;
-    private List<Agency>                                 agencies                                = new ArrayList<>();
+    private Map<String, Agency>                          agencies                                = new HashMap<>();
     private List<AgencyAttribute>                        agencyAttributes                        = new ArrayList<>();
     private List<AgencyLocationAccessAuthorization>      agencyLocationAccessAuthorizations      = new ArrayList<>();
     private List<AgencyProductAccessAuthorization>       agencyProductAccessAuthorizations       = new ArrayList<>();
     private List<AgencyAttributeAuthorization>           agencyAttributeAuthorizations           = new ArrayList<>();
     private List<AgencyNetwork>                          agencyNetworks                          = new ArrayList<>();
     private List<AgencyNetworkAuthorization>             agencyNetworkAuthorizations             = new ArrayList<>();
-    private List<Attribute>                              attributes                              = new ArrayList<>();
-    private List<Unit>                                   units                                   = new ArrayList<>();
+    private Map<String, Attribute>                       attributes                              = new HashMap<>();
+    private Map<String, Unit>                            units                                   = new HashMap<>();
     private List<UnitNetwork>                            unitNetworks                            = new ArrayList<>();
     private List<UnitAttribute>                          unitAttributes                          = new ArrayList<>();
     private List<UnitAttributeAuthorization>             unitAttributeAuthorizations             = new ArrayList<>();
@@ -111,7 +112,7 @@ public class WorkspaceSnapshot implements Workspace {
     private List<AttributeMetaAttribute>                 attributeMetaAttributes                 = new ArrayList<>();
     private List<AttributeMetaAttributeAuthorization>    attributeMetaAttributeAuthorizations    = new ArrayList<>();
     private List<AttributeNetwork>                       attributeNetworks                       = new ArrayList<>();
-    private List<StatusCode>                             statusCodes                             = new ArrayList<>();
+    private Map<String, StatusCode>                      statusCodes                             = new HashMap<>();
     private List<StatusCodeNetwork>                      statusCodeNetworks                      = new ArrayList<>();
     private List<StatusCodeSequencing>                   statusCodeSequencings                   = new ArrayList<>();
     private List<StatusCodeAttribute>                    statusCodeAttributes                    = new ArrayList<>();
@@ -125,7 +126,7 @@ public class WorkspaceSnapshot implements Workspace {
     private List<ProductSiblingSequencingAuthorization>  productSiblingSequencingAuthorizations  = new ArrayList<>();
     private List<Protocol>                               protocols                               = new ArrayList<>();
     private List<ProtocolAttribute>                      protocolAttributes                      = new ArrayList<>();
-    private List<Location>                               locations                               = new ArrayList<>();
+    private Map<String, Location>                        locations                               = new HashMap<>();
     private List<LocationNetwork>                        locationNetworks                        = new ArrayList<>();
     private List<LocationAgencyAccessAuthorization>      locationAgencyAccessAuthorizations      = new ArrayList<>();
     private List<LocationProductAccessAuthorization>     locationProductAccessAuthorizations     = new ArrayList<>();
@@ -133,11 +134,11 @@ public class WorkspaceSnapshot implements Workspace {
     private List<LocationAttributeAuthorization>         locationAttributeAuthorizations         = new ArrayList<>();
     private List<LocationNetworkAuthorization>           locationNetworkAuthorizations           = new ArrayList<>();
     private List<LocationRelationship>                   locationRelationships                   = new ArrayList<>();
-    private List<Relationship>                           relationships                           = new ArrayList<>();
+    private Map<String, Relationship>                    relationships                           = new HashMap<>();
     private List<RelationshipAttribute>                  relationshipAttributes                  = new ArrayList<>();
     private List<RelationshipAttributeAuthorization>     relationshipAttributeAuthorizations     = new ArrayList<>();
     private List<RelationshipNetwork>                    relationshipNetworks                    = new ArrayList<>();
-    private List<Product>                                products                                = new ArrayList<>();
+    private Map<String, Product>                         products                                = new HashMap<>();
     private List<ProductNetwork>                         productNetworks                         = new ArrayList<>();
     private List<ProductAgencyAccessAuthorization>       productAgencyAccessAuthorizations       = new ArrayList<>();
     private List<ProductAttributeAccessAuthorization>    productAttributeAccessAuthorizations    = new ArrayList<>();
@@ -156,8 +157,8 @@ public class WorkspaceSnapshot implements Workspace {
      * @return the agencies
      */
     @Override
-    public List<Agency> getAgencies() {
-        return agencies;
+    public Collection<Agency> getAgencies() {
+        return agencies.values();
     }
 
     /**
@@ -236,8 +237,8 @@ public class WorkspaceSnapshot implements Workspace {
      * @return the attributes
      */
     @Override
-    public List<Attribute> getAttributes() {
-        return attributes;
+    public Collection<Attribute> getAttributes() {
+        return attributes.values();
     }
 
     /**
@@ -324,8 +325,8 @@ public class WorkspaceSnapshot implements Workspace {
      * @return the locations
      */
     @Override
-    public List<Location> getLocations() {
-        return locations;
+    public Collection<Location> getLocations() {
+        return locations.values();
     }
 
     /**
@@ -444,8 +445,8 @@ public class WorkspaceSnapshot implements Workspace {
      * @return the products
      */
     @Override
-    public List<Product> getProducts() {
-        return products;
+    public Collection<Product> getProducts() {
+        return products.values();
     }
 
     /**
@@ -516,8 +517,8 @@ public class WorkspaceSnapshot implements Workspace {
      * @return the relationships
      */
     @Override
-    public List<Relationship> getRelationships() {
-        return relationships;
+    public Collection<Relationship> getRelationships() {
+        return relationships.values();
     }
 
     /**
@@ -548,8 +549,8 @@ public class WorkspaceSnapshot implements Workspace {
      * @return the statusCodes
      */
     @Override
-    public List<StatusCode> getStatusCodes() {
-        return statusCodes;
+    public Collection<StatusCode> getStatusCodes() {
+        return statusCodes.values();
     }
 
     /**
@@ -588,8 +589,8 @@ public class WorkspaceSnapshot implements Workspace {
      * @return the units
      */
     @Override
-    public List<Unit> getUnits() {
-        return units;
+    public Collection<Unit> getUnits() {
+        return units.values();
     }
 
     /**
@@ -643,7 +644,9 @@ public class WorkspaceSnapshot implements Workspace {
      */
     @Override
     public void setAgencies(List<Agency> agencies) {
-        this.agencies = agencies;
+        for (Agency a : agencies) {
+            this.agencies.put(a.getName(), a);
+        }
     }
 
     /**
@@ -733,7 +736,9 @@ public class WorkspaceSnapshot implements Workspace {
      */
     @Override
     public void setAttributes(List<Attribute> attributes) {
-        this.attributes = attributes;
+        for (Attribute a : attributes) {
+            this.attributes.put(a.getName(), a);
+        }
     }
 
     /**
@@ -832,7 +837,9 @@ public class WorkspaceSnapshot implements Workspace {
      */
     @Override
     public void setLocations(List<Location> locations) {
-        this.locations = locations;
+        for (Location a : locations) {
+            this.locations.put(a.getName(), a);
+        }
     }
 
     /**
@@ -967,7 +974,9 @@ public class WorkspaceSnapshot implements Workspace {
      */
     @Override
     public void setProducts(List<Product> products) {
-        this.products = products;
+        for (Product a : products) {
+            this.products.put(a.getName(), a);
+        }
     }
 
     /**
@@ -1048,7 +1057,9 @@ public class WorkspaceSnapshot implements Workspace {
      */
     @Override
     public void setRelationships(List<Relationship> relationships) {
-        this.relationships = relationships;
+        for (Relationship a : relationships) {
+            this.relationships.put(a.getName(), a);
+        }
     }
 
     /**
@@ -1084,7 +1095,9 @@ public class WorkspaceSnapshot implements Workspace {
      */
     @Override
     public void setStatusCodes(List<StatusCode> statusCodes) {
-        this.statusCodes = statusCodes;
+        for (StatusCode a : statusCodes) {
+            this.statusCodes.put(a.getName(), a);
+        }
     }
 
     /**
@@ -1129,7 +1142,9 @@ public class WorkspaceSnapshot implements Workspace {
      */
     @Override
     public void setUnits(List<Unit> units) {
-        this.units = units;
+        for (Unit a : units) {
+            this.units.put(a.getName(), a);
+        }
     }
 
     /**
@@ -1157,6 +1172,34 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public void setWorkspaceRelationship(Relationship workspaceRelationship) {
         this.workspaceRelationship = workspaceRelationship;
+    }
+
+    public Agency getAgency(String name) {
+        return agencies.get(name);
+    }
+
+    public Attribute getAttribute(String name) {
+        return attributes.get(name);
+    }
+
+    public Location getLocation(String name) {
+        return locations.get(name);
+    }
+
+    public Product getProduct(String name) {
+        return products.get(name);
+    }
+
+    public Relationship getRelationship(String name) {
+        return relationships.get(name);
+    }
+
+    public StatusCode getStatusCode(String name) {
+        return statusCodes.get(name);
+    }
+
+    public Unit getUnit(String name) {
+        return units.get(name);
     }
 
     private void mergeEntity(EntityManager em, Map<Ruleform, Ruleform> merged,

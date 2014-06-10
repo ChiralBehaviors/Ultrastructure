@@ -43,7 +43,9 @@
     <include
         relativeToChangelogFile="true"
         file="views/product_attribute.xml" />
-
+    <include
+        relativeToChangelogFile="true"
+        file="views/agency_location.xml" />
     <include
         relativeToChangelogFile="true"
         file="views/product_location.xml" />

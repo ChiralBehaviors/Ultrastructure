@@ -66,4 +66,6 @@
     <include relativeToChangelogFile="true" file="tables/unit_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/access_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_location.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_location_attribute.xml" />
 </databaseChangeLog>

@@ -83,5 +83,7 @@
         <class>com.chiralbehaviors.CoRE.time.Interval</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalAttribute</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
     </persistence-unit>
 </persistence>

@@ -15,6 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
+import static com.chiralbehaviors.CoRE.event.JobChronology.*;
+
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
@@ -27,6 +29,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -39,9 +43,18 @@ import com.chiralbehaviors.CoRE.product.Product;
  * The persistent class for the job_chronology database table.
  * 
  */
+@NamedQueries({
+               @NamedQuery(name = FIND_ALL, query = "select j from JobChronology j"),
+               @NamedQuery(name = FIND_FOR_JOB, query = "select j from JobChronology j "
+                                                        + "where j.job = :job "),
+               @NamedQuery(name = FIND_FOR_PRODUCT, query = "select j from JobChronology j "
+                                                            + "where j.product = :product ") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends Ruleform {
+    public static final String FIND_ALL = "jobChronology" + FIND_ALL_SUFFIX;
+    public static final String FIND_FOR_JOB = "jobChronology.findForJob";
+    public static final String FIND_FOR_PRODUCT = "jobChronology.findForProduct";
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Job

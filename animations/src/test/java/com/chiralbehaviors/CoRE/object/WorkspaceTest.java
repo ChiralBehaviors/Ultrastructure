@@ -16,24 +16,19 @@
 package com.chiralbehaviors.CoRE.object;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.kernel.Bootstrap;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
@@ -41,7 +36,6 @@ import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hparry
@@ -56,83 +50,6 @@ public class WorkspaceTest extends DatabaseTest {
         Bootstrap bt = new Bootstrap(connection);
         bt.bootstrap();
         kernel = new KernelImpl(em);
-    }
-
-    @Test
-    public void testLoadWorkspace() {
-        Product workspace = kernel.getWorkspace();
-        Relationship workspaceOf = kernel.getWorkspaceOf();
-        Model model = new ModelImpl(em);
-        Agency core = kernel.getCore();
-        Product p1 = new Product("MyProduct", core);
-        em.persist(p1);
-        model.getProductModel().link(workspace, workspaceOf, p1, core);
-        ProductAgencyAccessAuthorization coreAuth = new ProductAgencyAccessAuthorization(
-                                                                                         workspace,
-                                                                                         workspaceOf,
-                                                                                         core,
-                                                                                         core);
-        ProductLocationAccessAuthorization locAuth = new ProductLocationAccessAuthorization(
-                                                                                            workspace,
-                                                                                            workspaceOf,
-                                                                                            kernel.getAnyLocation(),
-                                                                                            core);
-        em.persist(coreAuth);
-        em.persist(locAuth);
-        em.flush();
-
-        Workspace w = new WorkspaceLoader(workspace, workspaceOf,
-                                          new ModelImpl(em)).getWorkspace();
-        assertEquals(1, w.getProducts().size());
-        assertTrue(w.getProducts().contains(p1));
-    }
-
-    @Test
-    public void testJavaReferences() {
-        em.clear();
-        //create ws with agencies, agency networks. See what happens
-        Product workspace = new Product("Workspace", "workspace",
-                                        kernel.getCoreAnimationSoftware());
-        Relationship workspaceOf = new Relationship(
-                                                    "workspace of",
-                                                    null,
-                                                    kernel.getCoreAnimationSoftware());
-        Relationship hasWorkspace = new Relationship("has workspace", null,
-                                                     kernel.getCore());
-        workspaceOf.setInverse(hasWorkspace);
-        hasWorkspace.setInverse(workspaceOf);
-        Agency a = new Agency("A", null, kernel.getCore());
-        Agency b = new Agency("B", null, kernel.getCore());
-        List<Agency> agencies = new LinkedList<>();
-        agencies.add(a);
-        agencies.add(b);
-        Relationship r1 = new Relationship("r1", null, kernel.getCore());
-        Relationship r2 = new Relationship("r2", null, kernel.getCore());
-        r1.setInverse(r2);
-        r2.setInverse(r1);
-        List<Relationship> rels = new LinkedList<>();
-        rels.add(r1);
-        rels.add(r2);
-        AgencyNetwork net = new AgencyNetwork(a, r1, b, kernel.getCore());
-        AgencyNetwork net2 = new AgencyNetwork(b, r2, a, kernel.getCore());
-        List<AgencyNetwork> nets = new LinkedList<>();
-        nets.add(net);
-        nets.add(net2);
-
-        Workspace w = new WorkspaceSnapshot();
-        w.setWorkspaceProduct(workspace);
-        w.setWorkspaceRelationship(workspaceOf);
-        w.setAgencies(agencies);
-        w.setRelationships(rels);
-        w.setAgencyNetworks(nets);
-        em.clear();
-        em.flush();
-        Model model = new ModelImpl(em);
-        Aspect<Product> aspect = model.getWorkspaceModel().importWorkspace(w);
-
-        em.flush();
-        assertNotNull(aspect.getClassifier().getId());
-
     }
 
     @Test
@@ -166,6 +83,36 @@ public class WorkspaceTest extends DatabaseTest {
                                                                                      kernel.getCore());
         em.persist(auth);
         em.flush();
+    }
+
+
+    @Test
+    public void testLoadWorkspace() {
+        Product workspace = kernel.getWorkspace();
+        Relationship workspaceOf = kernel.getWorkspaceOf();
+        Model model = new ModelImpl(em);
+        Agency core = kernel.getCore();
+        Product p1 = new Product("MyProduct", core);
+        em.persist(p1);
+        model.getProductModel().link(workspace, workspaceOf, p1, core);
+        ProductAgencyAccessAuthorization coreAuth = new ProductAgencyAccessAuthorization(
+                                                                                         workspace,
+                                                                                         workspaceOf,
+                                                                                         core,
+                                                                                         core);
+        ProductLocationAccessAuthorization locAuth = new ProductLocationAccessAuthorization(
+                                                                                            workspace,
+                                                                                            workspaceOf,
+                                                                                            kernel.getAnyLocation(),
+                                                                                            core);
+        em.persist(coreAuth);
+        em.persist(locAuth);
+        em.flush();
+
+        Workspace w = new WorkspaceLoader(workspace, workspaceOf,
+                                          new ModelImpl(em)).getWorkspace();
+        assertEquals(1, w.getProducts().size());
+        assertTrue(w.getProducts().contains(p1));
     }
 
 }

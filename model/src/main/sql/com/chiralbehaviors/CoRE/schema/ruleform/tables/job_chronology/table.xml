@@ -46,7 +46,7 @@
     <changeSet author="hhildebrand" id="1390879803225-164">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="job" baseTableName="job_chronology" constraintName="job_chronology_job_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="job" />
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="job" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-163">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

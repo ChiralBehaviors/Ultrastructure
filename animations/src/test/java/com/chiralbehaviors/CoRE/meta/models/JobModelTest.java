@@ -151,18 +151,6 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(7, jobs.size());
     }
 
-    private void clearJobs() throws SQLException {
-        Connection connection = em.unwrap(Connection.class);
-        boolean prev = connection.getAutoCommit();
-        connection.setAutoCommit(false);
-        alterTriggers(false);
-        String query = "DELETE FROM ruleform.job";
-        connection.createStatement().execute(query);
-        alterTriggers(true);
-        connection.commit();
-        connection.setAutoCommit(prev);
-    }
-
     @Test
     public void testIsTerminalState() throws Exception {
         em.getTransaction().begin();
@@ -413,6 +401,18 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.deliver);
         Job deliver = query.getSingleResult();
         assertEquals(scenario.completed, deliver.getStatus());
+    }
+
+    private void clearJobs() throws SQLException {
+        Connection connection = em.unwrap(Connection.class);
+        boolean prev = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        alterTriggers(false);
+        String query = "DELETE FROM ruleform.job";
+        connection.createStatement().execute(query);
+        alterTriggers(true);
+        connection.commit();
+        connection.setAutoCommit(prev);
     }
 
     private List<Job> findAllJobs() {

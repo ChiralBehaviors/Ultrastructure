@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -32,6 +33,7 @@ import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
@@ -122,6 +124,19 @@ public interface JobModel {
                                                                   throws SQLException;
 
     /**
+     * Returns a map of all protocols that match job.service and a list of field
+     * names specifying which fields on the protocol prevent the protocol from
+     * being matched. An empty list means the protocol would be matched if a job
+     * were inserted.
+     * 
+     * This method does not take metaprotocols into account.
+     * 
+     * @param job
+     * @return
+     */
+    Map<Protocol, List<String>> findProtocolGaps(Job job);
+
+    /**
      * For a given job, generates all the implicit jobs that need to be done
      * 
      * This is the jesus nut of the the event cluster animation.
@@ -187,6 +202,14 @@ public interface JobModel {
     Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
 
     /**
+     * Get all direct and indirect child jobs of this job, regardless of status
+     * 
+     * @param job
+     * @return
+     */
+    List<Job> getAllChildren(Job job);
+
+    /**
      * @param job
      * @return
      */
@@ -207,6 +230,16 @@ public interface JobModel {
      * @return
      */
     List<ProductChildSequencingAuthorization> getChildActions(Product node);
+
+    /**
+     * Gets all immediate children of the parent job having the specified
+     * service. Does not differentiate between unset, active, or terminated jobs
+     * 
+     * @param parent
+     * @param service
+     * @return
+     */
+    List<Job> getChildJobsByService(Job parent, Product service);
 
     /**
      * Returns an ordered list of all JobChronology rules for the given job.
@@ -340,6 +373,12 @@ public interface JobModel {
     List<ProductSiblingSequencingAuthorization> getSiblingActions(Product node);
 
     /**
+     * @param service
+     * @return
+     */
+    List<StatusCodeSequencing> getStatusCodeSequencingsFor(Product service);
+
+    /**
      * Answer the collection of status codes for a service
      * 
      * @param service
@@ -469,12 +508,5 @@ public interface JobModel {
      * @throws SQLException
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
-
-    /**
-     * Get all direct and indirect child jobs of this job, regardless of status
-     * @param job
-     * @return
-     */
-    List<Job> getAllChildren(Job job);
 
 }

@@ -49,10 +49,6 @@ public class AbstractModelTest {
     protected static Kernel        kernel;
     protected static EntityManager em;
 
-    public AbstractModelTest() {
-        super();
-    }
-
     @BeforeClass
     public static void initializeDatabase() throws IOException, SQLException {
         em = getEntityManager();
@@ -74,6 +70,10 @@ public class AbstractModelTest {
                                                                           properties);
         EntityManager em = emf.createEntityManager();
         return em;
+    }
+
+    public AbstractModelTest() {
+        super();
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {

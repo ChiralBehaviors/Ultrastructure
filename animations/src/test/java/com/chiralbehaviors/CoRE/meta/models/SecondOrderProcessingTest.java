@@ -15,6 +15,9 @@
  */
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -22,9 +25,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
-
-import static org.junit.Assert.*;
 
 /**
  * @author hparry
@@ -50,79 +52,63 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         w.createLocationNetworks();
         w.createProductNetworks();
         w.createStatusCodeSequencing();
-        em.getTransaction().commit();
-
-    }
-
-    @Test
-    public void testCreateWorkflow() {
-        em.getTransaction().begin();
         createProtocols();
         createMetaProtocols();
-        //        Agency assignTo, Agency requester, Product service,
-        //        Product product, Location deliverTo, Location deliverFrom,
-        //        Agency updatedBy
-        Job job = new Job(w.georgeTownUniversity, w.georgeTownUniversity, w.deliver,
-                          w.abc486, w.rsb225, w.factory1, w.core);
-        job.setStatus(w.unset);
-        em.persist(job);
-        
+        createSequencingAuthorizations();
         em.getTransaction().commit();
-        List<Job> jobs = model.getJobModel().getAllChildren(job);
-        assertEquals(5, jobs.size());
+
     }
 
     /**
      * 
      */
-    private void createMetaProtocols() {
+    private static void createMetaProtocols() {
         //        Product service, int sequenceNumber,
         //        Relationship productOrdered,
         //        Relationship requestingAgency,
         //        Relationship serviceType, Relationship deliverTo,
         //        Relationship deliverFrom, Agency updatedBy
-        
+
         //create pick and ship jobs
         MetaProtocol mp1 = new MetaProtocol(w.deliver, 1, w.anyRelationship,
                                             w.anyRelationship,
-                                            w.anyRelationship, w.anyRelationship, w.anyRelationship,
-                                            w.core);
+                                            w.anyRelationship,
+                                            w.anyRelationship,
+                                            w.anyRelationship, w.core);
         em.persist(mp1);
-        
+
         //if in US, check credit, if EU, check LOC
         MetaProtocol mp2 = new MetaProtocol(w.pick, 2, w.sameRelationship,
-                                            w.customerType,
-                                            w.anyRelationship, w.area, w.area,
-                                            w.core);
+                                            w.customerType, w.anyRelationship,
+                                            w.area, w.area, w.core);
         em.persist(mp2);
-        
+
         //print purchase order and customs declaration, if applicable
         MetaProtocol mp3 = new MetaProtocol(w.ship, 3, w.sameRelationship,
-                                            w.customerType,
-                                            w.anyRelationship, w.area, w.area,
-                                            w.core);
+                                            w.customerType, w.anyRelationship,
+                                            w.area, w.area, w.core);
         em.persist(mp3);
 
         //generate fee for georgetown
-        MetaProtocol mp4 = new MetaProtocol(w.printPurchaseOrder, 4, w.sameRelationship,
+        MetaProtocol mp4 = new MetaProtocol(w.printPurchaseOrder, 4,
+                                            w.sameRelationship,
                                             w.sameRelationship,
                                             w.anyRelationship, w.city, w.area,
                                             w.core);
         mp4.setStopOnMatch(true);
         em.persist(mp4);
-        
+
         //generate fee for everyone else
-        MetaProtocol mp5 = new MetaProtocol(w.printPurchaseOrder, 5, w.sameRelationship,
-                                            w.customerType,
-                                            w.anyRelationship, w.area, w.anyRelationship,
-                                            w.core);
+        MetaProtocol mp5 = new MetaProtocol(w.printPurchaseOrder, 5,
+                                            w.sameRelationship, w.customerType,
+                                            w.anyRelationship, w.area,
+                                            w.anyRelationship, w.core);
         em.persist(mp5);
-        
+
         //create sales tax
         MetaProtocol mp6 = new MetaProtocol(w.fee, 6, w.anyRelationship,
-                                            w.customerType,
-                                            w.anyRelationship, w.region, w.anyRelationship,
-                                            w.core);
+                                            w.customerType, w.anyRelationship,
+                                            w.region, w.anyRelationship, w.core);
         em.persist(mp6);
 
     }
@@ -130,7 +116,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     /**
      * 
      */
-    private void createProtocols() {
+    private static void createProtocols() {
         //        Product requestedService, Agency requester,
         //        Product requestedProduct, Location deliverTo,
         //        Location deliverFrom, Agency assignTo, Product service,
@@ -155,12 +141,12 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(checkLetterOfCreditProtocol);
 
         Protocol printPurchaseOrder = new Protocol(w.ship, w.externalCust,
-                                                 w.abc486, w.anyLocation, w.anyLocation,
-                                                 w.creditDept,
-                                                 w.printPurchaseOrder,
-                                                 w.anyProduct, w.core);
+                                                   w.abc486, w.anyLocation,
+                                                   w.anyLocation, w.creditDept,
+                                                   w.printPurchaseOrder,
+                                                   w.anyProduct, w.core);
         em.persist(printPurchaseOrder);
-        
+
         Protocol printCustomsDecl = new Protocol(w.ship, w.externalCust,
                                                  w.abc486, w.euro, w.us,
                                                  w.creditDept,
@@ -180,8 +166,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
                                              w.ship, w.anyProduct, w.core);
         em.persist(shipProtocol);
 
-        Protocol feeProtocol = new Protocol(w.printPurchaseOrder, w.externalCust,
-                                            w.abc486, w.anyLocation, w.us,
+        Protocol feeProtocol = new Protocol(w.printPurchaseOrder,
+                                            w.externalCust, w.abc486,
+                                            w.anyLocation, w.us,
                                             w.billingComputer, w.fee,
                                             w.anyProduct, w.core);
         em.persist(feeProtocol);
@@ -207,6 +194,100 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
                                                       w.abc486, w.core);
         em.persist(georgetownFeeProtocol);
 
+    }
+    
+    /**
+     * 
+     */
+    private static void createSequencingAuthorizations() {
+        ProductSiblingSequencingAuthorization pickToShip = new ProductSiblingSequencingAuthorization(
+                                                                                                     w.pick,
+                                                                                                     w.completed,
+                                                                                                     w.ship,
+                                                                                                     w.available,
+                                                                                                     w.core);
+        em.persist(pickToShip);
+    }
+
+    @Test
+    public void testCreateGeorgetownWorkflow() {
+        em.getTransaction().begin();
+        //        Agency assignTo, Agency requester, Product service,
+        //        Product product, Location deliverTo, Location deliverFrom,
+        //        Agency updatedBy
+        Job job = new Job(w.georgeTownUniversity, w.georgeTownUniversity,
+                          w.deliver, w.abc486, w.rsb225, w.factory1, w.core);
+        job.setStatus(w.unset);
+        em.persist(job);
+
+        em.getTransaction().commit();
+        List<Job> jobs = model.getJobModel().getAllChildren(job);
+        assertEquals(5, jobs.size());
+        boolean hasCorrectService = false;
+        for (Job j : jobs) {
+            if (j.getService().equals(w.fee)) {
+                hasCorrectService = true;
+            }
+        }
+        assertTrue("Did not find fee service in US job tree", hasCorrectService);
+    }
+    
+
+    @Test
+    public void testFirstSeqAuth() {
+        em.getTransaction().begin();
+        Job job = new Job(w.georgeTownUniversity, w.georgeTownUniversity,
+                          w.deliver, w.abc486, w.rsb225, w.factory1, w.core);
+        job.setStatus(w.unset);
+        em.persist(job);
+
+        em.getTransaction().commit();
+        
+        em.getTransaction().begin();
+        Job pick = model.getJobModel().getChildJobsByService(job, w.pick).get(0);
+        
+        //delete all child jobs so that we can move pick into a terminal state
+        List<Job> childJobs = model.getJobModel().getAllChildren(pick);
+        for (Job j : childJobs) {
+            em.remove(j);
+        }
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        pick.setStatus(w.available);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        pick.setStatus(w.active);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        pick.setStatus(w.completed);
+        em.getTransaction().commit();
+        
+        Job ship = model.getJobModel().getChildJobsByService(job, w.ship).get(0);
+        assertEquals(w.waitingOnPurchaseOrder, ship.getStatus());
+    }
+
+    @Test
+    public void testShipToEU() {
+        em.getTransaction().begin();
+        //        Agency assignTo, Agency requester, Product service,
+        //        Product product, Location deliverTo, Location deliverFrom,
+        //        Agency updatedBy
+        Job job = new Job(w.factory1Agency, w.cafleurBon, w.deliver, w.abc486,
+                          w.paris, w.factory1, w.core);
+        job.setStatus(w.unset);
+        em.persist(job);
+
+        em.getTransaction().commit();
+        List<Job> jobs = model.getJobModel().getAllChildren(job);
+        assertEquals(5, jobs.size());
+        boolean hasCorrectService = false;
+        for (Job j : jobs) {
+            if (j.getService().equals(w.checkLetterOfCredit)) {
+                hasCorrectService = true;
+            }
+        }
+        assertTrue("Did not find checkLetterOfCredit service in EU job tree",
+                   hasCorrectService);
     }
 
 }

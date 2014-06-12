@@ -69,32 +69,6 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     }
 
     @Test
-    public void testHasNoTerminalSCCs() {
-        Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
-        graph.put(codes[0], asList(codes[1]));
-        graph.put(codes[1], asList(codes[2]));
-        graph.put(codes[2], asList(codes[0], codes[6]));
-        graph.put(codes[3], asList(codes[4]));
-        graph.put(codes[4], asList(codes[5], codes[6]));
-        graph.put(codes[5], asList(codes[3]));
-        graph.put(codes[6], asList(codes[7]));
-        graph.put(codes[7], asList(codes[8]));
-        graph.put(codes[8], asList(codes[6]));
-
-        assertTrue(JobModelImpl.hasScc(graph));
-    }
-
-    @Test
     public void testHasNoSccs() throws Exception {
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
@@ -158,6 +132,32 @@ public class StatusCodeSequencingTest extends DatabaseTest {
         em.flush();
         assertTrue(jobModel.hasScs(service));
         jobModel.validateStateGraph(Arrays.asList(service));
+    }
+
+    @Test
+    public void testHasNoTerminalSCCs() {
+        Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
+        StatusCode[] codes = new StatusCode[] {
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()) };
+        graph.put(codes[0], asList(codes[1]));
+        graph.put(codes[1], asList(codes[2]));
+        graph.put(codes[2], asList(codes[0], codes[6]));
+        graph.put(codes[3], asList(codes[4]));
+        graph.put(codes[4], asList(codes[5], codes[6]));
+        graph.put(codes[5], asList(codes[3]));
+        graph.put(codes[6], asList(codes[7]));
+        graph.put(codes[7], asList(codes[8]));
+        graph.put(codes[8], asList(codes[6]));
+
+        assertTrue(JobModelImpl.hasScc(graph));
     }
 
     @Test

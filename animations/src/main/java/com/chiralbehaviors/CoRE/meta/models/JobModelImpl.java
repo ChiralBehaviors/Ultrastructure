@@ -587,6 +587,20 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public Map<Protocol, List<String>> findProtocolGaps(Job job) {
+
+        TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET_FOR_SERVICE,
+                                                         Protocol.class);
+        query.setParameter("requestedService", job.getService());
+        List<Protocol> protocols = query.getResultList();
+        Map<Protocol, List<String>> gaps = new HashMap<>();
+        for (Protocol p : protocols) {
+            gaps.put(p, findGaps(job, p));
+        }
+        return gaps;
+    }
+
+    @Override
     public List<Job> generateImplicitJobs(Job job) {
         List<Protocol> protocols = getProtocols(job);
         if (log.isTraceEnabled()) {
@@ -691,6 +705,24 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public List<Job> getAllChildren(Job job) {
+        List<Job> jobs = getActiveSubJobsOf(job);
+        if (jobs == null || jobs.size() == 0) {
+            return null;
+        }
+
+        List<Job> children = new LinkedList<>();
+        for (Job j : jobs) {
+            List<Job> temp = getAllChildren(j);
+            if (temp != null && temp.size() > 0) {
+                children.addAll(temp);
+            }
+        }
+        children.addAll(jobs);
+        return children;
+    }
+
+    @Override
     public List<JobAttribute> getAttributesForJob(Job job) {
         return em.createNamedQuery(Job.GET_ATTRIBUTES_FOR_JOB,
                                    JobAttribute.class).getResultList();
@@ -722,6 +754,17 @@ public class JobModelImpl implements JobModel {
         TypedQuery<ProductChildSequencingAuthorization> query = em.createNamedQuery(ProductChildSequencingAuthorization.GET_SEQUENCES,
                                                                                     ProductChildSequencingAuthorization.class);
         query.setParameter("parent", parent);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Job> getChildJobsByService(Job parent, Product service) {
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS_FOR_SERVICE,
+                                                    Job.class);
+
+        query.setParameter("parent", parent);
+        query.setParameter("service", service);
+
         return query.getResultList();
     }
 
@@ -917,24 +960,6 @@ public class JobModelImpl implements JobModel {
             return Collections.emptyList();
         }
     }
-    
-    @Override
-    public List<Job> getAllChildren(Job job) {
-        List<Job> jobs = getActiveSubJobsOf(job);
-        if (jobs == null || jobs.size() == 0) {
-            return null;
-        }
-        
-        List<Job> children = new LinkedList<>();
-        for (Job j : jobs) {
-            List<Job> temp = getAllChildren(j);
-            if (temp != null && temp.size() > 0) {
-                children.addAll(temp);
-            }
-        }
-        children.addAll(jobs);
-        return children;
-    }
 
     @Override
     public List<Protocol> getProtocols(Product requestedService,
@@ -989,6 +1014,16 @@ public class JobModelImpl implements JobModel {
                                                                                       ProductSiblingSequencingAuthorization.class);
         query.setParameter("parent", parent);
         return query.getResultList();
+    }
+
+    @Override
+    public List<StatusCodeSequencing> getStatusCodeSequencingsFor(Product service) {
+        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING,
+                                                                     StatusCodeSequencing.class);
+        query.setParameter("service", service);
+
+        return query.getResultList();
+
     }
 
     @Override
@@ -1409,6 +1444,29 @@ public class JobModelImpl implements JobModel {
                                                                            throws SQLException {
         ensureValidServiceAndStatus(em.find(Product.class, service),
                                     em.find(StatusCode.class, status));
+    }
+
+    /**
+     * @param job
+     * @param p
+     * @return
+     */
+    private List<String> findGaps(Job job, Protocol p) {
+        List<String> missingFields = new LinkedList<>();
+        if (!job.getRequester().equals(p.getRequester())) {
+            missingFields.add("Requester");
+        }
+        if (!job.getProduct().equals(p.getProduct())) {
+            missingFields.add("Product");
+        }
+        if (!job.getDeliverTo().equals(p.getDeliverTo())) {
+            missingFields.add("DeliverTo");
+        }
+        if (!job.getDeliverFrom().equals(p.getDeliverFrom())) {
+            missingFields.add("DeliverFrom");
+        }
+        return missingFields;
+
     }
 
     /**

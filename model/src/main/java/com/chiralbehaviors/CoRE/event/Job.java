@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ATTRIBUTES_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ATTRIBUTE_VALUE;
+import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
 import static com.chiralbehaviors.CoRE.event.Job.GET_STATUS_CODE_SEQUENCES;
@@ -39,7 +40,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -76,6 +76,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                              + "FROM Job AS j "
                                                                              + "WHERE j.parent = :parent "
                                                                              + "  AND j.status <> :unset"),
+               @NamedQuery(name = GET_CHILD_JOBS_FOR_SERVICE, query = "SELECT j "
+                                                                      + "FROM Job AS j "
+                                                                      + "WHERE j.parent = :parent "
+                                                                      + "  AND j.service = :service"),
                @NamedQuery(name = GET_ATTRIBUTES_FOR_JOB, query = "SELECT ja "
                                                                   + "FROM JobAttribute AS ja "
                                                                   + "WHERE ja.job = :job"),
@@ -192,13 +196,14 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String INITIAL_STATE                     = "job.initialState";
     public static final String STATUS_CODE                       = "job.statusCode";
     public static final String TOP_LEVEL_JOBS                    = "job.topLevelJobs";
+    public static final String GET_CHILD_JOBS_FOR_SERVICE        = "job.getChildJobsForService";
 
     private static final long  serialVersionUID                  = 1L;
 
     /**
      * The agency assigned to this job
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assign_to")
     private Agency             assignTo;
 
@@ -226,35 +231,35 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The location where the product will be delivered from
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_from")
     private Location           deliverFrom;
 
     /**
      * The location to deliver the product of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_to")
     private Location           deliverTo;
 
     /**
      * The parent of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
     private Job                parent;
 
     /**
      * The end product of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product")
     private Product            product;
 
     /**
      * The consumer of this job's product
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester")
     private Agency             requester;
 
@@ -264,7 +269,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     /**
      * The service this job is performing
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service")
     private Product            service;
 

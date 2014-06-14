@@ -347,4 +347,19 @@ public class Protocol extends Ruleform {
     public void setService(Product service) {
         this.service = service;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Protocol [requester=" + requester.getName() + ", assignTo="
+               + assignTo.getName() + ", service=" + service.getName()
+               + ", product=" + product.getName() + ", deliverFrom="
+               + deliverFrom.getName() + ", deliverTo=" + deliverTo.getName()
+               + ", requestedProduct=" + requestedProduct.getName()
+               + ", requestedService=" + requestedService.getName()
+               + ", copyAttributes=" + copyAttributes + ", sequenceNumber="
+               + sequenceNumber + "]";
+    }
 }

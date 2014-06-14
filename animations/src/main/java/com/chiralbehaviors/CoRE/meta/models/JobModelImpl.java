@@ -523,61 +523,73 @@ public class JobModelImpl implements JobModel {
                                        metaprotocol.getService());
 
         if (!metaprotocol.getDeliverFrom().equals(kernel.getNotApplicableRelationship())) {
+            Predicate mask;
             if (metaprotocol.getDeliverFrom().equals(kernel.getSameRelationship())) {
-                predicate = cb.and(predicate,
-                                   cb.equal(protocol.get(Protocol_.deliverFrom),
-                                            job.getDeliverFrom()));
+                mask = cb.equal(protocol.get(Protocol_.deliverFrom),
+                                job.getDeliverFrom());
             } else {
-                predicate = cb.and(predicate,
-                                   cb.or(protocol.get(Protocol_.deliverFrom).in(deliverFrom),
-                                         protocol.get(Protocol_.deliverFrom).in(Arrays.asList(kernel.getAnyLocation(),
-                                                                                              kernel.getSameLocation()))));
+                mask = protocol.get(Protocol_.deliverFrom).in(deliverFrom);
             }
+            predicate = cb.and(predicate,
+                               cb.or(mask,
+                                     cb.equal(protocol.get(Protocol_.deliverFrom),
+                                              kernel.getAnyLocation()),
+                                     cb.equal(protocol.get(Protocol_.deliverFrom),
+                                              kernel.getSameLocation())));
         }
 
         if (!metaprotocol.getDeliverTo().equals(kernel.getNotApplicableRelationship())) {
+            Predicate mask;
             if (metaprotocol.getDeliverTo().equals(kernel.getSameRelationship())) {
-                predicate = cb.and(predicate,
-                                   cb.equal(protocol.get(Protocol_.deliverTo),
-                                            job.getDeliverTo()));
+                mask = cb.equal(protocol.get(Protocol_.deliverTo),
+                                job.getDeliverTo());
             } else {
-                predicate = cb.and(predicate,
-                                   cb.or(protocol.get(Protocol_.deliverTo).in(deliverTo),
-                                         protocol.get(Protocol_.deliverTo).in(Arrays.asList(kernel.getAnyLocation(),
-                                                                                            kernel.getSameLocation()))));
+                mask = protocol.get(Protocol_.deliverTo).in(deliverTo);
             }
+            predicate = cb.and(predicate,
+                               cb.or(mask,
+                                     cb.equal(protocol.get(Protocol_.deliverTo),
+                                              kernel.getAnyLocation()),
+                                     cb.equal(protocol.get(Protocol_.deliverTo),
+                                              kernel.getSameLocation())));
         }
 
         if (!metaprotocol.getProductOrdered().equals(kernel.getNotApplicableRelationship())) {
+            Predicate mask;
             if (metaprotocol.getProductOrdered().equals(kernel.getSameRelationship())) {
-                predicate = cb.and(predicate,
-                                   cb.equal(protocol.get(Protocol_.product),
-                                            job.getProduct()));
+                mask = cb.equal(protocol.get(Protocol_.product),
+                                job.getProduct());
             } else {
-                predicate = cb.and(predicate,
-                                   cb.or(cb.or(protocol.get(Protocol_.product).in(productOrdered),
-                                               protocol.get(Protocol_.product).in(Arrays.asList(kernel.getAnyProduct(),
-                                                                                                kernel.getSameProduct())))));
+                mask = protocol.get(Protocol_.product).in(productOrdered);
             }
+            predicate = cb.and(predicate,
+                               cb.or(mask,
+                                     cb.equal(protocol.get(Protocol_.product),
+                                              kernel.getAnyProduct()),
+                                     cb.equal(protocol.get(Protocol_.product),
+                                              kernel.getSameProduct())));
         }
 
         if (!metaprotocol.getRequestingAgency().equals(kernel.getNotApplicableRelationship())) {
+            Predicate mask;
             if (metaprotocol.getRequestingAgency().equals(kernel.getSameRelationship())) {
-                predicate = cb.and(predicate,
-                                   cb.equal(protocol.get(Protocol_.requester),
-                                            job.getRequester()));
+                mask = cb.equal(protocol.get(Protocol_.requester),
+                                job.getRequester());
             } else {
-                predicate = cb.and(predicate,
-                                   cb.or(cb.or(protocol.get(Protocol_.requester).in(requestingAgency),
-                                               protocol.get(Protocol_.requester).in(Arrays.asList(kernel.getAnyAgency(),
-                                                                                                  kernel.getSameAgency())))));
+                mask = protocol.get(Protocol_.requester).in(requestingAgency);
             }
+            predicate = cb.and(predicate,
+                               cb.or(mask,
+                                     cb.equal(protocol.get(Protocol_.requester),
+                                              kernel.getAnyAgency()),
+                                     cb.equal(protocol.get(Protocol_.requester),
+                                              kernel.getSameAgency())));
         }
 
         query.where(predicate);
         query.select(protocol);
-
         TypedQuery<Protocol> tq = em.createQuery(query);
+        System.out.println(tq.unwrap(org.apache.openjpa.persistence.QueryImpl.class).getQueryString());
         return tq;
     }
 

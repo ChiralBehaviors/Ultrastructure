@@ -592,6 +592,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     private String constructQueryPrefix(RuleForm parent,
                                         ExistentialRuleform<?, ?> child) {
+        if (parent.getClass().equals(child.getClass())) {
+            return parent.getClass().getSimpleName().toLowerCase() + "Network";
+        }
         return parent.getClass().getSimpleName().toLowerCase()
                + child.getClass().getSimpleName() + "AccessAuthorization";
     }
@@ -662,6 +665,13 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                          String queryPrefix) {
         Query query;
 
+        //if parent and child share a class, this is a network query rather than an access auth query
+        if (parent.getClass().equals(child.getClass())) {
+            query = em.createNamedQuery(String.format("%s%s", queryPrefix, ExistentialRuleform.GET_NETWORKS_SUFFIX));
+            query.setParameter("parents", parent);
+            query.setParameter("relationship", authorizingRelationship);
+            query.setParameter("children", child);
+        }
         if (parentRelationship == null && childRelationship == null) {
             query = em.createNamedQuery(queryPrefix
                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX);

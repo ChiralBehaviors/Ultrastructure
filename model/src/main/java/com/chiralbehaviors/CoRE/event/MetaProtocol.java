@@ -251,6 +251,20 @@ public class MetaProtocol extends Ruleform {
         this.stopOnMatch = toInteger(stopOnMatch);
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "MetaProtocol [requestingAgency=" + requestingAgency.getName()
+               + ", service=" + service.getName() + ", serviceType="
+               + serviceType.getName() + ", productOrdered="
+               + productOrdered.getName() + ", deliverFrom="
+               + deliverFrom.getName() + ", deliverTo=" + deliverTo.getName()
+               + ", stopOnMatch=" + stopOnMatch + ", sequenceNumber="
+               + sequenceNumber + "]";
+    }
+
     /*
      * (non-Javadoc)
      * 

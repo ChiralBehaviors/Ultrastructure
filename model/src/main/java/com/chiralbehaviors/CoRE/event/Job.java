@@ -185,6 +185,7 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE   = "job.getActiveSubJobsForService";
     public static final String GET_ATTRIBUTE_VALUE               = "job.getAttributeValue";
     public static final String GET_ATTRIBUTES_FOR_JOB            = "job.getAttributesForJob";
+    public static final String GET_CHILD_JOBS_FOR_SERVICE        = "job.getChildJobsForService";
     public static final String GET_INITIAL_SUB_JOBS              = "job.getInitialSubJobs";
     public static final String GET_NEXT_STATUS_CODES             = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS               = "job.getStatusCodeIds";
@@ -196,7 +197,6 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     public static final String INITIAL_STATE                     = "job.initialState";
     public static final String STATUS_CODE                       = "job.statusCode";
     public static final String TOP_LEVEL_JOBS                    = "job.topLevelJobs";
-    public static final String GET_CHILD_JOBS_FOR_SERVICE        = "job.getChildJobsForService";
 
     private static final long  serialVersionUID                  = 1L;
 
@@ -470,10 +470,11 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     @Override
     public String toString() {
         return "Job [id=" + getId() + ", sequenceNumber=" + sequenceNumber
-               + ", status=" + status + ", parent="
+               + ", status=" + status.getName() + ", parent="
                + (parent == null ? null : parent.getId()) + ", assignTo="
-               + assignTo + ", service=" + service + ", product=" + product
-               + ", deliverFrom=" + deliverFrom + ", deliverTo=" + deliverTo
+               + assignTo.getName() + ", service=" + service.getName()
+               + ", product=" + product.getName() + ", deliverFrom="
+               + deliverFrom.getName() + ", deliverTo=" + deliverTo.getName()
                + "]";
     }
 

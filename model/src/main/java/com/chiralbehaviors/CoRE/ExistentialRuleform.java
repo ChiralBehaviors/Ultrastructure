@@ -170,7 +170,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     @Override
     public String toString() {
-        return String.format("%s [name=%s, id=%s]", getClass().getSimpleName(),
-                             name, getId());
+        return String.format("%s [%s]", getClass().getSimpleName(), name);
     }
 }

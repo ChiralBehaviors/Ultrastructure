@@ -461,137 +461,6 @@ public class JobModelImpl implements JobModel {
         return j;
     }
 
-    /**
-     * This query will do the work of matching protocols to networks defined by
-     * jobs and metaprocols. This is the real deal except it doesn't work in the
-     * db triggers for some stupid reason so we're not using it right now.
-     * 
-     * @param metaprotocol
-     * @param job
-     * @return
-     */
-    private TypedQuery<Protocol> createMaskQuery(MetaProtocol metaprotocol,
-                                                 Job job) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Protocol> query = cb.createQuery(Protocol.class);
-
-        Subquery<Location> deliverFrom = query.subquery(Location.class);
-        Root<LocationNetwork> dfRoot = deliverFrom.from(LocationNetwork.class);
-        deliverFrom.select(dfRoot.get(LocationNetwork_.child));
-        deliverFrom.where(cb.and(cb.equal(dfRoot.get(LocationNetwork_.parent),
-                                          job.getDeliverFrom()),
-                                 cb.equal(dfRoot.get(LocationNetwork_.relationship),
-                                          metaprotocol.getDeliverFrom())));
-
-        Subquery<Location> deliverTo = query.subquery(Location.class);
-        Root<LocationNetwork> dtRoot = deliverTo.from(LocationNetwork.class);
-        deliverTo.select(dtRoot.get(LocationNetwork_.child));
-        deliverTo.where(cb.and(cb.equal(dtRoot.get(LocationNetwork_.parent),
-                                        job.getDeliverTo()),
-                               cb.equal(dtRoot.get(LocationNetwork_.relationship),
-                                        metaprotocol.getDeliverTo())));
-
-        Subquery<Product> productOrdered = query.subquery(Product.class);
-        Root<ProductNetwork> poRoot = productOrdered.from(ProductNetwork.class);
-        productOrdered.select(poRoot.get(ProductNetwork_.child));
-        productOrdered.where(cb.and(cb.equal(poRoot.get(ProductNetwork_.parent),
-                                             job.getProduct()),
-                                    cb.equal(poRoot.get(ProductNetwork_.relationship),
-                                             metaprotocol.getProductOrdered())));
-
-        Subquery<Agency> requestingAgency = query.subquery(Agency.class);
-        Root<AgencyNetwork> raRoot = requestingAgency.from(AgencyNetwork.class);
-        requestingAgency.select(raRoot.get(AgencyNetwork_.child));
-        requestingAgency.where(cb.and(cb.equal(raRoot.get(AgencyNetwork_.parent),
-                                               job.getRequester()),
-                                      cb.equal(raRoot.get(AgencyNetwork_.relationship),
-                                               metaprotocol.getRequestingAgency())));
-
-        Root<Protocol> protocol = query.from(Protocol.class);
-
-        List<Predicate> masks = new ArrayList<>();
-
-        masks.add(cb.equal(protocol.get(Protocol_.requestedService),
-                           metaprotocol.getService()));
-
-        if (!metaprotocol.getDeliverFrom().equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (metaprotocol.getDeliverFrom().equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(Protocol_.deliverFrom),
-                                job.getDeliverFrom());
-            } else {
-                mask = protocol.get(Protocol_.deliverFrom).in(deliverFrom);
-            }
-            masks.add(cb.or(mask, cb.equal(protocol.get(Protocol_.deliverFrom),
-                                           kernel.getAnyLocation()),
-                            cb.equal(protocol.get(Protocol_.deliverFrom),
-                                     kernel.getSameLocation()),
-                            cb.equal(protocol.get(Protocol_.deliverFrom),
-                                     kernel.getNotApplicableLocation())));
-        }
-
-        if (!metaprotocol.getDeliverTo().equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (metaprotocol.getDeliverTo().equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(Protocol_.deliverTo),
-                                job.getDeliverTo());
-            } else {
-                mask = protocol.get(Protocol_.deliverTo).in(deliverTo);
-            }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(Protocol_.deliverTo),
-                                     kernel.getAnyLocation()),
-                            cb.equal(protocol.get(Protocol_.deliverTo),
-                                     kernel.getSameLocation()),
-                            cb.equal(protocol.get(Protocol_.deliverTo),
-                                     kernel.getNotApplicableLocation())));
-        }
-
-        if (!metaprotocol.getProductOrdered().equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (metaprotocol.getProductOrdered().equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(Protocol_.product),
-                                job.getProduct());
-            } else {
-                mask = protocol.get(Protocol_.product).in(productOrdered);
-            }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(Protocol_.product),
-                                     kernel.getAnyProduct()),
-                            cb.equal(protocol.get(Protocol_.product),
-                                     kernel.getSameProduct()),
-                            cb.equal(protocol.get(Protocol_.product),
-                                     kernel.getNotApplicableProduct())));
-        }
-
-        if (!metaprotocol.getRequestingAgency().equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (metaprotocol.getRequestingAgency().equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(Protocol_.requester),
-                                job.getRequester());
-            } else {
-                mask = protocol.get(Protocol_.requester).in(requestingAgency);
-            }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(Protocol_.requester),
-                                     kernel.getAnyAgency()),
-                            cb.equal(protocol.get(Protocol_.requester),
-                                     kernel.getSameAgency()),
-                            cb.equal(protocol.get(Protocol_.requester),
-                                     kernel.getNotApplicableAgency())));
-        }
-
-        query.where(masks.toArray(new Predicate[masks.size()]));
-        query.select(protocol);
-        TypedQuery<Protocol> tq = em.createQuery(query);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("mask query for %s and %s is\n%s", job,
-                                    metaprotocol,
-                                    tq.unwrap(QueryImpl.class).getQueryString()));
-        }
-        return tq;
-    }
-
     @Override
     public void createStatusCodeChain(Product service, StatusCode[] codes,
                                       Agency updatedBy) {
@@ -1418,6 +1287,159 @@ public class JobModelImpl implements JobModel {
      */
     private void automaticallyGenerateImplicitJobsForExplicitJobs(String job) {
         automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
+    }
+
+    /**
+     * This query will do the work of matching protocols to networks defined by
+     * jobs and metaprocols. This is the real deal except it doesn't work in the
+     * db triggers for some stupid reason so we're not using it right now.
+     * 
+     * @param metaprotocol
+     * @param job
+     * @return
+     */
+    private TypedQuery<Protocol> createMaskQuery(MetaProtocol metaprotocol,
+                                                 Job job) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Protocol> query = cb.createQuery(Protocol.class);
+
+        Subquery<Product> service = query.subquery(Product.class);
+        Root<ProductNetwork> servicRoot = service.from(ProductNetwork.class);
+        service.select(servicRoot.get(ProductNetwork_.child));
+        service.where(cb.and(cb.equal(servicRoot.get(ProductNetwork_.parent),
+                                      job.getService()),
+                             cb.equal(servicRoot.get(ProductNetwork_.relationship),
+                                      metaprotocol.getServiceType())));
+
+        Subquery<Location> deliverFrom = query.subquery(Location.class);
+        Root<LocationNetwork> dfRoot = deliverFrom.from(LocationNetwork.class);
+        deliverFrom.select(dfRoot.get(LocationNetwork_.child));
+        deliverFrom.where(cb.and(cb.equal(dfRoot.get(LocationNetwork_.parent),
+                                          job.getDeliverFrom()),
+                                 cb.equal(dfRoot.get(LocationNetwork_.relationship),
+                                          metaprotocol.getDeliverFrom())));
+
+        Subquery<Location> deliverTo = query.subquery(Location.class);
+        Root<LocationNetwork> dtRoot = deliverTo.from(LocationNetwork.class);
+        deliverTo.select(dtRoot.get(LocationNetwork_.child));
+        deliverTo.where(cb.and(cb.equal(dtRoot.get(LocationNetwork_.parent),
+                                        job.getDeliverTo()),
+                               cb.equal(dtRoot.get(LocationNetwork_.relationship),
+                                        metaprotocol.getDeliverTo())));
+
+        Subquery<Product> productOrdered = query.subquery(Product.class);
+        Root<ProductNetwork> poRoot = productOrdered.from(ProductNetwork.class);
+        productOrdered.select(poRoot.get(ProductNetwork_.child));
+        productOrdered.where(cb.and(cb.equal(poRoot.get(ProductNetwork_.parent),
+                                             job.getProduct()),
+                                    cb.equal(poRoot.get(ProductNetwork_.relationship),
+                                             metaprotocol.getProductOrdered())));
+
+        Subquery<Agency> requestingAgency = query.subquery(Agency.class);
+        Root<AgencyNetwork> raRoot = requestingAgency.from(AgencyNetwork.class);
+        requestingAgency.select(raRoot.get(AgencyNetwork_.child));
+        requestingAgency.where(cb.and(cb.equal(raRoot.get(AgencyNetwork_.parent),
+                                               job.getRequester()),
+                                      cb.equal(raRoot.get(AgencyNetwork_.relationship),
+                                               metaprotocol.getRequestingAgency())));
+
+        Root<Protocol> protocol = query.from(Protocol.class);
+
+        List<Predicate> masks = new ArrayList<>();
+
+        if (!metaprotocol.getServiceType().equals(kernel.getAnyRelationship())) {
+            Predicate mask;
+            if (metaprotocol.getServiceType().equals(kernel.getSameRelationship())) {
+                mask = cb.equal(protocol.get(Protocol_.requestedService),
+                                job.getService());
+            } else {
+                mask = protocol.get(Protocol_.requestedService).in(service);
+            }
+            masks.add(cb.or(mask,
+                            cb.equal(protocol.get(Protocol_.requestedService),
+                                     kernel.getAnyProduct()),
+                            cb.equal(protocol.get(Protocol_.requestedService),
+                                     kernel.getSameProduct()),
+                            cb.equal(protocol.get(Protocol_.requestedService),
+                                     kernel.getNotApplicableProduct())));
+        }
+
+        if (!metaprotocol.getDeliverFrom().equals(kernel.getAnyRelationship())) {
+            Predicate mask;
+            if (metaprotocol.getDeliverFrom().equals(kernel.getSameRelationship())) {
+                mask = cb.equal(protocol.get(Protocol_.deliverFrom),
+                                job.getDeliverFrom());
+            } else {
+                mask = protocol.get(Protocol_.deliverFrom).in(deliverFrom);
+            }
+            masks.add(cb.or(mask, cb.equal(protocol.get(Protocol_.deliverFrom),
+                                           kernel.getAnyLocation()),
+                            cb.equal(protocol.get(Protocol_.deliverFrom),
+                                     kernel.getSameLocation()),
+                            cb.equal(protocol.get(Protocol_.deliverFrom),
+                                     kernel.getNotApplicableLocation())));
+        }
+
+        if (!metaprotocol.getDeliverTo().equals(kernel.getAnyRelationship())) {
+            Predicate mask;
+            if (metaprotocol.getDeliverTo().equals(kernel.getSameRelationship())) {
+                mask = cb.equal(protocol.get(Protocol_.deliverTo),
+                                job.getDeliverTo());
+            } else {
+                mask = protocol.get(Protocol_.deliverTo).in(deliverTo);
+            }
+            masks.add(cb.or(mask,
+                            cb.equal(protocol.get(Protocol_.deliverTo),
+                                     kernel.getAnyLocation()),
+                            cb.equal(protocol.get(Protocol_.deliverTo),
+                                     kernel.getSameLocation()),
+                            cb.equal(protocol.get(Protocol_.deliverTo),
+                                     kernel.getNotApplicableLocation())));
+        }
+
+        if (!metaprotocol.getProductOrdered().equals(kernel.getAnyRelationship())) {
+            Predicate mask;
+            if (metaprotocol.getProductOrdered().equals(kernel.getSameRelationship())) {
+                mask = cb.equal(protocol.get(Protocol_.product),
+                                job.getProduct());
+            } else {
+                mask = protocol.get(Protocol_.product).in(productOrdered);
+            }
+            masks.add(cb.or(mask,
+                            cb.equal(protocol.get(Protocol_.product),
+                                     kernel.getAnyProduct()),
+                            cb.equal(protocol.get(Protocol_.product),
+                                     kernel.getSameProduct()),
+                            cb.equal(protocol.get(Protocol_.product),
+                                     kernel.getNotApplicableProduct())));
+        }
+
+        if (!metaprotocol.getRequestingAgency().equals(kernel.getAnyRelationship())) {
+            Predicate mask;
+            if (metaprotocol.getRequestingAgency().equals(kernel.getSameRelationship())) {
+                mask = cb.equal(protocol.get(Protocol_.requester),
+                                job.getRequester());
+            } else {
+                mask = protocol.get(Protocol_.requester).in(requestingAgency);
+            }
+            masks.add(cb.or(mask,
+                            cb.equal(protocol.get(Protocol_.requester),
+                                     kernel.getAnyAgency()),
+                            cb.equal(protocol.get(Protocol_.requester),
+                                     kernel.getSameAgency()),
+                            cb.equal(protocol.get(Protocol_.requester),
+                                     kernel.getNotApplicableAgency())));
+        }
+
+        query.where(masks.toArray(new Predicate[masks.size()]));
+        query.select(protocol);
+        TypedQuery<Protocol> tq = em.createQuery(query);
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("mask query for %s and %s is\n%s", job,
+                                    metaprotocol,
+                                    tq.unwrap(QueryImpl.class).getQueryString()));
+        }
+        return tq;
     }
 
     /**

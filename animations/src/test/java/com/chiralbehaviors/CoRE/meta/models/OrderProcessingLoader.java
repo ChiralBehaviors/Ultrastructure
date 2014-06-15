@@ -179,8 +179,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                            area, area, core);
         em.persist(m2);
         MetaProtocol m3 = new MetaProtocol(ship, 1, anyRelationship,
-                                           customerType, anyRelationship, area,
-                                           area, core);
+                                           customerType, sameRelationship,
+                                           area, area, core);
         em.persist(m3);
         MetaProtocol m5 = new MetaProtocol(fee, 1, anyRelationship,
                                            salesTaxStatus, sameRelationship,
@@ -188,7 +188,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(m5);
         MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 1,
                                            anyRelationship, anyRelationship,
-                                           anyRelationship, anyRelationship,
+                                           sameRelationship, anyRelationship,
                                            anyRelationship, core);
         em.persist(m6);
     }

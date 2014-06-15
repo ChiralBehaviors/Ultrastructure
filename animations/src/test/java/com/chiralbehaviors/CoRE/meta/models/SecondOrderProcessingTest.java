@@ -72,20 +72,20 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //create pick and ship jobs
         MetaProtocol mp1 = new MetaProtocol(w.deliver, 1, w.anyRelationship,
                                             w.anyRelationship,
-                                            w.anyRelationship,
+                                            w.sameRelationship,
                                             w.anyRelationship,
                                             w.anyRelationship, w.core);
         em.persist(mp1);
 
         //if in US, check credit, if EU, check LOC
         MetaProtocol mp2 = new MetaProtocol(w.pick, 2, w.sameRelationship,
-                                            w.customerType, w.anyRelationship,
+                                            w.customerType, w.sameRelationship,
                                             w.area, w.area, w.core);
         em.persist(mp2);
 
         //print purchase order and customs declaration, if applicable
         MetaProtocol mp3 = new MetaProtocol(w.ship, 3, w.sameRelationship,
-                                            w.customerType, w.anyRelationship,
+                                            w.customerType, w.sameRelationship,
                                             w.area, w.area, w.core);
         em.persist(mp3);
 
@@ -93,7 +93,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         MetaProtocol mp4 = new MetaProtocol(w.printPurchaseOrder, 4,
                                             w.sameRelationship,
                                             w.sameRelationship,
-                                            w.anyRelationship, w.city, w.area,
+                                            w.sameRelationship, w.city, w.area,
                                             w.core);
         mp4.setStopOnMatch(true);
         em.persist(mp4);
@@ -101,13 +101,13 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //generate fee for everyone else
         MetaProtocol mp5 = new MetaProtocol(w.printPurchaseOrder, 5,
                                             w.sameRelationship, w.customerType,
-                                            w.anyRelationship, w.area,
+                                            w.sameRelationship, w.area,
                                             w.anyRelationship, w.core);
         em.persist(mp5);
 
         //create sales tax
         MetaProtocol mp6 = new MetaProtocol(w.fee, 6, w.anyRelationship,
-                                            w.customerType, w.anyRelationship,
+                                            w.customerType, w.sameRelationship,
                                             w.region, w.anyRelationship, w.core);
         em.persist(mp6);
 
@@ -195,7 +195,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(georgetownFeeProtocol);
 
     }
-    
+
     /**
      * 
      */
@@ -231,7 +231,6 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         }
         assertTrue("Did not find fee service in US job tree", hasCorrectService);
     }
-    
 
     @Test
     public void testFirstSeqAuth() {
@@ -242,10 +241,10 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(job);
 
         em.getTransaction().commit();
-        
+
         em.getTransaction().begin();
         Job pick = model.getJobModel().getChildJobsByService(job, w.pick).get(0);
-        
+
         //delete all child jobs so that we can move pick into a terminal state
         List<Job> childJobs = model.getJobModel().getAllChildren(pick);
         for (Job j : childJobs) {
@@ -261,7 +260,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.getTransaction().begin();
         pick.setStatus(w.completed);
         em.getTransaction().commit();
-        
+
         Job ship = model.getJobModel().getChildJobsByService(job, w.ship).get(0);
         assertEquals(w.waitingOnPurchaseOrder, ship.getStatus());
     }

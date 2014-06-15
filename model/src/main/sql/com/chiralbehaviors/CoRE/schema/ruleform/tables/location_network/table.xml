@@ -22,6 +22,9 @@
             <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
                 <constraints nullable="false" />
             </column> 
+            <column name="inference" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
+                <constraints nullable="false" />
+            </column>
             <column name="premise1" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>
@@ -77,5 +80,10 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise2" baseTableName="location_network"
             constraintName="location_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="location_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-434">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="inference" baseTableName="location_network" constraintName="location_network_inference_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
     </changeSet>
 </databaseChangeLog>

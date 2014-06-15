@@ -39,7 +39,6 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
-import com.chiralbehaviors.CoRE.meta.CoordinateModel;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
@@ -109,7 +108,6 @@ public class ModelImpl implements Model {
 
     private final AgencyModel       agencyModel;
     private final AttributeModel    attributeModel;
-    private final CoordinateModel   coordinateModel;
     private final EntityManager     em;
     private final IntervalModel     intervalModel;
     private final JobModel          jobModel;
@@ -138,7 +136,6 @@ public class ModelImpl implements Model {
         jobModel = new JobModelImpl(this);
         relationshipModel = new RelationshipModelImpl(em, kernel);
         statusCodeModel = new StatusCodeModelImpl(em, kernel);
-        coordinateModel = new CoordinateModelImpl(em, kernel);
         unitModel = new UnitModelImpl(em, kernel);
         workspaceModel = new WorkspaceModelImpl(this);
     }
@@ -290,11 +287,6 @@ public class ModelImpl implements Model {
     @Override
     public AttributeModel getAttributeModel() {
         return attributeModel;
-    }
-
-    @Override
-    public CoordinateModel getCoordinateModel() {
-        return coordinateModel;
     }
 
     /*

@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -43,6 +44,10 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inference", insertable = false)
+    private NetworkInference  inference;
 
     private int               inferred         = FALSE;
 
@@ -97,6 +102,20 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     abstract public E getChild();
 
+    /**
+     * @return the inference
+     */
+    public NetworkInference getInference() {
+        return inference;
+    }
+
+    /**
+     * @return the inferred
+     */
+    public int getInferred() {
+        return inferred;
+    }
+
     abstract public E getParent();
 
     abstract public NetworkRuleform<E> getPremise1();
@@ -129,8 +148,24 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     abstract public void setChild(E child);
 
+    /**
+     * @param inference
+     *            the inference to set
+     */
+    public void setInference(NetworkInference inference) {
+        this.inference = inference;
+    }
+
     public void setInferred(boolean inferred) {
         this.inferred = inferred ? TRUE : FALSE;
+    }
+
+    /**
+     * @param inferred
+     *            the inferred to set
+     */
+    public void setInferred(int inferred) {
+        this.inferred = inferred;
     }
 
     abstract public void setParent(E parent);

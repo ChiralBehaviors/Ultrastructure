@@ -27,8 +27,6 @@
 	<include relativeToChangelogFile="true"
 		file="functions/get_attribute_type.xml" />
 	<include relativeToChangelogFile="true"
-		file="functions/nest_coordinates.xml" />
-	<include relativeToChangelogFile="true"
 		file="functions/agency_get_allowed_text_values.xml" />
 	<include relativeToChangelogFile="true" file="functions/transform.xml" />
 	<include relativeToChangelogFile="true" file="functions/translation.xml" />
@@ -66,8 +64,6 @@
 		file="functions/propagate_agency_network_deductions.xml" />
     <include relativeToChangelogFile="true"
         file="functions/propagate_relationship_network_deductions.xml" />
-    <include relativeToChangelogFile="true"
-        file="functions/propagate_coordinate_network_deductions.xml" />
     <include relativeToChangelogFile="true"
         file="functions/propagate_status_code_network_deductions.xml" />
     <include relativeToChangelogFile="true"

@@ -32,7 +32,6 @@
             <plugin>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>mixin-generator</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/generated-sources/mixin</outputDirectory>
                     <packageName>com.chiralbehaviors.CoRE.json</packageName>
@@ -51,7 +50,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.8</version>
                 <executions>
                     <execution>
                         <id>add-source</id>

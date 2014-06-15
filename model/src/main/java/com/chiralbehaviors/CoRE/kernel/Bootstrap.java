@@ -25,7 +25,6 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownCoordinate;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
@@ -57,9 +56,6 @@ public class Bootstrap {
             insert(wko);
         }
         for (WellKnownAttribute wko : WellKnownAttribute.values()) {
-            insert(wko);
-        }
-        for (WellKnownCoordinate wko : WellKnownCoordinate.values()) {
             insert(wko);
         }
         for (WellKnownInterval wko : WellKnownInterval.values()) {
@@ -211,9 +207,8 @@ public class Bootstrap {
     private void createRootNetworks() throws SQLException {
         for (WellKnownObject wko : new WellKnownObject[] {
                 WellKnownAgency.AGENCY, WellKnownAttribute.ATTRIBUTE,
-                WellKnownCoordinate.COORDINATE, WellKnownInterval.INTERVAL,
-                WellKnownLocation.LOCATION, WellKnownProduct.PRODUCT,
-                WellKnownRelationship.RELATIONSHIP,
+                WellKnownInterval.INTERVAL, WellKnownLocation.LOCATION,
+                WellKnownProduct.PRODUCT, WellKnownRelationship.RELATIONSHIP,
                 WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
             insertNetwork(wko);
         }

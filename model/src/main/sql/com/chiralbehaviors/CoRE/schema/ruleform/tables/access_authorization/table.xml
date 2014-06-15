@@ -14,7 +14,6 @@
             <column name="agency1" type="CHAR(22)" />
             <column name="location1" type="CHAR(22)" />
             <column name="attribute1" type="CHAR(22)" />
-            <column name="coordinate1" type="CHAR(22)" />
             <column name="interval1" type="CHAR(22)" />
             <column name="relationship1" type="CHAR(22)" />
             <column name="status_code1" type="CHAR(22)" />
@@ -29,7 +28,6 @@
             <column name="agency2" type="CHAR(22)" />
             <column name="location2" type="CHAR(22)" />
             <column name="attribute2" type="CHAR(22)" />
-            <column name="coordinate2" type="CHAR(22)" />
             <column name="interval2" type="CHAR(22)" />
             <column name="relationship2" type="CHAR(22)" />
             <column name="status_code2" type="CHAR(22)" />
@@ -74,16 +72,6 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="child_transitive_relationship" baseTableName="access_authorization"
             constraintName="access_authorization_child_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-70">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="coordinate1" baseTableName="access_authorization"
-            constraintName="access_authorization_coordinate1_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="coordinate" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-71">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="coordinate2" baseTableName="access_authorization"
-            constraintName="access_authorization_coordinate2_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="coordinate" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-72">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="interval1" baseTableName="access_authorization"

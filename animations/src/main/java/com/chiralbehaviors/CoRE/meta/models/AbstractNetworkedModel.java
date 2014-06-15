@@ -603,7 +603,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "relationship CHAR(22) NOT NULL,"
                                      + "child CHAR(22) NOT NULL,"
                                      + "premise1 CHAR(22) NOT NULL,"
-                                     + "premise2 CHAR(22) NOT NULL)").executeUpdate();
+                                     + "premise2 CHAR(22) NOT NULL,"
+                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
     }
 
     private void createDeductionTemporaryTables() {
@@ -622,7 +623,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "relationship CHAR(22) NOT NULL,"
                                      + "child CHAR(22) NOT NULL,"
                                      + "premise1 CHAR(22) NOT NULL,"
-                                     + "premise2 CHAR(22) NOT NULL)").executeUpdate();
+                                     + "premise2 CHAR(22) NOT NULL,"
+                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
     }
 
     private void createWorkingMemory() {
@@ -631,7 +633,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                      + "relationship CHAR(22) NOT NULL,"
                                      + "child CHAR(22) NOT NULL,"
                                      + "premise1 CHAR(22) NOT NULL,"
-                                     + "premise2 CHAR(22) NOT NULL )").executeUpdate();
+                                     + "premise2 CHAR(22) NOT NULL,"
+                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
     }
 
     @SuppressWarnings("unchecked")

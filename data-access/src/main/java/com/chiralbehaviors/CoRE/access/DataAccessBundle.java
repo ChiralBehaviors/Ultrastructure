@@ -36,7 +36,6 @@ import com.chiralbehaviors.CoRE.access.resource.TraversalResource;
 import com.chiralbehaviors.CoRE.access.resource.WorkspaceResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.AgencyResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.AttributeResource;
-import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.CoordinateResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.IntervalResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.LocationResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.ProductResource;
@@ -95,8 +94,6 @@ public class DataAccessBundle implements
                                                          emf.createEntityManager()));
         environment.jersey().register(new AttributeResource(
                                                             emf.createEntityManager()));
-        environment.jersey().register(new CoordinateResource(
-                                                             emf.createEntityManager()));
         environment.jersey().register(new IntervalResource(
                                                            emf.createEntityManager()));
         environment.jersey().register(new LocationResource(

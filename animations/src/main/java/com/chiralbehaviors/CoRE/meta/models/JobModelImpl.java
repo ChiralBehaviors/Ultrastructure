@@ -1347,21 +1347,11 @@ public class JobModelImpl implements JobModel {
 
         List<Predicate> masks = new ArrayList<>();
 
-        if (!metaprotocol.getServiceType().equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (metaprotocol.getServiceType().equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(Protocol_.requestedService),
-                                job.getService());
-            } else {
-                mask = protocol.get(Protocol_.requestedService).in(service);
-            }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(Protocol_.requestedService),
-                                     kernel.getAnyProduct()),
-                            cb.equal(protocol.get(Protocol_.requestedService),
-                                     kernel.getSameProduct()),
-                            cb.equal(protocol.get(Protocol_.requestedService),
-                                     kernel.getNotApplicableProduct())));
+        if (metaprotocol.getServiceType().equals(kernel.getSameRelationship())) {
+            masks.add(cb.equal(protocol.get(Protocol_.requestedService),
+                               job.getService()));
+        } else {
+            masks.add(protocol.get(Protocol_.requestedService).in(service));
         }
 
         if (!metaprotocol.getDeliverFrom().equals(kernel.getAnyRelationship())) {

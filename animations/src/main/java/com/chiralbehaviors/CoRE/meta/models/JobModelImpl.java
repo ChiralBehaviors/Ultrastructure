@@ -1467,6 +1467,7 @@ public class JobModelImpl implements JobModel {
      * @param p
      * @return
      */
+    //TODO HPARRY add same/any/null
     private List<String> findGaps(Job job, Protocol p) {
         List<String> missingFields = new LinkedList<>();
         if (!job.getRequester().equals(p.getRequester())) {

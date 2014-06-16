@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -126,12 +125,12 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     private Set<ProductLocation>   entities;
 
     // bi-directional many-to-one association to LocationNetwork
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
     private Set<LocationNetwork>   networkByChild;
 
     // bi-directional many-to-one association to LocationNetwork
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<LocationNetwork>   networkByParent;
 

@@ -41,7 +41,7 @@
             <column name="timestamp_value" type="TIMESTAMPTZ" />
             <column name="grouping_agency" type="CHAR(22)" />
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
@@ -56,27 +56,27 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-89">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_attribute" baseTableName="agency_attribute_authorization"
-            constraintName="agency_attribute_authorization_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_attribute_authorization_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-90">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="agency_attribute_authorization"
             constraintName="agency_attribute_authorization_classification_attribute_fkey" deferrable="true" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-91">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="agency_attribute_authorization"
-            constraintName="agency_attribute_authorization_classifier_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_attribute_authorization_classifier_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-92">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="agency_attribute_authorization"
-            constraintName="agency_attribute_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_attribute_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-93">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="agency_attribute_authorization"
-            constraintName="agency_attribute_authorization_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_attribute_authorization_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-370">
@@ -88,7 +88,7 @@
         <createIndex schemaName="ruleform" indexName="agency_attribute_authorization_updated_by_fkey_idx" tableName="agency_attribute_authorization"
             unique="false"
         >
-            <column name="updated_by" />
+            <column name="updated_by"   />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

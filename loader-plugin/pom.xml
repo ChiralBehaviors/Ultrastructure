@@ -63,7 +63,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <goalPrefix>pljava-loader</goalPrefix>
+                    <goalPrefix>loader</goalPrefix>
                 </configuration>
             </plugin>
         </plugins>

@@ -25,7 +25,7 @@
             <column name="product_network_agency" type="CHAR(22)" />
             <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
@@ -38,22 +38,22 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-343">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency_map" baseTableName="transformation_metarule"
-            constraintName="transformation_metarule_agency_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            constraintName="transformation_metarule_agency_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-344">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_map" baseTableName="transformation_metarule"
-            constraintName="transformation_metarule_product_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            constraintName="transformation_metarule_product_map_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-345">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_network_agency" baseTableName="transformation_metarule"
-            constraintName="transformation_metarule_product_network_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
+            constraintName="transformation_metarule_product_network_agency_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-346">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="service" baseTableName="transformation_metarule"
-            constraintName="transformation_metarule_service_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
+            constraintName="transformation_metarule_service_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
             referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-416">
@@ -64,7 +64,7 @@
         <createIndex schemaName="ruleform" indexName="transformation_metarule_updated_by_fkey_idx" tableName="transformation_metarule"
             unique="false"
         >
-            <column name="updated_by" />
+            <column name="updated_by"   />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

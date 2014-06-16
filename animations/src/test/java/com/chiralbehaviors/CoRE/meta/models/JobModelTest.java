@@ -247,7 +247,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testNetworkInference() {
-        List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inferred = 1",
+        List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                      LocationNetwork.class).getResultList();
         assertEquals(22, edges.size());
 
@@ -401,6 +401,49 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.deliver);
         Job deliver = query.getSingleResult();
         assertEquals(scenario.completed, deliver.getStatus());
+    }
+
+    @Test
+    public void testMetaProtocols() throws Exception {
+        Job job = new Job(scenario.orderFullfillment,
+                          scenario.georgeTownUniversity, scenario.deliver,
+                          scenario.abc486, scenario.rsb225, scenario.factory1,
+                          scenario.core);
+        job.setStatus(scenario.available);
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
+        assertEquals(1, metaProtocols.size());
+        List<Protocol> protocols = jobModel.getProtocols(job);
+        assertEquals(2, protocols.size());
+        assertEquals(scenario.deliver, protocols.get(0).getRequestedService());
+        assertEquals(scenario.deliver, protocols.get(1).getRequestedService());
+        assertEquals(scenario.anyAgency, protocols.get(0).getRequester());
+        assertEquals(scenario.anyAgency, protocols.get(1).getRequester());
+        assertEquals(scenario.anyProduct,
+                     protocols.get(0).getRequestedProduct());
+        assertEquals(scenario.anyProduct,
+                     protocols.get(1).getRequestedProduct());
+        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverFrom());
+        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverFrom());
+        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverTo());
+        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverTo());
+        assertEquals(scenario.factory1Agency, protocols.get(0).getAssignTo());
+        assertEquals(scenario.factory1Agency, protocols.get(1).getAssignTo());
+        if (protocols.get(0).getService().equals(scenario.pick)) {
+            assertEquals(scenario.ship, protocols.get(1).getService());
+        } else {
+            assertEquals(scenario.ship, protocols.get(0).getService());
+            assertEquals(scenario.pick, protocols.get(1).getService());
+        }
+
+        job = new Job(scenario.orderFullfillment,
+                      scenario.georgeTownUniversity,
+                      scenario.printPurchaseOrder, scenario.abc486,
+                      scenario.rsb225, scenario.factory1, scenario.core);
+        job.setStatus(scenario.available);
+        metaProtocols = jobModel.getMetaprotocols(job);
+        assertEquals(1, metaProtocols.size());
+        protocols = jobModel.getProtocols(job);
+        assertEquals(1, protocols.size());
     }
 
     private void clearJobs() throws SQLException {

@@ -58,6 +58,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
     public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
     public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
     public static final Integer TRUE                  = Integer.valueOf((byte) 1);
+    public static final String  ZERO                  = UuidGenerator.toBase64(new UUID(
+                                                                                        0,
+                                                                                        0));
     private static final long   serialVersionUID      = 1L;
 
     public static Boolean toBoolean(Integer value) {
@@ -79,10 +82,10 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @SequenceGenerator(name = "uuid_seq", sequenceName = "com.chiralbehaviors.CoRE.UuidGenerator()")
     private String    id;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     private String    notes;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "update_date")
     private Timestamp updateDate;
 

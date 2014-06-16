@@ -8,10 +8,6 @@
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/coordinate_attribute/trigger-coordinate_attribute_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/coordinate_nesting/trigger-coordinate_nesting_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/coordinate/trigger-coordinate_restrict_pinned.xml" />
-    <include relativeToChangelogFile="true" file="tables/coordinate/trigger-coordinate_update_date.xml" />
     <include relativeToChangelogFile="true"
         file="tables/product_attribute_authorization/trigger-product_attribute_authorization_update_date.xml" />
 
@@ -62,8 +58,6 @@
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_update_date.xml" />
     <include relativeToChangelogFile="true"
-        file="tables/coordinate_attribute_authorization/trigger-coordinate_attribute_authorization_update_date.xml" />
-    <include relativeToChangelogFile="true"
         file="tables/location_attribute_authorization/trigger-location_attribute_authorization_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute_authorization/trigger-attr_meta_attr_auth_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization/trigger-sourcing_authorization_update_date.xml" />
@@ -76,7 +70,6 @@
         file="tables/interval_attribute_authorization/trigger-interval_attribute_authorization_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_network/triggers.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_network/triggers.xml" />
-    <include relativeToChangelogFile="true" file="tables/coordinate_network/triggers.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship_attribute_authorization/triggers.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship_attribute/triggers.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_attribute_authorization/triggers.xml" />

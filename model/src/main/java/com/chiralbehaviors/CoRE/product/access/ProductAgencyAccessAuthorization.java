@@ -27,7 +27,6 @@ import static com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthori
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -139,7 +138,7 @@ public class ProductAgencyAccessAuthorization extends
     private Agency             child;
 
     // bi-directional many-to-one association to ProductNetwork
-    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "child")
     @JsonIgnore
     private Set<AgencyNetwork> networkByChild;
 

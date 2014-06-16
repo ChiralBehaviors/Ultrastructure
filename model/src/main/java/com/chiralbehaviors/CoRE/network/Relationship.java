@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -136,7 +135,7 @@ public class Relationship extends
 
     private static final long          serialVersionUID                         = 1L;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "relationship", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "relationship")
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
@@ -145,18 +144,18 @@ public class Relationship extends
     @JsonIgnore
     private Relationship               inverse;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
     private Set<RelationshipNetwork>   networkByChild;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<RelationshipNetwork>   networkByParent;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     private String                     operator;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     private Integer                    preferred                                = FALSE;
 
     public Relationship() {

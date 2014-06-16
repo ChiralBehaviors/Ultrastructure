@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -144,18 +143,18 @@ public class StatusCode extends
     private static final long        serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AgencyAttribute
-    @OneToMany(mappedBy = "statusCode", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "statusCode")
     @JsonIgnore
     private Set<StatusCodeAttribute> attributes;
 
     @Column(name = "fail_parent")
     private Integer                  failParent                               = TRUE;
 
-    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "child")
     @JsonIgnore
     private Set<StatusCodeNetwork>   networkByChild;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent")
     @JsonIgnore
     private Set<StatusCodeNetwork>   networkByParent;
 

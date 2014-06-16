@@ -25,7 +25,6 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownCoordinate;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
@@ -57,9 +56,6 @@ public class Bootstrap {
             insert(wko);
         }
         for (WellKnownAttribute wko : WellKnownAttribute.values()) {
-            insert(wko);
-        }
-        for (WellKnownCoordinate wko : WellKnownCoordinate.values()) {
             insert(wko);
         }
         for (WellKnownInterval wko : WellKnownInterval.values()) {
@@ -113,6 +109,22 @@ public class Bootstrap {
         }
     }
 
+    public void insert(WellKnownInterval wki) throws SQLException {
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, unit, description, pinned, updated_by) VALUES (?, ?, ?, ?, ?, ?)",
+                                                                        wki.tableName()));
+        try {
+            s.setString(1, wki.id());
+            s.setString(2, wki.wkoName());
+            s.setString(3, wki.unit().id());
+            s.setString(4, wki.description());
+            s.setByte(5, (byte) 1);
+            s.setString(6, WellKnownAgency.CORE.id());
+            s.execute();
+        } catch (SQLException e) {
+            throw new SQLException(String.format("Unable to insert %s", wki), e);
+        }
+    }
+
     public void insert(WellKnownLocation wkl) throws SQLException {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, pinned, updated_by) VALUES (?, ?, ?, ?, ?)",
                                                                         wkl.tableName()));
@@ -141,22 +153,6 @@ public class Bootstrap {
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko), e);
-        }
-    }
-
-    public void insert(WellKnownInterval wki) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, unit, description, pinned, updated_by) VALUES (?, ?, ?, ?, ?, ?)",
-                                                                        wki.tableName()));
-        try {
-            s.setString(1, wki.id());
-            s.setString(2, wki.wkoName());
-            s.setString(3, wki.unit().id());
-            s.setString(4, wki.description());
-            s.setByte(5, (byte) 1);
-            s.setString(6, WellKnownAgency.CORE.id());
-            s.execute();
-        } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert %s", wki), e);
         }
     }
 
@@ -211,9 +207,8 @@ public class Bootstrap {
     private void createRootNetworks() throws SQLException {
         for (WellKnownObject wko : new WellKnownObject[] {
                 WellKnownAgency.AGENCY, WellKnownAttribute.ATTRIBUTE,
-                WellKnownCoordinate.COORDINATE, WellKnownInterval.INTERVAL,
-                WellKnownLocation.LOCATION, WellKnownProduct.PRODUCT,
-                WellKnownRelationship.RELATIONSHIP,
+                WellKnownInterval.INTERVAL, WellKnownLocation.LOCATION,
+                WellKnownProduct.PRODUCT, WellKnownRelationship.RELATIONSHIP,
                 WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
             insertNetwork(wko);
         }

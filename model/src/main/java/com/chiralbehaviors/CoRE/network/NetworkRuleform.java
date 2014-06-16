@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -44,7 +45,9 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    private int               inferred         = FALSE;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inference", insertable = false)
+    private NetworkInference  inference;
 
     @ManyToOne
     @JoinColumn(name = "relationship")
@@ -97,6 +100,13 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     abstract public E getChild();
 
+    /**
+     * @return the inference
+     */
+    public NetworkInference getInference() {
+        return inference;
+    }
+
     abstract public E getParent();
 
     abstract public NetworkRuleform<E> getPremise1();
@@ -124,20 +134,27 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     }
 
     public boolean isInferred() {
-        return inferred == TRUE;
+        if (inference == null) {
+            return false;
+        }
+        return !ZERO.equals(inference.getId());
     }
 
     abstract public void setChild(E child);
 
-    public void setInferred(boolean inferred) {
-        this.inferred = inferred ? TRUE : FALSE;
+    /**
+     * @param inference
+     *            the inference to set
+     */
+    public void setInference(NetworkInference inference) {
+        this.inference = inference;
     }
 
     abstract public void setParent(E parent);
 
-    abstract public void setPremise1(NetworkRuleform<E> inferred);
+    abstract public void setPremise1(NetworkRuleform<E> premise1);
 
-    abstract public void setPremise2(NetworkRuleform<E> inferred);
+    abstract public void setPremise2(NetworkRuleform<E> premise2);
 
     /**
      * @param relationship

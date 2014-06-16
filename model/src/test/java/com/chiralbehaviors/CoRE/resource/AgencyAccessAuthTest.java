@@ -35,7 +35,7 @@ public class AgencyAccessAuthTest extends DatabaseTest {
     private static Kernel kernel;
 
     @Before
-    public void initKernel() throws SQLException { 
+    public void initKernel() throws SQLException {
         Bootstrap bt = new Bootstrap(connection);
         bt.clear();
         bt.bootstrap();

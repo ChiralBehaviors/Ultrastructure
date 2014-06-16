@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -138,23 +137,23 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
                                                                                          + UNLINKED_SUFFIX;
     private static final long                 serialVersionUID                         = 1L;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<AgencyAccessAuthorization<?>> accessAuthsByParent;
 
     // bi-directional many-to-one association to AgencyAttribute
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "agency")
     @JsonIgnore
     private Set<AgencyAttribute>              attributes;
 
     // bi-directional many-to-one association to AgencyNetwork
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
     private Set<AgencyNetwork>                networkByChild;
 
     // bi-directional many-to-one association to AgencyNetwork
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<AgencyNetwork>                networkByParent;
 

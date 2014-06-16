@@ -37,7 +37,7 @@
             </column>
             <column name="grouping_agency" remarks="A network parent an Location is expected to have" type="CHAR(22)" />
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
@@ -51,39 +51,45 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-187">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_parent" baseTableName="location_network_authorization"
-            constraintName="location_network_authorization_authorized_parent_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_parent" baseTableName="location_network_authorization" constraintName="location_network_authorization_authorized_parent_fkey"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-188">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_relationship" baseTableName="location_network_authorization"
-            constraintName="location_network_authorization_authorized_relationship_fkey" deferrable="false" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_relationship" baseTableName="location_network_authorization" constraintName="location_network_authorization_authorized_relationship_fkey"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-189">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="location_network_authorization"
-            constraintName="location_network_authorization_classification_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classification" baseTableName="location_network_authorization" constraintName="location_network_authorization_classification_fkey"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-190">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="location_network_authorization"
-            constraintName="location_network_authorization_classifier_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classifier" baseTableName="location_network_authorization" constraintName="location_network_authorization_classifier_fkey"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-191">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="location_network_authorization"
-            constraintName="location_network_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="location_network_authorization" constraintName="location_network_authorization_grouping_agency_fkey"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-192">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="location_network_authorization"
-            constraintName="location_network_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="location_network_authorization" constraintName="location_network_authorization_updated_by_fkey"
+            deferrable="false" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-387">
-        <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number"
-            constraintName="location_attribute_auth_agency_classification_key" deferrable="false" disabled="false" initiallyDeferred="false"
-            tableName="location_network_authorization" />
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number" constraintName="location_attribute_auth_agency_classification_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="location_network_authorization" />
     </changeSet>
     <changeSet author="hhildebrand (generated)" id="1390943449355-473">
         <createIndex schemaName="ruleform" indexName="location_network_authorization_updated_by_fkey_idx" tableName="location_network_authorization"

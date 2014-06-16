@@ -161,6 +161,10 @@ public class WorkspaceSnapshot implements Workspace {
         return agencies.values();
     }
 
+    public Agency getAgency(String name) {
+        return agencies.get(name);
+    }
+
     /**
      * @return the agencyAttributeAuthorizations
      */
@@ -207,6 +211,10 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<AgencyProductAccessAuthorization> getAgencyProductAccessAuthorizations() {
         return agencyProductAccessAuthorizations;
+    }
+
+    public Attribute getAttribute(String name) {
+        return attributes.get(name);
     }
 
     /**
@@ -263,6 +271,10 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<Job> getJobs() {
         return jobs;
+    }
+
+    public Location getLocation(String name) {
+        return locations.get(name);
     }
 
     /**
@@ -335,6 +347,10 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<MetaProtocol> getMetaProtocols() {
         return metaProtocols;
+    }
+
+    public Product getProduct(String name) {
+        return products.get(name);
     }
 
     /**
@@ -489,6 +505,10 @@ public class WorkspaceSnapshot implements Workspace {
         return protocols;
     }
 
+    public Relationship getRelationship(String name) {
+        return relationships.get(name);
+    }
+
     /**
      * @return the relationshipAttributeAuthorizations
      */
@@ -519,6 +539,10 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public Collection<Relationship> getRelationships() {
         return relationships.values();
+    }
+
+    public StatusCode getStatusCode(String name) {
+        return statusCodes.get(name);
     }
 
     /**
@@ -559,6 +583,10 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<StatusCodeSequencing> getStatusCodeSequencings() {
         return statusCodeSequencings;
+    }
+
+    public Unit getUnit(String name) {
+        return units.get(name);
     }
 
     /**
@@ -1172,34 +1200,6 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public void setWorkspaceRelationship(Relationship workspaceRelationship) {
         this.workspaceRelationship = workspaceRelationship;
-    }
-
-    public Agency getAgency(String name) {
-        return agencies.get(name);
-    }
-
-    public Attribute getAttribute(String name) {
-        return attributes.get(name);
-    }
-
-    public Location getLocation(String name) {
-        return locations.get(name);
-    }
-
-    public Product getProduct(String name) {
-        return products.get(name);
-    }
-
-    public Relationship getRelationship(String name) {
-        return relationships.get(name);
-    }
-
-    public StatusCode getStatusCode(String name) {
-        return statusCodes.get(name);
-    }
-
-    public Unit getUnit(String name) {
-        return units.get(name);
     }
 
     private void mergeEntity(EntityManager em, Map<Ruleform, Ruleform> merged,

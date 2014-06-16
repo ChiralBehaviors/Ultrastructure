@@ -47,6 +47,13 @@ public class ProductTest extends DatabaseTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProductTest.class);
 
+    @Override
+    @After
+    public void after() {
+        em.getTransaction().rollback();
+        em.clear();
+    }
+
     @Test
     public void createEntity() {
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
@@ -85,15 +92,9 @@ public class ProductTest extends DatabaseTest {
         assertTrue(b != b2);
         assertEquals(b, b2);
     }
-    
-    @After
-    public void after() {
-        em.getTransaction().rollback();
-        em.clear();
-    }
 
     @Before
-    public void initData() { 
+    public void initData() {
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);

@@ -58,7 +58,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         anyRelationship = kernel.getAnyRelationship();
         notApplicableRelationship = kernel.getNotApplicableRelationship();
         unset = kernel.getUnset();
-    } 
+    }
 
     public void createAgencyNetworks() {
         model.getAgencyModel().link(georgeTownUniversity, customerType,
@@ -170,28 +170,26 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createMetaProtocols() {
-        MetaProtocol m1 = new MetaProtocol(deliver, 1,
-                                           notApplicableRelationship,
+        MetaProtocol m1 = new MetaProtocol(deliver, 1, anyRelationship,
                                            sameRelationship, sameRelationship,
                                            state, area, core);
         em.persist(m1);
-        MetaProtocol m2 = new MetaProtocol(pick, 1, notApplicableRelationship,
+        MetaProtocol m2 = new MetaProtocol(pick, 1, anyRelationship,
                                            customerType, sameRelationship,
                                            area, area, core);
         em.persist(m2);
-        MetaProtocol m3 = new MetaProtocol(ship, 1, notApplicableRelationship,
-                                           customerType, anyRelationship, area,
-                                           area, core);
+        MetaProtocol m3 = new MetaProtocol(ship, 1, anyRelationship,
+                                           customerType, sameRelationship,
+                                           area, area, core);
         em.persist(m3);
-        MetaProtocol m5 = new MetaProtocol(fee, 1, notApplicableRelationship,
+        MetaProtocol m5 = new MetaProtocol(fee, 1, anyRelationship,
                                            salesTaxStatus, sameRelationship,
                                            city, anyRelationship, core);
         em.persist(m5);
         MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 1,
-                                           notApplicableRelationship,
                                            anyRelationship, anyRelationship,
-                                           anyRelationship, anyRelationship,
-                                           core);
+                                           sameRelationship, anyRelationship,
+                                           anyRelationship, core);
         em.persist(m6);
     }
 
@@ -411,7 +409,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                                 sameProduct, core);
         em.persist(printPoProtocol);
 
-        Protocol feeProtocol = new Protocol(printPurchaseOrder, externalCust,
+        Protocol feeProtocol = new Protocol(printPurchaseOrder, anyAgency,
                                             abc486, anyLocation, us,
                                             billingComputer, fee, sameProduct,
                                             core);

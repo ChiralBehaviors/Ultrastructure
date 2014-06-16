@@ -12,7 +12,7 @@
             </column>
             <column name="protocol" remarks="The protocol whose attributes are being specified" type="CHAR(22)">
                 <constraints nullable="false" />
-            </column> 
+            </column>
             <column name="attribute" remarks="The Attribute or facet of the given protocol being declared" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -33,7 +33,7 @@
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measure (if any) associated with the given value" type="CHAR(22)" />
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
@@ -47,32 +47,34 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-275">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="protocol_attribute"
-            constraintName="protocol_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="attribute" />
-    </changeSet>  
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="protocol_attribute" constraintName="protocol_attribute_attribute_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-291">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="protocol" baseTableName="protocol_attribute"
-            constraintName="protocol_attribute_protocol_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="protocol" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="protocol" baseTableName="protocol_attribute" constraintName="protocol_attribute_protocol_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="protocol" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-292">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="protocol_attribute" constraintName="protocol_attribute_units_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="protocol_attribute" constraintName="protocol_attribute_units_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-293">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="protocol_attribute"
-            constraintName="protocol_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="protocol_attribute" constraintName="protocol_attribute_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-406">
         <addUniqueConstraint schemaName="ruleform" columnNames="protocol, attribute, sequence_number" constraintName="protocol_attribute_sequence_number_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="protocol_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-511">
-        <createIndex schemaName="ruleform" indexName="protocol_attribute_updated_by_fkey_idx" tableName="protocol_attribute" unique="false">
-            <column name="updated_by" />
+        <createIndex schemaName="ruleform" indexName="protocol_attribute_updated_by_fkey_idx" tableName="protocol_attribute"
+            unique="false"
+        >
+            <column name="updated_by"   />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

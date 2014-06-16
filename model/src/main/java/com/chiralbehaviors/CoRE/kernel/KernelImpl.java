@@ -27,7 +27,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
@@ -114,7 +113,6 @@ public class KernelImpl implements Kernel {
     private final Relationship        prototypeOf;
     private final AgencyNetwork       rootAgencyNetwork;
     private final AttributeNetwork    rootAttributeNetwork;
-    private final CoordinateNetwork   rootCoordinateNetwork;
     private final IntervalNetwork     rootIntervalNetwork;
     private final LocationNetwork     rootLocationNetwork;
     private final ProductNetwork      rootProductNetwork;
@@ -211,7 +209,6 @@ public class KernelImpl implements Kernel {
 
         rootAgencyNetwork = em.find(AgencyNetwork.class, ZERO);
         rootAttributeNetwork = em.find(AttributeNetwork.class, ZERO);
-        rootCoordinateNetwork = em.find(CoordinateNetwork.class, ZERO);
         rootIntervalNetwork = em.find(IntervalNetwork.class, ZERO);
         rootLocationNetwork = em.find(LocationNetwork.class, ZERO);
         rootProductNetwork = em.find(ProductNetwork.class, ZERO);
@@ -731,14 +728,6 @@ public class KernelImpl implements Kernel {
     @Override
     public AttributeNetwork getRootAttributeNetwork() {
         return rootAttributeNetwork;
-    }
-
-    /**
-     * @return the rootCoordinateNetwork
-     */
-    @Override
-    public CoordinateNetwork getRootCoordinateNetwork() {
-        return rootCoordinateNetwork;
     }
 
     /**

@@ -105,6 +105,54 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <artifactId>network-inference-generator</artifactId>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/generated-resources/queries</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>network-inference-generator</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/jpa</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-resources/queries</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -117,25 +165,6 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/sql.xml</descriptor>
                             </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/jpa</source>
-                            </sources>
                         </configuration>
                     </execution>
                 </executions>
@@ -348,6 +377,19 @@
                                         <goals>
                                             <goal>update</goal>
                                             <goal>updateSQL</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.chiralbehaviors.CoRE</groupId>
+                                        <artifactId>network-inference-generator</artifactId>
+                                        <versionRange>[0.0.2-SNAPSHOT,)</versionRange>
+                                        <goals>
+                                            <goal>generate</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>

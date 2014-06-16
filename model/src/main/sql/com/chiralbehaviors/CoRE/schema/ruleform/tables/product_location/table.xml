@@ -11,7 +11,7 @@
                 <constraints primaryKey="true" primaryKeyName="product_location_pkey" />
             </column>
             <column name="agency" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ">
-                <constraints nullable="false" /> 
+                <constraints nullable="false" />
             </column>
             <column name="product" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -22,7 +22,7 @@
             <column name="location" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
@@ -35,29 +35,29 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-226">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="agency" baseTableName="product_location" constraintName="product_location_agency_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency" baseTableName="product_location" constraintName="product_location_agency_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-237">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="location" baseTableName="product_location"
-            constraintName="product_location_location_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location" baseTableName="product_location" constraintName="product_location_location_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-243">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product" baseTableName="product_location" constraintName="product_location_product_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="product_location" constraintName="product_location_product_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-244">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="product_location"
-            constraintName="product_location_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="product_location" constraintName="product_location_relationship_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-245">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product_location"
-            constraintName="product_location_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_location" constraintName="product_location_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-397">
         <addUniqueConstraint schemaName="ruleform" columnNames="agency, product, relationship, location" constraintName="product_location_agency_key"
@@ -74,13 +74,15 @@
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-494">
-        <createIndex schemaName="ruleform" indexName="product_location_relationship_fkey_idx" tableName="product_location" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_location_relationship_fkey_idx" tableName="product_location"
+            unique="false"
+        >
             <column name="relationship" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-495">
         <createIndex schemaName="ruleform" indexName="product_location_updated_by_fkey_idx" tableName="product_location" unique="false">
-            <column name="updated_by" />
+            <column name="updated_by"  />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

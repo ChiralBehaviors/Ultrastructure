@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -135,19 +134,19 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     private static final long      serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to IntervalAttribute
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "interval", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "interval")
     @JsonIgnore
     private Set<IntervalAttribute> attributes;
 
     private BigDecimal             duration;
 
     // bi-directional many-to-one association to IntervalNetwork
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
     private Set<IntervalNetwork>   networkByChild;
 
     // bi-directional many-to-one association to IntervalNetwork
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<IntervalNetwork>   networkByParent;
 
@@ -171,18 +170,18 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         this(name, start, unit, duration, null, updatedBy);
     }
 
-    public Interval(String name, BigDecimal start, Unit unit,
-                    BigDecimal duration, String description, Agency updatedBy) {
-        this(name, description, updatedBy);
-        setUnit(unit);
-    }
-
     public Interval(String name) {
         super(name);
     }
 
     public Interval(String name, Agency updatedBy) {
         super(name, updatedBy);
+    }
+
+    public Interval(String name, BigDecimal start, Unit unit,
+                    BigDecimal duration, String description, Agency updatedBy) {
+        this(name, description, updatedBy);
+        setUnit(unit);
     }
 
     public Interval(String name, String description) {

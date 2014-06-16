@@ -22,7 +22,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.coordinate.CoordinateNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.location.Location;
@@ -147,8 +146,6 @@ public interface Kernel {
     AgencyNetwork getRootAgencyNetwork();
 
     AttributeNetwork getRootAttributeNetwork();
-
-    CoordinateNetwork getRootCoordinateNetwork();
 
     IntervalNetwork getRootIntervalNetwork();
 

@@ -21,7 +21,6 @@ import static com.chiralbehaviors.CoRE.product.access.ProductAccessAuthorization
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -64,7 +63,7 @@ public abstract class ProductAccessAuthorization<Child extends ExistentialRulefo
     private static final long   serialVersionUID                                   = 1L;
 
     // bi-directional many-to-one association to ProductNetwork
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent")
     @JsonIgnore
     private Set<ProductNetwork> networkByParent;
 

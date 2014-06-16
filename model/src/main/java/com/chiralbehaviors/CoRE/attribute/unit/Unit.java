@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -114,7 +113,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     private String             abbreviation;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "unitRf", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "unitRf")
     @JsonIgnore
     private Set<UnitAttribute> attributes;
 
@@ -126,11 +125,11 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     private BigDecimal         min;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
     private Set<UnitNetwork>   networkByChild;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<UnitNetwork>   networkByParent;
 

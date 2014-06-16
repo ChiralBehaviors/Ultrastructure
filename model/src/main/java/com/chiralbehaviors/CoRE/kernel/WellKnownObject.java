@@ -396,40 +396,6 @@ public interface WellKnownObject {
         }
     }
 
-    public static enum WellKnownCoordinate implements WellKnownObject {
-        COORDINATE() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a coordinate. All existential entities defined in the Coordinate ruleform are instances of 'Coordinate'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.COORDINATE;
-            }
-
-        };
-
-        @Override
-        public String id() {
-            return UuidGenerator.toBase64(new UUID(
-                                                   WellKnownTypes.COORDINATE.ordinal(),
-                                                   ordinal() + 1));
-        }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.coordinate";
-        }
-    }
-
     public static enum WellKnownInterval implements WellKnownObject {
         INTERVAL() {
 

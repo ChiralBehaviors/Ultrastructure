@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -92,17 +91,17 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     // bi-directional many-to-one association to ProductNetworkAttribute
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "productNetwork", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productNetwork")
     @JsonIgnore
     private Set<ProductNetworkAttribute> attributes;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "child")
     private Product                      child;
 
     //bi-directional many-to-one association to Product 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Product                      parent;
 

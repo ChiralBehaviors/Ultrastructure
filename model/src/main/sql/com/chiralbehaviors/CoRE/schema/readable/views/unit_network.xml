@@ -12,7 +12,7 @@
                     p.name AS parent, 
                     rel.name AS relationship, 
                     c.name AS child,
-                    n.inferred,
+                    n.inference,
                     n.ordering,
                     n.premise1, 
                     n.premise2,

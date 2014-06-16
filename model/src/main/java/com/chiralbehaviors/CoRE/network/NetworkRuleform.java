@@ -49,8 +49,6 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     @JoinColumn(name = "inference", insertable = false)
     private NetworkInference  inference;
 
-    private int               inferred         = FALSE;
-
     @ManyToOne
     @JoinColumn(name = "relationship")
     private Relationship      relationship;
@@ -109,13 +107,6 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         return inference;
     }
 
-    /**
-     * @return the inferred
-     */
-    public int getInferred() {
-        return inferred;
-    }
-
     abstract public E getParent();
 
     abstract public NetworkRuleform<E> getPremise1();
@@ -143,7 +134,10 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     }
 
     public boolean isInferred() {
-        return inferred == TRUE;
+        if (inference == null) {
+            return false;
+        }
+        return !ZERO.equals(inference.getId());
     }
 
     abstract public void setChild(E child);
@@ -156,23 +150,11 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         this.inference = inference;
     }
 
-    public void setInferred(boolean inferred) {
-        this.inferred = inferred ? TRUE : FALSE;
-    }
-
-    /**
-     * @param inferred
-     *            the inferred to set
-     */
-    public void setInferred(int inferred) {
-        this.inferred = inferred;
-    }
-
     abstract public void setParent(E parent);
 
-    abstract public void setPremise1(NetworkRuleform<E> inferred);
+    abstract public void setPremise1(NetworkRuleform<E> premise1);
 
-    abstract public void setPremise2(NetworkRuleform<E> inferred);
+    abstract public void setPremise2(NetworkRuleform<E> premise2);
 
     /**
      * @param relationship

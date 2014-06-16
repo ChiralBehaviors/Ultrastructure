@@ -53,8 +53,8 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @NamedQueries({
                @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
                                                                             + "where n.parent = :agency "
-                                                                            + "and n.inferred = 0 "
-                                                                            + "and n.relationship.preferred = 0 "
+                                                                            + "and n.inference.id = 'AAAAAAAAAAAAAAAAAAAAAA' "
+                                                                            + "and n.relationship.preferred = 1 "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "

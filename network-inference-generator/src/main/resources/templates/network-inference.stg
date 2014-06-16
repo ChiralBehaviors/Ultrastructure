@@ -28,7 +28,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                             FROM ruleform.%tableName% AS n) as p1
                  JOIN  (SELECT n.id, n.parent, n.relationship, n.child
                             FROM ruleform.%tableName% AS n
-                            WHERE n.inferred = 0) as p2
+                            WHERE n.inference = 'AAAAAAAAAAAAAAAAAAAAAA') as p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                  JOIN ruleform.network_inference AS deduction
@@ -55,7 +55,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                         FROM last_pass_rules AS n) as p1
                 JOIN (SELECT n.id, n.parent, n.relationship, n.child
                         FROM ruleform.%tableName% AS n
-                        WHERE n.inferred = 0) as p2
+                        WHERE n.inference = 'AAAAAAAAAAAAAAAAAAAAAA') as p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                 JOIN ruleform.network_inference AS deduction
@@ -109,16 +109,14 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                                                parent, 
                                                relationship, 
                                                child, 
-                                               inferred,
                                                inference,
                                                premise1, 
                                                premise2,
                                                updated_by)
                SELECT cpr.id as id, 
-                      cpr.parent as parent, 
-                      cpr.relationship as relationship, 
-                      cpr.child as child, 
-                      1 as inferred,
+                      cpr.parent as parent,
+                      cpr.relationship as relationship,
+                      cpr.child as child,
                       cpr.inference as inference,
                       premise1 as premise1, 
                       premise2 as premise2, 
@@ -138,8 +136,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
             INSERT INTO ruleform.%tableName%(id,
                                                 parent, 
                                                 relationship, 
-                                                child, 
-                                                inferred,
+                                                child,
                                                 inference,
                                                 premise1, 
                                                 premise2, 
@@ -148,7 +145,6 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                    net.child as parent,
                    rel.inverse as relationship,
                    net.parent as child,
-                   net.inferred as inferred,
                    net.inference as inference,
                    net.premise1 as premise1,
                    net.premise2 as premise2,

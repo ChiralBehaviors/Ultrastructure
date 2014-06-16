@@ -19,9 +19,6 @@
             <column name="child" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="inferred" type="SMALLINT" defaultValueNumeric="0">
-                <constraints nullable="false" />
-            </column>
             <column name="inference" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>

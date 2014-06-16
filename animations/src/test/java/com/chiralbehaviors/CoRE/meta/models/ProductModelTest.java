@@ -192,7 +192,7 @@ public class ProductModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
 
-        List<ProductNetwork> edges = em.createQuery("SELECT edge FROM ProductNetwork edge WHERE edge.inferred = 1",
+        List<ProductNetwork> edges = em.createQuery("SELECT edge FROM ProductNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                     ProductNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }

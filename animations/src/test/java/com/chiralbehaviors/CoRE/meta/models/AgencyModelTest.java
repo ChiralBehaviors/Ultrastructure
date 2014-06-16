@@ -144,7 +144,7 @@ public class AgencyModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
 
-        List<AgencyNetwork> edges = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inferred = 1",
+        List<AgencyNetwork> edges = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                    AgencyNetwork.class).getResultList();
         assertEquals(2, edges.size());
     }

@@ -50,32 +50,32 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-96">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_parent" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_authorized_parent_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_network_authorization_authorized_parent_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-97">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_relationship" baseTableName="agency_network_authorization"
             constraintName="agency_network_authorization_authorized_relationship_fkey" deferrable="false" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-98">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_classification_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_network_authorization_classification_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-99">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_classifier_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_network_authorization_classifier_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-100">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_network_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-101">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            constraintName="agency_network_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET DEFAULT"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-371">

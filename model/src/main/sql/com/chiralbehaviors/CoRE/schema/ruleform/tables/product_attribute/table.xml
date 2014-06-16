@@ -40,26 +40,28 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-212">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="product_attribute"
-            constraintName="product_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="product_attribute" constraintName="product_attribute_attribute_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-218">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product" baseTableName="product_attribute"
-            constraintName="product_attribute_product_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="product_attribute" constraintName="product_attribute_product_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-220">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product_attribute"
-            constraintName="product_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_attribute" constraintName="product_attribute_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-395">
         <addUniqueConstraint schemaName="ruleform" columnNames="product, attribute, sequence_number" constraintName="product_attribute_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="product_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-481">
-        <createIndex schemaName="ruleform" indexName="product_attribute_attribute_fkey_idx" tableName="product_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_attribute_attribute_fkey_idx" tableName="product_attribute"
+            unique="false"
+        >
             <column name="attribute" />
         </createIndex>
     </changeSet>
@@ -74,7 +76,9 @@
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-485">
-        <createIndex schemaName="ruleform" indexName="product_attribute_updated_by_fkey_idx" tableName="product_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_attribute_updated_by_fkey_idx" tableName="product_attribute"
+            unique="false"
+        >
             <column name="updated_by" />
         </createIndex>
     </changeSet>

@@ -59,7 +59,7 @@
     <changeSet author="hhildebrand" id="1390879803225-364">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="unit_network" constraintName="unit_network_updated_by_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-421">
         <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2"

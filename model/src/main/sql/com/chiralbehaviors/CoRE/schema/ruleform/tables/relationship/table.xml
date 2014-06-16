@@ -37,13 +37,13 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-316">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="relationship" constraintName="relationship_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="relationship" constraintName="relationship_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-409">
-        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="relationship_name" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="relationship" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="relationship_name" deferrable="false"
+            disabled="false" initiallyDeferred="false" tableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-515">
         <createIndex schemaName="ruleform" indexName="relationship_inverse_fkey_idx" tableName="relationship" unique="false">

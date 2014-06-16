@@ -40,36 +40,41 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-302">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="attribute" baseTableName="relationship_attribute"
-            constraintName="relationship_attribute_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="relationship_attribute" constraintName="relationship_attribute_attribute_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-308">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="relationship_attribute"
-            constraintName="relationship_attribute_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="relationship_attribute" constraintName="relationship_attribute_relationship_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-309">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="relationship_attribute"
-            constraintName="relationship_attribute_unit_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="relationship_attribute" constraintName="relationship_attribute_unit_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-310">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="relationship_attribute"
-            constraintName="relationship_attribute_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="relationship_attribute" constraintName="relationship_attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-311">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="inverse" baseTableName="relationship" constraintName="relationship_inverse_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="inverse" baseTableName="relationship" constraintName="relationship_inverse_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-408">
         <addUniqueConstraint schemaName="ruleform" columnNames="relationship, attribute" constraintName="relationship_attribute_relationship_key"
             deferrable="false" disabled="false" initiallyDeferred="false" tableName="relationship_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-514">
-        <createIndex schemaName="ruleform" indexName="relationship_attribute_updated_by_fkey_idx" tableName="relationship_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="relationship_attribute_updated_by_fkey_idx" tableName="relationship_attribute"
+            unique="false"
+        >
             <column name="updated_by" />
         </createIndex>
     </changeSet>

@@ -51,17 +51,17 @@
     <changeSet author="hhildebrand" id="1390879803225-163">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product" baseTableName="job_chronology" constraintName="job_chronology_product_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-165">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="status" baseTableName="job_chronology" constraintName="job_chronology_old_status_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-166">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="job_chronology" constraintName="job_chronology_updated_by_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-385">
         <addUniqueConstraint schemaName="ruleform" columnNames="job, sequence" constraintName="job_chronology_job_sequence_key"

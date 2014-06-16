@@ -30,9 +30,9 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-272">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="product" constraintName="product_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product" constraintName="product_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-447">
         <createIndex schemaName="ruleform" indexName="case_insensitive_product_name_idx" tableName="product" unique="false">

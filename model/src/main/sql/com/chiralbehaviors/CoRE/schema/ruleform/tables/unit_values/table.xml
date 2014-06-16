@@ -36,23 +36,23 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-366">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="product_value" baseTableName="unit_values"
-            constraintName="unit_values_product_value_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_value" baseTableName="unit_values" constraintName="unit_values_product_value_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-367">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="unit_values" constraintName="unit_values_unit_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="unit_values" constraintName="unit_values_unit_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-368">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="unit_values" constraintName="unit_values_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="unit_values" constraintName="unit_values_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-422">
-        <addUniqueConstraint schemaName="ruleform" columnNames="unit, sequence_number" constraintName="unit_values_unit_key" deferrable="false"
-            disabled="false" initiallyDeferred="false" tableName="unit_values" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="unit, sequence_number" constraintName="unit_values_unit_key"
+            deferrable="false" disabled="false" initiallyDeferred="false" tableName="unit_values" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-527">
         <createIndex schemaName="ruleform" indexName="unit_values_unit_fkey_idx" tableName="unit_values" unique="false">

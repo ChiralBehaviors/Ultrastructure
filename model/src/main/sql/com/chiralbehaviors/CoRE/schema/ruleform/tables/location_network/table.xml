@@ -42,17 +42,19 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-154">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="child" baseTableName="location_network" constraintName="location_network_child_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child" baseTableName="location_network" constraintName="location_network_child_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-155">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="parent" baseTableName="location_network" constraintName="location_network_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="parent" baseTableName="location_network" constraintName="location_network_parent_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-156">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="relationship" baseTableName="location_network"
-            constraintName="location_network_relationship_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="location_network" constraintName="location_network_relationship_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-473">
         <createIndex schemaName="ruleform" indexName="location_network_child_fkey_idx" tableName="location_network" unique="false">
@@ -60,23 +62,23 @@
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-198">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="location_network"
-            constraintName="location_network_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="location_network" constraintName="location_network_updated_by_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-389">
-        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2" constraintName="location_network_parent_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="location_network" />
-    </changeSet> 
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2"
+            constraintName="location_network_parent_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="location_network" />
+    </changeSet>
     <changeSet author="hhildebrand" id="0879803225-432">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise1" baseTableName="location_network"
-            constraintName="location_network_premise1_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="location_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="premise1" baseTableName="location_network" constraintName="location_network_premise1_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="0879803225-433">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="premise2" baseTableName="location_network"
-            constraintName="location_network_premise2_fkey" deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-            referencedColumnNames="id" referencedTableName="location_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="premise2" baseTableName="location_network" constraintName="location_network_premise2_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-434">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

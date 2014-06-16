@@ -59,29 +59,34 @@
         <rollback />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-353">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_attribute" baseTableName="unit_attribute_authorization"
-            constraintName="unit_attribute_authorization_attribute_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_attribute" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_attribute_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-354">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="unit_attribute_authorization"
-            constraintName="unit_attribute_authorization_classification_attribute_fkey" deferrable="true" initiallyDeferred="false"
-            onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classification" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_classification_attribute_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-355">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="unit_attribute_authorization"
-            constraintName="unit_attribute_authorization_classifier_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classifier" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_classifier_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-356">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="unit_attribute_authorization"
-            constraintName="unit_attribute_authorization_grouping_unit_fkey" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_grouping_unit_fkey"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-357">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="unit_attribute_authorization"
-            constraintName="unit_attribute_authorization_updated_by_fkey" deferrable="true" initiallyDeferred="false" onDelete="RESTRICT"
-            onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_updated_by_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-418">
         <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_attribute, sequence_number"

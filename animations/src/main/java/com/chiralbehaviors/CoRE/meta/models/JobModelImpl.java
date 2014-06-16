@@ -496,7 +496,7 @@ public class JobModelImpl implements JobModel {
         Subquery<Location> deliverTo = query.subquery(Location.class);
         Root<LocationNetwork> dtRoot = deliverTo.from(LocationNetwork.class);
         deliverTo.select(dtRoot.get(LocationNetwork_.child));
-        deliverFrom.where(cb.and(cb.equal(dtRoot.get(LocationNetwork_.parent),
+        deliverTo.where(cb.and(cb.equal(dtRoot.get(LocationNetwork_.parent),
                                           job.getDeliverTo()),
                                  cb.equal(dtRoot.get(LocationNetwork_.relationship),
                                           metaprotocol.getDeliverTo())));
@@ -504,7 +504,7 @@ public class JobModelImpl implements JobModel {
         Subquery<Product> productOrdered = query.subquery(Product.class);
         Root<ProductNetwork> poRoot = productOrdered.from(ProductNetwork.class);
         productOrdered.select(poRoot.get(ProductNetwork_.child));
-        deliverFrom.where(cb.and(cb.equal(poRoot.get(ProductNetwork_.parent),
+        productOrdered.where(cb.and(cb.equal(poRoot.get(ProductNetwork_.parent),
                                           job.getProduct()),
                                  cb.equal(poRoot.get(ProductNetwork_.relationship),
                                           metaprotocol.getProductOrdered())));
@@ -512,7 +512,7 @@ public class JobModelImpl implements JobModel {
         Subquery<Agency> requestingAgency = query.subquery(Agency.class);
         Root<AgencyNetwork> raRoot = requestingAgency.from(AgencyNetwork.class);
         requestingAgency.select(raRoot.get(AgencyNetwork_.child));
-        deliverFrom.where(cb.and(cb.equal(raRoot.get(AgencyNetwork_.parent),
+        requestingAgency.where(cb.and(cb.equal(raRoot.get(AgencyNetwork_.parent),
                                           job.getRequester()),
                                  cb.equal(raRoot.get(AgencyNetwork_.relationship),
                                           metaprotocol.getRequestingAgency())));

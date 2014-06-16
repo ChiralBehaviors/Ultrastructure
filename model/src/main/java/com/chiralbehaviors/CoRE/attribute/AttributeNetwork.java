@@ -84,12 +84,12 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "child")
     private Attribute          child;
 
     //bi-directional many-to-one association to Attribute 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Attribute          parent;
 

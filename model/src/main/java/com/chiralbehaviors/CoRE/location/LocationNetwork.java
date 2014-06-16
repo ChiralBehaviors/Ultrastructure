@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -82,11 +81,11 @@ public class LocationNetwork extends NetworkRuleform<Location> {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "child")
     private Location        child;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Location        parent;
 

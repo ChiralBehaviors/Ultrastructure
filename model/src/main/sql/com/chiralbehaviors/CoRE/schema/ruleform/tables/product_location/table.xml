@@ -22,7 +22,7 @@
             <column name="location" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
@@ -82,7 +82,7 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-495">
         <createIndex schemaName="ruleform" indexName="product_location_updated_by_fkey_idx" tableName="product_location" unique="false">
-            <column name="updated_by" />
+            <column name="updated_by"  />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

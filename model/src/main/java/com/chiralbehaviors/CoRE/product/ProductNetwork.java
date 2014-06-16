@@ -92,7 +92,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     // bi-directional many-to-one association to ProductNetworkAttribute
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "productNetwork", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productNetwork", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetworkAttribute> attributes;
 

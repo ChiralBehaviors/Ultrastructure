@@ -171,18 +171,18 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         this(name, start, unit, duration, null, updatedBy);
     }
 
-    public Interval(String name, BigDecimal start, Unit unit,
-                    BigDecimal duration, String description, Agency updatedBy) {
-        this(name, description, updatedBy);
-        setUnit(unit);
-    }
-
     public Interval(String name) {
         super(name);
     }
 
     public Interval(String name, Agency updatedBy) {
         super(name, updatedBy);
+    }
+
+    public Interval(String name, BigDecimal start, Unit unit,
+                    BigDecimal duration, String description, Agency updatedBy) {
+        this(name, description, updatedBy);
+        setUnit(unit);
     }
 
     public Interval(String name, String description) {

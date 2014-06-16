@@ -27,7 +27,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="unit" type="CHAR(22)" />
-            <column name="updated_by" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">

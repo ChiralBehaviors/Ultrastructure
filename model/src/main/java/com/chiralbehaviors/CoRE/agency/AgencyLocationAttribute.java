@@ -27,7 +27,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
@@ -171,7 +170,7 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
     }
 
     public void setEntityLocation(AgencyLocation AgencyLocation) {
-        this.agencyLocation = AgencyLocation;
+        agencyLocation = AgencyLocation;
     }
 
     /*

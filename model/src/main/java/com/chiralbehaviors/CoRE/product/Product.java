@@ -160,22 +160,22 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
     private static final long     serialVersionUID                                       = 1L;
 
     // bi-directional many-to-one association to ProductAttribute
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductAttribute> attributes;
 
     // bi-directional many-to-one association to ProductLocation
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductLocation>  locations;
 
     // bi-directional many-to-one association to ProductNetwork
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetwork>   networkByChild;
 
     // bi-directional many-to-one association to ProductNetwork
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductNetwork>   networkByParent;
 

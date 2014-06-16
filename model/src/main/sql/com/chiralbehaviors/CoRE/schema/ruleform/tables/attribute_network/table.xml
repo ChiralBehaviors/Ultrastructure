@@ -29,7 +29,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
-            <column name="updated_by" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
@@ -86,7 +86,7 @@
         <createIndex schemaName="ruleform" indexName="attribute_network_updated_by_fkey_idx" tableName="attribute_network"
             unique="false"
         >
-            <column name="updated_by" />
+            <column name="updated_by"   />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-447">

@@ -153,10 +153,10 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipNetwork>   networkByParent;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     private String                     operator;
 
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     private Integer                    preferred                                = FALSE;
 
     public Relationship() {

@@ -31,7 +31,7 @@
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="CHAR(22)" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The time of the last update to this rule"
@@ -113,7 +113,7 @@
         <createIndex schemaName="ruleform" indexName="product_network_attribute_updated_by_fkey_idx" tableName="product_network_attribute"
             unique="false"
         >
-            <column name="updated_by" />
+            <column name="updated_by"   />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

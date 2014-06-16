@@ -15,7 +15,9 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.JobChronology.*;
+import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
+import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
+import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -52,32 +54,33 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends Ruleform {
-    public static final String FIND_ALL = "jobChronology" + FIND_ALL_SUFFIX;
-    public static final String FIND_FOR_JOB = "jobChronology.findForJob";
+    public static final String FIND_ALL         = "jobChronology"
+                                                  + FIND_ALL_SUFFIX;
+    public static final String FIND_FOR_JOB     = "jobChronology.findForJob";
     public static final String FIND_FOR_PRODUCT = "jobChronology.findForProduct";
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Job
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
-    private Job               job;
+    private Job                job;
 
     // bi-directional many-to-one association to Product
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product")
-    private Product           product;
+    private Product            product;
 
     @SequenceGenerator(schema = "ruleform", name = "job_chronology_seq", sequenceName = "job_chronology_seq")
     @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
-    private Long              sequence;
+    private Long               sequence;
 
     //bi-directional many-to-one association to StatusCode
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
-    private StatusCode        status;
+    private StatusCode         status;
 
     @Column(name = "time_stamp")
-    private Timestamp         timeStamp;
+    private Timestamp          timeStamp;
 
     public JobChronology() {
     }
@@ -93,7 +96,7 @@ public class JobChronology extends Ruleform {
                          String notes, Agency updatedBy) {
         super(notes, updatedBy);
         this.job = job;
-        this.product = job.getProduct();
+        product = job.getProduct();
         this.status = status;
         this.timeStamp = timeStamp;
     }
@@ -133,7 +136,7 @@ public class JobChronology extends Ruleform {
 
     public void setJob(Job job) {
         this.job = job;
-        this.product = job.getProduct();
+        product = job.getProduct();
     }
 
     /**

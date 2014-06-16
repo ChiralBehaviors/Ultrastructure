@@ -16,6 +16,9 @@
 
 package com.chiralbehaviors.CoRE.event;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -25,7 +28,6 @@ import com.chiralbehaviors.CoRE.kernel.Bootstrap;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
-import static org.junit.Assert.*;
 
 /**
  * @author hhildebrand

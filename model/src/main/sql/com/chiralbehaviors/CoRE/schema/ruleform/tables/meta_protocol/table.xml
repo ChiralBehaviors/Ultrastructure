@@ -35,7 +35,7 @@
             </column>
             <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
             <column name="notes" remarks="Additional notes regarding usage of the attribute" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"

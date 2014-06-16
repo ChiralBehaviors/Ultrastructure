@@ -31,7 +31,7 @@
             <column name="location_2_attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
@@ -87,7 +87,7 @@
         <createIndex schemaName="ruleform" indexName="location_relationship_updated_by_fkey_idx" tableName="location_relationship"
             unique="false"
         >
-            <column name="updated_by" />
+            <column name="updated_by"   />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

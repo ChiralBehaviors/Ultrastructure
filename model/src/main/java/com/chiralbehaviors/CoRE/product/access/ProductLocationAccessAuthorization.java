@@ -15,12 +15,13 @@
  */
 package com.chiralbehaviors.CoRE.product.access;
 
-import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.*;
+import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_CHILD;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT;
 import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD;
+import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization.FIND_PRODUCTS_IN_LOCATION;
 
 import java.util.Map;
 

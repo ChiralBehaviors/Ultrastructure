@@ -33,7 +33,7 @@
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measure (if any) associated with the given value" type="CHAR(22)" />
             <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
@@ -74,7 +74,7 @@
         <createIndex schemaName="ruleform" indexName="protocol_attribute_updated_by_fkey_idx" tableName="protocol_attribute"
             unique="false"
         >
-            <column name="updated_by" />
+            <column name="updated_by"   />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

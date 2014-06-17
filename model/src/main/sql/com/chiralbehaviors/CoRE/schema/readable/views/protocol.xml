@@ -9,11 +9,24 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.protocol AS 
 			 SELECT base_table.id,
-			   r.name AS requester, rs.name AS requested_service, 
-               rp.name AS requested_product, dt.name AS deliver_to, df.name AS deliver_from,
-               assign.name AS assign_to, s.name AS service, p.name AS product,
-			   base_table.copy_attributes, base_table.sequence_number, base_table.notes, 
-			   up.name AS updated_by, base_table.update_date
+			        r.name AS requester, 
+                    rs.name AS requested_service, 
+                    rp.name AS requested_product, 
+                    dt.name AS deliver_to, 
+                    df.name AS deliver_from,
+                    assign.name AS assign_to, 
+                    s.name AS service, 
+                    p.name AS product,
+                    ra.name AS requester_attribute,
+                    sa.name AS service_attribute,
+                    pa.name AS product_attribute,
+                    dta.name AS deliver_to_attribute,
+                    dfa.name AS deliver_from_attribute,
+                    ata.name AS assign_to_attribute,
+			        base_table.sequence_number, 
+                    base_table.notes, 
+			        up.name AS updated_by,
+                    base_table.update_date
 			   FROM protocol base_table
                JOIN product rs ON base_table.requested_service = rs.id
 			   JOIN product rp ON base_table.requested_product = rp.id
@@ -23,7 +36,13 @@
                JOIN location df ON base_table.deliver_from = df.id
 			   JOIN agency assign ON base_table.assign_to = assign.id
                JOIN agency r ON base_table.requester = r.id
-			   JOIN agency up ON base_table.updated_by = up.id;
+			   JOIN agency up ON base_table.updated_by = up.id
+               JOIN attribute ra ON base_table.requester_attribute = ra.id
+               JOIN attribute sa ON base_table.service_attribute = sa.id
+               JOIN attribute pa ON base_table.product_attribute = pa.id
+               JOIN attribute dta ON base_table.deliver_to_attribute = dta.id
+               JOIN attribute dfa ON base_table.deliver_from_attribute = dfa.id
+               JOIN attribute ata ON base_table.assign_to_attribute = ata.id;
 			
 			ALTER TABLE readable.protocol
 			  OWNER TO core;

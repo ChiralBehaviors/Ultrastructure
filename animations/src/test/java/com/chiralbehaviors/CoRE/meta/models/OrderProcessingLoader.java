@@ -25,7 +25,6 @@ import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.ProtocolAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -394,7 +393,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         Protocol shipProtocol = new Protocol(deliver, anyAgency, anyProduct,
                                              anyLocation, anyLocation,
                                              factory1Agency, ship, sameProduct,
-                                             true, core);
+                                             core);
         em.persist(shipProtocol);
 
         Protocol printCustDeclProtocol = new Protocol(ship, externalCust,
@@ -415,34 +414,16 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                             core);
         em.persist(feeProtocol);
 
-        price = new ProtocolAttribute(priceAttribute, core);
-        price.setIntegerValue(1500);
-        price.setProtocol(feeProtocol);
-        em.persist(price);
-
         Protocol salesTaxProtocol = new Protocol(fee, nonExemptAgency,
                                                  nonExempt, dc, anyLocation,
                                                  billingComputer, salesTax,
                                                  sameProduct, core);
         em.persist(salesTaxProtocol);
 
-        ProtocolAttribute taxRate = new ProtocolAttribute(taxRateAttribute,
-                                                          core);
-        taxRate.setIntegerValue(575);
-        taxRate.setProtocol(salesTaxProtocol);
-        em.persist(taxRate);
-
         Protocol discountProtocol = new Protocol(fee, externalCust, abc486,
                                                  euro, us, billingComputer,
                                                  discount, sameProduct, core);
         em.persist(discountProtocol);
-
-        ProtocolAttribute euroDiscount = new ProtocolAttribute(
-                                                               discountAttribute,
-                                                               core);
-        euroDiscount.setIntegerValue(5);
-        euroDiscount.setProtocol(salesTaxProtocol);
-        em.persist(euroDiscount);
 
         Protocol gtuDiscountedPriceProtocol = new Protocol(
                                                            fee,
@@ -452,13 +433,6 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                                            fee, sameProduct,
                                                            core);
         em.persist(gtuDiscountedPriceProtocol);
-
-        ProtocolAttribute discountedPrice = new ProtocolAttribute(
-                                                                  priceAttribute,
-                                                                  core);
-        discountedPrice.setIntegerValue(1250);
-        discountedPrice.setProtocol(gtuDiscountedPriceProtocol);
-        em.persist(discountedPrice);
     }
 
     public void createRelationships() {

@@ -54,14 +54,12 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork_;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.ProtocolAttribute;
 import com.chiralbehaviors.CoRE.event.Protocol_;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
@@ -685,12 +683,6 @@ public class JobModelImpl implements JobModel {
         return children;
     }
 
-    @Override
-    public List<JobAttribute> getAttributesForJob(Job job) {
-        return em.createNamedQuery(Job.GET_ATTRIBUTES_FOR_JOB,
-                                   JobAttribute.class).getResultList();
-    }
-
     /**
      * @param job
      * @return
@@ -1113,13 +1105,6 @@ public class JobModelImpl implements JobModel {
         job.setService(protocol.getService());
         job.setStatus(kernel.getUnset());
         em.persist(job);
-
-        for (ProtocolAttribute pAttribute : protocol.getAttributes()) {
-            JobAttribute attribute = pAttribute.createJobAttribute();
-            attribute.setUpdatedBy(kernel.getCoreAnimationSoftware());
-            attribute.setJob(job);
-            em.persist(attribute);
-        }
 
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s from protocol %s", job,

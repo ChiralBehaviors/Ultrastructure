@@ -10,6 +10,11 @@
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="protocol_pkey" />
             </column>
+            <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
+                type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
             <column name="requested_service" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -28,16 +33,28 @@
             <column name="product" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="copy_attributes" type="SMALLINT" />
-            <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
-                type="sequence_number"
-            >
-                <constraints nullable="false" />
-            </column>
             <column name="assign_to" remarks="The agency that should perform the task" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="requester" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="service_attribute" remarks="The attribute service performed by this Job" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_attribute" remarks="The product produced this Job" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="assign_to_attribute" remarks="The agency doing this Job" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="requester_attribute" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_to_attribute" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_from_attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Additional notes regarding usage of the attribute" type="VARCHAR(10485760)" />
@@ -101,7 +118,39 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-512">
         <createIndex schemaName="ruleform" indexName="protocol_updated_by_fkey_idx" tableName="protocol" unique="false">
-            <column name="updated_by"   />
+            <column name="updated_by" />
         </createIndex>
+    </changeSet>
+
+    <changeSet author="hhildebrand" id="1390879803225-467">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="assign_to_attribute" baseTableName="protocol" constraintName="protocol_assign_to_attribute_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-468">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="deliver_from_attribute" baseTableName="protocol" constraintName="protocol_deliver_from_attribute_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-469">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="deliver_to_attribute" baseTableName="protocol" constraintName="protocol_deliver_to_attribute_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-470">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_attribute" baseTableName="protocol" constraintName="protocol_product_attribute_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-471">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="requester_attribute" baseTableName="protocol" constraintName="protocol_requester_attribute_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-472">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="service_attribute" baseTableName="protocol" constraintName="protocol_service_attribute_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
 </databaseChangeLog>

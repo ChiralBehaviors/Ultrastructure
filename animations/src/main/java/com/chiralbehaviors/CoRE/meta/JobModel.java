@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
@@ -208,12 +207,6 @@ public interface JobModel {
      * @return
      */
     List<Job> getAllChildren(Job job);
-
-    /**
-     * @param job
-     * @return
-     */
-    List<JobAttribute> getAttributesForJob(Job job);
 
     /**
      * Answer the list of sequencing authorizations that have the job's service

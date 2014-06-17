@@ -102,7 +102,7 @@ public class JobModelTest extends AbstractModelTest {
         Protocol p = new Protocol(kiki, kernel.getCore(), bento,
                                   kernel.getAnyLocation(),
                                   kernel.getAnyLocation(), kernel.getCore(),
-                                  shipping, bento, false, kernel.getCore());
+                                  shipping, bento, kernel.getCore());
         em.persist(p);
 
         em.getTransaction().commit();

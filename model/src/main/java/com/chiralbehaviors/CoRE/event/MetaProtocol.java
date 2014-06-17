@@ -55,8 +55,16 @@ public class MetaProtocol extends Ruleform {
     private Relationship       deliverFrom;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deliver_from_attribute")
+    private Relationship       deliverFromAttribute;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deliver_to_attribute")
+    private Relationship       deliverToAttribute;
 
     /**
      * The relationship that transforms the product ordered
@@ -65,12 +73,20 @@ public class MetaProtocol extends Ruleform {
     @JoinColumn(name = "product_ordered")
     private Relationship       productOrdered;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_ordered_attribute")
+    private Relationship       productOrderedAttribute;
+
     /**
      * the relationship that transforms the requesting agency
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requesting_agency")
     private Relationship       requestingAgency;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requesting_agency_attribute")
+    private Relationship       requestingAgencyAttribute;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber   = 1;
@@ -81,6 +97,13 @@ public class MetaProtocol extends Ruleform {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service")
     private Product            service;
+
+    /**
+     * the relationship that transforms the service type
+     */
+    @ManyToOne
+    @JoinColumn(name = "service_attribute")
+    private Relationship       serviceAttribute;
 
     /**
      * the relationship that transforms the service type
@@ -146,10 +169,24 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
+     * @return the deliverFromAttribute
+     */
+    public Relationship getDeliverFromAttribute() {
+        return deliverFromAttribute;
+    }
+
+    /**
      * @return the deliverTo
      */
     public Relationship getDeliverTo() {
         return deliverTo;
+    }
+
+    /**
+     * @return the deliverToAttribute
+     */
+    public Relationship getDeliverToAttribute() {
+        return deliverToAttribute;
     }
 
     /**
@@ -160,10 +197,24 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
+     * @return the productOrderedAttribute
+     */
+    public Relationship getProductOrderedAttribute() {
+        return productOrderedAttribute;
+    }
+
+    /**
      * @return the requestingAgency
      */
     public Relationship getRequestingAgency() {
         return requestingAgency;
+    }
+
+    /**
+     * @return the requestingAgencyAttribute
+     */
+    public Relationship getRequestingAgencyAttribute() {
+        return requestingAgencyAttribute;
     }
 
     public Integer getSequenceNumber() {
@@ -175,6 +226,13 @@ public class MetaProtocol extends Ruleform {
      */
     public Product getService() {
         return service;
+    }
+
+    /**
+     * @return the serviceAttribute
+     */
+    public Relationship getServiceAttribute() {
+        return serviceAttribute;
     }
 
     /**
@@ -200,11 +258,27 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
+     * @param deliverFromAttribute
+     *            the deliverFromAttribute to set
+     */
+    public void setDeliverFromAttribute(Relationship deliverFromAttribute) {
+        this.deliverFromAttribute = deliverFromAttribute;
+    }
+
+    /**
      * @param deliverTo
      *            the deliverTo to set
      */
     public void setDeliverTo(Relationship deliverTo) {
         this.deliverTo = deliverTo;
+    }
+
+    /**
+     * @param deliverToAttribute
+     *            the deliverToAttribute to set
+     */
+    public void setDeliverToAttribute(Relationship deliverToAttribute) {
+        this.deliverToAttribute = deliverToAttribute;
     }
 
     /**
@@ -216,11 +290,27 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
+     * @param productOrderedAttribute
+     *            the productOrderedAttribute to set
+     */
+    public void setProductOrderedAttribute(Relationship productOrderedAttribute) {
+        this.productOrderedAttribute = productOrderedAttribute;
+    }
+
+    /**
      * @param requestingAgency
      *            the requesting agency to set
      */
     public void setRequestingAgency(Relationship requestingAgency) {
         this.requestingAgency = requestingAgency;
+    }
+
+    /**
+     * @param requestingAgencyAttribute
+     *            the requestingAgencyAttribute to set
+     */
+    public void setRequestingAgencyAttribute(Relationship requestingAgencyAttribute) {
+        this.requestingAgencyAttribute = requestingAgencyAttribute;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -233,6 +323,14 @@ public class MetaProtocol extends Ruleform {
      */
     public void setService(Product service) {
         this.service = service;
+    }
+
+    /**
+     * @param serviceAttribute
+     *            the serviceAttribute to set
+     */
+    public void setServiceAttribute(Relationship serviceAttribute) {
+        this.serviceAttribute = serviceAttribute;
     }
 
     /**
@@ -249,6 +347,14 @@ public class MetaProtocol extends Ruleform {
      */
     public void setStopOnMatch(Boolean stopOnMatch) {
         this.stopOnMatch = toInteger(stopOnMatch);
+    }
+
+    /**
+     * @param stopOnMatch
+     *            the stopOnMatch to set
+     */
+    public void setStopOnMatch(Integer stopOnMatch) {
+        this.stopOnMatch = stopOnMatch;
     }
 
     /* (non-Javadoc)

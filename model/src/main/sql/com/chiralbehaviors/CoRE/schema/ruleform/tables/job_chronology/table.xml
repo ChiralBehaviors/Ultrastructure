@@ -13,18 +13,38 @@
             <column name="job" remarks="The Job whose chronology is being specified" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="product" remarks="The product produced by the job at this point" type="CHAR(22)">
-                <constraints nullable="false" />
-            </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="time_stamp" remarks="The time at which a status change occurs"
                 type="TIMESTAMPTZ"
             >
                 <constraints nullable="false" />
             </column>
-            <column name="status" remarks="The status the job changed to at the specified time" type="CHAR(22)">
+            <column name="service" remarks="The service performed by this Job" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="notes" remarks="Indicates any additional information about the status change" type="VARCHAR(10485760)">
+            <column name="product" remarks="The product produced this Job" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="assign_to" remarks="The agency doing this Job" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="requester" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_to" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_from" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" remarks="The current status of this Job" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="CHAR(22)" />
+            <column defaultValueNumeric="0" name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
+            <column name="chronology_notes" remarks="Indicates any additional information about the status change" type="VARCHAR(10485760)" />
+            <column name="notes" remarks="Notes about this job" type="VARCHAR(10485760)">
             </column>
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -47,15 +67,44 @@
             baseColumnNames="job" baseTableName="job_chronology" constraintName="job_chronology_job_fkey" deferrable="true"
             initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="job" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-163">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product" baseTableName="job_chronology" constraintName="job_chronology_product_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+    <changeSet author="hhildebrand" id="1390879803225-159"><addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="assign_to" baseTableName="job_chronology" constraintName="job_chronology_assign_to_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-165">
+    <changeSet author="hhildebrand" id="1390879803225-167">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status" baseTableName="job_chronology" constraintName="job_chronology_old_status_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+            baseColumnNames="deliver_from" baseTableName="job_chronology" constraintName="job_chronology_deliver_from_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-168">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="deliver_to" baseTableName="job_chronology" constraintName="job_chronology_deliver_to_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-169">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="parent" baseTableName="job_chronology" constraintName="job_chronology_parent_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="job" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-170">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="job_chronology" constraintName="job_chronology_product_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-171">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="requester" baseTableName="job_chronology" constraintName="job_chronology_requester_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-172">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="service" baseTableName="job_chronology" constraintName="job_chronology_service_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-173">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status" baseTableName="job_chronology" constraintName="job_chronology_status_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-166">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

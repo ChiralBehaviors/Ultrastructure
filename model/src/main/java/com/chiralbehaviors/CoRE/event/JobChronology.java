@@ -39,6 +39,7 @@ import javax.persistence.Table;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -70,6 +71,36 @@ public class JobChronology extends Ruleform {
     @JoinColumn(name = "product")
     private Product            product;
 
+    // bi-directional many-to-one association to Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assign_to")
+    private Agency             assignTo;
+
+    // bi-directional many-to-one association to Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deliver_from")
+    private Location           deliverFrom;
+
+    // bi-directional many-to-one association to Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deliver_to")
+    private Location           deliverTo;
+
+    // bi-directional many-to-one association to Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent")
+    private Job                parent;
+
+    // bi-directional many-to-one association to Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requester")
+    private Agency             requester;
+
+    // bi-directional many-to-one association to Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service")
+    private Product            service;
+
     @SequenceGenerator(schema = "ruleform", name = "job_chronology_seq", sequenceName = "job_chronology_seq")
     @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
     private Long               sequence;
@@ -81,6 +112,9 @@ public class JobChronology extends Ruleform {
 
     @Column(name = "time_stamp")
     private Timestamp          timeStamp;
+
+    @Column(name = "chronology_notes")
+    private String             chronologyNotes;
 
     public JobChronology() {
     }
@@ -165,6 +199,104 @@ public class JobChronology extends Ruleform {
 
     public void setTimeStamp(Timestamp timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    /**
+     * @return the assignTo
+     */
+    public Agency getAssignTo() {
+        return assignTo;
+    }
+
+    /**
+     * @param assignTo the assignTo to set
+     */
+    public void setAssignTo(Agency assignTo) {
+        this.assignTo = assignTo;
+    }
+
+    /**
+     * @return the deliverFrom
+     */
+    public Location getDeliverFrom() {
+        return deliverFrom;
+    }
+
+    /**
+     * @param deliverFrom the deliverFrom to set
+     */
+    public void setDeliverFrom(Location deliverFrom) {
+        this.deliverFrom = deliverFrom;
+    }
+
+    /**
+     * @return the deliverTo
+     */
+    public Location getDeliverTo() {
+        return deliverTo;
+    }
+
+    /**
+     * @param deliverTo the deliverTo to set
+     */
+    public void setDeliverTo(Location deliverTo) {
+        this.deliverTo = deliverTo;
+    }
+
+    /**
+     * @return the parent
+     */
+    public Job getParent() {
+        return parent;
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(Job parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * @return the requester
+     */
+    public Agency getRequester() {
+        return requester;
+    }
+
+    /**
+     * @param requester the requester to set
+     */
+    public void setRequester(Agency requester) {
+        this.requester = requester;
+    }
+
+    /**
+     * @return the service
+     */
+    public Product getService() {
+        return service;
+    }
+
+    /**
+     * @param service the service to set
+     */
+    public void setService(Product service) {
+        this.service = service;
+    }
+
+    /**
+     * @return the chronologyNotes
+     */
+    public String getChronologyNotes() {
+        return chronologyNotes;
+    }
+
+    /**
+     * @param jobNotes the jobNotes to set
+     */
+    public void setChronologyNotes(String chronologyNotes) {
+        this.chronologyNotes = chronologyNotes;
     }
 
     /*

@@ -16,7 +16,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.event.Job.CHRONOLOGY;
 import static java.lang.String.format;
 
 import java.sql.SQLException;
@@ -410,9 +409,15 @@ public class JobModelImpl implements JobModel {
                                  StatusCode status, String notes) {
         JobChronology c = new JobChronology(job.getUpdatedBy());
         c.setJob(job);
-        if (notes != null) {
-            c.setNotes(notes);
-        }
+        c.setService(job.getService());
+        c.setProduct(job.getProduct());
+        c.setAssignTo(job.getAssignTo());
+        c.setRequester(job.getRequester());
+        c.setDeliverFrom(job.getDeliverFrom());
+        c.setDeliverTo(job.getDeliverTo());
+        c.setParent(job.getParent());
+        c.setChronologyNotes(notes);
+        c.setNotes(job.getNotes());
         c.setStatus(status);
         c.setTimeStamp(timestamp);
         em.persist(c);
@@ -739,7 +744,7 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<JobChronology> getChronologyForJob(Job job) {
-        return em.createNamedQuery(CHRONOLOGY, JobChronology.class).setParameter("job",
+        return em.createNamedQuery(JobChronology.FIND_FOR_JOB, JobChronology.class).setParameter("job",
                                                                                  job).getResultList();
     }
 

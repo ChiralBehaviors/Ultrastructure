@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
->
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.chiralbehaviors.CoRE</groupId>
@@ -16,6 +15,12 @@
         <main.sql>${project.basedir}/src/main/sql</main.sql>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>model</artifactId>
@@ -124,8 +129,8 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings
-                    only. It has no influence on the Maven build itself. -->
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -276,7 +281,8 @@
                                     <username>${db.login}</username>
                                     <password>${db.password}</password>
                                     <autocommit>true</autocommit>
-                                    <sqlCommand>SELECT sqlj.set_classpath('ruleform',
+                                    <sqlCommand>SELECT
+                                        sqlj.set_classpath('ruleform',
                                         '${pljavaClassPath}');</sqlCommand>
                                 </configuration>
                             </execution>

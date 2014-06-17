@@ -22,18 +22,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -444,6 +449,87 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(1, metaProtocols.size());
         protocols = jobModel.getProtocols(job);
         assertEquals(1, protocols.size());
+    }
+
+
+    
+    //@Test
+    
+    //TODO this test won't pass until we make job chronology saves fire from
+    //job update triggers
+    public void testJobChronologyOnStatusUpdate() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = new Job(scenario.orderFullfillment,
+                            scenario.georgeTownUniversity, scenario.deliver,
+                            scenario.abc486, scenario.rsb225,
+                            scenario.factory1, scenario.core);
+        em.persist(order);
+        txn.commit();
+        em.refresh(order);
+        List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
+        assertEquals(1, chronologies.size());
+        List<String> fieldErrors = verifyChronologyFields(order,
+                                                          chronologies.get(0));
+        
+        assertEquals(0, fieldErrors.size());
+        txn.begin();
+        model.getJobModel().changeStatus(order, scenario.available, kernel.getCore(), null);
+        txn.commit();
+        chronologies = model.getJobModel().getChronologyForJob(order);
+        assertEquals(2, chronologies.size());
+        fieldErrors = verifyChronologyFields(order, chronologies.get(0));
+        System.out.println(String.format("Errors: %s", fieldErrors));
+        assertEquals(0, fieldErrors.size());
+    }
+
+    /**
+     * Returns a list of fields that do not match between job and chronology
+     * 
+     * @param job
+     * @param jobChronology
+     * @return
+     * @throws SecurityException
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
+    private List<String> verifyChronologyFields(Job job,
+                                                JobChronology jobChronology)
+                                                                            throws Exception {
+        String[] fieldsToMatch = new String[] { "status", "parent",
+                "requester", "assignTo", "deliverFrom", "deliverTo", "notes" };
+        List<String> unmatchedFields = new LinkedList<>();
+        if (!jobChronology.getJob().equals(job)) {
+            unmatchedFields.add("job");
+            return unmatchedFields;
+        }
+        for (String field : fieldsToMatch) {
+            ExistentialRuleform<?, ?> jobRf = (ExistentialRuleform<?, ?>) PropertyUtils.getSimpleProperty(job,
+                                                                                                          field);
+            System.out.println(String.format("Job %s: %s", field, jobRf));
+            ExistentialRuleform<?, ?> chronoRf = (ExistentialRuleform<?, ?>) PropertyUtils.getSimpleProperty(jobChronology,
+                                                                                                             field);
+
+            System.out.println(String.format("Chronology %s: %s", field,
+                                             chronoRf));
+            if (chronoRf == null && jobRf == null) {
+                continue;
+            }
+            if (!chronoRf.equals(jobRf)) {
+                System.out.println(String.format("%s: job: %s, chronology: %s",
+                                                 field,
+                                                 jobRf == null ? "null"
+                                                              : jobRf.getName(),
+                                                 chronoRf == null ? "null"
+                                                                 : chronoRf.getName()));
+                unmatchedFields.add(field);
+            }
+        }
+
+        return unmatchedFields;
     }
 
     private void clearJobs() throws SQLException {

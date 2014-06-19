@@ -19,7 +19,6 @@ package com.chiralbehaviors.CoRE.event;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -117,9 +116,6 @@ public abstract class AbstractProtocol extends Ruleform {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_attribute")
     private Attribute         requesterAttribute;
-
-    @Column(name = "sequence_number")
-    private int               sequenceNumber   = 1;
 
     /**
      * The service this job is performing
@@ -262,13 +258,6 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @return the sequenceNumber
-     */
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    /**
      * @return the service
      */
     public Product getService() {
@@ -292,7 +281,7 @@ public abstract class AbstractProtocol extends Ruleform {
                              serviceAttribute.getName(),
                              productAttribute.getName(),
                              deliverToAttribute.getName(),
-                             deliverFromAttribute.getName(), sequenceNumber);
+                             deliverFromAttribute.getName());
     }
 
     public void setAssignTo(Agency agency2) {
@@ -372,22 +361,6 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @param sequenceNumber
-     *            the sequenceNumber to set
-     */
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    /**
-     * @param sequenceNumber
-     *            the sequenceNumber to set
-     */
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    /**
      * @param service
      *            the service to set
      */
@@ -417,7 +390,7 @@ public abstract class AbstractProtocol extends Ruleform {
                              serviceAttribute.getName(),
                              productAttribute.getName(),
                              deliverToAttribute.getName(),
-                             deliverFromAttribute.getName(), sequenceNumber);
+                             deliverFromAttribute.getName());
     }
 
     /*

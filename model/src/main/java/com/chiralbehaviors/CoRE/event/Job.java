@@ -217,6 +217,8 @@ public class Job extends AbstractProtocol {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<Job>           childJobs;
+    
+    
 
     public Job() {
     }

@@ -374,14 +374,12 @@ public class JobModelTest extends AbstractModelTest {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-        Job order = new Job(scenario.orderFullfillment,
-                            kernel.getAnyAttribute(), scenario.deliver,
-                            kernel.getAnyAttribute(), scenario.abc486,
-                            kernel.getAnyAttribute(), scenario.rsb225,
-                            kernel.getAnyAttribute(), scenario.factory1,
-                            kernel.getAnyAttribute(),
-                            scenario.georgeTownUniversity,
-                            kernel.getAnyAttribute(), scenario.core);
+        Job order = jobModel.newInitializedJob(scenario.deliver, scenario.core);
+        order.setAssignTo(scenario.orderFullfillment);
+        order.setProduct(scenario.abc486);
+        order.setDeliverTo(scenario.rsb225);
+        order.setDeliverFrom(scenario.factory1);
+        order.setRequester(scenario.georgeTownUniversity);
         order.setStatus(kernel.getUnset());
         //List<Job> jobs2 = model.getJobModel().generateImplicitJobs(order);
         em.persist(order);

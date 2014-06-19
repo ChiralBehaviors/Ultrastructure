@@ -857,11 +857,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<Protocol> getProtocols(Job job) {
         // First we try for protocols which match the current job
-        List<Protocol> protocols = getProtocols(job.getService(),
-                                                job.getRequester(),
-                                                job.getProduct(),
-                                                job.getDeliverTo(),
-                                                job.getDeliverFrom());
+        List<Protocol> protocols = getProtocolsMatching(job);
         if (!protocols.isEmpty()) {
             return protocols;
         }
@@ -901,20 +897,6 @@ public class JobModelImpl implements JobModel {
             }
             return Collections.emptyList();
         }
-    }
-
-    @Override
-    public List<Protocol> getProtocols(Product requestedService,
-                                       Agency requester, Product product,
-                                       Location deliverTo, Location deliverFrom) {
-        TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET,
-                                                         Protocol.class);
-        query.setParameter("requestedService", requestedService);
-        query.setParameter("requester", requester);
-        query.setParameter("product", product);
-        query.setParameter("deliverTo", deliverTo);
-        query.setParameter("deliverFrom", deliverFrom);
-        return query.getResultList();
     }
 
     /*
@@ -1083,13 +1065,7 @@ public class JobModelImpl implements JobModel {
     public Job insertJob(Job parent, Protocol protocol) {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
-        job.setAssignTo(resolve(parent.getAssignTo(), protocol.getAssignTo()));
-        job.setRequester(parent.getRequester());
-        job.setProduct(resolve(parent.getProduct(), protocol.getProduct()));
-        job.setDeliverFrom(resolve(parent.getDeliverFrom(),
-                                   protocol.getDeliverFrom()));
-        job.setDeliverTo(resolve(parent.getDeliverTo(), protocol.getDeliverTo()));
-        job.setService(protocol.getService());
+        job.copyFrom(protocol);
         job.setStatus(kernel.getUnset());
         em.persist(job);
 
@@ -1683,6 +1659,23 @@ public class JobModelImpl implements JobModel {
         return getInitialState(em.find(Product.class, service)).getId();
     }
 
+    private List<Protocol> getProtocolsMatching(Job job) {
+        TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET,
+                                                         Protocol.class);
+        query.setParameter("requestedService", job.getService());
+        query.setParameter("requester", job.getRequester());
+        query.setParameter("product", job.getProduct());
+        query.setParameter("deliverTo", job.getDeliverTo());
+        query.setParameter("deliverFrom", job.getDeliverFrom());
+        query.setParameter("productAttribute", job.getProductAttribute());
+        query.setParameter("assignToAttribute", job.getAssignToAttribute());
+        query.setParameter("requesterAttribute", job.getRequesterAttribute());
+        query.setParameter("deliverToAttribute", job.getDeliverToAttribute());
+        query.setParameter("deliverFromAttribute",
+                           job.getDeliverFromAttribute());
+        return query.getResultList();
+    }
+
     /**
      * @param serviceId
      * @return
@@ -1736,48 +1729,6 @@ public class JobModelImpl implements JobModel {
             }
         }
         return tally;
-    }
-
-    /**
-     * Resolve the value of a agency, using the original and supplied values
-     */
-    private Agency resolve(Agency original, Agency supplied) {
-        if (kernel.getSameAgency().equals(supplied)) {
-            return original;
-        } else if (kernel.getNotApplicableAgency().equals(supplied)) {
-            return kernel.getNotApplicableAgency();
-        } else if (kernel.getAnyAgency().equals(supplied)) {
-            return original;
-        }
-        return supplied;
-    }
-
-    /**
-     * Resolve the value of a location, using the original and supplied values
-     */
-    private Location resolve(Location original, Location supplied) {
-        if (kernel.getSameLocation().equals(supplied)) {
-            return original;
-        } else if (kernel.getAnyLocation().equals(supplied)) {
-            return original;
-        } else if (kernel.getNotApplicableLocation().equals(supplied)) {
-            return kernel.getNotApplicableLocation();
-        }
-        return supplied;
-    }
-
-    /**
-     * Resolve the value of an product, using the original and supplied values
-     */
-    private Product resolve(Product original, Product supplied) {
-        if (kernel.getSameProduct().equals(supplied)) {
-            return original;
-        } else if (kernel.getNotApplicableProduct().equals(supplied)) {
-            return kernel.getNotApplicableProduct();
-        } else if (kernel.getAnyProduct().equals(supplied)) {
-            return original;
-        }
-        return supplied;
     }
 
     /**

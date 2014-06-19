@@ -179,6 +179,21 @@ public abstract class AbstractProtocol extends Ruleform {
         super(id, updatedBy);
     }
 
+    public void copyFrom(AbstractProtocol protocol) {
+        assignTo = protocol.getAssignTo();
+        assignToAttribute = protocol.assignToAttribute;
+        deliverTo = protocol.deliverTo;
+        deliverToAttribute = protocol.deliverToAttribute;
+        deliverFrom = protocol.deliverFrom;
+        deliverFromAttribute = protocol.deliverFromAttribute;
+        product = protocol.product;
+        productAttribute = protocol.productAttribute;
+        requester = protocol.requester;
+        requesterAttribute = protocol.requesterAttribute;
+        service = protocol.service;
+        serviceAttribute = protocol.serviceAttribute;
+    }
+
     public Agency getAssignTo() {
         return assignTo;
     }
@@ -460,5 +475,4 @@ public abstract class AbstractProtocol extends Ruleform {
         super.traverseForeignKeys(em, knownObjects);
 
     }
-
 }

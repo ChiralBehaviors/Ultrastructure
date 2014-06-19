@@ -39,7 +39,6 @@ import javax.persistence.Table;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -53,7 +52,7 @@ import com.chiralbehaviors.CoRE.product.Product;
                                                             + "where j.product = :product ") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
-public class JobChronology extends Ruleform {
+public class JobChronology extends AbstractProtocol {
     public static final String FIND_ALL         = "jobChronology"
                                                   + FIND_ALL_SUFFIX;
     public static final String FIND_FOR_JOB     = "jobChronology.findForJob";
@@ -65,19 +64,9 @@ public class JobChronology extends Ruleform {
     @JoinColumn(name = "job")
     private Job                job;
 
-    // bi-directional many-to-one association to Product
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product")
-    private Product            product;
-
     @SequenceGenerator(schema = "ruleform", name = "job_chronology_seq", sequenceName = "job_chronology_seq")
     @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
     private Long               sequence;
-
-    //bi-directional many-to-one association to StatusCode
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status")
-    private StatusCode         status;
 
     @Column(name = "time_stamp")
     private Timestamp          timeStamp;
@@ -96,9 +85,8 @@ public class JobChronology extends Ruleform {
                          String notes, Agency updatedBy) {
         super(notes, updatedBy);
         this.job = job;
-        product = job.getProduct();
-        this.status = status;
         this.timeStamp = timeStamp;
+        copyFrom(job);
     }
 
     /**
@@ -112,22 +100,8 @@ public class JobChronology extends Ruleform {
         return job;
     }
 
-    /**
-     * @return the product
-     */
-    public Product getProduct() {
-        return product;
-    }
-
     public Long getSequence() {
         return sequence;
-    }
-
-    /**
-     * @return the status
-     */
-    public StatusCode getStatus() {
-        return status;
     }
 
     public Timestamp getTimeStamp() {
@@ -136,15 +110,7 @@ public class JobChronology extends Ruleform {
 
     public void setJob(Job job) {
         this.job = job;
-        product = job.getProduct();
-    }
-
-    /**
-     * @param product
-     *            the product to set
-     */
-    public void setProduct(Product product) {
-        this.product = product;
+        copyFrom(job);
     }
 
     /**
@@ -153,14 +119,6 @@ public class JobChronology extends Ruleform {
      */
     public void setSequence(Long sequence) {
         this.sequence = sequence;
-    }
-
-    /**
-     * @param status
-     *            the status to set
-     */
-    public void setStatus(StatusCode status) {
-        this.status = status;
     }
 
     public void setTimeStamp(Timestamp timeStamp) {
@@ -180,10 +138,6 @@ public class JobChronology extends Ruleform {
         if (job != null) {
             job = (Job) job.manageEntity(em, knownObjects);
         }
-        if (status != null) {
-            status = (StatusCode) status.manageEntity(em, knownObjects);
-        }
         super.traverseForeignKeys(em, knownObjects);
-
     }
 }

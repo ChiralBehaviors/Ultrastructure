@@ -29,7 +29,6 @@ import java.util.List;
 import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transaction;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,7 +49,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private static JobModelDebugger              jobModel;
+    private static JobModelDebugger      jobModel;
     private static OrderProcessingLoader scenario;
 
     @BeforeClass
@@ -342,11 +341,11 @@ public class JobModelTest extends AbstractModelTest {
     public void testGenerateJobsFromProtocols() {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-
-       Protocol p = jobModel.newInitializedProtocol();
+        Product service = new Product("test service", kernel.getCore());
+        Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
         em.persist(p);
         txn.commit();
-        Job order = jobModel.newInitializedJob();
+        Job order = jobModel.newInitializedJob(service, kernel.getCore());
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
         List<Protocol> protocols = model.getJobModel().getProtocols(order);
         assertEquals(1, protocols.size());

@@ -517,16 +517,27 @@ public interface JobModel {
     void logModifiedService(UUID scs);
 
     /**
+     * @param service TODO
+     * @param updatedBy TODO
      * @return a job in which every field has the appropriate NotApplicable
      *         ruleform. Status is set to UNSET
      */
-    Job newInitializedJob();
+    Job newInitializedJob(Product service, Agency updatedBy);
 
     /**
+     * @param service TODO
+     * @param updatedBy TODO
      * @return a protocol in which every field has the appropriate NotApplicable
      *         ruleform.
      */
-    Protocol newInitializedProtocol();
+    Protocol newInitializedProtocol(Product service, Agency updatedBy);
+
+    /**
+     * @param service TODO
+     * @param updatedBy TODO
+     * @return a protocol in which every field has the appropriate defaults
+     */
+    MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);
 
     /**
      * Process all the implicit status changes of the children of a job

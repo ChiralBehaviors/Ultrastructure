@@ -77,6 +77,7 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork_;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform_;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetwork_;
@@ -1145,8 +1146,10 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public Job newInitializedJob() {
+    public Job newInitializedJob(Product service, Agency updatedBy) {
         Job job = new Job();
+        job.setService(service);
+        job.setUpdatedBy(updatedBy);
         job.setAssignTo(kernel.getNotApplicableAgency());
         job.setAssignToAttribute(kernel.getNotApplicableAttribute());
         job.setDeliverFrom(kernel.getNotApplicableLocation());
@@ -1157,16 +1160,39 @@ public class JobModelImpl implements JobModel {
         job.setProductAttribute(kernel.getNotApplicableAttribute());
         job.setRequester(kernel.getNotApplicableAgency());
         job.setRequesterAttribute(kernel.getNotApplicableAttribute());
-        job.setService(kernel.getNotApplicableProduct());
         job.setServiceAttribute(kernel.getNotApplicableAttribute());
         job.setStatus(kernel.getUnset());
 
         return job;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.JobModel#newInitializedMetaProtocol()
+     */
     @Override
-    public Protocol newInitializedProtocol() {
+    public MetaProtocol newInitializedMetaProtocol(Product service,
+                                                   Agency updatedBy) {
+        Relationship same = kernel.getSameRelationship();
+        MetaProtocol mp = new MetaProtocol(updatedBy);
+        mp.setService(service);
+        mp.setAssignTo(same);
+        mp.setAssignToAttribute(same);
+        mp.setDeliverFrom(same);
+        mp.setDeliverFromAttribute(same);
+        mp.setProductOrdered(same);
+        mp.setProductOrderedAttribute(same);
+        mp.setRequestingAgency(same);
+        mp.setRequestingAgencyAttribute(same);
+        mp.setServiceAttribute(same);
+        mp.setServiceType(same);
+        return mp;
+    }
+
+    @Override
+    public Protocol newInitializedProtocol(Product service, Agency updatedBy) {
         Protocol protocol = new Protocol();
+        protocol.setService(service);
+        protocol.setUpdatedBy(updatedBy);
         protocol.setAssignTo(kernel.getNotApplicableAgency());
         protocol.setAssignToAttribute(kernel.getNotApplicableAttribute());
         protocol.setDeliverFrom(kernel.getNotApplicableLocation());
@@ -1177,7 +1203,6 @@ public class JobModelImpl implements JobModel {
         protocol.setProductAttribute(kernel.getNotApplicableAttribute());
         protocol.setRequester(kernel.getNotApplicableAgency());
         protocol.setRequesterAttribute(kernel.getNotApplicableAttribute());
-        protocol.setService(kernel.getNotApplicableProduct());
         protocol.setServiceAttribute(kernel.getNotApplicableAttribute());
 
         return protocol;

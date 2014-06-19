@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
 
@@ -359,20 +358,6 @@ public interface JobModel {
     List<Protocol> getProtocols(Job job, MetaProtocol metaprotocol);
 
     /**
-     * Answer the list of matching protocols
-     * 
-     * @param service
-     * @param requester
-     * @param product
-     * @param deliverTo
-     * @param deliverFrom
-     * @return
-     */
-    List<Protocol> getProtocols(Product service, Agency requester,
-                                Product product, Location deliverTo,
-                                Location deliverFrom);
-
-    /**
      * @param service
      * @return
      */
@@ -517,24 +502,30 @@ public interface JobModel {
     void logModifiedService(UUID scs);
 
     /**
-     * @param service TODO
-     * @param updatedBy TODO
+     * @param service
+     *            TODO
+     * @param updatedBy
+     *            TODO
      * @return a job in which every field has the appropriate NotApplicable
      *         ruleform. Status is set to UNSET
      */
     Job newInitializedJob(Product service, Agency updatedBy);
 
     /**
-     * @param service TODO
-     * @param updatedBy TODO
+     * @param service
+     *            TODO
+     * @param updatedBy
+     *            TODO
      * @return a protocol in which every field has the appropriate NotApplicable
      *         ruleform.
      */
     Protocol newInitializedProtocol(Product service, Agency updatedBy);
 
     /**
-     * @param service TODO
-     * @param updatedBy TODO
+     * @param service
+     *            TODO
+     * @param updatedBy
+     *            TODO
      * @return a protocol in which every field has the appropriate defaults
      */
     MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);

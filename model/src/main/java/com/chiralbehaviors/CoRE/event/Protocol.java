@@ -22,6 +22,7 @@ import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -34,8 +35,6 @@ import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -112,6 +111,8 @@ public class Protocol extends AbstractProtocol {
     @ManyToOne
     @JoinColumn(name = "requested_service")
     private Product            requestedService;
+    @Column(name = "sequence_number")
+    private int                sequenceNumber   = 1;
 
     public Protocol() {
     }
@@ -123,80 +124,19 @@ public class Protocol extends AbstractProtocol {
         super(updatedBy);
     }
 
-    public Protocol(Product requestedService, Agency requester,
-                    Attribute requesterAttribute, Product requestedProduct,
-                    Location deliverTo, Attribute deliverToAttribute,
-                    Location deliverFrom, Attribute deliverFromAttribute,
-                    Agency assignTo, Attribute assignToAttribute,
-                    Product service, Attribute serviceAttribute,
-                    Product product, Attribute productAttribute,
-                    Agency updatedBy) {
+    /**
+     * @param notes
+     */
+    public Protocol(String notes) {
+        super(notes);
+    }
 
-        super(updatedBy);
-        if (requestedService == null) {
-            throw new IllegalArgumentException(
-                                               "requestedService cannot be null");
-        }
-        if (requester == null) {
-            throw new IllegalArgumentException("requester cannot be null");
-        }
-        if (requesterAttribute == null) {
-            throw new IllegalArgumentException(
-                                               "requesterAttribute cannot be null");
-        }
-        if (requestedProduct == null) {
-            throw new IllegalArgumentException(
-                                               "requestedProduct cannot be null");
-        }
-        if (deliverTo == null) {
-            throw new IllegalArgumentException("deliverTo cannot be null");
-        }
-        if (deliverToAttribute == null) {
-            throw new IllegalArgumentException(
-                                               "deliverToAttribute cannot be null");
-        }
-        if (deliverFrom == null) {
-            throw new IllegalArgumentException("deliverFrom cannot be null");
-        }
-        if (deliverFromAttribute == null) {
-            throw new IllegalArgumentException(
-                                               "deliverFromAttribute cannot be null");
-        }
-        if (assignTo == null) {
-            throw new IllegalArgumentException("assignTo cannot be null");
-        }
-        if (assignToAttribute == null) {
-            throw new IllegalArgumentException(
-                                               "assignToAttribute cannot be null");
-        }
-        if (service == null) {
-            throw new IllegalArgumentException("service cannot be null");
-        }
-        if (serviceAttribute == null) {
-            throw new IllegalArgumentException(
-                                               "serviceAttribute cannot be null");
-        }
-        if (product == null) {
-            throw new IllegalArgumentException("product cannot be null");
-        }
-        if (productAttribute == null) {
-            throw new IllegalArgumentException(
-                                               "productAttribute cannot be null");
-        }
-        setRequestedService(requestedService);
-        setRequester(requester);
-        setRequesterAttribute(requesterAttribute);
-        setRequestedProduct(requestedProduct);
-        setDeliverTo(deliverTo);
-        setDeliverToAttribute(deliverToAttribute);
-        setDeliverFrom(deliverFrom);
-        setDeliverFromAttribute(deliverFromAttribute);
-        setAssignTo(assignTo);
-        setAssignToAttribute(assignToAttribute);
-        setService(service);
-        setServiceAttribute(serviceAttribute);
-        setProduct(product);
-        setProductAttribute(productAttribute);
+    /**
+     * @param notes
+     * @param updatedBy
+     */
+    public Protocol(String notes, Agency updatedBy) {
+        super(notes, updatedBy);
     }
 
     /**
@@ -204,6 +144,14 @@ public class Protocol extends AbstractProtocol {
      */
     public Protocol(UUID id) {
         super(id);
+    }
+
+    /**
+     * @param id
+     * @param updatedBy
+     */
+    public Protocol(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     public Product getRequestedProduct() {
@@ -215,6 +163,13 @@ public class Protocol extends AbstractProtocol {
      */
     public Product getRequestedService() {
         return requestedService;
+    }
+
+    /**
+     * @return the sequenceNumber
+     */
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
     }
 
     /**
@@ -231,6 +186,22 @@ public class Protocol extends AbstractProtocol {
      */
     public void setRequestedService(Product requestedService) {
         this.requestedService = requestedService;
+    }
+
+    /**
+     * @param sequenceNumber
+     *            the sequenceNumber to set
+     */
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    /**
+     * @param sequenceNumber
+     *            the sequenceNumber to set
+     */
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     /* (non-Javadoc)

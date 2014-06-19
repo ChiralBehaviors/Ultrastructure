@@ -23,10 +23,13 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hparry
@@ -74,41 +77,80 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
                                             kernel.getAnyRelationship(),
                                             w.anyRelationship,
                                             kernel.getAnyRelationship(),
-                                            w.sameRelationship, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.core);
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.anyRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.anyRelationship,
+                                            kernel.getAnyRelationship(), w.core);
         em.persist(mp1);
 
         //if in US, check credit, if EU, check LOC
         MetaProtocol mp2 = new MetaProtocol(w.pick, 2, w.sameRelationship,
-                                            kernel.getAnyRelationship(), w.customerType,
-                                            kernel.getAnyRelationship(), w.sameRelationship, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.core);
+                                            kernel.getAnyRelationship(),
+                                            w.customerType,
+                                            kernel.getAnyRelationship(),
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.area,
+                                            kernel.getAnyRelationship(),
+                                            w.area,
+                                            kernel.getAnyRelationship(), w.core);
         em.persist(mp2);
 
         //print purchase order and customs declaration, if applicable
         MetaProtocol mp3 = new MetaProtocol(w.ship, 3, w.sameRelationship,
-                                            kernel.getAnyRelationship(), w.customerType,
-                                            kernel.getAnyRelationship(), w.sameRelationship, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.core);
+                                            kernel.getAnyRelationship(),
+                                            w.customerType,
+                                            kernel.getAnyRelationship(),
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.area,
+                                            kernel.getAnyRelationship(),
+                                            w.area,
+                                            kernel.getAnyRelationship(), w.core);
         em.persist(mp3);
 
         //generate fee for georgetown
         MetaProtocol mp4 = new MetaProtocol(w.printPurchaseOrder, 4,
                                             w.sameRelationship,
                                             kernel.getAnyRelationship(),
-                                            w.sameRelationship, kernel.getAnyRelationship(), w.sameRelationship,
-                                            kernel.getAnyRelationship(), w.city, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.core);
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.city,
+                                            kernel.getAnyRelationship(),
+                                            w.area,
+                                            kernel.getAnyRelationship(), w.core);
         mp4.setStopOnMatch(true);
         em.persist(mp4);
 
         //generate fee for everyone else
         MetaProtocol mp5 = new MetaProtocol(w.printPurchaseOrder, 5,
-                                            w.sameRelationship, kernel.getAnyRelationship(),
-                                            w.customerType, kernel.getAnyRelationship(),
-                                            w.sameRelationship, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.core);
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.customerType,
+                                            kernel.getAnyRelationship(),
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.area,
+                                            kernel.getAnyRelationship(),
+                                            w.anyRelationship,
+                                            kernel.getAnyRelationship(), w.core);
         em.persist(mp5);
 
         //create sales tax
         MetaProtocol mp6 = new MetaProtocol(w.fee, 6, w.anyRelationship,
-                                            kernel.getAnyRelationship(), w.customerType,
-                                            kernel.getAnyRelationship(), w.sameRelationship, kernel.getAnyRelationship(), w.region, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.core);
+                                            kernel.getAnyRelationship(),
+                                            w.customerType,
+                                            kernel.getAnyRelationship(),
+                                            w.sameRelationship,
+                                            kernel.getAnyRelationship(),
+                                            w.region,
+                                            kernel.getAnyRelationship(),
+                                            w.anyRelationship,
+                                            kernel.getAnyRelationship(), w.core);
         em.persist(mp6);
 
     }
@@ -122,77 +164,139 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //        Location deliverFrom, Agency assignTo, Product service,
         //        Product product, Agency updatedBy
 
-        Protocol checkCreditProtocol = new Protocol(w.pick, w.externalCust,
-                                                    kernel.getAnyAttribute(), w.anyProduct, w.us,
-                                                    kernel.getAnyAttribute(), w.us,
-                                                    kernel.getAnyAttribute(), w.cpu, kernel.getAnyAttribute(), w.checkCredit, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
+        Product pick = w.pick;
+        Product anyProduct = w.anyProduct;
+        Location us = w.us;
+        Agency cpu = w.cpu;
+        Product checkCredit = w.checkCredit;
+        Agency externalCust = w.externalCust;
+        Location euro = w.euro;
+        Agency creditDept = w.creditDept;
+        Product checkLetterOfCredit = w.checkLetterOfCredit;
+        Product ship = w.ship;
+        Product abc486 = w.abc486;
+        Location anyLocation = w.anyLocation;
+        Product printPurchaseOrder = w.printPurchaseOrder;
+        Product printCustomsDeclaration = w.printCustomsDeclaration;
+        Product deliver = w.deliver;
+        Agency anyAgency = w.anyAgency;
+        Agency factory1Agency = w.factory1Agency;
+        Agency billingComputer = w.billingComputer;
+        Product fee = w.fee;
+        Agency nonExemptAgency = w.nonExemptAgency;
+        Product nonExempt = w.nonExempt;
+        Location dc = w.dc;
+        Product salesTax = w.salesTax;
+        Product discount = w.discount;
+        Agency georgeTownUniversity = w.georgeTownUniversity;
+
+        Protocol checkCreditProtocol = newProtocol();
+        checkCreditProtocol.setRequestedService(pick);
+        checkCreditProtocol.setRequester(externalCust);
+        checkCreditProtocol.setRequestedProduct(anyProduct);
+        checkCreditProtocol.setDeliverTo(us);
+        checkCreditProtocol.setDeliverFrom(us);
+        checkCreditProtocol.setAssignTo(cpu);
+        checkCreditProtocol.setService(checkCredit);
+        checkCreditProtocol.setProduct(anyProduct);
         em.persist(checkCreditProtocol);
 
-        Protocol checkLetterOfCreditProtocol = new Protocol(
-                                                            w.pick,
-                                                            w.externalCust,
-                                                            kernel.getAnyAttribute(),
-                                                            w.anyProduct,
-                                                            w.euro,
-                                                            kernel.getAnyAttribute(),
-                                                            w.us,
-                                                            kernel.getAnyAttribute(),
-                                                            w.creditDept, kernel.getAnyAttribute(), w.checkLetterOfCredit, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
+        Protocol checkLetterOfCreditProtocol = newProtocol();
+        checkLetterOfCreditProtocol.setRequestedService(pick);
+        checkLetterOfCreditProtocol.setRequester(externalCust);
+        checkLetterOfCreditProtocol.setRequestedProduct(anyProduct);
+        checkLetterOfCreditProtocol.setDeliverTo(euro);
+        checkLetterOfCreditProtocol.setDeliverFrom(us);
+        checkLetterOfCreditProtocol.setAssignTo(creditDept);
+        checkLetterOfCreditProtocol.setService(checkLetterOfCredit);
+        checkLetterOfCreditProtocol.setProduct(anyProduct);
         em.persist(checkLetterOfCreditProtocol);
 
-        Protocol printPurchaseOrder = new Protocol(w.ship, w.externalCust,
-                                                   kernel.getAnyAttribute(), w.abc486,
-                                                   w.anyLocation, kernel.getAnyAttribute(),
-                                                   w.anyLocation,
-                                                   kernel.getAnyAttribute(), w.creditDept, kernel.getAnyAttribute(), w.printPurchaseOrder, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
-        em.persist(printPurchaseOrder);
+        Protocol printPurchaseOrderProtocol = newProtocol();
+        printPurchaseOrderProtocol.setRequestedService(ship);
+        printPurchaseOrderProtocol.setRequester(externalCust);
+        printPurchaseOrderProtocol.setRequestedProduct(abc486);
+        printPurchaseOrderProtocol.setDeliverTo(anyLocation);
+        printPurchaseOrderProtocol.setDeliverFrom(anyLocation);
+        printPurchaseOrderProtocol.setAssignTo(creditDept);
+        printPurchaseOrderProtocol.setService(printPurchaseOrder);
+        printPurchaseOrderProtocol.setProduct(anyProduct);
+        em.persist(printPurchaseOrderProtocol);
 
-        Protocol printCustomsDecl = new Protocol(w.ship, w.externalCust,
-                                                 kernel.getAnyAttribute(), w.abc486, w.euro,
-                                                 kernel.getAnyAttribute(),
-                                                 w.us,
-                                                 kernel.getAnyAttribute(), w.creditDept, kernel.getAnyAttribute(), w.printCustomsDeclaration, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
-        em.persist(printCustomsDecl);
+        Protocol printCustomsDeclProtocol = newProtocol();
+        printCustomsDeclProtocol.setRequestedService(ship);
+        printCustomsDeclProtocol.setRequester(externalCust);
+        printCustomsDeclProtocol.setRequestedProduct(abc486);
+        printCustomsDeclProtocol.setDeliverTo(euro);
+        printCustomsDeclProtocol.setDeliverFrom(us);
+        printCustomsDeclProtocol.setAssignTo(creditDept);
+        printCustomsDeclProtocol.setService(printCustomsDeclaration);
+        printCustomsDeclProtocol.setProduct(anyProduct);
+        em.persist(printCustomsDeclProtocol);
 
-        Protocol pickProtocol = new Protocol(w.deliver, w.anyAgency,
-                                             kernel.getAnyAttribute(), w.anyProduct,
-                                             w.anyLocation, kernel.getAnyAttribute(),
-                                             w.anyLocation, kernel.getAnyAttribute(), w.factory1Agency, kernel.getAnyAttribute(), w.pick, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
+        Protocol pickProtocol = newProtocol();
+        pickProtocol.setRequestedService(deliver);
+        pickProtocol.setRequester(anyAgency);
+        pickProtocol.setRequestedProduct(anyProduct);
+        pickProtocol.setDeliverTo(anyLocation);
+        pickProtocol.setDeliverFrom(anyLocation);
+        pickProtocol.setAssignTo(factory1Agency);
+        pickProtocol.setService(pick);
+        pickProtocol.setProduct(anyProduct);
         em.persist(pickProtocol);
 
-        Protocol shipProtocol = new Protocol(w.deliver, w.anyAgency,
-                                             kernel.getAnyAttribute(), w.anyProduct,
-                                             w.anyLocation, kernel.getAnyAttribute(),
-                                             w.anyLocation, kernel.getAnyAttribute(), w.factory1Agency, kernel.getAnyAttribute(), w.ship, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
+        Protocol shipProtocol = newProtocol();
+        shipProtocol.setRequestedService(deliver);
+        shipProtocol.setRequester(anyAgency);
+        shipProtocol.setRequestedProduct(anyProduct);
+        shipProtocol.setDeliverTo(anyLocation);
+        shipProtocol.setDeliverFrom(anyLocation);
+        shipProtocol.setAssignTo(factory1Agency);
+        shipProtocol.setService(ship);
+        shipProtocol.setProduct(anyProduct);
         em.persist(shipProtocol);
 
-        Protocol feeProtocol = new Protocol(w.printPurchaseOrder,
-                                            w.externalCust, kernel.getAnyAttribute(),
-                                            w.abc486, w.anyLocation,
-                                            kernel.getAnyAttribute(), w.us,
-                                            kernel.getAnyAttribute(), w.billingComputer, kernel.getAnyAttribute(), w.fee, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
+        Protocol feeProtocol = newProtocol();
+        feeProtocol.setRequestedService(printPurchaseOrder);
+        feeProtocol.setRequester(externalCust);
+        feeProtocol.setRequestedProduct(abc486);
+        feeProtocol.setDeliverTo(anyLocation);
+        feeProtocol.setDeliverFrom(us);
+        feeProtocol.setAssignTo(billingComputer);
+        feeProtocol.setService(fee);
+        feeProtocol.setProduct(anyProduct);
         em.persist(feeProtocol);
 
-        Protocol nonExemptProtocol = new Protocol(w.fee, w.nonExemptAgency,
-                                                  kernel.getAnyAttribute(), w.nonExempt,
-                                                  w.dc,
-                                                  kernel.getAnyAttribute(),
-                                                  w.anyLocation, kernel.getAnyAttribute(),
-                                                  w.billingComputer, kernel.getAnyAttribute(), w.salesTax, kernel.getAnyAttribute(), w.nonExempt, kernel.getAnyAttribute(), w.core);
+        Protocol nonExemptProtocol = newProtocol();
+        nonExemptProtocol.setRequestedService(fee);
+        nonExemptProtocol.setRequester(nonExemptAgency);
+        nonExemptProtocol.setRequestedProduct(nonExempt);
+        nonExemptProtocol.setDeliverTo(dc);
+        nonExemptProtocol.setDeliverFrom(anyLocation);
+        nonExemptProtocol.setAssignTo(billingComputer);
+        nonExemptProtocol.setService(salesTax);
+        nonExemptProtocol.setProduct(nonExempt);
         em.persist(nonExemptProtocol);
 
-        Protocol discountProtocol = new Protocol(w.fee, w.externalCust,
-                                                 kernel.getAnyAttribute(), w.abc486, w.euro,
-                                                 kernel.getAnyAttribute(), w.us,
-                                                 kernel.getAnyAttribute(), w.billingComputer, kernel.getAnyAttribute(), w.discount, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.core);
-        em.persist(discountProtocol);
+        Protocol discountProtocol = newProtocol();
+        discountProtocol.setRequestedService(fee);
+        discountProtocol.setRequester(externalCust);
+        discountProtocol.setRequestedProduct(abc486);
+        discountProtocol.setDeliverTo(euro);
+        discountProtocol.setDeliverFrom(us);
+        discountProtocol.setAssignTo(billingComputer);
+        discountProtocol.setService(discount);
+        discountProtocol.setProduct(abc486);
 
-        Protocol georgetownFeeProtocol = new Protocol(w.printPurchaseOrder,
-                                                      w.georgeTownUniversity,
-                                                      kernel.getAnyAttribute(), w.abc486, w.dc,
-                                                      kernel.getAnyAttribute(), w.us,
-                                                      kernel.getAnyAttribute(), w.billingComputer, kernel.getAnyAttribute(), w.fee, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.core);
-        em.persist(georgetownFeeProtocol);
+        Protocol georgetownFeeProtocol = newProtocol();
+        georgetownFeeProtocol.setRequestedService(printPurchaseOrder);
+        georgetownFeeProtocol.setRequester(georgeTownUniversity);
+        georgetownFeeProtocol.setRequestedProduct(abc486);
+        georgetownFeeProtocol.setDeliverTo(dc);
+        georgetownFeeProtocol.setDeliverFrom(us);
+        georgetownFeeProtocol.setAssignTo(billingComputer);
+        georgetownFeeProtocol.setService(fee);
+        georgetownFeeProtocol.setProduct(abc486);
 
     }
 
@@ -216,7 +320,11 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //        Product product, Location deliverTo, Location deliverFrom,
         //        Agency updatedBy
         Job job = new Job(w.georgeTownUniversity, kernel.getAnyAttribute(),
-                          w.deliver, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.rsb225, kernel.getAnyAttribute(), w.factory1, kernel.getAnyAttribute(), w.georgeTownUniversity, kernel.getAnyAttribute(), w.core);
+                          w.deliver, kernel.getAnyAttribute(), w.abc486,
+                          kernel.getAnyAttribute(), w.rsb225,
+                          kernel.getAnyAttribute(), w.factory1,
+                          kernel.getAnyAttribute(), w.georgeTownUniversity,
+                          kernel.getAnyAttribute(), w.core);
         job.setStatus(w.unset);
         em.persist(job);
 
@@ -236,7 +344,11 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     public void testFirstSeqAuth() {
         em.getTransaction().begin();
         Job job = new Job(w.georgeTownUniversity, kernel.getAnyAttribute(),
-                          w.deliver, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.rsb225, kernel.getAnyAttribute(), w.factory1, kernel.getAnyAttribute(), w.georgeTownUniversity, kernel.getAnyAttribute(), w.core);
+                          w.deliver, kernel.getAnyAttribute(), w.abc486,
+                          kernel.getAnyAttribute(), w.rsb225,
+                          kernel.getAnyAttribute(), w.factory1,
+                          kernel.getAnyAttribute(), w.georgeTownUniversity,
+                          kernel.getAnyAttribute(), w.core);
         job.setStatus(w.unset);
         em.persist(job);
 
@@ -271,8 +383,12 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //        Agency assignTo, Agency requester, Product service,
         //        Product product, Location deliverTo, Location deliverFrom,
         //        Agency updatedBy
-        Job job = new Job(w.factory1Agency, kernel.getAnyAttribute(), w.deliver, kernel.getAnyAttribute(),
-                          w.abc486, kernel.getAnyAttribute(), w.paris, kernel.getAnyAttribute(), w.factory1, kernel.getAnyAttribute(), w.cafleurBon, kernel.getAnyAttribute(), w.core);
+        Job job = new Job(w.factory1Agency, kernel.getAnyAttribute(),
+                          w.deliver, kernel.getAnyAttribute(), w.abc486,
+                          kernel.getAnyAttribute(), w.paris,
+                          kernel.getAnyAttribute(), w.factory1,
+                          kernel.getAnyAttribute(), w.cafleurBon,
+                          kernel.getAnyAttribute(), w.core);
         job.setStatus(w.unset);
         em.persist(job);
 
@@ -287,6 +403,17 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         }
         assertTrue("Did not find checkLetterOfCredit service in EU job tree",
                    hasCorrectService);
+    }
+
+    private static Protocol newProtocol() {
+        Protocol p = new Protocol(kernel.getCore());
+        p.setRequesterAttribute(kernel.getAnyAttribute());
+        p.setDeliverToAttribute(kernel.getAnyAttribute());
+        p.setDeliverFromAttribute(kernel.getAnyAttribute());
+        p.setAssignToAttribute(kernel.getAnyAttribute());
+        p.setServiceAttribute(kernel.getAnyAttribute());
+        p.setProductAttribute(kernel.getAnyAttribute());
+        return p;
     }
 
 }

@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -217,6 +218,8 @@ public class Job extends AbstractProtocol {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<Job>           childJobs;
+    @Column(name = "sequence_number")
+    private int                sequenceNumber                    = 1;
 
     public Job() {
     }
@@ -234,10 +237,9 @@ public class Job extends AbstractProtocol {
                Attribute deliverToAttribute, Location deliverFrom,
                Attribute deliverFromAttribute, Agency requester,
                Attribute requesterAttribute, Agency updatedBy) {
-        this(null, assignTo, assignToAttribute, service,
-             serviceAttribute, product, productAttribute,
-             deliverTo, deliverToAttribute, deliverFrom,
-             deliverFromAttribute, requester, requesterAttribute,
+        this(null, assignTo, assignToAttribute, service, serviceAttribute,
+             product, productAttribute, deliverTo, deliverToAttribute,
+             deliverFrom, deliverFromAttribute, requester, requesterAttribute,
              updatedBy);
     }
 
@@ -299,10 +301,6 @@ public class Job extends AbstractProtocol {
         setRequester(requester);
     }
 
-    public Job getParent() {
-        return parent;
-    }
-
     /**
      * @param id
      */
@@ -316,6 +314,17 @@ public class Job extends AbstractProtocol {
 
     public Set<JobChronology> getChronology() {
         return chronology;
+    }
+
+    public Job getParent() {
+        return parent;
+    }
+
+    /**
+     * @return the sequenceNumber
+     */
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
     }
 
     public StatusCode getStatus() {
@@ -332,6 +341,22 @@ public class Job extends AbstractProtocol {
 
     public void setParent(Job job) {
         parent = job;
+    }
+
+    /**
+     * @param sequenceNumber
+     *            the sequenceNumber to set
+     */
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    /**
+     * @param sequenceNumber
+     *            the sequenceNumber to set
+     */
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     public void setStatus(StatusCode statusCode) {

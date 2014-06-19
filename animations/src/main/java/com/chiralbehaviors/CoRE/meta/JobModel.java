@@ -117,6 +117,12 @@ public interface JobModel {
      */
     void ensureValidParentStatus(Job parent) throws SQLException;
 
+    /**
+     * 
+     * @param nextSibling
+     * @param nextSiblingStatus
+     * @throws SQLException
+     */
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
                                                                   throws SQLException;
@@ -150,6 +156,12 @@ public interface JobModel {
      */
     List<Job> getActiveJobsFor(Agency agency);
 
+    /**
+     * 
+     * @param job
+     * @param service
+     * @return
+     */
     List<Job> getActiveSubJobsForService(Job job, Product service);
 
     /**
@@ -180,10 +192,29 @@ public interface JobModel {
      */
     Collection<Job> getAllActiveSubJobsOf(Job job);
 
+    /**
+     * 
+     * @param parent
+     * @param agency
+     * @return
+     */
     List<Job> getAllActiveSubJobsOf(Job parent, Agency agency);
 
+    /**
+     * 
+     * @param parent
+     * @param agency
+     * @param jobs
+     */
     void getAllActiveSubJobsOf(Job parent, Agency agency, List<Job> jobs);
 
+    /**
+     * Answer the list of all active subjobs
+     * 
+     * @param job
+     * @param tally
+     * @return
+     */
     Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
 
     /**
@@ -327,6 +358,16 @@ public interface JobModel {
      */
     List<Protocol> getProtocols(Job job, MetaProtocol metaprotocol);
 
+    /**
+     * Answer the list of matching protocols
+     * 
+     * @param service
+     * @param requester
+     * @param product
+     * @param deliverTo
+     * @param deliverFrom
+     * @return
+     */
     List<Protocol> getProtocols(Product service, Agency requester,
                                 Product product, Location deliverTo,
                                 Location deliverFrom);
@@ -365,6 +406,13 @@ public interface JobModel {
      */
     Collection<StatusCode> getStatusCodesFor(Product service);
 
+    /**
+     * Answer the list of terminal states for the supplied job
+     * 
+     * @param job
+     * @return
+     */
+
     List<StatusCode> getTerminalStates(Job job);
 
     /**
@@ -372,6 +420,12 @@ public interface JobModel {
      */
     List<Job> getTopLevelJobs();
 
+    /**
+     * answer the list of jobs with children assigned to an agency
+     * 
+     * @param agency
+     * @return
+     */
     List<Job> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency);
 
     /**
@@ -422,8 +476,19 @@ public interface JobModel {
      */
     boolean hasTerminalSCCs(Product service) throws SQLException;
 
+    /**
+     * Insert a new job
+     * 
+     * @param parent
+     * @param protocol
+     * @return
+     */
     Job insertJob(Job parent, Protocol protocol);
 
+    /**
+     * @param job
+     * @return true if the job is in a non terminal state
+     */
     boolean isActive(Job job);
 
     /**
@@ -450,6 +515,18 @@ public interface JobModel {
                               StatusCode next);
 
     void logModifiedService(UUID scs);
+
+    /**
+     * @return a job in which every field has the appropriate NotApplicable
+     *         ruleform. Status is set to UNSET
+     */
+    Job newInitializedJob();
+
+    /**
+     * @return a protocol in which every field has the appropriate NotApplicable
+     *         ruleform.
+     */
+    Protocol newInitializedProtocol();
 
     /**
      * Process all the implicit status changes of the children of a job
@@ -487,16 +564,5 @@ public interface JobModel {
      * @throws SQLException
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
-
-    /**
-     * @return a job in which every field has the appropriate NotApplicable ruleform.
-     * Status is set to UNSET
-     */
-    Job getInitializedJob();
-
-    /**
-     * @return a protocol in which every field has the appropriate NotApplicable ruleform.
-     */
-    Protocol getInitializedProtocol();
 
 }

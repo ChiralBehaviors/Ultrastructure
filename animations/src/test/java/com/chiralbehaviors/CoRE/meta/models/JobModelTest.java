@@ -343,10 +343,10 @@ public class JobModelTest extends AbstractModelTest {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
 
-       Protocol p = jobModel.getInitializedProtocol();
+       Protocol p = jobModel.newInitializedProtocol();
         em.persist(p);
         txn.commit();
-        Job order = jobModel.getInitializedJob();
+        Job order = jobModel.newInitializedJob();
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
         List<Protocol> protocols = model.getJobModel().getProtocols(order);
         assertEquals(1, protocols.size());

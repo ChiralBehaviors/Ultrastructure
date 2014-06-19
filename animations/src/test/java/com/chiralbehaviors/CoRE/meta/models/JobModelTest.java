@@ -50,7 +50,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private static JobModelDebugger              jobModel;
+    private static JobModelDebugger      jobModel;
     private static OrderProcessingLoader scenario;
 
     @BeforeClass
@@ -343,7 +343,7 @@ public class JobModelTest extends AbstractModelTest {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
 
-       Protocol p = jobModel.getInitializedProtocol();
+        Protocol p = jobModel.getInitializedProtocol();
         em.persist(p);
         txn.commit();
         Job order = jobModel.getInitializedJob();

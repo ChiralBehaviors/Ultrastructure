@@ -1170,6 +1170,7 @@ public class JobModelImpl implements JobModel {
     public Protocol newInitializedProtocol(Product service, Agency updatedBy) {
         Protocol protocol = new Protocol();
         protocol.setService(service);
+        protocol.setRequestedService(service);
         protocol.setUpdatedBy(updatedBy);
         protocol.setAssignTo(kernel.getNotApplicableAgency());
         protocol.setAssignToAttribute(kernel.getNotApplicableAttribute());
@@ -1178,6 +1179,7 @@ public class JobModelImpl implements JobModel {
         protocol.setDeliverTo(kernel.getNotApplicableLocation());
         protocol.setDeliverToAttribute(kernel.getNotApplicableAttribute());
         protocol.setProduct(kernel.getNotApplicableProduct());
+        protocol.setRequestedProduct(kernel.getNotApplicableProduct());
         protocol.setProductAttribute(kernel.getNotApplicableAttribute());
         protocol.setRequester(kernel.getNotApplicableAgency());
         protocol.setRequesterAttribute(kernel.getNotApplicableAttribute());

@@ -316,15 +316,12 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     @Test
     public void testCreateGeorgetownWorkflow() {
         em.getTransaction().begin();
-        //        Agency assignTo, Agency requester, Product service,
-        //        Product product, Location deliverTo, Location deliverFrom,
-        //        Agency updatedBy
-        Job job = new Job(w.georgeTownUniversity, kernel.getAnyAttribute(),
-                          w.deliver, kernel.getAnyAttribute(), w.abc486,
-                          kernel.getAnyAttribute(), w.rsb225,
-                          kernel.getAnyAttribute(), w.factory1,
-                          kernel.getAnyAttribute(), w.georgeTownUniversity,
-                          kernel.getAnyAttribute(), w.core);
+        Job job = model.getJobModel().newInitializedJob(w.deliver, w.core);
+        job.setAssignTo(w.orderFullfillment);
+        job.setProduct(w.abc486);
+        job.setDeliverTo(w.rsb225);
+        job.setDeliverFrom(w.factory1);
+        job.setRequester(w.georgeTownUniversity);
         job.setStatus(w.unset);
         em.persist(job);
 
@@ -343,12 +340,12 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     @Test
     public void testFirstSeqAuth() {
         em.getTransaction().begin();
-        Job job = new Job(w.georgeTownUniversity, kernel.getAnyAttribute(),
-                          w.deliver, kernel.getAnyAttribute(), w.abc486,
-                          kernel.getAnyAttribute(), w.rsb225,
-                          kernel.getAnyAttribute(), w.factory1,
-                          kernel.getAnyAttribute(), w.georgeTownUniversity,
-                          kernel.getAnyAttribute(), w.core);
+        Job job = model.getJobModel().newInitializedJob(w.deliver, w.core);
+        job.setAssignTo(w.orderFullfillment);
+        job.setProduct(w.abc486);
+        job.setDeliverTo(w.rsb225);
+        job.setDeliverFrom(w.factory1);
+        job.setRequester(w.georgeTownUniversity);
         job.setStatus(w.unset);
         em.persist(job);
 
@@ -380,15 +377,12 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     @Test
     public void testShipToEU() {
         em.getTransaction().begin();
-        //        Agency assignTo, Agency requester, Product service,
-        //        Product product, Location deliverTo, Location deliverFrom,
-        //        Agency updatedBy
-        Job job = new Job(w.factory1Agency, kernel.getAnyAttribute(),
-                          w.deliver, kernel.getAnyAttribute(), w.abc486,
-                          kernel.getAnyAttribute(), w.paris,
-                          kernel.getAnyAttribute(), w.factory1,
-                          kernel.getAnyAttribute(), w.cafleurBon,
-                          kernel.getAnyAttribute(), w.core);
+        Job job = model.getJobModel().newInitializedJob(w.deliver, w.core);
+        job.setAssignTo(w.factory1Agency);
+        job.setProduct(w.abc486);
+        job.setDeliverTo(w.paris);
+        job.setDeliverFrom(w.factory1);
+        job.setRequester(w.cafleurBon);
         job.setStatus(w.unset);
         em.persist(job);
 

@@ -68,8 +68,27 @@ public class JobChronology extends AbstractProtocol {
     @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
     private Long               sequence;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status")
+    private StatusCode         status;
+
+    /**
+     * @return the status
+     */
+    public StatusCode getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(StatusCode status) {
+        this.status = status;
+    }
+
     @Column(name = "time_stamp")
-    private Timestamp          timeStamp;
+    private Timestamp timeStamp;
 
     public JobChronology() {
     }
@@ -81,12 +100,12 @@ public class JobChronology extends AbstractProtocol {
         super(updatedBy);
     }
 
-    public JobChronology(Job job, StatusCode status, Timestamp timeStamp,
-                         String notes, Agency updatedBy) {
+    public JobChronology(Job job, String notes, Agency updatedBy) {
         super(notes, updatedBy);
         this.job = job;
-        this.timeStamp = timeStamp;
-        copyFrom(job);
+        this.status = job.getStatus();
+        this.timeStamp = job.getUpdateDate();
+        this.copyFrom(job);
     }
 
     /**
@@ -110,6 +129,8 @@ public class JobChronology extends AbstractProtocol {
 
     public void setJob(Job job) {
         this.job = job;
+        this.status = job.getStatus();
+        this.timeStamp = job.getUpdateDate();
         copyFrom(job);
     }
 

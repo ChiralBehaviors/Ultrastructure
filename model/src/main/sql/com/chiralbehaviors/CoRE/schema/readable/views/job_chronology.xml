@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.job_chronology AS 
-			 SELECT base.id, 
-                    base.job, 
-                    base.sequence, 
-                    base.time_stamp, 
-                    s.name AS status, 
+             SELECT base.id, 
+                    s.name AS service, 
+                    p.name AS product, 
+                    at.name AS assign_to, 
+                    r.name AS requester, 
+                    dt.name AS deliver_to, 
+                    df.name AS deliver_from, 
+                    sc.name AS status, 
+                    ra.name AS requester_attribute,
+                    sa.name AS service_attribute,
+                    pa.name AS product_attribute,
+                    dta.name AS deliver_to_attribute,
+                    dfa.name AS deliver_from_attribute,
+                    ata.name AS assign_to_attribute,
+                    base.sequence,
                     base.notes, 
-                    up.name AS updated_by, 
-                    base.update_date
-			   FROM job_chronology base
-			   JOIN status_code s ON base.status = s.id
-			   JOIN agency up ON base.updated_by = up.id;
+                    up.name AS updated_by, base.update_date
+               FROM job_chronology base
+               JOIN product s ON base.service = s.id
+               JOIN product p ON base.product = p.id
+               JOIN agency at ON base.assign_to = at.id
+               JOIN agency r ON base.requester = r.id
+               JOIN location dt ON base.deliver_to = dt.id
+               JOIN location df ON base.deliver_from = df.id
+               JOIN status_code sc ON base.status = sc.id
+               JOIN agency up ON base.updated_by = up.id
+               JOIN attribute ra ON base.requester_attribute = ra.id
+               JOIN attribute sa ON base.service_attribute = sa.id
+               JOIN attribute pa ON base.product_attribute = pa.id
+               JOIN attribute dta ON base.deliver_to_attribute = dta.id
+               JOIN attribute dfa ON base.deliver_from_attribute = dfa.id
+               JOIN attribute ata ON base.assign_to_attribute = ata.id;
 			
 			ALTER TABLE readable.job_chronology
 			  OWNER TO core;

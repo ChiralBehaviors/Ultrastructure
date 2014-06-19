@@ -383,7 +383,7 @@ public class JobModelTest extends AbstractModelTest {
                             scenario.georgeTownUniversity,
                             kernel.getAnyAttribute(), scenario.core);
         order.setStatus(kernel.getUnset());
-        List<Job> jobs2 = model.getJobModel().generateImplicitJobs(order);
+        //List<Job> jobs2 = model.getJobModel().generateImplicitJobs(order);
         em.persist(order);
         txn.commit();
         txn.begin();

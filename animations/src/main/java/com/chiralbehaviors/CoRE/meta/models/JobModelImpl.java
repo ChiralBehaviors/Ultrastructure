@@ -1546,7 +1546,7 @@ public class JobModelImpl implements JobModel {
                 mask = cb.equal(protocol.get(AbstractProtocol_.requester),
                                 job.getRequester());
             } else {
-                mask = protocol.get(AbstractProtocol_.requester).in(assignTo);
+                mask = protocol.get(Protocol_.requester).in(requestingAgency);
             }
             masks.add(cb.or(mask,
                             cb.equal(protocol.get(AbstractProtocol_.requester),

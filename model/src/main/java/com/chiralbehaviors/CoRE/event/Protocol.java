@@ -34,6 +34,7 @@ import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 
@@ -50,6 +51,11 @@ import com.chiralbehaviors.CoRE.product.Product;
                                                + "    AND p.requester = :requester"
                                                + "    AND p.deliverFrom = :deliverFrom"
                                                + "    AND p.deliverTo = :deliverTo"
+                                               + "    AND p.productAttribute = :productAttribute"
+                                               + "    AND p.assignToAttribute = :assignToAttribute"
+                                               + "    AND p.requesterAttribute = :requesterAttribute"
+                                               + "    AND p.deliverToAttribute = :deliverToAttribute"
+                                               + "    AND p.deliverFromAttribute = :deliverFromAttribute"
                                                + " ORDER BY p.sequenceNumber"),
                @NamedQuery(name = GET_FOR_SERVICE, query = "SELECT p FROM Protocol p "
                                                            + "WHERE p.requestedService = :requestedService "
@@ -118,27 +124,79 @@ public class Protocol extends AbstractProtocol {
     }
 
     public Protocol(Product requestedService, Agency requester,
-                    Product requestedProduct, Location deliverTo,
-                    Location deliverFrom, Agency assignTo, Product service,
-                    Product product, Agency updatedBy) {
+                    Attribute requesterAttribute, Product requestedProduct,
+                    Location deliverTo, Attribute deliverToAttribute,
+                    Location deliverFrom, Attribute deliverFromAttribute,
+                    Agency assignTo, Attribute assignToAttribute,
+                    Product service, Attribute serviceAttribute,
+                    Product product, Attribute productAttribute,
+                    Agency updatedBy) {
+
         super(updatedBy);
-        assert requestedProduct != null;
-        assert requester != null;
-        assert requestedProduct != null;
-        assert deliverTo != null;
-        assert deliverFrom != null;
-        assert assignTo != null;
-        assert service != null;
-        assert product != null;
-        assert updatedBy != null;
+        if (requestedService == null) {
+            throw new IllegalArgumentException(
+                                               "requestedService cannot be null");
+        }
+        if (requester == null) {
+            throw new IllegalArgumentException("requester cannot be null");
+        }
+        if (requesterAttribute == null) {
+            throw new IllegalArgumentException(
+                                               "requesterAttribute cannot be null");
+        }
+        if (requestedProduct == null) {
+            throw new IllegalArgumentException(
+                                               "requestedProduct cannot be null");
+        }
+        if (deliverTo == null) {
+            throw new IllegalArgumentException("deliverTo cannot be null");
+        }
+        if (deliverToAttribute == null) {
+            throw new IllegalArgumentException(
+                                               "deliverToAttribute cannot be null");
+        }
+        if (deliverFrom == null) {
+            throw new IllegalArgumentException("deliverFrom cannot be null");
+        }
+        if (deliverFromAttribute == null) {
+            throw new IllegalArgumentException(
+                                               "deliverFromAttribute cannot be null");
+        }
+        if (assignTo == null) {
+            throw new IllegalArgumentException("assignTo cannot be null");
+        }
+        if (assignToAttribute == null) {
+            throw new IllegalArgumentException(
+                                               "assignToAttribute cannot be null");
+        }
+        if (service == null) {
+            throw new IllegalArgumentException("service cannot be null");
+        }
+        if (serviceAttribute == null) {
+            throw new IllegalArgumentException(
+                                               "serviceAttribute cannot be null");
+        }
+        if (product == null) {
+            throw new IllegalArgumentException("product cannot be null");
+        }
+        if (productAttribute == null) {
+            throw new IllegalArgumentException(
+                                               "productAttribute cannot be null");
+        }
         setRequestedService(requestedService);
         setRequester(requester);
+        setRequesterAttribute(requesterAttribute);
         setRequestedProduct(requestedProduct);
         setDeliverTo(deliverTo);
+        setDeliverToAttribute(deliverToAttribute);
         setDeliverFrom(deliverFrom);
+        setDeliverFromAttribute(deliverFromAttribute);
         setAssignTo(assignTo);
+        setAssignToAttribute(assignToAttribute);
         setService(service);
+        setServiceAttribute(serviceAttribute);
         setProduct(product);
+        setProductAttribute(productAttribute);
     }
 
     /**

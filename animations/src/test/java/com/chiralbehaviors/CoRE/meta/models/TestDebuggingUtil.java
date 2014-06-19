@@ -16,8 +16,10 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.util.List;
+import java.util.Map;
 
 import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 
 /**
@@ -46,5 +48,23 @@ public class TestDebuggingUtil {
                                              s.getChildCode().getName()));
         }
     }
+
+    /**
+     * @param findProtocolGaps
+     */
+    public static void printProtocolGaps(Map<Protocol, List<String>> gaps) {
+        for (Map.Entry<Protocol, List<String>> e : gaps.entrySet()) {
+            System.out.println(String.format("requestedService: %s, service: %s",
+                                             e.getKey().getRequestedService().getName(),
+                                             e.getKey().getService().getName()));
+            System.out.println("Unmatched fields: ");
+            for (String f : e.getValue()) {
+                System.out.println(f);
+            }
+        }
+
+    }
+    
+    
 
 }

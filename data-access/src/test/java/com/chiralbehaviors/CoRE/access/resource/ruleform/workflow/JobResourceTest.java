@@ -54,10 +54,10 @@ public class JobResourceTest extends AbstractModelTest {
         em.persist(attr);
         em.flush();
         em.refresh(attr);
-        Job job = new Job(kernel.getCore(), kernel.getCore(),
-                          kernel.getAnyProduct(), kernel.getAnyProduct(),
-                          kernel.getAnyLocation(), kernel.getAnyLocation(),
-                          kernel.getCore());
+        Job job = new Job(kernel.getCore(), kernel.getAnyAttribute(),
+                          kernel.getAnyProduct(), kernel.getAnyAttribute(),
+                          kernel.getAnyProduct(), kernel.getAnyAttribute(),
+                          kernel.getAnyLocation(), kernel.getAnyAttribute(), kernel.getAnyLocation(), kernel.getAnyAttribute(), kernel.getCore(), kernel.getAnyAttribute(), kernel.getCore());
         em.getTransaction().commit();
         job = resource.insertJob(job);
         assertNotNull(job.getId());

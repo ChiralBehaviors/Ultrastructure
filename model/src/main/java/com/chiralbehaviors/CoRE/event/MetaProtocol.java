@@ -51,6 +51,15 @@ public class MetaProtocol extends Ruleform {
     private static final long  serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assign_to")
+    private Relationship       assignTo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assign_to_attribute")
+    private Relationship       assignToAttribute;
+
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
@@ -130,17 +139,62 @@ public class MetaProtocol extends Ruleform {
 
     public MetaProtocol(Product service, int sequenceNumber,
                         Relationship productOrdered,
+                        Relationship productOrderedAttribute,
                         Relationship requestingAgency,
-                        Relationship serviceType, Relationship deliverTo,
-                        Relationship deliverFrom, Agency updatedBy) {
+                        Relationship requestingAgencyAttribute,
+                        Relationship serviceType,
+                        Relationship serviceAttribute,
+                        Relationship deliverTo,
+                        Relationship deliverToAttribute,
+                        Relationship deliverFrom,
+                        Relationship deliverFromAttribute,
+                        Agency updatedBy) {
         super(updatedBy);
+        if (service == null) {
+            throw new IllegalArgumentException("service cannot be null");
+        }
+        if (requestingAgency == null) {
+            throw new IllegalArgumentException("requestingAgency cannot be null");
+        }
+        if (requestingAgencyAttribute == null) {
+            throw new IllegalArgumentException("requestingAgencyAttribute cannot be null");
+        }
+        if (productOrdered == null) {
+            throw new IllegalArgumentException("productOrdered cannot be null");
+        }
+        if (productOrderedAttribute == null) {
+            throw new IllegalArgumentException("productOrderedAttribute cannot be null");
+        }
+        if (deliverTo == null) {
+            throw new IllegalArgumentException("deliverTo cannot be null");
+        }
+        if (deliverToAttribute == null) {
+            throw new IllegalArgumentException("deliverToAttribute cannot be null");
+        }
+        if (deliverFrom == null) {
+            throw new IllegalArgumentException("deliverFrom cannot be null");
+        }
+        if (deliverFromAttribute == null) {
+            throw new IllegalArgumentException("deliverFromAttribute cannot be null");
+        }
+        if (serviceType == null) {
+            throw new IllegalArgumentException("serviceType cannot be null");
+        }
+        if (serviceAttribute == null) {
+            throw new IllegalArgumentException("serviceAttribute cannot be null");
+        }
         setService(service);
+        setServiceAttribute(serviceAttribute);
         setSequenceNumber(sequenceNumber);
         setProductOrdered(productOrdered);
+        setProductOrderedAttribute(productOrderedAttribute);
         setRequestingAgency(requestingAgency);
+        setRequestingAgencyAttribute(requestingAgencyAttribute);
         setServiceType(serviceType);
         setDeliverTo(deliverTo);
+        setDeliverToAttribute(deliverToAttribute);
         setDeliverFrom(deliverFrom);
+        setDeliverFromAttribute(deliverFromAttribute);
     }
 
     public MetaProtocol(Product service, Relationship requestingAgency,
@@ -405,6 +459,34 @@ public class MetaProtocol extends Ruleform {
         }
         super.traverseForeignKeys(em, knownObjects);
 
+    }
+
+    /**
+     * @return the assignToAttribute
+     */
+    public Relationship getAssignToAttribute() {
+        return assignToAttribute;
+    }
+
+    /**
+     * @param assignToAttribute the assignToAttribute to set
+     */
+    public void setAssignToAttribute(Relationship assignToAttribute) {
+        this.assignToAttribute = assignToAttribute;
+    }
+
+    /**
+     * @return the assignTo
+     */
+    public Relationship getAssignTo() {
+        return assignTo;
+    }
+
+    /**
+     * @param assignTo the assignTo to set
+     */
+    public void setAssignTo(Relationship assignTo) {
+        this.assignTo = assignTo;
     }
 
 }

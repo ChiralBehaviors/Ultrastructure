@@ -29,6 +29,7 @@ import java.util.List;
 import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transaction;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.JobModel;
+import com.chiralbehaviors.CoRE.meta.models.debug.JobModelDebugger;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -48,7 +50,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private static JobModel              jobModel;
+    private static JobModelDebugger              jobModel;
     private static OrderProcessingLoader scenario;
 
     @BeforeClass
@@ -58,7 +60,7 @@ public class JobModelTest extends AbstractModelTest {
         txn.begin();
         scenario.load();
         txn.commit();
-        jobModel = model.getJobModel();
+        jobModel = new JobModelDebugger(model);
     }
 
     @Test
@@ -99,19 +101,27 @@ public class JobModelTest extends AbstractModelTest {
                                                                       kernel.getCore());
         em.persist(childSequence);
 
-        Protocol p = new Protocol(kiki, kernel.getCore(), bento,
+        Protocol p = new Protocol(kiki, kernel.getCore(),
+                                  kernel.getAnyAttribute(), bento,
                                   kernel.getAnyLocation(),
-                                  kernel.getAnyLocation(), kernel.getCore(),
-                                  shipping, bento, kernel.getCore());
+                                  kernel.getAnyAttribute(),
+                                  kernel.getAnyLocation(),
+                                  kernel.getAnyAttribute(), kernel.getCore(),
+                                  kernel.getAnyAttribute(), shipping,
+                                  kernel.getAnyAttribute(), bento,
+                                  kernel.getAnyAttribute(), kernel.getCore());
         em.persist(p);
 
         em.getTransaction().commit();
 
         em.getTransaction().begin();
 
-        Job job = new Job(kernel.getCore(), kernel.getCore(), kiki, bento,
-                          kernel.getAnyLocation(), kernel.getAnyLocation(),
-                          kernel.getCore());
+        Job job = new Job(kernel.getCore(), kernel.getAnyAttribute(), kiki,
+                          kernel.getAnyAttribute(), bento,
+                          kernel.getAnyAttribute(), kernel.getAnyLocation(),
+                          kernel.getAnyAttribute(), kernel.getAnyLocation(),
+                          kernel.getAnyAttribute(), kernel.getCore(),
+                          kernel.getAnyAttribute(), kernel.getCore());
         em.persist(job);
 
         em.getTransaction().commit();
@@ -132,9 +142,13 @@ public class JobModelTest extends AbstractModelTest {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-        Job order = new Job(scenario.orderFullfillment, scenario.cafleurBon,
-                            scenario.deliver, scenario.abc486, scenario.rc31,
-                            scenario.factory1, scenario.core);
+        Job order = new Job(scenario.orderFullfillment,
+                            kernel.getAnyAttribute(), scenario.deliver,
+                            kernel.getAnyAttribute(), scenario.abc486,
+                            kernel.getAnyAttribute(), scenario.rc31,
+                            kernel.getAnyAttribute(), scenario.factory1,
+                            kernel.getAnyAttribute(), scenario.cafleurBon,
+                            kernel.getAnyAttribute(), scenario.core);
         em.persist(order);
         txn.commit();
         txn.begin();
@@ -301,9 +315,13 @@ public class JobModelTest extends AbstractModelTest {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-        Job order = new Job(scenario.orderFullfillment, scenario.orgA,
-                            scenario.deliver, scenario.abc486, scenario.bht378,
-                            scenario.factory1, scenario.core);
+        Job order = new Job(scenario.orderFullfillment,
+                            kernel.getAnyAttribute(), scenario.deliver,
+                            kernel.getAnyAttribute(), scenario.abc486,
+                            kernel.getAnyAttribute(), scenario.bht378,
+                            kernel.getAnyAttribute(), scenario.factory1,
+                            kernel.getAnyAttribute(), scenario.orgA,
+                            kernel.getAnyAttribute(), scenario.core);
         em.persist(order);
         txn.commit();
         txn.begin();
@@ -321,14 +339,52 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testGenerateJobsFromProtocols() {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+
+       Protocol p = jobModel.getInitializedProtocol();
+        em.persist(p);
+        txn.commit();
+        Job order = jobModel.getInitializedJob();
+        TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
+        List<Protocol> protocols = model.getJobModel().getProtocols(order);
+        assertEquals(1, protocols.size());
+        List<Job> jobs = model.getJobModel().generateImplicitJobs(order);
+        for (Job j : jobs) {
+            assertNotNull(j.getAssignToAttribute());
+            assertNotNull(j.getAssignTo());
+            assertNotNull(j.getService());
+            assertNotNull(j.getServiceAttribute());
+            assertNotNull(j.getProduct());
+            assertNotNull(j.getProductAttribute());
+            assertNotNull(j.getDeliverTo());
+            assertNotNull(j.getDeliverToAttribute());
+            assertNotNull(j.getDeliverFrom());
+            assertNotNull(j.getDeliverFromAttribute());
+            assertNotNull(j.getRequester());
+            assertNotNull(j.getRequesterAttribute());
+            assertNotNull(j.getUpdatedBy());
+
+        }
+
+    }
+
+    @Test
     public void testOrder() throws Exception {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = new Job(scenario.orderFullfillment,
-                            scenario.georgeTownUniversity, scenario.deliver,
-                            scenario.abc486, scenario.rsb225,
-                            scenario.factory1, scenario.core);
+                            kernel.getAnyAttribute(), scenario.deliver,
+                            kernel.getAnyAttribute(), scenario.abc486,
+                            kernel.getAnyAttribute(), scenario.rsb225,
+                            kernel.getAnyAttribute(), scenario.factory1,
+                            kernel.getAnyAttribute(),
+                            scenario.georgeTownUniversity,
+                            kernel.getAnyAttribute(), scenario.core);
+        order.setStatus(kernel.getUnset());
+        List<Job> jobs2 = model.getJobModel().generateImplicitJobs(order);
         em.persist(order);
         txn.commit();
         txn.begin();
@@ -405,10 +461,13 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testMetaProtocols() throws Exception {
-        Job job = new Job(scenario.orderFullfillment,
-                          scenario.georgeTownUniversity, scenario.deliver,
-                          scenario.abc486, scenario.rsb225, scenario.factory1,
-                          scenario.core);
+        Job job = new Job(scenario.orderFullfillment, kernel.getAnyAttribute(),
+                          scenario.deliver, kernel.getAnyAttribute(),
+                          scenario.abc486, kernel.getAnyAttribute(),
+                          scenario.rsb225, kernel.getAnyAttribute(),
+                          scenario.factory1, kernel.getAnyAttribute(),
+                          scenario.georgeTownUniversity,
+                          kernel.getAnyAttribute(), scenario.core);
         job.setStatus(scenario.available);
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
@@ -435,10 +494,13 @@ public class JobModelTest extends AbstractModelTest {
             assertEquals(scenario.pick, protocols.get(1).getService());
         }
 
-        job = new Job(scenario.orderFullfillment,
-                      scenario.georgeTownUniversity,
-                      scenario.printPurchaseOrder, scenario.abc486,
-                      scenario.rsb225, scenario.factory1, scenario.core);
+        job = new Job(scenario.orderFullfillment, kernel.getAnyAttribute(),
+                      scenario.printPurchaseOrder, kernel.getAnyAttribute(),
+                      scenario.abc486, kernel.getAnyAttribute(),
+                      scenario.rsb225, kernel.getAnyAttribute(),
+                      scenario.factory1, kernel.getAnyAttribute(),
+                      scenario.georgeTownUniversity, kernel.getAnyAttribute(),
+                      scenario.core);
         job.setStatus(scenario.available);
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());

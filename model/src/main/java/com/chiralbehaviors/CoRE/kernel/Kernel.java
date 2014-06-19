@@ -121,14 +121,6 @@ public interface Kernel {
 
     Relationship getNotApplicableRelationship();
 
-    Agency getOriginalAgency();
-
-    Attribute getOriginalAttribute();
-
-    Location getOriginalLocation();
-
-    Product getOriginalProduct();
-
     Relationship getOwnedBy();
 
     Relationship getOwns();
@@ -180,5 +172,10 @@ public interface Kernel {
     Product getWorkspace();
 
     Relationship getWorkspaceOf();
+
+    /**
+     * @return
+     */
+    Attribute getSameAttribute();
 
 }

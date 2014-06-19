@@ -100,10 +100,6 @@ public class KernelImpl implements Kernel {
     private final Location            notApplicableLocation;
     private final Product             notApplicableProduct;
     private final Relationship        notApplicableRelationship;
-    private final Agency              originalAgency;
-    private final Attribute           originalAttribute;
-    private final Location            originalLocation;
-    private final Product             originalProduct;
     private final Relationship        ownedBy;
     private final Relationship        owns;
     private final Attribute           passwordHashAttribute;
@@ -119,6 +115,7 @@ public class KernelImpl implements Kernel {
     private final RelationshipNetwork rootRelationshipNetwork;
     private final StatusCodeNetwork   rootStatusCodeNetwork;
     private final UnitNetwork         rootUnitNetwork;
+    private final Attribute           sameAttribute;
     private final Agency              sameAgency;
     private final Location            sameLocation;
     private final Product             sameProduct;
@@ -137,27 +134,24 @@ public class KernelImpl implements Kernel {
         attribute = find(em, WellKnownAttribute.ATTRIBUTE);
         anyAttribute = find(em, WellKnownAttribute.ANY);
         notApplicableAttribute = find(em, WellKnownAttribute.NOT_APPLICABLE);
-        originalAttribute = find(em, WellKnownAttribute.ORIGINAL);
+        sameAttribute = find(em, WellKnownAttribute.SAME);
         loginAttribute = find(em, WellKnownAttribute.LOGIN);
         passwordHashAttribute = find(em, WellKnownAttribute.PASSWORD_HASH);
 
         product = find(em, WellKnownProduct.ENTITY);
         anyProduct = find(em, WellKnownProduct.ANY);
-        originalProduct = find(em, WellKnownProduct.ORIGINAL);
         sameProduct = find(em, WellKnownProduct.SAME);
         notApplicableProduct = find(em, WellKnownProduct.NOT_APPLICABLE);
         workspace = find(em, WellKnownProduct.WORKSPACE);
 
         location = find(em, WellKnownLocation.LOCATION);
         anyLocation = find(em, WellKnownLocation.ANY);
-        originalLocation = find(em, WellKnownLocation.ORIGINAL);
         notApplicableLocation = find(em, WellKnownLocation.NOT_APPLICABLE);
         sameLocation = find(em, WellKnownLocation.SAME);
 
         coreUser = find(em, WellKnownAgency.CORE_USER);
         agency = find(em, WellKnownAgency.AGENCY);
         anyAgency = find(em, WellKnownAgency.ANY);
-        originalAgency = find(em, WellKnownAgency.ORIGINAL);
         core = find(em, WellKnownAgency.CORE);
         coreAnimationSoftware = find(em,
                                      WellKnownAgency.CORE_ANIMATION_SOFTWARE);
@@ -612,45 +606,10 @@ public class KernelImpl implements Kernel {
     public Relationship getNotApplicableRelationship() {
         return notApplicableRelationship;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getOriginalAgency()
-     */
+    
     @Override
-    public Agency getOriginalAgency() {
-        return originalAgency;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getOriginalAttribute()
-     */
-    @Override
-    public Attribute getOriginalAttribute() {
-        return originalAttribute;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getOriginalLocation()
-     */
-    @Override
-    public Location getOriginalLocation() {
-        return originalLocation;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getOriginalProduct()
-     */
-    @Override
-    public Product getOriginalProduct() {
-        return originalProduct;
+    public Attribute getSameAttribute() {
+        return sameAttribute;
     }
 
     /**

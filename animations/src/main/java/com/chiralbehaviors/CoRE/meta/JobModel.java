@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -121,19 +120,6 @@ public interface JobModel {
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
                                                                   throws SQLException;
-
-    /**
-     * Returns a map of all protocols that match job.service and a list of field
-     * names specifying which fields on the protocol prevent the protocol from
-     * being matched. An empty list means the protocol would be matched if a job
-     * were inserted.
-     * 
-     * This method does not take metaprotocols into account.
-     * 
-     * @param job
-     * @return
-     */
-    Map<Protocol, List<String>> findProtocolGaps(Job job);
 
     /**
      * For a given job, generates all the implicit jobs that need to be done
@@ -501,5 +487,16 @@ public interface JobModel {
      * @throws SQLException
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
+
+    /**
+     * @return a job in which every field has the appropriate NotApplicable ruleform.
+     * Status is set to UNSET
+     */
+    Job getInitializedJob();
+
+    /**
+     * @return a protocol in which every field has the appropriate NotApplicable ruleform.
+     */
+    Protocol getInitializedProtocol();
 
 }

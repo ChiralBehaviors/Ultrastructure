@@ -71,44 +71,44 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
 
         //create pick and ship jobs
         MetaProtocol mp1 = new MetaProtocol(w.deliver, 1, w.anyRelationship,
+                                            kernel.getAnyRelationship(),
                                             w.anyRelationship,
-                                            w.sameRelationship,
-                                            w.anyRelationship,
-                                            w.anyRelationship, w.core);
+                                            kernel.getAnyRelationship(),
+                                            w.sameRelationship, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.core);
         em.persist(mp1);
 
         //if in US, check credit, if EU, check LOC
         MetaProtocol mp2 = new MetaProtocol(w.pick, 2, w.sameRelationship,
-                                            w.customerType, w.sameRelationship,
-                                            w.area, w.area, w.core);
+                                            kernel.getAnyRelationship(), w.customerType,
+                                            kernel.getAnyRelationship(), w.sameRelationship, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.core);
         em.persist(mp2);
 
         //print purchase order and customs declaration, if applicable
         MetaProtocol mp3 = new MetaProtocol(w.ship, 3, w.sameRelationship,
-                                            w.customerType, w.sameRelationship,
-                                            w.area, w.area, w.core);
+                                            kernel.getAnyRelationship(), w.customerType,
+                                            kernel.getAnyRelationship(), w.sameRelationship, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.core);
         em.persist(mp3);
 
         //generate fee for georgetown
         MetaProtocol mp4 = new MetaProtocol(w.printPurchaseOrder, 4,
                                             w.sameRelationship,
-                                            w.sameRelationship,
-                                            w.sameRelationship, w.city, w.area,
-                                            w.core);
+                                            kernel.getAnyRelationship(),
+                                            w.sameRelationship, kernel.getAnyRelationship(), w.sameRelationship,
+                                            kernel.getAnyRelationship(), w.city, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.core);
         mp4.setStopOnMatch(true);
         em.persist(mp4);
 
         //generate fee for everyone else
         MetaProtocol mp5 = new MetaProtocol(w.printPurchaseOrder, 5,
-                                            w.sameRelationship, w.customerType,
-                                            w.sameRelationship, w.area,
-                                            w.anyRelationship, w.core);
+                                            w.sameRelationship, kernel.getAnyRelationship(),
+                                            w.customerType, kernel.getAnyRelationship(),
+                                            w.sameRelationship, kernel.getAnyRelationship(), w.area, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.core);
         em.persist(mp5);
 
         //create sales tax
         MetaProtocol mp6 = new MetaProtocol(w.fee, 6, w.anyRelationship,
-                                            w.customerType, w.sameRelationship,
-                                            w.region, w.anyRelationship, w.core);
+                                            kernel.getAnyRelationship(), w.customerType,
+                                            kernel.getAnyRelationship(), w.sameRelationship, kernel.getAnyRelationship(), w.region, kernel.getAnyRelationship(), w.anyRelationship, kernel.getAnyRelationship(), w.core);
         em.persist(mp6);
 
     }
@@ -123,75 +123,75 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //        Product product, Agency updatedBy
 
         Protocol checkCreditProtocol = new Protocol(w.pick, w.externalCust,
-                                                    w.anyProduct, w.us, w.us,
-                                                    w.cpu, w.checkCredit,
-                                                    w.anyProduct, w.core);
+                                                    kernel.getAnyAttribute(), w.anyProduct, w.us,
+                                                    kernel.getAnyAttribute(), w.us,
+                                                    kernel.getAnyAttribute(), w.cpu, kernel.getAnyAttribute(), w.checkCredit, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
         em.persist(checkCreditProtocol);
 
         Protocol checkLetterOfCreditProtocol = new Protocol(
                                                             w.pick,
                                                             w.externalCust,
+                                                            kernel.getAnyAttribute(),
                                                             w.anyProduct,
                                                             w.euro,
+                                                            kernel.getAnyAttribute(),
                                                             w.us,
-                                                            w.creditDept,
-                                                            w.checkLetterOfCredit,
-                                                            w.anyProduct,
-                                                            w.core);
+                                                            kernel.getAnyAttribute(),
+                                                            w.creditDept, kernel.getAnyAttribute(), w.checkLetterOfCredit, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
         em.persist(checkLetterOfCreditProtocol);
 
         Protocol printPurchaseOrder = new Protocol(w.ship, w.externalCust,
-                                                   w.abc486, w.anyLocation,
-                                                   w.anyLocation, w.creditDept,
-                                                   w.printPurchaseOrder,
-                                                   w.anyProduct, w.core);
+                                                   kernel.getAnyAttribute(), w.abc486,
+                                                   w.anyLocation, kernel.getAnyAttribute(),
+                                                   w.anyLocation,
+                                                   kernel.getAnyAttribute(), w.creditDept, kernel.getAnyAttribute(), w.printPurchaseOrder, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
         em.persist(printPurchaseOrder);
 
         Protocol printCustomsDecl = new Protocol(w.ship, w.externalCust,
-                                                 w.abc486, w.euro, w.us,
-                                                 w.creditDept,
-                                                 w.printCustomsDeclaration,
-                                                 w.anyProduct, w.core);
+                                                 kernel.getAnyAttribute(), w.abc486, w.euro,
+                                                 kernel.getAnyAttribute(),
+                                                 w.us,
+                                                 kernel.getAnyAttribute(), w.creditDept, kernel.getAnyAttribute(), w.printCustomsDeclaration, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
         em.persist(printCustomsDecl);
 
         Protocol pickProtocol = new Protocol(w.deliver, w.anyAgency,
-                                             w.anyProduct, w.anyLocation,
-                                             w.anyLocation, w.factory1Agency,
-                                             w.pick, w.anyProduct, w.core);
+                                             kernel.getAnyAttribute(), w.anyProduct,
+                                             w.anyLocation, kernel.getAnyAttribute(),
+                                             w.anyLocation, kernel.getAnyAttribute(), w.factory1Agency, kernel.getAnyAttribute(), w.pick, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
         em.persist(pickProtocol);
 
         Protocol shipProtocol = new Protocol(w.deliver, w.anyAgency,
-                                             w.anyProduct, w.anyLocation,
-                                             w.anyLocation, w.factory1Agency,
-                                             w.ship, w.anyProduct, w.core);
+                                             kernel.getAnyAttribute(), w.anyProduct,
+                                             w.anyLocation, kernel.getAnyAttribute(),
+                                             w.anyLocation, kernel.getAnyAttribute(), w.factory1Agency, kernel.getAnyAttribute(), w.ship, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
         em.persist(shipProtocol);
 
         Protocol feeProtocol = new Protocol(w.printPurchaseOrder,
-                                            w.externalCust, w.abc486,
-                                            w.anyLocation, w.us,
-                                            w.billingComputer, w.fee,
-                                            w.anyProduct, w.core);
+                                            w.externalCust, kernel.getAnyAttribute(),
+                                            w.abc486, w.anyLocation,
+                                            kernel.getAnyAttribute(), w.us,
+                                            kernel.getAnyAttribute(), w.billingComputer, kernel.getAnyAttribute(), w.fee, kernel.getAnyAttribute(), w.anyProduct, kernel.getAnyAttribute(), w.core);
         em.persist(feeProtocol);
 
         Protocol nonExemptProtocol = new Protocol(w.fee, w.nonExemptAgency,
-                                                  w.nonExempt, w.dc,
-                                                  w.anyLocation,
-                                                  w.billingComputer,
-                                                  w.salesTax, w.nonExempt,
-                                                  w.core);
+                                                  kernel.getAnyAttribute(), w.nonExempt,
+                                                  w.dc,
+                                                  kernel.getAnyAttribute(),
+                                                  w.anyLocation, kernel.getAnyAttribute(),
+                                                  w.billingComputer, kernel.getAnyAttribute(), w.salesTax, kernel.getAnyAttribute(), w.nonExempt, kernel.getAnyAttribute(), w.core);
         em.persist(nonExemptProtocol);
 
         Protocol discountProtocol = new Protocol(w.fee, w.externalCust,
-                                                 w.abc486, w.euro, w.us,
-                                                 w.billingComputer, w.discount,
-                                                 w.abc486, w.core);
+                                                 kernel.getAnyAttribute(), w.abc486, w.euro,
+                                                 kernel.getAnyAttribute(), w.us,
+                                                 kernel.getAnyAttribute(), w.billingComputer, kernel.getAnyAttribute(), w.discount, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.core);
         em.persist(discountProtocol);
 
         Protocol georgetownFeeProtocol = new Protocol(w.printPurchaseOrder,
                                                       w.georgeTownUniversity,
-                                                      w.abc486, w.dc, w.us,
-                                                      w.billingComputer, w.fee,
-                                                      w.abc486, w.core);
+                                                      kernel.getAnyAttribute(), w.abc486, w.dc,
+                                                      kernel.getAnyAttribute(), w.us,
+                                                      kernel.getAnyAttribute(), w.billingComputer, kernel.getAnyAttribute(), w.fee, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.core);
         em.persist(georgetownFeeProtocol);
 
     }
@@ -215,8 +215,8 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //        Agency assignTo, Agency requester, Product service,
         //        Product product, Location deliverTo, Location deliverFrom,
         //        Agency updatedBy
-        Job job = new Job(w.georgeTownUniversity, w.georgeTownUniversity,
-                          w.deliver, w.abc486, w.rsb225, w.factory1, w.core);
+        Job job = new Job(w.georgeTownUniversity, kernel.getAnyAttribute(),
+                          w.deliver, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.rsb225, kernel.getAnyAttribute(), w.factory1, kernel.getAnyAttribute(), w.georgeTownUniversity, kernel.getAnyAttribute(), w.core);
         job.setStatus(w.unset);
         em.persist(job);
 
@@ -235,8 +235,8 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     @Test
     public void testFirstSeqAuth() {
         em.getTransaction().begin();
-        Job job = new Job(w.georgeTownUniversity, w.georgeTownUniversity,
-                          w.deliver, w.abc486, w.rsb225, w.factory1, w.core);
+        Job job = new Job(w.georgeTownUniversity, kernel.getAnyAttribute(),
+                          w.deliver, kernel.getAnyAttribute(), w.abc486, kernel.getAnyAttribute(), w.rsb225, kernel.getAnyAttribute(), w.factory1, kernel.getAnyAttribute(), w.georgeTownUniversity, kernel.getAnyAttribute(), w.core);
         job.setStatus(w.unset);
         em.persist(job);
 
@@ -271,8 +271,8 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //        Agency assignTo, Agency requester, Product service,
         //        Product product, Location deliverTo, Location deliverFrom,
         //        Agency updatedBy
-        Job job = new Job(w.factory1Agency, w.cafleurBon, w.deliver, w.abc486,
-                          w.paris, w.factory1, w.core);
+        Job job = new Job(w.factory1Agency, kernel.getAnyAttribute(), w.deliver, kernel.getAnyAttribute(),
+                          w.abc486, kernel.getAnyAttribute(), w.paris, kernel.getAnyAttribute(), w.factory1, kernel.getAnyAttribute(), w.cafleurBon, kernel.getAnyAttribute(), w.core);
         job.setStatus(w.unset);
         em.persist(job);
 

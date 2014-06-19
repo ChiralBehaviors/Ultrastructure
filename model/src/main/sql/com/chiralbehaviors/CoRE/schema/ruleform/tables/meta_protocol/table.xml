@@ -27,6 +27,12 @@
             <column name="requesting_agency_attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
+            <column name="assign_to" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="assign_to_attribute" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
             <column name="service_type" remarks="Used to select a mapped value from a Product" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -105,6 +111,18 @@
     <changeSet author="hhildebrand" id="1390879803226-204">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requesting_agency_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_requesting_agency_attribute_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-204-1">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="assign_to" baseTableName="meta_protocol" constraintName="meta_protocol_assign_to_fkey"
+            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803226-204-2">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="assign_to_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_assign_to_attribute_fkey"
             deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>

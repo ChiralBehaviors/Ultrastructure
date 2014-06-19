@@ -169,26 +169,52 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createMetaProtocols() {
-        MetaProtocol m1 = new MetaProtocol(deliver, 1, anyRelationship,
-                                           notApplicableRelationship, sameRelationship,
-                                           notApplicableRelationship, sameRelationship, notApplicableRelationship, state, notApplicableRelationship, area, notApplicableRelationship, core);
+        MetaProtocol m1 = model.getJobModel().newInitializedMetaProtocol(deliver,
+                                                                         core);
+        m1.setSequenceNumber(1);
+        m1.setProductOrdered(anyRelationship);
+        m1.setDeliverTo(state);
+        m1.setDeliverFrom(area);
+
         em.persist(m1);
-        MetaProtocol m2 = new MetaProtocol(pick, 1, anyRelationship,
-                                           notApplicableRelationship, customerType,
-                                           notApplicableRelationship, sameRelationship, notApplicableRelationship, area, notApplicableRelationship, area, notApplicableRelationship, core);
+
+        MetaProtocol m2 = model.getJobModel().newInitializedMetaProtocol(pick,
+                                                                         core);
+        m2.setSequenceNumber(1);
+        m2.setProductOrdered(anyRelationship);
+        m2.setRequestingAgency(customerType);
+        m2.setDeliverTo(area);
+        m2.setDeliverFrom(area);
+
         em.persist(m2);
-        MetaProtocol m3 = new MetaProtocol(ship, 1, anyRelationship,
-                                           notApplicableRelationship, customerType,
-                                           notApplicableRelationship, sameRelationship, notApplicableRelationship, area, notApplicableRelationship, area, notApplicableRelationship, core);
+
+        MetaProtocol m3 = model.getJobModel().newInitializedMetaProtocol(ship,
+                                                                         core);
+        m3.setSequenceNumber(1);
+        m3.setProductOrdered(anyRelationship);
+        m3.setRequestingAgency(customerType);
+        m3.setDeliverTo(area);
+        m3.setDeliverFrom(area);
+
         em.persist(m3);
-        MetaProtocol m5 = new MetaProtocol(fee, 1, anyRelationship,
-                                           notApplicableRelationship, salesTaxStatus,
-                                           notApplicableRelationship, sameRelationship, notApplicableRelationship, city, notApplicableRelationship, anyRelationship, notApplicableRelationship, core);
+
+        MetaProtocol m5 = model.getJobModel().newInitializedMetaProtocol(fee,
+                                                                         core);
+        m5.setSequenceNumber(1);
+        m5.setProductOrdered(anyRelationship);
+        m5.setRequestingAgency(salesTaxStatus);
+        m5.setDeliverTo(city);
+
         em.persist(m5);
-        MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 1,
-                                           anyRelationship, notApplicableRelationship,
-                                           anyRelationship, notApplicableRelationship,
-                                           sameRelationship, notApplicableRelationship, anyRelationship, notApplicableRelationship, anyRelationship, notApplicableRelationship, core);
+
+        MetaProtocol m6 = model.getJobModel().newInitializedMetaProtocol(printPurchaseOrder,
+                                                                         core);
+        m6.setSequenceNumber(1);
+        m6.setProductOrdered(anyRelationship);
+        m6.setRequestingAgency(anyRelationship);
+        m6.setDeliverTo(anyRelationship);
+        m6.setDeliverFrom(anyRelationship);
+
         em.persist(m6);
     }
 
@@ -371,67 +397,143 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     public void createProtocols() {
 
-        Protocol pickProtocol = new Protocol(deliver, anyAgency, kernel.getAnyAttribute(),
+        Protocol pickProtocol = new Protocol(deliver, anyAgency,
+                                             kernel.getAnyAttribute(),
                                              anyProduct, anyLocation,
-                                             kernel.getAnyAttribute(), anyLocation, kernel.getAnyAttribute(),
-                                             factory1Agency, kernel.getAnyAttribute(), pick, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                             kernel.getAnyAttribute(),
+                                             anyLocation,
+                                             kernel.getAnyAttribute(),
+                                             factory1Agency,
+                                             kernel.getAnyAttribute(), pick,
+                                             kernel.getAnyAttribute(),
+                                             sameProduct,
+                                             kernel.getAnyAttribute(), core);
         em.persist(pickProtocol);
 
         Protocol chkCreditProtocol = new Protocol(pick, externalCust,
-                                                  kernel.getAnyAttribute(), anyProduct, us, kernel.getAnyAttribute(),
-                                                  us, kernel.getAnyAttribute(),
-                                                  cpu, kernel.getAnyAttribute(), checkCredit, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                                  kernel.getAnyAttribute(),
+                                                  anyProduct, us,
+                                                  kernel.getAnyAttribute(), us,
+                                                  kernel.getAnyAttribute(),
+                                                  cpu,
+                                                  kernel.getAnyAttribute(),
+                                                  checkCredit,
+                                                  kernel.getAnyAttribute(),
+                                                  sameProduct,
+                                                  kernel.getAnyAttribute(),
+                                                  core);
         em.persist(chkCreditProtocol);
 
         Protocol chkLtrCrdtProtocol = new Protocol(pick, externalCust,
-                                                   kernel.getAnyAttribute(), anyProduct, euro,
+                                                   kernel.getAnyAttribute(),
+                                                   anyProduct, euro,
                                                    kernel.getAnyAttribute(),
                                                    us,
-                                                   kernel.getAnyAttribute(), creditDept, kernel.getAnyAttribute(), checkLetterOfCredit, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                                   kernel.getAnyAttribute(),
+                                                   creditDept,
+                                                   kernel.getAnyAttribute(),
+                                                   checkLetterOfCredit,
+                                                   kernel.getAnyAttribute(),
+                                                   sameProduct,
+                                                   kernel.getAnyAttribute(),
+                                                   core);
         em.persist(chkLtrCrdtProtocol);
 
-        Protocol shipProtocol = new Protocol(deliver, anyAgency, kernel.getAnyAttribute(),
+        Protocol shipProtocol = new Protocol(deliver, anyAgency,
+                                             kernel.getAnyAttribute(),
                                              anyProduct, anyLocation,
-                                             kernel.getAnyAttribute(), anyLocation, kernel.getAnyAttribute(),
-                                             factory1Agency, kernel.getAnyAttribute(), ship, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                             kernel.getAnyAttribute(),
+                                             anyLocation,
+                                             kernel.getAnyAttribute(),
+                                             factory1Agency,
+                                             kernel.getAnyAttribute(), ship,
+                                             kernel.getAnyAttribute(),
+                                             sameProduct,
+                                             kernel.getAnyAttribute(), core);
         em.persist(shipProtocol);
 
         Protocol printCustDeclProtocol = new Protocol(ship, externalCust,
-                                                      kernel.getAnyAttribute(), abc486, euro, kernel.getAnyAttribute(),
+                                                      kernel.getAnyAttribute(),
+                                                      abc486, euro,
+                                                      kernel.getAnyAttribute(),
                                                       us,
-                                                      kernel.getAnyAttribute(), cpu, kernel.getAnyAttribute(), printCustomsDeclaration, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                                      kernel.getAnyAttribute(),
+                                                      cpu,
+                                                      kernel.getAnyAttribute(),
+                                                      printCustomsDeclaration,
+                                                      kernel.getAnyAttribute(),
+                                                      sameProduct,
+                                                      kernel.getAnyAttribute(),
+                                                      core);
         em.persist(printCustDeclProtocol);
 
-        Protocol printPoProtocol = new Protocol(ship, externalCust, kernel.getAnyAttribute(),
-                                                abc486, anyLocation, kernel.getAnyAttribute(),
-                                                us,
-                                                kernel.getAnyAttribute(), cpu, kernel.getAnyAttribute(), printPurchaseOrder, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+        Protocol printPoProtocol = new Protocol(ship, externalCust,
+                                                kernel.getAnyAttribute(),
+                                                abc486, anyLocation,
+                                                kernel.getAnyAttribute(), us,
+                                                kernel.getAnyAttribute(), cpu,
+                                                kernel.getAnyAttribute(),
+                                                printPurchaseOrder,
+                                                kernel.getAnyAttribute(),
+                                                sameProduct,
+                                                kernel.getAnyAttribute(), core);
         em.persist(printPoProtocol);
 
         Protocol feeProtocol = new Protocol(printPurchaseOrder, anyAgency,
-                                            kernel.getAnyAttribute(), abc486, anyLocation,
-                                            kernel.getAnyAttribute(), us, kernel.getAnyAttribute(),
-                                            billingComputer, kernel.getAnyAttribute(), fee, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                            kernel.getAnyAttribute(), abc486,
+                                            anyLocation,
+                                            kernel.getAnyAttribute(), us,
+                                            kernel.getAnyAttribute(),
+                                            billingComputer,
+                                            kernel.getAnyAttribute(), fee,
+                                            kernel.getAnyAttribute(),
+                                            sameProduct,
+                                            kernel.getAnyAttribute(), core);
         em.persist(feeProtocol);
 
         Protocol salesTaxProtocol = new Protocol(fee, nonExemptAgency,
-                                                 kernel.getAnyAttribute(), nonExempt, dc,
-                                                 kernel.getAnyAttribute(), anyLocation,
-                                                 kernel.getAnyAttribute(), billingComputer, kernel.getAnyAttribute(), salesTax, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                                 kernel.getAnyAttribute(),
+                                                 nonExempt, dc,
+                                                 kernel.getAnyAttribute(),
+                                                 anyLocation,
+                                                 kernel.getAnyAttribute(),
+                                                 billingComputer,
+                                                 kernel.getAnyAttribute(),
+                                                 salesTax,
+                                                 kernel.getAnyAttribute(),
+                                                 sameProduct,
+                                                 kernel.getAnyAttribute(), core);
         em.persist(salesTaxProtocol);
 
-        Protocol discountProtocol = new Protocol(fee, externalCust, kernel.getAnyAttribute(),
-                                                 abc486, euro, kernel.getAnyAttribute(),
-                                                 us, kernel.getAnyAttribute(), billingComputer, kernel.getAnyAttribute(), discount, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+        Protocol discountProtocol = new Protocol(fee, externalCust,
+                                                 kernel.getAnyAttribute(),
+                                                 abc486, euro,
+                                                 kernel.getAnyAttribute(), us,
+                                                 kernel.getAnyAttribute(),
+                                                 billingComputer,
+                                                 kernel.getAnyAttribute(),
+                                                 discount,
+                                                 kernel.getAnyAttribute(),
+                                                 sameProduct,
+                                                 kernel.getAnyAttribute(), core);
         em.persist(discountProtocol);
 
         Protocol gtuDiscountedPriceProtocol = new Protocol(
                                                            fee,
                                                            georgeTownUniversity,
-                                                           kernel.getAnyAttribute(), abc486, dc,
                                                            kernel.getAnyAttribute(),
-                                                           us, kernel.getAnyAttribute(),
-                                                           billingComputer, kernel.getAnyAttribute(), fee, kernel.getAnyAttribute(), sameProduct, kernel.getAnyAttribute(), core);
+                                                           abc486,
+                                                           dc,
+                                                           kernel.getAnyAttribute(),
+                                                           us,
+                                                           kernel.getAnyAttribute(),
+                                                           billingComputer,
+                                                           kernel.getAnyAttribute(),
+                                                           fee,
+                                                           kernel.getAnyAttribute(),
+                                                           sameProduct,
+                                                           kernel.getAnyAttribute(),
+                                                           core);
         em.persist(gtuDiscountedPriceProtocol);
     }
 

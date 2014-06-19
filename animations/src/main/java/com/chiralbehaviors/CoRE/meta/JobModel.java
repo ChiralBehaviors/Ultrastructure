@@ -535,7 +535,7 @@ public interface JobModel {
     /**
      * @param service TODO
      * @param updatedBy TODO
-     * @return a protocol in which every field has the appropriate defaults
+     * @return a metaprotocol in which every unspecified field is initialized to Same
      */
     MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);
 

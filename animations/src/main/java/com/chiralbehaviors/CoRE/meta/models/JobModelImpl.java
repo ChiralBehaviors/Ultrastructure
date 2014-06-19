@@ -1177,6 +1177,8 @@ public class JobModelImpl implements JobModel {
         mp.setService(service);
         mp.setAssignTo(same);
         mp.setAssignToAttribute(same);
+        mp.setDeliverTo(same);
+        mp.setDeliverToAttribute(same);
         mp.setDeliverFrom(same);
         mp.setDeliverFromAttribute(same);
         mp.setProductOrdered(same);

@@ -29,7 +29,6 @@ import java.util.List;
 import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transaction;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -342,11 +341,11 @@ public class JobModelTest extends AbstractModelTest {
     public void testGenerateJobsFromProtocols() {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-
-        Protocol p = jobModel.getInitializedProtocol();
+        Product service = new Product("test service", kernel.getCore());
+        Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
         em.persist(p);
         txn.commit();
-        Job order = jobModel.getInitializedJob();
+        Job order = jobModel.newInitializedJob(service, kernel.getCore());
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
         List<Protocol> protocols = model.getJobModel().getProtocols(order);
         assertEquals(1, protocols.size());
@@ -384,7 +383,7 @@ public class JobModelTest extends AbstractModelTest {
                             scenario.georgeTownUniversity,
                             kernel.getAnyAttribute(), scenario.core);
         order.setStatus(kernel.getUnset());
-        List<Job> jobs2 = model.getJobModel().generateImplicitJobs(order);
+        //List<Job> jobs2 = model.getJobModel().generateImplicitJobs(order);
         em.persist(order);
         txn.commit();
         txn.begin();

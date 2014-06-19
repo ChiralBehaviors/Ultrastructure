@@ -102,9 +102,15 @@ public class JobChronology extends AbstractProtocol {
 
     public JobChronology(Job job, String notes, Agency updatedBy) {
         super(notes, updatedBy);
+        initializeFrom(job);
+    }
+
+    protected void initializeFrom(Job job) {
         this.job = job;
         this.status = job.getStatus();
-        this.timeStamp = job.getUpdateDate();
+        if (job.getUpdateDate() != null) {
+            this.timeStamp = job.getUpdateDate();
+        }
         this.copyFrom(job);
     }
 
@@ -128,10 +134,7 @@ public class JobChronology extends AbstractProtocol {
     }
 
     public void setJob(Job job) {
-        this.job = job;
-        this.status = job.getStatus();
-        this.timeStamp = job.getUpdateDate();
-        copyFrom(job);
+        initializeFrom(job);
     }
 
     /**

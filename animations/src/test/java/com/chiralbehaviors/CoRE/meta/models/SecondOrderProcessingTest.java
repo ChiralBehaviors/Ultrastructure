@@ -66,93 +66,42 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
      * 
      */
     private static void createMetaProtocols() {
-        //        Product service, int sequenceNumber,
-        //        Relationship productOrdered,
-        //        Relationship requestingAgency,
-        //        Relationship serviceType, Relationship deliverTo,
-        //        Relationship deliverFrom, Agency updatedBy
-
         //create pick and ship jobs
-        MetaProtocol mp1 = new MetaProtocol(w.deliver, 1, w.anyRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.anyRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.anyRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.anyRelationship,
-                                            kernel.getAnyRelationship(), w.core);
+        MetaProtocol mp1 = model.getJobModel().newInitializedMetaProtocol(w.deliver,
+                                                                          w.core);
         em.persist(mp1);
 
-        //if in US, check credit, if EU, check LOC
-        MetaProtocol mp2 = new MetaProtocol(w.pick, 2, w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.customerType,
-                                            kernel.getAnyRelationship(),
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.area,
-                                            kernel.getAnyRelationship(),
-                                            w.area,
-                                            kernel.getAnyRelationship(), w.core);
+        //if in US, check credit, if EU, check LOC 
+        MetaProtocol mp2 = model.getJobModel().newInitializedMetaProtocol(w.pick,
+                                                                          w.core);
+        mp2.setRequestingAgency(w.customerType);
+        mp2.setDeliverFrom(w.area);
+        mp2.setDeliverTo(w.area);
         em.persist(mp2);
 
-        //print purchase order and customs declaration, if applicable
-        MetaProtocol mp3 = new MetaProtocol(w.ship, 3, w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.customerType,
-                                            kernel.getAnyRelationship(),
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.area,
-                                            kernel.getAnyRelationship(),
-                                            w.area,
-                                            kernel.getAnyRelationship(), w.core);
-        em.persist(mp3);
-
-        //generate fee for georgetown
-        MetaProtocol mp4 = new MetaProtocol(w.printPurchaseOrder, 4,
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.city,
-                                            kernel.getAnyRelationship(),
-                                            w.area,
-                                            kernel.getAnyRelationship(), w.core);
+        //generate fee for georgetown 
+        MetaProtocol mp4 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
+                                                                          w.core);
+        mp4.setRequestingAgency(w.customerType);
+        mp4.setDeliverTo(w.city);
+        em.persist(mp4);
         mp4.setStopOnMatch(true);
         em.persist(mp4);
 
-        //generate fee for everyone else
-        MetaProtocol mp5 = new MetaProtocol(w.printPurchaseOrder, 5,
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.customerType,
-                                            kernel.getAnyRelationship(),
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.area,
-                                            kernel.getAnyRelationship(),
-                                            w.anyRelationship,
-                                            kernel.getAnyRelationship(), w.core);
+        //generate fee for everyone else 
+        MetaProtocol mp5 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
+                                                                          w.core);
+        mp5.setRequestingAgency(w.customerType);
+        mp5.setDeliverTo(w.area);
+        mp5.setSequenceNumber(2);
         em.persist(mp5);
 
         //create sales tax
-        MetaProtocol mp6 = new MetaProtocol(w.fee, 6, w.anyRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.customerType,
-                                            kernel.getAnyRelationship(),
-                                            w.sameRelationship,
-                                            kernel.getAnyRelationship(),
-                                            w.region,
-                                            kernel.getAnyRelationship(),
-                                            w.anyRelationship,
-                                            kernel.getAnyRelationship(), w.core);
+        MetaProtocol mp6 = model.getJobModel().newInitializedMetaProtocol(w.fee,
+                                                                          w.core);
+        mp6.setRequestingAgency(w.customerType);
+        mp6.setDeliverTo(w.region);
         em.persist(mp6);
-
     }
 
     /**
@@ -287,6 +236,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         discountProtocol.setAssignTo(billingComputer);
         discountProtocol.setService(discount);
         discountProtocol.setProduct(abc486);
+        em.persist(discountProtocol);
 
         Protocol georgetownFeeProtocol = newProtocol();
         georgetownFeeProtocol.setRequestedService(printPurchaseOrder);
@@ -297,6 +247,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         georgetownFeeProtocol.setAssignTo(billingComputer);
         georgetownFeeProtocol.setService(fee);
         georgetownFeeProtocol.setProduct(abc486);
+        em.persist(georgetownFeeProtocol);
 
     }
 

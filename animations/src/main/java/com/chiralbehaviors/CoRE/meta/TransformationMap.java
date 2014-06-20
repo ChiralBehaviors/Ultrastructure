@@ -17,12 +17,13 @@
 package com.chiralbehaviors.CoRE.meta;
 
 /**
- * A map used in job transformations to determine which fields need to
- * be transformed. 
+ * A map used in job transformations to determine which fields need to be
+ * transformed.
  * 
  * Service has INTENTIONALLY been omitted because it is never transformed.
+ * 
  * @author hhildebrand
- *
+ * 
  */
 public class TransformationMap {
     public TransformationMap(boolean assignTo, boolean assignToAttribute,
@@ -47,4 +48,13 @@ public class TransformationMap {
     public final boolean assignTo, assignToAttribute, deliverFrom,
             deliverFromAttribute, deliverTo, deliverToAttribute, product,
             productAttribute, requester, requesterAttribute, serviceAttribute;
+
+    @Override
+    public String toString() {
+        return String.format("TransformationMap [assignTo=%s, assignToAttribute=%s, deliverFrom=%s, deliverFromAttribute=%s, deliverTo=%s, deliverToAttribute=%s, product=%s, productAttribute=%s, requester=%s, requesterAttribute=%s, serviceAttribute=%s]",
+                             assignTo, assignToAttribute, deliverFrom,
+                             deliverFromAttribute, deliverTo,
+                             deliverToAttribute, product, productAttribute,
+                             requester, requesterAttribute, serviceAttribute);
+    }
 }

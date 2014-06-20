@@ -512,11 +512,24 @@ public class JobModelTest extends AbstractModelTest {
         job.setProduct(scenario.abc486);
         job.setDeliverTo(scenario.rsb225);
         job.setDeliverFrom(scenario.factory1);
-        job.setRequester(scenario.georgeTownUniversity);
+        job.setRequester(scenario.cafleurBon);
+        em.persist(job);
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         txfm = jobModel.getProtocols(job);
         assertEquals(1, txfm.size());
+
+        List<Job> jobs = jobModel.generateImplicitJobs(job);
+        assertEquals(1, jobs.size());
+        Job derived = jobs.get(0);
+        assertEquals(scenario.fee, derived.getService());
+        assertEquals(scenario.abc486, derived.getProduct());
+        assertEquals(scenario.billingComputer, derived.getAssignTo());
+        assertEquals(scenario.cafleurBon, derived.getRequester());
+        assertEquals(scenario.rsb225, derived.getDeliverTo());
+        assertEquals(scenario.factory1, derived.getDeliverFrom());
+        assertEquals(scenario.unset, derived.getStatus());
+        assertEquals(job, derived.getParent());
     }
 
     @Test

@@ -213,7 +213,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m6.setProductOrdered(anyRelationship);
         m6.setRequestingAgency(anyRelationship);
         m6.setDeliverTo(anyRelationship);
-        m6.setDeliverFrom(anyRelationship);
+        m6.setDeliverFrom(area);
 
         em.persist(m6);
     }

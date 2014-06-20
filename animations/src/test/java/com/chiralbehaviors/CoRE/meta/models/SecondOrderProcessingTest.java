@@ -92,9 +92,10 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //generate fee for georgetown 
         MetaProtocol mp4 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
-        mp4.setRequestingAgency(w.customerType);
+
         mp4.setDeliverTo(w.city);
-        em.persist(mp4);
+        mp4.setDeliverFrom(w.area);
+        mp4.setSequenceNumber(4);
         mp4.setStopOnMatch(true);
         em.persist(mp4);
 
@@ -103,14 +104,18 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
                                                                           w.core);
         mp5.setRequestingAgency(w.customerType);
         mp5.setDeliverTo(w.area);
-        mp5.setSequenceNumber(2);
+        mp5.setDeliverFrom(w.anyRelationship);
+        mp5.setSequenceNumber(5);
         em.persist(mp5);
 
         //create sales tax
         MetaProtocol mp6 = model.getJobModel().newInitializedMetaProtocol(w.fee,
                                                                           w.core);
+        mp6.setProductOrdered(w.anyRelationship);
         mp6.setRequestingAgency(w.customerType);
         mp6.setDeliverTo(w.region);
+        mp6.setDeliverFrom(w.anyRelationship);
+        mp6.setSequenceNumber(6);
         em.persist(mp6);
     }
 

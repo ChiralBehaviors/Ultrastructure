@@ -45,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * 
  */
 @Entity
-@Table(name = "product_location", schema = "ruleform")
+@Table(name = "agency_location", schema = "ruleform")
 @NamedQueries({ @NamedQuery(name = AGENCIES_AT_LOCATION, query = "SELECT n.agency "
                                                                  + "FROM AgencyLocation n "
                                                                  + "WHERE n.relationship = :relationship "

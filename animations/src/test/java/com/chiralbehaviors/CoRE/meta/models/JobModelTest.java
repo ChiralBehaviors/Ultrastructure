@@ -344,8 +344,8 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(1, metaProtocols.size());
         Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
-        List<Job> jobs = findAllJobs();
-        assertEquals(7, jobs.size());
+        List<Job> jobs = jobModel.getAllChildren(order);
+        assertEquals(5, jobs.size());
     }
 
     @Test

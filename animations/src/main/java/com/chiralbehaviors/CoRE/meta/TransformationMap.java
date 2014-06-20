@@ -16,6 +16,14 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
+/**
+ * A map used in job transformations to determine which fields need to
+ * be transformed. 
+ * 
+ * Service has INTENTIONALLY been omitted because it is never transformed.
+ * @author hhildebrand
+ *
+ */
 public class TransformationMap {
     public TransformationMap(boolean assignTo, boolean assignToAttribute,
                              boolean deliverFrom, boolean deliverFromAttribute,

@@ -69,6 +69,10 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //create pick and ship jobs
         MetaProtocol mp1 = model.getJobModel().newInitializedMetaProtocol(w.deliver,
                                                                           w.core);
+        mp1.setProductOrdered(w.anyRelationship);
+        mp1.setRequestingAgency(w.anyRelationship);
+        mp1.setDeliverTo(w.anyRelationship);
+        mp1.setDeliverFrom(w.anyRelationship);
         em.persist(mp1);
 
         //if in US, check credit, if EU, check LOC 
@@ -79,6 +83,12 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         mp2.setDeliverTo(w.area);
         em.persist(mp2);
 
+        MetaProtocol mp3 = model.getJobModel().newInitializedMetaProtocol(w.ship, w.core);
+        mp3.setRequestingAgency(w.customerType);
+        mp3.setDeliverFrom(w.area);
+        mp3.setDeliverTo(w.area);
+        em.persist(mp3);
+        
         //generate fee for georgetown 
         MetaProtocol mp4 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
@@ -278,6 +288,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
 
         em.getTransaction().commit();
         List<Job> jobs = model.getJobModel().getAllChildren(job);
+        List<Protocol> protocols = model.getJobModel().getProtocolsFor(job.getService());
+        TestDebuggingUtil.printProtocols(protocols);
+        TestDebuggingUtil.printJobs(jobs);
         assertEquals(5, jobs.size());
         boolean hasCorrectService = false;
         for (Job j : jobs) {

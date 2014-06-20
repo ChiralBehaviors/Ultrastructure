@@ -889,7 +889,7 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<Protocol> getProtocolsFor(Product service) {
-        return em.createNamedQuery(Protocol.GET_FOR_SERVICE, Protocol.class).setParameter("service",
+        return em.createNamedQuery(Protocol.GET_FOR_SERVICE, Protocol.class).setParameter("requestedService",
                                                                                           service).getResultList();
     }
 

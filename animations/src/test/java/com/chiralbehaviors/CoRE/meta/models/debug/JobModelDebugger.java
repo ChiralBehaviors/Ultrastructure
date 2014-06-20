@@ -50,7 +50,7 @@ public class JobModelDebugger extends JobModelImpl {
         if (!job.getRequester().equals(p.getRequester())) {
             missingFields.add("Requester");
         }
-        if (!job.getProduct().equals(p.getProduct())) {
+        if (!job.getProduct().equals(p.getRequestedProduct())) {
             missingFields.add("Product");
         }
         if (!job.getDeliverTo().equals(p.getDeliverTo())) {
@@ -58,6 +58,18 @@ public class JobModelDebugger extends JobModelImpl {
         }
         if (!job.getDeliverFrom().equals(p.getDeliverFrom())) {
             missingFields.add("DeliverFrom");
+        }
+        if (!job.getRequesterAttribute().equals(p.getRequesterAttribute())) {
+            missingFields.add("RequesterAttribute");
+        }
+        if (!job.getProductAttribute().equals(p.getProductAttribute())) {
+            missingFields.add("ProductAttribute");
+        }
+        if (!job.getDeliverToAttribute().equals(p.getDeliverToAttribute())) {
+            missingFields.add("DeliverToAttribute");
+        }
+        if (!job.getDeliverFromAttribute().equals(p.getDeliverFromAttribute())) {
+            missingFields.add("DeliverFromAttribute");
         }
         return missingFields;
 

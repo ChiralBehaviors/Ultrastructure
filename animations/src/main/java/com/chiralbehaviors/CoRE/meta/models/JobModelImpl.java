@@ -341,23 +341,6 @@ public class JobModelImpl implements JobModel {
         });
     }
 
-    public static void log_inserts_in_job_chronology(final TriggerData triggerData)
-                                                                                   throws SQLException {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.logInsertsInJobChronology(triggerData.getNew().getString("id"),
-                                                   triggerData.getNew().getString("status"));
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "JobModel.log_inserts_in_job_chronology";
-            }
-        });
-    }
-
     public static void log_modified_product_status_code_sequencing(final TriggerData triggerData)
                                                                                                  throws SQLException {
 
@@ -456,7 +439,6 @@ public class JobModelImpl implements JobModel {
             job.setUpdatedBy(updatedBy);
         }
         Job j = em.merge(job);
-        addJobChronology(job, now, oldStatus, notes);
         return j;
     }
 
@@ -1702,13 +1684,6 @@ public class JobModelImpl implements JobModel {
     private boolean isTerminalState(String service, String statusCode) {
         return isTerminalState(em.find(StatusCode.class, statusCode),
                                em.find(Product.class, service));
-    }
-
-    private void logInsertsInJobChronology(String jobId, String statusId) {
-        addJobChronology(em.find(Job.class, jobId),
-                         new Timestamp(System.currentTimeMillis()),
-                         em.find(StatusCode.class, statusId),
-                         "Initial insertion of job");
     }
 
     private void processJobChange(String jobId) {

@@ -109,21 +109,14 @@ public class JobModelTest extends AbstractModelTest {
                                                                       kernel.getCore());
         em.persist(childSequence);
 
-        Protocol p = new Protocol(kernel.getCore());
-        p.setRequestedService(kiki);
-        p.setRequester(kernel.getCore());
-        p.setRequesterAttribute(kernel.getAnyAttribute());
+        Protocol p = jobModel.newInitializedProtocol(kiki, kernel.getCore());
         p.setRequestedProduct(bento);
+        p.setRequester(scenario.core);
         p.setDeliverTo(kernel.getAnyLocation());
-        p.setDeliverToAttribute(kernel.getAnyAttribute());
         p.setDeliverFrom(kernel.getAnyLocation());
-        p.setDeliverFromAttribute(kernel.getAnyAttribute());
-        p.setAssignTo(kernel.getCore());
-        p.setAssignToAttribute(kernel.getAnyAttribute());
+        p.setAssignTo(scenario.core);
         p.setService(shipping);
-        p.setServiceAttribute(kernel.getAnyAttribute());
         p.setProduct(bento);
-        p.setProductAttribute(kernel.getAnyAttribute());
         em.persist(p);
 
         em.getTransaction().commit();

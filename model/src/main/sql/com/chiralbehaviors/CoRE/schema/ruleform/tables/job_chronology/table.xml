@@ -52,7 +52,7 @@
             <column name="status" remarks="The current status of this Job" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="time_stamp" remarks="The time at which a status change occurs"
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="time_stamp" remarks="The date this rule was last changed"
                 type="TIMESTAMPTZ"
             >
                 <constraints nullable="false" />

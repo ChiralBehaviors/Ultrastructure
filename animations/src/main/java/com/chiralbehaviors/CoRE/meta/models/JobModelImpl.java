@@ -409,14 +409,6 @@ public class JobModelImpl implements JobModel {
                                  StatusCode status, String notes) {
         JobChronology c = new JobChronology(job.getUpdatedBy());
         c.setJob(job);
-        c.setService(job.getService());
-        c.setProduct(job.getProduct());
-        c.setAssignTo(job.getAssignTo());
-        c.setRequester(job.getRequester());
-        c.setDeliverFrom(job.getDeliverFrom());
-        c.setDeliverTo(job.getDeliverTo());
-        c.setParent(job.getParent());
-        c.setNotes(job.getNotes());
         c.setStatus(status);
         c.setTimeStamp(timestamp);
         em.persist(c);

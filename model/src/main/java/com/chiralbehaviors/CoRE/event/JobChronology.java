@@ -113,9 +113,6 @@ public class JobChronology extends Ruleform {
     @Column(name = "time_stamp")
     private Timestamp          timeStamp;
 
-    @Column(name = "chronology_notes")
-    private String             chronologyNotes;
-
     public JobChronology() {
     }
 
@@ -209,7 +206,8 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param assignTo the assignTo to set
+     * @param assignTo
+     *            the assignTo to set
      */
     public void setAssignTo(Agency assignTo) {
         this.assignTo = assignTo;
@@ -223,7 +221,8 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param deliverFrom the deliverFrom to set
+     * @param deliverFrom
+     *            the deliverFrom to set
      */
     public void setDeliverFrom(Location deliverFrom) {
         this.deliverFrom = deliverFrom;
@@ -237,7 +236,8 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param deliverTo the deliverTo to set
+     * @param deliverTo
+     *            the deliverTo to set
      */
     public void setDeliverTo(Location deliverTo) {
         this.deliverTo = deliverTo;
@@ -251,7 +251,8 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param parent the parent to set
+     * @param parent
+     *            the parent to set
      */
     public void setParent(Job parent) {
         this.parent = parent;
@@ -265,7 +266,8 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param requester the requester to set
+     * @param requester
+     *            the requester to set
      */
     public void setRequester(Agency requester) {
         this.requester = requester;
@@ -279,24 +281,11 @@ public class JobChronology extends Ruleform {
     }
 
     /**
-     * @param service the service to set
+     * @param service
+     *            the service to set
      */
     public void setService(Product service) {
         this.service = service;
-    }
-
-    /**
-     * @return the chronologyNotes
-     */
-    public String getChronologyNotes() {
-        return chronologyNotes;
-    }
-
-    /**
-     * @param jobNotes the jobNotes to set
-     */
-    public void setChronologyNotes(String chronologyNotes) {
-        this.chronologyNotes = chronologyNotes;
     }
 
     /*

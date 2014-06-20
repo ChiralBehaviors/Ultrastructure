@@ -93,7 +93,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //generate fee for georgetown 
         MetaProtocol mp4 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
-
+        mp4.setRequestingAgency(w.customerType);
         mp4.setDeliverTo(w.city);
         mp4.setDeliverFrom(w.area);
         mp4.setSequenceNumber(4);
@@ -103,7 +103,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //generate fee for everyone else 
         MetaProtocol mp5 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
-        mp5.setRequestingAgency(w.customerType);
+        
         mp5.setDeliverTo(w.area);
         mp5.setDeliverFrom(w.anyRelationship);
         mp5.setSequenceNumber(5);
@@ -294,9 +294,6 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
 
         em.getTransaction().commit();
         List<Job> jobs = model.getJobModel().getAllChildren(job);
-        List<Protocol> protocols = model.getJobModel().getProtocolsFor(job.getService());
-        TestDebuggingUtil.printProtocols(protocols);
-        TestDebuggingUtil.printJobs(jobs);
         assertEquals(5, jobs.size());
         boolean hasCorrectService = false;
         for (Job j : jobs) {

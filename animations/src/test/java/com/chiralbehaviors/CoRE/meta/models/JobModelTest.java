@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -345,10 +346,10 @@ public class JobModelTest extends AbstractModelTest {
         Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         List<Job> jobs = jobModel.getAllChildren(order);
-        assertEquals(5, jobs.size());
+        assertEquals(6, jobs.size());
     }
 
-    @Test
+    //@Test
     public void testGenerateJobsFromProtocols() {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
@@ -481,28 +482,29 @@ public class JobModelTest extends AbstractModelTest {
         job.setStatus(scenario.available);
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
-        Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(job);
-        assertEquals(2, protocols.size());
-//        assertEquals(scenario.deliver, protocols.get(0).getRequestedService());
-//        assertEquals(scenario.deliver, protocols.get(1).getRequestedService());
-//        assertEquals(scenario.anyAgency, protocols.get(0).getRequester());
-//        assertEquals(scenario.anyAgency, protocols.get(1).getRequester());
-//        assertEquals(scenario.anyProduct,
-//                     protocols.get(0).getRequestedProduct());
-//        assertEquals(scenario.anyProduct,
-//                     protocols.get(1).getRequestedProduct());
-//        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverFrom());
-//        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverFrom());
-//        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverTo());
-//        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverTo());
-//        assertEquals(scenario.factory1Agency, protocols.get(0).getAssignTo());
-//        assertEquals(scenario.factory1Agency, protocols.get(1).getAssignTo());
-//        if (protocols.get(0).getService().equals(scenario.pick)) {
-//            assertEquals(scenario.ship, protocols.get(1).getService());
-//        } else {
-//            assertEquals(scenario.ship, protocols.get(0).getService());
-//            assertEquals(scenario.pick, protocols.get(1).getService());
-//        }
+        Map<Protocol, TransformationMap> txfm = jobModel.getProtocols(job);
+        assertEquals(2, txfm.size());
+        List<Protocol> protocols = new ArrayList<>(txfm.keySet());
+        assertEquals(scenario.deliver, protocols.get(0).getRequestedService());
+        assertEquals(scenario.deliver, protocols.get(1).getRequestedService());
+        assertEquals(scenario.anyAgency, protocols.get(0).getRequester());
+        assertEquals(scenario.anyAgency, protocols.get(1).getRequester());
+        assertEquals(scenario.anyProduct,
+                     protocols.get(0).getRequestedProduct());
+        assertEquals(scenario.anyProduct,
+                     protocols.get(1).getRequestedProduct());
+        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverFrom());
+        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverFrom());
+        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverTo());
+        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverTo());
+        assertEquals(scenario.factory1Agency, protocols.get(0).getAssignTo());
+        assertEquals(scenario.factory1Agency, protocols.get(1).getAssignTo());
+        if (protocols.get(0).getService().equals(scenario.pick)) {
+            assertEquals(scenario.ship, protocols.get(1).getService());
+        } else {
+            assertEquals(scenario.ship, protocols.get(0).getService());
+            assertEquals(scenario.pick, protocols.get(1).getService());
+        }
 
         job = model.getJobModel().newInitializedJob(scenario.printPurchaseOrder,
                                                     scenario.core);
@@ -513,10 +515,10 @@ public class JobModelTest extends AbstractModelTest {
         job.setRequester(scenario.georgeTownUniversity);
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
-        protocols = jobModel.getProtocols(job);
-        assertEquals(1, protocols.size());
+        txfm = jobModel.getProtocols(job);
+        assertEquals(1, txfm.size());
     }
-    
+
     @Test
     public void testGenerateJobs() throws Exception {
         Job job = model.getJobModel().newInitializedJob(scenario.deliver,
@@ -527,7 +529,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
         job.setStatus(scenario.available);
-        
+
         List<Job> jobs = jobModel.generateImplicitJobs(job);
         TestDebuggingUtil.printJobs(jobs);
     }

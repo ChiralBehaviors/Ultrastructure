@@ -1644,8 +1644,8 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTxfm(Relationship relationship) {
-        return kernel.getAnyRelationship().equals(relationship)
-               || kernel.getSameRelationship().equals(relationship);
+        return !kernel.getAnyRelationship().equals(relationship)
+               && !kernel.getSameRelationship().equals(relationship);
     }
 
     /**

@@ -1397,13 +1397,10 @@ public class JobModelImpl implements JobModel {
         } else {
             child.setRequesterAttribute(parent.getRequesterAttribute());
         }
-        if (!protocol.getService().equals(kernel.getAnyProduct())
-            && !protocol.getService().equals(kernel.getSameProduct())
-            && !txfm.service) {
-            child.setService(protocol.getService());
-        } else {
-            child.setService(parent.getService());
-        }
+
+        //This is never transformed, so we always set to the protocol service.
+        child.setService(protocol.getService());
+
         if (!protocol.getServiceAttribute().equals(kernel.getAnyAttribute())
             && !protocol.getServiceAttribute().equals(kernel.getSameAttribute())
             && !txfm.serviceAttribute) {
@@ -1668,7 +1665,6 @@ public class JobModelImpl implements JobModel {
                                      isTxfm(metaProtocol.getProductOrderedAttribute()),
                                      isTxfm(metaProtocol.getRequestingAgency()),
                                      isTxfm(metaProtocol.getRequestingAgencyAttribute()),
-                                     isTxfm(metaProtocol.getServiceType()),
                                      isTxfm(metaProtocol.getServiceAttribute()));
     }
 

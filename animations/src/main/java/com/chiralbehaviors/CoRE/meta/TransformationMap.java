@@ -18,12 +18,11 @@ package com.chiralbehaviors.CoRE.meta;
 
 public class TransformationMap {
     public TransformationMap(boolean assignTo, boolean assignToAttribute,
-                             boolean deliverFrom,
-                             boolean deliverFromAttribute,
+                             boolean deliverFrom, boolean deliverFromAttribute,
                              boolean deliverTo, boolean deliverToAttribute,
                              boolean product, boolean productAttribute,
                              boolean requester, boolean requesterAttribute,
-                             boolean service, boolean serviceAttribute) {
+                             boolean serviceAttribute) {
         this.assignTo = assignTo;
         this.assignToAttribute = assignToAttribute;
         this.deliverFrom = deliverFrom;
@@ -34,12 +33,10 @@ public class TransformationMap {
         this.productAttribute = productAttribute;
         this.requester = requester;
         this.requesterAttribute = requesterAttribute;
-        this.service = service;
         this.serviceAttribute = serviceAttribute;
     }
 
     public final boolean assignTo, assignToAttribute, deliverFrom,
             deliverFromAttribute, deliverTo, deliverToAttribute, product,
-            productAttribute, requester, requesterAttribute, service,
-            serviceAttribute;
+            productAttribute, requester, requesterAttribute, serviceAttribute;
 }

@@ -51,7 +51,6 @@ public interface JobModel {
                                                                        false,
                                                                        false,
                                                                        false,
-                                                                       false,
                                                                        false);
 
     /**

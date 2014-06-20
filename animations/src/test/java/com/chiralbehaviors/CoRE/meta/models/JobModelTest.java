@@ -395,7 +395,6 @@ public class JobModelTest extends AbstractModelTest {
         order.setDeliverFrom(scenario.factory1);
         order.setRequester(scenario.georgeTownUniversity);
         order.setStatus(kernel.getUnset());
-        //List<Job> jobs2 = model.getJobModel().generateImplicitJobs(order);
         em.persist(order);
         txn.commit();
         txn.begin();
@@ -480,6 +479,55 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
         job.setStatus(scenario.available);
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
+        assertEquals(1, metaProtocols.size());
+        Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(job);
+        assertEquals(2, protocols.size());
+//        assertEquals(scenario.deliver, protocols.get(0).getRequestedService());
+//        assertEquals(scenario.deliver, protocols.get(1).getRequestedService());
+//        assertEquals(scenario.anyAgency, protocols.get(0).getRequester());
+//        assertEquals(scenario.anyAgency, protocols.get(1).getRequester());
+//        assertEquals(scenario.anyProduct,
+//                     protocols.get(0).getRequestedProduct());
+//        assertEquals(scenario.anyProduct,
+//                     protocols.get(1).getRequestedProduct());
+//        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverFrom());
+//        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverFrom());
+//        assertEquals(scenario.anyLocation, protocols.get(0).getDeliverTo());
+//        assertEquals(scenario.anyLocation, protocols.get(1).getDeliverTo());
+//        assertEquals(scenario.factory1Agency, protocols.get(0).getAssignTo());
+//        assertEquals(scenario.factory1Agency, protocols.get(1).getAssignTo());
+//        if (protocols.get(0).getService().equals(scenario.pick)) {
+//            assertEquals(scenario.ship, protocols.get(1).getService());
+//        } else {
+//            assertEquals(scenario.ship, protocols.get(0).getService());
+//            assertEquals(scenario.pick, protocols.get(1).getService());
+//        }
+
+        job = model.getJobModel().newInitializedJob(scenario.printPurchaseOrder,
+                                                    scenario.core);
+        job.setAssignTo(scenario.orderFullfillment);
+        job.setProduct(scenario.abc486);
+        job.setDeliverTo(scenario.rsb225);
+        job.setDeliverFrom(scenario.factory1);
+        job.setRequester(scenario.georgeTownUniversity);
+        metaProtocols = jobModel.getMetaprotocols(job);
+        assertEquals(1, metaProtocols.size());
+        protocols = jobModel.getProtocols(job);
+        assertEquals(1, protocols.size());
+    }
+    
+    @Test
+    public void testGenerateJobs() throws Exception {
+        Job job = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                        scenario.core);
+        job.setAssignTo(scenario.orderFullfillment);
+        job.setProduct(scenario.abc486);
+        job.setDeliverTo(scenario.rsb225);
+        job.setDeliverFrom(scenario.factory1);
+        job.setRequester(scenario.georgeTownUniversity);
+        job.setStatus(scenario.available);
+        List<Job> jobs = jobModel.generateImplicitJobs(job);
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(job);

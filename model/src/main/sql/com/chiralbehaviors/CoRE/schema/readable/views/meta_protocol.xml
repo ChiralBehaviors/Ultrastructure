@@ -33,10 +33,10 @@
                    LEFT JOIN relationship df ON base_table.deliver_from = df.id 
                    
                    LEFT JOIN relationship raa ON base_table.requesting_agency_attribute = raa.id
-                   LEFT JOIN relationship sa ON base_table.service_attribute = st.id
-                   LEFT JOIN relationship poa ON base_table.product_ordered_attribute = po.id
-                   LEFT JOIN relationship dta ON base_table.deliver_to_attribute = dt.id
-                   LEFT JOIN relationship dfa ON base_table.deliver_from_attribute = df.id
+                   LEFT JOIN relationship sa ON base_table.service_attribute = sa.id
+                   LEFT JOIN relationship poa ON base_table.product_ordered_attribute = poa.id
+                   LEFT JOIN relationship dta ON base_table.deliver_to_attribute = dta.id
+                   LEFT JOIN relationship dfa ON base_table.deliver_from_attribute = dfa.id
                    
 				   JOIN agency up ON base_table.updated_by = up.id;
 				

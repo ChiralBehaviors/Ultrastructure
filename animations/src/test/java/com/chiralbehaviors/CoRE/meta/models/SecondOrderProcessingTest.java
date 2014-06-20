@@ -83,12 +83,13 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         mp2.setDeliverTo(w.area);
         em.persist(mp2);
 
-        MetaProtocol mp3 = model.getJobModel().newInitializedMetaProtocol(w.ship, w.core);
+        MetaProtocol mp3 = model.getJobModel().newInitializedMetaProtocol(w.ship,
+                                                                          w.core);
         mp3.setRequestingAgency(w.customerType);
         mp3.setDeliverFrom(w.area);
         mp3.setDeliverTo(w.area);
         em.persist(mp3);
-        
+
         //generate fee for georgetown 
         MetaProtocol mp4 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
@@ -274,7 +275,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(pickToShip);
     }
 
-    // @Test
+    @Test
     public void testCreateGeorgetownWorkflow() {
         em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(w.deliver, w.core);
@@ -355,7 +356,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
 
         em.getTransaction().commit();
         List<Job> jobs = model.getJobModel().getAllChildren(job);
-        assertEquals(5, jobs.size());
+        assertEquals(6, jobs.size());
         boolean hasCorrectService = false;
         for (Job j : jobs) {
             if (j.getService().equals(w.checkLetterOfCredit)) {

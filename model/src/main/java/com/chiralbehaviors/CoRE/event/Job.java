@@ -215,7 +215,7 @@ public class Job extends AbstractProtocol {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
     private Set<Job>           childJobs;
-    
+
     @Column(name = "sequence_number")
     private int                sequenceNumber                    = 1;
 
@@ -319,8 +319,8 @@ public class Job extends AbstractProtocol {
      */
     @Override
     public String toString() {
-        return String.format("Job [status=%s, %s]", status.getName(),
-                             getToString());
+        return String.format("Job [status=%s, sequenceNumber=%s, %s]",
+                             status.getName(), sequenceNumber, getToString());
     }
 
     /*

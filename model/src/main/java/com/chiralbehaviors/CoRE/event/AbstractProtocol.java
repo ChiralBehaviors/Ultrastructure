@@ -272,7 +272,7 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     public String getToString() {
-        return String.format("requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, sequenceNumber=%s",
+        return String.format("requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s",
                              requester.getName(), assignTo.getName(),
                              service.getName(), product.getName(),
                              deliverTo.getName(), deliverFrom.getName(),
@@ -381,7 +381,7 @@ public abstract class AbstractProtocol extends Ruleform {
      */
     @Override
     public String toString() {
-        return String.format("AbstractProtocol [requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, sequenceNumber=%s]",
+        return String.format("AbstractProtocol [requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s]",
                              requester.getName(), assignTo.getName(),
                              service.getName(), product.getName(),
                              deliverTo.getName(), deliverFrom.getName(),

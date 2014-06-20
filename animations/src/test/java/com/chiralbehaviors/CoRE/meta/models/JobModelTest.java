@@ -356,6 +356,7 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(p);
         txn.commit();
         Job order = jobModel.newInitializedJob(service, kernel.getCore());
+        em.persist(order);
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
         List<Protocol> protocols = model.getJobModel().getProtocols(order);
         assertEquals(1, protocols.size());

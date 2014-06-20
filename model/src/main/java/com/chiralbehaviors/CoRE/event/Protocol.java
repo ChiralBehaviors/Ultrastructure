@@ -209,8 +209,9 @@ public class Protocol extends AbstractProtocol {
      */
     @Override
     public String toString() {
-        return String.format("Protocol [%s, requestedProduct=%s, requestedService=%s]",
-                             getToString(), requestedProduct.getName(),
+        return String.format("Protocol [%s, sequenceNumber=%s, requestedProduct=%s, requestedService=%s]",
+                             getToString(), sequenceNumber,
+                             requestedProduct.getName(),
                              requestedService.getName());
     }
 

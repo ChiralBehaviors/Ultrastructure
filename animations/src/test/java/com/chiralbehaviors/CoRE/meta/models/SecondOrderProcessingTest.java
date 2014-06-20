@@ -303,7 +303,10 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.getTransaction().commit();
 
         em.getTransaction().begin();
-        Job pick = model.getJobModel().getChildJobsByService(job, w.pick).get(0);
+        List<Job> childJobsByService = model.getJobModel().getChildJobsByService(job,
+                                                                                 w.pick);
+        assertEquals(1, childJobsByService.size());
+        Job pick = childJobsByService.get(0);
 
         //delete all child jobs so that we can move pick into a terminal state
         List<Job> childJobs = model.getJobModel().getAllChildren(pick);

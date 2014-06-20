@@ -159,7 +159,7 @@ public class StatusCode extends
     private Set<StatusCodeNetwork>   networkByParent;
 
     @Column(name = "propagate_children")
-    private Integer                  propagateChildren                        = FALSE;
+    private Integer                  propagateChildren                        = TRUE;
 
     public StatusCode() {
     }

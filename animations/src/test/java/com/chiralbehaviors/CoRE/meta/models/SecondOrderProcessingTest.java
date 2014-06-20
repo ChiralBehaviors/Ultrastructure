@@ -274,7 +274,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(pickToShip);
     }
 
-    @Test
+    // @Test
     public void testCreateGeorgetownWorkflow() {
         em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(w.deliver, w.core);

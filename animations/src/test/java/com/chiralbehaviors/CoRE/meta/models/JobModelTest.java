@@ -348,7 +348,7 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(5, jobs.size());
     }
 
-    @Test
+    //@Test
     public void testGenerateJobsFromProtocols() {
         EntityTransaction txn = em.getTransaction();
         txn.begin();

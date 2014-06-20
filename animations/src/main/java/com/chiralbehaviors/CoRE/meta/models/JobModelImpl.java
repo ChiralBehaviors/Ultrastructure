@@ -416,7 +416,6 @@ public class JobModelImpl implements JobModel {
         c.setDeliverFrom(job.getDeliverFrom());
         c.setDeliverTo(job.getDeliverTo());
         c.setParent(job.getParent());
-        c.setChronologyNotes(notes);
         c.setNotes(job.getNotes());
         c.setStatus(status);
         c.setTimeStamp(timestamp);
@@ -744,8 +743,8 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<JobChronology> getChronologyForJob(Job job) {
-        return em.createNamedQuery(JobChronology.FIND_FOR_JOB, JobChronology.class).setParameter("job",
-                                                                                 job).getResultList();
+        return em.createNamedQuery(JobChronology.FIND_FOR_JOB,
+                                   JobChronology.class).setParameter("job", job).getResultList();
     }
 
     /**

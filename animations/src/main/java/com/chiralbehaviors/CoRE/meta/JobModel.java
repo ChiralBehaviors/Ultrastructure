@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -40,6 +41,18 @@ import com.hellblazer.utils.Tuple;
  * 
  */
 public interface JobModel {
+    static TransformationMap NO_TRANSFORMATION = new TransformationMap(false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false);
 
     /**
      * Log the status change of a job at the timestamp
@@ -344,22 +357,24 @@ public interface JobModel {
      * @param job
      * @return the list of unique protocols applicable for a job
      */
-    List<Protocol> getProtocols(Job job);
+    Map<Protocol, TransformationMap> getProtocols(Job job);
 
     /**
-     * Answer the matched list of protocols for a job, given the meta protocol
-     * transformation
+     * Answer the matched list of inferred protocols for a job, given the meta
+     * protocol transformation
      * 
      * @param job
      * @param metaprotocol
-     * @return the matched list of protocols for a job, given the meta protocol
-     *         transformation
+     * @return The list of protocol mappings for a service that are inferred by
+     *         the meta protocol. The list is a Tuple of protocols, and a
+     *         boolean map indicating which field was inferred in the protocol.
      */
-    List<Protocol> getProtocols(Job job, MetaProtocol metaprotocol);
+    Map<Protocol, TransformationMap> getProtocols(Job job,
+                                                          MetaProtocol metaprotocol);
 
     /**
      * @param service
-     * @return
+     * @return The list of protocol mappings for a service.
      */
     List<Protocol> getProtocolsFor(Product service);
 
@@ -522,9 +537,12 @@ public interface JobModel {
     Protocol newInitializedProtocol(Product service, Agency updatedBy);
 
     /**
-     * @param service TODO
-     * @param updatedBy TODO
-     * @return a metaprotocol in which every unspecified field is initialized to Same
+     * @param service
+     *            TODO
+     * @param updatedBy
+     *            TODO
+     * @return a metaprotocol in which every unspecified field is initialized to
+     *         Same
      */
     MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);
 

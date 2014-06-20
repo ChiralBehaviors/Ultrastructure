@@ -27,9 +27,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -78,6 +80,7 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.LocationNetwork_;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.TransformationMap;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform_;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -91,6 +94,7 @@ import com.hellblazer.utils.Tuple;
  * 
  */
 public class JobModelImpl implements JobModel {
+
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -534,14 +538,14 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> generateImplicitJobs(Job job) {
-        List<Protocol> protocols = getProtocols(job);
+        Map<Protocol, TransformationMap> protocols = getProtocols(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Found %s protocols for %s",
                                     protocols.size(), job));
         }
         List<Job> jobs = new ArrayList<Job>();
-        for (Protocol protocol : protocols) {
-            jobs.add(insertJob(job, protocol));
+        for (Entry<Protocol, TransformationMap> txfm : protocols.entrySet()) {
+            jobs.add(insertJob(job, txfm.getKey(), txfm.getValue()));
         }
         return jobs;
     }
@@ -839,48 +843,41 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Protocol> getProtocols(Job job) {
+    public Map<Protocol, TransformationMap> getProtocols(Job job) {
         // First we try for protocols which match the current job
         List<Protocol> protocols = getProtocolsMatching(job);
+        Map<Protocol, TransformationMap> matches = new LinkedHashMap<>();
         if (!protocols.isEmpty()) {
-            return protocols;
+            for (Protocol protocol : protocols) {
+                matches.put(protocol, NO_TRANSFORMATION);
+            }
+            return matches;
         }
 
-        protocols = new ArrayList<Protocol>();
         if (job.getStatus().getPropagateChildren()) {
             for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
-                for (Protocol protocol : getProtocols(job, metaProtocol)) {
-                    if (!protocols.contains(protocol)) {
-                        protocols.add(protocol);
-                    }
-                }
+                matches.putAll(getProtocols(job, metaProtocol));
                 if (metaProtocol.getStopOnMatch()) {
                     break;
                 }
             }
         }
-        return protocols;
+        return matches;
     }
 
     /**
+     * Find protocols which match transformations specified by the meta protocol
+     * 
      * @return
-     * @throws SQLException
      */
     @Override
-    public List<Protocol> getProtocols(Job job, MetaProtocol metaProtocol) {
-        // Find protocols which match transformations specified by the meta
-        // protocol
-
-        try {
-            TypedQuery<Protocol> tq = createMaskQuery(metaProtocol, job);
-            return tq.getResultList();
-        } catch (NonUniqueResultException e) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("non unique transformation of %s, meta protocol %s",
-                                       job, metaProtocol));
-            }
-            return Collections.emptyList();
+    public Map<Protocol, TransformationMap> getProtocols(Job job,
+                                                         MetaProtocol metaProtocol) {
+        Map<Protocol, TransformationMap> protocols = new LinkedHashMap<>();
+        for (Protocol protocol : createMaskQuery(metaProtocol, job).getResultList()) {
+            protocols.put(protocol, map(protocol, metaProtocol));
         }
+        return protocols;
     }
 
     /*
@@ -1047,9 +1044,13 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public Job insertJob(Job parent, Protocol protocol) {
+        return insertJob(parent, protocol, NO_TRANSFORMATION);
+    }
+
+    public Job insertJob(Job parent, Protocol protocol, TransformationMap txfm) {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
-        copyIntoChild(parent, protocol, job);
+        copyIntoChild(parent, protocol, txfm, job);
         job.setStatus(kernel.getUnset());
         em.persist(job);
 
@@ -1324,75 +1325,88 @@ public class JobModelImpl implements JobModel {
         automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
     }
 
-    private void copyIntoChild(Job parent, Protocol protocol, Job child) {
+    private void copyIntoChild(Job parent, Protocol protocol,
+                               TransformationMap txfm, Job child) {
         if (!protocol.getAssignTo().equals(kernel.getAnyAgency())
-            && !protocol.getAssignTo().equals(kernel.getSameAgency())) {
+            && !protocol.getAssignTo().equals(kernel.getSameAgency())
+            && !txfm.assignTo) {
             child.setAssignTo(protocol.getAssignTo());
         } else {
             child.setAssignTo(parent.getAssignTo());
         }
         if (!protocol.getAssignToAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getAssignToAttribute().equals(kernel.getSameAttribute())) {
+            && !protocol.getAssignToAttribute().equals(kernel.getSameAttribute())
+            && !txfm.assignToAttribute) {
             child.setAssignToAttribute(protocol.getAssignToAttribute());
         } else {
             child.setAssignToAttribute(parent.getAssignToAttribute());
         }
         if (!protocol.getDeliverTo().equals(kernel.getAnyLocation())
-            && !protocol.getDeliverTo().equals(kernel.getSameLocation())) {
+            && !protocol.getDeliverTo().equals(kernel.getSameLocation())
+            && !txfm.deliverTo) {
             child.setDeliverTo(protocol.getDeliverTo());
         } else {
             child.setDeliverTo(parent.getDeliverTo());
         }
         if (!protocol.getDeliverToAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getDeliverToAttribute().equals(kernel.getSameAttribute())) {
+            && !protocol.getDeliverToAttribute().equals(kernel.getSameAttribute())
+            && !txfm.assignToAttribute) {
             child.setDeliverToAttribute(protocol.getDeliverToAttribute());
         } else {
             child.setDeliverToAttribute(parent.getDeliverToAttribute());
         }
         if (!protocol.getDeliverFrom().equals(kernel.getAnyLocation())
-            && !protocol.getDeliverFrom().equals(kernel.getSameLocation())) {
+            && !protocol.getDeliverFrom().equals(kernel.getSameLocation())
+            && !txfm.deliverFrom) {
             child.setDeliverFrom(protocol.getDeliverFrom());
         } else {
             child.setDeliverFrom(parent.getDeliverFrom());
         }
         if (!protocol.getDeliverFromAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getDeliverFromAttribute().equals(kernel.getSameAttribute())) {
+            && !protocol.getDeliverFromAttribute().equals(kernel.getSameAttribute())
+            && !txfm.deliverFromAttribute) {
             child.setDeliverFromAttribute(protocol.getDeliverFromAttribute());
         } else {
             child.setDeliverFromAttribute(parent.getDeliverFromAttribute());
         }
         if (!protocol.getProduct().equals(kernel.getAnyProduct())
-            && !protocol.getProduct().equals(kernel.getSameProduct())) {
+            && !protocol.getProduct().equals(kernel.getSameProduct())
+            && !txfm.product) {
             child.setProduct(protocol.getProduct());
         } else {
             child.setProduct(parent.getProduct());
         }
         if (!protocol.getProductAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getProductAttribute().equals(kernel.getSameAttribute())) {
+            && !protocol.getProductAttribute().equals(kernel.getSameAttribute())
+            && !txfm.productAttribute) {
             child.setProductAttribute(protocol.getProductAttribute());
         } else {
             child.setProductAttribute(protocol.getProductAttribute());
         }
         if (!protocol.getRequester().equals(kernel.getAnyAgency())
-            && !protocol.getRequester().equals(kernel.getSameAgency())) {
+            && !protocol.getRequester().equals(kernel.getSameAgency())
+            && !txfm.requester) {
             child.setRequester(protocol.getRequester());
         } else {
             child.setRequester(parent.getRequester());
         }
         if (!protocol.getRequesterAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getRequesterAttribute().equals(kernel.getSameAttribute())) {
+            && !protocol.getRequesterAttribute().equals(kernel.getSameAttribute())
+            && !txfm.requesterAttribute) {
             child.setRequesterAttribute(protocol.getRequesterAttribute());
         } else {
             child.setRequesterAttribute(parent.getRequesterAttribute());
         }
         if (!protocol.getService().equals(kernel.getAnyProduct())
-            && !protocol.getService().equals(kernel.getSameProduct())) {
+            && !protocol.getService().equals(kernel.getSameProduct())
+            && !txfm.service) {
             child.setService(protocol.getService());
         } else {
             child.setService(parent.getService());
         }
         if (!protocol.getServiceAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getServiceAttribute().equals(kernel.getSameAttribute())) {
+            && !protocol.getServiceAttribute().equals(kernel.getSameAttribute())
+            && !txfm.serviceAttribute) {
             child.setServiceAttribute(protocol.getServiceAttribute());
         } else {
             child.setServiceAttribute(parent.getServiceAttribute());
@@ -1626,6 +1640,36 @@ public class JobModelImpl implements JobModel {
     private boolean isTerminalState(String service, String statusCode) {
         return isTerminalState(em.find(StatusCode.class, statusCode),
                                em.find(Product.class, service));
+    }
+
+    /**
+     * @param relationship
+     * @return
+     */
+    private boolean isTxfm(Relationship relationship) {
+        return kernel.getAnyRelationship().equals(relationship)
+               || kernel.getSameRelationship().equals(relationship);
+    }
+
+    /**
+     * @param protocol
+     * @param metaProtocol
+     * @return
+     */
+    private TransformationMap map(Protocol protocol, MetaProtocol metaProtocol) {
+        return new TransformationMap(
+                                     isTxfm(metaProtocol.getAssignTo()),
+                                     isTxfm(metaProtocol.getAssignToAttribute()),
+                                     isTxfm(metaProtocol.getDeliverFrom()),
+                                     isTxfm(metaProtocol.getDeliverFromAttribute()),
+                                     isTxfm(metaProtocol.getDeliverTo()),
+                                     isTxfm(metaProtocol.getDeliverToAttribute()),
+                                     isTxfm(metaProtocol.getProductOrdered()),
+                                     isTxfm(metaProtocol.getProductOrderedAttribute()),
+                                     isTxfm(metaProtocol.getRequestingAgency()),
+                                     isTxfm(metaProtocol.getRequestingAgencyAttribute()),
+                                     isTxfm(metaProtocol.getServiceType()),
+                                     isTxfm(metaProtocol.getServiceAttribute()));
     }
 
     private void mask(Agency agency, Relationship relationship,

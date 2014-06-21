@@ -57,8 +57,11 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="notes" remarks="Indicates any additional information about the status change" type="VARCHAR(10485760)">
+            <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="CHAR(22)" />
+            <column defaultValueNumeric="0" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
+            </column>
+            <column name="notes" remarks="Notes about this job" type="VARCHAR(10485760)">
             </column>
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -98,8 +101,8 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-170">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product" baseTableName="job_chronology" constraintName="job_chronology_product_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="status" baseTableName="job_chronology" constraintName="job_chronology_status_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-171">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -110,11 +113,6 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service" baseTableName="job_chronology" constraintName="job_chronology_service_fkey" deferrable="true"
             initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-173">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status" baseTableName="job_chronology" constraintName="job_chronology_status_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
 
     <changeSet author="hhildebrand" id="1390879803225-467">

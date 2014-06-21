@@ -109,7 +109,6 @@ public class JobChronology extends AbstractProtocol {
         this.job = job;
         this.status = job.getStatus();
         if (job.getUpdateDate() != null) {
-            System.out.println("Logging update date: " + job.getUpdateDate().toLocaleString());
             this.timeStamp = job.getUpdateDate();
         }
         this.copyFrom(job);

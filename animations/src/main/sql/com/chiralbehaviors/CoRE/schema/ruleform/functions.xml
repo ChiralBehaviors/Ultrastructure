@@ -26,8 +26,6 @@
 		file="functions/get_attribute_type.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/agency_get_allowed_text_values.xml" />
-	<include relativeToChangelogFile="true" file="functions/transform.xml" />
-	<include relativeToChangelogFile="true" file="functions/translation.xml" />
 	<include relativeToChangelogFile="true"
 		file="functions/allowed_to_insert_job.xml" />
 	<include relativeToChangelogFile="true"

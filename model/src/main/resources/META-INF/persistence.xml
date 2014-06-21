@@ -19,8 +19,6 @@
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeValue</class>
-        <class>com.chiralbehaviors.CoRE.attribute.Transformation</class>
-        <class>com.chiralbehaviors.CoRE.attribute.TransformationMetarule</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.Unit</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization</class>

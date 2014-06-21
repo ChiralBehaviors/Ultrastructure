@@ -122,11 +122,17 @@ public interface Kernel {
 
     Attribute getNotApplicableAttribute();
 
+    Interval getNotApplicableInterval();
+
     Location getNotApplicableLocation();
 
     Product getNotApplicableProduct();
 
     Relationship getNotApplicableRelationship();
+
+    StatusCode getNotApplicableStatusCode();
+
+    Unit getNotApplicableUnit();
 
     Relationship getOwnedBy();
 

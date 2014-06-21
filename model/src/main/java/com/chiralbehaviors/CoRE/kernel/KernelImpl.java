@@ -98,9 +98,12 @@ public class KernelImpl implements Kernel {
     private final Relationship        memberOf;
     private final Agency              notApplicableAgency;
     private final Attribute           notApplicableAttribute;
+    private final Interval            notApplicableInterval;
     private final Location            notApplicableLocation;
     private final Product             notApplicableProduct;
     private final Relationship        notApplicableRelationship;
+    private final StatusCode          notApplicableStatusCode;
+    private final Unit                notApplicableUnit;
     private final Relationship        ownedBy;
     private final Relationship        owns;
     private final Attribute           passwordHashAttribute;
@@ -204,12 +207,16 @@ public class KernelImpl implements Kernel {
         unset = find(em, WellKnownStatusCode.UNSET);
         anyStatusCode = find(em, WellKnownStatusCode.ANY);
         sameStatusCode = find(em, WellKnownStatusCode.SAME);
+        notApplicableStatusCode = find(em, WellKnownStatusCode.NOT_APPLICABLE);
+
         unsetUnit = find(em, WellKnownUnit.UNSET);
         anyUnit = find(em, WellKnownUnit.ANY);
         sameUnit = find(em, WellKnownUnit.SAME);
+        notApplicableUnit = find(em, WellKnownUnit.NOT_APPLICABLE);
 
         anyInterval = find(em, WellKnownInterval.ANY);
         sameInterval = find(em, WellKnownInterval.SAME);
+        notApplicableInterval = find(em, WellKnownInterval.NOT_APPLICABLE);
 
         rootAgencyNetwork = em.find(AgencyNetwork.class, ZERO);
         rootAttributeNetwork = em.find(AttributeNetwork.class, ZERO);
@@ -608,6 +615,11 @@ public class KernelImpl implements Kernel {
         return notApplicableAttribute;
     }
 
+    @Override
+    public Interval getNotApplicableInterval() {
+        return notApplicableInterval;
+    }
+
     /**
      * @return the notApplicableLocation
      */
@@ -630,6 +642,16 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getNotApplicableRelationship() {
         return notApplicableRelationship;
+    }
+
+    @Override
+    public StatusCode getNotApplicableStatusCode() {
+        return notApplicableStatusCode;
+    }
+
+    @Override
+    public Unit getNotApplicableUnit() {
+        return notApplicableUnit;
     }
 
     /**

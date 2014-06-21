@@ -23,9 +23,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.event.AttributedJob;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
 /**
@@ -56,15 +54,15 @@ public class JobResourceTest extends AbstractModelTest {
         em.persist(attr);
         em.flush();
         em.refresh(attr);
-        Job job = new Job(kernel.getCore(), kernel.getCore(),
-                          kernel.getAnyProduct(), kernel.getAnyProduct(),
-                          kernel.getAnyLocation(), kernel.getAnyLocation(),
-                          kernel.getCore());
-        JobAttribute jobAttr = new JobAttribute(attr, "foo", kernel.getCore());
-        jobAttr.setJob(job);
-        AttributedJob attributedJob = new AttributedJob(job);
+        Job job = model.getJobModel().newInitializedJob(kernel.getAnyProduct(),
+                                                        kernel.getCore());
+        job.setAssignTo(kernel.getCore());
+        job.setProduct(kernel.getAnyProduct());
+        job.setDeliverTo(kernel.getAnyLocation());
+        job.setDeliverFrom(kernel.getAnyLocation());
+        job.setRequester(kernel.getAnyAgency());
         em.getTransaction().commit();
-        job = resource.insertJob(attributedJob);
+        job = resource.insertJob(job);
         assertNotNull(job.getId());
     }
 

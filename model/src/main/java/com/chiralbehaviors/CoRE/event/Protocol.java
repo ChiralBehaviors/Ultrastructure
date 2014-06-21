@@ -19,26 +19,23 @@ import static com.chiralbehaviors.CoRE.event.Protocol.GET;
 import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The Protocol ruleform.
@@ -53,6 +50,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                + "    AND p.requester = :requester"
                                                + "    AND p.deliverFrom = :deliverFrom"
                                                + "    AND p.deliverTo = :deliverTo"
+                                               + "    AND p.productAttribute = :productAttribute"
+                                               + "    AND p.assignToAttribute = :assignToAttribute"
+                                               + "    AND p.requesterAttribute = :requesterAttribute"
+                                               + "    AND p.deliverToAttribute = :deliverToAttribute"
+                                               + "    AND p.deliverFromAttribute = :deliverFromAttribute"
                                                + " ORDER BY p.sequenceNumber"),
                @NamedQuery(name = GET_FOR_SERVICE, query = "SELECT p FROM Protocol p "
                                                            + "WHERE p.requestedService = :requestedService "
@@ -89,81 +91,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                     + "OR p.requester IN (?, ?))") })
 @Entity
 @Table(name = "protocol", schema = "ruleform")
-public class Protocol extends Ruleform {
-    public static final String     GET              = "protocol.get";
-    public static final String     GET_FOR_JOB      = "protocol.getForJob";
-    public static final String     GET_FOR_SERVICE  = "protocol.getForService";
+public class Protocol extends AbstractProtocol {
+    public static final String GET              = "protocol.get";
+    public static final String GET_FOR_JOB      = "protocol.getForJob";
+    public static final String GET_FOR_SERVICE  = "protocol.getForService";
 
-    private static final long      serialVersionUID = 1L;
-
-    /**
-     * The agency to assign to the job represented by this instance
-     */
-    @ManyToOne
-    @JoinColumn(name = "assign_to")
-    private Agency                 assignTo;
-
-    /**
-     * The attributes of this protocol
-     */
-    @OneToMany(mappedBy = "protocol")
-    @JsonIgnore
-    private Set<ProtocolAttribute> attributes;
-
-    @Column(name = "copy_attributes")
-    private Integer                copyAttributes   = FALSE;
-
-    /**
-     * the location to deliver the product from
-     */
-    @ManyToOne
-    @JoinColumn(name = "deliver_from")
-    private Location               deliverFrom;
-
-    /**
-     * The location to deliver the product to
-     */
-    @ManyToOne
-    @JoinColumn(name = "deliver_to")
-    private Location               deliverTo;
-
-    /**
-     * The product of the service
-     */
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private Product                product;
+    private static final long  serialVersionUID = 1L;
 
     /**
      * The ordered product
      */
     @ManyToOne
     @JoinColumn(name = "requested_product")
-    private Product                requestedProduct;
+    private Product            requestedProduct;
 
     /**
      * The requested service to be performed
      */
     @ManyToOne
     @JoinColumn(name = "requested_service")
-    private Product                requestedService;
-
-    /**
-     * The agency that requested the product of this service
-     */
-    @ManyToOne
-    @JoinColumn(name = "requester")
-    private Agency                 requester;
-
+    private Product            requestedService;
     @Column(name = "sequence_number")
-    private Integer                sequenceNumber   = 1;
-
-    /**
-     * The service to be performed
-     */
-    @ManyToOne
-    @JoinColumn(name = "service")
-    private Product                service;
+    private int                sequenceNumber   = 1;
 
     public Protocol() {
     }
@@ -175,37 +124,19 @@ public class Protocol extends Ruleform {
         super(updatedBy);
     }
 
-    public Protocol(Product requestedService, Agency requester,
-                    Product requestedProduct, Location deliverTo,
-                    Location deliverFrom, Agency assignTo, Product service,
-                    Product product, Agency updatedBy) {
-        super(updatedBy);
-        assert requestedProduct != null;
-        assert requester != null;
-        assert requestedProduct != null;
-        assert deliverTo != null;
-        assert deliverFrom != null;
-        assert assignTo != null;
-        assert service != null;
-        assert product != null;
-        assert updatedBy != null;
-        setRequestedService(requestedService);
-        setRequester(requester);
-        setRequestedProduct(requestedProduct);
-        setDeliverTo(deliverTo);
-        setDeliverFrom(deliverFrom);
-        setAssignTo(assignTo);
-        setService(service);
-        setProduct(product);
+    /**
+     * @param notes
+     */
+    public Protocol(String notes) {
+        super(notes);
     }
 
-    public Protocol(Product requestedService, Agency requester,
-                    Product requestedProduct, Location deliverTo,
-                    Location deliverFrom, Agency assignTo, Product service,
-                    Product product, boolean copyAttributes, Agency updatedBy) {
-        this(requestedService, requester, requestedProduct, deliverTo,
-             deliverFrom, assignTo, service, product, updatedBy);
-        setCopyAttributes(copyAttributes);
+    /**
+     * @param notes
+     * @param updatedBy
+     */
+    public Protocol(String notes, Agency updatedBy) {
+        super(notes, updatedBy);
     }
 
     /**
@@ -215,36 +146,12 @@ public class Protocol extends Ruleform {
         super(id);
     }
 
-    public Agency getAssignTo() {
-        return assignTo;
-    }
-
-    public Set<ProtocolAttribute> getAttributes() {
-        if (attributes == null) {
-            return Collections.emptySet();
-        }
-        return attributes;
-    }
-
     /**
-     * @return the deliverFrom
+     * @param id
+     * @param updatedBy
      */
-    public Location getDeliverFrom() {
-        return deliverFrom;
-    }
-
-    /**
-     * @return the deliverTo
-     */
-    public Location getDeliverTo() {
-        return deliverTo;
-    }
-
-    /**
-     * @return the product
-     */
-    public Product getProduct() {
-        return product;
+    public Protocol(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     public Product getRequestedProduct() {
@@ -259,63 +166,16 @@ public class Protocol extends Ruleform {
     }
 
     /**
-     * @return the requester
+     * @return the sequenceNumber
      */
-    public Agency getRequester() {
-        return requester;
-    }
-
     public Integer getSequenceNumber() {
         return sequenceNumber;
     }
 
     /**
-     * @return the service
+     * @param requestedProduct
+     *            the requestedProduct to set
      */
-    public Product getService() {
-        return service;
-    }
-
-    public boolean isCopyAttributes() {
-        return toBoolean(copyAttributes);
-    }
-
-    public void setAssignTo(Agency assignTo) {
-        this.assignTo = assignTo;
-    }
-
-    public void setAttributes(Set<ProtocolAttribute> protocolAttributes) {
-        attributes = protocolAttributes;
-    }
-
-    public void setCopyAttributes(boolean copyAttributes) {
-        this.copyAttributes = toInteger(copyAttributes);
-    }
-
-    /**
-     * @param deliverFrom
-     *            the deliverFrom to set
-     */
-    public void setDeliverFrom(Location deliverFrom) {
-        this.deliverFrom = deliverFrom;
-    }
-
-    /**
-     * @param deliverTo
-     *            the deliverTo to set
-     */
-    public void setDeliverTo(Location deliverTo) {
-        this.deliverTo = deliverTo;
-    }
-
-    /**
-     * @param product
-     *            the product to set
-     */
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     public void setRequestedProduct(Product requestedProduct) {
         this.requestedProduct = requestedProduct;
     }
@@ -329,23 +189,19 @@ public class Protocol extends Ruleform {
     }
 
     /**
-     * @param requester
-     *            the agency requesting the service
+     * @param sequenceNumber
+     *            the sequenceNumber to set
      */
-    public void setRequester(Agency requester) {
-        this.requester = requester;
-    }
-
-    public void setSequenceNumber(Integer sequenceNumber) {
+    public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 
     /**
-     * @param service
-     *            the service to set
+     * @param sequenceNumber
+     *            the sequenceNumber to set
      */
-    public void setService(Product service) {
-        this.service = service;
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     /* (non-Javadoc)
@@ -353,13 +209,31 @@ public class Protocol extends Ruleform {
      */
     @Override
     public String toString() {
-        return "Protocol [requester=" + requester.getName() + ", assignTo="
-               + assignTo.getName() + ", service=" + service.getName()
-               + ", product=" + product.getName() + ", deliverFrom="
-               + deliverFrom.getName() + ", deliverTo=" + deliverTo.getName()
-               + ", requestedProduct=" + requestedProduct.getName()
-               + ", requestedService=" + requestedService.getName()
-               + ", copyAttributes=" + copyAttributes + ", sequenceNumber="
-               + sequenceNumber + "]";
+        return String.format("Protocol [%s, sequenceNumber=%s, requestedProduct=%s, requestedService=%s]",
+                             getToString(), sequenceNumber,
+                             requestedProduct.getName(),
+                             requestedService.getName());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
+     * .EntityManager, java.util.Map)
+     */
+    @Override
+    public void traverseForeignKeys(EntityManager em,
+                                    Map<Ruleform, Ruleform> knownObjects) {
+        if (requestedProduct != null) {
+            requestedProduct = (Product) requestedProduct.manageEntity(em,
+                                                                       knownObjects);
+        }
+        if (requestedService != null) {
+            requestedService = (Product) requestedService.manageEntity(em,
+                                                                       knownObjects);
+        }
+        super.traverseForeignKeys(em, knownObjects);
+
     }
 }

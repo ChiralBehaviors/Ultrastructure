@@ -34,7 +34,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 
 /**
  * The abstract attribute value.
@@ -143,36 +142,6 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
      */
     public AttributeValue(UUID id) {
         super(id);
-    }
-
-    /**
-     * Copy the state of the receiver into the clone
-     * 
-     * @param clone
-     */
-    public void copyInto(JobAttribute clone) {
-        clone.setAttribute(getAttribute());
-        switch (attribute.getValueType()) {
-            case BINARY:
-                clone.setBinaryValue(getBinaryValue());
-                break;
-            case BOOLEAN:
-                clone.setBooleanValue(getBooleanValue());
-                break;
-            case INTEGER:
-                clone.setIntegerValue(getIntegerValue());
-                break;
-            case NUMERIC:
-                clone.setNumericValue(getNumericValue());
-                break;
-            case TEXT:
-                clone.setTextValue(getTextValue());
-                break;
-            case TIMESTAMP:
-                clone.setTimestampValue(getTimestampValue());
-                break;
-        }
-        clone.setUnit(getUnit());
     }
 
     public Attribute getAttribute() {

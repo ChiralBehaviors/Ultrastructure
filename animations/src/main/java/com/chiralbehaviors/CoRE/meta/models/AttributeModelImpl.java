@@ -231,13 +231,13 @@ public class AttributeModelImpl
                                                                     mappedProduct)) {
                 txfmd = null;
                 Agency txfmAgency;
-                if (kernel.getOriginalAgency().equals(transformation.getAgencyKey())) {
+                if (kernel.getSameAgency().equals(transformation.getAgencyKey())) {
                     txfmAgency = agency;
                 } else {
                     txfmAgency = transformation.getAgencyKey();
                 }
                 Product txfmProduct;
-                if (kernel.getOriginalProduct().equals(transformation.getProductKey())) {
+                if (kernel.getSameProduct().equals(transformation.getProductKey())) {
                     txfmProduct = product;
                 } else {
                     txfmProduct = transformation.getProductKey();

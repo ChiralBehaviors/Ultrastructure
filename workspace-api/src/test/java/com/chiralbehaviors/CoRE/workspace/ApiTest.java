@@ -15,11 +15,12 @@
  */
 package com.chiralbehaviors.CoRE.workspace;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.workspace.api.WorkspaceInvocationHandler;

@@ -22,8 +22,6 @@ import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ATTRIBUTES_FOR_JOB;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ATTRIBUTE_VALUE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
@@ -55,10 +53,7 @@ import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -68,10 +63,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedQueries({
                @NamedQuery(name = FIND_ALL, query = "select j from Job j"),
                @NamedQuery(name = TOP_LEVEL_JOBS, query = "SELECT j  FROM Job AS j  WHERE j.parent IS NULL"),
-               @NamedQuery(name = GET_ATTRIBUTE_VALUE, query = "SELECT ja "
-                                                               + "FROM JobAttribute AS ja "
-                                                               + "WHERE ja.attribute = :attribute "
-                                                               + "AND ja.job = :job"),
                @NamedQuery(name = GET_ACTIVE_OR_TERMINATED_SUB_JOBS, query = "SELECT j "
                                                                              + "FROM Job AS j "
                                                                              + "WHERE j.parent = :parent "
@@ -80,9 +71,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                       + "FROM Job AS j "
                                                                       + "WHERE j.parent = :parent "
                                                                       + "  AND j.service = :service"),
-               @NamedQuery(name = GET_ATTRIBUTES_FOR_JOB, query = "SELECT ja "
-                                                                  + "FROM JobAttribute AS ja "
-                                                                  + "WHERE ja.job = :job"),
                @NamedQuery(name = HAS_SCS, query = "SELECT scs from StatusCodeSequencing scs where scs.service = :service "),
                @NamedQuery(name = GET_NEXT_STATUS_CODES, query = "SELECT code "
                                                                  + "FROM StatusCodeSequencing AS sequencing, StatusCode AS code "
@@ -172,7 +160,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                      + " AND seq.service = ?") })
 @Entity
 @Table(name = "job", schema = "ruleform")
-public class Job extends Ruleform implements Attributable<JobAttribute> {
+public class Job extends AbstractProtocol {
     public static final String ACTIVE_JOBS                       = "job.getActiveJobs";
     public static final String CHANGE_STATUS                     = "job.changeStatus";
     public static final String CHRONOLOGY                        = "job.chronology";
@@ -201,18 +189,25 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     private static final long  serialVersionUID                  = 1L;
 
     /**
-     * The agency assigned to this job
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assign_to")
-    private Agency             assignTo;
-
-    /**
-     * The attributes of this job
+     * The chronology of this job
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "job")
     @JsonIgnore
-    private Set<JobAttribute>  attributes;
+    private Set<JobChronology> chronology;
+
+    /**
+     * The parent of this job
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent")
+    Job                        parent;
+
+    /**
+     * This job's status
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status")
+    private StatusCode         status;
 
     /**
      * The children of this job
@@ -221,64 +216,8 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     @JsonIgnore
     private Set<Job>           childJobs;
 
-    /**
-     * The chronology of this job
-     */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "job")
-    @JsonIgnore
-    private Set<JobChronology> chronology;
-
-    /**
-     * The location where the product will be delivered from
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deliver_from")
-    private Location           deliverFrom;
-
-    /**
-     * The location to deliver the product of this job
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deliver_to")
-    private Location           deliverTo;
-
-    /**
-     * The parent of this job
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent")
-    private Job                parent;
-
-    /**
-     * The end product of this job
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product")
-    private Product            product;
-
-    /**
-     * The consumer of this job's product
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requester")
-    private Agency             requester;
-
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber                    = 1;
-
-    /**
-     * The service this job is performing
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service")
-    private Product            service;
-
-    /**
-     * This job's status
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status")
-    private StatusCode         status;
+    private int                sequenceNumber                    = 1;
 
     public Job() {
     }
@@ -290,24 +229,19 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         super(updatedBy);
     }
 
-    public Job(Agency assignTo, Agency requester, Product service,
-               Product product, Location deliverTo, Location deliverFrom,
-               Agency updatedBy) {
-        this(null, assignTo, service, product, deliverTo, deliverFrom,
-             requester, updatedBy);
+    /**
+     * @param notes
+     */
+    public Job(String notes) {
+        super(notes);
     }
 
-    public Job(Job parent, Agency assignTo, Product service, Product product,
-               Location deliverTo, Location deliverFrom, Agency requester,
-               Agency updatedBy) {
-        this(updatedBy);
-        setParent(parent);
-        setAssignTo(assignTo);
-        setService(service);
-        setProduct(product);
-        setDeliverTo(deliverTo);
-        setDeliverFrom(deliverFrom);
-        setRequester(requester);
+    /**
+     * @param notes
+     * @param updatedBy
+     */
+    public Job(String notes, Agency updatedBy) {
+        super(notes, updatedBy);
     }
 
     /**
@@ -317,23 +251,12 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         super(id);
     }
 
-    public Agency getAssignTo() {
-        return assignTo;
-    }
-
-    @Override
-    public Set<JobAttribute> getAttributes() {
-        return attributes;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
+    /**
+     * @param id
+     * @param updatedBy
      */
-    @Override
-    public Class<JobAttribute> getAttributeType() {
-        return JobAttribute.class;
+    public Job(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     public Set<Job> getChildJobs() {
@@ -344,36 +267,8 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         return chronology;
     }
 
-    /**
-     * @return the deliverFrom
-     */
-    public Location getDeliverFrom() {
-        return deliverFrom;
-    }
-
-    /**
-     * @return the deliverTo
-     */
-    public Location getDeliverTo() {
-        return deliverTo;
-    }
-
     public Job getParent() {
         return parent;
-    }
-
-    /**
-     * @return the product
-     */
-    public Product getProduct() {
-        return product;
-    }
-
-    /**
-     * @return the requester
-     */
-    public Agency getRequester() {
-        return requester;
     }
 
     /**
@@ -383,24 +278,8 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         return sequenceNumber;
     }
 
-    /**
-     * @return the service
-     */
-    public Product getService() {
-        return service;
-    }
-
     public StatusCode getStatus() {
         return status;
-    }
-
-    public void setAssignTo(Agency agency2) {
-        assignTo = agency2;
-    }
-
-    @Override
-    public void setAttributes(Set<JobAttribute> jobAttributes) {
-        attributes = jobAttributes;
     }
 
     public void setChildJobs(Set<Job> jobs) {
@@ -411,40 +290,16 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         chronology = jobChronologies;
     }
 
-    /**
-     * @param deliverFrom
-     *            the deliverFrom to set
-     */
-    public void setDeliverFrom(Location deliverFrom) {
-        this.deliverFrom = deliverFrom;
-    }
-
-    /**
-     * @param deliverTo
-     *            the deliverTo to set
-     */
-    public void setDeliverTo(Location deliverTo) {
-        this.deliverTo = deliverTo;
-    }
-
     public void setParent(Job job) {
         parent = job;
     }
 
     /**
-     * @param product
-     *            the product to set
+     * @param sequenceNumber
+     *            the sequenceNumber to set
      */
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    /**
-     * @param requester
-     *            the requester to set
-     */
-    public void setRequester(Agency requester) {
-        this.requester = requester;
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     /**
@@ -455,27 +310,17 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
         this.sequenceNumber = sequenceNumber;
     }
 
-    /**
-     * @param service
-     *            the service to set
-     */
-    public void setService(Product service) {
-        this.service = service;
-    }
-
     public void setStatus(StatusCode statusCode) {
         status = statusCode;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        return "Job [id=" + getId() + ", sequenceNumber=" + sequenceNumber
-               + ", status=" + status.getName() + ", parent="
-               + (parent == null ? null : parent.getId()) + ", assignTo="
-               + assignTo.getName() + ", service=" + service.getName()
-               + ", product=" + product.getName() + ", deliverFrom="
-               + deliverFrom.getName() + ", deliverTo=" + deliverTo.getName()
-               + "]";
+        return String.format("Job [status=%s, sequenceNumber=%s, %s]",
+                             status.getName(), sequenceNumber, getToString());
     }
 
     /*
@@ -488,26 +333,8 @@ public class Job extends Ruleform implements Attributable<JobAttribute> {
     @Override
     public void traverseForeignKeys(EntityManager em,
                                     Map<Ruleform, Ruleform> knownObjects) {
-        if (assignTo != null) {
-            assignTo = (Agency) assignTo.manageEntity(em, knownObjects);
-        }
-        if (deliverFrom != null) {
-            deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
-        }
-        if (deliverTo != null) {
-            deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
-        }
         if (parent != null) {
             parent = (Job) parent.manageEntity(em, knownObjects);
-        }
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        if (requester != null) {
-            requester = (Agency) requester.manageEntity(em, knownObjects);
-        }
-        if (service != null) {
-            service = (Product) service.manageEntity(em, knownObjects);
         }
         if (status != null) {
             status = (StatusCode) status.manageEntity(em, knownObjects);

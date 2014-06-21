@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
@@ -34,7 +33,6 @@ import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
 
@@ -43,6 +41,17 @@ import com.hellblazer.utils.Tuple;
  * 
  */
 public interface JobModel {
+    static TransformationMap NO_TRANSFORMATION = new TransformationMap(false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false,
+                                                                       false);
 
     /**
      * Log the status change of a job at the timestamp
@@ -119,22 +128,15 @@ public interface JobModel {
      */
     void ensureValidParentStatus(Job parent) throws SQLException;
 
+    /**
+     * 
+     * @param nextSibling
+     * @param nextSiblingStatus
+     * @throws SQLException
+     */
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
                                                                   throws SQLException;
-
-    /**
-     * Returns a map of all protocols that match job.service and a list of field
-     * names specifying which fields on the protocol prevent the protocol from
-     * being matched. An empty list means the protocol would be matched if a job
-     * were inserted.
-     * 
-     * This method does not take metaprotocols into account.
-     * 
-     * @param job
-     * @return
-     */
-    Map<Protocol, List<String>> findProtocolGaps(Job job);
 
     /**
      * For a given job, generates all the implicit jobs that need to be done
@@ -165,6 +167,12 @@ public interface JobModel {
      */
     List<Job> getActiveJobsFor(Agency agency);
 
+    /**
+     * 
+     * @param job
+     * @param service
+     * @return
+     */
     List<Job> getActiveSubJobsForService(Job job, Product service);
 
     /**
@@ -195,10 +203,29 @@ public interface JobModel {
      */
     Collection<Job> getAllActiveSubJobsOf(Job job);
 
+    /**
+     * 
+     * @param parent
+     * @param agency
+     * @return
+     */
     List<Job> getAllActiveSubJobsOf(Job parent, Agency agency);
 
+    /**
+     * 
+     * @param parent
+     * @param agency
+     * @param jobs
+     */
     void getAllActiveSubJobsOf(Job parent, Agency agency, List<Job> jobs);
 
+    /**
+     * Answer the list of all active subjobs
+     * 
+     * @param job
+     * @param tally
+     * @return
+     */
     Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
 
     /**
@@ -208,12 +235,6 @@ public interface JobModel {
      * @return
      */
     List<Job> getAllChildren(Job job);
-
-    /**
-     * @param job
-     * @return
-     */
-    List<JobAttribute> getAttributesForJob(Job job);
 
     /**
      * Answer the list of sequencing authorizations that have the job's service
@@ -335,26 +356,24 @@ public interface JobModel {
      * @param job
      * @return the list of unique protocols applicable for a job
      */
-    List<Protocol> getProtocols(Job job);
+    Map<Protocol, TransformationMap> getProtocols(Job job);
 
     /**
-     * Answer the matched list of protocols for a job, given the meta protocol
-     * transformation
+     * Answer the matched list of inferred protocols for a job, given the meta
+     * protocol transformation
      * 
      * @param job
      * @param metaprotocol
-     * @return the matched list of protocols for a job, given the meta protocol
-     *         transformation
+     * @return The list of protocol mappings for a service that are inferred by
+     *         the meta protocol. The list is a Tuple of protocols, and a
+     *         boolean map indicating which field was inferred in the protocol.
      */
-    List<Protocol> getProtocols(Job job, MetaProtocol metaprotocol);
-
-    List<Protocol> getProtocols(Product service, Agency requester,
-                                Product product, Location deliverTo,
-                                Location deliverFrom);
+    Map<Protocol, TransformationMap> getProtocols(Job job,
+                                                          MetaProtocol metaprotocol);
 
     /**
      * @param service
-     * @return
+     * @return The list of protocol mappings for a service.
      */
     List<Protocol> getProtocolsFor(Product service);
 
@@ -386,6 +405,13 @@ public interface JobModel {
      */
     Collection<StatusCode> getStatusCodesFor(Product service);
 
+    /**
+     * Answer the list of terminal states for the supplied job
+     * 
+     * @param job
+     * @return
+     */
+
     List<StatusCode> getTerminalStates(Job job);
 
     /**
@@ -393,6 +419,12 @@ public interface JobModel {
      */
     List<Job> getTopLevelJobs();
 
+    /**
+     * answer the list of jobs with children assigned to an agency
+     * 
+     * @param agency
+     * @return
+     */
     List<Job> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency);
 
     /**
@@ -443,8 +475,19 @@ public interface JobModel {
      */
     boolean hasTerminalSCCs(Product service) throws SQLException;
 
+    /**
+     * Insert a new job
+     * 
+     * @param parent
+     * @param protocol
+     * @return
+     */
     Job insertJob(Job parent, Protocol protocol);
 
+    /**
+     * @param job
+     * @return true if the job is in a non terminal state
+     */
     boolean isActive(Job job);
 
     /**
@@ -471,6 +514,36 @@ public interface JobModel {
                               StatusCode next);
 
     void logModifiedService(UUID scs);
+
+    /**
+     * @param service
+     *            TODO
+     * @param updatedBy
+     *            TODO
+     * @return a job in which every field has the appropriate NotApplicable
+     *         ruleform. Status is set to UNSET
+     */
+    Job newInitializedJob(Product service, Agency updatedBy);
+
+    /**
+     * @param service
+     *            TODO
+     * @param updatedBy
+     *            TODO
+     * @return a protocol in which every field has the appropriate NotApplicable
+     *         ruleform.
+     */
+    Protocol newInitializedProtocol(Product service, Agency updatedBy);
+
+    /**
+     * @param service
+     *            TODO
+     * @param updatedBy
+     *            TODO
+     * @return a metaprotocol in which every unspecified field is initialized to
+     *         Same
+     */
+    MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);
 
     /**
      * Process all the implicit status changes of the children of a job

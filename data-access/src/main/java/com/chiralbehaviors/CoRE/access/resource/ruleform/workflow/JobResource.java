@@ -16,9 +16,7 @@
 package com.chiralbehaviors.CoRE.access.resource.ruleform.workflow;
 
 import java.security.InvalidParameterException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -32,10 +30,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.event.AttributedJob;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -80,19 +75,16 @@ public class JobResource {
     @GET
     @Path("/{id}")
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    public AttributedJob getJob(@PathParam("id") long id) {
-        Job job = em.find(Job.class, id);
-
-        return new AttributedJob(job);
+    public Job getJob(@PathParam("id") long id) {
+        return em.find(Job.class, id);
     }
 
     @GET
     @Path("/{id}/subjobs")
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    public List<AttributedJob> getActiveSubJobs(@PathParam("id") long jobId,
-                                                @QueryParam("agencyId") Long agencyId) {
+    public List<Job> getActiveSubJobs(@PathParam("id") long jobId,
+                                      @QueryParam("agencyId") Long agencyId) {
         List<Job> jobs;
-        List<AttributedJob> attributedJobs = new LinkedList<>();
         Job parentJob = em.find(Job.class, jobId);
         if (agencyId == null) {
             jobs = model.getActiveSubJobsOf(parentJob);
@@ -105,10 +97,7 @@ public class JobResource {
             }
             jobs = model.getAllActiveSubJobsOf(parentJob, agency);
         }
-        for (Job job : jobs) {
-            attributedJobs.add(new AttributedJob(job));
-        }
-        return attributedJobs;
+        return jobs;
     }
 
     @GET
@@ -127,9 +116,8 @@ public class JobResource {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    public List<AttributedJob> getJobsForAgency(@QueryParam("agencyId") Long agencyId) {
+    public List<Job> getJobsForAgency(@QueryParam("agencyId") Long agencyId) {
         List<Job> jobs;
-        List<AttributedJob> attributedJobs = new LinkedList<>();
         if (agencyId == null) {
             TypedQuery<Job> query = em.createQuery("select j from Job j",
                                                    Job.class);
@@ -144,10 +132,7 @@ public class JobResource {
             }
             jobs = model.getActiveJobsFor(agency);
         }
-        for (Job job : jobs) {
-            attributedJobs.add(new AttributedJob(job));
-        }
-        return attributedJobs;
+        return jobs;
     }
 
     // TODO get chronology of all sub jobs
@@ -174,17 +159,12 @@ public class JobResource {
 
     @POST
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
-    public Job insertJob(AttributedJob job) {
-        Job jobToInsert = job.getJob();
-
+    public Job insertJob(Job job) {
         em.getTransaction().begin();
-        em.persist(jobToInsert);
-        for (Map.Entry<Attribute, JobAttribute> e : job.getAttributes().entrySet()) {
-            em.persist(e.getValue());
-        }
+        em.persist(job);
         em.getTransaction().commit();
-        em.refresh(jobToInsert);
-        return jobToInsert;
+        em.refresh(job);
+        return job;
 
     }
 

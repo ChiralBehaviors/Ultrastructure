@@ -45,14 +45,12 @@ import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitValue;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.ProtocolAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
@@ -118,14 +116,12 @@ public class WorkspaceSnapshot implements Workspace {
     private List<StatusCodeAttribute>                    statusCodeAttributes                    = new ArrayList<>();
     private List<StatusCodeAttributeAuthorization>       statusCodeAttributeAuthorizations       = new ArrayList<>();
     private List<Job>                                    jobs                                    = new ArrayList<>();
-    private List<JobAttribute>                           jobAttributes                           = new ArrayList<>();
     private List<JobChronology>                          jobChronologies                         = new ArrayList<>();
     private List<MetaProtocol>                           metaProtocols                           = new ArrayList<>();
     private List<ProductChildSequencingAuthorization>    productChildSequencingAuthorizations    = new ArrayList<>();
     private List<ProductParentSequencingAuthorization>   productParentSequencingAuthorizations   = new ArrayList<>();
     private List<ProductSiblingSequencingAuthorization>  productSiblingSequencingAuthorizations  = new ArrayList<>();
     private List<Protocol>                               protocols                               = new ArrayList<>();
-    private List<ProtocolAttribute>                      protocolAttributes                      = new ArrayList<>();
     private Map<String, Location>                        locations                               = new HashMap<>();
     private List<LocationNetwork>                        locationNetworks                        = new ArrayList<>();
     private List<LocationAgencyAccessAuthorization>      locationAgencyAccessAuthorizations      = new ArrayList<>();
@@ -247,14 +243,6 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public Collection<Attribute> getAttributes() {
         return attributes.values();
-    }
-
-    /**
-     * @return the jobAttributes
-     */
-    @Override
-    public List<JobAttribute> getJobAttributes() {
-        return jobAttributes;
     }
 
     /**
@@ -487,14 +475,6 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<ProductUnitAccessAuthorization> getProductUnitAccessAuthorizations() {
         return productUnitAccessAuthorizations;
-    }
-
-    /**
-     * @return the protocolAttributes
-     */
-    @Override
-    public List<ProtocolAttribute> getProtocolAttributes() {
-        return protocolAttributes;
     }
 
     /**
@@ -770,15 +750,6 @@ public class WorkspaceSnapshot implements Workspace {
     }
 
     /**
-     * @param jobAttributes
-     *            the jobAttributes to set
-     */
-    @Override
-    public void setJobAttributes(List<JobAttribute> jobAttributes) {
-        this.jobAttributes = jobAttributes;
-    }
-
-    /**
      * @param jobChronologies
      *            the jobChronologies to set
      */
@@ -1032,15 +1003,6 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public void setProductUnitAccessAuthorizations(List<ProductUnitAccessAuthorization> productUnitAccessAuthorizations) {
         this.productUnitAccessAuthorizations = productUnitAccessAuthorizations;
-    }
-
-    /**
-     * @param protocolAttributes
-     *            the protocolAttributes to set
-     */
-    @Override
-    public void setProtocolAttributes(List<ProtocolAttribute> protocolAttributes) {
-        this.protocolAttributes = protocolAttributes;
     }
 
     /**

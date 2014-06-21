@@ -29,6 +29,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -54,11 +55,19 @@ public class AbstractModelTest {
         em = getEntityManager();
         BootstrapLoader loader = new BootstrapLoader(em);
         em.getTransaction().begin();
-        loader.clear(); 
+        loader.clear();
         loader.bootstrap();
         em.getTransaction().commit();
         model = new ModelImpl(em);
         kernel = model.getKernel();
+    }
+
+    @After
+    public void after() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+            em.clear();
+        }
     }
 
     private static EntityManager getEntityManager() throws IOException {

@@ -159,22 +159,6 @@ public interface WellKnownObject {
             }
 
         },
-        ORIGINAL() {
-
-            @Override
-            public String description() {
-                return "A special Agency that stands for the originally supplied agency";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.ORIGINAL;
-            }
-
-        },
         PROPAGATION_SOFTWARE() {
 
             @Override
@@ -332,11 +316,11 @@ public interface WellKnownObject {
             }
 
         },
-        ORIGINAL() {
+        SAME() {
 
             @Override
             public String description() {
-                return "A special Attribute that stands for the originally supplied attribute";
+                return "A special Attribute that stands for the same attribute";
             }
 
             /* (non-Javadoc)
@@ -344,7 +328,7 @@ public interface WellKnownObject {
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.ORIGINAL;
+                return WellKnownObject.SAME;
             }
 
         },
@@ -486,22 +470,6 @@ public interface WellKnownObject {
             }
 
         },
-        ORIGINAL() {
-
-            @Override
-            public String description() {
-                return "A special Location that stands for the originally supplied location";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.ORIGINAL;
-            }
-
-        },
         SAME() {
 
             @Override
@@ -584,22 +552,6 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
-        ORIGINAL() {
-
-            @Override
-            public String description() {
-                return "A special Product that stands for the originally supplied product";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.ORIGINAL;
             }
 
         },
@@ -1697,7 +1649,6 @@ public interface WellKnownObject {
     String MEMBER                    = "member";
     String MEMBER_OF                 = "member-of";
     String NOT_APPLICABLE            = "(N/A)";
-    String ORIGINAL                  = "(Original)";
     String OWNED_BY                  = "ownedBy";
     String OWNS                      = "owns";
     String PASSWORD_HASH             = "password-hash";

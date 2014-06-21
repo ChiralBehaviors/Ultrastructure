@@ -35,14 +35,12 @@ import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitValue;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobAttribute;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.ProtocolAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
@@ -103,8 +101,6 @@ public interface Workspace {
 
     Collection<Attribute> getAttributes();
 
-    List<JobAttribute> getJobAttributes();
-
     List<JobChronology> getJobChronologies();
 
     List<Job> getJobs();
@@ -160,8 +156,6 @@ public interface Workspace {
     List<ProductStatusCodeAccessAuthorization> getProductStatusCodeAccessAuthorizations();
 
     List<ProductUnitAccessAuthorization> getProductUnitAccessAuthorizations();
-
-    List<ProtocolAttribute> getProtocolAttributes();
 
     List<Protocol> getProtocols();
 
@@ -219,8 +213,6 @@ public interface Workspace {
 
     void setAttributes(List<Attribute> attributes);
 
-    void setJobAttributes(List<JobAttribute> jobAttributes);
-
     void setJobChronologies(List<JobChronology> jobChronologies);
 
     void setJobs(List<Job> jobs);
@@ -276,8 +268,6 @@ public interface Workspace {
     void setProductStatusCodeAccessAuthorizations(List<ProductStatusCodeAccessAuthorization> productStatusCodeAccessAuthorizations);
 
     void setProductUnitAccessAuthorizations(List<ProductUnitAccessAuthorization> productUnitAccessAuthorizations);
-
-    void setProtocolAttributes(List<ProtocolAttribute> protocolAttributes);
 
     void setProtocols(List<Protocol> protocols);
 

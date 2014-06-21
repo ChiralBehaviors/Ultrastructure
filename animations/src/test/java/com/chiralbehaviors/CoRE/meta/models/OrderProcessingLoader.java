@@ -25,7 +25,6 @@ import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.ProtocolAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -170,26 +169,52 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createMetaProtocols() {
-        MetaProtocol m1 = new MetaProtocol(deliver, 1, anyRelationship,
-                                           sameRelationship, sameRelationship,
-                                           state, area, core);
+        MetaProtocol m1 = model.getJobModel().newInitializedMetaProtocol(deliver,
+                                                                         core);
+        m1.setSequenceNumber(1);
+        m1.setProductOrdered(anyRelationship);
+        m1.setDeliverTo(state);
+        m1.setDeliverFrom(area);
+
         em.persist(m1);
-        MetaProtocol m2 = new MetaProtocol(pick, 1, anyRelationship,
-                                           customerType, sameRelationship,
-                                           area, area, core);
+
+        MetaProtocol m2 = model.getJobModel().newInitializedMetaProtocol(pick,
+                                                                         core);
+        m2.setSequenceNumber(1);
+        m2.setProductOrdered(anyRelationship);
+        m2.setRequestingAgency(customerType);
+        m2.setDeliverTo(area);
+        m2.setDeliverFrom(area);
+
         em.persist(m2);
-        MetaProtocol m3 = new MetaProtocol(ship, 1, anyRelationship,
-                                           customerType, sameRelationship,
-                                           area, area, core);
+
+        MetaProtocol m3 = model.getJobModel().newInitializedMetaProtocol(ship,
+                                                                         core);
+        m3.setSequenceNumber(1);
+        m3.setProductOrdered(anyRelationship);
+        m3.setRequestingAgency(customerType);
+        m3.setDeliverTo(area);
+        m3.setDeliverFrom(area);
+
         em.persist(m3);
-        MetaProtocol m5 = new MetaProtocol(fee, 1, anyRelationship,
-                                           salesTaxStatus, sameRelationship,
-                                           city, anyRelationship, core);
+
+        MetaProtocol m5 = model.getJobModel().newInitializedMetaProtocol(fee,
+                                                                         core);
+        m5.setSequenceNumber(1);
+        m5.setProductOrdered(anyRelationship);
+        m5.setRequestingAgency(salesTaxStatus);
+        m5.setDeliverTo(city);
+
         em.persist(m5);
-        MetaProtocol m6 = new MetaProtocol(printPurchaseOrder, 1,
-                                           anyRelationship, anyRelationship,
-                                           sameRelationship, anyRelationship,
-                                           anyRelationship, core);
+
+        MetaProtocol m6 = model.getJobModel().newInitializedMetaProtocol(printPurchaseOrder,
+                                                                         core);
+        m6.setSequenceNumber(1);
+        m6.setProductOrdered(anyRelationship);
+        m6.setRequestingAgency(anyRelationship);
+        m6.setDeliverTo(anyRelationship);
+        m6.setDeliverFrom(area);
+
         em.persist(m6);
     }
 
@@ -372,93 +397,116 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     public void createProtocols() {
 
-        Protocol pickProtocol = new Protocol(deliver, anyAgency, anyProduct,
-                                             anyLocation, anyLocation,
-                                             factory1Agency, pick, sameProduct,
-                                             core);
+        Protocol pickProtocol = newProtocol();
+        pickProtocol.setRequestedService(deliver);
+        pickProtocol.setRequester(anyAgency);
+        pickProtocol.setRequestedProduct(anyProduct);
+        pickProtocol.setDeliverTo(anyLocation);
+        pickProtocol.setDeliverFrom(anyLocation);
+        pickProtocol.setAssignTo(factory1Agency);
+        pickProtocol.setService(pick);
+        pickProtocol.setProduct(sameProduct);
         em.persist(pickProtocol);
 
-        Protocol chkCreditProtocol = new Protocol(pick, externalCust,
-                                                  anyProduct, us, us, cpu,
-                                                  checkCredit, sameProduct,
-                                                  core);
+        Protocol chkCreditProtocol = newProtocol();
+        chkCreditProtocol.setRequestedService(pick);
+        chkCreditProtocol.setRequester(externalCust);
+        chkCreditProtocol.setRequestedProduct(anyProduct);
+        chkCreditProtocol.setDeliverTo(us);
+        chkCreditProtocol.setDeliverFrom(us);
+        chkCreditProtocol.setAssignTo(cpu);
+        chkCreditProtocol.setService(checkCredit);
+        chkCreditProtocol.setProduct(sameProduct);
         em.persist(chkCreditProtocol);
 
-        Protocol chkLtrCrdtProtocol = new Protocol(pick, externalCust,
-                                                   anyProduct, euro, us,
-                                                   creditDept,
-                                                   checkLetterOfCredit,
-                                                   sameProduct, core);
+        Protocol chkLtrCrdtProtocol = newProtocol();
+        chkLtrCrdtProtocol.setRequestedService(pick);
+        chkLtrCrdtProtocol.setRequester(externalCust);
+        chkLtrCrdtProtocol.setRequestedProduct(anyProduct);
+        chkLtrCrdtProtocol.setDeliverTo(euro);
+        chkLtrCrdtProtocol.setDeliverFrom(us);
+        chkLtrCrdtProtocol.setAssignTo(creditDept);
+        chkLtrCrdtProtocol.setService(checkLetterOfCredit);
+        chkLtrCrdtProtocol.setProduct(sameProduct);
         em.persist(chkLtrCrdtProtocol);
 
-        Protocol shipProtocol = new Protocol(deliver, anyAgency, anyProduct,
-                                             anyLocation, anyLocation,
-                                             factory1Agency, ship, sameProduct,
-                                             true, core);
+        Protocol shipProtocol = newProtocol();
+        shipProtocol.setRequestedService(deliver);
+        shipProtocol.setRequester(anyAgency);
+        shipProtocol.setRequestedProduct(anyProduct);
+        shipProtocol.setDeliverTo(anyLocation);
+        shipProtocol.setDeliverFrom(anyLocation);
+        shipProtocol.setAssignTo(factory1Agency);
+        shipProtocol.setService(ship);
+        shipProtocol.setProduct(sameProduct);
         em.persist(shipProtocol);
 
-        Protocol printCustDeclProtocol = new Protocol(ship, externalCust,
-                                                      abc486, euro, us, cpu,
-                                                      printCustomsDeclaration,
-                                                      sameProduct, core);
+        Protocol printCustDeclProtocol = newProtocol();
+        printCustDeclProtocol.setRequestedService(ship);
+        printCustDeclProtocol.setRequester(externalCust);
+        printCustDeclProtocol.setRequestedProduct(abc486);
+        printCustDeclProtocol.setDeliverTo(euro);
+        printCustDeclProtocol.setDeliverFrom(us);
+        printCustDeclProtocol.setAssignTo(cpu);
+        printCustDeclProtocol.setService(printCustomsDeclaration);
+        printCustDeclProtocol.setProduct(sameProduct);
         em.persist(printCustDeclProtocol);
 
-        Protocol printPoProtocol = new Protocol(ship, externalCust, abc486,
-                                                anyLocation, us, cpu,
-                                                printPurchaseOrder,
-                                                sameProduct, core);
+        Protocol printPoProtocol = newProtocol();
+        printPoProtocol.setRequestedService(ship);
+        printPoProtocol.setRequester(externalCust);
+        printPoProtocol.setRequestedProduct(abc486);
+        printPoProtocol.setDeliverTo(anyLocation);
+        printPoProtocol.setDeliverFrom(us);
+        printPoProtocol.setAssignTo(cpu);
+        printPoProtocol.setService(printPurchaseOrder);
+        printPoProtocol.setProduct(sameProduct);
         em.persist(printPoProtocol);
 
-        Protocol feeProtocol = new Protocol(printPurchaseOrder, anyAgency,
-                                            abc486, anyLocation, us,
-                                            billingComputer, fee, sameProduct,
-                                            core);
+        Protocol feeProtocol = newProtocol();
+        feeProtocol.setRequestedService(printPurchaseOrder);
+        feeProtocol.setRequester(anyAgency);
+        feeProtocol.setRequestedProduct(abc486);
+        feeProtocol.setDeliverTo(anyLocation);
+        feeProtocol.setDeliverFrom(us);
+        feeProtocol.setAssignTo(billingComputer);
+        feeProtocol.setService(fee);
+        feeProtocol.setProduct(sameProduct);
         em.persist(feeProtocol);
 
-        price = new ProtocolAttribute(priceAttribute, core);
-        price.setIntegerValue(1500);
-        price.setProtocol(feeProtocol);
-        em.persist(price);
-
-        Protocol salesTaxProtocol = new Protocol(fee, nonExemptAgency,
-                                                 nonExempt, dc, anyLocation,
-                                                 billingComputer, salesTax,
-                                                 sameProduct, core);
+        Protocol salesTaxProtocol = newProtocol();
+        salesTaxProtocol.setRequestedService(fee);
+        salesTaxProtocol.setRequester(nonExemptAgency);
+        salesTaxProtocol.setRequestedProduct(nonExempt);
+        salesTaxProtocol.setDeliverTo(dc);
+        salesTaxProtocol.setDeliverFrom(anyLocation);
+        salesTaxProtocol.setAssignTo(billingComputer);
+        salesTaxProtocol.setService(salesTax);
+        salesTaxProtocol.setProduct(sameProduct);
         em.persist(salesTaxProtocol);
 
-        ProtocolAttribute taxRate = new ProtocolAttribute(taxRateAttribute,
-                                                          core);
-        taxRate.setIntegerValue(575);
-        taxRate.setProtocol(salesTaxProtocol);
-        em.persist(taxRate);
-
-        Protocol discountProtocol = new Protocol(fee, externalCust, abc486,
-                                                 euro, us, billingComputer,
-                                                 discount, sameProduct, core);
+        Protocol discountProtocol = newProtocol();
+        discountProtocol.setRequestedService(fee);
+        discountProtocol.setRequester(externalCust);
+        discountProtocol.setRequestedProduct(abc486);
+        discountProtocol.setDeliverTo(euro);
+        discountProtocol.setDeliverFrom(us);
+        discountProtocol.setAssignTo(billingComputer);
+        discountProtocol.setService(discount);
+        discountProtocol.setProduct(sameProduct);
         em.persist(discountProtocol);
 
-        ProtocolAttribute euroDiscount = new ProtocolAttribute(
-                                                               discountAttribute,
-                                                               core);
-        euroDiscount.setIntegerValue(5);
-        euroDiscount.setProtocol(salesTaxProtocol);
-        em.persist(euroDiscount);
-
-        Protocol gtuDiscountedPriceProtocol = new Protocol(
-                                                           fee,
-                                                           georgeTownUniversity,
-                                                           abc486, dc, us,
-                                                           billingComputer,
-                                                           fee, sameProduct,
-                                                           core);
+        Protocol gtuDiscountedPriceProtocol = newProtocol();
+        gtuDiscountedPriceProtocol.setRequestedService(fee);
+        gtuDiscountedPriceProtocol.setRequester(georgeTownUniversity);
+        gtuDiscountedPriceProtocol.setRequestedProduct(abc486);
+        gtuDiscountedPriceProtocol.setDeliverTo(dc);
+        gtuDiscountedPriceProtocol.setDeliverFrom(us);
+        gtuDiscountedPriceProtocol.setAssignTo(billingComputer);
+        gtuDiscountedPriceProtocol.setService(fee);
+        gtuDiscountedPriceProtocol.setProduct(sameProduct);
         em.persist(gtuDiscountedPriceProtocol);
-
-        ProtocolAttribute discountedPrice = new ProtocolAttribute(
-                                                                  priceAttribute,
-                                                                  core);
-        discountedPrice.setIntegerValue(1250);
-        discountedPrice.setProtocol(gtuDiscountedPriceProtocol);
-        em.persist(discountedPrice);
+        em.persist(gtuDiscountedPriceProtocol);
     }
 
     public void createRelationships() {
@@ -724,5 +772,16 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         createStatusCodes();
         createStatusCodeSequencing();
         createProductSequencingAuthorizations();
+    }
+
+    private Protocol newProtocol() {
+        Protocol p = new Protocol(core);
+        p.setRequesterAttribute(kernel.getAnyAttribute());
+        p.setDeliverToAttribute(kernel.getAnyAttribute());
+        p.setDeliverFromAttribute(kernel.getAnyAttribute());
+        p.setAssignToAttribute(kernel.getAnyAttribute());
+        p.setServiceAttribute(kernel.getAnyAttribute());
+        p.setProductAttribute(kernel.getAnyAttribute());
+        return p;
     }
 }

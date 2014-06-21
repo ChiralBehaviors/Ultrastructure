@@ -88,14 +88,11 @@ public class KernelTest {
         assertNotNull(kernel.getLocation());
         assertNotNull(kernel.getMapsToLocation());
         assertNotNull(kernel.getMemberOf());
-        assertNotNull(kernel.getOriginalAttribute());
-        assertNotNull(kernel.getOriginalProduct());
-        assertNotNull(kernel.getOriginalLocation());
-        assertNotNull(kernel.getOriginalAgency());
         assertNotNull(kernel.getPropagationSoftware());
         assertNotNull(kernel.getPrototype());
         assertNotNull(kernel.getPrototypeOf());
         assertNotNull(kernel.getAgency());
+        assertNotNull(kernel.getSameAttribute());
         assertNotNull(kernel.getSameRelationship());
         assertNotNull(kernel.getSpecialSystemAgency());
         assertNotNull(kernel.getVersionOf());

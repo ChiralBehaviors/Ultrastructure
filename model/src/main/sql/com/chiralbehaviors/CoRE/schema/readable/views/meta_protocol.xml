@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
 	        CREATE OR REPLACE VIEW readable.meta_protocol AS 
-	             SELECT base_table.id, s.name AS service, base_table.sequence_number, 
-	                    rr.name AS requesting_agency, st.name AS service_type, 
-	                    po.name AS product_ordered, dt.name AS deliver_to, 
-	                    df.name AS deliver_from, base_table.stop_on_match,
-	                    up.name AS updated_by, base_table.update_date
+	             SELECT base_table.id, 
+                        s.name AS service, 
+                        base_table.sequence_number, 
+	                    rr.name AS requesting_agency, 
+                        st.name AS service_type, 
+	                    po.name AS product_ordered, 
+                        dt.name AS deliver_to, 
+	                    df.name AS deliver_from, 
+                        raa.name AS requesting_agency_attribute, 
+                        sa.name AS service_attribute, 
+                        poa.name AS product_ordered_attribute, 
+                        dta.name AS deliver_to_attribute, 
+                        dfa.name AS deliver_from_attribute, 
+                        base_table.stop_on_match,
+	                    up.name AS updated_by, 
+                        base_table.update_date
 				   FROM meta_protocol base_table
 				   JOIN product s ON base_table.service = s.id
                    LEFT JOIN relationship rr ON base_table.requesting_agency = rr.id
 				   LEFT JOIN relationship st ON base_table.service_type = st.id
 				   LEFT JOIN relationship po ON base_table.product_ordered = po.id
                    LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
-                   LEFT JOIN relationship df ON base_table.deliver_from = df.id
+                   LEFT JOIN relationship df ON base_table.deliver_from = df.id 
+                   
+                   LEFT JOIN relationship raa ON base_table.requesting_agency_attribute = raa.id
+                   LEFT JOIN relationship sa ON base_table.service_attribute = sa.id
+                   LEFT JOIN relationship poa ON base_table.product_ordered_attribute = poa.id
+                   LEFT JOIN relationship dta ON base_table.deliver_to_attribute = dta.id
+                   LEFT JOIN relationship dfa ON base_table.deliver_from_attribute = dfa.id
+                   
 				   JOIN agency up ON base_table.updated_by = up.id;
 				
 				ALTER TABLE readable.meta_protocol

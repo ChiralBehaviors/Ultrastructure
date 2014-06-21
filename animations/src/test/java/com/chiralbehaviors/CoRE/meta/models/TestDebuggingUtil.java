@@ -39,6 +39,14 @@ public class TestDebuggingUtil {
                                                                    : "null")));
         }
     }
+    
+    public static void printProtocols(List<Protocol> protocols) {
+        for (Protocol p : protocols) {
+            System.out.println(String.format("Requested Service: %s, Service: %s",
+                                             p.getRequestedService().getName(),
+                                             p.getService()));
+        }
+    }
 
     public static void printSequencings(List<StatusCodeSequencing> seqs) {
         for (StatusCodeSequencing s : seqs) {

@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -306,6 +307,15 @@ public class Relationship extends
 
     public Boolean getPreferred() {
         return toBoolean(preferred);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownRelationship.ANY.id().equals(getId())
+               || WellKnownRelationship.SAME.id().equals(getId());
     }
 
     /*

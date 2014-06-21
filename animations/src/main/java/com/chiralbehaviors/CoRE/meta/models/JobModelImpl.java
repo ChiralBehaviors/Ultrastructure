@@ -1351,63 +1351,63 @@ public class JobModelImpl implements JobModel {
 
     private void copyIntoChild(Job parent, Protocol protocol,
                                InferenceMap inferred, Job child) {
-        if (inferred.assignTo || isAnyOrSame(protocol.getAssignTo())) {
+        if (inferred.assignTo || protocol.getAssignTo().isAnyOrSame()) {
             child.setAssignTo(parent.getAssignTo());
         } else {
             child.setAssignTo(protocol.getAssignTo());
         }
         if (inferred.assignToAttribute
-            || isAnyOrSame(protocol.getAssignToAttribute())) {
+            || protocol.getAssignToAttribute().isAnyOrSame()) {
             child.setAssignToAttribute(parent.getAssignToAttribute());
         } else {
             child.setAssignToAttribute(protocol.getAssignToAttribute());
         }
-        if (inferred.deliverTo || isAnyOrSame(protocol.getDeliverTo())) {
+        if (inferred.deliverTo || protocol.getDeliverTo().isAnyOrSame()) {
             child.setDeliverTo(parent.getDeliverTo());
         } else {
             child.setDeliverTo(protocol.getDeliverTo());
         }
         if (inferred.assignToAttribute
-            || isAnyOrSame(protocol.getDeliverToAttribute())) {
+            || protocol.getDeliverToAttribute().isAnyOrSame()) {
             child.setDeliverToAttribute(parent.getDeliverToAttribute());
         } else {
             child.setDeliverToAttribute(protocol.getDeliverToAttribute());
         }
-        if (inferred.deliverFrom || isAnyOrSame(protocol.getDeliverFrom())) {
+        if (inferred.deliverFrom || protocol.getDeliverFrom().isAnyOrSame()) {
             child.setDeliverFrom(parent.getDeliverFrom());
         } else {
             child.setDeliverFrom(protocol.getDeliverFrom());
         }
         if (inferred.deliverFromAttribute
-            || isAnyOrSame(protocol.getDeliverFromAttribute())) {
+            || protocol.getDeliverFromAttribute().isAnyOrSame()) {
             child.setDeliverFromAttribute(parent.getDeliverFromAttribute());
         } else {
             child.setDeliverFromAttribute(protocol.getDeliverFromAttribute());
         }
-        if (inferred.product || isAnyOrSame(protocol.getProduct())) {
+        if (inferred.product || protocol.getProduct().isAnyOrSame()) {
             child.setProduct(parent.getProduct());
         } else {
             child.setProduct(protocol.getProduct());
         }
         if (inferred.productAttribute
-            || isAnyOrSame(protocol.getProductAttribute())) {
+            || protocol.getProductAttribute().isAnyOrSame()) {
             child.setProductAttribute(parent.getProductAttribute());
         } else {
             child.setProductAttribute(protocol.getProductAttribute());
         }
-        if (inferred.requester || isAnyOrSame(protocol.getRequester())) {
+        if (inferred.requester || protocol.getRequester().isAnyOrSame()) {
             child.setRequester(parent.getRequester());
         } else {
             child.setRequester(protocol.getRequester());
         }
         if (inferred.requesterAttribute
-            || isAnyOrSame(protocol.getRequesterAttribute())) {
+            || protocol.getRequesterAttribute().isAnyOrSame()) {
             child.setRequesterAttribute(parent.getRequesterAttribute());
         } else {
             child.setRequesterAttribute(protocol.getRequesterAttribute());
         }
         if (inferred.serviceAttribute
-            || isAnyOrSame(protocol.getServiceAttribute())) {
+            || protocol.getServiceAttribute().isAnyOrSame()) {
             child.setServiceAttribute(parent.getServiceAttribute());
         } else {
             child.setServiceAttribute(protocol.getServiceAttribute());
@@ -1415,26 +1415,6 @@ public class JobModelImpl implements JobModel {
 
         //This is never transformed, so we always set to the protocol service.
         child.setService(protocol.getService());
-    }
-
-    private boolean isAnyOrSame(Agency agency) {
-        return agency.equals(kernel.getAnyAgency())
-               || agency.equals(kernel.getSameAgency());
-    }
-
-    private boolean isAnyOrSame(Location location) {
-        return location.equals(kernel.getAnyLocation())
-               || location.equals(kernel.getSameLocation());
-    }
-
-    private boolean isAnyOrSame(Product product) {
-        return product.equals(kernel.getAnyProduct())
-               || product.equals(kernel.getSameProduct());
-    }
-
-    private boolean isAnyOrSame(Attribute attribute) {
-        return attribute.equals(kernel.getAnyAttribute())
-               || attribute.equals(kernel.getSameAttribute());
     }
 
     /**

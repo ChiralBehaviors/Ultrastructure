@@ -30,6 +30,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
@@ -43,11 +44,17 @@ public interface Kernel {
 
     Attribute getAnyAttribute();
 
+    Interval getAnyInterval();
+
     Location getAnyLocation();
 
     Product getAnyProduct();
 
     Relationship getAnyRelationship();
+
+    StatusCode getAnyStatusCode();
+
+    Unit getAnyUnit();
 
     Attribute getAttribute();
 
@@ -153,11 +160,22 @@ public interface Kernel {
 
     Agency getSameAgency();
 
+    /**
+     * @return
+     */
+    Attribute getSameAttribute();
+
+    Interval getSameInterval();
+
     Location getSameLocation();
 
     Product getSameProduct();
 
     Relationship getSameRelationship();
+
+    StatusCode getSameStatusCode();
+
+    Unit getSameUnit();
 
     Agency getSpecialSystemAgency();
 
@@ -172,10 +190,5 @@ public interface Kernel {
     Product getWorkspace();
 
     Relationship getWorkspaceOf();
-
-    /**
-     * @return
-     */
-    Attribute getSameAttribute();
 
 }

@@ -138,6 +138,13 @@ public class MetaProtocol extends Ruleform {
 
     /**
      * @param notes
+     */
+    public MetaProtocol(String notes) {
+        super(notes);
+    }
+
+    /**
+     * @param notes
      * @param updatedBy
      */
     public MetaProtocol(String notes, Agency updatedBy) {
@@ -145,10 +152,10 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param notes
+     * @param id
      */
-    public MetaProtocol(String notes) {
-        super(notes);
+    public MetaProtocol(UUID id) {
+        super(id);
     }
 
     /**
@@ -160,10 +167,17 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param id
+     * @return the assignTo
      */
-    public MetaProtocol(UUID id) {
-        super(id);
+    public Relationship getAssignTo() {
+        return assignTo;
+    }
+
+    /**
+     * @return the assignToAttribute
+     */
+    public Relationship getAssignToAttribute() {
+        return assignToAttribute;
     }
 
     /**
@@ -252,6 +266,22 @@ public class MetaProtocol extends Ruleform {
      */
     public Boolean getStopOnMatch() {
         return toBoolean(stopOnMatch);
+    }
+
+    /**
+     * @param assignTo
+     *            the assignTo to set
+     */
+    public void setAssignTo(Relationship assignTo) {
+        this.assignTo = assignTo;
+    }
+
+    /**
+     * @param assignToAttribute
+     *            the assignToAttribute to set
+     */
+    public void setAssignToAttribute(Relationship assignToAttribute) {
+        this.assignToAttribute = assignToAttribute;
     }
 
     /**
@@ -410,36 +440,6 @@ public class MetaProtocol extends Ruleform {
         }
         super.traverseForeignKeys(em, knownObjects);
 
-    }
-
-    /**
-     * @return the assignToAttribute
-     */
-    public Relationship getAssignToAttribute() {
-        return assignToAttribute;
-    }
-
-    /**
-     * @param assignToAttribute
-     *            the assignToAttribute to set
-     */
-    public void setAssignToAttribute(Relationship assignToAttribute) {
-        this.assignToAttribute = assignToAttribute;
-    }
-
-    /**
-     * @return the assignTo
-     */
-    public Relationship getAssignTo() {
-        return assignTo;
-    }
-
-    /**
-     * @param assignTo
-     *            the assignTo to set
-     */
-    public void setAssignTo(Relationship assignTo) {
-        this.assignTo = assignTo;
     }
 
 }

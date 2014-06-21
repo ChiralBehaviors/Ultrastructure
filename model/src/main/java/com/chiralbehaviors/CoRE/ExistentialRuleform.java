@@ -137,6 +137,8 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
         return toBoolean(pinned);
     }
 
+    public abstract boolean isAnyOrSame();
+
     abstract public void link(Relationship r, RuleForm child, Agency updatedBy,
                               Agency inverseSoftware, EntityManager em);
 

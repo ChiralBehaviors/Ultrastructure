@@ -44,6 +44,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -262,6 +263,15 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
             return Collections.emptySet();
         }
         return networkByParent;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownLocation.ANY.id().equals(getId())
+               || WellKnownLocation.SAME.id().equals(getId());
     }
 
     /*

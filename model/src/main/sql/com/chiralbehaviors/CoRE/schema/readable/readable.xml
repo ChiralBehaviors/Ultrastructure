@@ -63,5 +63,5 @@
     <include relativeToChangelogFile="true" file="views/interval_network.xml" />
     <include relativeToChangelogFile="true" file="views/status_code_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/status_code_attribute_authorization.xml" />
-
+    <include relativeToChangelogFile="true" file="views/agency_product.xml" />
 </databaseChangeLog>

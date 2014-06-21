@@ -21,8 +21,10 @@ import java.util.List;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocation;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProduct;
 import com.chiralbehaviors.CoRE.agency.access.AgencyLocationAccessAuthorization;
 import com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -51,7 +53,6 @@ import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
-import com.chiralbehaviors.CoRE.location.LocationRelationship;
 import com.chiralbehaviors.CoRE.location.access.LocationAgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.location.access.LocationProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -87,11 +88,15 @@ public interface Workspace {
 
     List<AgencyLocationAccessAuthorization> getAgencyLocationAccessAuthorizations();
 
+    List<AgencyLocation> getAgencyLocations();
+
     List<AgencyNetworkAuthorization> getAgencyNetworkAuthorizations();
 
     List<AgencyNetwork> getAgencyNetworks();
 
     List<AgencyProductAccessAuthorization> getAgencyProductAccessAuthorizations();
+
+    List<AgencyProduct> getAgencyProducts();
 
     List<AttributeMetaAttributeAuthorization> getAttributeMetaAttributeAuthorizations();
 
@@ -116,8 +121,6 @@ public interface Workspace {
     List<LocationNetwork> getLocationNetworks();
 
     List<LocationProductAccessAuthorization> getLocationProductAccessAuthorizations();
-
-    List<LocationRelationship> getLocationRelationships();
 
     Collection<Location> getLocations();
 
@@ -199,9 +202,13 @@ public interface Workspace {
 
     void setAgencyLocationAccessAuthorizations(List<AgencyLocationAccessAuthorization> agencyLocationAccessAuthorizations);
 
+    void setAgencyLocations(List<AgencyLocation> agencyLocations);
+
     void setAgencyNetworkAuthorizations(List<AgencyNetworkAuthorization> agencyNetworkAuthorizations);
 
     void setAgencyNetworks(List<AgencyNetwork> agencyNetworks);
+
+    void setAgencyProduct(List<AgencyProduct> agencyProducts);
 
     void setAgencyProductAccessAuthorizations(List<AgencyProductAccessAuthorization> agencyProductAccessAuthorizations);
 
@@ -228,8 +235,6 @@ public interface Workspace {
     void setLocationNetworks(List<LocationNetwork> locationNetworks);
 
     void setLocationProductAccessAuthorizations(List<LocationProductAccessAuthorization> locationProductAccessAuthorizations);
-
-    void setLocationRelationships(List<LocationRelationship> locationRelationships);
 
     void setLocations(List<Location> locations);
 

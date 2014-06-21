@@ -25,8 +25,8 @@ package com.chiralbehaviors.CoRE.meta;
  * @author hhildebrand
  * 
  */
-public class TransformationMap {
-    public TransformationMap(boolean assignTo, boolean assignToAttribute,
+public class InferenceMap {
+    public InferenceMap(boolean assignTo, boolean assignToAttribute,
                              boolean deliverFrom, boolean deliverFromAttribute,
                              boolean deliverTo, boolean deliverToAttribute,
                              boolean product, boolean productAttribute,

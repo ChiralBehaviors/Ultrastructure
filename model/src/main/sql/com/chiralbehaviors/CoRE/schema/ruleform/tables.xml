@@ -19,7 +19,6 @@
     <include relativeToChangelogFile="true" file="tables/location_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/transformation_metarule-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_values-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_network-0.0.1.xml" />
@@ -40,7 +39,6 @@
     <include relativeToChangelogFile="true" file="tables/meta_protocol-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/location_relationship-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/transformation-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization.xml" />

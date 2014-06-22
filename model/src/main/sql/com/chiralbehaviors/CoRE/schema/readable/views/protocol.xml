@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
@@ -17,6 +17,8 @@
                     assign.name AS assign_to, 
                     s.name AS service, 
                     p.name AS product,
+                    base_table.quantity,
+                    u.name AS quantity_unit,
                     ra.name AS requester_attribute,
                     sa.name AS service_attribute,
                     pa.name AS product_attribute,
@@ -37,6 +39,7 @@
 			   JOIN agency assign ON base_table.assign_to = assign.id
                JOIN agency r ON base_table.requester = r.id
 			   JOIN agency up ON base_table.updated_by = up.id
+               JOIN unit u ON base_table.quantity_unit = u.id
                JOIN attribute ra ON base_table.requester_attribute = ra.id
                JOIN attribute sa ON base_table.service_attribute = sa.id
                JOIN attribute pa ON base_table.product_attribute = pa.id

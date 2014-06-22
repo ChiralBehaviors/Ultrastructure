@@ -16,6 +16,8 @@
 			        dt.name AS deliver_to, 
                     df.name AS deliver_from, 
 			        sc.name AS status, 
+                    base_table.quantity,
+                    u.name AS quantity_unit,
                     base_table.parent, 
                     ra.name AS requester_attribute,
                     sa.name AS service_attribute,
@@ -40,6 +42,7 @@
                JOIN attribute pa ON base_table.product_attribute = pa.id
                JOIN attribute dta ON base_table.deliver_to_attribute = dta.id
                JOIN attribute dfa ON base_table.deliver_from_attribute = dfa.id
+               JOIN unit u ON base_table.quantity_unit = u.id
                JOIN attribute ata ON base_table.assign_to_attribute = ata.id;
 			
 			ALTER TABLE readable.job

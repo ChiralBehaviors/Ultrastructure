@@ -15,7 +15,9 @@
                     r.name AS requester, 
                     dt.name AS deliver_to, 
                     df.name AS deliver_from, 
-                    sc.name AS status, 
+                    sc.name AS status,
+                    base.quantity,
+                    u.name AS quantity_unit,
                     ra.name AS requester_attribute,
                     sa.name AS service_attribute,
                     pa.name AS product_attribute,
@@ -39,6 +41,7 @@
                JOIN attribute pa ON base.product_attribute = pa.id
                JOIN attribute dta ON base.deliver_to_attribute = dta.id
                JOIN attribute dfa ON base.deliver_from_attribute = dfa.id
+               JOIN unit u ON base.quantity_unit = u.id
                JOIN attribute ata ON base.assign_to_attribute = ata.id;
 			
 			ALTER TABLE readable.job_chronology

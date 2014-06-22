@@ -194,6 +194,7 @@ public abstract class AbstractProtocol extends Ruleform {
         requesterAttribute = protocol.requesterAttribute;
         service = protocol.service;
         serviceAttribute = protocol.serviceAttribute;
+        quantityUnit = protocol.quantityUnit;
     }
 
     public Agency getAssignTo() {

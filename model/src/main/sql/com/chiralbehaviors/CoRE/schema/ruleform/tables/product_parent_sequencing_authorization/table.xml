@@ -52,37 +52,37 @@
     <changeSet author="hhildebrand" id="1390879803225-262">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="parent" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_my_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-263">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_parent_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-264">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="parent_status_to_set" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_parent_status_to_set_fk"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-265">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="status_code" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_status_code_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-266">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-403">
         <addUniqueConstraint schemaName="ruleform" columnNames="service, status_code, sequence_number"
             constraintName="product_parent_sequencing_authorization_parent_status_code_sequ" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="product_parent_sequencing_authorization" />
+            initiallyDeferred="true" tableName="product_parent_sequencing_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-507">
         <createIndex schemaName="ruleform" indexName="product_parent_sequencing_authorization_updated_by_fkey_idx" tableName="product_parent_sequencing_authorization"

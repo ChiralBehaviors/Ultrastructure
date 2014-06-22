@@ -368,7 +368,8 @@ public class JobModelTest extends AbstractModelTest {
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
         Map<Protocol, InferenceMap> protocols = model.getJobModel().getProtocols(order);
         assertEquals(1, protocols.size());
-        List<Job> jobs = model.getJobModel().generateImplicitJobs(order);
+        List<Job> jobs = model.getJobModel().generateImplicitJobs(order,
+                                                                  kernel.getCore());
         for (Job j : jobs) {
             assertNotNull(j.getAssignToAttribute());
             assertNotNull(j.getAssignTo());
@@ -524,7 +525,7 @@ public class JobModelTest extends AbstractModelTest {
         txfm = jobModel.getProtocols(job);
         assertEquals(1, txfm.size());
 
-        List<Job> jobs = jobModel.generateImplicitJobs(job);
+        List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
         assertEquals(1, jobs.size());
         Job derived = jobs.get(0);
         assertEquals(scenario.fee, derived.getService());
@@ -548,41 +549,52 @@ public class JobModelTest extends AbstractModelTest {
         job.setRequester(scenario.georgeTownUniversity);
         job.setStatus(scenario.available);
 
-        List<Job> jobs = jobModel.generateImplicitJobs(job);
+        List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
         TestDebuggingUtil.printJobs(jobs);
     }
 
+    //    TODO this test won't pass until we make job chronology saves fire from
+    //    job update triggers
+    // @Test
+    public void testJobChronologyOnStatusUpdate() throws Exception {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        alterTriggers(false);
+        try {
+            Job order = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                              scenario.core);
+            order.setAssignTo(scenario.orderFullfillment);
+            order.setProduct(scenario.abc486);
+            order.setDeliverTo(scenario.rsb225);
+            order.setDeliverFrom(scenario.factory1);
+            order.setRequester(scenario.georgeTownUniversity);
+            order.setStatus(scenario.available);
+            em.persist(order);
+            em.flush();
+            JobChronology chronology = new JobChronology(order, "Testy",
+                                                         kernel.getCore());
+            em.persist(chronology);
+            txn.commit();
+            em.refresh(order);
+            List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
+            assertEquals(1, chronologies.size());
+            List<String> fieldErrors = verifyChronologyFields(order,
+                                                              chronologies.get(0));
 
-    
-    //@Test
-    
-    //TODO this test won't pass until we make job chronology saves fire from
-    //job update triggers
-//    public void testJobChronologyOnStatusUpdate() throws Exception {
-//        EntityTransaction txn = em.getTransaction();
-//        txn.begin();
-//        Job order = new Job(scenario.orderFullfillment,
-//                            scenario.georgeTownUniversity, scenario.deliver,
-//                            scenario.abc486, scenario.rsb225,
-//                            scenario.factory1, scenario.core);
-//        em.persist(order);
-//        txn.commit();
-//        em.refresh(order);
-//        List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-//        assertEquals(1, chronologies.size());
-//        List<String> fieldErrors = verifyChronologyFields(order,
-//                                                          chronologies.get(0));
-//        
-//        assertEquals(0, fieldErrors.size());
-//        txn.begin();
-//        model.getJobModel().changeStatus(order, scenario.available, kernel.getCore(), null);
-//        txn.commit();
-//        chronologies = model.getJobModel().getChronologyForJob(order);
-//        assertEquals(2, chronologies.size());
-//        fieldErrors = verifyChronologyFields(order, chronologies.get(0));
-//        System.out.println(String.format("Errors: %s", fieldErrors));
-//        assertEquals(0, fieldErrors.size());
-//    }
+            assertEquals(0, fieldErrors.size());
+            txn.begin();
+            model.getJobModel().changeStatus(order, scenario.available,
+                                             kernel.getCore(), null);
+            txn.commit();
+            chronologies = model.getJobModel().getChronologyForJob(order);
+            assertEquals(2, chronologies.size());
+            fieldErrors = verifyChronologyFields(order, chronologies.get(0));
+            System.out.println(String.format("Errors: %s", fieldErrors));
+            assertEquals(0, fieldErrors.size());
+        } finally {
+            alterTriggers(true);
+        }
+    }
 
     /**
      * Returns a list of fields that do not match between job and chronology
@@ -601,8 +613,8 @@ public class JobModelTest extends AbstractModelTest {
     private List<String> verifyChronologyFields(Job job,
                                                 JobChronology jobChronology)
                                                                             throws Exception {
-        String[] fieldsToMatch = new String[] { "status", "parent",
-                "requester", "assignTo", "deliverFrom", "deliverTo", "notes" };
+        String[] fieldsToMatch = new String[] { "status", "requester",
+                "assignTo", "deliverFrom", "deliverTo", "notes" };
         List<String> unmatchedFields = new LinkedList<>();
         if (!jobChronology.getJob().equals(job)) {
             unmatchedFields.add("job");

@@ -17,7 +17,6 @@
 package com.chiralbehaviors.CoRE.meta;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -52,19 +51,17 @@ public interface JobModel {
      * Log the status change of a job at the timestamp
      * 
      * @param job
-     * @param timestamp
-     * @param status
      * @param notes
      */
-    void addJobChronology(Job job, Timestamp timestamp, StatusCode status,
-                          String notes);
+    void addJobChronology(Job job, String notes);
 
     /**
      * Generate all the implicit sub jobs for the job
      * 
      * @param job
+     * @param updatedBy TODO
      */
-    void automaticallyGenerateImplicitJobsForExplicitJobs(Job job);
+    void automaticallyGenerateImplicitJobsForExplicitJobs(Job job, Agency updatedBy);
 
     /**
      * Sets the status of the given Job. This should not be done directly on the
@@ -137,12 +134,13 @@ public interface JobModel {
      * For a given job, generates all the implicit jobs that need to be done
      * 
      * This is the jesus nut of the the event cluster animation.
-     * 
+     * @param updatedBy TODO
      * @param jobId
+     * 
      * @return the list of jobs generated
      * @throws SQLException
      */
-    List<Job> generateImplicitJobs(Job job);
+    List<Job> generateImplicitJobs(Job job, Agency updatedBy);
 
     /**
      * Retrieve a list of all currently active "explicit" (top level) Jobs.
@@ -474,9 +472,10 @@ public interface JobModel {
      * 
      * @param parent
      * @param protocol
+     * @param updatedBy TODO
      * @return
      */
-    Job insertJob(Job parent, Protocol protocol);
+    Job insertJob(Job parent, Protocol protocol, Agency updatedBy);
 
     /**
      * @param job

@@ -57,37 +57,37 @@
     <changeSet author="hhildebrand" id="1390879803225-303">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_attribute_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-304">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_classification_attribute_f"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-305">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_classifier_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-306">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-307">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-407">
         <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_attribute, sequence_number"
             constraintName="relationship_attribute_authorizat_classification_attribute_clas" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="relationship_attribute_authorization" />
+            initiallyDeferred="true" tableName="relationship_attribute_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-513">
         <createIndex schemaName="ruleform" indexName="relationship_attribute_authorization_updated_by_fkey_idx" tableName="relationship_attribute_authorization"

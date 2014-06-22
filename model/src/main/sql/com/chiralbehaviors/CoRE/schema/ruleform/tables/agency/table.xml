@@ -33,7 +33,7 @@
 
     <changeSet author="hhildebrand" id="1390879803225-110">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="agency" constraintName="agency_updated_by_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="updated_by" baseTableName="agency" constraintName="agency_updated_by_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
 

@@ -1,69 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <include relativeToChangelogFile="true" file="functions/next_id.xml" />
-	<include relativeToChangelogFile="true" file="functions/_add_id.xml" />
-	<include relativeToChangelogFile="true" file="functions/_clear_ids.xml" />
-	<include relativeToChangelogFile="true" file="functions/_contains_id.xml" />
-	<include relativeToChangelogFile="true" file="functions/_ids.xml" />
-	<include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/is_terminal_state.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/attribute_usage.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/create_product_usage_view.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/create_individual_product_usage_view.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/product_by_attribute_value.xml" />
-	<include relativeToChangelogFile="true" file="functions/get_attribute.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/get_attribute_type.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/agency_get_allowed_text_values.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/allowed_to_insert_job.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/automatically_generate_implicit_jobs_for_explicit_jobs.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/ensure_next_state_is_valid.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/ensure_valid_child_service_and_status.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/ensure_valid_parent_service_and_status.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/ensure_valid_sibling_service_and_status.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/ensure_valid_initial_state.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/log_modified_product_status_code_sequencing.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/process_job_change.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/valid_agency_attribute.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/validate_state_graph.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/propagate_attribute_network_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/propagate_interval_network_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/propagate_location_network_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/propagate_product_network_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/propagate_agency_network_deductions.xml" />
-    <include relativeToChangelogFile="true"
-        file="functions/propagate_relationship_network_deductions.xml" />
-    <include relativeToChangelogFile="true"
-        file="functions/propagate_status_code_network_deductions.xml" />
-    <include relativeToChangelogFile="true"
-        file="functions/propagate_unit_network_deductions.xml" />
-	<include relativeToChangelogFile="true"
-		file="functions/if_table_exists.xml" />
+    <include relativeToChangelogFile="true" file="functions/_add_id.xml" />
+    <include relativeToChangelogFile="true" file="functions/_clear_ids.xml" />
+    <include relativeToChangelogFile="true" file="functions/_contains_id.xml" />
+    <include relativeToChangelogFile="true" file="functions/_ids.xml" />
+    <include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
+    <include relativeToChangelogFile="true" file="functions/is_terminal_state.xml" />
+    <include relativeToChangelogFile="true" file="functions/attribute_usage.xml" />
+    <include relativeToChangelogFile="true" file="functions/create_product_usage_view.xml" />
+    <include relativeToChangelogFile="true" file="functions/create_individual_product_usage_view.xml" />
+    <include relativeToChangelogFile="true" file="functions/product_by_attribute_value.xml" />
+    <include relativeToChangelogFile="true" file="functions/get_attribute.xml" />
+    <include relativeToChangelogFile="true" file="functions/get_attribute_type.xml" />
+    <include relativeToChangelogFile="true" file="functions/agency_get_allowed_text_values.xml" />
+    <include relativeToChangelogFile="true" file="functions/allowed_to_insert_job.xml" />
+    <include relativeToChangelogFile="true" file="functions/automatically_generate_implicit_jobs_for_explicit_jobs.xml" />
+    <include relativeToChangelogFile="true" file="functions/ensure_next_state_is_valid.xml" />
+    <include relativeToChangelogFile="true" file="functions/ensure_valid_child_service_and_status.xml" />
+    <include relativeToChangelogFile="true" file="functions/ensure_valid_parent_service_and_status.xml" />
+    <include relativeToChangelogFile="true" file="functions/ensure_valid_sibling_service_and_status.xml" />
+    <include relativeToChangelogFile="true" file="functions/ensure_valid_initial_state.xml" />
+    <include relativeToChangelogFile="true" file="functions/log_modified_product_status_code_sequencing.xml" />
+    <include relativeToChangelogFile="true" file="functions/process_job_change.xml" />
+    <include relativeToChangelogFile="true" file="functions/valid_agency_attribute.xml" />
+    <include relativeToChangelogFile="true" file="functions/validate_state_graph.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_attribute_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_interval_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_location_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_product_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_agency_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_relationship_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_status_code_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/propagate_unit_network_deductions.xml" />
+    <include relativeToChangelogFile="true" file="functions/if_table_exists.xml" />
+    <include relativeToChangelogFile="true" file="functions/log_inserts_in_job_chronology.xml" />
 </databaseChangeLog>

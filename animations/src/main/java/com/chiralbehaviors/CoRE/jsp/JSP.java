@@ -80,10 +80,13 @@ public abstract class JSP {
         }
         try {
             Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
+            if (rootCause != null) {
+                return null;
+            }
             throwRootCause();
             EntityManager em = EMF.createEntityManager();
             em.getTransaction().begin();
-            T value;
+            T value = null;
             try {
                 if (log.isDebugEnabled()) {
                     log.debug(String.format("calling %s", call));
@@ -105,7 +108,6 @@ public abstract class JSP {
                 if (log.isTraceEnabled()) {
                     log.warn(String.format("Error during %s", call), e);
                 }
-                throw e;
             } catch (Throwable e) {
                 if (log.isInfoEnabled()) {
                     log.info(String.format("Error during %s", call), e);
@@ -127,7 +129,6 @@ public abstract class JSP {
                     }
                     rootCause = sqlException;
                 }
-                throw sqlException;
             }
             throwRootCause();
             try {

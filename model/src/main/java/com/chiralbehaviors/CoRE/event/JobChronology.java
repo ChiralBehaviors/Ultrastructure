@@ -19,7 +19,6 @@ import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
 
-import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,13 +26,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -64,16 +60,12 @@ public class JobChronology extends AbstractProtocol {
     @JoinColumn(name = "job")
     private Job                job;
 
-    @SequenceGenerator(schema = "ruleform", name = "job_chronology_seq", sequenceName = "job_chronology_seq")
-    @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
-    private Long               sequence;
+    @Column(name = "sequence_number", insertable = false)
+    private Long               sequenceNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode         status;
-
-    @Column(name = "time_stamp")
-    private Timestamp          timeStamp;
 
     public JobChronology() {
     }
@@ -101,8 +93,8 @@ public class JobChronology extends AbstractProtocol {
         return job;
     }
 
-    public Long getSequence() {
-        return sequence;
+    public Long getSequenceNumber() {
+        return sequenceNumber;
     }
 
     /**
@@ -112,20 +104,16 @@ public class JobChronology extends AbstractProtocol {
         return status;
     }
 
-    public Timestamp getTimeStamp() {
-        return timeStamp;
-    }
-
     public void setJob(Job job) {
         initializeFrom(job);
     }
 
     /**
-     * @param sequence
+     * @param sequenceNumber
      *            the sequence to set
      */
-    public void setSequence(Long sequence) {
-        this.sequence = sequence;
+    public void setSequenceNumber(Long sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     /**
@@ -134,10 +122,6 @@ public class JobChronology extends AbstractProtocol {
      */
     public void setStatus(StatusCode status) {
         this.status = status;
-    }
-
-    public void setTimeStamp(Timestamp timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     /*
@@ -159,9 +143,7 @@ public class JobChronology extends AbstractProtocol {
     protected void initializeFrom(Job job) {
         this.job = job;
         status = job.getStatus();
-        if (job.getUpdateDate() != null) {
-            timeStamp = job.getUpdateDate();
-        }
+        setUpdateDate(job.getUpdateDate());
         copyFrom(job);
     }
 }

@@ -61,37 +61,37 @@
     <changeSet author="hhildebrand" id="1390879803225-178">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="location_attribute_authorization" constraintName="location_attribute_authorization_authorized_attribute_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-179">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="location_attribute_authorization" constraintName="location_attribute_authorization_classification_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-180">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="location_attribute_authorization" constraintName="location_attribute_authorization_classifier_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-181">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="location_attribute_authorization" constraintName="location_attribute_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-182">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="location_attribute_authorization" constraintName="location_attribute_authorization_updated_by_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-387">
         <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_attribute, sequence_number"
             constraintName="location_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="location_attribute_authorization" />
+            initiallyDeferred="true" tableName="location_attribute_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-467">
         <createIndex schemaName="ruleform" indexName="location_attribute_authorization_updated_by_fkey_idx" tableName="location_attribute_authorization"

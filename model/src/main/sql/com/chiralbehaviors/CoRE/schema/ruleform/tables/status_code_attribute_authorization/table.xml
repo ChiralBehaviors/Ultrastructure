@@ -57,37 +57,37 @@
     <changeSet author="hhildebrand" id="1390879803225-322">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_attribute_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-323">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_classification_attribute_fk"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-324">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_classifier_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-325">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_grouping_status_code_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-326">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-412">
         <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_attribute, sequence_number"
             constraintName="status_code_attribute_authorizat_classification_attribute_clas_" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="status_code_attribute_authorization" />
+            initiallyDeferred="true" tableName="status_code_attribute_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-518">
         <createIndex schemaName="ruleform" indexName="status_code_attribute_authorization_updated_by_fkey_idx" tableName="status_code_attribute_authorization"

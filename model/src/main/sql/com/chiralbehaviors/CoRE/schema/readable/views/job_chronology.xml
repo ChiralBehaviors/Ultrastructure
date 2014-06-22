@@ -9,9 +9,10 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.job_chronology AS 
              SELECT base.id, 
+                    base.sequence_number,
+                    at.name AS assign_to, 
                     s.name AS service, 
                     p.name AS product, 
-                    at.name AS assign_to, 
                     r.name AS requester, 
                     dt.name AS deliver_to, 
                     df.name AS deliver_from, 
@@ -24,7 +25,6 @@
                     dta.name AS deliver_to_attribute,
                     dfa.name AS deliver_from_attribute,
                     ata.name AS assign_to_attribute,
-                    base.sequence,
                     base.notes, 
                     up.name AS updated_by, base.update_date
                FROM job_chronology base

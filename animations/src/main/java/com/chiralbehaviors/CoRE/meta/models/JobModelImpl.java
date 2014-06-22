@@ -19,7 +19,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static java.lang.String.format;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,7 +99,6 @@ import com.hellblazer.utils.Tuple;
  * 
  */
 public class JobModelImpl implements JobModel {
-
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -353,6 +351,23 @@ public class JobModelImpl implements JobModel {
         });
     }
 
+    public static void log_inserts_in_job_chronology(final TriggerData triggerData)
+                                                                                   throws SQLException {
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(JobModelImpl jobModel) throws Exception {
+                jobModel.logInsertsInJobChronology(triggerData.getNew().getString("id"),
+                                                   triggerData.getNew().getString("status"));
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "JobModel.log_inserts_in_job_chronology";
+            }
+        });
+    }
+
     public static void log_modified_product_status_code_sequencing(final TriggerData triggerData)
                                                                                                  throws SQLException {
 
@@ -396,6 +411,7 @@ public class JobModelImpl implements JobModel {
     }
 
     protected final EntityManager em;
+
     protected final Kernel        kernel;
 
     public JobModelImpl(Model model) {
@@ -404,21 +420,18 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void addJobChronology(Job job, Timestamp timestamp,
-                                 StatusCode status, String notes) {
-        JobChronology c = new JobChronology(job.getUpdatedBy());
-        c.setJob(job);
-        c.setNotes(notes);
-        em.persist(c);
+    public void addJobChronology(Job job, String notes) {
+        em.persist(new JobChronology(job, notes, job.getUpdatedBy()));
     }
 
     @Override
-    public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job) {
+    public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job,
+                                                                 Agency updatedBy) {
         if (job.getStatus().getPropagateChildren()) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Generating implicit jobs for %s", job));
             }
-            for (Job subJob : generateImplicitJobs(job)) {
+            for (Job subJob : generateImplicitJobs(job, updatedBy)) {
                 changeStatus(subJob, getInitialState(subJob.getService()),
                              null,
                              "Initially available job (automatically set)");
@@ -442,7 +455,6 @@ public class JobModelImpl implements JobModel {
             }
             return job;
         }
-        new Timestamp(System.currentTimeMillis());
         if (log.isInfoEnabled()) {
             log.info(String.format("Setting %s status to %s", job, newStatus));
         }
@@ -450,6 +462,7 @@ public class JobModelImpl implements JobModel {
         if (updatedBy != null) {
             job.setUpdatedBy(updatedBy);
         }
+        addJobChronology(job, notes);
         Job j = em.merge(job);
         return j;
     }
@@ -543,7 +556,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<Job> generateImplicitJobs(Job job) {
+    public List<Job> generateImplicitJobs(Job job, Agency updatedBy) {
         Map<Protocol, InferenceMap> protocols = getProtocols(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Found %s protocols for %s",
@@ -551,7 +564,7 @@ public class JobModelImpl implements JobModel {
         }
         List<Job> jobs = new ArrayList<Job>();
         for (Entry<Protocol, InferenceMap> txfm : protocols.entrySet()) {
-            jobs.add(insertJob(job, txfm.getKey(), txfm.getValue()));
+            jobs.add(insertJob(job, txfm.getKey(), txfm.getValue(), updatedBy));
         }
         return jobs;
     }
@@ -1049,15 +1062,20 @@ public class JobModelImpl implements JobModel {
      * @return the newly created job
      */
     @Override
-    public Job insertJob(Job parent, Protocol protocol) {
-        return insertJob(parent, protocol, NO_TRANSFORMATION);
+    public Job insertJob(Job parent, Protocol protocol, Agency updatedBy) {
+        return insertJob(parent, protocol, NO_TRANSFORMATION, updatedBy);
     }
 
-    public Job insertJob(Job parent, Protocol protocol, InferenceMap txfm) {
+    public Job insertJob(Job parent, Protocol protocol, InferenceMap txfm,
+                         Agency updatedBy) {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
         copyIntoChild(parent, protocol, txfm, job);
         job.setStatus(kernel.getUnset());
+        em.persist(new JobChronology(
+                                     job,
+                                     "Implicit job creation by animation software",
+                                     updatedBy));
         em.persist(job);
 
         if (log.isTraceEnabled()) {
@@ -1193,9 +1211,8 @@ public class JobModelImpl implements JobModel {
                 changeStatus(child,
                              seq.getNextChildStatus(),
                              kernel.getCoreAnimationSoftware(),
-                             String.format("Automatically switching to %s via direct communication from parent job %s",
-                                           seq.getNextChildStatus().getName(),
-                                           job));
+                             String.format("Automatically switching to %s via direct communication from parent job",
+                                           seq.getNextChildStatus().getName()));
                 if (seq.isReplaceProduct()) {
                     child.setProduct(job.getProduct());
                 }
@@ -1226,8 +1243,8 @@ public class JobModelImpl implements JobModel {
                     changeStatus(job.getParent(),
                                  seq.getParentStatusToSet(),
                                  kernel.getCoreAnimationSoftware(),
-                                 String.format("'Automatically switching to %s via direct communication from child job %s",
-                                               seq.getParentStatusToSet(), job));
+                                 String.format("'Automatically switching to %s via direct communication from child job",
+                                               seq.getParentStatusToSet()));
                     if (seq.isReplaceProduct()) {
                         job.getParent().setProduct(job.getProduct());
                     }
@@ -1236,8 +1253,8 @@ public class JobModelImpl implements JobModel {
                     changeStatus(job.getParent(),
                                  seq.getParentStatusToSet(),
                                  kernel.getCoreAnimationSoftware(),
-                                 String.format("'Automatically switching to %s via direct communication from child job %s",
-                                               seq.getParentStatusToSet(), job));
+                                 String.format("'Automatically switching to %s via direct communication from child job",
+                                               seq.getParentStatusToSet()));
                     if (seq.isReplaceProduct()) {
                         job.getParent().setProduct(job.getProduct());
                     }
@@ -1259,9 +1276,8 @@ public class JobModelImpl implements JobModel {
                 changeStatus(sibling,
                              seq.getNextSiblingStatus(),
                              null,
-                             String.format("Automatically switching to %s via direct communication from sibling job %s",
-                                           seq.getNextSiblingStatus().getName(),
-                                           job));
+                             String.format("Automatically switching to %s via direct communication from sibling jobs",
+                                           seq.getNextSiblingStatus().getName()));
                 if (seq.isReplaceProduct()) {
                     sibling.setProduct(job.getProduct());
                 }
@@ -1365,7 +1381,8 @@ public class JobModelImpl implements JobModel {
      * @param job
      */
     private void automaticallyGenerateImplicitJobsForExplicitJobs(String job) {
-        automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job));
+        automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job),
+                                                         kernel.getCoreAnimationSoftware());
     }
 
     private void copyIntoChild(Job parent, Protocol protocol,
@@ -1648,6 +1665,10 @@ public class JobModelImpl implements JobModel {
     private boolean isTxfm(Relationship relationship) {
         return !kernel.getAnyRelationship().equals(relationship)
                && !kernel.getSameRelationship().equals(relationship);
+    }
+
+    private void logInsertsInJobChronology(String jobId, String statusId) {
+        addJobChronology(em.find(Job.class, jobId), "Initial insertion of job");
     }
 
     /**

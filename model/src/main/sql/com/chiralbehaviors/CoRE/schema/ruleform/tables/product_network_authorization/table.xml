@@ -53,43 +53,43 @@
     <changeSet author="hhildebrand" id="1390879803225-252">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_parent" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_parent_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-253">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_relationship" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_relationship_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-254">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="product_network_authorization" constraintName="product_network_authorization_classification_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-255">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="product_network_authorization" constraintName="product_network_authorization_classifier_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-256">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="product_network_authorization" constraintName="product_network_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-257">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_network_authorization" constraintName="product_network_authorization_updated_by_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-394">
         <addUniqueConstraint schemaName="ruleform"
             columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number" constraintName="product_attribute_authorizatio_agency_classification_attri_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="product_network_authorization" />
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_network_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-502">
         <createIndex schemaName="ruleform" indexName="product_network_authorization_updated_by_fkey_idx" tableName="product_network_authorization"

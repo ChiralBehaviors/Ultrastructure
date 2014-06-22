@@ -53,6 +53,10 @@
             <column defaultValueNumeric="0" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
+            <column name="quantity" type="numeric" />
+            <column name="quantity_unit" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="VARCHAR(10485760)" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -152,5 +156,10 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service_attribute" baseTableName="job" constraintName="job_service_attribute_fkey" deferrable="true"
             initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-473">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="quantity_unit" baseTableName="job" constraintName="job_quantity_unit_fkey" deferrable="true" initiallyDeferred="false"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
 </databaseChangeLog>

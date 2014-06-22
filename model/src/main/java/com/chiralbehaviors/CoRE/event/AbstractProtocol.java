@@ -16,11 +16,12 @@
 
 package com.chiralbehaviors.CoRE.event;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -31,6 +32,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.RuleformIdGenerator;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -52,88 +54,92 @@ public abstract class AbstractProtocol extends Ruleform {
     /**
      * The agency assigned to this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "assign_to")
     private Agency            assignTo;
     /**
      * The attribute for the agency assigned to this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "assign_to_attribute")
     private Attribute         assignToAttribute;
     /**
      * The location where the product will be delivered from
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_from")
     private Location          deliverFrom;
     /**
      * The the attribute on the location where the product will be delivered
      * from
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_from_attribute")
     private Attribute         deliverFromAttribute;
 
     /**
      * The location to deliver the product of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Location          deliverTo;
 
     /**
      * The attribute on the location to deliver the product of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_to_attribute")
     private Attribute         deliverToAttribute;
 
     /**
      * The product of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product")
     private Product           product;
 
     /**
      * The attribute on the product of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_attribute")
     private Attribute         productAttribute;
+
+    @Column(name = "quantity")
+    private BigDecimal        quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "quantity_unit")
+    private Unit              quantityUnit;
 
     /**
      * The consumer of this job's product
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requester")
     private Agency            requester;
 
     /**
      * The consumer of this job's product
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requester_attribute")
     private Attribute         requesterAttribute;
 
     /**
      * The service this job is performing
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product           service;
 
     /**
      * The attribute on the service this job is performing
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "service_attribute")
     private Attribute         serviceAttribute;
 
-    /**
-     * 
-     */
     public AbstractProtocol() {
         super();
     }
@@ -243,6 +249,14 @@ public abstract class AbstractProtocol extends Ruleform {
         return productAttribute;
     }
 
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public Unit getQuantityUnit() {
+        return quantityUnit;
+    }
+
     /**
      * @return the requester
      */
@@ -342,6 +356,14 @@ public abstract class AbstractProtocol extends Ruleform {
      */
     public void setProductAttribute(Attribute productAttribute) {
         this.productAttribute = productAttribute;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setQuantityUnit(Unit quantityUnit) {
+        this.quantityUnit = quantityUnit;
     }
 
     /**

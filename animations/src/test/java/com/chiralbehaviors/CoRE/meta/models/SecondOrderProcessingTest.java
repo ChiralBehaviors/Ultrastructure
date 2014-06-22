@@ -377,6 +377,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         p.setAssignToAttribute(kernel.getAnyAttribute());
         p.setServiceAttribute(kernel.getAnyAttribute());
         p.setProductAttribute(kernel.getAnyAttribute());
+        p.setQuantityUnit(kernel.getAnyUnit());
         return p;
     }
 

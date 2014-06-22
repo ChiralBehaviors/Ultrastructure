@@ -54,6 +54,9 @@
             <column name="deliver_from_attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
+            <column name="quantity_unit" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
             <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
             <column name="notes" remarks="Additional notes regarding usage of the metaprotocol" type="VARCHAR(10485760)" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
@@ -116,9 +119,8 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-204-1">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="assign_to" baseTableName="meta_protocol" constraintName="meta_protocol_assign_to_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            baseColumnNames="assign_to" baseTableName="meta_protocol" constraintName="meta_protocol_assign_to_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803226-204-2">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -137,6 +139,11 @@
             initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-207">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="quantity_unit" baseTableName="meta_protocol" constraintName="meta_protocol_quantity_unit_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-208">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="meta_protocol" constraintName="meta_protocol_updated_by_fkey" deferrable="true"
             initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />

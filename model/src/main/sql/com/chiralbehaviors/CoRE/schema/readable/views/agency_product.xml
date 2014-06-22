@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="1" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.agency_product AS 
+			 SELECT bl.id, 
+                    res.name AS agency, 
+                    rel.name AS relationship, 
+                    p.name AS product, 
+                    bl.notes, 
+                    up.name AS updated_by, 
+                    bl.update_date
+			   FROM agency_product bl
+			   JOIN agency res ON bl.agency = res.id 
+			   JOIN relationship rel ON bl.relationship = rel.id
+			   JOIN product p ON bl.product = p.id
+			   JOIN agency up ON bl.updated_by = up.id;
+			
+			ALTER TABLE readable.agency_product
+			  OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.agency_product" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

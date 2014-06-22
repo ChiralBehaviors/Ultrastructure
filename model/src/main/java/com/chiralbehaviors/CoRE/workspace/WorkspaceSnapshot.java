@@ -31,8 +31,10 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocation;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProduct;
 import com.chiralbehaviors.CoRE.agency.access.AgencyLocationAccessAuthorization;
 import com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -61,7 +63,6 @@ import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
-import com.chiralbehaviors.CoRE.location.LocationRelationship;
 import com.chiralbehaviors.CoRE.location.access.LocationAgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.location.access.LocationProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -96,7 +97,9 @@ public class WorkspaceSnapshot implements Workspace {
     private Relationship                                 workspaceRelationship;
     private Map<String, Agency>                          agencies                                = new HashMap<>();
     private List<AgencyAttribute>                        agencyAttributes                        = new ArrayList<>();
+    private List<AgencyLocation>                         agencyLocations                         = new ArrayList<>();
     private List<AgencyLocationAccessAuthorization>      agencyLocationAccessAuthorizations      = new ArrayList<>();
+    private List<AgencyProduct>                          agencyProducts                          = new ArrayList<>();
     private List<AgencyProductAccessAuthorization>       agencyProductAccessAuthorizations       = new ArrayList<>();
     private List<AgencyAttributeAuthorization>           agencyAttributeAuthorizations           = new ArrayList<>();
     private List<AgencyNetwork>                          agencyNetworks                          = new ArrayList<>();
@@ -129,7 +132,6 @@ public class WorkspaceSnapshot implements Workspace {
     private List<LocationAttribute>                      locationAttributes                      = new ArrayList<>();
     private List<LocationAttributeAuthorization>         locationAttributeAuthorizations         = new ArrayList<>();
     private List<LocationNetworkAuthorization>           locationNetworkAuthorizations           = new ArrayList<>();
-    private List<LocationRelationship>                   locationRelationships                   = new ArrayList<>();
     private Map<String, Relationship>                    relationships                           = new HashMap<>();
     private List<RelationshipAttribute>                  relationshipAttributes                  = new ArrayList<>();
     private List<RelationshipAttributeAuthorization>     relationshipAttributeAuthorizations     = new ArrayList<>();
@@ -185,6 +187,14 @@ public class WorkspaceSnapshot implements Workspace {
         return agencyLocationAccessAuthorizations;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAgencyLocations()
+     */
+    @Override
+    public List<AgencyLocation> getAgencyLocations() {
+        return agencyLocations;
+    }
+
     /**
      * @return the agencyNetworkAuthorizations
      */
@@ -207,6 +217,14 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<AgencyProductAccessAuthorization> getAgencyProductAccessAuthorizations() {
         return agencyProductAccessAuthorizations;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAgencyProducts()
+     */
+    @Override
+    public List<AgencyProduct> getAgencyProducts() {
+        return agencyProducts;
     }
 
     public Attribute getAttribute(String name) {
@@ -311,14 +329,6 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public List<LocationProductAccessAuthorization> getLocationProductAccessAuthorizations() {
         return locationProductAccessAuthorizations;
-    }
-
-    /**
-     * @return the locationRelationships
-     */
-    @Override
-    public List<LocationRelationship> getLocationRelationships() {
-        return locationRelationships;
     }
 
     /**
@@ -684,6 +694,14 @@ public class WorkspaceSnapshot implements Workspace {
         this.agencyLocationAccessAuthorizations = agencyLocationAccessAuthorizations;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#setAgencyLocations(java.util.List)
+     */
+    @Override
+    public void setAgencyLocations(List<AgencyLocation> agencyLocations) {
+        this.agencyLocations = agencyLocations;
+    }
+
     /**
      * @param agencyNetworkAuthorizations
      *            the agencyNetworkAuthorizations to set
@@ -700,6 +718,14 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public void setAgencyNetworks(List<AgencyNetwork> agencyNetworks) {
         this.agencyNetworks = agencyNetworks;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.workspace.Workspace#setAgencyProduct(java.util.List)
+     */
+    @Override
+    public void setAgencyProduct(List<AgencyProduct> agencyProducts) {
+        this.agencyProducts = agencyProducts;
     }
 
     /**
@@ -819,15 +845,6 @@ public class WorkspaceSnapshot implements Workspace {
     @Override
     public void setLocationProductAccessAuthorizations(List<LocationProductAccessAuthorization> locationProductAccessAuthorizations) {
         this.locationProductAccessAuthorizations = locationProductAccessAuthorizations;
-    }
-
-    /**
-     * @param locationRelationships
-     *            the locationRelationships to set
-     */
-    @Override
-    public void setLocationRelationships(List<LocationRelationship> locationRelationships) {
-        this.locationRelationships = locationRelationships;
     }
 
     /**

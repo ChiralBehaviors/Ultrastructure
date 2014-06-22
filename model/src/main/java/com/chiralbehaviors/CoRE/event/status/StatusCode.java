@@ -44,6 +44,7 @@ import javax.persistence.Table;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -285,6 +286,15 @@ public class StatusCode extends
 
     public Boolean getPropagateChildren() {
         return toBoolean(propagateChildren);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownStatusCode.ANY.id().equals(getId())
+               || WellKnownStatusCode.SAME.id().equals(getId());
     }
 
     /*

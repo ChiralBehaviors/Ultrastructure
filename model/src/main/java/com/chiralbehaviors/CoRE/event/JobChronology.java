@@ -72,23 +72,8 @@ public class JobChronology extends AbstractProtocol {
     @JoinColumn(name = "status")
     private StatusCode         status;
 
-    /**
-     * @return the status
-     */
-    public StatusCode getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status
-     *            the status to set
-     */
-    public void setStatus(StatusCode status) {
-        this.status = status;
-    }
-
     @Column(name = "time_stamp")
-    private Timestamp timeStamp;
+    private Timestamp          timeStamp;
 
     public JobChronology() {
     }
@@ -103,15 +88,6 @@ public class JobChronology extends AbstractProtocol {
     public JobChronology(Job job, String notes, Agency updatedBy) {
         super(notes, updatedBy);
         initializeFrom(job);
-    }
-
-    protected void initializeFrom(Job job) {
-        this.job = job;
-        this.status = job.getStatus();
-        if (job.getUpdateDate() != null) {
-            this.timeStamp = job.getUpdateDate();
-        }
-        this.copyFrom(job);
     }
 
     /**
@@ -129,6 +105,13 @@ public class JobChronology extends AbstractProtocol {
         return sequence;
     }
 
+    /**
+     * @return the status
+     */
+    public StatusCode getStatus() {
+        return status;
+    }
+
     public Timestamp getTimeStamp() {
         return timeStamp;
     }
@@ -143,6 +126,14 @@ public class JobChronology extends AbstractProtocol {
      */
     public void setSequence(Long sequence) {
         this.sequence = sequence;
+    }
+
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(StatusCode status) {
+        this.status = status;
     }
 
     public void setTimeStamp(Timestamp timeStamp) {
@@ -163,5 +154,14 @@ public class JobChronology extends AbstractProtocol {
             job = (Job) job.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
+    }
+
+    protected void initializeFrom(Job job) {
+        this.job = job;
+        status = job.getStatus();
+        if (job.getUpdateDate() != null) {
+            timeStamp = job.getUpdateDate();
+        }
+        copyFrom(job);
     }
 }

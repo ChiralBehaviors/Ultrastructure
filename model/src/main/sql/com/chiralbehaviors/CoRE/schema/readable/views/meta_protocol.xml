@@ -16,6 +16,7 @@
 	                    po.name AS product_ordered, 
                         dt.name AS deliver_to, 
 	                    df.name AS deliver_from, 
+                        u.name AS quantity_unit,
                         raa.name AS requesting_agency_attribute, 
                         sa.name AS service_attribute, 
                         poa.name AS product_ordered_attribute, 
@@ -31,7 +32,7 @@
 				   LEFT JOIN relationship po ON base_table.product_ordered = po.id
                    LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
                    LEFT JOIN relationship df ON base_table.deliver_from = df.id 
-                   
+                   LEFT JOIN relationship u ON base_table.quantity_unit = u.id
                    LEFT JOIN relationship raa ON base_table.requesting_agency_attribute = raa.id
                    LEFT JOIN relationship sa ON base_table.service_attribute = sa.id
                    LEFT JOIN relationship poa ON base_table.product_ordered_attribute = poa.id

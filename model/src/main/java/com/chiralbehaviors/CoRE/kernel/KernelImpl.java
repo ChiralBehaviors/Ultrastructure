@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
@@ -42,6 +43,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
@@ -57,23 +59,23 @@ public class KernelImpl implements Kernel {
     private final Agency              agency;
     private final Agency              anyAgency;
     private final Attribute           anyAttribute;
+    private final Interval            anyInterval;
     private final Location            anyLocation;
     private final Product             anyProduct;
     private final Relationship        anyRelationship;
-
+    private final StatusCode          anyStatusCode;
+    private final Unit                anyUnit;
     private final Attribute           attribute;
     private final Relationship        contains;
     private final Agency              core;
     private final Agency              coreAnimationSoftware;
     private final Agency              coreModel;
     private final Agency              coreUser;
-
     private final Relationship        developed;
     private final Relationship        developedBy;
     private final Relationship        equals;
     private final Relationship        formerMemberOf;
     private final Relationship        greaterThan;
-
     private final Relationship        greaterThanOrEqual;
     private final Relationship        hadMember;
     private final Relationship        hasException;
@@ -87,7 +89,6 @@ public class KernelImpl implements Kernel {
     private final Relationship        isA;
     private final Relationship        isContainedIn;
     private final Relationship        isExceptionTo;
-
     private final Relationship        isLocationOf;
     private final Relationship        lessThan;
     private final Relationship        lessThanOrEqual;
@@ -97,9 +98,12 @@ public class KernelImpl implements Kernel {
     private final Relationship        memberOf;
     private final Agency              notApplicableAgency;
     private final Attribute           notApplicableAttribute;
+    private final Interval            notApplicableInterval;
     private final Location            notApplicableLocation;
     private final Product             notApplicableProduct;
     private final Relationship        notApplicableRelationship;
+    private final StatusCode          notApplicableStatusCode;
+    private final Unit                notApplicableUnit;
     private final Relationship        ownedBy;
     private final Relationship        owns;
     private final Attribute           passwordHashAttribute;
@@ -115,18 +119,20 @@ public class KernelImpl implements Kernel {
     private final RelationshipNetwork rootRelationshipNetwork;
     private final StatusCodeNetwork   rootStatusCodeNetwork;
     private final UnitNetwork         rootUnitNetwork;
-    private final Attribute           sameAttribute;
     private final Agency              sameAgency;
+    private final Attribute           sameAttribute;
+    private final Interval            sameInterval;
     private final Location            sameLocation;
     private final Product             sameProduct;
     private final Relationship        sameRelationship;
+    private final StatusCode          sameStatusCode;
+    private final Unit                sameUnit;
     private final Agency              specialSystemAgency;
     private final Agency              superUser;
     private final StatusCode          unset;
     private final Unit                unsetUnit;
     private final Relationship        versionOf;
     private final Product             workspace;
-
     private final Relationship        workspaceOf;
 
     public KernelImpl(EntityManager em) {
@@ -199,7 +205,18 @@ public class KernelImpl implements Kernel {
         workspaceOf = find(em, WellKnownRelationship.WORKSPACE_OF);
 
         unset = find(em, WellKnownStatusCode.UNSET);
+        anyStatusCode = find(em, WellKnownStatusCode.ANY);
+        sameStatusCode = find(em, WellKnownStatusCode.SAME);
+        notApplicableStatusCode = find(em, WellKnownStatusCode.NOT_APPLICABLE);
+
         unsetUnit = find(em, WellKnownUnit.UNSET);
+        anyUnit = find(em, WellKnownUnit.ANY);
+        sameUnit = find(em, WellKnownUnit.SAME);
+        notApplicableUnit = find(em, WellKnownUnit.NOT_APPLICABLE);
+
+        anyInterval = find(em, WellKnownInterval.ANY);
+        sameInterval = find(em, WellKnownInterval.SAME);
+        notApplicableInterval = find(em, WellKnownInterval.NOT_APPLICABLE);
 
         rootAgencyNetwork = em.find(AgencyNetwork.class, ZERO);
         rootAttributeNetwork = em.find(AttributeNetwork.class, ZERO);
@@ -241,6 +258,11 @@ public class KernelImpl implements Kernel {
         return anyAttribute;
     }
 
+    @Override
+    public Interval getAnyInterval() {
+        return anyInterval;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -269,6 +291,16 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getAnyRelationship() {
         return anyRelationship;
+    }
+
+    @Override
+    public StatusCode getAnyStatusCode() {
+        return anyStatusCode;
+    }
+
+    @Override
+    public Unit getAnyUnit() {
+        return anyUnit;
     }
 
     /*
@@ -583,6 +615,11 @@ public class KernelImpl implements Kernel {
         return notApplicableAttribute;
     }
 
+    @Override
+    public Interval getNotApplicableInterval() {
+        return notApplicableInterval;
+    }
+
     /**
      * @return the notApplicableLocation
      */
@@ -606,10 +643,15 @@ public class KernelImpl implements Kernel {
     public Relationship getNotApplicableRelationship() {
         return notApplicableRelationship;
     }
-    
+
     @Override
-    public Attribute getSameAttribute() {
-        return sameAttribute;
+    public StatusCode getNotApplicableStatusCode() {
+        return notApplicableStatusCode;
+    }
+
+    @Override
+    public Unit getNotApplicableUnit() {
+        return notApplicableUnit;
     }
 
     /**
@@ -745,6 +787,16 @@ public class KernelImpl implements Kernel {
         return sameAgency;
     }
 
+    @Override
+    public Attribute getSameAttribute() {
+        return sameAttribute;
+    }
+
+    @Override
+    public Interval getSameInterval() {
+        return sameInterval;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -771,6 +823,16 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getSameRelationship() {
         return sameRelationship;
+    }
+
+    @Override
+    public StatusCode getSameStatusCode() {
+        return sameStatusCode;
+    }
+
+    @Override
+    public Unit getSameUnit() {
+        return sameUnit;
     }
 
     /*
@@ -854,6 +916,10 @@ public class KernelImpl implements Kernel {
         return em.find(Attribute.class, wko.id());
     }
 
+    Interval find(EntityManager em, WellKnownInterval wko) {
+        return em.find(Interval.class, wko.id());
+    }
+
     /**
      * 
      * @param wko
@@ -893,5 +959,4 @@ public class KernelImpl implements Kernel {
     Unit find(EntityManager em, WellKnownUnit wko) {
         return em.find(Unit.class, wko.id());
     }
-
 }

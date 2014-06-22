@@ -52,6 +52,7 @@ import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -319,6 +320,15 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
             return Collections.emptySet();
         }
         return networkByParent;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownProduct.ANY.id().equals(getId())
+               || WellKnownProduct.SAME.id().equals(getId());
     }
 
     @Override

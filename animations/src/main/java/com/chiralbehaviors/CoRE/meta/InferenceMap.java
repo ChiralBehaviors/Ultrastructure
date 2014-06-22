@@ -27,11 +27,11 @@ package com.chiralbehaviors.CoRE.meta;
  */
 public class InferenceMap {
     public InferenceMap(boolean assignTo, boolean assignToAttribute,
-                             boolean deliverFrom, boolean deliverFromAttribute,
-                             boolean deliverTo, boolean deliverToAttribute,
-                             boolean product, boolean productAttribute,
-                             boolean requester, boolean requesterAttribute,
-                             boolean serviceAttribute) {
+                        boolean deliverFrom, boolean deliverFromAttribute,
+                        boolean deliverTo, boolean deliverToAttribute,
+                        boolean product, boolean productAttribute,
+                        boolean requester, boolean requesterAttribute,
+                        boolean serviceAttribute, boolean quantityUnit) {
         this.assignTo = assignTo;
         this.assignToAttribute = assignToAttribute;
         this.deliverFrom = deliverFrom;
@@ -43,18 +43,21 @@ public class InferenceMap {
         this.requester = requester;
         this.requesterAttribute = requesterAttribute;
         this.serviceAttribute = serviceAttribute;
+        this.quantityUnit = quantityUnit;
     }
 
     public final boolean assignTo, assignToAttribute, deliverFrom,
             deliverFromAttribute, deliverTo, deliverToAttribute, product,
-            productAttribute, requester, requesterAttribute, serviceAttribute;
+            productAttribute, requester, requesterAttribute, serviceAttribute,
+            quantityUnit;
 
     @Override
     public String toString() {
-        return String.format("TransformationMap [assignTo=%s, assignToAttribute=%s, deliverFrom=%s, deliverFromAttribute=%s, deliverTo=%s, deliverToAttribute=%s, product=%s, productAttribute=%s, requester=%s, requesterAttribute=%s, serviceAttribute=%s]",
+        return String.format("TransformationMap [assignTo=%s, assignToAttribute=%s, deliverFrom=%s, deliverFromAttribute=%s, deliverTo=%s, deliverToAttribute=%s, product=%s, productAttribute=%s, requester=%s, requesterAttribute=%s, serviceAttribute=%s, quantityUnit=%s]",
                              assignTo, assignToAttribute, deliverFrom,
                              deliverFromAttribute, deliverTo,
                              deliverToAttribute, product, productAttribute,
-                             requester, requesterAttribute, serviceAttribute);
+                             requester, requesterAttribute, serviceAttribute,
+                             quantityUnit);
     }
 }

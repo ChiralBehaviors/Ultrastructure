@@ -57,6 +57,10 @@
             <column name="deliver_from_attribute" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
+            <column name="quantity" type="numeric" />
+            <column name="quantity_unit" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
             <column name="notes" remarks="Additional notes regarding usage of the attribute" type="VARCHAR(10485760)" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -152,5 +156,10 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service_attribute" baseTableName="protocol" constraintName="protocol_service_attribute_fkey" deferrable="true"
             initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-473">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="quantity_unit" baseTableName="protocol" constraintName="protocol_quantity_unit_fkey" deferrable="true"
+            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
 </databaseChangeLog>

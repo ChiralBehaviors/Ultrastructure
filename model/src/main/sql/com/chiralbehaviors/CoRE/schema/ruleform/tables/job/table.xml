@@ -54,6 +54,9 @@
                 <constraints nullable="false" />
             </column>
             <column name="quantity" type="numeric" />
+            <column name="current_log_sequence" type="int4">
+                <constraints nullable="false" />
+            </column>
             <column name="quantity_unit" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>

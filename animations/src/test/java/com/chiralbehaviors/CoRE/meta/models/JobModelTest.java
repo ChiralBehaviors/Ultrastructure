@@ -478,6 +478,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testMetaProtocols() throws Exception {
+        em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.deliver,
                                                         scenario.core);
         job.setAssignTo(scenario.orderFullfillment);
@@ -486,6 +487,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
         job.setStatus(scenario.available);
+        em.persist(job);
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> txfm = jobModel.getProtocols(job);
@@ -536,10 +538,12 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(scenario.factory1, derived.getDeliverFrom());
         assertEquals(scenario.unset, derived.getStatus());
         assertEquals(job, derived.getParent());
+        em.getTransaction().rollback();
     }
 
     @Test
     public void testGenerateJobs() throws Exception {
+        em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.deliver,
                                                         scenario.core);
         job.setAssignTo(scenario.orderFullfillment);
@@ -548,9 +552,11 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
         job.setStatus(scenario.available);
+        em.persist(job);
 
         List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
         TestDebuggingUtil.printJobs(jobs);
+        em.getTransaction().rollback();
     }
 
     //    TODO this test won't pass until we make job chronology saves fire from
@@ -609,7 +615,6 @@ public class JobModelTest extends AbstractModelTest {
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
-    @SuppressWarnings("unused")
     private List<String> verifyChronologyFields(Job job,
                                                 JobChronology jobChronology)
                                                                             throws Exception {

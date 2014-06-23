@@ -48,20 +48,13 @@ public interface JobModel {
                                                              false, false);
 
     /**
-     * Log the status change of a job at the timestamp
-     * 
-     * @param job
-     * @param notes
-     */
-    void addJobChronology(Job job, String notes);
-
-    /**
      * Generate all the implicit sub jobs for the job
      * 
      * @param job
-     * @param updatedBy TODO
+     * @param updatedBy
      */
-    void automaticallyGenerateImplicitJobsForExplicitJobs(Job job, Agency updatedBy);
+    void automaticallyGenerateImplicitJobsForExplicitJobs(Job job,
+                                                          Agency updatedBy);
 
     /**
      * Sets the status of the given Job. This should not be done directly on the
@@ -134,7 +127,8 @@ public interface JobModel {
      * For a given job, generates all the implicit jobs that need to be done
      * 
      * This is the jesus nut of the the event cluster animation.
-     * @param updatedBy TODO
+     * 
+     * @param updatedBy
      * @param jobId
      * 
      * @return the list of jobs generated
@@ -472,7 +466,7 @@ public interface JobModel {
      * 
      * @param parent
      * @param protocol
-     * @param updatedBy TODO
+     * @param updatedBy
      * @return
      */
     Job insertJob(Job parent, Protocol protocol, Agency updatedBy);
@@ -506,13 +500,19 @@ public interface JobModel {
     boolean isValidNextStatus(Product service, StatusCode parent,
                               StatusCode next);
 
+    /**
+     * Log the status change of a job at the timestamp
+     * 
+     * @param job
+     * @param notes
+     */
+    void logJobChronology(Job job, String notes);
+
     void logModifiedService(UUID scs);
 
     /**
      * @param service
-     *            TODO
      * @param updatedBy
-     *            TODO
      * @return a job in which every field has the appropriate NotApplicable
      *         ruleform. Status is set to UNSET
      */
@@ -520,23 +520,19 @@ public interface JobModel {
 
     /**
      * @param service
-     *            TODO
      * @param updatedBy
-     *            TODO
-     * @return a protocol in which every field has the appropriate NotApplicable
-     *         ruleform.
-     */
-    Protocol newInitializedProtocol(Product service, Agency updatedBy);
-
-    /**
-     * @param service
-     *            TODO
-     * @param updatedBy
-     *            TODO
      * @return a metaprotocol in which every unspecified field is initialized to
      *         Same
      */
     MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);
+
+    /**
+     * @param service
+     * @param updatedBy
+     * @return a protocol in which every field has the appropriate NotApplicable
+     *         ruleform.
+     */
+    Protocol newInitializedProtocol(Product service, Agency updatedBy);
 
     /**
      * Process all the implicit status changes of the children of a job

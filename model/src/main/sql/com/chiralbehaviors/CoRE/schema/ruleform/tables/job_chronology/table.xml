@@ -52,7 +52,7 @@
             <column name="status" remarks="The current status of this Job" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column name="sequence_number" type="serial8">
+            <column name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
             <column name="quantity" type="numeric" />
@@ -122,8 +122,7 @@
     <changeSet author="hhildebrand" id="1390879803225-469">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to_attribute" baseTableName="job_chronology" constraintName="job_chronology_deliver_to_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="attribute" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-470">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -150,13 +149,12 @@
             baseColumnNames="quantity_unit" baseTableName="job_chronology" constraintName="job_chronology_quantity_unit_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
-    <!-- <changeSet author="hhildebrand" id="1390879803225-385">
+    <changeSet author="hhildebrand" id="1390879803225-385">
         <addUniqueConstraint schemaName="ruleform"
-        columnNames="sequence_number, job, assign_to, assign_to_attribute, deliver_from_attribute, deliver_to_attribute, product, product_attribute,
+            columnNames="job, assign_to, assign_to_attribute, deliver_from_attribute, deliver_to_attribute, product, product_attribute,
         quantity, quantity_unit, requester, requester_attribute, service, service_attribute"
-        constraintName="job_chronology_job_unique_constraint" deferrable="false" disabled="false" initiallyDeferred="true" tableName="job_chronology"
-        />
-        </changeSet> -->
+            constraintName="job_chronology_job_unique_constraint" deferrable="false" disabled="false" initiallyDeferred="true" tableName="job_chronology" />
+    </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-465">
         <createIndex schemaName="ruleform" indexName="job_chronology_updated_by_fkey_idx" tableName="job_chronology" unique="false">
             <column name="updated_by" />

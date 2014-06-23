@@ -420,11 +420,6 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void addJobChronology(Job job, String notes) {
-        em.persist(new JobChronology(job, notes, job.getUpdatedBy()));
-    }
-
-    @Override
     public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job,
                                                                  Agency updatedBy) {
         if (job.getStatus().getPropagateChildren()) {
@@ -462,7 +457,7 @@ public class JobModelImpl implements JobModel {
         if (updatedBy != null) {
             job.setUpdatedBy(updatedBy);
         }
-        addJobChronology(job, notes);
+        logJobChronology(job, notes);
         Job j = em.merge(job);
         return j;
     }
@@ -1072,11 +1067,8 @@ public class JobModelImpl implements JobModel {
         job.setParent(parent);
         copyIntoChild(parent, protocol, txfm, job);
         job.setStatus(kernel.getUnset());
-        em.persist(new JobChronology(
-                                     job,
-                                     "Implicit job creation by animation software",
-                                     updatedBy));
         em.persist(job);
+        logJobChronology(job, "Implicit job creation by animation software");
 
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s from protocol %s", job,
@@ -1117,6 +1109,15 @@ public class JobModelImpl implements JobModel {
         query.setParameter(2, parent.getPrimaryKey());
         query.setParameter(3, next.getPrimaryKey());
         return query.getSingleResult() > 0;
+    }
+
+    @Override
+    public void logJobChronology(Job job, String notes) { 
+        JobChronology entry = new JobChronology(job, notes,
+                                                job.getUpdatedBy());
+        entry.setSequenceNumber(job.nextLogSequence());
+        em.persist(entry);
+        em.flush();
     }
 
     /*
@@ -1668,7 +1669,7 @@ public class JobModelImpl implements JobModel {
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {
-        addJobChronology(em.find(Job.class, jobId), "Initial insertion of job");
+        logJobChronology(em.find(Job.class, jobId), "Initial insertion of job");
     }
 
     /**

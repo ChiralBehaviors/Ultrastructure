@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.event;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
+import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
 
 import java.util.Map;
 import java.util.UUID;
@@ -45,23 +46,26 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
                @NamedQuery(name = FIND_FOR_JOB, query = "select j from JobChronology j "
                                                         + "where j.job = :job "),
                @NamedQuery(name = FIND_FOR_PRODUCT, query = "select j from JobChronology j "
-                                                            + "where j.product = :product ") })
+                                                            + "where j.product = :product "),
+               @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "select MAX(j.sequenceNumber) from JobChronology j "
+                                                                    + "where j.job = :job") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends AbstractProtocol {
-    public static final String FIND_ALL         = "jobChronology"
-                                                  + FIND_ALL_SUFFIX;
-    public static final String FIND_FOR_JOB     = "jobChronology.findForJob";
-    public static final String FIND_FOR_PRODUCT = "jobChronology.findForProduct";
-    private static final long  serialVersionUID = 1L;
+    public static final String FIND_ALL                 = "jobChronology"
+                                                          + FIND_ALL_SUFFIX;
+    public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
+    public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
+    public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";
+    private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     private Job                job;
 
-    @Column(name = "sequence_number", insertable = false)
-    private Long               sequenceNumber;
+    @Column(name = "sequence_number")
+    private int                sequenceNumber           = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
@@ -93,7 +97,7 @@ public class JobChronology extends AbstractProtocol {
         return job;
     }
 
-    public Long getSequenceNumber() {
+    public int getSequenceNumber() {
         return sequenceNumber;
     }
 
@@ -104,15 +108,11 @@ public class JobChronology extends AbstractProtocol {
         return status;
     }
 
-    public void setJob(Job job) {
-        initializeFrom(job);
-    }
-
     /**
      * @param sequenceNumber
      *            the sequence to set
      */
-    public void setSequenceNumber(Long sequenceNumber) {
+    public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 

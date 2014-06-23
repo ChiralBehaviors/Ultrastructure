@@ -9,6 +9,7 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.job_chronology AS 
              SELECT base.id, 
+                    base.job,
                     base.sequence_number,
                     at.name AS assign_to, 
                     s.name AS service, 

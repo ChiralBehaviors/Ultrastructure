@@ -24,7 +24,7 @@
              FROM ruleform.location_attribute_authorization base_table
              LEFT JOIN agency res ON base_table.grouping_agency = res.id
              LEFT JOIN relationship cls ON base_table.classification = cls.id
-             LEFT JOIN product b ON base_table.classifier = b.id
+             LEFT JOIN location b ON base_table.classifier = b.id
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN agency up ON base_table.updated_by = up.id;
 			

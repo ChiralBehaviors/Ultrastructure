@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
@@ -22,10 +22,10 @@
 			    base_table.update_date
 			 FROM agency_attribute_authorization base_table
 			 LEFT JOIN agency res ON base_table.grouping_agency = res.id
-			 JOIN relationship cls ON base_table.classification = cls.id
-			 JOIN agency b ON base_table.classifier = b.id
-			 JOIN attribute att ON base_table.authorized_attribute = att.id
-			 JOIN agency up ON base_table.updated_by = up.id;
+			 LEFT JOIN relationship cls ON base_table.classification = cls.id
+			 LEFT JOIN agency b ON base_table.classifier = b.id
+			 LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
+			 LEFT JOIN agency up ON base_table.updated_by = up.id;
 			
 			ALTER TABLE readable.agency_attribute_authorization
 			  OWNER TO core;

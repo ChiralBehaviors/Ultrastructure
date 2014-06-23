@@ -103,7 +103,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         //generate fee for everyone else 
         MetaProtocol mp5 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
-        
+
         mp5.setDeliverTo(w.area);
         mp5.setDeliverFrom(w.anyRelationship);
         mp5.setSequenceNumber(5);
@@ -289,7 +289,6 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         job.setDeliverTo(w.rsb225);
         job.setDeliverFrom(w.factory1);
         job.setRequester(w.georgeTownUniversity);
-        job.setStatus(w.unset);
         em.persist(job);
 
         em.getTransaction().commit();
@@ -313,7 +312,6 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         job.setDeliverTo(w.rsb225);
         job.setDeliverFrom(w.factory1);
         job.setRequester(w.georgeTownUniversity);
-        job.setStatus(w.unset);
         em.persist(job);
 
         em.getTransaction().commit();
@@ -331,13 +329,16 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         }
         em.getTransaction().commit();
         em.getTransaction().begin();
-        pick.setStatus(w.available);
+        model.getJobModel().changeStatus(pick, w.available, kernel.getCore(),
+                                         "Test transition");
         em.getTransaction().commit();
         em.getTransaction().begin();
-        pick.setStatus(w.active);
+        model.getJobModel().changeStatus(pick, w.active, kernel.getCore(),
+                                         "Test transition");
         em.getTransaction().commit();
         em.getTransaction().begin();
-        pick.setStatus(w.completed);
+        model.getJobModel().changeStatus(pick, w.completed, kernel.getCore(),
+                                         "Test transition");
         em.getTransaction().commit();
 
         Job ship = model.getJobModel().getChildJobsByService(job, w.ship).get(0);
@@ -353,7 +354,6 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         job.setDeliverTo(w.paris);
         job.setDeliverFrom(w.factory1);
         job.setRequester(w.cafleurBon);
-        job.setStatus(w.unset);
         em.persist(job);
 
         em.getTransaction().commit();

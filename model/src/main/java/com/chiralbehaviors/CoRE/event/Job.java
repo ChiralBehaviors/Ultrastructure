@@ -262,6 +262,19 @@ public class Job extends AbstractProtocol {
         super(id, updatedBy);
     }
 
+    /**
+     * Should ONLY be called from JobModel. You call this yourself, you ain't be
+     * logging. We have to make it Public because it ain't in the same package.
+     * <p>
+     * <b>word</b>
+     * </p>
+     * 
+     * @param newStatus
+     */
+    public void _setStatus(StatusCode newStatus) {
+        status = newStatus;
+    }
+
     public Set<Job> getChildJobs() {
         return childJobs;
     }
@@ -329,17 +342,14 @@ public class Job extends AbstractProtocol {
         this.sequenceNumber = sequenceNumber;
     }
 
-    public void setStatus(StatusCode statusCode) {
-        status = statusCode;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         return String.format("Job [status=%s, sequenceNumber=%s, %s]",
-                             status.getName(), sequenceNumber, getToString());
+                             status != null ? status.getName() : "null",
+                             sequenceNumber, getToString());
     }
 
     /*

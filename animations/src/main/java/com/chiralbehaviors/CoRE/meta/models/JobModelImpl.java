@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -121,9 +122,9 @@ public class JobModelImpl implements JobModel {
         T call(JobModelImpl jobModel) throws Exception;
     }
 
-    private static final Logger       log               = LoggerFactory.getLogger(JobModelImpl.class);
-
-    private static final List<String> MODIFIED_SERVICES = new ArrayList<>();
+    private static final Logger        log                = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final AtomicBoolean IGNORE_LOG_INSERTS = new AtomicBoolean();
+    private static final List<String>  MODIFIED_SERVICES  = new ArrayList<>();
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
@@ -353,6 +354,9 @@ public class JobModelImpl implements JobModel {
 
     public static void log_inserts_in_job_chronology(final TriggerData triggerData)
                                                                                    throws SQLException {
+        if (IGNORE_LOG_INSERTS.get()) {
+            return;
+        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
@@ -420,22 +424,27 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void automaticallyGenerateImplicitJobsForExplicitJobs(Job job,
-                                                                 Agency updatedBy) {
-        if (job.getStatus().getPropagateChildren()) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Generating implicit jobs for %s", job));
+    public void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy) {
+        boolean previous = IGNORE_LOG_INSERTS.compareAndSet(false, true);
+        try {
+            if (job.getStatus().getPropagateChildren()) {
+                if (log.isInfoEnabled()) {
+                    log.info(String.format("Generating implicit jobs for %s",
+                                           job));
+                }
+                for (Job subJob : generateImplicitJobs(job, updatedBy)) {
+                    changeStatus(subJob, getInitialState(subJob.getService()),
+                                 null,
+                                 "Initially available job (automatically set)");
+                }
+            } else {
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Not generating implicit jobs for: %s",
+                                            job));
+                }
             }
-            for (Job subJob : generateImplicitJobs(job, updatedBy)) {
-                changeStatus(subJob, getInitialState(subJob.getService()),
-                             null,
-                             "Initially available job (automatically set)");
-            }
-        } else {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Not generating implicit jobs for: %s",
-                                        job));
-            }
+        } finally {
+            IGNORE_LOG_INSERTS.set(previous);
         }
     }
 
@@ -443,7 +452,7 @@ public class JobModelImpl implements JobModel {
     public Job changeStatus(Job job, StatusCode newStatus, Agency updatedBy,
                             String notes) {
         StatusCode oldStatus = job.getStatus();
-        if (oldStatus.equals(newStatus)) {
+        if (oldStatus != null && oldStatus.equals(newStatus)) {
             if (log.isInfoEnabled()) {
                 log.info(String.format("Job status is already set to desired status %s",
                                        job));
@@ -451,9 +460,9 @@ public class JobModelImpl implements JobModel {
             return job;
         }
         if (log.isInfoEnabled()) {
-            log.info(String.format("Setting %s status to %s", job, newStatus));
+            log.info(String.format("Setting status %s of %s", newStatus, job));
         }
-        job.setStatus(newStatus);
+        job._setStatus(newStatus);
         if (updatedBy != null) {
             job.setUpdatedBy(updatedBy);
         }
@@ -858,6 +867,10 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public Map<Protocol, InferenceMap> getProtocols(Job job) {
+        if (job.getStatus() == null) {
+            // Bail because, dude.  We have even been initialized
+            return Collections.emptyMap();
+        }
         // First we try for protocols which match the current job
         List<Protocol> protocols = getProtocolsMatching(job);
         Map<Protocol, InferenceMap> matches = new LinkedHashMap<>();
@@ -1063,18 +1076,24 @@ public class JobModelImpl implements JobModel {
 
     public Job insertJob(Job parent, Protocol protocol, InferenceMap txfm,
                          Agency updatedBy) {
-        Job job = new Job(kernel.getCoreAnimationSoftware());
-        job.setParent(parent);
-        copyIntoChild(parent, protocol, txfm, job);
-        job.setStatus(kernel.getUnset());
-        em.persist(job);
-        logJobChronology(job, "Implicit job creation by animation software");
+        boolean previous = IGNORE_LOG_INSERTS.getAndSet(true);
+        try {
+            Job job = new Job(kernel.getCoreAnimationSoftware());
+            job.setParent(parent);
+            copyIntoChild(parent, protocol, txfm, job);
+            job._setStatus(kernel.getUnset());
+            em.persist(job);
+            em.flush();
+            logJobChronology(job, "Implicit job creation by animation software");
 
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Inserted job %s from protocol %s", job,
-                                    protocol));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Inserted job %s from protocol %s",
+                                        job, protocol));
+            }
+            return job;
+        } finally {
+            IGNORE_LOG_INSERTS.set(previous);
         }
-        return job;
     }
 
     @Override
@@ -1112,12 +1131,10 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void logJobChronology(Job job, String notes) { 
-        JobChronology entry = new JobChronology(job, notes,
-                                                job.getUpdatedBy());
+    public void logJobChronology(Job job, String notes) {
+        JobChronology entry = new JobChronology(job, notes, job.getUpdatedBy());
         entry.setSequenceNumber(job.nextLogSequence());
         em.persist(entry);
-        em.flush();
     }
 
     /*
@@ -1148,8 +1165,7 @@ public class JobModelImpl implements JobModel {
         job.setRequesterAttribute(kernel.getNotApplicableAttribute());
         job.setServiceAttribute(kernel.getNotApplicableAttribute());
         job.setQuantityUnit(kernel.getNotApplicableUnit());
-        job.setStatus(kernel.getUnset());
-
+        em.persist(job);
         return job;
     }
 
@@ -1175,6 +1191,7 @@ public class JobModelImpl implements JobModel {
         mp.setServiceAttribute(any);
         mp.setServiceType(kernel.getSameRelationship());
         mp.setQuantityUnit(any);
+        em.persist(mp);
         return mp;
     }
 
@@ -1197,7 +1214,7 @@ public class JobModelImpl implements JobModel {
         protocol.setRequesterAttribute(kernel.getNotApplicableAttribute());
         protocol.setServiceAttribute(kernel.getNotApplicableAttribute());
         protocol.setQuantityUnit(kernel.getNotApplicableUnit());
-
+        em.persist(protocol);
         return protocol;
     }
 
@@ -1226,9 +1243,14 @@ public class JobModelImpl implements JobModel {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing change in Job %s", job));
         }
-        processChildChanges(job);
-        processParentChanges(job);
-        processSiblingChanges(job);
+        boolean previous = IGNORE_LOG_INSERTS.getAndSet(false);
+        try {
+            processChildChanges(job);
+            processParentChanges(job);
+            processSiblingChanges(job);
+        } finally {
+            IGNORE_LOG_INSERTS.set(previous);
+        }
     }
 
     @Override
@@ -1382,8 +1404,8 @@ public class JobModelImpl implements JobModel {
      * @param job
      */
     private void automaticallyGenerateImplicitJobsForExplicitJobs(String job) {
-        automaticallyGenerateImplicitJobsForExplicitJobs(em.find(Job.class, job),
-                                                         kernel.getCoreAnimationSoftware());
+        generateImplicitJobsForExplicitJobs(em.find(Job.class, job),
+                                            kernel.getCoreAnimationSoftware());
     }
 
     private void copyIntoChild(Job parent, Protocol protocol,

@@ -53,7 +53,7 @@ public interface JobModel {
      * @param job
      * @param updatedBy
      */
-    void automaticallyGenerateImplicitJobsForExplicitJobs(Job job,
+    void generateImplicitJobsForExplicitJobs(Job job,
                                                           Agency updatedBy);
 
     /**

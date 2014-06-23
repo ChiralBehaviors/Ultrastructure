@@ -41,29 +41,29 @@
     <changeSet author="hhildebrand" id="1390879803225-317">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="owner" baseTableName="sourcing_authorization" constraintName="sourcing_authorization_consumer_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-318">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="location" baseTableName="sourcing_authorization" constraintName="sourcing_authorization_location_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-319">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product" baseTableName="sourcing_authorization" constraintName="sourcing_authorization_product_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-320">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="sourcing_authorization" constraintName="sourcing_authorization_updated_by_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-411">
         <addUniqueConstraint schemaName="ruleform" columnNames="owner, product, location" constraintName="sourcing_athorization_classification_attri_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="sourcing_authorization" />
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="sourcing_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-517">
         <createIndex schemaName="ruleform" indexName="sourcing_authorization_updated_by_fkey_idx" tableName="sourcing_authorization"

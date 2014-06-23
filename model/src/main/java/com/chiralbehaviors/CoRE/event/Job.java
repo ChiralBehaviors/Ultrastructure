@@ -189,18 +189,24 @@ public class Job extends AbstractProtocol {
     private static final long  serialVersionUID                  = 1L;
 
     /**
+     * The children of this job
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    @JsonIgnore
+    private Set<Job>           childJobs;
+
+    /**
      * The chronology of this job
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "job")
     @JsonIgnore
     private Set<JobChronology> chronology;
 
-    /**
-     * The parent of this job
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent")
-    Job                        parent;
+    @Column(name = "current_log_sequence")
+    private int                currentLogSequence                = 0;
+
+    @Column(name = "sequence_number")
+    private int                sequenceNumber                    = 1;
 
     /**
      * This job's status
@@ -210,14 +216,11 @@ public class Job extends AbstractProtocol {
     private StatusCode         status;
 
     /**
-     * The children of this job
+     * The parent of this job
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-    @JsonIgnore
-    private Set<Job>           childJobs;
-
-    @Column(name = "sequence_number")
-    private int                sequenceNumber                    = 1;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent")
+    Job                        parent;
 
     public Job() {
     }
@@ -259,12 +262,29 @@ public class Job extends AbstractProtocol {
         super(id, updatedBy);
     }
 
+    /**
+     * Should ONLY be called from JobModel. You call this yourself, you ain't be
+     * logging. We have to make it Public because it ain't in the same package.
+     * <p>
+     * <b>word</b>
+     * </p>
+     * 
+     * @param newStatus
+     */
+    public void _setStatus(StatusCode newStatus) {
+        status = newStatus;
+    }
+
     public Set<Job> getChildJobs() {
         return childJobs;
     }
 
     public Set<JobChronology> getChronology() {
         return chronology;
+    }
+
+    public int getCurrentLogSequence() {
+        return currentLogSequence;
     }
 
     public Job getParent() {
@@ -282,12 +302,24 @@ public class Job extends AbstractProtocol {
         return status;
     }
 
+    /**
+     * @return
+     */
+    public int nextLogSequence() {
+        currentLogSequence++;
+        return currentLogSequence;
+    }
+
     public void setChildJobs(Set<Job> jobs) {
         childJobs = jobs;
     }
 
     public void setChronology(Set<JobChronology> jobChronologies) {
         chronology = jobChronologies;
+    }
+
+    public void setCurrentLogSequence(int currentLogSequence) {
+        this.currentLogSequence = currentLogSequence;
     }
 
     public void setParent(Job job) {
@@ -310,17 +342,14 @@ public class Job extends AbstractProtocol {
         this.sequenceNumber = sequenceNumber;
     }
 
-    public void setStatus(StatusCode statusCode) {
-        status = statusCode;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         return String.format("Job [status=%s, sequenceNumber=%s, %s]",
-                             status.getName(), sequenceNumber, getToString());
+                             status != null ? status.getName() : "null",
+                             sequenceNumber, getToString());
     }
 
     /*

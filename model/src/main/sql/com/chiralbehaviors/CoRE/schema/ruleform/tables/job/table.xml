@@ -54,6 +54,9 @@
                 <constraints nullable="false" />
             </column>
             <column name="quantity" type="numeric" />
+            <column name="current_log_sequence" type="int4">
+                <constraints nullable="false" />
+            </column>
             <column name="quantity_unit" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -73,47 +76,47 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-159">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="assign_to" baseTableName="job" constraintName="job_assign_to_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="assign_to" baseTableName="job" constraintName="job_assign_to_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-167">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="deliver_from" baseTableName="job" constraintName="job_deliver_from_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="deliver_from" baseTableName="job" constraintName="job_deliver_from_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-168">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="deliver_to" baseTableName="job" constraintName="job_deliver_to_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="deliver_to" baseTableName="job" constraintName="job_deliver_to_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-169">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="parent" baseTableName="job" constraintName="job_parent_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="parent" baseTableName="job" constraintName="job_parent_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="job" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-170">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product" baseTableName="job" constraintName="job_product_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="product" baseTableName="job" constraintName="job_product_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-171">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="requester" baseTableName="job" constraintName="job_requester_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="requester" baseTableName="job" constraintName="job_requester_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-172">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="service" baseTableName="job" constraintName="job_service_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="service" baseTableName="job" constraintName="job_service_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-173">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status" baseTableName="job" constraintName="job_status_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="status" baseTableName="job" constraintName="job_status_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-174">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="job" constraintName="job_updated_by_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="updated_by" baseTableName="job" constraintName="job_updated_by_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-463">
@@ -130,36 +133,36 @@
     <changeSet author="hhildebrand" id="1390879803225-467">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="assign_to_attribute" baseTableName="job" constraintName="job_assign_to_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-468">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from_attribute" baseTableName="job" constraintName="job_deliver_from_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-469">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to_attribute" baseTableName="job" constraintName="job_deliver_to_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-470">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_attribute" baseTableName="job" constraintName="job_product_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-471">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requester_attribute" baseTableName="job" constraintName="job_requester_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-472">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service_attribute" baseTableName="job" constraintName="job_service_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-473">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="quantity_unit" baseTableName="job" constraintName="job_quantity_unit_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="quantity_unit" baseTableName="job" constraintName="job_quantity_unit_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
 </databaseChangeLog>

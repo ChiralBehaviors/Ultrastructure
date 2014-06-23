@@ -78,47 +78,47 @@
     <changeSet author="hhildebrand" id="1390879803225-273">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="assign_to" baseTableName="protocol" constraintName="protocol_assign_to_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-294">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from" baseTableName="protocol" constraintName="protocol_deliver_from_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-295">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to" baseTableName="protocol" constraintName="protocol_deliver_to_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-296">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product" baseTableName="protocol" constraintName="protocol_product_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="product" baseTableName="protocol" constraintName="protocol_product_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-297">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requested_product" baseTableName="protocol" constraintName="protocol_product_ordered_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-298">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requested_service" baseTableName="protocol" constraintName="protocol_requested_service_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-299">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requester" baseTableName="protocol" constraintName="protocol_requester_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-300">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="service" baseTableName="protocol" constraintName="protocol_service_fkey" deferrable="true" initiallyDeferred="false"
+            baseColumnNames="service" baseTableName="protocol" constraintName="protocol_service_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-301">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="protocol" constraintName="protocol_updated_by_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-512">
         <createIndex schemaName="ruleform" indexName="protocol_updated_by_fkey_idx" tableName="protocol" unique="false">
@@ -129,37 +129,37 @@
     <changeSet author="hhildebrand" id="1390879803225-467">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="assign_to_attribute" baseTableName="protocol" constraintName="protocol_assign_to_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-468">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from_attribute" baseTableName="protocol" constraintName="protocol_deliver_from_attribute_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-469">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to_attribute" baseTableName="protocol" constraintName="protocol_deliver_to_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-470">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_attribute" baseTableName="protocol" constraintName="protocol_product_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-471">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requester_attribute" baseTableName="protocol" constraintName="protocol_requester_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-472">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service_attribute" baseTableName="protocol" constraintName="protocol_service_attribute_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-473">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="quantity_unit" baseTableName="protocol" constraintName="protocol_quantity_unit_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
 </databaseChangeLog>

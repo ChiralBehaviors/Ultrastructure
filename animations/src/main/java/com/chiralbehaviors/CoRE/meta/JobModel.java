@@ -17,7 +17,6 @@
 package com.chiralbehaviors.CoRE.meta;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -49,22 +48,13 @@ public interface JobModel {
                                                              false, false);
 
     /**
-     * Log the status change of a job at the timestamp
-     * 
-     * @param job
-     * @param timestamp
-     * @param status
-     * @param notes
-     */
-    void addJobChronology(Job job, Timestamp timestamp, StatusCode status,
-                          String notes);
-
-    /**
      * Generate all the implicit sub jobs for the job
      * 
      * @param job
+     * @param updatedBy
      */
-    void automaticallyGenerateImplicitJobsForExplicitJobs(Job job);
+    void generateImplicitJobsForExplicitJobs(Job job,
+                                                          Agency updatedBy);
 
     /**
      * Sets the status of the given Job. This should not be done directly on the
@@ -138,11 +128,13 @@ public interface JobModel {
      * 
      * This is the jesus nut of the the event cluster animation.
      * 
+     * @param updatedBy
      * @param jobId
+     * 
      * @return the list of jobs generated
      * @throws SQLException
      */
-    List<Job> generateImplicitJobs(Job job);
+    List<Job> generateImplicitJobs(Job job, Agency updatedBy);
 
     /**
      * Retrieve a list of all currently active "explicit" (top level) Jobs.
@@ -474,9 +466,10 @@ public interface JobModel {
      * 
      * @param parent
      * @param protocol
+     * @param updatedBy
      * @return
      */
-    Job insertJob(Job parent, Protocol protocol);
+    Job insertJob(Job parent, Protocol protocol, Agency updatedBy);
 
     /**
      * @param job
@@ -507,13 +500,19 @@ public interface JobModel {
     boolean isValidNextStatus(Product service, StatusCode parent,
                               StatusCode next);
 
+    /**
+     * Log the status change of a job at the timestamp
+     * 
+     * @param job
+     * @param notes
+     */
+    void logJobChronology(Job job, String notes);
+
     void logModifiedService(UUID scs);
 
     /**
      * @param service
-     *            TODO
      * @param updatedBy
-     *            TODO
      * @return a job in which every field has the appropriate NotApplicable
      *         ruleform. Status is set to UNSET
      */
@@ -521,23 +520,19 @@ public interface JobModel {
 
     /**
      * @param service
-     *            TODO
      * @param updatedBy
-     *            TODO
-     * @return a protocol in which every field has the appropriate NotApplicable
-     *         ruleform.
-     */
-    Protocol newInitializedProtocol(Product service, Agency updatedBy);
-
-    /**
-     * @param service
-     *            TODO
-     * @param updatedBy
-     *            TODO
      * @return a metaprotocol in which every unspecified field is initialized to
      *         Same
      */
     MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);
+
+    /**
+     * @param service
+     * @param updatedBy
+     * @return a protocol in which every field has the appropriate NotApplicable
+     *         ruleform.
+     */
+    Protocol newInitializedProtocol(Product service, Agency updatedBy);
 
     /**
      * Process all the implicit status changes of the children of a job

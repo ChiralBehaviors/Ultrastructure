@@ -50,38 +50,38 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-96">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_parent" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_authorized_parent_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
+            constraintName="agency_network_authorization_authorized_parent_fkey" deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-97">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="authorized_relationship" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_authorized_relationship_fkey" deferrable="false" initiallyDeferred="false"
+            constraintName="agency_network_authorization_authorized_relationship_fkey" deferrable="false" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-98">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classification" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_classification_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
+            constraintName="agency_network_authorization_classification_fkey" deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-99">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="classifier" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_classifier_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
+            constraintName="agency_network_authorization_classifier_fkey" deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-100">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="grouping_agency" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE"
+            constraintName="agency_network_authorization_grouping_agency_fkey" deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-101">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="updated_by" baseTableName="agency_network_authorization"
-            constraintName="agency_network_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET DEFAULT"
+            constraintName="agency_network_authorization_updated_by_fkey" deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"
             onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-371">
         <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number"
             constraintName="agency_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
-            initiallyDeferred="false" tableName="agency_network_authorization" />
+            initiallyDeferred="true" tableName="agency_network_authorization" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-427">
         <createIndex schemaName="ruleform" indexName="agency_network_authorization_updated_by_fkey_idx" tableName="agency_network_authorization"

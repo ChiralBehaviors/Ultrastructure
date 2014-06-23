@@ -60,37 +60,37 @@
     <changeSet author="hhildebrand" id="1390879803225-111">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_authorized_attribute_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-112">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_classification_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-113">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_classifier_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-114">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-115">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_updated_by_fkey"
-            deferrable="false" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-374">
         <addUniqueConstraint schemaName="ruleform"
             columnNames="grouping_agency, classification, classifier, authorized_attribute, sequence_number" constraintName="attr_meta_attr_auth_classification_attri_key"
-            deferrable="false" disabled="false" initiallyDeferred="false" tableName="attr_meta_attr_auth" />
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="attr_meta_attr_auth" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-437">
         <createIndex schemaName="ruleform" indexName="attr_meta_attr_auth_updated_by_fkey_idx" tableName="attr_meta_attr_auth"

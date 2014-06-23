@@ -18,8 +18,8 @@ package com.chiralbehaviors.CoRE.event;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
+import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
 
-import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,13 +27,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -49,31 +46,30 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
                @NamedQuery(name = FIND_FOR_JOB, query = "select j from JobChronology j "
                                                         + "where j.job = :job "),
                @NamedQuery(name = FIND_FOR_PRODUCT, query = "select j from JobChronology j "
-                                                            + "where j.product = :product ") })
+                                                            + "where j.product = :product "),
+               @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "select MAX(j.sequenceNumber) from JobChronology j "
+                                                                    + "where j.job = :job") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends AbstractProtocol {
-    public static final String FIND_ALL         = "jobChronology"
-                                                  + FIND_ALL_SUFFIX;
-    public static final String FIND_FOR_JOB     = "jobChronology.findForJob";
-    public static final String FIND_FOR_PRODUCT = "jobChronology.findForProduct";
-    private static final long  serialVersionUID = 1L;
+    public static final String FIND_ALL                 = "jobChronology"
+                                                          + FIND_ALL_SUFFIX;
+    public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
+    public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
+    public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";
+    private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     private Job                job;
 
-    @SequenceGenerator(schema = "ruleform", name = "job_chronology_seq", sequenceName = "job_chronology_seq")
-    @GeneratedValue(generator = "job_chronology_seq", strategy = GenerationType.SEQUENCE)
-    private Long               sequence;
+    @Column(name = "sequence_number")
+    private int                sequenceNumber           = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode         status;
-
-    @Column(name = "time_stamp")
-    private Timestamp          timeStamp;
 
     public JobChronology() {
     }
@@ -101,8 +97,8 @@ public class JobChronology extends AbstractProtocol {
         return job;
     }
 
-    public Long getSequence() {
-        return sequence;
+    public int getSequenceNumber() {
+        return sequenceNumber;
     }
 
     /**
@@ -112,20 +108,12 @@ public class JobChronology extends AbstractProtocol {
         return status;
     }
 
-    public Timestamp getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setJob(Job job) {
-        initializeFrom(job);
-    }
-
     /**
-     * @param sequence
+     * @param sequenceNumber
      *            the sequence to set
      */
-    public void setSequence(Long sequence) {
-        this.sequence = sequence;
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     /**
@@ -134,10 +122,6 @@ public class JobChronology extends AbstractProtocol {
      */
     public void setStatus(StatusCode status) {
         this.status = status;
-    }
-
-    public void setTimeStamp(Timestamp timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     /*
@@ -159,9 +143,7 @@ public class JobChronology extends AbstractProtocol {
     protected void initializeFrom(Job job) {
         this.job = job;
         status = job.getStatus();
-        if (job.getUpdateDate() != null) {
-            timeStamp = job.getUpdateDate();
-        }
+        setUpdateDate(job.getUpdateDate());
         copyFrom(job);
     }
 }

@@ -80,7 +80,9 @@ public abstract class JSP {
         }
         try {
             Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
-            throwRootCause();
+            if (rootCause != null) {
+                return null;
+            }
             EntityManager em = EMF.createEntityManager();
             em.getTransaction().begin();
             T value;
@@ -105,7 +107,7 @@ public abstract class JSP {
                 if (log.isTraceEnabled()) {
                     log.warn(String.format("Error during %s", call), e);
                 }
-                throw e;
+                return null;
             } catch (Throwable e) {
                 if (log.isInfoEnabled()) {
                     log.info(String.format("Error during %s", call), e);
@@ -120,16 +122,15 @@ public abstract class JSP {
                                                                            string.toString()),
                                                              e);
 
-                if (rootCause == null) {
+                for (int i = 0; i < 15; i++) {
                     if (log.isTraceEnabled()) {
                         log.trace(String.format("Setting root cause to: %s",
                                                 sqlException));
                     }
                     rootCause = sqlException;
                 }
-                throw sqlException;
+                return null;
             }
-            throwRootCause();
             try {
                 em.getTransaction().commit();
             } catch (RollbackException e) {
@@ -139,7 +140,11 @@ public abstract class JSP {
                         throw e;
                     }
                     if (cause instanceof SQLException) {
-                        throw (SQLException) cause;
+                        if (rootCause == null) {
+                            rootCause = (SQLException) cause;
+                            return null;
+                        }
+                        ;
                     }
                     cause = cause.getCause();
                 }
@@ -151,14 +156,12 @@ public abstract class JSP {
                 if (log.isTraceEnabled()) {
                     log.trace("clearing root cause");
                 }
+                SQLException cause = rootCause;
                 rootCause = null;
+                if (cause != null) {
+                    throw cause;
+                }
             }
-        }
-    }
-
-    private static void throwRootCause() throws SQLException {
-        if (rootCause != null) {
-            throw rootCause;
         }
     }
 }

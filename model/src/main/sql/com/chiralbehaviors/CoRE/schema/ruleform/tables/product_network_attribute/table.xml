@@ -50,36 +50,36 @@
     <changeSet author="hhildebrand" id="1390879803225-246">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="product_network_attribute" constraintName="product_network_attribute_agency_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-247">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="product_network_attribute" constraintName="product_network_attribute_attribute_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-248">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="network_rule" baseTableName="product_network_attribute" constraintName="product_network_attribute_network_rule_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-250">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="unit" baseTableName="product_network_attribute" constraintName="product_network_attribute_unit_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-251">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_network_attribute" constraintName="product_network_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-401">
         <addUniqueConstraint schemaName="ruleform" columnNames="agency, network_rule, attribute, sequence_number"
-            constraintName="product_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="product_network_attribute" />
+            constraintName="product_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_network_attribute" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-496">
         <createIndex schemaName="ruleform" indexName="product_network_attribute_agency_fkey_idx" tableName="product_network_attribute"

@@ -44,38 +44,38 @@
     <changeSet author="hhildebrand" id="1390879803225-330">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child" baseTableName="status_code_network" constraintName="status_code_network_child_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-331">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="parent" baseTableName="status_code_network" constraintName="status_code_network_parent_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-332">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="relationship" baseTableName="status_code_network" constraintName="status_code_network_relationship_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-333">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="status_code_network" constraintName="status_code_network_updated_by_fkey"
-            deferrable="true" initiallyDeferred="false" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803228-432">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise1" baseTableName="status_code_network" constraintName="status_code_network_premise1_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803228-433">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise2" baseTableName="status_code_network" constraintName="status_code_network_premise2_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network" />
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-434">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="inference" baseTableName="status_code_network" constraintName="status_code_network_inference_fkey" deferrable="true"
-            initiallyDeferred="false" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
     </changeSet>
 
     <changeSet id="2" author="hhildebrand">

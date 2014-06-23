@@ -87,7 +87,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "update_date")
-    private Timestamp updateDate;
+    private Timestamp updateDate = new Timestamp(System.currentTimeMillis());
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
@@ -97,7 +97,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     public Ruleform(Agency updatedBy) {
-        this();
         this.updatedBy = updatedBy;
     }
 

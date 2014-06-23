@@ -679,7 +679,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
         s = new StatusCodeSequencing(pick, active, completed, core);
         em.persist(s);
-        
+
         s = new StatusCodeSequencing(ship, waitingOnPurchaseOrder, available,
                                      core);
         em.persist(s);
@@ -782,6 +782,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         p.setAssignToAttribute(kernel.getAnyAttribute());
         p.setServiceAttribute(kernel.getAnyAttribute());
         p.setProductAttribute(kernel.getAnyAttribute());
+        p.setQuantityUnit(kernel.getAnyUnit());
         return p;
     }
 }

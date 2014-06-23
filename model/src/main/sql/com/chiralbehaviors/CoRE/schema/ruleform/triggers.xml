@@ -50,8 +50,6 @@
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-status_code_sequencing_updated_date.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_restrict_pinned_.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_updated_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/transformation_metarule/trigger-transformation_metarule_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/transformation/trigger-transformation_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_values/trigger-unit_values_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_update_date.xml" />

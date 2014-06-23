@@ -42,6 +42,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -52,12 +53,16 @@ import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork_;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork_;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork_;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol_;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -78,9 +83,10 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.LocationNetwork_;
+import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.TransformationMap;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform_;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -538,13 +544,13 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> generateImplicitJobs(Job job) {
-        Map<Protocol, TransformationMap> protocols = getProtocols(job);
+        Map<Protocol, InferenceMap> protocols = getProtocols(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Found %s protocols for %s",
                                     protocols.size(), job));
         }
         List<Job> jobs = new ArrayList<Job>();
-        for (Entry<Protocol, TransformationMap> txfm : protocols.entrySet()) {
+        for (Entry<Protocol, InferenceMap> txfm : protocols.entrySet()) {
             jobs.add(insertJob(job, txfm.getKey(), txfm.getValue()));
         }
         return jobs;
@@ -843,10 +849,10 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public Map<Protocol, TransformationMap> getProtocols(Job job) {
+    public Map<Protocol, InferenceMap> getProtocols(Job job) {
         // First we try for protocols which match the current job
         List<Protocol> protocols = getProtocolsMatching(job);
-        Map<Protocol, TransformationMap> matches = new LinkedHashMap<>();
+        Map<Protocol, InferenceMap> matches = new LinkedHashMap<>();
         if (!protocols.isEmpty()) {
             for (Protocol protocol : protocols) {
                 matches.put(protocol, NO_TRANSFORMATION);
@@ -871,9 +877,9 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public Map<Protocol, TransformationMap> getProtocols(Job job,
-                                                         MetaProtocol metaProtocol) {
-        Map<Protocol, TransformationMap> protocols = new LinkedHashMap<>();
+    public Map<Protocol, InferenceMap> getProtocols(Job job,
+                                                    MetaProtocol metaProtocol) {
+        Map<Protocol, InferenceMap> protocols = new LinkedHashMap<>();
         for (Protocol protocol : createMaskQuery(metaProtocol, job).getResultList()) {
             protocols.put(protocol, map(protocol, metaProtocol));
         }
@@ -1047,7 +1053,7 @@ public class JobModelImpl implements JobModel {
         return insertJob(parent, protocol, NO_TRANSFORMATION);
     }
 
-    public Job insertJob(Job parent, Protocol protocol, TransformationMap txfm) {
+    public Job insertJob(Job parent, Protocol protocol, InferenceMap txfm) {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job.setParent(parent);
         copyIntoChild(parent, protocol, txfm, job);
@@ -1122,6 +1128,7 @@ public class JobModelImpl implements JobModel {
         job.setRequester(kernel.getNotApplicableAgency());
         job.setRequesterAttribute(kernel.getNotApplicableAttribute());
         job.setServiceAttribute(kernel.getNotApplicableAttribute());
+        job.setQuantityUnit(kernel.getNotApplicableUnit());
         job.setStatus(kernel.getUnset());
 
         return job;
@@ -1148,6 +1155,7 @@ public class JobModelImpl implements JobModel {
         mp.setRequestingAgencyAttribute(any);
         mp.setServiceAttribute(any);
         mp.setServiceType(kernel.getSameRelationship());
+        mp.setQuantityUnit(any);
         return mp;
     }
 
@@ -1169,6 +1177,7 @@ public class JobModelImpl implements JobModel {
         protocol.setRequester(kernel.getNotApplicableAgency());
         protocol.setRequesterAttribute(kernel.getNotApplicableAttribute());
         protocol.setServiceAttribute(kernel.getNotApplicableAttribute());
+        protocol.setQuantityUnit(kernel.getNotApplicableUnit());
 
         return protocol;
     }
@@ -1286,8 +1295,13 @@ public class JobModelImpl implements JobModel {
                          SingularAttribute<AbstractProtocol, Agency> column,
                          CriteriaBuilder cb, CriteriaQuery<Protocol> query,
                          Root<Protocol> protocol, List<Predicate> masks) {
-        mask(agency, relationship, column, cb,
-             inferenceSubquery(agency, relationship, cb, query), protocol,
+        mask(agency,
+             relationship,
+             column,
+             cb,
+             inferenceSubquery(agency, relationship, Agency.class,
+                               AgencyNetwork.class, AgencyNetwork_.parent,
+                               AgencyNetwork_.child, cb, query), protocol,
              masks);
     }
 
@@ -1295,8 +1309,14 @@ public class JobModelImpl implements JobModel {
                          SingularAttribute<AbstractProtocol, Attribute> column,
                          CriteriaBuilder cb, CriteriaQuery<Protocol> query,
                          Root<Protocol> protocol, List<Predicate> masks) {
-        mask(attribute, relationship, column, cb,
-             inferenceSubquery(attribute, relationship, cb, query), protocol,
+        mask(attribute,
+             relationship,
+             column,
+             cb,
+             inferenceSubquery(attribute, relationship, Attribute.class,
+                               AttributeNetwork.class,
+                               AttributeNetwork_.parent,
+                               AttributeNetwork_.child, cb, query), protocol,
              masks);
     }
 
@@ -1304,8 +1324,13 @@ public class JobModelImpl implements JobModel {
                          SingularAttribute<AbstractProtocol, Location> column,
                          CriteriaBuilder cb, CriteriaQuery<Protocol> query,
                          Root<Protocol> protocol, List<Predicate> masks) {
-        mask(location, relationship, column, cb,
-             inferenceSubquery(location, relationship, cb, query), protocol,
+        mask(location,
+             relationship,
+             column,
+             cb,
+             inferenceSubquery(location, relationship, Location.class,
+                               LocationNetwork.class, LocationNetwork_.parent,
+                               LocationNetwork_.child, cb, query), protocol,
              masks);
     }
 
@@ -1313,9 +1338,27 @@ public class JobModelImpl implements JobModel {
                          SingularAttribute<AbstractProtocol, Product> column,
                          CriteriaBuilder cb, CriteriaQuery<Protocol> query,
                          Root<Protocol> protocol, List<Predicate> masks) {
-        mask(product, relationship, column, cb,
-             inferenceSubquery(product, relationship, cb, query), protocol,
+        mask(product,
+             relationship,
+             column,
+             cb,
+             inferenceSubquery(product, relationship, Product.class,
+                               ProductNetwork.class, ProductNetwork_.parent,
+                               ProductNetwork_.child, cb, query), protocol,
              masks);
+    }
+
+    private void addMask(Unit unit, Relationship relationship,
+                         SingularAttribute<AbstractProtocol, Unit> column,
+                         CriteriaBuilder cb, CriteriaQuery<Protocol> query,
+                         Root<Protocol> protocol, List<Predicate> masks) {
+        mask(unit,
+             relationship,
+             column,
+             cb,
+             inferenceSubquery(unit, relationship, Unit.class,
+                               UnitNetwork.class, UnitNetwork_.parent,
+                               UnitNetwork_.child, cb, query), protocol, masks);
     }
 
     /**
@@ -1326,88 +1369,78 @@ public class JobModelImpl implements JobModel {
     }
 
     private void copyIntoChild(Job parent, Protocol protocol,
-                               TransformationMap txfm, Job child) {
-        if (!protocol.getAssignTo().equals(kernel.getAnyAgency())
-            && !protocol.getAssignTo().equals(kernel.getSameAgency())
-            && !txfm.assignTo) {
-            child.setAssignTo(protocol.getAssignTo());
-        } else {
+                               InferenceMap inferred, Job child) {
+        if (inferred.assignTo || protocol.getAssignTo().isAnyOrSame()) {
             child.setAssignTo(parent.getAssignTo());
-        }
-        if (!protocol.getAssignToAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getAssignToAttribute().equals(kernel.getSameAttribute())
-            && !txfm.assignToAttribute) {
-            child.setAssignToAttribute(protocol.getAssignToAttribute());
         } else {
+            child.setAssignTo(protocol.getAssignTo());
+        }
+        if (inferred.assignToAttribute
+            || protocol.getAssignToAttribute().isAnyOrSame()) {
             child.setAssignToAttribute(parent.getAssignToAttribute());
-        }
-        if (!protocol.getDeliverTo().equals(kernel.getAnyLocation())
-            && !protocol.getDeliverTo().equals(kernel.getSameLocation())
-            && !txfm.deliverTo) {
-            child.setDeliverTo(protocol.getDeliverTo());
         } else {
+            child.setAssignToAttribute(protocol.getAssignToAttribute());
+        }
+        if (inferred.deliverTo || protocol.getDeliverTo().isAnyOrSame()) {
             child.setDeliverTo(parent.getDeliverTo());
-        }
-        if (!protocol.getDeliverToAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getDeliverToAttribute().equals(kernel.getSameAttribute())
-            && !txfm.assignToAttribute) {
-            child.setDeliverToAttribute(protocol.getDeliverToAttribute());
         } else {
+            child.setDeliverTo(protocol.getDeliverTo());
+        }
+        if (inferred.assignToAttribute
+            || protocol.getDeliverToAttribute().isAnyOrSame()) {
             child.setDeliverToAttribute(parent.getDeliverToAttribute());
-        }
-        if (!protocol.getDeliverFrom().equals(kernel.getAnyLocation())
-            && !protocol.getDeliverFrom().equals(kernel.getSameLocation())
-            && !txfm.deliverFrom) {
-            child.setDeliverFrom(protocol.getDeliverFrom());
         } else {
+            child.setDeliverToAttribute(protocol.getDeliverToAttribute());
+        }
+        if (inferred.deliverFrom || protocol.getDeliverFrom().isAnyOrSame()) {
             child.setDeliverFrom(parent.getDeliverFrom());
-        }
-        if (!protocol.getDeliverFromAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getDeliverFromAttribute().equals(kernel.getSameAttribute())
-            && !txfm.deliverFromAttribute) {
-            child.setDeliverFromAttribute(protocol.getDeliverFromAttribute());
         } else {
+            child.setDeliverFrom(protocol.getDeliverFrom());
+        }
+        if (inferred.deliverFromAttribute
+            || protocol.getDeliverFromAttribute().isAnyOrSame()) {
             child.setDeliverFromAttribute(parent.getDeliverFromAttribute());
-        }
-        if (!protocol.getProduct().equals(kernel.getAnyProduct())
-            && !protocol.getProduct().equals(kernel.getSameProduct())
-            && !txfm.product) {
-            child.setProduct(protocol.getProduct());
         } else {
+            child.setDeliverFromAttribute(protocol.getDeliverFromAttribute());
+        }
+        if (inferred.product || protocol.getProduct().isAnyOrSame()) {
             child.setProduct(parent.getProduct());
+        } else {
+            child.setProduct(protocol.getProduct());
         }
-        if (!protocol.getProductAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getProductAttribute().equals(kernel.getSameAttribute())
-            && !txfm.productAttribute) {
-            child.setProductAttribute(protocol.getProductAttribute());
+        if (inferred.productAttribute
+            || protocol.getProductAttribute().isAnyOrSame()) {
+            child.setProductAttribute(parent.getProductAttribute());
         } else {
             child.setProductAttribute(protocol.getProductAttribute());
         }
-        if (!protocol.getRequester().equals(kernel.getAnyAgency())
-            && !protocol.getRequester().equals(kernel.getSameAgency())
-            && !txfm.requester) {
-            child.setRequester(protocol.getRequester());
-        } else {
+        if (inferred.requester || protocol.getRequester().isAnyOrSame()) {
             child.setRequester(parent.getRequester());
-        }
-        if (!protocol.getRequesterAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getRequesterAttribute().equals(kernel.getSameAttribute())
-            && !txfm.requesterAttribute) {
-            child.setRequesterAttribute(protocol.getRequesterAttribute());
         } else {
+            child.setRequester(protocol.getRequester());
+        }
+        if (inferred.requesterAttribute
+            || protocol.getRequesterAttribute().isAnyOrSame()) {
             child.setRequesterAttribute(parent.getRequesterAttribute());
+        } else {
+            child.setRequesterAttribute(protocol.getRequesterAttribute());
+        }
+        if (inferred.serviceAttribute
+            || protocol.getServiceAttribute().isAnyOrSame()) {
+            child.setServiceAttribute(parent.getServiceAttribute());
+        } else {
+            child.setServiceAttribute(protocol.getServiceAttribute());
+        }
+        if (inferred.quantityUnit || protocol.getQuantityUnit().isAnyOrSame()) {
+            child.setQuantityUnit(parent.getQuantityUnit());
+            child.setQuantity(parent.getQuantity());
+        } else {
+            child.setQuantityUnit(protocol.getQuantityUnit());
+            child.setQuantity(protocol.getQuantity());
         }
 
         //This is never transformed, so we always set to the protocol service.
         child.setService(protocol.getService());
-
-        if (!protocol.getServiceAttribute().equals(kernel.getAnyAttribute())
-            && !protocol.getServiceAttribute().equals(kernel.getSameAttribute())
-            && !txfm.serviceAttribute) {
-            child.setServiceAttribute(protocol.getServiceAttribute());
-        } else {
-            child.setServiceAttribute(parent.getServiceAttribute());
-        }
     }
 
     /**
@@ -1435,6 +1468,10 @@ public class JobModelImpl implements JobModel {
         } else {
             masks.add(protocol.get(Protocol_.requestedService).in(inferenceSubquery(job.getService(),
                                                                                     metaprotocol.getServiceType(),
+                                                                                    Product.class,
+                                                                                    ProductNetwork.class,
+                                                                                    ProductNetwork_.parent,
+                                                                                    ProductNetwork_.child,
                                                                                     cb,
                                                                                     query)));
         }
@@ -1490,6 +1527,10 @@ public class JobModelImpl implements JobModel {
         addMask(job.getAssignToAttribute(),
                 metaprotocol.getAssignToAttribute(),
                 AbstractProtocol_.assignToAttribute, cb, query, protocol, masks);
+
+        // Quqntity Unit
+        addMask(job.getQuantityUnit(), metaprotocol.getQuantityUnit(),
+                AbstractProtocol_.quantityUnit, cb, query, protocol, masks);
 
         query.where(masks.toArray(new Predicate[masks.size()]));
         query.select(protocol);
@@ -1565,60 +1606,21 @@ public class JobModelImpl implements JobModel {
         return getStatusCodesFor(em.find(Product.class, serviceId));
     }
 
-    private Subquery<Agency> inferenceSubquery(Agency agency,
-                                               Relationship relationship,
-                                               CriteriaBuilder cb,
-                                               CriteriaQuery<Protocol> query) {
-        Subquery<Agency> agencyQuery = query.subquery(Agency.class);
-        Root<AgencyNetwork> agencyRoot = agencyQuery.from(AgencyNetwork.class);
-        agencyQuery.select(agencyRoot.get(AgencyNetwork_.child));
-        agencyQuery.where(cb.and(cb.equal(agencyRoot.get(AgencyNetwork_.parent),
-                                          agency),
-                                 cb.equal(agencyRoot.get(NetworkRuleform_.relationship),
-                                          relationship)));
-        return agencyQuery;
-    }
-
-    private Subquery<Attribute> inferenceSubquery(Attribute attribute,
-                                                  Relationship relationship,
-                                                  CriteriaBuilder cb,
-                                                  CriteriaQuery<Protocol> query) {
-        Subquery<Attribute> attributeQuery = query.subquery(Attribute.class);
-        Root<AttributeNetwork> attributeRoot = attributeQuery.from(AttributeNetwork.class);
-        attributeQuery.select(attributeRoot.get(AttributeNetwork_.child));
-        attributeQuery.where(cb.and(cb.equal(attributeRoot.get(AttributeNetwork_.parent),
-                                             attribute),
-                                    cb.equal(attributeRoot.get(NetworkRuleform_.relationship),
-                                             relationship)));
-        return attributeQuery;
-    }
-
-    private Subquery<Location> inferenceSubquery(Location location,
-                                                 Relationship relationship,
-                                                 CriteriaBuilder cb,
-                                                 CriteriaQuery<Protocol> query) {
-        Subquery<Location> locationQuery = query.subquery(Location.class);
-        Root<LocationNetwork> locationRoot = locationQuery.from(LocationNetwork.class);
-        locationQuery.select(locationRoot.get(LocationNetwork_.child));
-        locationQuery.where(cb.and(cb.equal(locationRoot.get(LocationNetwork_.parent),
-                                            location),
-                                   cb.equal(locationRoot.get(NetworkRuleform_.relationship),
-                                            relationship)));
-        return locationQuery;
-    }
-
-    private Subquery<Product> inferenceSubquery(Product attribute,
-                                                Relationship relationship,
-                                                CriteriaBuilder cb,
-                                                CriteriaQuery<Protocol> query) {
-        Subquery<Product> productQuery = query.subquery(Product.class);
-        Root<ProductNetwork> productRoot = productQuery.from(ProductNetwork.class);
-        productQuery.select(productRoot.get(ProductNetwork_.child));
-        productQuery.where(cb.and(cb.equal(productRoot.get(ProductNetwork_.parent),
-                                           attribute),
-                                  cb.equal(productRoot.get(NetworkRuleform_.relationship),
-                                           relationship)));
-        return productQuery;
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Subquery<RuleForm> inferenceSubquery(RuleForm attribute,
+                                                                                                                                                      Relationship relationship,
+                                                                                                                                                      Class<RuleForm> ruleformClass,
+                                                                                                                                                      Class<Network> networkClass,
+                                                                                                                                                      SingularAttribute<Network, RuleForm> parent,
+                                                                                                                                                      SingularAttribute<Network, RuleForm> child,
+                                                                                                                                                      CriteriaBuilder cb,
+                                                                                                                                                      CriteriaQuery<Protocol> query) {
+        Subquery<RuleForm> inference = query.subquery(ruleformClass);
+        Root<Network> root = inference.from(networkClass);
+        inference.select(root.get(child));
+        inference.where(cb.and(cb.equal(root.get(parent), attribute),
+                               cb.equal(root.get(NetworkRuleform_.relationship),
+                                        relationship)));
+        return inference;
     }
 
     /**
@@ -1653,40 +1655,29 @@ public class JobModelImpl implements JobModel {
      * @param metaProtocol
      * @return
      */
-    private TransformationMap map(Protocol protocol, MetaProtocol metaProtocol) {
-        return new TransformationMap(
-                                     isTxfm(metaProtocol.getAssignTo()),
-                                     isTxfm(metaProtocol.getAssignToAttribute()),
-                                     isTxfm(metaProtocol.getDeliverFrom()),
-                                     isTxfm(metaProtocol.getDeliverFromAttribute()),
-                                     isTxfm(metaProtocol.getDeliverTo()),
-                                     isTxfm(metaProtocol.getDeliverToAttribute()),
-                                     isTxfm(metaProtocol.getProductOrdered()),
-                                     isTxfm(metaProtocol.getProductOrderedAttribute()),
-                                     isTxfm(metaProtocol.getRequestingAgency()),
-                                     isTxfm(metaProtocol.getRequestingAgencyAttribute()),
-                                     isTxfm(metaProtocol.getServiceAttribute()));
+    private InferenceMap map(Protocol protocol, MetaProtocol metaProtocol) {
+        return new InferenceMap(
+                                isTxfm(metaProtocol.getAssignTo()),
+                                isTxfm(metaProtocol.getAssignToAttribute()),
+                                isTxfm(metaProtocol.getDeliverFrom()),
+                                isTxfm(metaProtocol.getDeliverFromAttribute()),
+                                isTxfm(metaProtocol.getDeliverTo()),
+                                isTxfm(metaProtocol.getDeliverToAttribute()),
+                                isTxfm(metaProtocol.getProductOrdered()),
+                                isTxfm(metaProtocol.getProductOrderedAttribute()),
+                                isTxfm(metaProtocol.getRequestingAgency()),
+                                isTxfm(metaProtocol.getRequestingAgencyAttribute()),
+                                isTxfm(metaProtocol.getServiceAttribute()),
+                                isTxfm(metaProtocol.getQuantityUnit()));
     }
 
     private void mask(Agency agency, Relationship relationship,
                       SingularAttribute<AbstractProtocol, Agency> column,
                       CriteriaBuilder cb, Subquery<Agency> agencyInference,
                       Root<Protocol> protocol, List<Predicate> masks) {
-        if (!relationship.equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (relationship.equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(column), agency);
-            } else {
-                mask = protocol.get(column).in(agencyInference);
-            }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(column),
-                                     kernel.getAnyAgency()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getSameAgency()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getNotApplicableAgency())));
-        }
+        mask(agency, relationship, column, kernel.getAnyAgency(),
+             kernel.getSameAgency(), kernel.getNotApplicableAgency(), cb,
+             agencyInference, protocol, masks);
     }
 
     private void mask(Attribute attribute, Relationship relationship,
@@ -1694,63 +1685,60 @@ public class JobModelImpl implements JobModel {
                       CriteriaBuilder cb,
                       Subquery<Attribute> attributeInference,
                       Root<Protocol> protocol, List<Predicate> masks) {
-        if (!relationship.equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (relationship.equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(column), attribute);
-            } else {
-                mask = protocol.get(column).in(attributeInference);
-            }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(column),
-                                     kernel.getAnyAttribute()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getSameAttribute()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getNotApplicableAttribute())));
-        }
+        mask(attribute, relationship, column, kernel.getAnyAttribute(),
+             kernel.getSameAttribute(), kernel.getNotApplicableAttribute(), cb,
+             attributeInference, protocol, masks);
     }
 
     private void mask(Location location, Relationship relationship,
                       SingularAttribute<AbstractProtocol, Location> column,
                       CriteriaBuilder cb, Subquery<Location> locationInference,
                       Root<Protocol> protocol, List<Predicate> masks) {
-        if (!relationship.equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            if (relationship.equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(column), location);
-            } else {
-                mask = protocol.get(column).in(locationInference);
-            }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(column),
-                                     kernel.getAnyLocation()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getSameLocation()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getNotApplicableLocation())));
-        }
+        mask(location, relationship, column, kernel.getAnyLocation(),
+             kernel.getSameLocation(), kernel.getNotApplicableLocation(), cb,
+             locationInference, protocol, masks);
     }
 
     private void mask(Product product, Relationship relationship,
                       SingularAttribute<AbstractProtocol, Product> column,
                       CriteriaBuilder cb, Subquery<Product> productInference,
                       Root<Protocol> protocol, List<Predicate> masks) {
+        mask(product, relationship, column, kernel.getAnyProduct(),
+             kernel.getSameProduct(), kernel.getNotApplicableProduct(), cb,
+             productInference, protocol, masks);
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> void mask(RuleForm exist,
+                                                                          Relationship relationship,
+                                                                          SingularAttribute<AbstractProtocol, RuleForm> column,
+                                                                          RuleForm any,
+                                                                          RuleForm same,
+                                                                          RuleForm notApplicable,
+                                                                          CriteriaBuilder cb,
+                                                                          Subquery<RuleForm> inference,
+                                                                          Root<Protocol> protocol,
+                                                                          List<Predicate> masks) {
         if (!relationship.equals(kernel.getAnyRelationship())) {
             Predicate mask;
+            Path<RuleForm> columnPath = protocol.get(column);
             if (relationship.equals(kernel.getSameRelationship())) {
-                mask = cb.equal(protocol.get(column), product);
+                mask = cb.equal(columnPath, exist);
             } else {
-                mask = protocol.get(column).in(productInference);
+                mask = columnPath.in(inference);
             }
-            masks.add(cb.or(mask,
-                            cb.equal(protocol.get(column),
-                                     kernel.getAnyProduct()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getSameProduct()),
-                            cb.equal(protocol.get(column),
-                                     kernel.getNotApplicableProduct())));
+            masks.add(cb.or(cb.equal(columnPath, any),
+                            cb.equal(columnPath, same),
+                            cb.equal(columnPath, notApplicable), mask));
         }
+    }
+
+    private void mask(Unit unit, Relationship relationship,
+                      SingularAttribute<AbstractProtocol, Unit> column,
+                      CriteriaBuilder cb, Subquery<Unit> unitInference,
+                      Root<Protocol> protocol, List<Predicate> masks) {
+        mask(unit, relationship, column, kernel.getAnyUnit(),
+             kernel.getSameUnit(), kernel.getNotApplicableUnit(), cb,
+             unitInference, protocol, masks);
     }
 
     private void processJobChange(String jobId) {

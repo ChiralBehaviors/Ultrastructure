@@ -42,6 +42,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -252,6 +253,15 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
             return Collections.emptySet();
         }
         return networkByParent;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownUnit.ANY.id().equals(getId())
+               || WellKnownUnit.SAME.id().equals(getId());
     }
 
     /*

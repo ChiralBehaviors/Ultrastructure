@@ -41,17 +41,12 @@ import com.hellblazer.utils.Tuple;
  * 
  */
 public interface JobModel {
-    static TransformationMap NO_TRANSFORMATION = new TransformationMap(false,
-                                                                       false,
-                                                                       false,
-                                                                       false,
-                                                                       false,
-                                                                       false,
-                                                                       false,
-                                                                       false,
-                                                                       false,
-                                                                       false,
-                                                                       false);
+    static InferenceMap NO_TRANSFORMATION = new InferenceMap(false, false,
+                                                             false, false,
+                                                             false, false,
+                                                             false, false,
+                                                             false, false,
+                                                             false, false);
 
     /**
      * Log the status change of a job at the timestamp
@@ -356,7 +351,7 @@ public interface JobModel {
      * @param job
      * @return the list of unique protocols applicable for a job
      */
-    Map<Protocol, TransformationMap> getProtocols(Job job);
+    Map<Protocol, InferenceMap> getProtocols(Job job);
 
     /**
      * Answer the matched list of inferred protocols for a job, given the meta
@@ -368,8 +363,7 @@ public interface JobModel {
      *         the meta protocol. The list is a Tuple of protocols, and a
      *         boolean map indicating which field was inferred in the protocol.
      */
-    Map<Protocol, TransformationMap> getProtocols(Job job,
-                                                          MetaProtocol metaprotocol);
+    Map<Protocol, InferenceMap> getProtocols(Job job, MetaProtocol metaprotocol);
 
     /**
      * @param service

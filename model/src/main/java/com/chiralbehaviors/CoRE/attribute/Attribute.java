@@ -43,6 +43,7 @@ import javax.persistence.Table;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -284,6 +285,15 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
 
     public ValueType getValueType() {
         return valueType;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownAttribute.ANY.id().equals(getId())
+               || WellKnownAttribute.SAME.id().equals(getId());
     }
 
     /*

@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -299,6 +300,15 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      */
     public Unit getUnit() {
         return unit;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownInterval.ANY.id().equals(getId())
+               || WellKnownInterval.SAME.id().equals(getId());
     }
 
     /*

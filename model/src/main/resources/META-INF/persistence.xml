@@ -19,8 +19,6 @@
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeValue</class>
-        <class>com.chiralbehaviors.CoRE.attribute.Transformation</class>
-        <class>com.chiralbehaviors.CoRE.attribute.TransformationMetarule</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.Unit</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization</class>
@@ -48,7 +46,6 @@
         <class>com.chiralbehaviors.CoRE.location.LocationAttribute</class>
         <class>com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.location.LocationRelationship</class>
         <class>com.chiralbehaviors.CoRE.network.Relationship</class>
         <class>com.chiralbehaviors.CoRE.network.RelationshipAttribute</class>
         <class>com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization</class>
@@ -79,5 +76,6 @@
         <class>com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
     </persistence-unit>
 </persistence>

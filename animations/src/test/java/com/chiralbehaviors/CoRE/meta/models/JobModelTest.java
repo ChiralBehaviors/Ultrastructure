@@ -48,7 +48,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.TransformationMap;
+import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.models.debug.JobModelDebugger;
 import com.chiralbehaviors.CoRE.product.Product;
 
@@ -175,7 +175,7 @@ public class JobModelTest extends AbstractModelTest {
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
-        Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(order);
+        Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         List<Job> jobs = findAllJobs();
         assertEquals(7, jobs.size());
@@ -348,7 +348,7 @@ public class JobModelTest extends AbstractModelTest {
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
-        Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(order);
+        Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         List<Job> jobs = jobModel.getAllChildren(order);
         assertEquals(6, jobs.size());
@@ -366,7 +366,7 @@ public class JobModelTest extends AbstractModelTest {
         Job order = jobModel.newInitializedJob(service, kernel.getCore());
         em.persist(order);
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
-        Map<Protocol, TransformationMap> protocols = model.getJobModel().getProtocols(order);
+        Map<Protocol, InferenceMap> protocols = model.getJobModel().getProtocols(order);
         assertEquals(1, protocols.size());
         List<Job> jobs = model.getJobModel().generateImplicitJobs(order);
         for (Job j : jobs) {
@@ -411,7 +411,7 @@ public class JobModelTest extends AbstractModelTest {
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
-        Map<Protocol, TransformationMap> protocols = jobModel.getProtocols(order);
+        Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         List<Job> jobs = findAllJobs();
         assertEquals(6, jobs.size());
@@ -487,7 +487,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setStatus(scenario.available);
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
-        Map<Protocol, TransformationMap> txfm = jobModel.getProtocols(job);
+        Map<Protocol, InferenceMap> txfm = jobModel.getProtocols(job);
         assertEquals(2, txfm.size());
         List<Protocol> protocols = new ArrayList<>(txfm.keySet());
         assertEquals(scenario.deliver, protocols.get(0).getRequestedService());

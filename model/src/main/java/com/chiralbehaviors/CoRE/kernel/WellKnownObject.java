@@ -381,6 +381,7 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownInterval implements WellKnownObject {
+
         INTERVAL() {
 
             @Override
@@ -396,6 +397,53 @@ public interface WellKnownObject {
                 return WellKnownObject.INTERVAL;
             }
 
+        },
+        ANY() {
+
+            @Override
+            public String description() {
+                return "A special Interval that stands for any interval";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.ANY;
+            }
+
+        },
+        SAME() {
+
+            @Override
+            public String description() {
+                return "A special Interval that stands for the same interval";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.SAME;
+            }
+
+        },
+        NOT_APPLICABLE() {
+
+            @Override
+            public String description() {
+                return "A special Interval that stands for 'not applicable'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NOT_APPLICABLE;
+            }
         };
 
         @Override
@@ -1532,6 +1580,54 @@ public interface WellKnownObject {
                 return WellKnownObject.UNSET;
             }
 
+        },
+        ANY() {
+
+            @Override
+            public String description() {
+                return "A special Status Code that stands for any status code";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.ANY;
+            }
+
+        },
+        SAME() {
+
+            @Override
+            public String description() {
+                return "A special StatusCode that stands for the same status code";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.SAME;
+            }
+
+        },
+        NOT_APPLICABLE() {
+
+            @Override
+            public String description() {
+                return "A special StatusCode that stands for 'not applicable'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NOT_APPLICABLE;
+            }
+
         };
 
         @Override
@@ -1551,8 +1647,8 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownTypes {
-        AGENCY, ATTRIBUTE, COORDINATE, INTERVAL, LOCATION, PRODUCT,
-        RELATIONSHIP, STATUS_CODE, UNIT;
+        AGENCY, ATTRIBUTE, INTERVAL, LOCATION, PRODUCT, RELATIONSHIP,
+        STATUS_CODE, UNIT;
     }
 
     public static enum WellKnownUnit implements WellKnownObject {
@@ -1585,6 +1681,54 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.UNSET;
+            }
+
+        },
+        ANY() {
+
+            @Override
+            public String description() {
+                return "A special Unit that stands for any unit";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.ANY;
+            }
+
+        },
+        SAME() {
+
+            @Override
+            public String description() {
+                return "A special Unit that stands for the same unit";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.SAME;
+            }
+
+        },
+        NOT_APPLICABLE() {
+
+            @Override
+            public String description() {
+                return "A special Unit that stands for 'not applicable'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NOT_APPLICABLE;
             }
 
         };

@@ -23,7 +23,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -50,49 +49,56 @@ public class MetaProtocol extends Ruleform {
 
     private static final long  serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "assign_to")
     private Relationship       assignTo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "assign_to_attribute")
     private Relationship       assignToAttribute;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_from_attribute")
     private Relationship       deliverFromAttribute;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "deliver_to_attribute")
     private Relationship       deliverToAttribute;
 
     /**
      * The relationship that transforms the product ordered
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_ordered")
     private Relationship       productOrdered;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_ordered_attribute")
     private Relationship       productOrderedAttribute;
 
     /**
+     * the relationship that transforms the quantity unit type
+     */
+    @ManyToOne
+    @JoinColumn(name = "quantity_unit")
+    private Relationship       quantityUnit;
+
+    /**
      * the relationship that transforms the requesting agency
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requesting_agency")
     private Relationship       requestingAgency;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requesting_agency_attribute")
     private Relationship       requestingAgencyAttribute;
 
@@ -102,7 +108,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * The service factor for this rule
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
 
@@ -138,6 +144,13 @@ public class MetaProtocol extends Ruleform {
 
     /**
      * @param notes
+     */
+    public MetaProtocol(String notes) {
+        super(notes);
+    }
+
+    /**
+     * @param notes
      * @param updatedBy
      */
     public MetaProtocol(String notes, Agency updatedBy) {
@@ -145,10 +158,10 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param notes
+     * @param id
      */
-    public MetaProtocol(String notes) {
-        super(notes);
+    public MetaProtocol(UUID id) {
+        super(id);
     }
 
     /**
@@ -160,10 +173,17 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param id
+     * @return the assignTo
      */
-    public MetaProtocol(UUID id) {
-        super(id);
+    public Relationship getAssignTo() {
+        return assignTo;
+    }
+
+    /**
+     * @return the assignToAttribute
+     */
+    public Relationship getAssignToAttribute() {
+        return assignToAttribute;
     }
 
     /**
@@ -206,6 +226,10 @@ public class MetaProtocol extends Ruleform {
      */
     public Relationship getProductOrderedAttribute() {
         return productOrderedAttribute;
+    }
+
+    public Relationship getQuantityUnit() {
+        return quantityUnit;
     }
 
     /**
@@ -255,6 +279,22 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
+     * @param assignTo
+     *            the assignTo to set
+     */
+    public void setAssignTo(Relationship assignTo) {
+        this.assignTo = assignTo;
+    }
+
+    /**
+     * @param assignToAttribute
+     *            the assignToAttribute to set
+     */
+    public void setAssignToAttribute(Relationship assignToAttribute) {
+        this.assignToAttribute = assignToAttribute;
+    }
+
+    /**
      * @param deliverFrom
      *            the deliverFrom to set
      */
@@ -300,6 +340,10 @@ public class MetaProtocol extends Ruleform {
      */
     public void setProductOrderedAttribute(Relationship productOrderedAttribute) {
         this.productOrderedAttribute = productOrderedAttribute;
+    }
+
+    public void setQuantityUnit(Relationship quantityUnit) {
+        this.quantityUnit = quantityUnit;
     }
 
     /**
@@ -410,36 +454,6 @@ public class MetaProtocol extends Ruleform {
         }
         super.traverseForeignKeys(em, knownObjects);
 
-    }
-
-    /**
-     * @return the assignToAttribute
-     */
-    public Relationship getAssignToAttribute() {
-        return assignToAttribute;
-    }
-
-    /**
-     * @param assignToAttribute
-     *            the assignToAttribute to set
-     */
-    public void setAssignToAttribute(Relationship assignToAttribute) {
-        this.assignToAttribute = assignToAttribute;
-    }
-
-    /**
-     * @return the assignTo
-     */
-    public Relationship getAssignTo() {
-        return assignTo;
-    }
-
-    /**
-     * @param assignTo
-     *            the assignTo to set
-     */
-    public void setAssignTo(Relationship assignTo) {
-        this.assignTo = assignTo;
     }
 
 }

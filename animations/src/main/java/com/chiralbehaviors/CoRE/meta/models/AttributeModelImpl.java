@@ -26,13 +26,10 @@ import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.Transformation;
-import com.chiralbehaviors.CoRE.attribute.TransformationMetarule;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -41,8 +38,6 @@ import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductAttribute;
 
 /**
  * @author hhildebrand
@@ -207,145 +202,6 @@ public class AttributeModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    public Attribute transform(Product service, Agency agency, Product product) {
-
-        Attribute txfmd = null;
-        for (TransformationMetarule transfromationMetarule : getTransformationMetarules(service)) {
-            Agency mappedAgency;
-            if (kernel.getSameAgency().equals(transfromationMetarule.getRelationshipMap())) {
-                mappedAgency = kernel.getSameAgency();
-            } else {
-                mappedAgency = getMappedAgency(transfromationMetarule, agency);
-            }
-            Product mappedProduct;
-            if (kernel.getSameProduct().equals(transfromationMetarule.getProductMap())) {
-                mappedProduct = kernel.getSameProduct();
-            } else {
-                mappedProduct = getMappedProduct(transfromationMetarule,
-                                                 product);
-            }
-            for (Transformation transformation : getTransformations(service,
-                                                                    mappedAgency,
-                                                                    mappedProduct)) {
-                txfmd = null;
-                Agency txfmAgency;
-                if (kernel.getSameAgency().equals(transformation.getAgencyKey())) {
-                    txfmAgency = agency;
-                } else {
-                    txfmAgency = transformation.getAgencyKey();
-                }
-                Product txfmProduct;
-                if (kernel.getSameProduct().equals(transformation.getProductKey())) {
-                    txfmProduct = product;
-                } else {
-                    txfmProduct = transformation.getProductKey();
-                }
-                Product foundProduct = findProduct(transformation, txfmAgency,
-                                                   txfmProduct);
-
-                txfmd = findAttribute(transformation, foundProduct);
-                if (txfmd != null) {
-                    break;
-                }
-            }
-            if (txfmd != null && transfromationMetarule.getStopOnMatch()) {
-                break;
-            }
-        }
-        return txfmd;
-    }
-
-    /**
-     * @param transformation
-     * @param product
-     * @return
-     */
-    private Attribute findAttribute(Transformation transformation,
-                                    Product product) {
-        TypedQuery<Attribute> attrQuery = em.createNamedQuery(ProductAttribute.FIND_ATTRIBUTE_VALUE_FROM_AGENCY,
-                                                              Attribute.class);
-        attrQuery.setParameter("agency",
-                               transformation.getProductAttributeAgency());
-        attrQuery.setParameter("product", product);
-        attrQuery.setParameter("attribute", transformation.getAttribute());
-        return attrQuery.getSingleResult();
-    }
-
-    /**
-     * @param transformation
-     * @param agency
-     * @param product
-     * @return
-     */
-    private Product findProduct(Transformation transformation, Agency agency,
-                                Product product) {
-        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILDREN,
-                                                                 Product.class);
-        productNetworkQuery.setParameter("parent", product);
-        productNetworkQuery.setParameter("relationship",
-                                         transformation.getRelationshipKey());
-        return productNetworkQuery.getSingleResult();
-    }
-
-    /**
-     * @param transfromationMetarule
-     * @param agency
-     * @return
-     */
-    private Agency getMappedAgency(TransformationMetarule transfromationMetarule,
-                                   Agency agency) {
-        TypedQuery<Agency> agencyNetworkQuery = em.createQuery(Agency.GET_CHILD,
-                                                               Agency.class);
-        agencyNetworkQuery.setParameter("parent", agency);
-        agencyNetworkQuery.setParameter("relationship",
-                                        transfromationMetarule.getRelationshipMap());
-        return agencyNetworkQuery.getSingleResult();
-    }
-
-    /**
-     * @param transfromationMetarule
-     * @param product
-     * @return
-     */
-    private Product getMappedProduct(TransformationMetarule transfromationMetarule,
-                                     Product product) {
-        TypedQuery<Product> productNetworkQuery = em.createQuery(Product.GET_CHILDREN,
-                                                                 Product.class);
-        productNetworkQuery.setParameter("parent", product);
-        productNetworkQuery.setParameter("relationship",
-                                         transfromationMetarule.getRelationshipMap());
-        return productNetworkQuery.getSingleResult();
-    }
-
-    /**
-     * @param service
-     * @return
-     */
-    private List<TransformationMetarule> getTransformationMetarules(Product service) {
-        TypedQuery<TransformationMetarule> txfmMetaruleQuery = em.createQuery(TransformationMetarule.GET_BY_EVENT,
-                                                                              TransformationMetarule.class);
-        txfmMetaruleQuery.setParameter("event", service);
-        return txfmMetaruleQuery.getResultList();
-    }
-
-    /**
-     * @param service
-     * @param mappedAgency
-     * @param mappedProduct
-     * @return
-     */
-    private List<Transformation> getTransformations(Product service,
-                                                    Agency mappedAgency,
-                                                    Product mappedProduct) {
-        TypedQuery<Transformation> txfmQuery = em.createQuery(Transformation.GET,
-                                                              Transformation.class);
-        txfmQuery.setParameter("event", service);
-        txfmQuery.setParameter("product", mappedProduct);
-        txfmQuery.setParameter("agency", mappedAgency);
-
-        return txfmQuery.getResultList();
     }
 
     /**

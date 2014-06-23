@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.access.AgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -300,6 +301,15 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
                                                                       this).getResultList();
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
+     */
+    @Override
+    public boolean isAnyOrSame() {
+        return WellKnownAgency.ANY.id().equals(getId())
+               || WellKnownAgency.SAME.id().equals(getId());
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -337,5 +347,4 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
     public void setNetworkByParent(Set<AgencyNetwork> AgencyNetworks2) {
         networkByParent = AgencyNetworks2;
     }
-
 }

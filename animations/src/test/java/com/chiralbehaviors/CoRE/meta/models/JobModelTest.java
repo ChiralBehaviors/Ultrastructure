@@ -46,10 +46,12 @@ import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.models.debug.JobModelDebugger;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -552,37 +554,35 @@ public class JobModelTest extends AbstractModelTest {
         TestDebuggingUtil.printJobs(jobs);
     }
 
-
-    
     //@Test
-    
+
     //TODO this test won't pass until we make job chronology saves fire from
     //job update triggers
-//    public void testJobChronologyOnStatusUpdate() throws Exception {
-//        EntityTransaction txn = em.getTransaction();
-//        txn.begin();
-//        Job order = new Job(scenario.orderFullfillment,
-//                            scenario.georgeTownUniversity, scenario.deliver,
-//                            scenario.abc486, scenario.rsb225,
-//                            scenario.factory1, scenario.core);
-//        em.persist(order);
-//        txn.commit();
-//        em.refresh(order);
-//        List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-//        assertEquals(1, chronologies.size());
-//        List<String> fieldErrors = verifyChronologyFields(order,
-//                                                          chronologies.get(0));
-//        
-//        assertEquals(0, fieldErrors.size());
-//        txn.begin();
-//        model.getJobModel().changeStatus(order, scenario.available, kernel.getCore(), null);
-//        txn.commit();
-//        chronologies = model.getJobModel().getChronologyForJob(order);
-//        assertEquals(2, chronologies.size());
-//        fieldErrors = verifyChronologyFields(order, chronologies.get(0));
-//        System.out.println(String.format("Errors: %s", fieldErrors));
-//        assertEquals(0, fieldErrors.size());
-//    }
+    //    public void testJobChronologyOnStatusUpdate() throws Exception {
+    //        EntityTransaction txn = em.getTransaction();
+    //        txn.begin();
+    //        Job order = new Job(scenario.orderFullfillment,
+    //                            scenario.georgeTownUniversity, scenario.deliver,
+    //                            scenario.abc486, scenario.rsb225,
+    //                            scenario.factory1, scenario.core);
+    //        em.persist(order);
+    //        txn.commit();
+    //        em.refresh(order);
+    //        List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
+    //        assertEquals(1, chronologies.size());
+    //        List<String> fieldErrors = verifyChronologyFields(order,
+    //                                                          chronologies.get(0));
+    //        
+    //        assertEquals(0, fieldErrors.size());
+    //        txn.begin();
+    //        model.getJobModel().changeStatus(order, scenario.available, kernel.getCore(), null);
+    //        txn.commit();
+    //        chronologies = model.getJobModel().getChronologyForJob(order);
+    //        assertEquals(2, chronologies.size());
+    //        fieldErrors = verifyChronologyFields(order, chronologies.get(0));
+    //        System.out.println(String.format("Errors: %s", fieldErrors));
+    //        assertEquals(0, fieldErrors.size());
+    //    }
 
     /**
      * Returns a list of fields that do not match between job and chronology

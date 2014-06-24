@@ -330,6 +330,14 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
         return WellKnownProduct.ANY.id().equals(getId())
                || WellKnownProduct.SAME.id().equals(getId());
     }
+    
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownProduct.NOT_APPLICABLE.id().equals(getId());
+    }
 
     @Override
     public void link(Relationship r, Product child, Agency updatedBy,

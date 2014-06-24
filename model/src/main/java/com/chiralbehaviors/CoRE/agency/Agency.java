@@ -310,6 +310,14 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
                || WellKnownAgency.SAME.id().equals(getId());
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownAgency.NOT_APPLICABLE.id().equals(getId());
+    }
+
     /*
      * (non-Javadoc)
      * 

@@ -310,6 +310,14 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         return WellKnownInterval.ANY.id().equals(getId())
                || WellKnownInterval.SAME.id().equals(getId());
     }
+    
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownInterval.NOT_APPLICABLE.id().equals(getId());
+    }
 
     /*
      * (non-Javadoc)

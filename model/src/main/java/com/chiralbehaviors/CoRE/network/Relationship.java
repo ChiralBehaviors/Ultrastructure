@@ -317,6 +317,14 @@ public class Relationship extends
         return WellKnownRelationship.ANY.id().equals(getId())
                || WellKnownRelationship.SAME.id().equals(getId());
     }
+    
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownRelationship.NOT_APPLICABLE.id().equals(getId());
+    }
 
     /*
      * (non-Javadoc)

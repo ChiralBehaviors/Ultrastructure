@@ -273,6 +273,14 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
         return WellKnownLocation.ANY.id().equals(getId())
                || WellKnownLocation.SAME.id().equals(getId());
     }
+    
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownLocation.NOT_APPLICABLE.id().equals(getId());
+    }
 
     /*
      * (non-Javadoc)

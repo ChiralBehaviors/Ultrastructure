@@ -264,6 +264,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
                || WellKnownUnit.SAME.id().equals(getId());
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownUnit.NOT_APPLICABLE.id().equals(getId());
+    }
+
     /*
      * (non-Javadoc)
      * 

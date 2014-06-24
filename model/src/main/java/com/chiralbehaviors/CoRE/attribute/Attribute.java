@@ -296,6 +296,14 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
                || WellKnownAttribute.SAME.id().equals(getId());
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownAttribute.NOT_APPLICABLE.id().equals(getId());
+    }
+
     /*
      * (non-Javadoc)
      * 

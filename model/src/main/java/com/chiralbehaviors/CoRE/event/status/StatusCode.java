@@ -297,6 +297,14 @@ public class StatusCode extends
                || WellKnownStatusCode.SAME.id().equals(getId());
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownStatusCode.NOT_APPLICABLE.id().equals(getId());
+    }
+
     /*
      * (non-Javadoc)
      * 

@@ -377,6 +377,8 @@ public class JobModelTest extends AbstractModelTest {
                                                Job.class);
         query.setParameter("service", scenario.checkCredit);
         Job creditCheck = query.getSingleResult();
+        jobModel.changeStatus(creditCheck, scenario.available, kernel.getAgency(),
+                "transition during test");
         jobModel.changeStatus(creditCheck, scenario.active, kernel.getAgency(),
                               "transition during test");
         txn.commit();
@@ -527,7 +529,6 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().rollback();
     }
 
-
     //    TODO this test won't pass until we make job chronology saves fire from
     //    job update triggers
     // @Test
@@ -547,8 +548,7 @@ public class JobModelTest extends AbstractModelTest {
                                   "Test transition");
             em.persist(order);
             em.flush();
-            JobChronology chronology = new JobChronology(order, "Testy",
-                                                         kernel.getCore());
+            JobChronology chronology = new JobChronology(order, "Testy");
             em.persist(chronology);
             txn.commit();
             em.refresh(order);

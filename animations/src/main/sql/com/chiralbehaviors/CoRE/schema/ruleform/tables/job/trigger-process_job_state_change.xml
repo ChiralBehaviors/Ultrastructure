@@ -6,9 +6,10 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<changeSet id="1" author="hhildebrand">
-		<sql> CREATE TRIGGER process_job_state_change AFTER UPDATE
+		<sql> CREATE CONSTRAINT TRIGGER process_job_state_change AFTER UPDATE
 			ON
 			ruleform.job
+            DEFERRABLE INITIALLY DEFERRED
 			FOR EACH
 			ROW EXECUTE PROCEDURE ruleform.process_job_change();
 		</sql>

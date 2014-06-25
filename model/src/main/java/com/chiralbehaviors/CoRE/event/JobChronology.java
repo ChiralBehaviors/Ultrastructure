@@ -19,6 +19,7 @@ import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
 import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
+import static com.chiralbehaviors.CoRE.event.JobChronology.LAST_JOB_LOG;
 
 import java.util.Map;
 import java.util.UUID;
@@ -34,7 +35,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 
 /**
@@ -42,13 +42,16 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
  * 
  */
 @NamedQueries({
-               @NamedQuery(name = FIND_ALL, query = "select j from JobChronology j"),
-               @NamedQuery(name = FIND_FOR_JOB, query = "select j from JobChronology j "
-                                                        + "where j.job = :job "),
-               @NamedQuery(name = FIND_FOR_PRODUCT, query = "select j from JobChronology j "
-                                                            + "where j.product = :product "),
-               @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "select MAX(j.sequenceNumber) from JobChronology j "
-                                                                    + "where j.job = :job") })
+               @NamedQuery(name = FIND_ALL, query = "SELECT j FROM JobChronology j"),
+               @NamedQuery(name = FIND_FOR_JOB, query = "SELECT j FROM JobChronology j "
+                                                        + "WHERE j.job = :job "),
+               @NamedQuery(name = FIND_FOR_PRODUCT, query = "SELECT j FROM JobChronology j "
+                                                            + "WHERE j.product = :product "),
+               @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "SELECT MAX(j.sequenceNumber) FROM JobChronology j "
+                                                                    + "WHERE j.job = :job"),
+               @NamedQuery(name = LAST_JOB_LOG, query = "SELECT j from JobChronology j "
+                                                        + "WHERE j.job = :job "
+                                                        + "    AND j.sequenceNumber = j.job.currentLogSequence") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends AbstractProtocol {
@@ -57,6 +60,7 @@ public class JobChronology extends AbstractProtocol {
     public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
     public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
     public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";
+    public static final String LAST_JOB_LOG             = "jobChronology.lastJobLog";
     private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job
@@ -74,15 +78,8 @@ public class JobChronology extends AbstractProtocol {
     public JobChronology() {
     }
 
-    /**
-     * @param updatedBy
-     */
-    public JobChronology(Agency updatedBy) {
-        super(updatedBy);
-    }
-
-    public JobChronology(Job job, String notes, Agency updatedBy) {
-        super(notes, updatedBy);
+    public JobChronology(Job job, String notes) {
+        super(notes, job.getUpdatedBy());
         initializeFrom(job);
     }
 

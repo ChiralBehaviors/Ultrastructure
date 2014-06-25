@@ -309,14 +309,6 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         checkCreditCompleted.setParentStatusToSet(available);
         em.persist(checkCreditCompleted);
 
-        ProductParentSequencingAuthorization checkLetterOfCreditCompleted = new ProductParentSequencingAuthorization(
-                                                                                                                     core);
-        checkLetterOfCreditCompleted.setService(checkLetterOfCredit);
-        checkLetterOfCreditCompleted.setStatusCode(completed);
-        checkLetterOfCreditCompleted.setParent(pick);
-        checkLetterOfCreditCompleted.setParentStatusToSet(available);
-        em.persist(checkLetterOfCreditCompleted);
-
         ProductSiblingSequencingAuthorization activateShip = new ProductSiblingSequencingAuthorization(
                                                                                                        core);
         activateShip.setParent(pick);
@@ -351,6 +343,14 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activatePrintPurchaseOrder.setNextChildStatus(waitingOnFee);
         em.persist(activatePrintPurchaseOrder);
 
+        ProductChildSequencingAuthorization activateCreditCheck = new ProductChildSequencingAuthorization(
+                                                                                                          core);
+        activateCreditCheck.setParent(pick);
+        activateCreditCheck.setStatusCode(available);
+        activateCreditCheck.setNextChild(checkCredit);
+        activateCreditCheck.setNextChildStatus(available);
+        em.persist(activateCreditCheck);
+
         ProductChildSequencingAuthorization activateFee = new ProductChildSequencingAuthorization(
                                                                                                   core);
         activateFee.setParent(printPurchaseOrder);
@@ -358,6 +358,14 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activateFee.setNextChild(fee);
         activateFee.setNextChildStatus(available);
         em.persist(activateFee);
+
+        ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(
+                                                                                                   core);
+        activatePick.setParent(deliver);
+        activatePick.setStatusCode(available);
+        activatePick.setNextChild(pick);
+        activatePick.setNextChildStatus(waitingOnCreditCheck);
+        em.persist(activatePick);
 
         ProductSiblingSequencingAuthorization activateDiscount = new ProductSiblingSequencingAuthorization(
                                                                                                            core);

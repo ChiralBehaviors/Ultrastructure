@@ -57,12 +57,14 @@ public abstract class AbstractProtocol extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "assign_to")
     private Agency            assignTo;
+
     /**
      * The attribute for the agency assigned to this job
      */
     @ManyToOne
     @JoinColumn(name = "assign_to_attribute")
     private Attribute         assignToAttribute;
+
     /**
      * The location where the product will be delivered from
      */
@@ -76,7 +78,6 @@ public abstract class AbstractProtocol extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "deliver_from_attribute")
     private Attribute         deliverFromAttribute;
-
     /**
      * The location to deliver the product of this job
      */
@@ -196,6 +197,108 @@ public abstract class AbstractProtocol extends Ruleform {
         serviceAttribute = protocol.serviceAttribute;
         quantityUnit = protocol.quantityUnit;
         quantity = protocol.quantity;
+    }
+
+    public boolean equalsProtocol(AbstractProtocol other) {
+        if (assignTo == null) {
+            if (other.assignTo != null) {
+                return false;
+            }
+        } else if (!assignTo.equals(other.assignTo)) {
+            return false;
+        }
+        if (assignToAttribute == null) {
+            if (other.assignToAttribute != null) {
+                return false;
+            }
+        } else if (!assignToAttribute.equals(other.assignToAttribute)) {
+            return false;
+        }
+        if (deliverFrom == null) {
+            if (other.deliverFrom != null) {
+                return false;
+            }
+        } else if (!deliverFrom.equals(other.deliverFrom)) {
+            return false;
+        }
+        if (deliverFromAttribute == null) {
+            if (other.deliverFromAttribute != null) {
+                return false;
+            }
+        } else if (!deliverFromAttribute.equals(other.deliverFromAttribute)) {
+            return false;
+        }
+        if (deliverTo == null) {
+            if (other.deliverTo != null) {
+                return false;
+            }
+        } else if (!deliverTo.equals(other.deliverTo)) {
+            return false;
+        }
+        if (deliverToAttribute == null) {
+            if (other.deliverToAttribute != null) {
+                return false;
+            }
+        } else if (!deliverToAttribute.equals(other.deliverToAttribute)) {
+            return false;
+        }
+        if (product == null) {
+            if (other.product != null) {
+                return false;
+            }
+        } else if (!product.equals(other.product)) {
+            return false;
+        }
+        if (productAttribute == null) {
+            if (other.productAttribute != null) {
+                return false;
+            }
+        } else if (!productAttribute.equals(other.productAttribute)) {
+            return false;
+        }
+        if (quantity == null) {
+            if (other.quantity != null) {
+                return false;
+            }
+        } else if (!quantity.equals(other.quantity)) {
+            return false;
+        }
+        if (quantityUnit == null) {
+            if (other.quantityUnit != null) {
+                return false;
+            }
+        } else if (!quantityUnit.equals(other.quantityUnit)) {
+            return false;
+        }
+        if (requester == null) {
+            if (other.requester != null) {
+                return false;
+            }
+        } else if (!requester.equals(other.requester)) {
+            return false;
+        }
+        if (requesterAttribute == null) {
+            if (other.requesterAttribute != null) {
+                return false;
+            }
+        } else if (!requesterAttribute.equals(other.requesterAttribute)) {
+            return false;
+        }
+        if (service == null) {
+            if (other.service != null) {
+                return false;
+            }
+        } else if (!service.equals(other.service)) {
+            return false;
+        }
+        if (serviceAttribute == null) {
+            if (other.serviceAttribute != null) {
+                return false;
+            }
+        } else if (!serviceAttribute.equals(other.serviceAttribute)) {
+            return false;
+        }
+        return true;
     }
 
     public Agency getAssignTo() {

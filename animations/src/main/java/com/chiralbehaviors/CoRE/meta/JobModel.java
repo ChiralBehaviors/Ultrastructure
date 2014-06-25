@@ -466,10 +466,9 @@ public interface JobModel {
      * 
      * @param parent
      * @param protocol
-     * @param updatedBy
      * @return
      */
-    Job insertJob(Job parent, Protocol protocol, Agency updatedBy);
+    Job insert(Job parent, Protocol protocol);
 
     /**
      * @param job
@@ -506,7 +505,7 @@ public interface JobModel {
      * @param job
      * @param notes
      */
-    void logJobChronology(Job job, String notes);
+    void log(Job job, String notes);
 
     void logModifiedService(UUID scs);
 

@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -32,24 +32,24 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
- * 
+ *
  * The meta model for a networked ruleform.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> {
 
     /**
      * Create a new instance with the supplied aspect
-     * 
+     *
      * @param name
      *            The name of the new instance
      * @param description
      *            the description of the new instance
      * @param aspect
      *            - the initial aspect of the instance
-     * 
+     *
      * @return the new instance
      */
     public Facet<RuleForm, AttributeType> create(String name,
@@ -58,14 +58,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     /**
      * Create a new instance with the supplied aspects
-     * 
+     *
      * @param name
      *            The name of the new instance
      * @param description
      *            the description of the new instance
      * @param aspects
      *            - the initial aspects of the instance
-     * 
+     *
      * @return the new instance
      */
     public RuleForm create(String name,
@@ -77,21 +77,21 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     /**
      * Answer the list of unlinked
-     * 
+     *
      * @return
      */
     public List<RuleForm> getUnlinked();
 
     /**
      * Answer the list of relationships used in this ruleform's networks.
-     * 
+     *
      * @return
      */
     public List<Relationship> getUsedRelationships();
 
     /**
      * Assign the attributes as authorized atrributes of the aspect
-     * 
+     *
      * @param aspect
      * @param attributes
      */
@@ -99,7 +99,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     /**
      * Create a new instance of the RuleForm based on the provided prototype
-     * 
+     *
      * @param prototype
      *            - the model for the new instance
      * @return the new instance
@@ -113,7 +113,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     RuleForm find(UUID id);
 
     /**
-     * 
+     *
      * @return all existential ruleforms that exist for this model
      */
     List<RuleForm> findAll();
@@ -121,7 +121,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
      * aspect
-     * 
+     *
      * @param attribute
      *            - the Attribute
      * @param groupingAgency
@@ -134,7 +134,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
      * aspect
-     * 
+     *
      * @param attribute
      *            - the Attribute
      * @param aspect
@@ -147,7 +147,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the list of attribute authorizations that are classified by the
      * grouping agency
-     * 
+     *
      * @param groupingAgency
      * @return
      */
@@ -156,7 +156,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the list of attribute authorizations that are classified by the
      * grouping agency, defined for the particular attribute
-     * 
+     *
      * @param groupingAgency
      * @param attribute
      * @return
@@ -167,7 +167,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the list of attribute authorizations that are classified by an
      * aspect
-     * 
+     *
      * @param aspect
      *            - the classifying aspect.
      * @return
@@ -177,7 +177,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the list of attribute authorizations that are classified by an
      * aspect, defined for the particular attribute
-     * 
+     *
      * @param aspect
      *            - the classifying aspect.
      * @param attribute
@@ -189,7 +189,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the list of existing attributes for the ruleform instance that are
      * authorized by the groupingAgency
-     * 
+     *
      * @param ruleform
      *            - the instance
      * @param groupingAgency
@@ -202,7 +202,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the list of existing attributes for the ruleform instance that are
      * authorized by the classification relationship described by the aspect
-     * 
+     *
      * @param ruleform
      *            - the instance
      * @param aspect
@@ -215,7 +215,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the list of existing attributes for the ruleform instance that are
      * grouped by the given agency
-     * 
+     *
      * @param ruleform
      *            - the instance
      * @param groupingAgency
@@ -228,7 +228,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     /**
      * Answer the child that is connected to the parent via the relationship
-     * 
+     *
      * @param parent
      * @param relationship
      * @return the child that is connected to the parent via the relationship
@@ -236,7 +236,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     RuleForm getChild(RuleForm parent, Relationship relationship);
 
     /**
-     * 
+     *
      * @param parent
      * @param relationship
      * @return
@@ -246,7 +246,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Answer the Facet of the ruleform instance containing the authorized
      * attributes as classified
-     * 
+     *
      * @param ruleform
      *            - the instance
      * @param classifier
@@ -259,14 +259,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                                             Aspect<RuleForm> aspect);
 
     /**
-     * 
+     *
      * @param parent
      * @return
      */
     Collection<Network> getImmediateNetworkEdges(RuleForm parent);
 
     /**
-     * 
+     *
      * @param parent
      * @return
      */
@@ -284,7 +284,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                                       Collection<RuleForm> children);
 
     /**
-     * 
+     *
      * @param parent
      * @param relationship
      * @return
@@ -292,14 +292,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     List<RuleForm> getNotInGroup(RuleForm parent, Relationship relationship);
 
     /**
-     * 
+     *
      * @param parent
      * @return
      */
     Collection<Relationship> getTransitiveRelationships(RuleForm parent);
 
     /**
-     * 
+     *
      * @param parent
      * @param parentRelationship
      * @param authorizingRelationship
@@ -312,7 +312,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                          Relationship childRelationship);
 
     /**
-     * 
+     *
      * @param parent
      * @param r
      * @param child
@@ -323,7 +323,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Propagate the network inferences based on the tracked additions,
      * deletions and modifications
-     * 
+     *
      * @throws SQLException
      */
     void propagate();

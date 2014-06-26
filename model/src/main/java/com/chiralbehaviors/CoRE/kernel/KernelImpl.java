@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -48,9 +48,9 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * Repository of immutable kernal rules
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 public class KernelImpl implements Kernel {
 
@@ -230,7 +230,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getAgency()
      */
     @Override
@@ -240,7 +240,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getAnyAgency()
      */
     @Override
@@ -250,7 +250,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getAnyAttribute()
      */
     @Override
@@ -265,7 +265,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getAnyLocation()
      */
     @Override
@@ -275,7 +275,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getAnyProduct()
      */
     @Override
@@ -285,7 +285,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getAnyRelationship()
      */
     @Override
@@ -305,7 +305,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getAttribute()
      */
     @Override
@@ -315,7 +315,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getContains()
      */
     @Override
@@ -325,7 +325,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getCore()
      */
     @Override
@@ -335,7 +335,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.models.Kernel#getCoreAnimationProcedure()
      */
@@ -351,7 +351,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getCoreUser()
      */
     @Override
@@ -361,7 +361,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getDeveloped()
      */
     @Override
@@ -371,7 +371,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getDevelopedBy()
      */
     @Override
@@ -381,7 +381,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getEquals()
      */
     @Override
@@ -391,7 +391,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getFormerMemberOf()
      */
     @Override
@@ -401,7 +401,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getGreaterThan()
      */
     @Override
@@ -411,7 +411,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getGreaterThanOrEqual()
      */
     @Override
@@ -421,7 +421,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getHadMember()
      */
     @Override
@@ -431,7 +431,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getHasException()
      */
     @Override
@@ -441,7 +441,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getHasHead()
      */
     @Override
@@ -451,7 +451,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getHasMember()
      */
     @Override
@@ -461,7 +461,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getHasVersion()
      */
     @Override
@@ -471,7 +471,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getHeadOf()
      */
     @Override
@@ -481,7 +481,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getIncludes()
      */
     @Override
@@ -496,7 +496,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.kernel.Kernel#getInWorkspace()
      */
     @Override
@@ -506,7 +506,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getIsA()
      */
     @Override
@@ -516,7 +516,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getIsContainedIn()
      */
     @Override
@@ -526,7 +526,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getIsExceptionTo()
      */
     @Override
@@ -536,7 +536,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getIsLocationOf()
      */
     @Override
@@ -546,7 +546,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getLessThan()
      */
     @Override
@@ -556,7 +556,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getLessThanOrEqual()
      */
     @Override
@@ -566,7 +566,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getLocation()
      */
     @Override
@@ -581,7 +581,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getMapsToLocation()
      */
     @Override
@@ -591,7 +591,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getMemberOf()
      */
     @Override
@@ -677,7 +677,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getProduct()
      */
     @Override
@@ -687,7 +687,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getPropagationSoftware()
      */
     @Override
@@ -697,7 +697,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getPrototype()
      */
     @Override
@@ -707,7 +707,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getPrototypeOf()
      */
     @Override
@@ -799,7 +799,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Kernel#getSameLocation()
      */
     @Override
@@ -817,7 +817,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getSameRelationship()
      */
     @Override
@@ -837,7 +837,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getSpecialSystemAgency()
      */
     @Override
@@ -847,7 +847,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Kernel#getSuperUser()
      */
     @Override
@@ -857,7 +857,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Kernel#getUnset()
      */
     @Override
@@ -875,7 +875,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.models.Kernel#getVersionOf()
      */
     @Override
@@ -890,7 +890,7 @@ public class KernelImpl implements Kernel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.kernel.Kernel#getWorkspaceOf()
      */
     @Override
@@ -899,7 +899,7 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * 
+     *
      * @param wko
      * @return the {@link Agency} corresponding to the well known object
      */
@@ -908,7 +908,7 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * 
+     *
      * @param wko
      * @return the {@link Attribute} corresponding to the well known object
      */
@@ -921,7 +921,7 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * 
+     *
      * @param wko
      * @return the {@link Location} corresponding to the well known object
      */
@@ -930,7 +930,7 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * 
+     *
      * @param wko
      * @return the {@link Product} corresponding to the well known object
      */
@@ -939,7 +939,7 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * 
+     *
      * @param wko
      * @return the {@link Relationship} corresponding to the well known object
      */
@@ -948,7 +948,7 @@ public class KernelImpl implements Kernel {
     }
 
     /**
-     * 
+     *
      * @param wko
      * @return the {@link StatusCode} corresponding to the well known object
      */

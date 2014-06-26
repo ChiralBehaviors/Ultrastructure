@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.event;
@@ -38,7 +38,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 @NamedQueries({
                @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
@@ -60,32 +60,23 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "next_sibling")
     private Product            nextSibling;
 
-    @Override
-    public String toString() {
-        return String.format("ProductSiblingSequencingAuthorization [parent=%s, statusCode=%s, nextSibling=%s, nextSiblingStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
-                             parent.getName(), statusCode.getName(),
-                             nextSibling.getName(),
-                             nextSiblingStatus.getName(), replaceProduct,
-                             sequenceNumber);
-    }
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_sibling_status")
-    private StatusCode nextSiblingStatus;
+    private StatusCode         nextSiblingStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
-    private Product    parent;
+    private Product            parent;
 
     @Column(name = "sequence_number")
-    private Integer    sequenceNumber = 1;
+    private Integer            sequenceNumber      = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
-    private StatusCode statusCode;
+    private StatusCode         statusCode;
 
     @Column(name = "replace_product")
-    private Integer    replaceProduct = FALSE;
+    private Integer            replaceProduct      = FALSE;
 
     public ProductSiblingSequencingAuthorization() {
     }
@@ -194,9 +185,18 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
         this.statusCode = statusCode;
     }
 
+    @Override
+    public String toString() {
+        return String.format("ProductSiblingSequencingAuthorization [parent=%s, statusCode=%s, nextSibling=%s, nextSiblingStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
+                             parent.getName(), statusCode.getName(),
+                             nextSibling.getName(),
+                             nextSiblingStatus.getName(), replaceProduct,
+                             sequenceNumber);
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
      * .EntityManager, java.util.Map)

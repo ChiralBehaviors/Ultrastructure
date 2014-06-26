@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -41,12 +41,12 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class AttributeModelImpl
-        extends
-        AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
-        implements AttributeModel {
+extends
+AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
+implements AttributeModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -71,7 +71,7 @@ public class AttributeModelImpl
     }
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
+            throws Exception {
         execute(new Procedure<Void>() {
             @Override
             public Void call(AttributeModel attributeModel) throws Exception {
@@ -106,7 +106,7 @@ public class AttributeModelImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE
      * .meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute[])
@@ -125,7 +125,7 @@ public class AttributeModelImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.network
      * .Networked)
@@ -163,10 +163,10 @@ public class AttributeModelImpl
                                             kernel.getCoreModel());
         em.persist(attribute);
         return new Facet<Attribute, AttributeMetaAttribute>(
-                                                            aspect,
-                                                            attribute,
-                                                            initialize(attribute,
-                                                                       aspect)) {
+                aspect,
+                attribute,
+                initialize(attribute,
+                           aspect)) {
         };
     }
 
@@ -192,8 +192,8 @@ public class AttributeModelImpl
                                                       Collection<Relationship> relationships,
                                                       Collection<Attribute> children) {
         if (parents == null || parents.size() == 0 || relationships == null
-            || relationships.size() == 0 || children == null
-            || children.size() == 0) {
+                || relationships.size() == 0 || children == null
+                || children.size() == 0) {
             return null;
         }
         TypedQuery<AttributeNetwork> query = em.createNamedQuery(AttributeNetwork.GET_NETWORKS,

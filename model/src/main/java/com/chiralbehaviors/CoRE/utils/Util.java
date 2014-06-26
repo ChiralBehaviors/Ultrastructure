@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.utils;
@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public final class Util {
 
@@ -38,7 +38,7 @@ public final class Util {
 
     /**
      * Generates an MD5 hash of the given File.
-     * 
+     *
      * @param file
      *            the file to hash
      * @return a 32-character hexadecimal string that is the MD5 hash of the
@@ -62,7 +62,7 @@ public final class Util {
     /**
      * Generates an MD5 hash of the given byte array. Uses
      * {@link java.security.MessageDigest}.
-     * 
+     *
      * @param is
      *            the input stream to hash
      * @return a 32-character hexadecimal string that is the MD5 hash of the
@@ -93,7 +93,7 @@ public final class Util {
     /**
      * Generates an MD5 hash of the given String. Useful for hashing passwords
      * and such.
-     * 
+     *
      * @param toEncrypt
      *            the String to hash
      * @return a 32-character hexadecimal string that is the MD5 hash of the
@@ -108,11 +108,11 @@ public final class Util {
 
     /**
      * We initially used this code to convert the digest to a hex string:
-     * 
+     *
      * return new BigInteger( 1, md.digest( bytes )).toString( 16 );
-     * 
+     *
      * This was a case of being too clever.
-     * 
+     *
      * This approach doesn't always work reliably; you could get hashes that
      * were less than 32 characters long! This is because a full, 32-character
      * MD5 hash considers leading zeros to be significant. If you have a byte

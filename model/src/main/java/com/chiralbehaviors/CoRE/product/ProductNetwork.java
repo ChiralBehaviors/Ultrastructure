@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.product;
@@ -51,9 +51,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The network relationships of products.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 @NamedQueries({
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n"),
@@ -68,27 +68,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "product_network", schema = "ruleform")
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES     = "productNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                  = "productNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
-    public static final String GET_NETWORKS                  = "productNetwork"
-                                                               + GET_NETWORKS_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS        = "productNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                = "productNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "productNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;
-
     public static List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
     }
+
+    public static final String           DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
+            + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+    public static final String           GENERATE_NETWORK_INVERSES     = "productNetwork"
+            + GENERATE_NETWORK_INVERSES_SUFFIX;
+    public static final String           GET_CHILDREN                  = "productNetwork"
+            + GET_CHILDREN_SUFFIX;
+    public static final String           GET_NETWORKS                  = "productNetwork"
+            + GET_NETWORKS_SUFFIX;
+    public static final String           GET_USED_RELATIONSHIPS        = "productNetwork"
+            + USED_RELATIONSHIPS_SUFFIX;
+    public static final String           INFERENCE_STEP                = "productNetwork"
+            + INFERENCE_STEP_SUFFIX;
+    public static final String           INFERENCE_STEP_FROM_LAST_PASS = "productNetwork"
+            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String           INSERT_NEW_NETWORK_RULES      = "productNetwork"
+            + INSERT_NEW_NETWORK_RULES_SUFFIX;
+
+    private static final long            serialVersionUID              = 1L;
 
     // bi-directional many-to-one association to ProductNetworkAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productNetwork")
@@ -100,7 +101,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JoinColumn(name = "child")
     private Product                      child;
 
-    //bi-directional many-to-one association to Product 
+    //bi-directional many-to-one association to Product
     @ManyToOne
     @JoinColumn(name = "parent")
     private Product                      parent;
@@ -169,7 +170,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -241,7 +242,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     =======
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
      * .EntityManager, java.util.Map)

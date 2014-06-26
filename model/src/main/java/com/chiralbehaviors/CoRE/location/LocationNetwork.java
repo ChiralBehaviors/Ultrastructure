@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.location;
@@ -46,7 +46,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * The persistent class for the location_network database table.
- * 
+ *
  */
 @NamedQueries({
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
@@ -60,6 +60,10 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Entity
 @Table(name = "location_network", schema = "ruleform")
 public class LocationNetwork extends NetworkRuleform<Location> {
+    public static List<Relationship> getUsedRelationships(EntityManager em) {
+        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
+    }
+
     public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
@@ -75,27 +79,24 @@ public class LocationNetwork extends NetworkRuleform<Location> {
                                                                + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
-    private static final long  serialVersionUID              = 1L;
 
-    public static List<Relationship> getUsedRelationships(EntityManager em) {
-        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
-    }
+    private static final long  serialVersionUID              = 1L;
 
     @ManyToOne
     @JoinColumn(name = "child")
-    private Location        child;
+    private Location           child;
 
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Location        parent;
+    private Location           parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise1")
-    private LocationNetwork premise1;
+    private LocationNetwork    premise1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(insertable = false, name = "premise2")
-    private LocationNetwork premise2;
+    private LocationNetwork    premise2;
 
     public LocationNetwork() {
     }

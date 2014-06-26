@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.object;
@@ -37,9 +37,9 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * Creates a workspace object from data in the database
- * 
+ *
  * @author hparry
- * 
+ *
  */
 public class WorkspaceLoader {
 
@@ -85,7 +85,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadAgencies() {
         List<Agency> agencies = new LinkedList<>();
@@ -100,7 +100,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadAgencyNetworks() {
         workspace.setAgencyNetworks(model.getAgencyModel().getInterconnections(workspace.getAgencies(),
@@ -110,7 +110,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadAttributeNetworks() {
         workspace.setAttributeNetworks(model.getAttributeModel().getInterconnections(workspace.getAttributes(),
@@ -120,7 +120,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadAttributes() {
         List<Attribute> attributes = new LinkedList<>();
@@ -134,7 +134,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadLocations() {
         List<Location> locations = new LinkedList<>();
@@ -149,7 +149,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadProductNetworks() {
         workspace.setProductNetworks(model.getProductModel().getInterconnections(workspace.getProducts(),
@@ -158,7 +158,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadRelationshipNetworks() {
         workspace.setRelationshipNetworks(model.getRelationshipModel().getInterconnections(workspace.getRelationships(),
@@ -179,7 +179,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadStatusCodes() {
         List<StatusCode> statusCodes = new LinkedList<>();
@@ -193,7 +193,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadUnitNetworks() {
         workspace.setUnitNetworks(model.getUnitModel().getInterconnections(workspace.getUnits(),
@@ -203,7 +203,7 @@ public class WorkspaceLoader {
     }
 
     /**
-     * 
+     *
      */
     private void loadUnits() {
         List<Unit> units = new LinkedList<>();

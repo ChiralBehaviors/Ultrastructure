@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE;
@@ -24,6 +24,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -31,14 +32,14 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * A ruleform that declares existence.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
-        extends Ruleform {
+extends Ruleform {
     public static final String DEDUCE_NEW_NETWORK_RULES_SUFFIX                               = ".deduceNewNetworkRules";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findClassifiedAttributeAuthorizationsForAttribute";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX               = ".findClassifiedAttributeAuthorizations";
@@ -112,6 +113,8 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     abstract public void addParentRelationship(Network relationship);
 
+    abstract public String getAnyId();
+
     /**
      * @return the description
      */
@@ -130,6 +133,14 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     abstract public Set<Network> getNetworkByParent();
 
+    abstract public SingularAttribute<Network, RuleForm> getNetworkChildAttribute();
+
+    abstract public Class<Network> getNetworkClass();
+
+    abstract public SingularAttribute<Network, RuleForm> getNetworkParentAttribute();
+
+    abstract public String getNotApplicableId();
+
     /**
      * @return the pinned
      */
@@ -137,8 +148,15 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
         return toBoolean(pinned);
     }
 
+    @SuppressWarnings("unchecked")
+    public Class<RuleForm> getRuleformClass() {
+        return (Class<RuleForm>) getClass();
+    }
+
+    abstract public String getSameId();
+
     public abstract boolean isAnyOrSame();
-    
+
     public abstract boolean isNotApplicable();
 
     abstract public void link(Relationship r, RuleForm child, Agency updatedBy,

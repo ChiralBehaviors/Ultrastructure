@@ -16,15 +16,15 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * and thereafter it will confine itself to the object type and ID. This makes
  * the generated JSON structures inconsistent and very hard for JS clients to
  * consume.
- * 
+ *
  * To make life easier, this class contains no duplicate instances. It's a
  * unique list of nodes in the graph, a unique list of Relationship types
  * (a.k.a. edge types) and a GraphEdge data structure that is nothing more than
  * array index references for the parent and child nodes as well as the
  * Relationship the edge represents.
- * 
+ *
  * @author hparry
- * 
+ *
  */
 public class SerializableGraph<T extends ExistentialRuleform<T, ?>> {
 

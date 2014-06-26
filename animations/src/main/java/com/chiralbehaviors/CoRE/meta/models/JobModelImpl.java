@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -53,15 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork_;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork_;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork_;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol_;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -79,9 +72,6 @@ import com.chiralbehaviors.CoRE.jsp.RuleformIdIterator;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
-import com.chiralbehaviors.CoRE.location.LocationNetwork_;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -94,9 +84,9 @@ import com.chiralbehaviors.CoRE.product.ProductNetwork_;
 import com.hellblazer.utils.Tuple;
 
 /**
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 public class JobModelImpl implements JobModel {
     private static class Call<T> implements StoredProcedure<T> {
@@ -120,9 +110,6 @@ public class JobModelImpl implements JobModel {
     private static interface Procedure<T> {
         T call(JobModelImpl jobModel) throws Exception;
     }
-
-    private static final Logger       log               = LoggerFactory.getLogger(JobModelImpl.class);
-    private static final List<String> MODIFIED_SERVICES = new ArrayList<>();
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
@@ -263,7 +250,7 @@ public class JobModelImpl implements JobModel {
 
     /**
      * In database function entry point
-     * 
+     *
      * @param serviceId
      * @return
      * @throws SQLException
@@ -291,7 +278,7 @@ public class JobModelImpl implements JobModel {
      * SCC. If there are any, then we won't get "stuck" looping around the SCC
      * forever (there's an escape available). If there are no such nodes, then
      * once you enter the SCC, you're stuck looping around it forever.
-     * 
+     *
      * @param graph
      * @return
      */
@@ -409,28 +396,17 @@ public class JobModelImpl implements JobModel {
         return JSP.call(new Call<T>(procedure));
     }
 
-    protected final EntityManager em;
+    private static final Logger       log               = LoggerFactory.getLogger(JobModelImpl.class);
 
-    protected final Kernel        kernel;
+    private static final List<String> MODIFIED_SERVICES = new ArrayList<>();
+
+    protected final EntityManager     em;
+
+    protected final Kernel            kernel;
 
     public JobModelImpl(Model model) {
         em = model.getEntityManager();
         kernel = model.getKernel();
-    }
-
-    @Override
-    public void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy) {
-        if (job.getStatus().getPropagateChildren()) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Generating implicit jobs for %s", job));
-            }
-            generateImplicitJobs(job, updatedBy);
-        } else {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Not generating implicit jobs for: %s",
-                                        job));
-            }
-        }
     }
 
     @Override
@@ -556,6 +532,21 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy) {
+        if (job.getStatus().getPropagateChildren()) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Generating implicit jobs for %s", job));
+            }
+            generateImplicitJobs(job, updatedBy);
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Not generating implicit jobs for: %s",
+                                        job));
+            }
+        }
+    }
+
+    @Override
     public List<Job> getActiveExplicitJobs() {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_EXPLICIT_JOBS,
                                                     Job.class);
@@ -589,7 +580,7 @@ public class JobModelImpl implements JobModel {
 
     /**
      * Recursively retrieve all the active or terminated sub jobs of a given job
-     * 
+     *
      * @param job
      * @return
      */
@@ -679,7 +670,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.JobModel#getChildActions(com.chiralbehaviors
      * .CoRE .product.Product)
@@ -705,7 +696,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.JobModel#getChronologyForJob(com.
      * chiralbehaviors. CoRE.jsp.Job)
      */
@@ -718,7 +709,7 @@ public class JobModelImpl implements JobModel {
     /**
      * Answer the list of the active or terminated direct sub jobs of a given
      * job
-     * 
+     *
      * @param job
      * @return
      */
@@ -749,7 +740,7 @@ public class JobModelImpl implements JobModel {
     /**
      * Returns a list of initially available sub-jobs (i.e., ones that do not
      * depend on any others having been completed yet) of a given job
-     * 
+     *
      * @param job
      * @return
      */
@@ -783,7 +774,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.JobModel#getMetaProtocolsFor(com.
      * chiralbehaviors.CoRE.product.Product)
      */
@@ -795,7 +786,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.JobModel#getMostRecentChronologyEntry(com
      * .chiralbehaviors .CoRE.jsp.Job)
@@ -834,7 +825,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.JobModel#getParentActions(com.chiralbehaviors
      * .CoRE .product.Product)
@@ -876,7 +867,7 @@ public class JobModelImpl implements JobModel {
 
     /**
      * Find protocols which match transformations specified by the meta protocol
-     * 
+     *
      * @return
      */
     @Override
@@ -891,7 +882,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.JobModel#getProtocolsFor(com.chiralbehaviors
      * .CoRE.product.Product)
@@ -917,7 +908,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.JobModel#getSiblingActions(com.chiralbehaviors
      * .CoRE .product.Product)
@@ -1046,7 +1037,7 @@ public class JobModelImpl implements JobModel {
 
     /**
      * Insert the new job defined by the protocol
-     * 
+     *
      * @param parent
      * @param protocol
      * @return the newly created job
@@ -1077,7 +1068,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.JobModel#isTerminalState(com.chiralbehaviors
      * .CoRE .jsp.StatusCode, com.chiralbehaviors.CoRE.jsp.Event)
@@ -1130,7 +1121,7 @@ public class JobModelImpl implements JobModel {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.JobModel#logModifiedService(java.lang.Long)
      */
@@ -1355,74 +1346,18 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    private void addMask(Agency agency, Relationship relationship,
-                         SingularAttribute<AbstractProtocol, Agency> column,
-                         CriteriaBuilder cb, CriteriaQuery<Protocol> query,
-                         Root<Protocol> protocol, List<Predicate> masks) {
-        mask(agency,
-             relationship,
-             column,
-             cb,
-             inferenceSubquery(agency, relationship, Agency.class,
-                               AgencyNetwork.class, AgencyNetwork_.parent,
-                               AgencyNetwork_.child, cb, query), protocol,
-             masks);
-    }
-
-    private void addMask(Attribute attribute, Relationship relationship,
-                         SingularAttribute<AbstractProtocol, Attribute> column,
-                         CriteriaBuilder cb, CriteriaQuery<Protocol> query,
-                         Root<Protocol> protocol, List<Predicate> masks) {
-        mask(attribute,
-             relationship,
-             column,
-             cb,
-             inferenceSubquery(attribute, relationship, Attribute.class,
-                               AttributeNetwork.class,
-                               AttributeNetwork_.parent,
-                               AttributeNetwork_.child, cb, query), protocol,
-             masks);
-    }
-
-    private void addMask(Location location, Relationship relationship,
-                         SingularAttribute<AbstractProtocol, Location> column,
-                         CriteriaBuilder cb, CriteriaQuery<Protocol> query,
-                         Root<Protocol> protocol, List<Predicate> masks) {
-        mask(location,
-             relationship,
-             column,
-             cb,
-             inferenceSubquery(location, relationship, Location.class,
-                               LocationNetwork.class, LocationNetwork_.parent,
-                               LocationNetwork_.child, cb, query), protocol,
-             masks);
-    }
-
-    private void addMask(Product product, Relationship relationship,
-                         SingularAttribute<AbstractProtocol, Product> column,
-                         CriteriaBuilder cb, CriteriaQuery<Protocol> query,
-                         Root<Protocol> protocol, List<Predicate> masks) {
-        mask(product,
-             relationship,
-             column,
-             cb,
-             inferenceSubquery(product, relationship, Product.class,
-                               ProductNetwork.class, ProductNetwork_.parent,
-                               ProductNetwork_.child, cb, query), protocol,
-             masks);
-    }
-
-    private void addMask(Unit unit, Relationship relationship,
-                         SingularAttribute<AbstractProtocol, Unit> column,
-                         CriteriaBuilder cb, CriteriaQuery<Protocol> query,
-                         Root<Protocol> protocol, List<Predicate> masks) {
-        mask(unit,
-             relationship,
-             column,
-             cb,
-             inferenceSubquery(unit, relationship, Unit.class,
-                               UnitNetwork.class, UnitNetwork_.parent,
-                               UnitNetwork_.child, cb, query), protocol, masks);
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addMask(RuleForm ruleform,
+                                                                                                                              Relationship relationship,
+                                                                                                                              SingularAttribute<AbstractProtocol, RuleForm> column,
+                                                                                                                              CriteriaBuilder cb,
+                                                                                                                              CriteriaQuery<Protocol> query,
+                                                                                                                              Root<Protocol> protocol,
+                                                                                                                              List<Predicate> masks) {
+        Predicate mask = mask(ruleform, relationship, column, cb, query,
+                              protocol);
+        if (mask != null) {
+            masks.add(mask);
+        }
     }
 
     /**
@@ -1512,7 +1447,7 @@ public class JobModelImpl implements JobModel {
      * This query will do the work of matching protocols to networks defined by
      * jobs and metaprocols. This is the real deal except it doesn't work in the
      * db triggers for some stupid reason so we're not using it right now.
-     * 
+     *
      * @param metaprotocol
      * @param job
      * @return
@@ -1740,53 +1675,30 @@ public class JobModelImpl implements JobModel {
                                 isTxfm(metaProtocol.getQuantityUnit()));
     }
 
-    private void mask(Agency agency, Relationship relationship,
-                      SingularAttribute<AbstractProtocol, Agency> column,
-                      CriteriaBuilder cb, Subquery<Agency> agencyInference,
-                      Root<Protocol> protocol, List<Predicate> masks) {
-        mask(agency, relationship, column, kernel.getAnyAgency(),
-             kernel.getSameAgency(), kernel.getNotApplicableAgency(), cb,
-             agencyInference, protocol, masks);
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Predicate mask(RuleForm ruleform,
+                                                                                                                                Relationship relationship,
+                                                                                                                                SingularAttribute<AbstractProtocol, RuleForm> column,
+                                                                                                                                CriteriaBuilder cb,
+                                                                                                                                CriteriaQuery<Protocol> query,
+                                                                                                                                Root<Protocol> protocol) {
+        return mask(ruleform,
+                    relationship,
+                    column,
+                    cb,
+                    inferenceSubquery(ruleform, relationship,
+                                      ruleform.getRuleformClass(),
+                                      ruleform.getNetworkClass(),
+                                      ruleform.getNetworkParentAttribute(),
+                                      ruleform.getNetworkChildAttribute(), cb,
+                                      query), protocol);
     }
 
-    private void mask(Attribute attribute, Relationship relationship,
-                      SingularAttribute<AbstractProtocol, Attribute> column,
-                      CriteriaBuilder cb,
-                      Subquery<Attribute> attributeInference,
-                      Root<Protocol> protocol, List<Predicate> masks) {
-        mask(attribute, relationship, column, kernel.getAnyAttribute(),
-             kernel.getSameAttribute(), kernel.getNotApplicableAttribute(), cb,
-             attributeInference, protocol, masks);
-    }
-
-    private void mask(Location location, Relationship relationship,
-                      SingularAttribute<AbstractProtocol, Location> column,
-                      CriteriaBuilder cb, Subquery<Location> locationInference,
-                      Root<Protocol> protocol, List<Predicate> masks) {
-        mask(location, relationship, column, kernel.getAnyLocation(),
-             kernel.getSameLocation(), kernel.getNotApplicableLocation(), cb,
-             locationInference, protocol, masks);
-    }
-
-    private void mask(Product product, Relationship relationship,
-                      SingularAttribute<AbstractProtocol, Product> column,
-                      CriteriaBuilder cb, Subquery<Product> productInference,
-                      Root<Protocol> protocol, List<Predicate> masks) {
-        mask(product, relationship, column, kernel.getAnyProduct(),
-             kernel.getSameProduct(), kernel.getNotApplicableProduct(), cb,
-             productInference, protocol, masks);
-    }
-
-    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> void mask(RuleForm exist,
-                                                                          Relationship relationship,
-                                                                          SingularAttribute<AbstractProtocol, RuleForm> column,
-                                                                          RuleForm any,
-                                                                          RuleForm same,
-                                                                          RuleForm notApplicable,
-                                                                          CriteriaBuilder cb,
-                                                                          Subquery<RuleForm> inference,
-                                                                          Root<Protocol> protocol,
-                                                                          List<Predicate> masks) {
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Predicate mask(RuleForm exist,
+                                                                               Relationship relationship,
+                                                                               SingularAttribute<AbstractProtocol, RuleForm> column,
+                                                                               CriteriaBuilder cb,
+                                                                               Subquery<RuleForm> inference,
+                                                                               Root<Protocol> protocol) {
         if (!relationship.equals(kernel.getAnyRelationship())) {
             Predicate mask;
             Path<RuleForm> columnPath = protocol.get(column);
@@ -1795,19 +1707,14 @@ public class JobModelImpl implements JobModel {
             } else {
                 mask = columnPath.in(inference);
             }
-            masks.add(cb.or(cb.equal(columnPath, any),
-                            cb.equal(columnPath, same),
-                            cb.equal(columnPath, notApplicable), mask));
+            return cb.or(cb.equal(columnPath.get(Ruleform_.id),
+                                  exist.getAnyId()),
+                         cb.equal(columnPath.get(Ruleform_.id),
+                                  exist.getSameId()),
+                         cb.equal(columnPath.get(Ruleform_.id),
+                                  exist.getNotApplicableId()), mask);
         }
-    }
-
-    private void mask(Unit unit, Relationship relationship,
-                      SingularAttribute<AbstractProtocol, Unit> column,
-                      CriteriaBuilder cb, Subquery<Unit> unitInference,
-                      Root<Protocol> protocol, List<Predicate> masks) {
-        mask(unit, relationship, column, kernel.getAnyUnit(),
-             kernel.getSameUnit(), kernel.getNotApplicableUnit(), cb,
-             unitInference, protocol, masks);
+        return null;
     }
 
     private void processJobChange(String jobId) {
@@ -1817,7 +1724,7 @@ public class JobModelImpl implements JobModel {
     /**
      * Answer the list of the active or terminated sub jobs of a given job,
      * recursively
-     * 
+     *
      * @param job
      * @return
      */

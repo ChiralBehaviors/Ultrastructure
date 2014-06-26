@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.location;
@@ -39,6 +39,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
@@ -52,67 +53,67 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * General idea of a location or address; where some agency, product or event
  * can be found in a variety of spaces
- * 
+ *
  */
 @Entity
 @Table(name = "location", schema = "ruleform")
 @NamedQueries({
-               @NamedQuery(name = "location" + FIND_BY_NAME_SUFFIX, query = "select l from Location l where l.name = :name"),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       LocationAttribute attrValue, "
-                                                                            + "       LocationAttributeAuthorization auth, "
-                                                                            + "       LocationNetwork network "
-                                                                            + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.location = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
-                                                                                    + "WHERE la.classification = :classification "
-                                                                                    + "AND la.classifier = :classifier"),
-               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
-                                                                                 + "WHERE la.groupingAgency = :groupingAgency"),
-               @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
-                                                                         + "WHERE la.classification = :classification "
-                                                                         + "AND la.classifier = :classifier "
-                                                                         + "AND la.groupingAgency = :groupingAgency"),
-               @NamedQuery(name = LOCATION_NAME, query = "SELECT la.name FROM Location la WHERE la.id = :id"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
-                                                     + "FROM LocationNetwork n "
-                                                     + "WHERE n.parent = :p "
-                                                     + "AND n.relationship = :r"),
-               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                                                        + "FROM LocationNetwork n "
-                                                                        + "WHERE n.child = :c"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM LocationNetwork n "
-                                                                           + "WHERE n.parent = :location "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+    @NamedQuery(name = "location" + FIND_BY_NAME_SUFFIX, query = "select l from Location l where l.name = :name"),
+    @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+            + "  attrValue "
+            + "FROM "
+            + "       LocationAttribute attrValue, "
+            + "       LocationAttributeAuthorization auth, "
+            + "       LocationNetwork network "
+            + "WHERE "
+            + "        auth.authorizedAttribute = attrValue.attribute AND "
+            + "        network.relationship = auth.classification AND "
+            + "        network.child = auth.classifier AND"
+            + "        attrValue.location = :ruleform AND "
+            + "        auth.classification = :classification AND "
+            + "        auth.classifier = :classifier "),
+            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
+                    + "WHERE la.classification = :classification "
+                    + "AND la.classifier = :classifier"),
+                    @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
+                            + "WHERE la.groupingAgency = :groupingAgency"),
+                            @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
+                                    + "WHERE la.classification = :classification "
+                                    + "AND la.classifier = :classifier "
+                                    + "AND la.groupingAgency = :groupingAgency"),
+                                    @NamedQuery(name = LOCATION_NAME, query = "SELECT la.name FROM Location la WHERE la.id = :id"),
+                                    @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                            + "FROM LocationNetwork n "
+                                            + "WHERE n.parent = :p "
+                                            + "AND n.relationship = :r"),
+                                            @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                    + "FROM LocationNetwork n "
+                                                    + "WHERE n.child = :c"),
+                                                    @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM LocationNetwork n "
+                                                            + "WHERE n.parent = :location "
+                                                            + "AND n.relationship IN :relationships "
+                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
-// ?1 = :queryString, ?2 = :numberOfMatches
-@NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
+    // ?1 = :queryString, ?2 = :numberOfMatches
+    @NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Location extends ExistentialRuleform<Location, LocationNetwork>
-        implements Attributable<LocationAttribute> {
+implements Attributable<LocationAttribute> {
     public static final String     FIND_ATTRIBUTE_AUTHORIZATIONS            = "location.findAttributeAuthorizations";
     public static final String     FIND_BY_ID                               = "location.findById";
     public static final String     FIND_BY_NAME                             = "location.findByName";
     public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "location"
-                                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "location.findClassifiedAttributes";
     public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "location.findGroupedAttributeAuthorizations";
     public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "location"
-                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String     GET_CHILD                                = "location"
-                                                                              + GET_CHILDREN_SUFFIX;
+            + GET_CHILDREN_SUFFIX;
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "location"
-                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     LOCATION_NAME                            = "location.getName";
     public static final String     NAME_SEARCH                              = "location"
-                                                                              + NAME_SEARCH_SUFFIX;
+            + NAME_SEARCH_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to LocationAttribute
@@ -186,7 +187,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.Networked#addChildRelationship(com.chiralbehaviors
      * .CoRE .NetworkRuleform)
@@ -199,7 +200,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.Networked#addParentRelationship(com.chiralbehaviors
      * .CoRE .NetworkRuleform)
@@ -220,6 +221,14 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
         return clone;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
+     */
+    @Override
+    public String getAnyId() {
+        return WellKnownLocation.ANY.id();
+    }
+
     @Override
     public Set<LocationAttribute> getAttributes() {
         return attributes;
@@ -227,7 +236,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -241,7 +250,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.Networked#getNetworkByChild()
      */
     @Override
@@ -254,7 +263,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.Networked#getNetworkByParent()
      */
     @Override
@@ -266,14 +275,54 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkChildAttribute()
+     */
+    @Override
+    public SingularAttribute<LocationNetwork, Location> getNetworkChildAttribute() {
+        return LocationNetwork_.child;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkClass()
+     */
+    @Override
+    public Class<LocationNetwork> getNetworkClass() {
+        return LocationNetwork.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkParentAttribute()
+     */
+    @Override
+    public SingularAttribute<LocationNetwork, Location> getNetworkParentAttribute() {
+        return LocationNetwork_.parent;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
+     */
+    @Override
+    public String getNotApplicableId() {
+        return WellKnownLocation.NOT_APPLICABLE.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
+     */
+    @Override
+    public String getSameId() {
+        return WellKnownLocation.SAME.id();
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
      */
     @Override
     public boolean isAnyOrSame() {
         return WellKnownLocation.ANY.id().equals(getId())
-               || WellKnownLocation.SAME.id().equals(getId());
+                || WellKnownLocation.SAME.id().equals(getId());
     }
-    
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
      */
@@ -284,7 +333,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE
      * .network .Relationship, com.chiralbehaviors.CoRE.network.Networked,
@@ -311,7 +360,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.Networked#setNetworkByChild(java.util.Set)
      */
     @Override
@@ -321,7 +370,7 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.Networked#setNetworkByParent(java.util.Set)
      */
     @Override

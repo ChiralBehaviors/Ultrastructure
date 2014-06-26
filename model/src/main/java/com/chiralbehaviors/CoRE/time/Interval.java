@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.time;
@@ -42,6 +42,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
@@ -54,84 +55,84 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * An interval in time.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 @NamedNativeQueries({
-                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                + "FROM interval AS unlinked "
-                                                                + "JOIN ("
-                                                                + "     SELECT id "
-                                                                + "     FROM interval "
-                                                                + "     EXCEPT ("
-                                                                + "             SELECT distinct(net.child) "
-                                                                + "             FROM interval_network as net "
-                                                                + "             WHERE net.parent = interval_id('Agency') "
-                                                                + "             AND relationship = relationship_id('includes') "
-                                                                + "     )"
-                                                                + ") AS linked ON unlinked.id = linked.id "
-                                                                + "WHERE unlinked.id != interval_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = "interval" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('interval', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
+    @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+            + "FROM interval AS unlinked "
+            + "JOIN ("
+            + "     SELECT id "
+            + "     FROM interval "
+            + "     EXCEPT ("
+            + "             SELECT distinct(net.child) "
+            + "             FROM interval_network as net "
+            + "             WHERE net.parent = interval_id('Agency') "
+            + "             AND relationship = relationship_id('includes') "
+            + "     )"
+            + ") AS linked ON unlinked.id = linked.id "
+            + "WHERE unlinked.id != interval_id('Agency');", resultClass = Agency.class),
+            // ?1 = :queryString, ?2 = :numberOfMatches
+            @NamedNativeQuery(name = "interval" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('interval', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @NamedQueries({
-               @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from IntervalAttribute as ca where ca.interval = :interval"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       IntervalAttribute attrValue, "
-                                                                            + "       IntervalAttributeAuthorization auth, "
-                                                                            + "       IntervalNetwork network "
-                                                                            + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.interval = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
-                                                                                    + "WHERE ra.classifier = :classification "
-                                                                                    + "AND ra.classifier = :classifier"),
-               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
-                                                                                 + "WHERE ra.groupingAgency = :groupingAgency"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
-                                                     + "FROM IntervalNetwork n "
-                                                     + "WHERE n.parent = :p "
-                                                     + "AND n.relationship = :r"),
-               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                                                        + "FROM IntervalNetwork n "
-                                                                        + "WHERE n.child = :c"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM IntervalNetwork n "
-                                                                           + "WHERE n.parent = :interval "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+    @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from IntervalAttribute as ca where ca.interval = :interval"),
+    @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
+    @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+            + "  attrValue "
+            + "FROM "
+            + "       IntervalAttribute attrValue, "
+            + "       IntervalAttributeAuthorization auth, "
+            + "       IntervalNetwork network "
+            + "WHERE "
+            + "        auth.authorizedAttribute = attrValue.attribute AND "
+            + "        network.relationship = auth.classification AND "
+            + "        network.child = auth.classifier AND"
+            + "        attrValue.interval = :ruleform AND "
+            + "        auth.classification = :classification AND "
+            + "        auth.classifier = :classifier "),
+            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
+                    + "WHERE ra.classifier = :classification "
+                    + "AND ra.classifier = :classifier"),
+                    @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
+                            + "WHERE ra.groupingAgency = :groupingAgency"),
+                            @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                    + "FROM IntervalNetwork n "
+                                    + "WHERE n.parent = :p "
+                                    + "AND n.relationship = :r"),
+                                    @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                            + "FROM IntervalNetwork n "
+                                            + "WHERE n.child = :c"),
+                                            @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM IntervalNetwork n "
+                                                    + "WHERE n.parent = :interval "
+                                                    + "AND n.relationship IN :relationships "
+                                                    + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "interval", schema = "ruleform")
 public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
-        implements Attributable<IntervalAttribute> {
+implements Attributable<IntervalAttribute> {
 
     public static final String     AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "interval.IntervalAttributesByClassification";
 
     public static final String     AUTHORIZED_AGENCY_ATTRIBUTES             = "interval.authorizedAttributes";
     public static final String     FIND_BY_NAME                             = "interval"
-                                                                              + FIND_BY_NAME_SUFFIX;
+            + FIND_BY_NAME_SUFFIX;
     public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "interval"
-                                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "interval"
-                                                                              + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "interval"
-                                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "interval"
-                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String     GET_CHILD                                = "interval"
-                                                                              + GET_CHILDREN_SUFFIX;
+            + GET_CHILDREN_SUFFIX;
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "interval"
-                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     ORDERED_ATTRIBUTES                       = "interval.orderedAttributes";
     public static final String     QUALIFIED_ENTITY_NETWORK_RULES           = "interval.qualifiedEntityNetworkRules";
     public static final String     UNLINKED                                 = "interval"
-                                                                              + UNLINKED_SUFFIX;
+            + UNLINKED_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to IntervalAttribute
@@ -203,7 +204,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.network.Networked#addChildRelationship(com.
      * chiralbehaviors .CoRE.network.NetworkRuleform)
      */
@@ -215,7 +216,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.network.Networked#addParentRelationship(com.
      * chiralbehaviors .CoRE.network.NetworkRuleform)
@@ -235,9 +236,17 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         return clone;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
+     */
+    @Override
+    public String getAnyId() {
+        return WellKnownInterval.ANY.id();
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributes()
      */
     @Override
@@ -247,7 +256,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -264,7 +273,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.network.Networked#getNetworkByChild()
      */
     @Override
@@ -277,7 +286,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.network.Networked#getNetworkByParent()
      */
     @Override
@@ -286,6 +295,46 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
             return Collections.emptySet();
         }
         return networkByParent;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkChildAttribute()
+     */
+    @Override
+    public SingularAttribute<IntervalNetwork, Interval> getNetworkChildAttribute() {
+        return IntervalNetwork_.child;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkClass()
+     */
+    @Override
+    public Class<IntervalNetwork> getNetworkClass() {
+        return IntervalNetwork.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkParentAttribute()
+     */
+    @Override
+    public SingularAttribute<IntervalNetwork, Interval> getNetworkParentAttribute() {
+        return IntervalNetwork_.parent;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
+     */
+    @Override
+    public String getNotApplicableId() {
+        return WellKnownInterval.NOT_APPLICABLE.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
+     */
+    @Override
+    public String getSameId() {
+        return WellKnownInterval.SAME.id();
     }
 
     /**
@@ -308,9 +357,9 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
     @Override
     public boolean isAnyOrSame() {
         return WellKnownInterval.ANY.id().equals(getId())
-               || WellKnownInterval.SAME.id().equals(getId());
+                || WellKnownInterval.SAME.id().equals(getId());
     }
-    
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
      */
@@ -321,7 +370,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.network.Networked#link(com.chiralbehaviors.CoRE
      * .network .Relationship, com.chiralbehaviors.CoRE.network.Networked,
@@ -345,7 +394,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.attribute.Attributable#setAttributes(java.util
      * .Set)
@@ -365,7 +414,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.network.Networked#setNetworkByChild(java.util
      * .Set)
@@ -377,7 +426,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.network.Networked#setNetworkByParent(java.util
      * .Set)

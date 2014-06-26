@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -32,7 +32,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hparry
- * 
+ *
  */
 public class NetworkGraphTest {
 
@@ -93,15 +93,15 @@ public class NetworkGraphTest {
     @Test
     public void testIntersection() throws CloneNotSupportedException {
         GraphImpl<String, String> erisGraph = new GraphImpl<>(
-                                                              new ArrayList<Node<String>>(
-                                                                                          erisNodes),
-                                                              new ArrayList<Edge<String>>(
-                                                                                          erisEdges));
+                new ArrayList<Node<String>>(
+                        erisNodes),
+                        new ArrayList<Edge<String>>(
+                                erisEdges));
         GraphImpl<String, String> michaelsGraph = new GraphImpl<>(
-                                                                  new ArrayList<Node<String>>(
-                                                                                              michaelsNodes),
-                                                                  new ArrayList<Edge<String>>(
-                                                                                              michaelsEdges));
+                new ArrayList<Node<String>>(
+                        michaelsNodes),
+                        new ArrayList<Edge<String>>(
+                                michaelsEdges));
         erisGraph.intersection(michaelsGraph);
         assertTrue(erisGraph.getNodes().contains(CouldItBeMagic));
         assertFalse(erisGraph.getNodes().contains(Parabola));
@@ -111,15 +111,15 @@ public class NetworkGraphTest {
     @Test
     public void testUnion() throws CloneNotSupportedException {
         GraphImpl<String, String> erisGraph = new GraphImpl<>(
-                                                              new ArrayList<Node<String>>(
-                                                                                          erisNodes),
-                                                              new ArrayList<Edge<String>>(
-                                                                                          erisEdges));
+                new ArrayList<Node<String>>(
+                        erisNodes),
+                        new ArrayList<Edge<String>>(
+                                erisEdges));
         GraphImpl<String, String> michaelsGraph = new GraphImpl<>(
-                                                                  new ArrayList<Node<String>>(
-                                                                                              michaelsNodes),
-                                                                  new ArrayList<Edge<String>>(
-                                                                                              michaelsEdges));
+                new ArrayList<Node<String>>(
+                        michaelsNodes),
+                        new ArrayList<Edge<String>>(
+                                michaelsEdges));
         erisGraph.union(michaelsGraph);
         assertTrue(erisGraph.getNodes().contains(CouldItBeMagic));
         assertTrue(erisGraph.getNodes().contains(Parabola));
@@ -131,7 +131,7 @@ public class NetworkGraphTest {
      * Eris, goddess of discord, instigator of the Trojan war, and lover of
      * double bass pedals.
      */
-    private void createErisGraph() {
+     private void createErisGraph() {
         erisEdges = new ArrayList<Edge<String>>();
 
         erisEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Tool, isA));
@@ -160,80 +160,80 @@ public class NetworkGraphTest {
 
         @SuppressWarnings("unchecked")
         Node<String>[] tempNodes = new Node[] { SONG_TYPE, CHANNEL_TYPE,
-                USER_TYPE, Tool, Disturbed, Barry_Manilow, Pushit,
-                FortySixAndTwo, Parabola, Mistress, Hell, CouldItBeMagic, Eris };
+                                                USER_TYPE, Tool, Disturbed, Barry_Manilow, Pushit,
+                                                FortySixAndTwo, Parabola, Mistress, Hell, CouldItBeMagic, Eris };
         erisNodes = new ArrayList<Node<String>>();
         for (Node<String> node : tempNodes) {
             erisNodes.add(node);
         }
 
-    }
+     }
 
-    /**
-	 * 
-	 */
-    private void createMichaelsGraph() {
-        michaelsEdges = new ArrayList<Edge<String>>();
+     /**
+      *
+      */
+     private void createMichaelsGraph() {
+         michaelsEdges = new ArrayList<Edge<String>>();
 
-        michaelsEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Alan_Parsons_Project,
-                                           isA));
-        michaelsEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Barry_Manilow, isA));
-        michaelsEdges.add(new TestEdgeImpl(USER_TYPE, Michael, isA));
-        michaelsEdges.add(new TestEdgeImpl(SONG_TYPE, CouldItBeMagic, isA));
+         michaelsEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Alan_Parsons_Project,
+                                            isA));
+         michaelsEdges.add(new TestEdgeImpl(CHANNEL_TYPE, Barry_Manilow, isA));
+         michaelsEdges.add(new TestEdgeImpl(USER_TYPE, Michael, isA));
+         michaelsEdges.add(new TestEdgeImpl(SONG_TYPE, CouldItBeMagic, isA));
 
-        michaelsEdges.add(new TestEdgeImpl(Michael, Alan_Parsons_Project, owns));
-        michaelsEdges.add(new TestEdgeImpl(Michael, Barry_Manilow, owns));
+         michaelsEdges.add(new TestEdgeImpl(Michael, Alan_Parsons_Project, owns));
+         michaelsEdges.add(new TestEdgeImpl(Michael, Barry_Manilow, owns));
 
-        michaelsEdges.add(new TestEdgeImpl(Barry_Manilow, CouldItBeMagic,
-                                           contains));
+         michaelsEdges.add(new TestEdgeImpl(Barry_Manilow, CouldItBeMagic,
+                                            contains));
 
-        @SuppressWarnings("unchecked")
-        Node<String>[] tempNodes = new Node[] { SONG_TYPE, CHANNEL_TYPE,
-                USER_TYPE, Alan_Parsons_Project, Barry_Manilow, CouldItBeMagic,
-                Michael };
+         @SuppressWarnings("unchecked")
+         Node<String>[] tempNodes = new Node[] { SONG_TYPE, CHANNEL_TYPE,
+                                                 USER_TYPE, Alan_Parsons_Project, Barry_Manilow, CouldItBeMagic,
+                                                 Michael };
 
-        michaelsNodes = new ArrayList<Node<String>>();
-        for (Node<String> node : tempNodes) {
-            michaelsNodes.add(node);
-        }
+         michaelsNodes = new ArrayList<Node<String>>();
+         for (Node<String> node : tempNodes) {
+             michaelsNodes.add(node);
+         }
 
-    }
+     }
 
-    /**
-	 * 
-	 */
-    private void createNodesAndEdges() {
-        // node supertypes
-        SONG_TYPE = new TestNodeImpl("SONG_TYPE");
-        CHANNEL_TYPE = new TestNodeImpl("CHANNEL_TYPE");
-        USER_TYPE = new TestNodeImpl("USER_TYPE");
+     /**
+      *
+      */
+     private void createNodesAndEdges() {
+         // node supertypes
+         SONG_TYPE = new TestNodeImpl("SONG_TYPE");
+         CHANNEL_TYPE = new TestNodeImpl("CHANNEL_TYPE");
+         USER_TYPE = new TestNodeImpl("USER_TYPE");
 
-        // channels
-        // yes, they look like bands. Ever used Pandora? That's how this works
-        Tool = new TestNodeImpl("Tool");
-        Disturbed = new TestNodeImpl("Disturbed");
-        Alan_Parsons_Project = new TestNodeImpl("Alan Parsons Project");
-        Barry_Manilow = new TestNodeImpl("Barry Manilow");
+         // channels
+         // yes, they look like bands. Ever used Pandora? That's how this works
+         Tool = new TestNodeImpl("Tool");
+         Disturbed = new TestNodeImpl("Disturbed");
+         Alan_Parsons_Project = new TestNodeImpl("Alan Parsons Project");
+         Barry_Manilow = new TestNodeImpl("Barry Manilow");
 
-        // Songs
-        Pushit = new TestNodeImpl("Pushit");
-        FortySixAndTwo = new TestNodeImpl("Forty Six & 2");
-        Parabola = new TestNodeImpl("Parabola");
-        Mistress = new TestNodeImpl("Mistress");
-        Hell = new TestNodeImpl("Hell");
-        Ronnie = new TestNodeImpl("Ronnie");
-        CouldItBeMagic = new TestNodeImpl("Could It Be Magic");
+         // Songs
+         Pushit = new TestNodeImpl("Pushit");
+         FortySixAndTwo = new TestNodeImpl("Forty Six & 2");
+         Parabola = new TestNodeImpl("Parabola");
+         Mistress = new TestNodeImpl("Mistress");
+         Hell = new TestNodeImpl("Hell");
+         Ronnie = new TestNodeImpl("Ronnie");
+         CouldItBeMagic = new TestNodeImpl("Could It Be Magic");
 
-        // users
-        // permanently at odds in the age-old batle of musical tastes
-        // also, Manilow can't write an ending for shit
-        Michael = new TestNodeImpl("Valentine Michael Smith");
-        Eris = new TestNodeImpl("Eris");
+         // users
+         // permanently at odds in the age-old batle of musical tastes
+         // also, Manilow can't write an ending for shit
+         Michael = new TestNodeImpl("Valentine Michael Smith");
+         Eris = new TestNodeImpl("Eris");
 
-    }
+     }
 
-    private void printClass(Ruleform r) {
-        assertEquals(Product.class, r.getClass());
-    }
+     private void printClass(Ruleform r) {
+         assertEquals(Product.class, r.getClass());
+     }
 
 }

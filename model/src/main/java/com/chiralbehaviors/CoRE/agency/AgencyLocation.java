@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.agency;
@@ -40,9 +40,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * The authorization rule form that defines rules for relating products to
  * locations.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 @Entity
 @Table(name = "agency_location", schema = "ruleform")
@@ -118,7 +118,7 @@ public class AgencyLocation extends Ruleform implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
      */
     @Override
@@ -153,7 +153,7 @@ public class AgencyLocation extends Ruleform implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
      * .EntityManager, java.util.Map)

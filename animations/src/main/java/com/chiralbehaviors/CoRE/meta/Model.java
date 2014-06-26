@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -28,15 +28,15 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 
 /**
  * The meta model for the CoRE
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 public interface Model {
 
     /**
      * Find the ruleform instances that match the supplied attribute
-     * 
+     *
      * @param attributeValue
      *            - the attribute value to match
      * @return the collection of ruleform instances that match the attribute
@@ -45,7 +45,7 @@ public interface Model {
 
     /**
      * Find an instance using the id
-     * 
+     *
      * @param id
      * @return the instance corresponding to the supplied id, or null if the
      *         instance does not exist
@@ -54,7 +54,7 @@ public interface Model {
 
     /**
      * Find an instance of the ExistentialRuleform using the name
-     * 
+     *
      * @param name
      * @return the instance that has the supplied name, or null if the instance
      *         does not exist
@@ -64,7 +64,7 @@ public interface Model {
 
     /**
      * Find the instances of the ruleform that are flagged for research
-     * 
+     *
      * @param name
      * @return the instances that have non null research values
      */
@@ -73,7 +73,7 @@ public interface Model {
     /**
      * Find all the instances of the RuleForm that have been updated by the
      * agency
-     * 
+     *
      * @param updatedBy
      * @param ruleform
      * @return
@@ -93,7 +93,7 @@ public interface Model {
 
     /**
      * Answer the product manager used for this model instance
-     * 
+     *
      * @return
      */
     EntityManager getEntityManager();
@@ -110,7 +110,7 @@ public interface Model {
 
     /**
      * Answer the access model for the kernel rules
-     * 
+     *
      * @return the kernel definition
      */
     Kernel getKernel();

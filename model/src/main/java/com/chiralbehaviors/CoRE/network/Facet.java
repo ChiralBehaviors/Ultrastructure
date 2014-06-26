@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.network;
@@ -28,9 +28,9 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
  * Represents an aspect of a networked existential ruleform instance. This facet
  * of the whole is determined by the authorized attributes that are classified
  * by the aspect
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, AttributeType extends AttributeValue<RuleForm>> {
     private final Aspect<RuleForm>              aspect;
@@ -59,7 +59,7 @@ abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, A
 
     /**
      * Convienence type erasure
-     * 
+     *
      * @return the underlying instance as the type of RuleForm
      */
     public RuleForm asRuleform() {
@@ -74,7 +74,7 @@ abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, A
     }
 
     /**
-     * 
+     *
      * @return the authorized attribute values for this facet
      */
     public Map<Attribute, AttributeType> getAttributes() {
@@ -83,7 +83,7 @@ abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, A
 
     /**
      * Answer the attribute value for the attribute.
-     * 
+     *
      * @param attribute
      * @return the attribute value for the attribute, or null if this is not an
      *         attribute of this facet

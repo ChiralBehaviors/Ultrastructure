@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.meta;
@@ -37,12 +37,12 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public interface WorkspaceModel {
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Agency} that are referred to by the workspace
@@ -51,7 +51,7 @@ public interface WorkspaceModel {
     Collection<Agency> getAgencies(Product workspace, Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Attribute} that are referred to by the workspace
@@ -61,7 +61,7 @@ public interface WorkspaceModel {
                                         Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Job} that are referred to by the workspace
@@ -70,7 +70,7 @@ public interface WorkspaceModel {
     Collection<Job> getJobs(Product workspace, Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Location} that are referred to by the workspace
@@ -80,7 +80,7 @@ public interface WorkspaceModel {
                                       Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #MetaProtocol} that are referred to by the workspace
@@ -90,7 +90,7 @@ public interface WorkspaceModel {
                                               Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #ProductChildSequencingAuthorization} that are
@@ -100,7 +100,7 @@ public interface WorkspaceModel {
                                                                                             Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #ProductParentSequencingAuthorization} that are
@@ -110,7 +110,7 @@ public interface WorkspaceModel {
                                                                                               Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Product} that are referred to by the workspace
@@ -119,7 +119,7 @@ public interface WorkspaceModel {
     Collection<Product> getProducts(Product workspace, Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #ProductSiblingSequencingAuthorization} that are
@@ -129,7 +129,7 @@ public interface WorkspaceModel {
                                                                                                 Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Protocol} that are referred to by the workspace
@@ -139,7 +139,7 @@ public interface WorkspaceModel {
                                       Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Relationship} that are referred to by the workspace
@@ -151,7 +151,7 @@ public interface WorkspaceModel {
     <NodeType, EdgeType> Graph<NodeType, EdgeType> getStatusCodeGraph(Product product);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #StatusCode} that are referred to by the workspace
@@ -161,7 +161,7 @@ public interface WorkspaceModel {
                                           Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #StatusCodeSequencing} that are referred to by the
@@ -171,7 +171,7 @@ public interface WorkspaceModel {
                                                             Relationship relationship);
 
     /**
-     * 
+     *
      * @param workspace
      * @param relationship
      * @return the {@link #Unit} that are referred to by the workspace
@@ -182,7 +182,7 @@ public interface WorkspaceModel {
     /**
      * This method takes a {@link #Workspace} object and inserts its members
      * into the database. It assumes that none of these objects exist already.
-     * 
+     *
      * @param workspace
      *            the workspace to be imported
      * @return the {@link #Aspect} representing the workspace {@link #Product}

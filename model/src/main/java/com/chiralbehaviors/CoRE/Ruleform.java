@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE;
@@ -41,28 +41,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 /**
  * The superclass of all rule forms.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 abstract public class Ruleform implements Serializable, Cloneable {
-    public static final Integer FALSE                 = Integer.valueOf((byte) 0);
-    public static final String  FIND_ALL_SUFFIX       = ".findAll";
-    public static final String  FIND_BY_ID_SUFFIX     = ".findById";
-    public static final String  FIND_BY_NAME_SUFFIX   = ".findByName";
-    public static final String  FIND_FLAGGED_SUFFIX   = ".findFlagged";
-    public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
-    public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
-    public static final Integer TRUE                  = Integer.valueOf((byte) 1);
-    public static final String  ZERO                  = UuidGenerator.toBase64(new UUID(
-                                                                                        0,
-                                                                                        0));
-    private static final long   serialVersionUID      = 1L;
-
     public static Boolean toBoolean(Integer value) {
         if (value == null) {
             return null;
@@ -77,21 +64,37 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return value ? TRUE : FALSE;
     }
 
+    public static final Integer FALSE                 = Integer.valueOf((byte) 0);
+    public static final String  FIND_ALL_SUFFIX       = ".findAll";
+    public static final String  FIND_BY_ID_SUFFIX     = ".findById";
+    public static final String  FIND_BY_NAME_SUFFIX   = ".findByName";
+    public static final String  FIND_FLAGGED_SUFFIX   = ".findFlagged";
+    public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+    public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
+    public static final Integer TRUE                  = Integer.valueOf((byte) 1);
+
+    public static final String  ZERO                  = UuidGenerator.toBase64(new UUID(
+                                                                                        0,
+                                                                                        0));
+
+    private static final long   serialVersionUID      = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid_seq")
     @SequenceGenerator(name = "uuid_seq", sequenceName = "com.chiralbehaviors.CoRE.UuidGenerator()")
-    private String    id;
+    private String              id;
 
     @Basic(fetch = FetchType.LAZY)
-    private String    notes;
+    private String              notes;
 
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "update_date")
-    private Timestamp updateDate = new Timestamp(System.currentTimeMillis());
+    private Timestamp           updateDate            = new Timestamp(
+                                                                      System.currentTimeMillis());
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
-    protected Agency  updatedBy;
+    protected Agency            updatedBy;
 
     public Ruleform() {
     }
@@ -133,7 +136,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -195,7 +198,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -271,7 +274,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * Calls manageEntity on each foreign key and replaces non-managed foreign
      * key objects with managed objects
-     * 
+     *
      * @param em
      * @param knownObjects
      */

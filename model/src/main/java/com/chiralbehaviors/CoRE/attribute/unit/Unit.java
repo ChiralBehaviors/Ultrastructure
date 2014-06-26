@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.attribute.unit;
@@ -37,6 +37,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
@@ -48,68 +49,68 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute unit.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  */
 @NamedQueries({
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       UnitAttribute attrValue, "
-                                                                            + "       UnitAttributeAuthorization auth, "
-                                                                            + "       UnitNetwork network "
-                                                                            + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.attribute = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from UnitAttributeAuthorization ama "
-                                                                                    + "WHERE ama.classification = :classification "
-                                                                                    + "AND ama.classifier = :classifier"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM UnitNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM UnitNetwork n "
-                                                                           + "WHERE n.parent = :attribute "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+    @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+            + "  attrValue "
+            + "FROM "
+            + "       UnitAttribute attrValue, "
+            + "       UnitAttributeAuthorization auth, "
+            + "       UnitNetwork network "
+            + "WHERE "
+            + "        auth.authorizedAttribute = attrValue.attribute AND "
+            + "        network.relationship = auth.classification AND "
+            + "        network.child = auth.classifier AND"
+            + "        attrValue.attribute = :ruleform AND "
+            + "        auth.classification = :classification AND "
+            + "        auth.classifier = :classifier "),
+            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from UnitAttributeAuthorization ama "
+                    + "WHERE ama.classification = :classification "
+                    + "AND ama.classifier = :classifier"),
+                    @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
+                    @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                            + "FROM UnitNetwork rn "
+                            + "WHERE rn.parent = :parent "
+                            + "AND rn.relationship = :relationship"),
+                            @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM UnitNetwork n "
+                                    + "WHERE n.parent = :attribute "
+                                    + "AND n.relationship IN :relationships "
+                                    + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
-                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                + "FROM attribute AS unlinked "
-                                                                + "JOIN ("
-                                                                + "SELECT id "
-                                                                + "FROM attribute "
-                                                                + "EXCEPT ("
-                                                                + "SELECT distinct(net.child) "
-                                                                + "FROM unit_network as net "
-                                                                + "WHERE net.parent = attribute_id('Attribute') "
-                                                                + "AND relationship = relationship_id('includes') "
-                                                                + ")"
-                                                                + ") AS linked ON unlinked.id = linked.id "
-                                                                + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
+    @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+            + "FROM attribute AS unlinked "
+            + "JOIN ("
+            + "SELECT id "
+            + "FROM attribute "
+            + "EXCEPT ("
+            + "SELECT distinct(net.child) "
+            + "FROM unit_network as net "
+            + "WHERE net.parent = attribute_id('Attribute') "
+            + "AND relationship = relationship_id('includes') "
+            + ")"
+            + ") AS linked ON unlinked.id = linked.id "
+            + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class),
+            // ?1 = :queryString, ?2 = :numberOfMatches
+            @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "unit", schema = "ruleform")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     public static final String FIND_BY_NAME                             = "unit.findByName";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "unit"
-                                                                          + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "unit"
-                                                                          + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String GET_CHILD                                = "unit"
-                                                                          + GET_CHILDREN_SUFFIX;
+            + GET_CHILDREN_SUFFIX;
     public static final String GET_CHILD_RULES_BY_RELATIONSHIP          = "unit"
-                                                                          + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String NAME_SEARCH                              = "unit"
-                                                                          + NAME_SEARCH_SUFFIX;
+            + NAME_SEARCH_SUFFIX;
     public static final String UNLINKED                                 = "unit"
-                                                                          + UNLINKED_SUFFIX;
+            + UNLINKED_SUFFIX;
     private static final long  serialVersionUID                         = 1L;
 
     private String             abbreviation;
@@ -172,7 +173,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.ExistentialRuleform#addChildRelationship(com
      * .chiralbehaviors .CoRE.network.NetworkRuleform)
@@ -185,7 +186,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.ExistentialRuleform#addParentRelationship(com
      * .chiralbehaviors .CoRE.network.NetworkRuleform)
@@ -207,6 +208,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     public String getAbbreviation() {
         return abbreviation;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
+     */
+    @Override
+    public String getAnyId() {
+        return WellKnownUnit.ANY.id();
     }
 
     public Set<UnitAttribute> getAttributes() {
@@ -231,7 +240,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkByChild()
      */
     @Override
@@ -244,7 +253,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkByParent()
      */
     @Override
@@ -256,12 +265,52 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkChildAttribute()
+     */
+    @Override
+    public SingularAttribute<UnitNetwork, Unit> getNetworkChildAttribute() {
+        return UnitNetwork_.child;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkClass()
+     */
+    @Override
+    public Class<UnitNetwork> getNetworkClass() {
+        return UnitNetwork.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkParentAttribute()
+     */
+    @Override
+    public SingularAttribute<UnitNetwork, Unit> getNetworkParentAttribute() {
+        return UnitNetwork_.parent;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
+     */
+    @Override
+    public String getNotApplicableId() {
+        return WellKnownUnit.NOT_APPLICABLE.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
+     */
+    @Override
+    public String getSameId() {
+        return WellKnownUnit.SAME.id();
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
      */
     @Override
     public boolean isAnyOrSame() {
         return WellKnownUnit.ANY.id().equals(getId())
-               || WellKnownUnit.SAME.id().equals(getId());
+                || WellKnownUnit.SAME.id().equals(getId());
     }
 
     /* (non-Javadoc)
@@ -274,7 +323,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.ExistentialRuleform#link(com.chiralbehaviors
      * .CoRE.network .Relationship,
@@ -323,7 +372,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByChild(java.util
      * .Set)
@@ -335,7 +384,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.ExistentialRuleform#setNetworkByParent(java.
      * util.Set)

@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -42,12 +42,12 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class AgencyModelImpl
-        extends
-        AbstractNetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
-        implements AgencyModel {
+extends
+AbstractNetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
+implements AgencyModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -72,7 +72,7 @@ public class AgencyModelImpl
     }
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
+            throws Exception {
         execute(new Procedure<Void>() {
             @Override
             public Void call(AgencyModel agencyModel) throws Exception {
@@ -107,7 +107,7 @@ public class AgencyModelImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE
      * .meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute[])
@@ -126,7 +126,7 @@ public class AgencyModelImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.network
      * .Networked)
@@ -162,13 +162,13 @@ public class AgencyModelImpl
         Agency agency = new Agency(name, description, kernel.getCoreModel());
         em.persist(agency);
         return new Facet<Agency, AgencyAttribute>(aspect, agency,
-                                                  initialize(agency, aspect)) {
+                initialize(agency, aspect)) {
         };
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.meta
      * .Aspect<RuleForm>[])
@@ -193,8 +193,8 @@ public class AgencyModelImpl
                                                    Collection<Relationship> relationships,
                                                    Collection<Agency> children) {
         if (parents == null || parents.size() == 0 || relationships == null
-            || relationships.size() == 0 || children == null
-            || children.size() == 0) {
+                || relationships.size() == 0 || children == null
+                || children.size() == 0) {
             return null;
         }
         TypedQuery<AgencyNetwork> query = em.createNamedQuery(AgencyNetwork.GET_NETWORKS,

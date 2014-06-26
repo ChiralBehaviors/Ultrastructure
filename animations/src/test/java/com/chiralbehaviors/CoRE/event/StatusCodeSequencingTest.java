@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -45,7 +45,7 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class StatusCodeSequencingTest extends DatabaseTest {
 
@@ -138,15 +138,15 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     public void testHasNoTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -218,7 +218,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
             jobModel.validateStateGraph(Arrays.asList(service));
             fail("Did not catch event with non terminal loop");
         } catch (SQLException e) {
-            // expected 
+            // expected
             assertTrue(e.getMessage().endsWith("has at least one terminal SCC defined in its status code graph"));
         }
     }
@@ -227,15 +227,15 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     public void testHasTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -248,15 +248,15 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     public void testLoop() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[3]));

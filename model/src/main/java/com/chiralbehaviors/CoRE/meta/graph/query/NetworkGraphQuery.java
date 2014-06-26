@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.meta.graph.query;
@@ -29,9 +29,9 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * Class for representing the graphs created by networked ruleforms. The nodes
  * are existential ruleforms and the edges are created by relationships. This
  * means that the edges are a) directed and b) typed.
- * 
+ *
  * @author hparry
- * 
+ *
  */
 public final class NetworkGraphQuery<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
 
@@ -67,7 +67,7 @@ public final class NetworkGraphQuery<RuleForm extends ExistentialRuleform<RuleFo
      * Gets the "edges" of the graph. The source and target properties of the
      * edge object are indexes that refer to values in the node array. They are
      * NOT ids.
-     * 
+     *
      * @return the compound network ruleforms that represent graph edges
      */
     public List<NetworkRuleform<RuleForm>> getEdges() {
@@ -77,7 +77,7 @@ public final class NetworkGraphQuery<RuleForm extends ExistentialRuleform<RuleFo
     /**
      * Returns the set of nodes in the graph, starting with the origin. These
      * are existential ruleforms.
-     * 
+     *
      * @return
      */
     public List<RuleForm> getNodes() {

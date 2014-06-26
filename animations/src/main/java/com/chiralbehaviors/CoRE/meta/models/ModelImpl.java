@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -52,11 +52,9 @@ import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class ModelImpl implements Model {
-    private static AuthenticatedPrincipal principal;
-
     public static AuthenticatedPrincipal getPrincipal() {
         return principal;
     }
@@ -73,7 +71,7 @@ public class ModelImpl implements Model {
      * Sets up the authenticated principal to use in the animation's in database
      * context. Will throw all sorts of errors if used outside of the context of
      * a Java stored proceedure.
-     * 
+     *
      * @param agency
      *            - the id of the agency corresponding to the principal
      * @param activeRoleRelationships
@@ -82,7 +80,7 @@ public class ModelImpl implements Model {
      * @param activeRoleAgencys
      *            - the ids of the agencys of the active role aspects. If null,
      *            then no active role aspects are set.
-     * 
+     *
      * @throws IllegalArgumentException
      *             if the activeRoleRelationships.length !=
      *             activeRoleAgencys.length
@@ -106,20 +104,22 @@ public class ModelImpl implements Model {
          */
     }
 
-    private final AgencyModel       agencyModel;
-    private final AttributeModel    attributeModel;
-    private final EntityManager     em;
-    private final IntervalModel     intervalModel;
-    private final JobModel          jobModel;
+    private static AuthenticatedPrincipal principal;
 
-    private final Kernel            kernel;
+    private final AgencyModel             agencyModel;
+    private final AttributeModel          attributeModel;
+    private final EntityManager           em;
+    private final IntervalModel           intervalModel;
+    private final JobModel                jobModel;
 
-    private final LocationModel     locationModel;
-    private final ProductModel      productModel;
-    private final RelationshipModel relationshipModel;
-    private final StatusCodeModel   statusCodeModel;
-    private final UnitModel         unitModel;
-    private final WorkspaceModel    workspaceModel;
+    private final Kernel                  kernel;
+
+    private final LocationModel           locationModel;
+    private final ProductModel            productModel;
+    private final RelationshipModel       relationshipModel;
+    private final StatusCodeModel         statusCodeModel;
+    private final UnitModel               unitModel;
+    private final WorkspaceModel          workspaceModel;
 
     public ModelImpl(EntityManager entityManager) {
         this(entityManager, new KernelImpl(entityManager));
@@ -142,7 +142,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#find(com.chiralbehaviors.CoRE.attribute.
      * AttributeValue)
      */
@@ -215,7 +215,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.Long, java.lang.Class)
      */
     @Override
@@ -226,7 +226,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.String,
      * java.lang.Class)
      */
@@ -236,8 +236,8 @@ public class ModelImpl implements Model {
                                                                       Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
-                                                          + FIND_BY_NAME_SUFFIX).setParameter("name",
-                                                                                              name).getSingleResult();
+                                                  + FIND_BY_NAME_SUFFIX).setParameter("name",
+                                                                                      name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -245,7 +245,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#findFlagged(java.lang.Class)
      */
     @Override
@@ -256,7 +256,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.Model#findUpdatedBy(com.chiralbehaviors.CoRE.agency
      * .Agency, java.lang.Class)
@@ -271,7 +271,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#getAgencyModel()
      */
     @Override
@@ -281,7 +281,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#getAttributeModel()
      */
     @Override
@@ -291,7 +291,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#getEntityManager()
      */
     @Override
@@ -306,7 +306,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#getJobModel()
      */
     @Override
@@ -316,7 +316,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#getKernel()
      */
     @Override
@@ -326,7 +326,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#getLocationModel()
      */
     @Override
@@ -336,7 +336,7 @@ public class ModelImpl implements Model {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.chiralbehaviors.CoRE.meta.Model#getProductModel()
      */
     @Override

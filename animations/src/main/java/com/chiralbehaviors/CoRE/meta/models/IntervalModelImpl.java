@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -41,12 +41,12 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class IntervalModelImpl
-        extends
-        AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
-        implements IntervalModel {
+extends
+AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
+implements IntervalModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -71,7 +71,7 @@ public class IntervalModelImpl
     }
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
+            throws Exception {
         execute(new Procedure<Void>() {
             @Override
             public Void call(IntervalModelImpl agencyModel) throws Exception {
@@ -106,7 +106,7 @@ public class IntervalModelImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE
      * .meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute[])
@@ -125,7 +125,7 @@ public class IntervalModelImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.network
      * .Networked)
@@ -162,14 +162,14 @@ public class IntervalModelImpl
                                          kernel.getCoreModel());
         em.persist(interval);
         return new Facet<Interval, IntervalAttribute>(aspect, interval,
-                                                      initialize(interval,
-                                                                 aspect)) {
+                initialize(interval,
+                           aspect)) {
         };
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.meta
      * .Aspect<RuleForm>[])

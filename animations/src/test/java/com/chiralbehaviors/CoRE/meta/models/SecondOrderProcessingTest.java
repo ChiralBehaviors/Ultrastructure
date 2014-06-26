@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.meta.models;
@@ -33,11 +33,9 @@ import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hparry
- * 
+ *
  */
 public class SecondOrderProcessingTest extends AbstractModelTest {
-
-    private static OrderProcessingLoader w;
 
     @BeforeClass
     public static void initialize() throws Exception {
@@ -63,7 +61,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     }
 
     /**
-     * 
+     *
      */
     private static void createMetaProtocols() {
         //create pick and ship jobs
@@ -75,7 +73,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         mp1.setDeliverFrom(w.anyRelationship);
         em.persist(mp1);
 
-        //if in US, check credit, if EU, check LOC 
+        //if in US, check credit, if EU, check LOC
         MetaProtocol mp2 = model.getJobModel().newInitializedMetaProtocol(w.pick,
                                                                           w.core);
         mp2.setRequestingAgency(w.customerType);
@@ -90,7 +88,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         mp3.setDeliverTo(w.area);
         em.persist(mp3);
 
-        //generate fee for georgetown 
+        //generate fee for georgetown
         MetaProtocol mp4 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
         mp4.setRequestingAgency(w.customerType);
@@ -100,7 +98,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         mp4.setStopOnMatch(true);
         em.persist(mp4);
 
-        //generate fee for everyone else 
+        //generate fee for everyone else
         MetaProtocol mp5 = model.getJobModel().newInitializedMetaProtocol(w.printPurchaseOrder,
                                                                           w.core);
 
@@ -121,7 +119,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     }
 
     /**
-     * 
+     *
      */
     private static void createProtocols() {
         //        Product requestedService, Agency requester,
@@ -268,7 +266,7 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
     }
 
     /**
-     * 
+     *
      */
     private static void createSequencingAuthorizations() {
         ProductSiblingSequencingAuthorization pickToShip = new ProductSiblingSequencingAuthorization(
@@ -279,6 +277,20 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
                                                                                                      w.core);
         em.persist(pickToShip);
     }
+
+    private static Protocol newProtocol() {
+        Protocol p = new Protocol(kernel.getCore());
+        p.setRequesterAttribute(kernel.getAnyAttribute());
+        p.setDeliverToAttribute(kernel.getAnyAttribute());
+        p.setDeliverFromAttribute(kernel.getAnyAttribute());
+        p.setAssignToAttribute(kernel.getAnyAttribute());
+        p.setServiceAttribute(kernel.getAnyAttribute());
+        p.setProductAttribute(kernel.getAnyAttribute());
+        p.setQuantityUnit(kernel.getAnyUnit());
+        return p;
+    }
+
+    private static OrderProcessingLoader w;
 
     @Test
     public void testCreateGeorgetownWorkflow() {
@@ -330,15 +342,15 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.getTransaction().begin();
         model.getJobModel().changeStatus(pick, w.available, kernel.getCore(),
-                                         "Test transition");
+                "Test transition");
         em.getTransaction().commit();
         em.getTransaction().begin();
         model.getJobModel().changeStatus(pick, w.active, kernel.getCore(),
-                                         "Test transition");
+                "Test transition");
         em.getTransaction().commit();
         em.getTransaction().begin();
         model.getJobModel().changeStatus(pick, w.completed, kernel.getCore(),
-                                         "Test transition");
+                "Test transition");
         em.getTransaction().commit();
 
         Job ship = model.getJobModel().getChildJobsByService(job, w.ship).get(0);
@@ -367,18 +379,6 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         }
         assertTrue("Did not find checkLetterOfCredit service in EU job tree",
                    hasCorrectService);
-    }
-
-    private static Protocol newProtocol() {
-        Protocol p = new Protocol(kernel.getCore());
-        p.setRequesterAttribute(kernel.getAnyAttribute());
-        p.setDeliverToAttribute(kernel.getAnyAttribute());
-        p.setDeliverFromAttribute(kernel.getAnyAttribute());
-        p.setAssignToAttribute(kernel.getAnyAttribute());
-        p.setServiceAttribute(kernel.getAnyAttribute());
-        p.setProductAttribute(kernel.getAnyAttribute());
-        p.setQuantityUnit(kernel.getAnyUnit());
-        return p;
     }
 
 }

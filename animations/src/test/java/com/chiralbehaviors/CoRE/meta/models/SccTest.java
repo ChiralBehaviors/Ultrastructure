@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class SccTest {
 
@@ -42,10 +42,10 @@ public class SccTest {
     public void testScc() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] { new StatusCode(new UUID(0, 1)),
-                new StatusCode(new UUID(0, 2)), new StatusCode(new UUID(0, 3)),
-                new StatusCode(new UUID(0, 4)), new StatusCode(new UUID(0, 5)),
-                new StatusCode(new UUID(0, 6)), new StatusCode(new UUID(0, 7)),
-                new StatusCode(new UUID(0, 8)), new StatusCode(new UUID(0, 9)) };
+                                                new StatusCode(new UUID(0, 2)), new StatusCode(new UUID(0, 3)),
+                                                new StatusCode(new UUID(0, 4)), new StatusCode(new UUID(0, 5)),
+                                                new StatusCode(new UUID(0, 6)), new StatusCode(new UUID(0, 7)),
+                                                new StatusCode(new UUID(0, 8)), new StatusCode(new UUID(0, 9)) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));

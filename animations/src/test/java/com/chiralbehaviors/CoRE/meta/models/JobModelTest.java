@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -53,12 +53,9 @@ import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class JobModelTest extends AbstractModelTest {
-
-    private static JobModelDebugger      jobModel;
-    private static OrderProcessingLoader scenario;
 
     @BeforeClass
     public static void before() throws Exception {
@@ -70,6 +67,11 @@ public class JobModelTest extends AbstractModelTest {
         jobModel = new JobModelDebugger(model);
     }
 
+    private static JobModelDebugger      jobModel;
+
+    private static OrderProcessingLoader scenario;
+
+    @Override
     @After
     public void after() {
         if (em.getTransaction().isActive()) {
@@ -137,14 +139,14 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.anyLocation);
         job.setRequester(scenario.core);
         jobModel.changeStatus(job, scenario.unset, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         em.persist(job);
 
         em.getTransaction().commit();
 
         em.getTransaction().begin();
         jobModel.changeStatus(job, startState, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         em.getTransaction().commit();
 
         TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
@@ -170,11 +172,11 @@ public class JobModelTest extends AbstractModelTest {
         txn.commit();
         txn.begin();
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
@@ -182,6 +184,59 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(2, protocols.size());
         List<Job> jobs = findAllJobs();
         assertEquals(7, jobs.size());
+    }
+
+    @Test
+    public void testGenerateJobs() throws Exception {
+        em.getTransaction().begin();
+        Job job = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                        scenario.core);
+        job.setAssignTo(scenario.orderFullfillment);
+        job.setProduct(scenario.abc486);
+        job.setDeliverTo(scenario.rsb225);
+        job.setDeliverFrom(scenario.factory1);
+        job.setRequester(scenario.georgeTownUniversity);
+        jobModel.changeStatus(job, scenario.available, kernel.getCore(),
+                "Test transition");
+
+        List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
+        TestDebuggingUtil.printJobs(jobs);
+        em.getTransaction().rollback();
+    }
+
+    //@Test
+    public void testGenerateJobsFromProtocols() {
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Product service = new Product("test service", kernel.getCore());
+        em.persist(service);
+        Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
+        em.persist(p);
+        txn.commit();
+        Job order = jobModel.newInitializedJob(service, kernel.getCore());
+        em.persist(order);
+        TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
+        Map<Protocol, InferenceMap> protocols = model.getJobModel().getProtocols(order);
+        assertEquals(1, protocols.size());
+        List<Job> jobs = model.getJobModel().generateImplicitJobs(order,
+                                                                  kernel.getCore());
+        for (Job j : jobs) {
+            assertNotNull(j.getAssignToAttribute());
+            assertNotNull(j.getAssignTo());
+            assertNotNull(j.getService());
+            assertNotNull(j.getServiceAttribute());
+            assertNotNull(j.getProduct());
+            assertNotNull(j.getProductAttribute());
+            assertNotNull(j.getDeliverTo());
+            assertNotNull(j.getDeliverToAttribute());
+            assertNotNull(j.getDeliverFrom());
+            assertNotNull(j.getDeliverFromAttribute());
+            assertNotNull(j.getRequester());
+            assertNotNull(j.getRequesterAttribute());
+            assertNotNull(j.getUpdatedBy());
+
+        }
+
     }
 
     @Test
@@ -278,173 +333,47 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().commit();
     }
 
-    @Test
-    public void testNonExemptOrder() throws Exception {
-        clearJobs();
+    //    TODO this test won't pass until we make job chronology saves fire from
+    //    job update triggers
+    // @Test
+    public void testJobChronologyOnStatusUpdate() throws Exception {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
-                                                          scenario.core);
-        order.setAssignTo(scenario.orderFullfillment);
-        order.setProduct(scenario.abc486);
-        order.setDeliverTo(scenario.bht378);
-        order.setDeliverFrom(scenario.factory1);
-        order.setRequester(scenario.orgA);
-        em.persist(order);
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
-        assertEquals(1, metaProtocols.size());
-        Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
-        assertEquals(2, protocols.size());
-        List<Job> jobs = jobModel.getAllChildren(order);
-        assertEquals(6, jobs.size());
-    }
+        alterTriggers(false);
+        try {
+            Job order = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                              scenario.core);
+            order.setAssignTo(scenario.orderFullfillment);
+            order.setProduct(scenario.abc486);
+            order.setDeliverTo(scenario.rsb225);
+            order.setDeliverFrom(scenario.factory1);
+            order.setRequester(scenario.georgeTownUniversity);
+            jobModel.changeStatus(order, scenario.available, kernel.getCore(),
+                    "Test transition");
+            em.persist(order);
+            em.flush();
+            JobChronology chronology = new JobChronology(order, "Testy");
+            em.persist(chronology);
+            txn.commit();
+            em.refresh(order);
+            List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
+            assertEquals(1, chronologies.size());
+            List<String> fieldErrors = verifyChronologyFields(order,
+                                                              chronologies.get(0));
 
-    //@Test
-    public void testGenerateJobsFromProtocols() {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        Product service = new Product("test service", kernel.getCore());
-        em.persist(service);
-        Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
-        em.persist(p);
-        txn.commit();
-        Job order = jobModel.newInitializedJob(service, kernel.getCore());
-        em.persist(order);
-        TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
-        Map<Protocol, InferenceMap> protocols = model.getJobModel().getProtocols(order);
-        assertEquals(1, protocols.size());
-        List<Job> jobs = model.getJobModel().generateImplicitJobs(order,
-                                                                  kernel.getCore());
-        for (Job j : jobs) {
-            assertNotNull(j.getAssignToAttribute());
-            assertNotNull(j.getAssignTo());
-            assertNotNull(j.getService());
-            assertNotNull(j.getServiceAttribute());
-            assertNotNull(j.getProduct());
-            assertNotNull(j.getProductAttribute());
-            assertNotNull(j.getDeliverTo());
-            assertNotNull(j.getDeliverToAttribute());
-            assertNotNull(j.getDeliverFrom());
-            assertNotNull(j.getDeliverFromAttribute());
-            assertNotNull(j.getRequester());
-            assertNotNull(j.getRequesterAttribute());
-            assertNotNull(j.getUpdatedBy());
-
+            assertEquals(0, fieldErrors.size());
+            txn.begin();
+            model.getJobModel().changeStatus(order, scenario.available,
+                                             kernel.getCore(), null);
+            txn.commit();
+            chronologies = model.getJobModel().getChronologyForJob(order);
+            assertEquals(2, chronologies.size());
+            fieldErrors = verifyChronologyFields(order, chronologies.get(0));
+            System.out.println(String.format("Errors: %s", fieldErrors));
+            assertEquals(0, fieldErrors.size());
+        } finally {
+            alterTriggers(true);
         }
-
-    }
-
-    @Test
-    public void testOrder() throws Exception {
-        clearJobs();
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
-                                                          scenario.core);
-        order.setAssignTo(scenario.orderFullfillment);
-        order.setProduct(scenario.abc486);
-        order.setDeliverTo(scenario.rsb225);
-        order.setDeliverFrom(scenario.factory1);
-        order.setRequester(scenario.georgeTownUniversity);
-        em.persist(order);
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
-        assertEquals(1, metaProtocols.size());
-        Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
-        assertEquals(2, protocols.size());
-        List<Job> jobs = findAllJobs();
-        assertEquals(6, jobs.size());
-
-        txn.begin();
-        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
-                                               Job.class);
-        query.setParameter("service", scenario.checkCredit);
-        Job creditCheck = query.getSingleResult();
-        assertEquals(scenario.available, creditCheck.getStatus());
-        jobModel.changeStatus(creditCheck, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(creditCheck, scenario.completed,
-                              kernel.getAgency(), "transition during test");
-        txn.commit();
-        em.clear();
-        txn.begin();
-        query.setParameter("service", scenario.pick);
-        Job pick = query.getSingleResult();
-        assertEquals(scenario.available, pick.getStatus());
-        jobModel.changeStatus(pick, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(pick, scenario.completed, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        em.clear();
-        query.setParameter("service", scenario.ship);
-        Job ship = query.getSingleResult();
-        List<Job> pickSiblings = jobModel.getActiveSubJobsForService(pick.getParent(),
-                                                                     scenario.ship);
-        assertEquals(1, pickSiblings.size());
-        assertEquals(scenario.waitingOnPurchaseOrder, ship.getStatus());
-        query.setParameter("service", scenario.fee);
-        Job fee = query.getSingleResult();
-        JobModelDebugger debugger = new JobModelDebugger(model);
-        TestDebuggingUtil.printProtocolGaps(debugger.findProtocolGaps(fee));
-        jobModel.changeStatus(fee, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(fee, scenario.completed, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        em.clear();
-        query.setParameter("service", scenario.printPurchaseOrder);
-        Job printPO = query.getSingleResult();
-        assertEquals(scenario.available, printPO.getStatus());
-        jobModel.changeStatus(printPO, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(printPO, scenario.completed, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        em.clear();
-        query.setParameter("service", scenario.ship);
-        ship = query.getSingleResult();
-        assertEquals(scenario.available, ship.getStatus());
-        jobModel.changeStatus(ship, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(ship, scenario.completed, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        em.clear();
-        query.setParameter("service", scenario.deliver);
-        Job deliver = query.getSingleResult();
-        assertEquals(scenario.completed, deliver.getStatus());
     }
 
     @Test
@@ -458,7 +387,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
         jobModel.changeStatus(job, scenario.available, kernel.getCore(),
-                              "Test transition");
+                "Test transition");
         em.persist(job);
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
@@ -495,7 +424,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setRequester(scenario.cafleurBon);
         em.persist(job);
         jobModel.changeStatus(job, scenario.unset, kernel.getCore(),
-                              "Transition from test");
+                "Transition from test");
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         txfm = jobModel.getProtocols(job);
@@ -516,69 +445,160 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testGenerateJobs() throws Exception {
-        em.getTransaction().begin();
-        Job job = model.getJobModel().newInitializedJob(scenario.deliver,
-                                                        scenario.core);
-        job.setAssignTo(scenario.orderFullfillment);
-        job.setProduct(scenario.abc486);
-        job.setDeliverTo(scenario.rsb225);
-        job.setDeliverFrom(scenario.factory1);
-        job.setRequester(scenario.georgeTownUniversity);
-        jobModel.changeStatus(job, scenario.available, kernel.getCore(),
-                              "Test transition");
-
-        List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
-        TestDebuggingUtil.printJobs(jobs);
-        em.getTransaction().rollback();
-    }
-
-    //    TODO this test won't pass until we make job chronology saves fire from
-    //    job update triggers
-    // @Test
-    public void testJobChronologyOnStatusUpdate() throws Exception {
+    public void testNonExemptOrder() throws Exception {
+        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-        alterTriggers(false);
-        try {
-            Job order = model.getJobModel().newInitializedJob(scenario.deliver,
-                                                              scenario.core);
-            order.setAssignTo(scenario.orderFullfillment);
-            order.setProduct(scenario.abc486);
-            order.setDeliverTo(scenario.rsb225);
-            order.setDeliverFrom(scenario.factory1);
-            order.setRequester(scenario.georgeTownUniversity);
-            jobModel.changeStatus(order, scenario.available, kernel.getCore(),
-                                  "Test transition");
-            em.persist(order);
-            em.flush();
-            JobChronology chronology = new JobChronology(order, "Testy");
-            em.persist(chronology);
-            txn.commit();
-            em.refresh(order);
-            List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(1, chronologies.size());
-            List<String> fieldErrors = verifyChronologyFields(order,
-                                                              chronologies.get(0));
+        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                          scenario.core);
+        order.setAssignTo(scenario.orderFullfillment);
+        order.setProduct(scenario.abc486);
+        order.setDeliverTo(scenario.bht378);
+        order.setDeliverFrom(scenario.factory1);
+        order.setRequester(scenario.orgA);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(1, metaProtocols.size());
+        Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        List<Job> jobs = jobModel.getAllChildren(order);
+        assertEquals(6, jobs.size());
+    }
 
-            assertEquals(0, fieldErrors.size());
-            txn.begin();
-            model.getJobModel().changeStatus(order, scenario.available,
-                                             kernel.getCore(), null);
-            txn.commit();
-            chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(2, chronologies.size());
-            fieldErrors = verifyChronologyFields(order, chronologies.get(0));
-            System.out.println(String.format("Errors: %s", fieldErrors));
-            assertEquals(0, fieldErrors.size());
-        } finally {
-            alterTriggers(true);
-        }
+    @Test
+    public void testOrder() throws Exception {
+        clearJobs();
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                          scenario.core);
+        order.setAssignTo(scenario.orderFullfillment);
+        order.setProduct(scenario.abc486);
+        order.setDeliverTo(scenario.rsb225);
+        order.setDeliverFrom(scenario.factory1);
+        order.setRequester(scenario.georgeTownUniversity);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        assertEquals(1, metaProtocols.size());
+        Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
+        assertEquals(2, protocols.size());
+        List<Job> jobs = findAllJobs();
+        assertEquals(6, jobs.size());
+
+        txn.begin();
+        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
+                                               Job.class);
+        query.setParameter("service", scenario.checkCredit);
+        Job creditCheck = query.getSingleResult();
+        assertEquals(scenario.available, creditCheck.getStatus());
+        jobModel.changeStatus(creditCheck, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(creditCheck, scenario.completed,
+                              kernel.getAgency(), "transition during test");
+        txn.commit();
+        em.clear();
+        txn.begin();
+        query.setParameter("service", scenario.pick);
+        Job pick = query.getSingleResult();
+        assertEquals(scenario.available, pick.getStatus());
+        jobModel.changeStatus(pick, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(pick, scenario.completed, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.ship);
+        Job ship = query.getSingleResult();
+        List<Job> pickSiblings = jobModel.getActiveSubJobsForService(pick.getParent(),
+                                                                     scenario.ship);
+        assertEquals(1, pickSiblings.size());
+        assertEquals(scenario.waitingOnPurchaseOrder, ship.getStatus());
+        query.setParameter("service", scenario.fee);
+        Job fee = query.getSingleResult();
+        JobModelDebugger debugger = new JobModelDebugger(model);
+        TestDebuggingUtil.printProtocolGaps(debugger.findProtocolGaps(fee));
+        jobModel.changeStatus(fee, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(fee, scenario.completed, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.printPurchaseOrder);
+        Job printPO = query.getSingleResult();
+        assertEquals(scenario.available, printPO.getStatus());
+        jobModel.changeStatus(printPO, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(printPO, scenario.completed, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.ship);
+        ship = query.getSingleResult();
+        assertEquals(scenario.available, ship.getStatus());
+        jobModel.changeStatus(ship, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(ship, scenario.completed, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        em.clear();
+        query.setParameter("service", scenario.deliver);
+        Job deliver = query.getSingleResult();
+        assertEquals(scenario.completed, deliver.getStatus());
+    }
+
+    private void clearJobs() throws SQLException {
+        Connection connection = em.unwrap(Connection.class);
+        boolean prev = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        alterTriggers(false);
+        String query = "DELETE FROM ruleform.job";
+        connection.createStatement().execute(query);
+        alterTriggers(true);
+        connection.commit();
+        connection.setAutoCommit(prev);
+    }
+
+    private List<Job> findAllJobs() {
+        TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",
+                                                                     Job.class);
+        return query.getResultList();
     }
 
     /**
      * Returns a list of fields that do not match between job and chronology
-     * 
+     *
      * @param job
      * @param jobChronology
      * @return
@@ -591,9 +611,9 @@ public class JobModelTest extends AbstractModelTest {
      */
     private List<String> verifyChronologyFields(Job job,
                                                 JobChronology jobChronology)
-                                                                            throws Exception {
+                                                        throws Exception {
         String[] fieldsToMatch = new String[] { "status", "requester",
-                "assignTo", "deliverFrom", "deliverTo", "notes" };
+                                                "assignTo", "deliverFrom", "deliverTo", "notes" };
         List<String> unmatchedFields = new LinkedList<>();
         if (!jobChronology.getJob().equals(job)) {
             unmatchedFields.add("job");
@@ -615,31 +635,13 @@ public class JobModelTest extends AbstractModelTest {
                 System.out.println(String.format("%s: job: %s, chronology: %s",
                                                  field,
                                                  jobRf == null ? "null"
-                                                              : jobRf.getName(),
-                                                 chronoRf == null ? "null"
-                                                                 : chronoRf.getName()));
+                                                                 : jobRf.getName(),
+                                                                 chronoRf == null ? "null"
+                                                                                    : chronoRf.getName()));
                 unmatchedFields.add(field);
             }
         }
 
         return unmatchedFields;
-    }
-
-    private void clearJobs() throws SQLException {
-        Connection connection = em.unwrap(Connection.class);
-        boolean prev = connection.getAutoCommit();
-        connection.setAutoCommit(false);
-        alterTriggers(false);
-        String query = "DELETE FROM ruleform.job";
-        connection.createStatement().execute(query);
-        alterTriggers(true);
-        connection.commit();
-        connection.setAutoCommit(prev);
-    }
-
-    private List<Job> findAllJobs() {
-        TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",
-                                                                     Job.class);
-        return query.getResultList();
     }
 }

@@ -1,26 +1,27 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.Job.*;
+import static com.chiralbehaviors.CoRE.event.Job.ACTIVE_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.FIND_ALL;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_EXPLICIT_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
+import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
@@ -57,7 +58,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * An instantiation of a service; something actually done
- * 
+ *
  */
 @NamedQueries({
                @NamedQuery(name = FIND_ALL, query = "select j from Job j"),
@@ -219,7 +220,7 @@ public class Job extends AbstractProtocol {
      */
     @ManyToOne
     @JoinColumn(name = "parent")
-    private Job                        parent;
+    private Job                parent;
 
     public Job() {
     }
@@ -267,7 +268,7 @@ public class Job extends AbstractProtocol {
      * <p>
      * <b>word</b>
      * </p>
-     * 
+     *
      * @param newStatus
      */
     public void _setStatus(StatusCode newStatus) {
@@ -353,7 +354,7 @@ public class Job extends AbstractProtocol {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
      * .EntityManager, java.util.Map)

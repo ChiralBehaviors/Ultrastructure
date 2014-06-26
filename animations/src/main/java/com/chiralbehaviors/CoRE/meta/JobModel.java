@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -37,7 +37,7 @@ import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public interface JobModel {
     static InferenceMap NO_TRANSFORMATION = new InferenceMap(false, false,
@@ -48,18 +48,9 @@ public interface JobModel {
                                                              false, false);
 
     /**
-     * Generate all the implicit sub jobs for the job
-     * 
-     * @param job
-     * @param updatedBy
-     */
-    void generateImplicitJobsForExplicitJobs(Job job,
-                                                          Agency updatedBy);
-
-    /**
      * Sets the status of the given Job. This should not be done directly on the
      * job itself because we log the change in the JobChronology ruleform.
-     * 
+     *
      * @param job
      * @param newStatus
      * @param message
@@ -74,7 +65,7 @@ public interface JobModel {
      * Creates and persist a StatusCodeSequencing object for each sequential
      * pair of StatusCodes in the codes variable. So if codes is [A, B, C,] 2
      * StatusCodeSequencing objects will be created: A->B, B->C
-     * 
+     *
      * @param service
      *            the service with which these status codes are associated
      * @param codes
@@ -96,7 +87,7 @@ public interface JobModel {
     /**
      * Ensure that the nextStatus is a valid status transition from the
      * currentStatus for the service
-     * 
+     *
      * @param job
      * @param service
      * @param currentStatus
@@ -105,7 +96,7 @@ public interface JobModel {
      */
     void ensureNextStateIsValid(Job job, Product service,
                                 StatusCode currentStatus, StatusCode nextStatus)
-                                                                                throws SQLException;
+                                        throws SQLException;
 
     /**
      * @param parent
@@ -114,48 +105,56 @@ public interface JobModel {
     void ensureValidParentStatus(Job parent) throws SQLException;
 
     /**
-     * 
+     *
      * @param nextSibling
      * @param nextSiblingStatus
      * @throws SQLException
      */
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
-                                                                  throws SQLException;
+                                             throws SQLException;
 
     /**
      * For a given job, generates all the implicit jobs that need to be done
-     * 
+     *
      * This is the jesus nut of the the event cluster animation.
-     * 
+     *
      * @param updatedBy
      * @param jobId
-     * 
+     *
      * @return the list of jobs generated
      * @throws SQLException
      */
     List<Job> generateImplicitJobs(Job job, Agency updatedBy);
 
     /**
+     * Generate all the implicit sub jobs for the job
+     *
+     * @param job
+     * @param updatedBy
+     */
+    void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy);
+
+    /**
      * Retrieve a list of all currently active "explicit" (top level) Jobs.
      * "Explicit" means a Job that has no parent Job. "Active" means Jobs whose
      * current state is neither "(UNSET)"/pending nor a terminal state for the
      * Job's Product.
-     * 
+     *
      * @return the list of all active, top level jobs
      */
     List<Job> getActiveExplicitJobs();
 
     /**
      * Answer the list of active jobs that are assigned to a agency
-     * 
+     *
      * @param agency
      * @return the list of active jobs assigned to the agency
      */
     List<Job> getActiveJobsFor(Agency agency);
 
     /**
-     * 
+     *
      * @param job
      * @param service
      * @return
@@ -164,7 +163,7 @@ public interface JobModel {
 
     /**
      * Answer the list of active sub jobs (children) of the job
-     * 
+     *
      * @param job
      * @return the list of active sub jobs of the job
      */
@@ -173,7 +172,7 @@ public interface JobModel {
     /**
      * Answer the recursive list of all sub jobs - at any level - of a job that
      * are active or terminated
-     * 
+     *
      * @param job
      * @return the full list of all sub jobs of a job that are active or
      *         terminated
@@ -183,7 +182,7 @@ public interface JobModel {
     /**
      * Answer the recursive list of all sub jobs - at any level - of a job that
      * are active
-     * 
+     *
      * @param job
      * @return the recursive list of all sub jobs - at any level - of a job that
      *         are active
@@ -191,7 +190,7 @@ public interface JobModel {
     Collection<Job> getAllActiveSubJobsOf(Job job);
 
     /**
-     * 
+     *
      * @param parent
      * @param agency
      * @return
@@ -199,7 +198,7 @@ public interface JobModel {
     List<Job> getAllActiveSubJobsOf(Job parent, Agency agency);
 
     /**
-     * 
+     *
      * @param parent
      * @param agency
      * @param jobs
@@ -208,7 +207,7 @@ public interface JobModel {
 
     /**
      * Answer the list of all active subjobs
-     * 
+     *
      * @param job
      * @param tally
      * @return
@@ -217,7 +216,7 @@ public interface JobModel {
 
     /**
      * Get all direct and indirect child jobs of this job, regardless of status
-     * 
+     *
      * @param job
      * @return
      */
@@ -226,7 +225,7 @@ public interface JobModel {
     /**
      * Answer the list of sequencing authorizations that have the job's service
      * as parent
-     * 
+     *
      * @param job
      * @return the list of sequencing authorizations that have the job's service
      *         as parent
@@ -242,7 +241,7 @@ public interface JobModel {
     /**
      * Gets all immediate children of the parent job having the specified
      * service. Does not differentiate between unset, active, or terminated jobs
-     * 
+     *
      * @param parent
      * @param service
      * @return
@@ -253,10 +252,10 @@ public interface JobModel {
      * Returns an ordered list of all JobChronology rules for the given job.
      * Entries are ordered by the ascending timeStamp (oldest is first, most
      * recent is last)
-     * 
+     *
      * If the given Job is either null or has a null id property, an empty list
      * is returned.
-     * 
+     *
      * @param job
      * @return
      */
@@ -264,7 +263,7 @@ public interface JobModel {
 
     /**
      * Answer the immediate child jobs of the job that are active or terminal
-     * 
+     *
      * @param job
      * @return the immediate child jobs of the job that are active or terminal
      */
@@ -272,7 +271,7 @@ public interface JobModel {
 
     /**
      * Answer the initial state of a service
-     * 
+     *
      * @param service
      * @return the initial state of a service
      */
@@ -281,7 +280,7 @@ public interface JobModel {
     /**
      * Returns a list of initially available sub-jobs (i.e., ones that do not
      * depend on any others having been completed yet) of a given job
-     * 
+     *
      * @param job
      * @return
      */
@@ -289,7 +288,7 @@ public interface JobModel {
 
     /**
      * Answer the list of MetaProtocols that can be applied to the job
-     * 
+     *
      * @param job
      * @return the list of MetaProtocols that can be applied to the job
      */
@@ -304,10 +303,10 @@ public interface JobModel {
     /**
      * Returns the individual JobChronology rule that reflects the most recent
      * change to the given Job.
-     * 
+     *
      * If the given Job is either null or has a null id property, an empty list
      * is returned.
-     * 
+     *
      * @param job
      * @return
      */
@@ -315,7 +314,7 @@ public interface JobModel {
 
     /**
      * Answer the list of child status codes for the service for the parent code
-     * 
+     *
      * @param service
      * @param parent
      * @return the list of child status codes for the service for the parent
@@ -325,7 +324,7 @@ public interface JobModel {
 
     /**
      * Answer the list of parent actions of the job
-     * 
+     *
      * @param job
      * @return the list of parent actions of the job
      */
@@ -339,7 +338,7 @@ public interface JobModel {
 
     /**
      * Answer the list of unique protocols applicable for a job
-     * 
+     *
      * @param job
      * @return the list of unique protocols applicable for a job
      */
@@ -348,7 +347,7 @@ public interface JobModel {
     /**
      * Answer the matched list of inferred protocols for a job, given the meta
      * protocol transformation
-     * 
+     *
      * @param job
      * @param metaprotocol
      * @return The list of protocol mappings for a service that are inferred by
@@ -365,7 +364,7 @@ public interface JobModel {
 
     /**
      * Answer the list of sibling actions for the job
-     * 
+     *
      * @param job
      * @return the list of sibling actions for the job
      */
@@ -385,7 +384,7 @@ public interface JobModel {
 
     /**
      * Answer the collection of status codes for a service
-     * 
+     *
      * @param service
      * @return the collection of status codes for a service
      */
@@ -393,7 +392,7 @@ public interface JobModel {
 
     /**
      * Answer the list of terminal states for the supplied job
-     * 
+     *
      * @param job
      * @return
      */
@@ -407,7 +406,7 @@ public interface JobModel {
 
     /**
      * answer the list of jobs with children assigned to an agency
-     * 
+     *
      * @param agency
      * @return
      */
@@ -415,7 +414,7 @@ public interface JobModel {
 
     /**
      * Answer the list of siblings of a service that have the unset status
-     * 
+     *
      * @param parent
      *            - the parent who children are the siblings
      * @param service
@@ -426,7 +425,7 @@ public interface JobModel {
 
     /**
      * Answer true if the job has active siblings, false otherwise
-     * 
+     *
      * @param job
      * @return true if the job has active siblings, false otherwise
      */
@@ -434,7 +433,7 @@ public interface JobModel {
 
     /**
      * Answer true if the service has an initial state, false otherwise
-     * 
+     *
      * @param service
      * @return true if the service has an initial state, false otherwise
      */
@@ -443,7 +442,7 @@ public interface JobModel {
     /**
      * Answer true if the service's status graph has strongly connected
      * components
-     * 
+     *
      * @param service
      * @return true if the service's status graph has strongly connected
      *         components
@@ -453,7 +452,7 @@ public interface JobModel {
     /**
      * Answer true if the service's status graph has terminal strongly connected
      * components
-     * 
+     *
      * @param service
      * @return true if the service's status graph has terminal strongly
      *         connected components
@@ -463,7 +462,7 @@ public interface JobModel {
 
     /**
      * Insert a new job
-     * 
+     *
      * @param parent
      * @param protocol
      * @return
@@ -478,7 +477,7 @@ public interface JobModel {
 
     /**
      * Answer true if the status code is the terminal state for the event
-     * 
+     *
      * @param sc
      * @param service
      * @return true, if the status code is the terminal state for the event,
@@ -489,7 +488,7 @@ public interface JobModel {
     /**
      * Answer true if the next status code is a valid status transition of the
      * service given the parent
-     * 
+     *
      * @param service
      * @param parent
      * @param next
@@ -501,7 +500,7 @@ public interface JobModel {
 
     /**
      * Log the status change of a job at the timestamp
-     * 
+     *
      * @param job
      * @param notes
      */
@@ -535,28 +534,28 @@ public interface JobModel {
 
     /**
      * Process all the implicit status changes of the children of a job
-     * 
+     *
      * @param job
      */
     void processChildSequencing(Job job);
 
     /**
      * Process all the implicit status changes of a job
-     * 
+     *
      * @param job
      */
     void processJobSequencing(Job job);
 
     /**
      * Process all the implicit status changes of the parent of a job
-     * 
+     *
      * @param job
      */
     void processParentSequencing(Job job);
 
     /**
      * Process all the implicit status changes of the siblings of a job
-     * 
+     *
      * @param job
      */
     void processSiblingSequencing(Job job);
@@ -564,7 +563,7 @@ public interface JobModel {
     /**
      * Validate that the status graph of the list of services have no loops that
      * can't be escaped into a terminal state
-     * 
+     *
      * @param modifiedProducts
      * @throws SQLException
      */

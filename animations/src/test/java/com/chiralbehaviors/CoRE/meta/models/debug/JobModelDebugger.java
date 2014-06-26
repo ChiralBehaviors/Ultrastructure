@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
 
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.Protocol;
@@ -39,7 +40,7 @@ public class JobModelDebugger extends JobModelImpl {
     public JobModelDebugger(Model model) {
         super(model);
     }
-    
+
     /**
      * @param job
      * @param p
@@ -74,7 +75,7 @@ public class JobModelDebugger extends JobModelImpl {
         return missingFields;
 
     }
-    
+
     /**
      * Returns a map of all protocols that match job.service and a list of field
      * names specifying which fields on the protocol prevent the protocol from
@@ -96,6 +97,19 @@ public class JobModelDebugger extends JobModelImpl {
         for (Protocol p : protocols) {
             gaps.put(p, findGaps(job, p));
         }
+        return gaps;
+    }
+
+    public Map<Protocol, List<String>> findMetaProtocolGaps(Job job) {
+        TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET_FOR_SERVICE,
+                                                         Protocol.class);
+        query.setParameter("requestedService", job.getService());
+        List<Protocol> protocols = query.getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        Map<Protocol, List<String>> gaps = new HashMap<>();
+        for (Protocol protocol : protocols) {
+        }
+
         return gaps;
     }
 

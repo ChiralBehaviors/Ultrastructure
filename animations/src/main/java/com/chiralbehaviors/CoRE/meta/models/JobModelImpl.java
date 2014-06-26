@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -122,9 +121,8 @@ public class JobModelImpl implements JobModel {
         T call(JobModelImpl jobModel) throws Exception;
     }
 
-    private static final Logger        log                = LoggerFactory.getLogger(JobModelImpl.class);
-    private static final AtomicBoolean IGNORE_LOG_INSERTS = new AtomicBoolean();
-    private static final List<String>  MODIFIED_SERVICES  = new ArrayList<>();
+    private static final Logger       log               = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final List<String> MODIFIED_SERVICES = new ArrayList<>();
 
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
@@ -354,9 +352,6 @@ public class JobModelImpl implements JobModel {
 
     public static void log_inserts_in_job_chronology(final TriggerData triggerData)
                                                                                    throws SQLException {
-        if (IGNORE_LOG_INSERTS.get()) {
-            return;
-        }
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
@@ -425,22 +420,16 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy) {
-        boolean previous = IGNORE_LOG_INSERTS.compareAndSet(false, true);
-        try {
-            if (job.getStatus().getPropagateChildren()) {
-                if (log.isInfoEnabled()) {
-                    log.info(String.format("Generating implicit jobs for %s",
-                                           job));
-                }
-                generateImplicitJobs(job, updatedBy);
-            } else {
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("Not generating implicit jobs for: %s",
-                                            job));
-                }
+        if (job.getStatus().getPropagateChildren()) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Generating implicit jobs for %s", job));
             }
-        } finally {
-            IGNORE_LOG_INSERTS.set(previous);
+            generateImplicitJobs(job, updatedBy);
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Not generating implicit jobs for: %s",
+                                        job));
+            }
         }
     }
 
@@ -554,21 +543,16 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> generateImplicitJobs(Job job, Agency updatedBy) {
-        boolean previous = IGNORE_LOG_INSERTS.compareAndSet(false, true);
-        try {
-            Map<Protocol, InferenceMap> protocols = getProtocols(job);
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Found %s protocols for %s",
-                                        protocols.size(), job));
-            }
-            List<Job> jobs = new ArrayList<Job>();
-            for (Entry<Protocol, InferenceMap> txfm : protocols.entrySet()) {
-                jobs.add(insert(job, txfm.getKey(), txfm.getValue()));
-            }
-            return jobs;
-        } finally {
-            IGNORE_LOG_INSERTS.set(previous);
+        Map<Protocol, InferenceMap> protocols = getProtocols(job);
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Found %s protocols for %s",
+                                    protocols.size(), job));
         }
+        List<Job> jobs = new ArrayList<Job>();
+        for (Entry<Protocol, InferenceMap> txfm : protocols.entrySet()) {
+            jobs.add(insert(job, txfm.getKey(), txfm.getValue()));
+        }
+        return jobs;
     }
 
     @Override
@@ -590,8 +574,8 @@ public class JobModelImpl implements JobModel {
     public List<Job> getActiveSubJobsForService(Job job, Product service) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE,
                                                     Job.class);
-        query.setParameter(1, job.getService().getPrimaryKey());
-        query.setParameter(2, job.getPrimaryKey());
+        query.setParameter(1, job.getPrimaryKey());
+        query.setParameter(2, service.getPrimaryKey());
         return query.getResultList();
     }
 
@@ -926,7 +910,7 @@ public class JobModelImpl implements JobModel {
     public List<ProductSiblingSequencingAuthorization> getSiblingActions(Job job) {
         TypedQuery<ProductSiblingSequencingAuthorization> query = em.createNamedQuery(ProductSiblingSequencingAuthorization.GET_SIBLING_ACTIONS,
                                                                                       ProductSiblingSequencingAuthorization.class);
-        query.setParameter("service", job.getService());
+        query.setParameter("parent", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
     }
@@ -1073,28 +1057,22 @@ public class JobModelImpl implements JobModel {
     }
 
     public Job insert(Job parent, Protocol protocol, InferenceMap txfm) {
-        boolean previous = IGNORE_LOG_INSERTS.getAndSet(true);
-        try {
-            Job job = new Job(kernel.getCoreAnimationSoftware());
-            job._setStatus(kernel.getUnset());
-            job.setParent(parent);
-            copyIntoChild(parent, protocol, txfm, job);
-            em.persist(job);
-            log(job, String.format("Inserted from protocol match"));
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Inserted job %s from protocol %s",
-                                        job, protocol));
-            }
-            return job;
-        } finally {
-            IGNORE_LOG_INSERTS.set(previous);
+        Job job = new Job(kernel.getCoreAnimationSoftware());
+        job._setStatus(kernel.getUnset());
+        job.setParent(parent);
+        copyIntoChild(parent, protocol, txfm, job);
+        em.persist(job);
+        log(job, String.format("Inserted from protocol match"));
+        if (log.isInfoEnabled()) {
+            log.info(String.format("Inserted job %s from protocol %s", job,
+                                   protocol));
         }
+        return job;
     }
 
     @Override
     public boolean isActive(Job job) {
-        return !kernel.getUnset().equals(job.getStatus())
-               && !isTerminalState(job.getStatus(), job.getService());
+        return !isTerminalState(job.getStatus(), job.getService());
     }
 
     /*
@@ -1233,47 +1211,60 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void processChildChanges(Job job) {
+    public void processChildSequencing(Job job) {
         if (log.isInfoEnabled()) {
             log.info(String.format("Processing children of Job %s", job));
         }
         List<ProductChildSequencingAuthorization> childActions = getChildActions(job);
+        if (log.isInfoEnabled()) {
+            log.info(String.format("%s children actions for Job %s",
+                                   childActions.size(), job));
+        }
         for (ProductChildSequencingAuthorization seq : childActions) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Processing %s", seq));
+            }
             for (Job child : getActiveSubJobsOf(job)) {
-                changeStatus(child,
-                             seq.getNextChildStatus(),
-                             kernel.getCoreAnimationSoftware(),
-                             String.format("Automatically switching to %s via direct communication from parent job",
-                                           seq.getNextChildStatus().getName()));
-                if (seq.isReplaceProduct()) {
-                    child.setProduct(job.getProduct());
+                if (seq.getNextChild().equals(child.getService())) {
+                    changeStatus(child,
+                                 seq.getNextChildStatus(),
+                                 kernel.getCoreAnimationSoftware(),
+                                 String.format("Automatically switching to %s via direct communication from parent job",
+                                               seq.getNextChildStatus().getName()));
+                    if (seq.isReplaceProduct()) {
+                        child.setProduct(job.getProduct());
+                    }
                 }
             }
         }
     }
 
     @Override
-    public void processJobChange(Job job) {
+    public void processJobSequencing(Job job) {
         if (log.isInfoEnabled()) {
             log.info(String.format("Processing change in Job %s", job));
         }
-        boolean previous = IGNORE_LOG_INSERTS.getAndSet(false);
-        try {
-            processChildChanges(job);
-            processParentChanges(job);
-            processSiblingChanges(job);
-        } finally {
-            IGNORE_LOG_INSERTS.set(previous);
-        }
+        processChildSequencing(job);
+        processParentSequencing(job);
+        processSiblingSequencing(job);
     }
 
     @Override
-    public void processParentChanges(Job job) {
+    public void processParentSequencing(Job job) {
+        if (job.getParent() == null) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("No parent of job, not processing parent sequencing: %s",
+                                       job));
+            }
+        }
         if (log.isInfoEnabled()) {
             log.info(String.format("Processing parent of Job %s", job));
         }
 
         for (ProductParentSequencingAuthorization seq : getParentActions(job)) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Processing %s", seq));
+            }
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
                 if (seq.getParent() == null
                     && seq.getService().equals(job.getParent().getService())) {
@@ -1302,21 +1293,41 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void processSiblingChanges(Job job) {
+    public void processSiblingSequencing(Job job) {
+        if (job.getParent() == null) {
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Job does not have a parent, so not processing siblings"));
+            }
+            return;
+        }
         if (log.isInfoEnabled()) {
             log.info(String.format("Processing siblings of Job %s", job));
         }
 
         for (ProductSiblingSequencingAuthorization seq : getSiblingActions(job)) {
-            for (Job sibling : getUnsetSiblings(job.getParent(),
-                                                seq.getNextSibling())) {
-                changeStatus(sibling,
-                             seq.getNextSiblingStatus(),
-                             kernel.getCoreAnimationSoftware(),
-                             String.format("Automatically switching to %s via direct communication from sibling jobs",
-                                           seq.getNextSiblingStatus().getName()));
-                if (seq.isReplaceProduct()) {
-                    sibling.setProduct(job.getProduct());
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Processing %s", seq));
+            }
+            List<Job> siblings = getActiveSubJobsForService(job.getParent(),
+                                                            seq.getNextSibling());
+            if (log.isInfoEnabled()) {
+                log.info(String.format("selected %s siblings of %s",
+                                       siblings.size(), job));
+            }
+            for (Job sibling : siblings) {
+                if (log.isInfoEnabled()) {
+                    log.info(String.format("Processing sibling change for %s",
+                                           sibling));
+                }
+                if (seq.getNextSibling().equals(sibling.getService())) {
+                    changeStatus(sibling,
+                                 seq.getNextSiblingStatus(),
+                                 kernel.getCoreAnimationSoftware(),
+                                 String.format("Automatically switching to %s via direct communication from sibling jobs",
+                                               seq.getNextSiblingStatus().getName()));
+                    if (seq.isReplaceProduct()) {
+                        sibling.setProduct(job.getProduct());
+                    }
                 }
             }
         }
@@ -1800,7 +1811,7 @@ public class JobModelImpl implements JobModel {
     }
 
     private void processJobChange(String jobId) {
-        processJobChange(em.find(Job.class, jobId));
+        processJobSequencing(em.find(Job.class, jobId));
     }
 
     /**

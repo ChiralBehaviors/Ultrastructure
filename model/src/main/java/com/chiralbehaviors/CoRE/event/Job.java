@@ -15,13 +15,12 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.Job.ACTIVE_JOBS;
+import static com.chiralbehaviors.CoRE.event.Job.*;
 import static com.chiralbehaviors.CoRE.event.Job.FIND_ALL;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_EXPLICIT_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
@@ -105,10 +104,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                      @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS, query = "SELECT job.* FROM ruleform.job as job "
                                                                            + "WHERE parent = ? "
                                                                            + "  AND ruleform.is_job_active( job.id )"),
-                     @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS_FOR_SERVICE, query = "SELECT j.* FROM ruleform.job AS j "
-                                                                                       + "WHERE j.service = ? "
-                                                                                       + "  AND ruleform.is_job_active( j.id ) "
-                                                                                       + "  AND j.parent = ?"),
+                     @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS_FOR_SERVICE, query = "SELECT job.* FROM ruleform.job as job "
+                                                                                       + "WHERE parent = ? "
+                                                                                       + "  AND ruleform.is_job_active( job.id ) "
+                                                                                       + "  AND job.service = ?"),
                      @NamedNativeQuery(name = ACTIVE_JOBS, query = "SELECT j.* "
                                                                    + "FROM ruleform.job_chronology AS jc "
                                                                    + "JOIN ruleform.job AS j ON jc.job = j.id "
@@ -211,16 +210,16 @@ public class Job extends AbstractProtocol {
     /**
      * This job's status
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "status")
     private StatusCode         status;
 
     /**
      * The parent of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "parent")
-    Job                        parent;
+    private Job                        parent;
 
     public Job() {
     }

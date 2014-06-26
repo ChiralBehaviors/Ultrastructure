@@ -377,8 +377,7 @@ public class JobModelTest extends AbstractModelTest {
                                                Job.class);
         query.setParameter("service", scenario.checkCredit);
         Job creditCheck = query.getSingleResult();
-        jobModel.changeStatus(creditCheck, scenario.available, kernel.getAgency(),
-                "transition during test");
+        assertEquals(scenario.available, creditCheck.getStatus());
         jobModel.changeStatus(creditCheck, scenario.active, kernel.getAgency(),
                               "transition during test");
         txn.commit();
@@ -402,9 +401,14 @@ public class JobModelTest extends AbstractModelTest {
         em.clear();
         query.setParameter("service", scenario.ship);
         Job ship = query.getSingleResult();
+        List<Job> pickSiblings = jobModel.getActiveSubJobsForService(pick.getParent(),
+                                                                     scenario.ship);
+        assertEquals(1, pickSiblings.size());
         assertEquals(scenario.waitingOnPurchaseOrder, ship.getStatus());
         query.setParameter("service", scenario.fee);
         Job fee = query.getSingleResult();
+        JobModelDebugger debugger = new JobModelDebugger(model);
+        TestDebuggingUtil.printProtocolGaps(debugger.findProtocolGaps(fee));
         jobModel.changeStatus(fee, scenario.active, kernel.getAgency(),
                               "transition during test");
         txn.commit();

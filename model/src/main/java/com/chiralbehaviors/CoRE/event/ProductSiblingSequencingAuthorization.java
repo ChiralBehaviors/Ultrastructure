@@ -42,7 +42,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 @NamedQueries({
                @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
-                                                               + " WHERE seq.parent = :service"
+                                                               + " WHERE seq.parent = :parent"
                                                                + " AND seq.statusCode = :status "
                                                                + " ORDER BY seq.sequenceNumber"),
                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
@@ -60,23 +60,32 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "next_sibling")
     private Product            nextSibling;
 
+    @Override
+    public String toString() {
+        return String.format("ProductSiblingSequencingAuthorization [parent=%s, statusCode=%s, nextSibling=%s, nextSiblingStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
+                             parent.getName(), statusCode.getName(),
+                             nextSibling.getName(),
+                             nextSiblingStatus.getName(), replaceProduct,
+                             sequenceNumber);
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_sibling_status")
-    private StatusCode         nextSiblingStatus;
+    private StatusCode nextSiblingStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
-    private Product            parent;
+    private Product    parent;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber      = 1;
+    private Integer    sequenceNumber = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+    private StatusCode statusCode;
 
     @Column(name = "replace_product")
-    private Integer            replaceProduct      = FALSE;
+    private Integer    replaceProduct = FALSE;
 
     public ProductSiblingSequencingAuthorization() {
     }

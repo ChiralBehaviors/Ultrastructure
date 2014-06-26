@@ -81,9 +81,6 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
-    /**
-     * 
-     */
     public ProductParentSequencingAuthorization() {
         super();
     }
@@ -198,6 +195,15 @@ public class ProductParentSequencingAuthorization extends Ruleform {
 
     public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ProductParentSequencingAuthorization [service=%s, statusCode=%s, parent=%s, parentStatusToSet=%s, setIfActiveSiblings=%s, replaceProduct=%s, sequenceNumber=%s]",
+                             service.getName(), statusCode.getName(),
+                             parent.getName(), parentStatusToSet.getName(),
+                             setIfActiveSiblings, replaceProduct,
+                             sequenceNumber);
     }
 
     /*

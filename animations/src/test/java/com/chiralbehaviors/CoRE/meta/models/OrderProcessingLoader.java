@@ -346,7 +346,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         ProductChildSequencingAuthorization activateCreditCheck = new ProductChildSequencingAuthorization(
                                                                                                           core);
         activateCreditCheck.setParent(pick);
-        activateCreditCheck.setStatusCode(available);
+        activateCreditCheck.setStatusCode(waitingOnCreditCheck);
         activateCreditCheck.setNextChild(checkCredit);
         activateCreditCheck.setNextChildStatus(available);
         em.persist(activateCreditCheck);
@@ -356,7 +356,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activateFee.setParent(printPurchaseOrder);
         activateFee.setStatusCode(waitingOnFee);
         activateFee.setNextChild(fee);
-        activateFee.setNextChildStatus(available);
+        activateFee.setNextChildStatus(waitingOnPricing);
         em.persist(activateFee);
 
         ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(
@@ -511,7 +511,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         gtuDiscountedPriceProtocol.setDeliverTo(dc);
         gtuDiscountedPriceProtocol.setDeliverFrom(us);
         gtuDiscountedPriceProtocol.setAssignTo(billingComputer);
-        gtuDiscountedPriceProtocol.setService(fee);
+        gtuDiscountedPriceProtocol.setService(salesTax);
         gtuDiscountedPriceProtocol.setProduct(sameProduct);
         em.persist(gtuDiscountedPriceProtocol);
         em.persist(gtuDiscountedPriceProtocol);
@@ -724,7 +724,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         s = new StatusCodeSequencing(discount, active, completed, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(fee, waitingOnFee, available, core);
+        s = new StatusCodeSequencing(fee, waitingOnPricing, available, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(fee, available, active, core);

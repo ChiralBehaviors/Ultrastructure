@@ -538,28 +538,28 @@ public interface JobModel {
      * 
      * @param job
      */
-    void processChildChanges(Job job);
+    void processChildSequencing(Job job);
 
     /**
      * Process all the implicit status changes of a job
      * 
      * @param job
      */
-    void processJobChange(Job job);
+    void processJobSequencing(Job job);
 
     /**
      * Process all the implicit status changes of the parent of a job
      * 
      * @param job
      */
-    void processParentChanges(Job job);
+    void processParentSequencing(Job job);
 
     /**
      * Process all the implicit status changes of the siblings of a job
      * 
      * @param job
      */
-    void processSiblingChanges(Job job);
+    void processSiblingSequencing(Job job);
 
     /**
      * Validate that the status graph of the list of services have no loops that

@@ -59,23 +59,31 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "next_child")
     private Product            nextChild;
 
+    @Override
+    public String toString() {
+        return String.format("ProductChildSequencingAuthorization [parent=%s, statusCode=%s, nextChild=%s, nextChildStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
+                             parent.getName(), statusCode.getName(),
+                             nextChild.getName(), nextChildStatus.getName(),
+                             replaceProduct, sequenceNumber);
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_child_status")
-    private StatusCode         nextChildStatus;
+    private StatusCode nextChildStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
-    private Product            parent;
+    private Product    parent;
 
     @Column(name = "replace_product")
-    private Integer            replaceProduct    = FALSE;
+    private Integer    replaceProduct = FALSE;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber    = 1;
+    private Integer    sequenceNumber = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+    private StatusCode statusCode;
 
     /**
      * 

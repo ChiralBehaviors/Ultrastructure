@@ -27,7 +27,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -64,14 +63,14 @@ public class JobChronology extends AbstractProtocol {
     private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "job")
     private Job                job;
 
     @Column(name = "sequence_number")
     private int                sequenceNumber           = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "status")
     private StatusCode         status;
 

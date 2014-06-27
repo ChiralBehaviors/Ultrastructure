@@ -15,14 +15,25 @@
  */
 package com.chiralbehaviors.CoRE.meta.models.debug;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.Subquery;
 
+import org.apache.openjpa.persistence.QueryImpl;
+
+import com.chiralbehaviors.CoRE.event.AbstractProtocol_;
 import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.JobModelImpl;
@@ -41,13 +52,25 @@ public class JobModelDebugger extends JobModelImpl {
     }
 
     public Map<Protocol, List<String>> findMetaProtocolGaps(Job job) {
-        TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET_FOR_SERVICE,
-                                                         Protocol.class);
-        query.setParameter("requestedService", job.getService());
-        List<Protocol> protocols = query.getResultList();
-        em.getCriteriaBuilder();
+        List<MetaProtocol> metaProtocols = getMetaprotocols(job);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         Map<Protocol, List<String>> gaps = new HashMap<>();
-        for (Protocol protocol : protocols) {
+        for (Protocol protocol : getProtocolsFor(job.getService())) {
+            for (MetaProtocol metaProtocol : metaProtocols) {
+                List<Predicate> masks = new ArrayList<>();
+                CriteriaQuery<Protocol> query = cb.createQuery(Protocol.class);
+                Root<Protocol> protocolRoot = query.from(Protocol.class);
+
+                Predicate assignToMask = mask(job.getDeliverFrom(),
+                                              metaProtocol.getDeliverFrom(),
+                                              AbstractProtocol_.deliverFrom, cb,
+                                              query, protocolRoot);
+            Subquery<Boolean> sq = query.subquery(Boolean.class);
+                Selection<Boolean> subquery = query.subquery(Boolean.class).select(cb.literal(true)).where().alias("deliverFrom");
+                query.multiselect(subquery);
+                Query tq = em.createQuery("select 1=1 from");
+                System.out.println(tq.unwrap(QueryImpl.class).getQueryString());
+            }
         }
 
         return gaps;
@@ -65,13 +88,8 @@ public class JobModelDebugger extends JobModelImpl {
      * @return
      */
     public Map<Protocol, List<String>> findProtocolGaps(Job job) {
-
-        TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET_FOR_SERVICE,
-                                                         Protocol.class);
-        query.setParameter("requestedService", job.getService());
-        List<Protocol> protocols = query.getResultList();
         Map<Protocol, List<String>> gaps = new HashMap<>();
-        for (Protocol p : protocols) {
+        for (Protocol p : getProtocolsFor(job.getService())) {
             gaps.put(p, findGaps(job, p));
         }
         return gaps;

@@ -79,6 +79,7 @@ public class JobModelTest extends AbstractModelTest {
             em.clear();
         }
     }
+    
 
     @Test
     public void testDeliverWithoutMetaProtocol() {
@@ -539,6 +540,7 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.fee);
         Job fee = query.getSingleResult();
         JobModelDebugger debugger = new JobModelDebugger(model);
+        debugger.findMetaProtocolGaps(fee);
         TestDebuggingUtil.printProtocolGaps(debugger.findProtocolGaps(fee));
         jobModel.changeStatus(fee, scenario.active, kernel.getAgency(),
                 "transition during test");

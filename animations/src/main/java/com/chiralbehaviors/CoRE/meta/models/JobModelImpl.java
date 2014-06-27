@@ -1346,20 +1346,6 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addMask(RuleForm ruleform,
-                                                                                                                              Relationship relationship,
-                                                                                                                              SingularAttribute<AbstractProtocol, RuleForm> column,
-                                                                                                                              CriteriaBuilder cb,
-                                                                                                                              CriteriaQuery<Protocol> query,
-                                                                                                                              Root<Protocol> protocol,
-                                                                                                                              List<Predicate> masks) {
-        Predicate mask = mask(ruleform, relationship, column, cb, query,
-                              protocol);
-        if (mask != null) {
-            masks.add(mask);
-        }
-    }
-
     /**
      * @param job
      */
@@ -1675,48 +1661,6 @@ public class JobModelImpl implements JobModel {
                                 isTxfm(metaProtocol.getQuantityUnit()));
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Predicate mask(RuleForm ruleform,
-                                                                                                                                Relationship relationship,
-                                                                                                                                SingularAttribute<AbstractProtocol, RuleForm> column,
-                                                                                                                                CriteriaBuilder cb,
-                                                                                                                                CriteriaQuery<Protocol> query,
-                                                                                                                                Root<Protocol> protocol) {
-        return mask(ruleform,
-                    relationship,
-                    column,
-                    cb,
-                    inferenceSubquery(ruleform, relationship,
-                                      ruleform.getRuleformClass(),
-                                      ruleform.getNetworkClass(),
-                                      ruleform.getNetworkParentAttribute(),
-                                      ruleform.getNetworkChildAttribute(), cb,
-                                      query), protocol);
-    }
-
-    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Predicate mask(RuleForm exist,
-                                                                               Relationship relationship,
-                                                                               SingularAttribute<AbstractProtocol, RuleForm> column,
-                                                                               CriteriaBuilder cb,
-                                                                               Subquery<RuleForm> inference,
-                                                                               Root<Protocol> protocol) {
-        if (!relationship.equals(kernel.getAnyRelationship())) {
-            Predicate mask;
-            Path<RuleForm> columnPath = protocol.get(column);
-            if (relationship.equals(kernel.getSameRelationship())) {
-                mask = cb.equal(columnPath, exist);
-            } else {
-                mask = columnPath.in(inference);
-            }
-            return cb.or(cb.equal(columnPath.get(Ruleform_.id),
-                                  exist.getAnyId()),
-                         cb.equal(columnPath.get(Ruleform_.id),
-                                  exist.getSameId()),
-                         cb.equal(columnPath.get(Ruleform_.id),
-                                  exist.getNotApplicableId()), mask);
-        }
-        return null;
-    }
-
     private void processJobChange(String jobId) {
         processJobSequencing(em.find(Job.class, jobId));
     }
@@ -1758,5 +1702,49 @@ public class JobModelImpl implements JobModel {
         } finally {
             MODIFIED_SERVICES.clear();
         }
+    }
+
+    protected <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addMask(RuleForm ruleform,
+                                                                                                                                Relationship relationship,
+                                                                                                                                SingularAttribute<AbstractProtocol, RuleForm> column,
+                                                                                                                                CriteriaBuilder cb,
+                                                                                                                                CriteriaQuery<Protocol> query,
+                                                                                                                                Root<Protocol> protocol,
+                                                                                                                                List<Predicate> masks) {
+        Predicate mask = mask(ruleform, relationship, column, cb, query,
+                              protocol);
+        if (mask != null) {
+            masks.add(mask);
+        }
+    }
+
+    protected <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Predicate mask(RuleForm ruleform,
+                                                                                                                                  Relationship relationship,
+                                                                                                                                  SingularAttribute<AbstractProtocol, RuleForm> column,
+                                                                                                                                  CriteriaBuilder cb,
+                                                                                                                                  CriteriaQuery<Protocol> query,
+                                                                                                                                  Root<Protocol> protocol) {
+        if (!relationship.equals(kernel.getAnyRelationship())) {
+            Predicate mask;
+            Path<RuleForm> columnPath = protocol.get(column);
+            if (relationship.equals(kernel.getSameRelationship())) {
+                mask = cb.equal(columnPath, ruleform);
+            } else {
+                mask = columnPath.in(inferenceSubquery(ruleform,
+                                                       relationship,
+                                                       ruleform.getRuleformClass(),
+                                                       ruleform.getNetworkClass(),
+                                                       ruleform.getNetworkParentAttribute(),
+                                                       ruleform.getNetworkChildAttribute(),
+                                                       cb, query));
+            }
+            return cb.or(cb.equal(columnPath.get(Ruleform_.id),
+                                  ruleform.getAnyId()),
+                         cb.equal(columnPath.get(Ruleform_.id),
+                                  ruleform.getSameId()),
+                         cb.equal(columnPath.get(Ruleform_.id),
+                                  ruleform.getNotApplicableId()), mask);
+        }
+        return null;
     }
 }

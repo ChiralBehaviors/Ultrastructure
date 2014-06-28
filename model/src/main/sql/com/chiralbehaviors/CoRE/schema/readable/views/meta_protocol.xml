@@ -9,13 +9,13 @@
         <sql><![CDATA[
 	        CREATE OR REPLACE VIEW readable.meta_protocol AS 
 	             SELECT base_table.id, 
-                        s.name AS service, 
-                        base_table.sequence_number, 
-	                    rr.name AS requesting_agency, 
+                        s.name AS service,  
                         st.name AS service_type, 
-	                    po.name AS product_ordered, 
+	                    rr.name AS requesting_agency, 
+                        po.name AS product_ordered,
                         dt.name AS deliver_to, 
 	                    df.name AS deliver_from, 
+                        at.name AS assign_to,
                         u.name AS quantity_unit,
                         raa.name AS requesting_agency_attribute, 
                         sa.name AS service_attribute, 
@@ -23,6 +23,7 @@
                         dta.name AS deliver_to_attribute, 
                         dfa.name AS deliver_from_attribute, 
                         base_table.stop_on_match,
+                        base_table.sequence_number, 
 	                    up.name AS updated_by, 
                         base_table.update_date
 				   FROM meta_protocol base_table
@@ -32,6 +33,7 @@
 				   LEFT JOIN relationship po ON base_table.product_ordered = po.id
                    LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
                    LEFT JOIN relationship df ON base_table.deliver_from = df.id 
+                   LEFT JOIN relationship at ON base_table.assign_to = at.id 
                    LEFT JOIN relationship u ON base_table.quantity_unit = u.id
                    LEFT JOIN relationship raa ON base_table.requesting_agency_attribute = raa.id
                    LEFT JOIN relationship sa ON base_table.service_attribute = sa.id

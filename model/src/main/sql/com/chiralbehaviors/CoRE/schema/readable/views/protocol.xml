@@ -9,8 +9,8 @@
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.protocol AS 
 			 SELECT base_table.id,
-			        r.name AS requester, 
-                    rs.name AS requested_service, 
+                    rs.name AS requested_service,
+			        r.name AS requester,  
                     rp.name AS requested_product, 
                     dt.name AS deliver_to, 
                     df.name AS deliver_from,

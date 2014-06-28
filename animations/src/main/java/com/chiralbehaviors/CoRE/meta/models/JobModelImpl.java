@@ -414,15 +414,15 @@ public class JobModelImpl implements JobModel {
                             String notes) {
         StatusCode oldStatus = job.getStatus();
         if (oldStatus != null && oldStatus.equals(newStatus)) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Job status is already set to desired status %s",
-                                       job));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Job status is already set to desired status %s",
+                                        job));
             }
             return job;
         }
-        if (log.isInfoEnabled()) {
-            log.info(String.format("%s Setting status %s of %s", notes,
-                                   newStatus, job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("%s Setting status %s of %s", notes,
+                                    newStatus, job));
         }
         job._setStatus(newStatus);
         log(job, notes);
@@ -534,8 +534,8 @@ public class JobModelImpl implements JobModel {
     @Override
     public void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy) {
         if (job.getStatus().getPropagateChildren()) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Generating implicit jobs for %s", job));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Generating implicit jobs for %s", job));
             }
             generateImplicitJobs(job, updatedBy);
         } else {
@@ -849,14 +849,23 @@ public class JobModelImpl implements JobModel {
         Map<Protocol, InferenceMap> matches = new LinkedHashMap<>();
         if (!protocols.isEmpty()) {
             for (Protocol protocol : protocols) {
-                matches.put(protocol, NO_TRANSFORMATION);
+                if (!matches.containsKey(protocol)) {
+                    matches.put(protocol, NO_TRANSFORMATION);
+                }
             }
             return matches;
         }
 
         if (job.getStatus().getPropagateChildren()) {
             for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
-                matches.putAll(getProtocols(job, metaProtocol));
+                for (Map.Entry<Protocol, InferenceMap> transformed : getProtocols(
+                                                                                  job,
+                                                                                  metaProtocol).entrySet()) {
+                    if (!matches.containsKey(transformed.getKey())) {
+                        matches.put(transformed.getKey(),
+                                    transformed.getValue());
+                    }
+                }
                 if (metaProtocol.getStopOnMatch()) {
                     break;
                 }
@@ -875,7 +884,9 @@ public class JobModelImpl implements JobModel {
                                                     MetaProtocol metaProtocol) {
         Map<Protocol, InferenceMap> protocols = new LinkedHashMap<>();
         for (Protocol protocol : createMaskQuery(metaProtocol, job).getResultList()) {
-            protocols.put(protocol, map(protocol, metaProtocol));
+            if (!protocols.containsKey(protocol)) {
+                protocols.put(protocol, map(protocol, metaProtocol));
+            }
         }
         return protocols;
     }
@@ -1052,11 +1063,13 @@ public class JobModelImpl implements JobModel {
         job._setStatus(kernel.getUnset());
         job.setParent(parent);
         copyIntoChild(parent, protocol, txfm, job);
+        log.info(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
+                               job, protocol, txfm));
         em.persist(job);
         log(job, String.format("Inserted from protocol match"));
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Inserted job %s from protocol %s", job,
-                                   protocol));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Inserted job %s from protocol %s", job,
+                                    protocol));
         }
         return job;
     }
@@ -1203,17 +1216,17 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processChildSequencing(Job job) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing children of Job %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing children of Job %s", job));
         }
         List<ProductChildSequencingAuthorization> childActions = getChildActions(job);
-        if (log.isInfoEnabled()) {
-            log.info(String.format("%s children actions for Job %s",
-                                   childActions.size(), job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("%s children actions for Job %s",
+                                    childActions.size(), job));
         }
         for (ProductChildSequencingAuthorization seq : childActions) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Processing %s", seq));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Processing %s", seq));
             }
             for (Job child : getActiveSubJobsOf(job)) {
                 if (seq.getNextChild().equals(child.getService())) {
@@ -1232,8 +1245,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processJobSequencing(Job job) {
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing change in Job %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing change in Job %s", job));
         }
         processChildSequencing(job);
         processParentSequencing(job);
@@ -1243,18 +1256,18 @@ public class JobModelImpl implements JobModel {
     @Override
     public void processParentSequencing(Job job) {
         if (job.getParent() == null) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("No parent of job, not processing parent sequencing: %s",
-                                       job));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("No parent of job, not processing parent sequencing: %s",
+                                        job));
             }
         }
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing parent of Job %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing parent of Job %s", job));
         }
 
         for (ProductParentSequencingAuthorization seq : getParentActions(job)) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Processing %s", seq));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Processing %s", seq));
             }
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
                 if (seq.getParent() == null
@@ -1286,29 +1299,29 @@ public class JobModelImpl implements JobModel {
     @Override
     public void processSiblingSequencing(Job job) {
         if (job.getParent() == null) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Job does not have a parent, so not processing siblings"));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Job does not have a parent, so not processing siblings"));
             }
             return;
         }
-        if (log.isInfoEnabled()) {
-            log.info(String.format("Processing siblings of Job %s", job));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Processing siblings of Job %s", job));
         }
 
         for (ProductSiblingSequencingAuthorization seq : getSiblingActions(job)) {
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Processing %s", seq));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Processing %s", seq));
             }
             List<Job> siblings = getActiveSubJobsForService(job.getParent(),
                                                             seq.getNextSibling());
-            if (log.isInfoEnabled()) {
-                log.info(String.format("selected %s siblings of %s",
-                                       siblings.size(), job));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("selected %s siblings of %s",
+                                        siblings.size(), job));
             }
             for (Job sibling : siblings) {
-                if (log.isInfoEnabled()) {
-                    log.info(String.format("Processing sibling change for %s",
-                                           sibling));
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Processing sibling change for %s",
+                                            sibling));
                 }
                 if (seq.getNextSibling().equals(sibling.getService())) {
                     changeStatus(sibling,
@@ -1519,7 +1532,7 @@ public class JobModelImpl implements JobModel {
                 AbstractProtocol_.quantityUnit, cb, query, protocol, masks);
 
         query.where(masks.toArray(new Predicate[masks.size()]));
-        query.select(protocol);
+        query.select(protocol).distinct(true);
         TypedQuery<Protocol> tq = em.createQuery(query);
         if (log.isTraceEnabled()) {
             log.trace(String.format("mask query for %s and %s is\n%s", job,
@@ -1632,8 +1645,10 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTxfm(Relationship relationship) {
-        return !kernel.getAnyRelationship().equals(relationship)
-               && !kernel.getSameRelationship().equals(relationship);
+        boolean isTxfm = !kernel.getAnyRelationship().equals(relationship)
+                         && !kernel.getSameRelationship().equals(relationship);
+        log.info(String.format("%s is txfm: %s", relationship.getName(), isTxfm));
+        return isTxfm;
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {

@@ -10,11 +10,11 @@
             CREATE OR REPLACE VIEW readable.job AS 
 			 SELECT base_table.id, 
                     s.name AS service, 
-			        p.name AS product, 
-			        at.name AS assign_to, 
                     r.name AS requester, 
+			        p.name AS product,  
 			        dt.name AS deliver_to, 
                     df.name AS deliver_from, 
+                    at.name AS assign_to,
 			        sc.name AS status, 
                     base_table.quantity,
                     u.name AS quantity_unit,

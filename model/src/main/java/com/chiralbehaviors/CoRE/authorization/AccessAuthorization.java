@@ -44,9 +44,6 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Parent, ?>, Child extends ExistentialRuleform<Child, ?>>
         extends Ruleform {
 
-    public static final String AGENCY_LOCATION                                                                = "1";
-    // IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
-    public static final String AGENCY_PRODUCT                                                                 = "0";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX = ".findAllAuthsForParentRelationshipChildMatchOnAllRelationships";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX                            = ".findAllAuthsForParentRelationshipChild";
     public static final String FIND_AUTHORIZATION_SUFFIX                                                      = ".findAuthorization";
@@ -56,11 +53,14 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX                                          = ".findAllAuthsForIndirectParent";
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX                      = ".getAllAuthorizationsForParentAndRelationship";
     public static final String GET_ALL_AUTHORIZATIONS_FOR_RELATIONSHIP_AND_CHILD_SUFFIX                       = ".getAllAuthorizationsForRelationshipAndChild";
+    // IMPORTANT: DON'T CHANGE THESE VALUES IF YOU HAVE DATA IN THE DATABASE
+    public static final String AGENCY_PRODUCT                                                                 = "0";
+    public static final String AGENCY_LOCATION                                                                = "1";
+    public static final String PRODUCT_AGENCY                                                                 = "2";
+    public static final String PRODUCT_LOCATION                                                               = "3";
     public static final String LOCATION_AGENCY                                                                = "4";
     public static final String LOCATION_PRODUCT                                                               = "5";
-    public static final String PRODUCT_AGENCY                                                                 = "2";
     public static final String PRODUCT_ATTRIBUTE                                                              = "6";
-    public static final String PRODUCT_LOCATION                                                               = "3";
     public static final String PRODUCT_RELATIONSHIP                                                           = "7";
     public static final String PRODUCT_STATUS_CODE                                                            = "8";
     public static final String PRODUCT_UNIT                                                                   = "9";

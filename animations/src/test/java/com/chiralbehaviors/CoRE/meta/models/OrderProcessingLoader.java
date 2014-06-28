@@ -216,6 +216,13 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m6.setDeliverFrom(area);
 
         em.persist(m6);
+
+        MetaProtocol m7 = model.getJobModel().newInitializedMetaProtocol(fee,
+                                                                         core);
+        m7.setSequenceNumber(2);
+        m7.setProductOrdered(anyRelationship);
+        m7.setRequestingAgency(anyRelationship);
+        m7.setDeliverTo(city);
     }
 
     public void createNetworkInferences() {

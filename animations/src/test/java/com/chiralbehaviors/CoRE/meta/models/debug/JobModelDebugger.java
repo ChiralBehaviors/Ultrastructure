@@ -51,6 +51,7 @@ public class JobModelDebugger extends JobModelImpl {
         super(model);
     }
 
+    @SuppressWarnings("unused")
     public Map<Protocol, List<String>> findMetaProtocolGaps(Job job) {
         List<MetaProtocol> metaProtocols = getMetaprotocols(job);
         CriteriaBuilder cb = em.getCriteriaBuilder();

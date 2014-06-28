@@ -1063,13 +1063,11 @@ public class JobModelImpl implements JobModel {
         job._setStatus(kernel.getUnset());
         job.setParent(parent);
         copyIntoChild(parent, protocol, txfm, job);
-        log.info(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
-                               job, protocol, txfm));
         em.persist(job);
         log(job, String.format("Inserted from protocol match"));
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Inserted job %s from protocol %s", job,
-                                    protocol));
+            log.trace(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
+                                    job, protocol, txfm));
         }
         return job;
     }
@@ -1645,10 +1643,8 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTxfm(Relationship relationship) {
-        boolean isTxfm = !kernel.getAnyRelationship().equals(relationship)
-                         && !kernel.getSameRelationship().equals(relationship);
-        log.info(String.format("%s is txfm: %s", relationship.getName(), isTxfm));
-        return isTxfm;
+        return !kernel.getAnyRelationship().equals(relationship)
+               && !kernel.getSameRelationship().equals(relationship);
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {

@@ -196,7 +196,14 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m3.setDeliverTo(area);
         m3.setDeliverFrom(area);
 
-        em.persist(m3);
+        //        em.persist(m3);
+        //
+        //        MetaProtocol m7 = model.getJobModel().newInitializedMetaProtocol(fee,
+        //                                                                         core);
+        //        m7.setSequenceNumber(1);
+        //        m7.setProductOrdered(anyRelationship);
+        //        m7.setRequestingAgency(anyRelationship);
+        //        m7.setDeliverTo(city);
 
         MetaProtocol m5 = model.getJobModel().newInitializedMetaProtocol(fee,
                                                                          core);
@@ -216,13 +223,6 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m6.setDeliverFrom(area);
 
         em.persist(m6);
-
-        MetaProtocol m7 = model.getJobModel().newInitializedMetaProtocol(fee,
-                                                                         core);
-        m7.setSequenceNumber(2);
-        m7.setProductOrdered(anyRelationship);
-        m7.setRequestingAgency(anyRelationship);
-        m7.setDeliverTo(city);
     }
 
     public void createNetworkInferences() {
@@ -363,7 +363,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activateFee.setParent(printPurchaseOrder);
         activateFee.setStatusCode(waitingOnFee);
         activateFee.setNextChild(fee);
-        activateFee.setNextChildStatus(waitingOnPricing);
+        activateFee.setNextChildStatus(available);
         em.persist(activateFee);
 
         ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(
@@ -731,10 +731,13 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         s = new StatusCodeSequencing(discount, active, completed, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(fee, waitingOnPricing, available, core);
+        s = new StatusCodeSequencing(fee, available, active, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(fee, available, active, core);
+        s = new StatusCodeSequencing(fee, available, waitingOnPricing, core);
+        em.persist(s);
+
+        s = new StatusCodeSequencing(fee, waitingOnPricing, active, core);
         em.persist(s);
 
         s = new StatusCodeSequencing(fee, active, completed, core);

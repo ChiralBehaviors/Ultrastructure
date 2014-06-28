@@ -501,7 +501,7 @@ public class JobModelTest extends AbstractModelTest {
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         List<Job> jobs = findAllJobs();
-        assertEquals(8, jobs.size());
+        assertEquals(6, jobs.size());
 
         txn.begin();
         TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",

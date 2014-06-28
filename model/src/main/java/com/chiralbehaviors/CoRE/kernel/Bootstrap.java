@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
@@ -150,6 +151,23 @@ public class Bootstrap {
             s.setString(3, wko.description());
             s.setByte(4, (byte) 1);
             s.setString(5, WellKnownAgency.CORE.id());
+            s.execute();
+        } catch (SQLException e) {
+            throw new SQLException(String.format("Unable to insert %s", wko), e);
+        }
+    }
+
+    public void insert(WellKnownStatusCode wko) throws SQLException {
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, pinned, updated_by) VALUES (?, ?, ?, ?, ?, ?)",
+                                                                        wko.tableName()));
+        try {
+            s.setString(1, wko.id());
+            s.setString(2, wko.wkoName());
+            s.setString(3, wko.description());
+            s.setInt(4, wko == WellKnownStatusCode.UNSET ? Ruleform.TRUE
+                                                        : Ruleform.FALSE);
+            s.setByte(5, (byte) 1);
+            s.setString(6, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko), e);

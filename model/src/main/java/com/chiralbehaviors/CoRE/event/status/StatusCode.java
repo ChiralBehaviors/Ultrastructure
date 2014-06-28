@@ -57,90 +57,90 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "status_code", schema = "ruleform")
 @NamedNativeQueries({
-    @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-            + "FROM statusCode AS unlinked "
-            + "JOIN ("
-            + "     SELECT id "
-            + "     FROM statusCode "
-            + "     EXCEPT ("
-            + "             SELECT distinct(net.child) "
-            + "             FROM statusCode_network as net "
-            + "             WHERE net.parent = statusCode_id('Agency') "
-            + "             AND relationship = relationship_id('includes') "
-            + "     )"
-            + ") AS linked ON unlinked.id = linked.id "
-            + "WHERE unlinked.id != statusCode_id('Agency');", resultClass = Agency.class),
-            @NamedNativeQuery(name = "statusCode" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('status_code', ?1, ?2)", resultClass = NameSearchResult.class),
-            @NamedNativeQuery(name = IS_TERMINAL_STATE, query = "SELECT EXISTS( "
-                    + "SELECT sc.id "
-                    + "FROM ruleform.status_code_sequencing AS seq "
-                    + "    JOIN ruleform.status_code AS sc ON seq.child_code = sc.id "
-                    + " WHERE "
-                    + "  NOT EXISTS ( "
-                    + "    SELECT parent_code FROM ruleform.status_code_sequencing "
-                    + "    WHERE service = seq.service "
-                    + "      AND parent_code = seq.child_code "
-                    + "  ) "
-                    + "  AND service = ? "
-                    + "  AND sc.id = ? "
-                    + " )") })
+                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                + "FROM statusCode AS unlinked "
+                                                                + "JOIN ("
+                                                                + "     SELECT id "
+                                                                + "     FROM statusCode "
+                                                                + "     EXCEPT ("
+                                                                + "             SELECT distinct(net.child) "
+                                                                + "             FROM statusCode_network as net "
+                                                                + "             WHERE net.parent = statusCode_id('Agency') "
+                                                                + "             AND relationship = relationship_id('includes') "
+                                                                + "     )"
+                                                                + ") AS linked ON unlinked.id = linked.id "
+                                                                + "WHERE unlinked.id != statusCode_id('Agency');", resultClass = Agency.class),
+                     @NamedNativeQuery(name = "statusCode" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('status_code', ?1, ?2)", resultClass = NameSearchResult.class),
+                     @NamedNativeQuery(name = IS_TERMINAL_STATE, query = "SELECT EXISTS( "
+                                                                         + "SELECT sc.id "
+                                                                         + "FROM ruleform.status_code_sequencing AS seq "
+                                                                         + "    JOIN ruleform.status_code AS sc ON seq.child_code = sc.id "
+                                                                         + " WHERE "
+                                                                         + "  NOT EXISTS ( "
+                                                                         + "    SELECT parent_code FROM ruleform.status_code_sequencing "
+                                                                         + "    WHERE service = seq.service "
+                                                                         + "      AND parent_code = seq.child_code "
+                                                                         + "  ) "
+                                                                         + "  AND service = ? "
+                                                                         + "  AND sc.id = ? "
+                                                                         + " )") })
 @NamedQueries({
-    @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from StatusCodeAttribute as ca where ca.statusCode = :statusCode"),
-    @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
-    @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-            + "  attrValue "
-            + "FROM "
-            + "       StatusCodeAttribute attrValue, "
-            + "       StatusCodeAttributeAuthorization auth, "
-            + "       StatusCodeNetwork network "
-            + "WHERE "
-            + "        auth.authorizedAttribute = attrValue.attribute AND "
-            + "        network.relationship = auth.classification AND "
-            + "        network.child = auth.classifier AND"
-            + "        attrValue.statusCode = :ruleform AND "
-            + "        auth.classification = :classification AND "
-            + "        auth.classifier = :classifier "),
-            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from StatusCodeAttributeAuthorization ra "
-                    + "WHERE ra.classifier = :classification "
-                    + "AND ra.classifier = :classifier"),
-                    @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from StatusCodeAttributeAuthorization ra "
-                            + "WHERE ra.groupingAgency = :groupingAgency"),
-                            @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
-                                    + "FROM StatusCodeNetwork n "
-                                    + "WHERE n.parent = :p "
-                                    + "AND n.relationship = :r"),
-                                    @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                            + "FROM StatusCodeNetwork n "
-                                            + "WHERE n.child = :c"),
-                                            @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM StatusCodeNetwork n "
-                                                    + "WHERE n.parent = :statusCode "
-                                                    + "AND n.relationship IN :relationships "
-                                                    + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+               @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from StatusCodeAttribute as ca where ca.statusCode = :statusCode"),
+               @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                            + "  attrValue "
+                                                                            + "FROM "
+                                                                            + "       StatusCodeAttribute attrValue, "
+                                                                            + "       StatusCodeAttributeAuthorization auth, "
+                                                                            + "       StatusCodeNetwork network "
+                                                                            + "WHERE "
+                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
+                                                                            + "        network.relationship = auth.classification AND "
+                                                                            + "        network.child = auth.classifier AND"
+                                                                            + "        attrValue.statusCode = :ruleform AND "
+                                                                            + "        auth.classification = :classification AND "
+                                                                            + "        auth.classifier = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from StatusCodeAttributeAuthorization ra "
+                                                                                    + "WHERE ra.classifier = :classification "
+                                                                                    + "AND ra.classifier = :classifier"),
+               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from StatusCodeAttributeAuthorization ra "
+                                                                                 + "WHERE ra.groupingAgency = :groupingAgency"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                     + "FROM StatusCodeNetwork n "
+                                                     + "WHERE n.parent = :p "
+                                                     + "AND n.relationship = :r"),
+               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                        + "FROM StatusCodeNetwork n "
+                                                                        + "WHERE n.child = :c"),
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM StatusCodeNetwork n "
+                                                                           + "WHERE n.parent = :statusCode "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 public class StatusCode extends
-ExistentialRuleform<StatusCode, StatusCodeNetwork> {
+        ExistentialRuleform<StatusCode, StatusCodeNetwork> {
 
     public static final String       AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "statusCode.AgencyAttributesByClassification";
     public static final String       AUTHORIZED_AGENCY_ATTRIBUTES             = "statusCode.authorizedAttributes";
 
     public static final String       FIND_BY_NAME                             = "statusCode"
-            + FIND_BY_NAME_SUFFIX;
+                                                                                + FIND_BY_NAME_SUFFIX;
     public static final String       FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "statusCode"
-            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String       FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "statusCode"
-            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                                + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String       FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "statusCode"
-            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                                + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String       GET_ALL_PARENT_RELATIONSHIPS             = "statusCode"
-            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+                                                                                + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String       GET_CHILD                                = "statusCode"
-            + GET_CHILDREN_SUFFIX;
+                                                                                + GET_CHILDREN_SUFFIX;
     public static final String       GET_CHILD_RULES_BY_RELATIONSHIP          = "statusCode"
-            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+                                                                                + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String       IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
     public static final String       ORDERED_ATTRIBUTES                       = "statusCode.orderedAttributes";
     public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
     public static final String       UNLINKED                                 = "statusCode"
-            + UNLINKED_SUFFIX;
+                                                                                + UNLINKED_SUFFIX;
 
     private static final long        serialVersionUID                         = 1L;
 
@@ -161,7 +161,7 @@ ExistentialRuleform<StatusCode, StatusCodeNetwork> {
     private Set<StatusCodeNetwork>   networkByParent;
 
     @Column(name = "propagate_children")
-    private Integer                  propagateChildren                        = TRUE;
+    private Integer                  propagateChildren                        = FALSE;
 
     public StatusCode() {
     }
@@ -343,7 +343,7 @@ ExistentialRuleform<StatusCode, StatusCodeNetwork> {
     @Override
     public boolean isAnyOrSame() {
         return WellKnownStatusCode.ANY.id().equals(getId())
-                || WellKnownStatusCode.SAME.id().equals(getId());
+               || WellKnownStatusCode.SAME.id().equals(getId());
     }
 
     /* (non-Javadoc)

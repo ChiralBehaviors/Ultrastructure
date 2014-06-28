@@ -205,9 +205,6 @@ public class Job extends AbstractProtocol {
     @Column(name = "current_log_sequence")
     private int                currentLogSequence                = 0;
 
-    @Column(name = "sequence_number")
-    private int                sequenceNumber                    = 1;
-
     /**
      * This job's status
      */
@@ -291,13 +288,6 @@ public class Job extends AbstractProtocol {
         return parent;
     }
 
-    /**
-     * @return the sequenceNumber
-     */
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     public StatusCode getStatus() {
         return status;
     }
@@ -326,30 +316,14 @@ public class Job extends AbstractProtocol {
         parent = job;
     }
 
-    /**
-     * @param sequenceNumber
-     *            the sequenceNumber to set
-     */
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    /**
-     * @param sequenceNumber
-     *            the sequenceNumber to set
-     */
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return String.format("Job [status=%s, sequenceNumber=%s, %s]",
+        return String.format("Job [status=%s, currentLogSequence=%s, %s]",
                              status != null ? status.getName() : "null",
-                             sequenceNumber, getToString());
+                             currentLogSequence, getToString());
     }
 
     /*

@@ -25,7 +25,6 @@
                     dta.name AS deliver_to_attribute,
                     dfa.name AS deliver_from_attribute,
                     ata.name AS assign_to_attribute,
-                    base_table.sequence_number,
 			        base_table.notes, 
                     base_table.current_log_sequence,
 			        up.name AS updated_by, base_table.update_date

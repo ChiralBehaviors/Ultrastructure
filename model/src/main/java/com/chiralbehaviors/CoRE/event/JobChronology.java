@@ -15,7 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
+import static com.chiralbehaviors.CoRE.event.JobChronology.*;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
 import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
@@ -48,6 +48,9 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
                                                             + "WHERE j.product = :product "),
                @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "SELECT MAX(j.sequenceNumber) FROM JobChronology j "
                                                                     + "WHERE j.job = :job"),
+               @NamedQuery(name = GET_LOG_FOR_SEQUENCE, query = "SELECT j from JobChronology j "
+                                                                + "WHERE j.job = :job "
+                                                                + "    AND j.sequenceNumber = :sequence"),
                @NamedQuery(name = LAST_JOB_LOG, query = "SELECT j from JobChronology j "
                                                         + "WHERE j.job = :job "
                                                         + "    AND j.sequenceNumber = j.job.currentLogSequence") })
@@ -60,6 +63,7 @@ public class JobChronology extends AbstractProtocol {
     public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
     public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";
     public static final String LAST_JOB_LOG             = "jobChronology.lastJobLog";
+    public static final String GET_LOG_FOR_SEQUENCE     = "jobChronology.getLogForSequenc";
     private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job

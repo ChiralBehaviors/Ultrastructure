@@ -50,9 +50,6 @@
                 <constraints nullable="false" />
             </column>
             <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="CHAR(22)" />
-            <column defaultValueNumeric="0" name="sequence_number" type="INT4">
-                <constraints nullable="false" />
-            </column>
             <column name="quantity" type="numeric" />
             <column name="current_log_sequence" type="int4">
                 <constraints nullable="false" />

@@ -856,19 +856,16 @@ public class JobModelImpl implements JobModel {
             return matches;
         }
 
-        if (job.getStatus().getPropagateChildren()) {
-            for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
-                for (Map.Entry<Protocol, InferenceMap> transformed : getProtocols(
-                                                                                  job,
-                                                                                  metaProtocol).entrySet()) {
-                    if (!matches.containsKey(transformed.getKey())) {
-                        matches.put(transformed.getKey(),
-                                    transformed.getValue());
-                    }
+        for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
+            for (Map.Entry<Protocol, InferenceMap> transformed : getProtocols(
+                                                                              job,
+                                                                              metaProtocol).entrySet()) {
+                if (!matches.containsKey(transformed.getKey())) {
+                    matches.put(transformed.getKey(), transformed.getValue());
                 }
-                if (metaProtocol.getStopOnMatch()) {
-                    break;
-                }
+            }
+            if (metaProtocol.getStopOnMatch()) {
+                break;
             }
         }
         return matches;
@@ -1110,19 +1107,6 @@ public class JobModelImpl implements JobModel {
         if (job.getStatus() == null) {
             job._setStatus(kernel.getUnset()); // Prophylactic against recursive error disease
         }
-        JobChronology last = null;
-        try {
-            last = em.createNamedQuery(JobChronology.LAST_JOB_LOG,
-                                       JobChronology.class).getSingleResult();
-        } catch (NoResultException e) {
-            // initial insert o' the job
-        }
-        if (last != null && last.equalsProtocol(job)) {
-            if (log.isInfoEnabled()) {
-                log.info("Skipped logging for %s, as it's already logged");
-            }
-        }
-        em.merge(job);
         JobChronology entry = new JobChronology(job, notes);
         int nextLogSequence = job.nextLogSequence();
         em.merge(job);
@@ -1228,11 +1212,9 @@ public class JobModelImpl implements JobModel {
             }
             for (Job child : getActiveSubJobsOf(job)) {
                 if (seq.getNextChild().equals(child.getService())) {
-                    changeStatus(child,
-                                 seq.getNextChildStatus(),
+                    changeStatus(child, seq.getNextChildStatus(),
                                  kernel.getCoreAnimationSoftware(),
-                                 String.format("Automatically switching to %s via direct communication from parent job",
-                                               seq.getNextChildStatus().getName()));
+                                 "Automatically switching status via direct communication from parent job");
                     if (seq.isReplaceProduct()) {
                         child.setProduct(job.getProduct());
                     }
@@ -1270,21 +1252,17 @@ public class JobModelImpl implements JobModel {
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
                 if (seq.getParent() == null
                     && seq.getService().equals(job.getParent().getService())) {
-                    changeStatus(job.getParent(),
-                                 seq.getParentStatusToSet(),
+                    changeStatus(job.getParent(), seq.getParentStatusToSet(),
                                  kernel.getCoreAnimationSoftware(),
-                                 String.format("'Automatically switching to %s via direct communication from child job",
-                                               seq.getParentStatusToSet()));
+                                 "Automatically switching status via direct communication from child job");
                     if (seq.isReplaceProduct()) {
                         job.getParent().setProduct(job.getProduct());
                     }
                     break;
                 } else if (seq.getParent().equals(job.getParent().getService())) {
-                    changeStatus(job.getParent(),
-                                 seq.getParentStatusToSet(),
+                    changeStatus(job.getParent(), seq.getParentStatusToSet(),
                                  kernel.getCoreAnimationSoftware(),
-                                 String.format("'Automatically switching to %s via direct communication from child job",
-                                               seq.getParentStatusToSet()));
+                                 "Automatically switching status via direct communication from child job");
                     if (seq.isReplaceProduct()) {
                         job.getParent().setProduct(job.getProduct());
                     }
@@ -1322,11 +1300,9 @@ public class JobModelImpl implements JobModel {
                                             sibling));
                 }
                 if (seq.getNextSibling().equals(sibling.getService())) {
-                    changeStatus(sibling,
-                                 seq.getNextSiblingStatus(),
+                    changeStatus(sibling, seq.getNextSiblingStatus(),
                                  kernel.getCoreAnimationSoftware(),
-                                 String.format("Automatically switching to %s via direct communication from sibling jobs",
-                                               seq.getNextSiblingStatus().getName()));
+                                 "Automatically switching staus via direct communication from sibling jobs");
                     if (seq.isReplaceProduct()) {
                         sibling.setProduct(job.getProduct());
                     }
@@ -1648,7 +1624,10 @@ public class JobModelImpl implements JobModel {
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {
-        log(em.find(Job.class, jobId), "Initial insertion of job");
+        Job job = em.find(Job.class, jobId);
+        if (job.getCurrentLogSequence() == 0) {
+            log(job, "Initial insertion of job");
+        }
     }
 
     /**

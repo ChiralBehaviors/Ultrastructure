@@ -132,7 +132,9 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                log.info("before ensure_next_status_is_valid");
+                if (log.isTraceEnabled()) {
+                    log.trace("before ensure_next_status_is_valid");
+                }
                 String oldStatus = triggerData.getOld().getString("status");
                 String newStatus = triggerData.getNew().getString("status");
                 if (oldStatus != null && oldStatus.equals(newStatus)) {
@@ -142,7 +144,9 @@ public class JobModelImpl implements JobModel {
                 jobModel.ensureNextStateIsValid(triggerData.getNew().getString("id"),
                                                 triggerData.getNew().getString("service"),
                                                 oldStatus, newStatus);
-                log.info("completed ensure_next_status_is_valid");
+                if (log.isTraceEnabled()) {
+                    log.trace("completed ensure_next_status_is_valid");
+                }
                 return null;
             }
 
@@ -536,8 +540,8 @@ public class JobModelImpl implements JobModel {
             if (query.getSingleResult() == 0) {
                 jobs.add(insert(job, protocol, txfm.getValue()));
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
                                             job, protocol));
                 }
             }

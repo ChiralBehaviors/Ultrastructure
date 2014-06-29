@@ -523,8 +523,8 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
                 newRules = em.createNamedQuery(networkPrefix
                                                + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
             }
-            if (log.isInfoEnabled()) {
-                log.info(String.format("inferred %s new rules", newRules));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("inferred %s new rules", newRules));
             }
             if (newRules == 0) {
                 break;
@@ -532,8 +532,8 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
             // Deduce the new rules
             int deduced = em.createNamedQuery(networkPrefix
                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
-            if (log.isInfoEnabled()) {
-                log.info(String.format("deduced %s rules", deduced));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("deduced %s rules", deduced));
             }
             // Insert the new rules
             Query insert = em.createNamedQuery(networkPrefix
@@ -541,8 +541,8 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
             insert.setParameter(1,
                                 kernel.getPropagationSoftware().getPrimaryKey());
             int inserted = insert.executeUpdate();
-            if (log.isInfoEnabled()) {
-                log.info(String.format("inserted %s new rules", inserted));
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("inserted %s new rules", inserted));
             }
             derived |= inserted > 0;
             if (inserted == 0) {

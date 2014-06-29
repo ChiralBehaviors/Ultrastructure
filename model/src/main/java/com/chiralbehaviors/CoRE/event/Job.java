@@ -213,11 +213,11 @@ public class Job extends AbstractProtocol {
      * The parent of this job
      */
     @ManyToOne
-    @JoinColumn(name = "parent")
+    @JoinColumn(name = "parent", updatable = false)
     private Job                parent;
 
     @ManyToOne
-    @JoinColumn(name = "protocol")
+    @JoinColumn(name = "protocol", updatable = false)
     private Protocol           protocol;
 
     @Column(name = "sequence_number")

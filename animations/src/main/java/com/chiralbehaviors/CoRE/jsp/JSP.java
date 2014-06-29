@@ -55,14 +55,14 @@ public abstract class JSP {
             em.getTransaction().begin();
             T value;
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug(String.format("calling %s", call));
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("calling %s", call));
                 }
                 try {
                     value = call.call(em);
                 } finally {
-                    if (log.isDebugEnabled()) {
-                        log.debug(String.format("exiting %s", call));
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("exiting %s", call));
                     }
                 }
             } catch (SQLException e) {
@@ -88,13 +88,10 @@ public abstract class JSP {
                                                              String.format("** Java Stored procedure failed %s\n%s",
                                                                            call,
                                                                            string.toString()),
-                                                                           e);
-
-                for (int i = 0; i < 15; i++) {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("Setting root cause to: %s",
-                                                sqlException));
-                    }
+                                                             e);
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Setting root cause to: %s",
+                                            sqlException));
                     rootCause = sqlException;
                 }
                 return null;
@@ -103,19 +100,16 @@ public abstract class JSP {
                 em.getTransaction().commit();
             } catch (RollbackException e) {
                 Throwable cause = e.getCause();
-                while (true) {
+                for (int i = 0; i < 15; i++) {
                     if (cause == null) {
-                        throw e;
+                        break;
                     }
                     if (cause instanceof SQLException) {
-                        if (rootCause == null) {
-                            rootCause = (SQLException) cause;
-                            return null;
-                        }
-                        ;
+                        throw (SQLException) cause;
                     }
                     cause = cause.getCause();
                 }
+                throw new SQLException("Txn rollback", e);
             }
             return value;
         } finally {
@@ -154,7 +148,7 @@ public abstract class JSP {
         if (is == null) {
             log.error("Unable to read jpa.properties, resource is null");
             throw new IllegalStateException(
-                    "Unable to read jpa.properties, resource is null");
+                                            "Unable to read jpa.properties, resource is null");
         }
         try {
             PROPERTIES.load(is);

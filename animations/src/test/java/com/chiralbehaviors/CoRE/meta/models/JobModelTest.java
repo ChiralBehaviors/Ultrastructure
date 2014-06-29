@@ -489,6 +489,7 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
+        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
                               "transition during test");
         txn.commit();

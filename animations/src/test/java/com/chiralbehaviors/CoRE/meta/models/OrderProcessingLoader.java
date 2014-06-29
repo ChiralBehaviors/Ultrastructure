@@ -647,7 +647,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(waitingOnCreditCheck);
 
         completed = new StatusCode("Completed", "Completed Job", core);
-        completed.setPropagateChildren(true);
+        completed.setPropagateChildren(true); // This is done to test the dup logic in the job animation
         em.persist(completed);
 
         failure = new StatusCode("Failure", "Something went wrong", core);

@@ -17,6 +17,7 @@
     <include relativeToChangelogFile="true" file="tables/product_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/location_network-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_values-0.0.1.xml" />
@@ -37,7 +38,6 @@
     <include relativeToChangelogFile="true" file="tables/product_attribute_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_network_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/meta_protocol-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/location_relationship-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization.xml" />

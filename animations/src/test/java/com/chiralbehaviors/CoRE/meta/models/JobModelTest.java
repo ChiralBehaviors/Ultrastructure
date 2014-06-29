@@ -85,7 +85,7 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().begin();
 
         StatusCode startState = new StatusCode("begin", kernel.getCore());
-        startState.setPropagateChildren(true);
+        // startState.setPropagateChildren(true);
         em.persist(startState);
 
         StatusCode delivered = new StatusCode("delivered", kernel.getCore());

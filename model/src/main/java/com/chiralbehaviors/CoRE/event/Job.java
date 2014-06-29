@@ -23,7 +23,7 @@ import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JO
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
-import static com.chiralbehaviors.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
+import static com.chiralbehaviors.CoRE.event.Job.*;
 import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
 import static com.chiralbehaviors.CoRE.event.Job.GET_STATUS_CODE_SEQUENCES;
 import static com.chiralbehaviors.CoRE.event.Job.GET_SUB_JOBS_ASSIGNED_TO;
@@ -63,6 +63,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedQueries({
                @NamedQuery(name = FIND_ALL, query = "select j from Job j"),
                @NamedQuery(name = TOP_LEVEL_JOBS, query = "SELECT j  FROM Job AS j  WHERE j.parent IS NULL"),
+               @NamedQuery(name = EXISTING_JOB_WITH_PARENT_AND_PROTOCOL, query = "SELECT COUNT(j) from Job as j "
+                                                                                 + "WHERE j.parent = :parent "
+                                                                                 + "AND j.protocol = :protocol"),
                @NamedQuery(name = GET_ACTIVE_OR_TERMINATED_SUB_JOBS, query = "SELECT j "
                                                                              + "FROM Job AS j "
                                                                              + "WHERE j.parent = :parent "
@@ -161,32 +164,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "job", schema = "ruleform")
 public class Job extends AbstractProtocol {
-    public static final String ACTIVE_JOBS                       = "job.getActiveJobs";
-    public static final String CHANGE_STATUS                     = "job.changeStatus";
-    public static final String CHRONOLOGY                        = "job.chronology";
-    public static final String CLASSIFIED                        = "event.classified";
-    public static final String FIND_ALL                          = "job.findAll";
-    public static final String GET_ACTIVE_EXPLICIT_JOBS          = "job.getActiveExplicitJobs";
-    public static final String GET_ACTIVE_JOBS_FOR_AGENCY        = "job.getActiveJobsForAgency";
-    public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS = "job.getActiveOrTerminatedSubJobs";
-    public static final String GET_ACTIVE_SUB_JOBS               = "job.getActiveSubJobs";
-    public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE   = "job.getActiveSubJobsForService";
-    public static final String GET_ATTRIBUTE_VALUE               = "job.getAttributeValue";
-    public static final String GET_ATTRIBUTES_FOR_JOB            = "job.getAttributesForJob";
-    public static final String GET_CHILD_JOBS_FOR_SERVICE        = "job.getChildJobsForService";
-    public static final String GET_INITIAL_SUB_JOBS              = "job.getInitialSubJobs";
-    public static final String GET_NEXT_STATUS_CODES             = "job.getNextStatusCodes";
-    public static final String GET_STATUS_CODE_IDS               = "job.getStatusCodeIds";
-    public static final String GET_STATUS_CODE_SEQUENCES         = "job.getStatusCodeSequences";
-    public static final String GET_SUB_JOBS_ASSIGNED_TO          = "job.getSubJobsAssignedTo";
-    public static final String GET_TERMINAL_STATES               = "job.getTerminalStates";
-    public static final String GET_UNSET_SIBLINGS                = "job.getUnsetSiblings";
-    public static final String HAS_SCS                           = "job.hasScs";
-    public static final String INITIAL_STATE                     = "job.initialState";
-    public static final String STATUS_CODE                       = "job.statusCode";
-    public static final String TOP_LEVEL_JOBS                    = "job.topLevelJobs";
+    public static final String ACTIVE_JOBS                           = "job.getActiveJobs";
+    public static final String CHANGE_STATUS                         = "job.changeStatus";
+    public static final String CHRONOLOGY                            = "job.chronology";
+    public static final String CLASSIFIED                            = "event.classified";
+    public static final String FIND_ALL                              = "job.findAll";
+    public static final String GET_ACTIVE_EXPLICIT_JOBS              = "job.getActiveExplicitJobs";
+    public static final String GET_ACTIVE_JOBS_FOR_AGENCY            = "job.getActiveJobsForAgency";
+    public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS     = "job.getActiveOrTerminatedSubJobs";
+    public static final String GET_ACTIVE_SUB_JOBS                   = "job.getActiveSubJobs";
+    public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE       = "job.getActiveSubJobsForService";
+    public static final String GET_ATTRIBUTE_VALUE                   = "job.getAttributeValue";
+    public static final String GET_ATTRIBUTES_FOR_JOB                = "job.getAttributesForJob";
+    public static final String GET_CHILD_JOBS_FOR_SERVICE            = "job.getChildJobsForService";
+    public static final String GET_INITIAL_SUB_JOBS                  = "job.getInitialSubJobs";
+    public static final String EXISTING_JOB_WITH_PARENT_AND_PROTOCOL = "job.existingJobWithParentAndProtocol";
+    public static final String GET_NEXT_STATUS_CODES                 = "job.getNextStatusCodes";
+    public static final String GET_STATUS_CODE_IDS                   = "job.getStatusCodeIds";
+    public static final String GET_STATUS_CODE_SEQUENCES             = "job.getStatusCodeSequences";
+    public static final String GET_SUB_JOBS_ASSIGNED_TO              = "job.getSubJobsAssignedTo";
+    public static final String GET_TERMINAL_STATES                   = "job.getTerminalStates";
+    public static final String GET_UNSET_SIBLINGS                    = "job.getUnsetSiblings";
+    public static final String HAS_SCS                               = "job.hasScs";
+    public static final String INITIAL_STATE                         = "job.initialState";
+    public static final String STATUS_CODE                           = "job.statusCode";
+    public static final String TOP_LEVEL_JOBS                        = "job.topLevelJobs";
 
-    private static final long  serialVersionUID                  = 1L;
+    private static final long  serialVersionUID                      = 1L;
 
     /**
      * The children of this job
@@ -203,14 +207,7 @@ public class Job extends AbstractProtocol {
     private Set<JobChronology> chronology;
 
     @Column(name = "current_log_sequence")
-    private int                currentLogSequence                = 0;
-
-    /**
-     * This job's status
-     */
-    @ManyToOne
-    @JoinColumn(name = "status")
-    private StatusCode         status;
+    private int                currentLogSequence                    = 0;
 
     /**
      * The parent of this job
@@ -218,6 +215,20 @@ public class Job extends AbstractProtocol {
     @ManyToOne
     @JoinColumn(name = "parent")
     private Job                parent;
+
+    @ManyToOne
+    @JoinColumn(name = "protocol")
+    private Protocol           protocol;
+
+    @Column(name = "sequence_number")
+    private int                sequenceNumber                        = 1;
+
+    /**
+     * This job's status
+     */
+    @ManyToOne
+    @JoinColumn(name = "status")
+    private StatusCode         status;
 
     public Job() {
     }
@@ -288,6 +299,17 @@ public class Job extends AbstractProtocol {
         return parent;
     }
 
+    public Protocol getProtocol() {
+        return protocol;
+    }
+
+    /**
+     * @return the sequenceNumber
+     */
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
+
     public StatusCode getStatus() {
         return status;
     }
@@ -316,14 +338,34 @@ public class Job extends AbstractProtocol {
         parent = job;
     }
 
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
+
+    /**
+     * @param sequenceNumber
+     *            the sequenceNumber to set
+     */
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    /**
+     * @param sequenceNumber
+     *            the sequenceNumber to set
+     */
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return String.format("Job [status=%s, currentLogSequence=%s, %s]",
+        return String.format("Job [status=%s, %s, sequenceNumber=%s, currentLogSequence=%s]",
                              status != null ? status.getName() : "null",
-                             currentLogSequence, getToString());
+                             getToString(), sequenceNumber, currentLogSequence);
     }
 
     /*

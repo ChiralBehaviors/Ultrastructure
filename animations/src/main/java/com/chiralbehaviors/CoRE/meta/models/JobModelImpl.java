@@ -365,7 +365,9 @@ public class JobModelImpl implements JobModel {
         execute(new Procedure<Void>() {
             @Override
             public Void call(JobModelImpl jobModel) throws Exception {
-                jobModel.processJobChange(triggerData.getNew().getString("id"));
+                if (!triggerData.getNew().getString("status").equals(triggerData.getOld().getString("status"))) {
+                    jobModel.processJobChange(triggerData.getNew().getString("id"));
+                }
                 return null;
             }
 
@@ -526,7 +528,19 @@ public class JobModelImpl implements JobModel {
         }
         List<Job> jobs = new ArrayList<Job>();
         for (Entry<Protocol, InferenceMap> txfm : protocols.entrySet()) {
-            jobs.add(insert(job, txfm.getKey(), txfm.getValue()));
+            TypedQuery<Long> query = em.createNamedQuery(Job.EXISTING_JOB_WITH_PARENT_AND_PROTOCOL,
+                                                         Long.class);
+            Protocol protocol = txfm.getKey();
+            query.setParameter("parent", job);
+            query.setParameter("protocol", protocol);
+            if (query.getSingleResult() == 0) {
+                jobs.add(insert(job, protocol, txfm.getValue()));
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
+                                            job, protocol));
+                }
+            }
         }
         return jobs;
     }
@@ -1059,6 +1073,7 @@ public class JobModelImpl implements JobModel {
         Job job = new Job(kernel.getCoreAnimationSoftware());
         job._setStatus(kernel.getUnset());
         job.setParent(parent);
+        job.setProtocol(protocol);
         copyIntoChild(parent, protocol, txfm, job);
         em.persist(job);
         log(job, String.format("Inserted from protocol match"));
@@ -1652,7 +1667,10 @@ public class JobModelImpl implements JobModel {
     }
 
     private void processJobChange(String jobId) {
-        processJobSequencing(em.find(Job.class, jobId));
+        Job job = em.find(Job.class, jobId);
+        processJobSequencing(job);
+        generateImplicitJobsForExplicitJobs(job,
+                                            kernel.getCoreAnimationSoftware());
     }
 
     /**

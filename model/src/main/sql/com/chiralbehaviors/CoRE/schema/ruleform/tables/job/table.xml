@@ -50,6 +50,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="CHAR(22)" />
+            <column name="protocol" remarks="The protocol that generated this job" type="CHAR(22)" />
+            <column defaultValueNumeric="1" name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
             <column name="quantity" type="numeric" />
             <column name="current_log_sequence" type="int4">
                 <constraints nullable="false" />
@@ -161,5 +165,10 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="quantity_unit" baseTableName="job" constraintName="job_quantity_unit_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-474">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="protocol" baseTableName="job" constraintName="job_protocol_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="protocol" />
     </changeSet>
 </databaseChangeLog>

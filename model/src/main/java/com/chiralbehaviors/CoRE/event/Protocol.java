@@ -98,13 +98,15 @@ public class Protocol extends AbstractProtocol {
 
     private static final long  serialVersionUID = 1L;
 
+    @Column(name = "name")
+    private String             name;
+
     /**
      * The ordered product
      */
     @ManyToOne
     @JoinColumn(name = "requested_product")
     private Product            requestedProduct;
-
     /**
      * The requested service to be performed
      */
@@ -154,6 +156,10 @@ public class Protocol extends AbstractProtocol {
         super(id, updatedBy);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Product getRequestedProduct() {
         return requestedProduct;
     }
@@ -170,6 +176,10 @@ public class Protocol extends AbstractProtocol {
      */
     public Integer getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

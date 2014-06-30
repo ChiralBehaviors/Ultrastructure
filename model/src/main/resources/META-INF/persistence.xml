@@ -77,5 +77,6 @@
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
     </persistence-unit>
 </persistence>

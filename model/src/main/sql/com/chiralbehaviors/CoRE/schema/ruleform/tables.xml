@@ -37,6 +37,7 @@
     <include relativeToChangelogFile="true" file="tables/agency_network_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_attribute_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_network_authorization-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/meta_protocol-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/location_relationship-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,6 +49,11 @@ public class CollectionResourceTest extends DatabaseTest {
         core.setUpdatedBy(core);
         core = em.merge(core);
         beginTransaction();
+    }
+
+    @After
+    public void after() {
+        em.getTransaction().rollback();
     }
 
     @Test

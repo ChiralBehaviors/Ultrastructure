@@ -42,7 +42,7 @@
             initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-409">
-        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="relationship_name" deferrable="false"
+        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="relationship_name_constraint" deferrable="false"
             disabled="false" initiallyDeferred="true" tableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-515">

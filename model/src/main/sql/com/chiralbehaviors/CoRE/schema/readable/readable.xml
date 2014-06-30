@@ -37,6 +37,7 @@
     <include relativeToChangelogFile="true" file="views/agency_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/agency_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/agency_network.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/status_code.xml" />
     <include relativeToChangelogFile="true" file="views/status_code_network.xml" />
     <include relativeToChangelogFile="true" file="views/status_code_sequencing.xml" />

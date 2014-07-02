@@ -18,11 +18,13 @@ package com.chiralbehaviors.CoRE.time;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_NETWORKS;
 
 import java.util.UUID;
 
@@ -42,9 +44,14 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * @author hhildebrand
  *
  */
-@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
-                                                         + "WHERE n.parent = :parent "
-                                                         + "AND n.relationship = :relationship") })
+@NamedQueries({
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship"),
+               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM IntervalNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship "
+                                                        + "AND n.child = :child") })
 @Entity
 @Table(name = "interval_network", schema = "ruleform")
 public class IntervalNetwork extends NetworkRuleform<Interval> {
@@ -55,6 +62,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "intervalNetwork"
                                                                + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS = "intervalNetwork" + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "intervalNetwork"
                                                                + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                = "intervalNetwork"

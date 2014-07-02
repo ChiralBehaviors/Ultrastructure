@@ -61,9 +61,9 @@ import com.chiralbehaviors.CoRE.network.Relationship;
                                                         + "WHERE n.parent = :parent "
                                                         + "AND n.relationship = :relationship"),
                @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AgencyNetwork n "
-                                                        + "WHERE n.parent IN :parents "
-                                                        + "AND n.relationship IN :relationships "
-                                                        + "AND n.child IN :children") })
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship "
+                                                        + "AND n.child = :child") })
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 public class AgencyNetwork extends NetworkRuleform<Agency> {

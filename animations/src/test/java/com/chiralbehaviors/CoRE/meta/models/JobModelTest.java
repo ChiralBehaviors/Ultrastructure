@@ -46,9 +46,9 @@ import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.models.debug.JobModelDebugger;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -64,10 +64,10 @@ public class JobModelTest extends AbstractModelTest {
         txn.begin();
         scenario.load();
         txn.commit();
-        jobModel = new JobModelDebugger(model);
+        jobModel = model.getJobModel();
     }
 
-    private static JobModelDebugger      jobModel;
+    private static JobModel      jobModel;
 
     private static OrderProcessingLoader scenario;
 
@@ -204,19 +204,29 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().rollback();
     }
 
-    //@Test
+    @Test
     public void testGenerateJobsFromProtocols() {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Product service = new Product("test service", kernel.getCore());
         em.persist(service);
+        MetaProtocol mp = jobModel.newInitializedMetaProtocol(service, kernel.getCore());
+        mp.setAssignTo(kernel.getDevelopedBy());
+        mp.setDeliverTo(kernel.getGreaterThanOrEqual());
+        em.persist(mp);
         Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
+        p.setAssignTo(kernel.getPropagationSoftware());
         em.persist(p);
         txn.commit();
         Job order = jobModel.newInitializedJob(service, kernel.getCore());
+        order.setAssignTo(kernel.getCoreUser());
+        Location loc = new Location("crap location", null, kernel.getCore());
+        em.persist(loc);
+        order.setDeliverTo(loc);
         em.persist(order);
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
-        Map<Protocol, InferenceMap> protocols = model.getJobModel().getProtocols(order);
+        TestDebuggingUtil.printMetaProtocolGaps(jobModel.findMetaProtocolGaps(order));
+        List<Protocol> protocols = model.getJobModel().getProtocolsFor(order.getService());
         assertEquals(1, protocols.size());
         List<Job> jobs = model.getJobModel().generateImplicitJobs(order,
                                                                   kernel.getCore());

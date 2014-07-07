@@ -46,10 +46,11 @@ import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.models.debug.JobModelDebugger;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -64,10 +65,10 @@ public class JobModelTest extends AbstractModelTest {
         txn.begin();
         scenario.load();
         txn.commit();
-        jobModel = new JobModelDebugger(model);
+        jobModel = model.getJobModel();
     }
 
-    private static JobModelDebugger      jobModel;
+    private static JobModel      jobModel;
 
     private static OrderProcessingLoader scenario;
 
@@ -204,19 +205,29 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().rollback();
     }
 
-    //@Test
+    @Test
     public void testGenerateJobsFromProtocols() {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Product service = new Product("test service", kernel.getCore());
         em.persist(service);
+        MetaProtocol mp = jobModel.newInitializedMetaProtocol(service, kernel.getCore());
+        mp.setAssignTo(kernel.getDevelopedBy());
+        mp.setDeliverTo(kernel.getGreaterThanOrEqual());
+        em.persist(mp);
         Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
+        p.setAssignTo(kernel.getPropagationSoftware());
         em.persist(p);
         txn.commit();
         Job order = jobModel.newInitializedJob(service, kernel.getCore());
+        order.setAssignTo(kernel.getCoreUser());
+        Location loc = new Location("crap location", null, kernel.getCore());
+        em.persist(loc);
+        order.setDeliverTo(loc);
         em.persist(order);
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
-        Map<Protocol, InferenceMap> protocols = model.getJobModel().getProtocols(order);
+        TestDebuggingUtil.printMetaProtocolGaps(jobModel.findMetaProtocolGaps(order));
+        List<Protocol> protocols = model.getJobModel().getProtocolsFor(order.getService());
         assertEquals(1, protocols.size());
         List<Job> jobs = model.getJobModel().generateImplicitJobs(order,
                                                                   kernel.getCore());
@@ -260,26 +271,12 @@ public class JobModelTest extends AbstractModelTest {
         Product service = new Product("My Service", kernel.getCore());
         em.persist(service);
 
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(
-                                                                  service,
-                                                                  startState,
-                                                                  state1,
-                                                                  kernel.getCore());
-        em.persist(sequence1);
-
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(
-                                                                  service,
-                                                                  state1,
-                                                                  state2,
-                                                                  kernel.getCore());
-        em.persist(sequence2);
-
-        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
-                                                                  service,
-                                                                  state2,
-                                                                  terminalState,
-                                                                  kernel.getCore());
-        em.persist(sequence3);
+        List<Tuple<StatusCode, StatusCode>> sequences = new ArrayList<Tuple<StatusCode, StatusCode>>();
+        sequences.add(new Tuple<StatusCode, StatusCode>(startState, state1));
+        sequences.add(new Tuple<StatusCode, StatusCode>(state1, state2));
+        sequences.add(new Tuple<StatusCode, StatusCode>(state2, terminalState));
+        
+        model.getJobModel().createStatusCodeSequencings(service, sequences, kernel.getCore());
 
         em.getTransaction().commit();
 

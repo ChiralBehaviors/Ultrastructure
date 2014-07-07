@@ -55,6 +55,8 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol_;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -75,6 +77,7 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform_;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -410,7 +413,10 @@ public class JobModelImpl implements JobModel {
 
     protected final Kernel            kernel;
 
+    protected final Model             model;
+
     public JobModelImpl(Model model) {
+        this.model = model;
         em = model.getEntityManager();
         kernel = model.getKernel();
     }
@@ -1758,5 +1764,158 @@ public class JobModelImpl implements JobModel {
                                   ruleform.getNotApplicableId()), mask);
         }
         return null;
+    }
+
+    @Override
+    public Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job) {
+        List<MetaProtocol> metaProtocols = getMetaprotocols(job);
+        Map<Protocol, Map<MetaProtocol, List<String>>> gaps = new HashMap<>();
+
+        List<Protocol> protocols = getProtocolsFor(job.getService());
+        for (Protocol p : protocols) {
+            Map<MetaProtocol, List<String>> mpGaps = new HashMap<>();
+            for (MetaProtocol mp : metaProtocols) {
+                List<String> fieldsMissing = new ArrayList<>();
+                if (!pathExists(job.getAssignTo(), mp.getAssignTo(),
+                                p.getAssignTo(), model.getAgencyModel())) {
+                    fieldsMissing.add("AssignTo");
+                }
+                if (!pathExists(job.getRequester(), mp.getRequestingAgency(),
+                                p.getRequester(), model.getAgencyModel())) {
+                    fieldsMissing.add("Requester");
+                }
+                if (!pathExists(job.getDeliverTo(), mp.getDeliverTo(),
+                                p.getDeliverTo(), model.getLocationModel())) {
+                    fieldsMissing.add("DeliverTo");
+                }
+                if (!pathExists(job.getDeliverFrom(), mp.getDeliverFrom(),
+                                p.getDeliverFrom(), model.getLocationModel())) {
+                    fieldsMissing.add("DeliverFrom");
+                }
+                if (!pathExists(job.getProduct(), mp.getProductOrdered(),
+                                p.getRequestedProduct(),
+                                model.getProductModel())) {
+                    fieldsMissing.add("Product");
+                }
+                if (!pathExists(job.getService(), mp.getServiceType(),
+                                p.getRequestedService(),
+                                model.getProductModel())) {
+                    fieldsMissing.add("Service");
+                }
+                if (!pathExists(job.getAssignToAttribute(),
+                                mp.getAssignToAttribute(),
+                                p.getAssignToAttribute(),
+                                model.getAttributeModel())) {
+                    fieldsMissing.add("AssignToAttribute");
+                }
+                if (!pathExists(job.getRequesterAttribute(),
+                                mp.getRequestingAgencyAttribute(),
+                                p.getRequesterAttribute(),
+                                model.getAttributeModel())) {
+                    fieldsMissing.add("RequesterAttribute");
+                }
+                if (!pathExists(job.getDeliverToAttribute(),
+                                mp.getDeliverToAttribute(),
+                                p.getDeliverToAttribute(),
+                                model.getAttributeModel())) {
+                    fieldsMissing.add("DeliverToAttribute");
+                }
+                if (!pathExists(job.getDeliverFromAttribute(),
+                                mp.getDeliverFromAttribute(),
+                                p.getDeliverFromAttribute(),
+                                model.getAttributeModel())) {
+                    fieldsMissing.add("DeliverFromAttribute");
+                }
+                if (!pathExists(job.getProductAttribute(),
+                                mp.getProductOrderedAttribute(),
+                                p.getProductAttribute(),
+                                model.getAttributeModel())) {
+                    fieldsMissing.add("ProductAttribute");
+                }
+                if (!pathExists(job.getServiceAttribute(),
+                                mp.getServiceAttribute(),
+                                p.getServiceAttribute(),
+                                model.getAttributeModel())) {
+                    fieldsMissing.add("ServiceAttribute");
+                }
+                mpGaps.put(mp, fieldsMissing);
+            }
+            gaps.put(p, mpGaps);
+        }
+        return gaps;
+    }
+
+    /**
+     * @param mpRelationship
+     * @param child
+     *            TODO
+     * @param job
+     */
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> boolean pathExists(RuleForm rf,
+                                                                                                                                                                                                                                                               Relationship mpRelationship,
+                                                                                                                                                                                                                                                               RuleForm child,
+                                                                                                                                                                                                                                                               NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> netModel) {
+        if (mpRelationship.isAnyOrSame() || mpRelationship.isNotApplicable()) {
+            return true;
+        }
+        if (!(netModel.isAccessible(rf, null, mpRelationship, child, null))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns a map of all protocols that match job.service and a list of field
+     * names specifying which fields on the protocol prevent the protocol from
+     * being matched. An empty list means the protocol would be matched if a job
+     * were inserted.
+     * 
+     * This method does not take metaprotocols into account.
+     * 
+     * @param job
+     * @return
+     */
+    @Override
+    public Map<Protocol, List<String>> findProtocolGaps(Job job) {
+        Map<Protocol, List<String>> gaps = new HashMap<>();
+        for (Protocol p : getProtocolsFor(job.getService())) {
+            gaps.put(p, findGaps(job, p));
+        }
+        return gaps;
+    }
+
+    /**
+     * @param job
+     * @param p
+     * @return
+     */
+    private List<String> findGaps(Job job, Protocol p) {
+        List<String> missingFields = new LinkedList<>();
+        if (!job.getRequester().equals(p.getRequester())) {
+            missingFields.add("Requester");
+        }
+        if (!job.getProduct().equals(p.getRequestedProduct())) {
+            missingFields.add("Product");
+        }
+        if (!job.getDeliverTo().equals(p.getDeliverTo())) {
+            missingFields.add("DeliverTo");
+        }
+        if (!job.getDeliverFrom().equals(p.getDeliverFrom())) {
+            missingFields.add("DeliverFrom");
+        }
+        if (!job.getRequesterAttribute().equals(p.getRequesterAttribute())) {
+            missingFields.add("RequesterAttribute");
+        }
+        if (!job.getProductAttribute().equals(p.getProductAttribute())) {
+            missingFields.add("ProductAttribute");
+        }
+        if (!job.getDeliverToAttribute().equals(p.getDeliverToAttribute())) {
+            missingFields.add("DeliverToAttribute");
+        }
+        if (!job.getDeliverFromAttribute().equals(p.getDeliverFromAttribute())) {
+            missingFields.add("DeliverFromAttribute");
+        }
+        return missingFields;
+
     }
 }

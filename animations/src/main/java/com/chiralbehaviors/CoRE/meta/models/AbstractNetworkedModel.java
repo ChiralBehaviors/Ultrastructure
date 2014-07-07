@@ -75,8 +75,8 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>>
-implements
-NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
+        implements
+        NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
 
     /**
      * @param attr
@@ -195,7 +195,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     @Override
     public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency) {
         TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                       + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
+                                                                               + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
                                                                        authorization);
         query.setParameter("groupingAgency", groupingAgency);
         return query.getResultList();
@@ -212,7 +212,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
                                                                    Attribute attribute) {
         TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                       + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
+                                                                               + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
                                                                        authorization);
         query.setParameter("groupingAgency", groupingAgency);
         query.setParameter("attribute", attribute);
@@ -222,7 +222,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     @Override
     public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect) {
         TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                       + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
+                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
                                                                        authorization);
         query.setParameter("classification", aspect.getClassification());
         query.setParameter("classifier", aspect.getClassifier());
@@ -240,7 +240,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect,
                                                                    Attribute attribute) {
         TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                       + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
+                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
                                                                        authorization);
         query.setParameter("classification", aspect.getClassification());
         query.setParameter("classifier", aspect.getClassifier());
@@ -252,7 +252,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
                                                          Agency groupingAgency) {
         TypedQuery<AttributeType> query = em.createNamedQuery(prefix
-                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
+                                                                      + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
                                                               attribute);
         query.setParameter("ruleform", ruleform);
         query.setParameter("agency", groupingAgency);
@@ -270,7 +270,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
                                                          Aspect<RuleForm> aspect) {
         TypedQuery<AttributeType> query = em.createNamedQuery(prefix
-                                                              + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX,
+                                                                      + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX,
                                                               attribute);
         query.setParameter("ruleform", ruleform);
         query.setParameter("classifier", aspect.getClassifier());
@@ -289,7 +289,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     public List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
                                                       Agency groupingAgency) {
         TypedQuery<AttributeType> query = em.createNamedQuery(prefix
-                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
+                                                                      + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
                                                               attribute);
         query.setParameter("ruleform", ruleform);
         query.setParameter("agency", groupingAgency);
@@ -312,8 +312,8 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
         }
         query.select(path).where(cb.and(cb.equal(networkRoot.get("parent"),
                                                  parent),
-                                                 cb.equal(networkRoot.get("relationship"),
-                                                          relationship)));
+                                        cb.equal(networkRoot.get("relationship"),
+                                                 relationship)));
         TypedQuery<RuleForm> q = em.createQuery(query);
         return q.getSingleResult();
     }
@@ -328,10 +328,10 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     @Override
     public List<RuleForm> getChildren(RuleForm parent, Relationship relationship) {
         String prefix = parent.getClass().getSimpleName().toLowerCase()
-                + "Network";
+                        + "Network";
         @SuppressWarnings("unchecked")
         TypedQuery<RuleForm> q = (TypedQuery<RuleForm>) em.createNamedQuery(prefix
-                                                                            + ExistentialRuleform.GET_CHILDREN_SUFFIX,
+                                                                                    + ExistentialRuleform.GET_CHILDREN_SUFFIX,
                                                                             parent.getClass());
         q.setParameter("parent", parent);
         q.setParameter("relationship", relationship);
@@ -350,10 +350,10 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     public Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,
                                                    Aspect<RuleForm> aspect) {
         return new Facet<RuleForm, AttributeType>(
-                aspect,
-                ruleform,
-                getAttributesClassifiedBy(ruleform,
-                                          aspect)) {
+                                                  aspect,
+                                                  ruleform,
+                                                  getAttributesClassifiedBy(ruleform,
+                                                                            aspect)) {
         };
     }
 
@@ -435,7 +435,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
     @Override
     public RuleForm getSingleChild(RuleForm parent, Relationship r) {
         TypedQuery<RuleForm> query = em.createNamedQuery(prefix
-                                                         + GET_CHILDREN_SUFFIX,
+                                                                 + GET_CHILDREN_SUFFIX,
                                                          entity);
         query.setParameter("p", parent);
         query.setParameter("r", r);
@@ -517,11 +517,11 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
             // Deduce all possible rules
             if (firstPass) {
                 newRules = em.createNamedQuery(networkPrefix
-                                               + INFERENCE_STEP_SUFFIX).executeUpdate();
+                                                       + INFERENCE_STEP_SUFFIX).executeUpdate();
                 firstPass = false;
             } else {
                 newRules = em.createNamedQuery(networkPrefix
-                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
+                                                       + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX).executeUpdate();
             }
             if (log.isTraceEnabled()) {
                 log.trace(String.format("inferred %s new rules", newRules));
@@ -534,6 +534,7 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
             if (log.isTraceEnabled()) {
                 log.trace(String.format("deduced %s rules", deduced));
+                                                      
             }
             // Insert the new rules
             Query insert = em.createNamedQuery(networkPrefix
@@ -596,18 +597,18 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
             return parent.getClass().getSimpleName().toLowerCase() + "Network";
         }
         return parent.getClass().getSimpleName().toLowerCase()
-                + child.getClass().getSimpleName() + "AccessAuthorization";
+               + child.getClass().getSimpleName() + "AccessAuthorization";
     }
 
     private void createCurrentPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
-                + "id CHAR(22) NOT NULL,"
-                + "parent CHAR(22) NOT NULL,"
-                + "relationship CHAR(22) NOT NULL,"
-                + "child CHAR(22) NOT NULL,"
-                + "premise1 CHAR(22) NOT NULL,"
-                + "premise2 CHAR(22) NOT NULL,"
-                + "inference CHAR(22) NOT NULL )").executeUpdate();
+                                     + "id CHAR(22) NOT NULL,"
+                                     + "parent CHAR(22) NOT NULL,"
+                                     + "relationship CHAR(22) NOT NULL,"
+                                     + "child CHAR(22) NOT NULL,"
+                                     + "premise1 CHAR(22) NOT NULL,"
+                                     + "premise2 CHAR(22) NOT NULL,"
+                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
     }
 
     private void createDeductionTemporaryTables() {
@@ -621,23 +622,23 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
 
     private void createLastPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE last_pass_rules ("
-                + "id CHAR(22) NOT NULL,"
-                + "parent CHAR(22) NOT NULL,"
-                + "relationship CHAR(22) NOT NULL,"
-                + "child CHAR(22) NOT NULL,"
-                + "premise1 CHAR(22) NOT NULL,"
-                + "premise2 CHAR(22) NOT NULL,"
-                + "inference CHAR(22) NOT NULL )").executeUpdate();
+                                     + "id CHAR(22) NOT NULL,"
+                                     + "parent CHAR(22) NOT NULL,"
+                                     + "relationship CHAR(22) NOT NULL,"
+                                     + "child CHAR(22) NOT NULL,"
+                                     + "premise1 CHAR(22) NOT NULL,"
+                                     + "premise2 CHAR(22) NOT NULL,"
+                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
     }
 
     private void createWorkingMemory() {
         em.createNativeQuery("CREATE TEMPORARY TABLE working_memory("
-                + "parent CHAR(22) NOT NULL,"
-                + "relationship CHAR(22) NOT NULL,"
-                + "child CHAR(22) NOT NULL,"
-                + "premise1 CHAR(22) NOT NULL,"
-                + "premise2 CHAR(22) NOT NULL,"
-                + "inference CHAR(22) NOT NULL )").executeUpdate();
+                                     + "parent CHAR(22) NOT NULL,"
+                                     + "relationship CHAR(22) NOT NULL,"
+                                     + "child CHAR(22) NOT NULL,"
+                                     + "premise1 CHAR(22) NOT NULL,"
+                                     + "premise2 CHAR(22) NOT NULL,"
+                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
     }
 
     @SuppressWarnings("unchecked")
@@ -673,11 +674,10 @@ NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
             query = em.createNamedQuery(String.format("%s%s",
                                                       queryPrefix,
                                                       ExistentialRuleform.GET_NETWORKS_SUFFIX));
-            query.setParameter("parents", parent);
+            query.setParameter("parent", parent);
             query.setParameter("relationship", authorizingRelationship);
-            query.setParameter("children", child);
-        }
-        if (parentRelationship == null && childRelationship == null) {
+            query.setParameter("child", child);
+        } else if (parentRelationship == null && childRelationship == null) {
             query = em.createNamedQuery(queryPrefix
                                         + AccessAuthorization.FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX);
             query.setParameter("parent", parent);

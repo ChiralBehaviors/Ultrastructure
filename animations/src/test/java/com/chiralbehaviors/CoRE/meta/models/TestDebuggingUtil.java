@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 
@@ -71,6 +72,26 @@ public class TestDebuggingUtil {
                                              s.getParentCode().getName(),
                                              s.getChildCode().getName()));
         }
+    }
+
+    /**
+     * @param findMetaProtocolGaps
+     */
+    public static void printMetaProtocolGaps(Map<Protocol, Map<MetaProtocol, List<String>>> gaps) {
+        for (Map.Entry<Protocol, Map<MetaProtocol, List<String>>> e : gaps.entrySet()) {
+            System.out.println(String.format("requestedService: %s, service: %s",
+                                             e.getKey().getRequestedService().getName(),
+                                             e.getKey().getService().getName()));
+            
+            for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue().entrySet()) {
+                System.out.println(String.format("MetaProtocol: %s", mpe.getKey().getId()));
+                System.out.println("Unmatched fields: ");
+                for (String f : mpe.getValue()) {
+                    System.out.println(f);
+                }
+            }
+        }
+        
     }
 
 }

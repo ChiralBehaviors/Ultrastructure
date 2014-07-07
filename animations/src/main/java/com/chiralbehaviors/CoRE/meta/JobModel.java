@@ -569,4 +569,8 @@ public interface JobModel {
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
 
+    public abstract Map<Protocol, List<String>> findProtocolGaps(Job job);
+
+    public abstract Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
+
 }

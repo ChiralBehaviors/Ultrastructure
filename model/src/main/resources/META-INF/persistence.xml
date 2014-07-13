@@ -78,5 +78,10 @@
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.location.LocationNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAttribute</class>
     </persistence-unit>
 </persistence>

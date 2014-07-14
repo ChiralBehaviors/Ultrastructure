@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.access.resource;
@@ -22,8 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -35,25 +34,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * @author hparry
- * 
+ *
  */
 public class CollectionResourceTest extends DatabaseTest {
 
-    CollectionResource resource;
-    Agency             core;
+    private static Agency             core;
+    private static CollectionResource resource;
 
-    @Before
-    public void before() {
+    @BeforeClass
+    public static void setup() throws Exception {
+        DatabaseTest.setup();
         resource = new CollectionResource(emf);
         core = new Agency("CoRE");
         core.setUpdatedBy(core);
         core = em.merge(core);
-        beginTransaction();
-    }
-
-    @After
-    public void after() {
-        em.getTransaction().rollback();
     }
 
     @Test
@@ -101,7 +95,7 @@ public class CollectionResourceTest extends DatabaseTest {
 
     /**
      * Tests inserting a cycle
-     * 
+     *
      * @throws JsonProcessingException
      */
     @Test

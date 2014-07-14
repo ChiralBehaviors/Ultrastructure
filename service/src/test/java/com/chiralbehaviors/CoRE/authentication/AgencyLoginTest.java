@@ -16,8 +16,8 @@
 
 package com.chiralbehaviors.CoRE.authentication;
 
-import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import io.dropwizard.auth.basic.BasicCredentials;
 
 import java.io.InputStream;

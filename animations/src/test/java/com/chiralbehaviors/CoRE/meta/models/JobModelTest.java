@@ -17,10 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -31,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityTransaction;
-import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -50,7 +46,6 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -68,7 +63,7 @@ public class JobModelTest extends AbstractModelTest {
         jobModel = model.getJobModel();
     }
 
-    private static JobModel      jobModel;
+    private static JobModel              jobModel;
 
     private static OrderProcessingLoader scenario;
 
@@ -211,7 +206,8 @@ public class JobModelTest extends AbstractModelTest {
         txn.begin();
         Product service = new Product("test service", kernel.getCore());
         em.persist(service);
-        MetaProtocol mp = jobModel.newInitializedMetaProtocol(service, kernel.getCore());
+        MetaProtocol mp = jobModel.newInitializedMetaProtocol(service,
+                                                              kernel.getCore());
         mp.setAssignTo(kernel.getDevelopedBy());
         mp.setDeliverTo(kernel.getGreaterThanOrEqual());
         em.persist(mp);
@@ -248,86 +244,6 @@ public class JobModelTest extends AbstractModelTest {
 
         }
 
-    }
-
-    @Test
-    public void testIsTerminalState() throws Exception {
-        em.getTransaction().begin();
-
-        JobModel jobModel = model.getJobModel();
-        StatusCode startState = new StatusCode("top-level", kernel.getCore());
-        em.persist(startState);
-
-        StatusCode state1 = new StatusCode("state-1", kernel.getCore());
-        em.persist(state1);
-
-        StatusCode state2 = new StatusCode("state-2", kernel.getCore());
-        em.persist(state2);
-
-        StatusCode terminalState = new StatusCode("terminal state",
-                                                  kernel.getCore());
-        em.persist(terminalState);
-
-        Product service = new Product("My Service", kernel.getCore());
-        em.persist(service);
-
-        List<Tuple<StatusCode, StatusCode>> sequences = new ArrayList<Tuple<StatusCode, StatusCode>>();
-        sequences.add(new Tuple<StatusCode, StatusCode>(startState, state1));
-        sequences.add(new Tuple<StatusCode, StatusCode>(state1, state2));
-        sequences.add(new Tuple<StatusCode, StatusCode>(state2, terminalState));
-        
-        model.getJobModel().createStatusCodeSequencings(service, sequences, kernel.getCore());
-
-        em.getTransaction().commit();
-
-        assertTrue(String.format("%s is not a terminal state", terminalState),
-                   jobModel.isTerminalState(terminalState, service));
-        assertFalse(String.format("%s is a terminal state", startState),
-                    jobModel.isTerminalState(startState, service));
-        assertFalse(String.format("%s is a terminal state", state1),
-                    jobModel.isTerminalState(state1, service));
-        assertFalse(String.format("%s is a terminal state", state2),
-                    jobModel.isTerminalState(state2, service));
-
-        em.getTransaction().begin();
-
-        StatusCodeSequencing loop = new StatusCodeSequencing(service,
-                                                             terminalState,
-                                                             state1,
-                                                             kernel.getCore());
-        em.persist(loop);
-        try {
-            em.getTransaction().commit();
-            fail("Expected failure due to circularity");
-        } catch (RollbackException e) {
-            // expected
-        }
-
-        assertTrue(String.format("%s is not a terminal state", terminalState),
-                   jobModel.isTerminalState(terminalState, service));
-
-        em.getTransaction().begin();
-
-        StatusCode loopState = new StatusCode("loop-state", kernel.getCore());
-        em.persist(loopState);
-
-        loop = new StatusCodeSequencing(service, state2, loopState,
-                                        kernel.getCore());
-        em.persist(loop);
-
-        StatusCodeSequencing terminate = new StatusCodeSequencing(
-                                                                  service,
-                                                                  loopState,
-                                                                  terminalState,
-                                                                  kernel.getCore());
-        em.persist(terminate);
-
-        StatusCodeSequencing back = new StatusCodeSequencing(service,
-                                                             loopState, state1,
-                                                             kernel.getCore());
-        em.persist(back);
-        em.persist(terminate);
-        em.getTransaction().commit();
     }
 
     //    TODO this test won't pass until we make job chronology saves fire from
@@ -383,9 +299,9 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverTo(scenario.rsb225);
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
+        em.persist(job);
         jobModel.changeStatus(job, scenario.available, kernel.getCore(),
                               "Test transition");
-        em.persist(job);
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> txfm = jobModel.getProtocols(job);

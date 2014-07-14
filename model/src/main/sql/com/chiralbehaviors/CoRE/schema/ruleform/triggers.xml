@@ -72,5 +72,11 @@
     <include relativeToChangelogFile="true" file="tables/status_code_attribute/triggers.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_attribute_authorization/triggers.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_attribute/triggers.xml" />
+    <include relativeToChangelogFile="true" file="tables/attribute_network_attribute/trigger-update_date.xml" />
+    <include relativeToChangelogFile="true" file="tables/interval_network_attribute/trigger-update_date.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_network_attribute/trigger-update_date.xml" />
+    <include relativeToChangelogFile="true" file="tables/relationship_network_attribute/trigger-update_date.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_network_attribute/trigger-update_date.xml" />
+    <include relativeToChangelogFile="true" file="tables/unit_network_attribute/trigger-update_date.xml" />
 
 </databaseChangeLog>

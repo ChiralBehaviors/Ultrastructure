@@ -60,4 +60,10 @@
     <include relativeToChangelogFile="true" file="tables/access_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_location.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_location_attribute.xml" />
+    <include relativeToChangelogFile="true" file="tables/attribute_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/interval_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/relationship_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/unit_network_attribute/table.xml" />
 </databaseChangeLog>

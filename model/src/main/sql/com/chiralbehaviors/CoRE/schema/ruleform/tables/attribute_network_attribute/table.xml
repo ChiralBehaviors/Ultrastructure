@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="1390879803225-41">
+        <createTable schemaName="ruleform"
+            remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
+            tableName="attribute_network_attribute"
+        >
+            <column name="id" type="CHAR(22)">
+                <constraints primaryKey="true" primaryKeyName="attribute_network_attribute_pkey" />
+            </column>
+            <column name="agency" remarks="The agency that the information in this rule comes from" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="network_rule" remarks="The agency Network rule whose attribute is being defined" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="attribute" remarks="The Attribute of the agency Network rule being defined" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="VARCHAR(10485760)" />
+            <column name="text_value" remarks="If the Attribute has a text value, it is stored in this column" type="VARCHAR(10485760)" />
+            <column name="numeric_value" remarks="If the Attribute has a numeric (real) value, it is stored in this column" type="numeric" />
+            <column name="integer_value" remarks="If the Attribute has an integer value, it is stored in this column" type="INT4" />
+            <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="SMALLINT" />
+            <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="CHAR(22)" />
+            <column name="notes" remarks="Miscellaneous notes about this rule" type="VARCHAR(10485760)" />
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The time of the last update to this rule"
+                type="TIMESTAMP WITH TIME ZONE"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueNumeric="1" name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="attribute_network_attribute" />
+        </rollback>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-246">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency" baseTableName="attribute_network_attribute" constraintName="attribute_network_attribute_agency_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-247">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="attribute_network_attribute" constraintName="attribute_network_attribute_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-248">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="network_rule" baseTableName="attribute_network_attribute" constraintName="attribute_network_attribute_network_rule_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute_network" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-250">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="attribute_network_attribute" constraintName="attribute_network_attribute_unit_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-251">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="attribute_network_attribute" constraintName="attribute_network_attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-401">
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, network_rule, attribute, sequence_number"
+            constraintName="attribute_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="attribute_network_attribute" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-496">
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_agency_fkey_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="agency" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-497">
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_attribute_fkey_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="attribute" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-498">
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_network_rule_fkey_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="network_rule" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-500">
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_unit_fkey_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="unit" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="1390879803225-501">
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_updated_by_fkey_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+    <changeSet id="1" author="hhildebrand">
+        <sql> ALTER TABLE attribute_network_attribute OWNER TO core; </sql>
+        <rollback />
+    </changeSet>
+    <changeSet id="2" author="hhildebrand">
+        <sql><![CDATA[
+            GRANT ALL ON TABLE attribute_network_attribute TO core;
+            GRANT SELECT ON TABLE attribute_network_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE attribute_network_attribute TO core_read_write;
+            ]]>
+        </sql>
+        <rollback />
+    </changeSet>
+</databaseChangeLog>

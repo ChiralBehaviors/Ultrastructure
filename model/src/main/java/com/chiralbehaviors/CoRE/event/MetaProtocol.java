@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -49,26 +50,32 @@ public class MetaProtocol extends Ruleform {
 
     private static final long  serialVersionUID = 1L;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "assign_to")
     private Relationship       assignTo;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "assign_to_attribute")
     private Relationship       assignToAttribute;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "deliver_from_attribute")
     private Relationship       deliverFromAttribute;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "deliver_to_attribute")
     private Relationship       deliverToAttribute;
@@ -76,10 +83,12 @@ public class MetaProtocol extends Ruleform {
     /**
      * The relationship that transforms the product ordered
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "product_ordered")
     private Relationship       productOrdered;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "product_ordered_attribute")
     private Relationship       productOrderedAttribute;
@@ -87,6 +96,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * the relationship that transforms the quantity unit type
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "quantity_unit")
     private Relationship       quantityUnit;
@@ -94,10 +104,12 @@ public class MetaProtocol extends Ruleform {
     /**
      * the relationship that transforms the requesting agency
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "requesting_agency")
     private Relationship       requestingAgency;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "requesting_agency_attribute")
     private Relationship       requestingAgencyAttribute;
@@ -108,6 +120,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * The service factor for this rule
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "service")
     private Product            service;
@@ -115,6 +128,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * the relationship that transforms the service type
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "service_attribute")
     private Relationship       serviceAttribute;
@@ -122,6 +136,7 @@ public class MetaProtocol extends Ruleform {
     /**
      * the relationship that transforms the service type
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "service_type")
     private Relationship       serviceType;

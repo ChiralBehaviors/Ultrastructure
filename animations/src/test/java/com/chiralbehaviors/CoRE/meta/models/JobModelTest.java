@@ -299,7 +299,6 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverTo(scenario.rsb225);
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
-        em.persist(job);
         jobModel.changeStatus(job, scenario.available, kernel.getCore(),
                               "Test transition");
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
@@ -335,7 +334,6 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverTo(scenario.rsb225);
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.cafleurBon);
-        em.persist(job);
         jobModel.changeStatus(job, scenario.unset, kernel.getCore(),
                               "Transition from test");
         metaProtocols = jobModel.getMetaprotocols(job);

@@ -15,24 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.Job.ACTIVE_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.FIND_ALL;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_EXPLICIT_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
-import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.event.Job.*;
-import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
-import static com.chiralbehaviors.CoRE.event.Job.GET_STATUS_CODE_SEQUENCES;
-import static com.chiralbehaviors.CoRE.event.Job.GET_SUB_JOBS_ASSIGNED_TO;
-import static com.chiralbehaviors.CoRE.event.Job.GET_TERMINAL_STATES;
-import static com.chiralbehaviors.CoRE.event.Job.GET_UNSET_SIBLINGS;
-import static com.chiralbehaviors.CoRE.event.Job.HAS_SCS;
-import static com.chiralbehaviors.CoRE.event.Job.INITIAL_STATE;
-import static com.chiralbehaviors.CoRE.event.Job.STATUS_CODE;
-import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +33,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -226,6 +210,7 @@ public class Job extends AbstractProtocol {
     /**
      * This job's status
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "status")
     private StatusCode         status;

@@ -214,7 +214,7 @@
                             <url>jdbc:postgresql://${db.server}:${db.port}/core</url>
                             <username>${db.login}</username>
                             <password>${db.password}</password>
-                            <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml</changeLogFile>
+                            <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/animations.xml</changeLogFile>
                             <verbose>false</verbose>
                         </configuration>
                         <executions>

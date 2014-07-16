@@ -16,7 +16,7 @@
     <changeSet id="modify changelog column length" author="hparry">
         <sql><![CDATA[
             ALTER TABLE databasechangelog
-            ALTER COLUMN filename TYPE varchar(500);
+            ALTER COLUMN filename TYPE varchar(4096);
             ]]>
 
         </sql>

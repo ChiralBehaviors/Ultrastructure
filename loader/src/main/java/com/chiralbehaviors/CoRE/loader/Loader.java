@@ -42,15 +42,15 @@ import com.hellblazer.utils.Utils;
  */
 public class Loader {
 
-    private static final String ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML = "animations/com/chiralbehaviors/CoRE/schema/ruleform/animations.xml";
+    private static final String ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_ANIMATIONS_XML = "animations/com/chiralbehaviors/CoRE/schema/animations.xml";
     private static final String ANIMATIONS_JAR;
     private static final String ANIMATIONS_JAR_NAME;
-    private static final String CREATE_DATABASE_XML                                                 = "create-database.xml";
-    private static final String DROP_DATABASE_SQL                                                   = "/drop-database.sql";
-    private static final String DROP_LIQUIBASE_SQL                                                  = "/drop-liquibase.sql";
-    private static final String DROP_ROLES_SQL                                                      = "/drop-roles.sql";
-    private static final Logger log                                                                 = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML                     = "model/com/chiralbehaviors/CoRE/schema/core.xml";
+    private static final String CREATE_DATABASE_XML                                        = "create-database.xml";
+    private static final String DROP_DATABASE_SQL                                          = "/drop-database.sql";
+    private static final String DROP_LIQUIBASE_SQL                                         = "/drop-liquibase.sql";
+    private static final String DROP_ROLES_SQL                                             = "/drop-roles.sql";
+    private static final Logger log                                                        = LoggerFactory.getLogger(Loader.class);
+    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML            = "model/com/chiralbehaviors/CoRE/schema/core.xml";
 
     static {
         String version;
@@ -59,7 +59,8 @@ public class Loader {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        ANIMATIONS_JAR = String.format("/animations/animations-%s-phat.jar", version);
+        ANIMATIONS_JAR = String.format("/animations/animations-%s-phat.jar",
+                                       version);
         ANIMATIONS_JAR_NAME = String.format("animations_%s",
                                             version.replace('.', '_').replace("-",
                                                                               "_"));
@@ -224,7 +225,7 @@ public class Loader {
     protected void loadAnimations() throws Exception, SQLException {
         log.info(String.format("loading animations sql in core db %s",
                                configuration.coreDb));
-        load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_RULEFORM_ANIMATIONS_XML,
+        load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_ANIMATIONS_XML,
              configuration.getCoreConnection());
     }
 

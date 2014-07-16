@@ -7,13 +7,12 @@
     <artifactId>CoRE.app</artifactId>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Ultra-structure Core/650 Prototype</name>
-    <description>Exploration Project For Ultra-Structure</description>
+    <name>Ultra Structure</name>
+    <description>An implementation of Ultra Structure</description>
 
     <properties>
         <postgresql.driver.version>9.1-901.jdbc4</postgresql.driver.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.version>0.0.2-SNAPSHOT</project.version>
         <core.java.login>core_java</core.java.login>
         <core.java.password>password</core.java.password>
         <db.login>core</db.login>
@@ -175,7 +174,7 @@
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>test-framework</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
+                <version>${project.version}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -289,7 +288,7 @@
             <dependency>
                 <groupId>com.hellblazer</groupId>
                 <artifactId>utils</artifactId>
-                <version>0.0.3-SNAPSHOT</version>
+                <version>0.0.3</version>
             </dependency>
             <dependency>
                 <groupId>io.dropwizard</groupId>

@@ -31,4 +31,10 @@ public class AnnotationValue {
     public String getPropName() {
         return this.propName;
     }
+
+    @Override
+    public String toString() {
+        return String.format("AnnotationValue [%s, %s]",
+                             className, propName);
+    }
 }

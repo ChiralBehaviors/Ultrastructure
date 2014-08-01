@@ -10,6 +10,31 @@
     <name>Ultra Structure</name>
     <description>An implementation of Ultra Structure</description>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Hal Hildebrand</name>
+            <email>hal.hildebrand@me.com</email>
+            <organization>Chiral Behaviors</organization>
+        </developer>
+        <developer>
+            <name>Halloran Parry</name>
+            <email>halloran.parry@gmail.com</email>
+            <organization>Chiral Behaviors</organization>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>git://github.com/ChiralBehaviors/Ultrastructure.git</connection>
+        <url>https://github.com/ChiralBehaviors/Ultrastructure</url>
+    </scm>
+
     <properties>
         <postgresql.driver.version>9.1-901.jdbc4</postgresql.driver.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

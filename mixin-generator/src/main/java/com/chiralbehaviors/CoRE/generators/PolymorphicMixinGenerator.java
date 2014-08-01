@@ -21,9 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +60,7 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
     /**
      * @parameter
      */
-    private String packageName;
+    private String className;
 
     /**
      * @parameter
@@ -70,7 +70,17 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
     /**
      * @parameter
      */
-    private String className;
+    private String packageName;
+
+    public PolymorphicMixinGenerator() {
+    }
+
+    public PolymorphicMixinGenerator(String packageName, File outputDirectory,
+                                     String className) {
+        this.packageName = packageName;
+        this.outputDirectory = outputDirectory;
+        this.className = className;
+    }
 
     public void execute() throws MojoExecutionException {
         System.out.println(String.format("args: %s, %s, %s", packageName,
@@ -90,7 +100,7 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
         }
         final Map<String, Class<?>> entityMap = new HashMap<String, Class<?>>();
         Set<String> imports = new HashSet<String>();
-        List<AnnotationValue> annotations = new LinkedList<AnnotationValue>();
+        List<AnnotationValue> annotations = new ArrayList<AnnotationValue>();
 
         Reflections reflections = new Reflections(
                                                   Ruleform.class.getPackage().getName());
@@ -110,15 +120,7 @@ public class PolymorphicMixinGenerator extends AbstractMojo {
         STGroup group = new STGroupFile("templates/polymorphicmixin.stg");
         ST mixin = group.getInstanceOf("mixinclass");
         mixin.add("importdecs", imports);
-
-        //        The template has a bunch of comma separated annotations,
-        //        except the last annotation doesn't end with a comma. I'm
-        //        sure there's a better way, but this works for now.
-        if (annotations.size() > 1) {
-            mixin.add("annotations",
-                      annotations.subList(0, annotations.size() - 2));
-        }
-        mixin.add("lasta", annotations.get(annotations.size() - 1));
+        mixin.add("annotations", annotations);
 
         FileOutputStream os;
         try {

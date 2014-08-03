@@ -113,7 +113,7 @@ public class Protocol extends AbstractProtocol {
     private Location           childDeliverFrom;
 
     @ManyToOne
-    @JoinColumn(name = "child_deliver_from")
+    @JoinColumn(name = "child_deliver_from_attribute")
     private Attribute          childDeliverFromAttribute;
 
     @ManyToOne

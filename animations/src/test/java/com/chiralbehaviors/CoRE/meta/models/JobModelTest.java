@@ -115,13 +115,13 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(childSequence);
 
         Protocol p = jobModel.newInitializedProtocol(kiki, kernel.getCore());
-        p.setChildProduct(bento);
+        p.setProduct(bento);
         p.setRequester(scenario.core);
         p.setDeliverTo(kernel.getAnyLocation());
         p.setDeliverFrom(kernel.getAnyLocation());
         p.setAssignTo(scenario.core);
-        p.setService(shipping);
-        p.setProduct(bento);
+        p.setChildService(shipping);
+        p.setChildProduct(bento);
         em.persist(p);
 
         em.getTransaction().commit();
@@ -318,11 +318,11 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(scenario.anyLocation, protocols.get(1).getDeliverTo());
         assertEquals(scenario.factory1Agency, protocols.get(0).getAssignTo());
         assertEquals(scenario.factory1Agency, protocols.get(1).getAssignTo());
-        if (protocols.get(0).getService().equals(scenario.pick)) {
-            assertEquals(scenario.ship, protocols.get(1).getService());
+        if (protocols.get(0).getChildService().equals(scenario.pick)) {
+            assertEquals(scenario.ship, protocols.get(1).getChildService());
         } else {
-            assertEquals(scenario.ship, protocols.get(0).getService());
-            assertEquals(scenario.pick, protocols.get(1).getService());
+            assertEquals(scenario.ship, protocols.get(0).getChildService());
+            assertEquals(scenario.pick, protocols.get(1).getChildService());
         }
 
         job = model.getJobModel().newInitializedJob(scenario.printPurchaseOrder,

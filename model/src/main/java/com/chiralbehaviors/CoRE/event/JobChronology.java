@@ -15,12 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
-import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
-import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
-import static com.chiralbehaviors.CoRE.event.JobChronology.GET_LOG_FOR_SEQUENCE;
-import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
-import static com.chiralbehaviors.CoRE.event.JobChronology.LAST_JOB_LOG;
+import static com.chiralbehaviors.CoRE.event.JobChronology.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +31,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.event.status.StatusCode;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -57,7 +53,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
                                                         + "    AND j.sequenceNumber = j.job.currentLogSequence") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
-public class JobChronology extends Job {
+public class JobChronology extends AbstractProtocol {
     public static final String FIND_ALL                 = "jobChronology"
                                                           + FIND_ALL_SUFFIX;
     public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
@@ -75,6 +71,11 @@ public class JobChronology extends Job {
 
     @Column(name = "sequence_number")
     private int                sequenceNumber           = 0;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "status")
+    private StatusCode         status;
 
     public JobChronology() {
     }
@@ -95,18 +96,31 @@ public class JobChronology extends Job {
         return job;
     }
 
-    @Override
-    public Integer getSequenceNumber() {
+    public int getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    /**
+     * @return the status
+     */
+    public StatusCode getStatus() {
+        return status;
     }
 
     /**
      * @param sequenceNumber
      *            the sequence to set
      */
-    @Override
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(StatusCode status) {
+        this.status = status;
     }
 
     /*
@@ -127,6 +141,7 @@ public class JobChronology extends Job {
 
     protected void initializeFrom(Job job) {
         this.job = job;
+        status = job.getStatus();
         setUpdateDate(job.getUpdateDate());
         copyFrom(job);
     }

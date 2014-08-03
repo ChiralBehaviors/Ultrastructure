@@ -79,60 +79,60 @@
 
         <createView viewName="protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT base_table.id,
-                    base_table.name,
-                    s.name AS service, 
-                    p.name AS product,
-                    r.name AS requester,  
-                    dt.name AS deliver_to, 
-                    df.name AS deliver_from,
-                    assign.name AS assign_to, 
-                    base_table.quantity,
-                    u.name AS quantity_unit,
-                    ra.name AS requester_attribute,
-                    sa.name AS service_attribute,
-                    pa.name AS product_attribute,
-                    dta.name AS deliver_to_attribute,
-                    dfa.name AS deliver_from_attribute,
-                    ata.name AS assign_to_attribute,
-                    cs.name AS child_service,
-                    cp.name AS child_product, 
-                    cat.name AS child_assign_to, 
-                    cdt.name AS child_deliver_to, 
-                    cdf.name AS child_deliver_from, 
-                    csa.name AS child_service_attribute,
-                    cpa.name AS child_product_attribute,
-                    cdta.name AS child_deliver_to_attribute,
-                    cdfa.name AS child_deliver_from_attribute,
-                    cata.name AS child_assign_to_attribute,
-                    base_table.sequence_number, 
-                    base_table.notes, 
-                    up.name AS updated_by,
-                    base_table.update_date
-               FROM protocol base_table
-               JOIN product s ON base_table.service = s.id
-               JOIN product p ON base_table.product = p.id
-               JOIN location dt ON base_table.deliver_to = dt.id
-               JOIN location df ON base_table.deliver_from = df.id
-               JOIN agency assign ON base_table.assign_to = assign.id
-               JOIN agency r ON base_table.requester = r.id
-               JOIN agency up ON base_table.updated_by = up.id
-               JOIN unit u ON base_table.quantity_unit = u.id
-               JOIN attribute ra ON base_table.requester_attribute = ra.id
-               JOIN attribute sa ON base_table.service_attribute = sa.id
-               JOIN attribute pa ON base_table.product_attribute = pa.id
-               JOIN attribute dta ON base_table.deliver_to_attribute = dta.id
-               JOIN attribute dfa ON base_table.deliver_from_attribute = dfa.id
-               JOIN attribute ata ON base_table.assign_to_attribute = ata.id
-               JOIN agency cat ON base_table.child_assign_to = cat.id
-               JOIN agency cata ON base_table.child_assign_to_attribute = cata.id
-               JOIN product cs ON base_table.child_service = cs.id
-               JOIN product cp ON base_table.child_product = cp.id
-               JOIN location cdt ON base_table.child_deliver_to = cdt.id
-               JOIN location cdf ON base_table.child_deliver_from = cdf.id
-               JOIN attribute csa ON base_table.child_service_attribute = csa.id
-               JOIN attribute cpa ON base_table.child_product_attribute = cpa.id
-               JOIN attribute cdta ON base_table.child_deliver_to_attribute = cdta.id
-               JOIN attribute cdfa ON base_table.child_deliver_from_attribute = cdfa.id;
+                base_table.name,
+                s.name AS service,
+                p.name AS product,
+                r.name AS requester,
+                dt.name AS deliver_to,
+                df.name AS deliver_from,
+                assign.name AS assign_to,
+                base_table.quantity,
+                u.name AS quantity_unit,
+                ra.name AS requester_attribute,
+                sa.name AS service_attribute,
+                pa.name AS product_attribute,
+                dta.name AS deliver_to_attribute,
+                dfa.name AS deliver_from_attribute,
+                ata.name AS assign_to_attribute,
+                cs.name AS child_service,
+                cp.name AS child_product,
+                cat.name AS child_assign_to,
+                cdt.name AS child_deliver_to,
+                cdf.name AS child_deliver_from,
+                csa.name AS child_service_attribute,
+                cpa.name AS child_product_attribute,
+                cdta.name AS child_deliver_to_attribute,
+                cdfa.name AS child_deliver_from_attribute,
+                cata.name AS child_assign_to_attribute,
+                base_table.sequence_number,
+                base_table.notes,
+                up.name AS updated_by,
+                base_table.update_date
+               FROM ruleform.protocol base_table
+               JOIN ruleform.product s ON base_table.service = s.id
+               JOIN ruleform.product p ON base_table.product = p.id
+               JOIN ruleform.agency r ON base_table.requester = r.id
+               JOIN ruleform.location dt ON base_table.deliver_to = dt.id
+               JOIN ruleform.location df ON base_table.deliver_from = df.id
+               JOIN ruleform.agency assign ON base_table.assign_to = assign.id
+               JOIN ruleform.unit u ON base_table.quantity_unit = u.id
+               JOIN ruleform.attribute ra ON base_table.requester_attribute = ra.id
+               JOIN ruleform.attribute sa ON base_table.service_attribute = sa.id
+               JOIN ruleform.attribute pa ON base_table.product_attribute = pa.id
+               JOIN ruleform.attribute dta ON base_table.deliver_to_attribute = dta.id
+               JOIN ruleform.attribute dfa ON base_table.deliver_from_attribute = dfa.id
+               JOIN ruleform.attribute ata ON base_table.assign_to_attribute = ata.id
+               JOIN ruleform.product cs ON base_table.child_service = cs.id
+               JOIN ruleform.product cp ON base_table.child_product = cp.id
+               JOIN ruleform.agency cat ON base_table.child_assign_to = cat.id
+               JOIN ruleform.location cdt ON base_table.child_deliver_to = cdt.id
+               JOIN ruleform.location cdf ON base_table.child_deliver_from = cdf.id
+               JOIN ruleform.attribute csa ON base_table.child_service_attribute = csa.id
+               JOIN ruleform.attribute cpa ON base_table.child_product_attribute = cpa.id
+               JOIN ruleform.attribute cdta ON base_table.child_deliver_to_attribute = cdta.id
+               JOIN ruleform.attribute cdfa ON base_table.child_deliver_from_attribute = cdfa.id
+               JOIN ruleform.attribute cata ON base_table.child_assign_to_attribute = cata.id
+               JOIN ruleform.agency up ON base_table.updated_by = up.id;
         ]]>
         </createView>
     </changeSet>

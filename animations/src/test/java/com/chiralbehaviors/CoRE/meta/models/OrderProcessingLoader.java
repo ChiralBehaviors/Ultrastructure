@@ -412,7 +412,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     public void createProtocols() {
 
-        Protocol pickProtocol = newProtocol();
+        Protocol pickProtocol = model.getJobModel().newInitializedProtocol(deliver,
+                                                                           core);
         pickProtocol.setService(deliver);
         pickProtocol.setRequester(anyAgency);
         pickProtocol.setProduct(anyProduct);
@@ -423,7 +424,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         pickProtocol.setChildProduct(sameProduct);
         em.persist(pickProtocol);
 
-        Protocol chkCreditProtocol = newProtocol();
+        Protocol chkCreditProtocol = model.getJobModel().newInitializedProtocol(pick,
+                                                                                core);
         chkCreditProtocol.setService(pick);
         chkCreditProtocol.setRequester(externalCust);
         chkCreditProtocol.setProduct(anyProduct);
@@ -434,7 +436,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkCreditProtocol.setChildProduct(sameProduct);
         em.persist(chkCreditProtocol);
 
-        Protocol chkLtrCrdtProtocol = newProtocol();
+        Protocol chkLtrCrdtProtocol = model.getJobModel().newInitializedProtocol(pick,
+                                                                                 core);
         chkLtrCrdtProtocol.setService(pick);
         chkLtrCrdtProtocol.setRequester(externalCust);
         chkLtrCrdtProtocol.setProduct(anyProduct);
@@ -445,7 +448,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkLtrCrdtProtocol.setChildProduct(sameProduct);
         em.persist(chkLtrCrdtProtocol);
 
-        Protocol shipProtocol = newProtocol();
+        Protocol shipProtocol = model.getJobModel().newInitializedProtocol(deliver,
+                                                                           core);
         shipProtocol.setService(deliver);
         shipProtocol.setRequester(anyAgency);
         shipProtocol.setProduct(anyProduct);
@@ -456,7 +460,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         shipProtocol.setChildProduct(sameProduct);
         em.persist(shipProtocol);
 
-        Protocol printCustDeclProtocol = newProtocol();
+        Protocol printCustDeclProtocol = model.getJobModel().newInitializedProtocol(ship,
+                                                                                    core);
         printCustDeclProtocol.setService(ship);
         printCustDeclProtocol.setRequester(externalCust);
         printCustDeclProtocol.setProduct(abc486);
@@ -467,7 +472,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printCustDeclProtocol.setChildProduct(sameProduct);
         em.persist(printCustDeclProtocol);
 
-        Protocol printPoProtocol = newProtocol();
+        Protocol printPoProtocol = model.getJobModel().newInitializedProtocol(ship,
+                                                                              core);
         printPoProtocol.setService(ship);
         printPoProtocol.setRequester(externalCust);
         printPoProtocol.setProduct(abc486);
@@ -478,7 +484,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printPoProtocol.setChildProduct(sameProduct);
         em.persist(printPoProtocol);
 
-        Protocol feeProtocol = newProtocol();
+        Protocol feeProtocol = model.getJobModel().newInitializedProtocol(printPurchaseOrder,
+                                                                          core);
         feeProtocol.setService(printPurchaseOrder);
         feeProtocol.setRequester(anyAgency);
         feeProtocol.setProduct(abc486);
@@ -489,7 +496,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         feeProtocol.setChildProduct(sameProduct);
         em.persist(feeProtocol);
 
-        Protocol salesTaxProtocol = newProtocol();
+        Protocol salesTaxProtocol = model.getJobModel().newInitializedProtocol(fee,
+                                                                               core);
         salesTaxProtocol.setService(fee);
         salesTaxProtocol.setRequester(nonExemptAgency);
         salesTaxProtocol.setProduct(nonExempt);
@@ -500,7 +508,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         salesTaxProtocol.setChildProduct(sameProduct);
         em.persist(salesTaxProtocol);
 
-        Protocol discountProtocol = newProtocol();
+        Protocol discountProtocol = model.getJobModel().newInitializedProtocol(fee,
+                                                                               core);
         discountProtocol.setService(fee);
         discountProtocol.setRequester(externalCust);
         discountProtocol.setProduct(abc486);
@@ -511,7 +520,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         discountProtocol.setChildProduct(sameProduct);
         em.persist(discountProtocol);
 
-        Protocol gtuDiscountedPriceProtocol = newProtocol();
+        Protocol gtuDiscountedPriceProtocol = model.getJobModel().newInitializedProtocol(fee,
+                                                                                         core);
         gtuDiscountedPriceProtocol.setService(fee);
         gtuDiscountedPriceProtocol.setRequester(georgeTownUniversity);
         gtuDiscountedPriceProtocol.setProduct(abc486);
@@ -789,17 +799,5 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         createStatusCodes();
         createStatusCodeSequencing();
         createProductSequencingAuthorizations();
-    }
-
-    private Protocol newProtocol() {
-        Protocol p = new Protocol(core);
-        p.setRequesterAttribute(kernel.getAnyAttribute());
-        p.setDeliverToAttribute(kernel.getAnyAttribute());
-        p.setDeliverFromAttribute(kernel.getAnyAttribute());
-        p.setAssignToAttribute(kernel.getAnyAttribute());
-        p.setServiceAttribute(kernel.getAnyAttribute());
-        p.setProductAttribute(kernel.getAnyAttribute());
-        p.setQuantityUnit(kernel.getAnyUnit());
-        return p;
     }
 }

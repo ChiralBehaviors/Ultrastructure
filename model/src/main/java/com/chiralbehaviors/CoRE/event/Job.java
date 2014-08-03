@@ -43,8 +43,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
@@ -166,7 +164,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                      + ") "
                                                                      + " AND seq.service = ?") })
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "job", schema = "ruleform")
 public class Job extends AbstractProtocol {
     public static final String ACTIVE_JOBS                           = "job.getActiveJobs";

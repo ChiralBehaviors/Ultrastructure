@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 
 /**
  * The attribute value for unit networks
@@ -51,7 +50,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
     // bi-directional many-to-one association to UnitNetwork
     @ManyToOne
     @JoinColumn(name = "network_rule")
-    private UnitNetwork   UnitNetwork;
+    private UnitNetwork       UnitNetwork;
 
     public UnitNetworkAttribute() {
     }
@@ -84,7 +83,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
      * @param updatedBy
      */
     public UnitNetworkAttribute(Attribute attribute, BigDecimal value,
-                                    Agency updatedBy) {
+                                Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -94,7 +93,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
      * @param updatedBy
      */
     public UnitNetworkAttribute(Attribute attribute, boolean value,
-                                    Agency updatedBy) {
+                                Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -103,8 +102,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
      * @param value
      * @param updatedBy
      */
-    public UnitNetworkAttribute(Attribute attribute, int value,
-                                    Agency updatedBy) {
+    public UnitNetworkAttribute(Attribute attribute, int value, Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -114,7 +112,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
      * @param updatedBy
      */
     public UnitNetworkAttribute(Attribute attribute, String value,
-                                    Agency updatedBy) {
+                                Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -135,10 +133,6 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
 
     public Agency getAgency() {
         return agency;
-    }
-
-    public UnitNetwork getUnitNetwork() {
-        return UnitNetwork;
     }
 
     /*
@@ -162,6 +156,10 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
         return UnitNetwork.class;
     }
 
+    public UnitNetwork getUnitNetwork() {
+        return UnitNetwork;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
     }
@@ -182,7 +180,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (UnitNetwork != null) {
             UnitNetwork = (UnitNetwork) UnitNetwork.manageEntity(em,
-                                                                             knownObjects);
+                                                                 knownObjects);
         }
         if (agency != null) {
             agency = (Agency) agency.manageEntity(em, knownObjects);

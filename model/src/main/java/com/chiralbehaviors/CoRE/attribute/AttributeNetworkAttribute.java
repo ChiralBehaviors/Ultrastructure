@@ -49,7 +49,7 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
     // bi-directional many-to-one association to AttributeNetwork
     @ManyToOne
     @JoinColumn(name = "network_rule")
-    private AttributeNetwork    AttributeNetwork;
+    private AttributeNetwork  AttributeNetwork;
 
     public AttributeNetworkAttribute() {
     }
@@ -82,7 +82,7 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
      * @param updatedBy
      */
     public AttributeNetworkAttribute(Attribute attribute, BigDecimal value,
-                                   Agency updatedBy) {
+                                     Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -92,7 +92,7 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
      * @param updatedBy
      */
     public AttributeNetworkAttribute(Attribute attribute, boolean value,
-                                   Agency updatedBy) {
+                                     Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -102,7 +102,7 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
      * @param updatedBy
      */
     public AttributeNetworkAttribute(Attribute attribute, int value,
-                                   Agency updatedBy) {
+                                     Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -112,7 +112,7 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
      * @param updatedBy
      */
     public AttributeNetworkAttribute(Attribute attribute, String value,
-                                   Agency updatedBy) {
+                                     Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -180,7 +180,7 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (AttributeNetwork != null) {
             AttributeNetwork = (AttributeNetwork) AttributeNetwork.manageEntity(em,
-                                                                          knownObjects);
+                                                                                knownObjects);
         }
         if (agency != null) {
             agency = (Agency) agency.manageEntity(em, knownObjects);

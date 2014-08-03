@@ -67,6 +67,14 @@ public class KernelImpl implements Kernel {
     private final Unit                anyUnit;
     private final Attribute           attribute;
     private final Relationship        contains;
+    private final Agency              copyAgency;
+    private final Attribute           copyAttribute;
+    private final Interval            copyInterval;
+    private final Location            copyLocation;
+    private final Product             copyProduct;
+    private final Relationship        copyRelationship;
+    private final StatusCode          copyStatusCode;
+    private final Unit                copyUnit;
     private final Agency              core;
     private final Agency              coreAnimationSoftware;
     private final Agency              coreModel;
@@ -139,6 +147,7 @@ public class KernelImpl implements Kernel {
 
         attribute = find(em, WellKnownAttribute.ATTRIBUTE);
         anyAttribute = find(em, WellKnownAttribute.ANY);
+        copyAttribute = find(em, WellKnownAttribute.COPY);
         notApplicableAttribute = find(em, WellKnownAttribute.NOT_APPLICABLE);
         sameAttribute = find(em, WellKnownAttribute.SAME);
         loginAttribute = find(em, WellKnownAttribute.LOGIN);
@@ -146,18 +155,21 @@ public class KernelImpl implements Kernel {
 
         product = find(em, WellKnownProduct.ENTITY);
         anyProduct = find(em, WellKnownProduct.ANY);
+        copyProduct = find(em, WellKnownProduct.COPY);
         sameProduct = find(em, WellKnownProduct.SAME);
         notApplicableProduct = find(em, WellKnownProduct.NOT_APPLICABLE);
         workspace = find(em, WellKnownProduct.WORKSPACE);
 
         location = find(em, WellKnownLocation.LOCATION);
         anyLocation = find(em, WellKnownLocation.ANY);
+        copyLocation = find(em, WellKnownLocation.COPY);
         notApplicableLocation = find(em, WellKnownLocation.NOT_APPLICABLE);
         sameLocation = find(em, WellKnownLocation.SAME);
 
         coreUser = find(em, WellKnownAgency.CORE_USER);
         agency = find(em, WellKnownAgency.AGENCY);
         anyAgency = find(em, WellKnownAgency.ANY);
+        copyAgency = find(em, WellKnownAgency.COPY);
         core = find(em, WellKnownAgency.CORE);
         coreAnimationSoftware = find(em,
                                      WellKnownAgency.CORE_ANIMATION_SOFTWARE);
@@ -170,6 +182,7 @@ public class KernelImpl implements Kernel {
         notApplicableAgency = find(em, WellKnownAgency.NOT_APPLICABLE);
 
         anyRelationship = find(em, WellKnownRelationship.ANY);
+        copyRelationship = find(em, WellKnownRelationship.COPY);
         sameRelationship = find(em, WellKnownRelationship.SAME);
         isContainedIn = find(em, WellKnownRelationship.IS_CONTAINED_IN);
         contains = find(em, WellKnownRelationship.CONTAINS);
@@ -206,15 +219,18 @@ public class KernelImpl implements Kernel {
 
         unset = find(em, WellKnownStatusCode.UNSET);
         anyStatusCode = find(em, WellKnownStatusCode.ANY);
+        copyStatusCode = find(em, WellKnownStatusCode.COPY);
         sameStatusCode = find(em, WellKnownStatusCode.SAME);
         notApplicableStatusCode = find(em, WellKnownStatusCode.NOT_APPLICABLE);
 
         unsetUnit = find(em, WellKnownUnit.UNSET);
         anyUnit = find(em, WellKnownUnit.ANY);
+        copyUnit = find(em, WellKnownUnit.COPY);
         sameUnit = find(em, WellKnownUnit.SAME);
         notApplicableUnit = find(em, WellKnownUnit.NOT_APPLICABLE);
 
         anyInterval = find(em, WellKnownInterval.ANY);
+        copyInterval = find(em, WellKnownInterval.COPY);
         sameInterval = find(em, WellKnownInterval.SAME);
         notApplicableInterval = find(em, WellKnownInterval.NOT_APPLICABLE);
 
@@ -321,6 +337,46 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getContains() {
         return contains;
+    }
+
+    @Override
+    public Agency getCopyAgency() {
+        return copyAgency;
+    }
+
+    @Override
+    public Attribute getCopyAttribute() {
+        return copyAttribute;
+    }
+
+    @Override
+    public Interval getCopyInterval() {
+        return copyInterval;
+    }
+
+    @Override
+    public Location getCopyLocation() {
+        return copyLocation;
+    }
+
+    @Override
+    public Product getCopyProduct() {
+        return copyProduct;
+    }
+
+    @Override
+    public Relationship getCopyRelationship() {
+        return copyRelationship;
+    }
+
+    @Override
+    public StatusCode getCopyStatusCode() {
+        return copyStatusCode;
+    }
+
+    @Override
+    public Unit getCopyUnit() {
+        return copyUnit;
     }
 
     /*

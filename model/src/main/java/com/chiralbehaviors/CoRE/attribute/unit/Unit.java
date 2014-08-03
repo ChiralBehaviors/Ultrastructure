@@ -222,6 +222,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         return attributes;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
+     */
+    @Override
+    public String getCopyId() {
+        return WellKnownUnit.COPY.id();
+    }
+
     public String getDatatype() {
         return datatype;
     }
@@ -305,6 +313,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
+     */
+    @Override
+    public boolean isAny() {
+        return WellKnownUnit.ANY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
      */
     @Override
@@ -314,11 +330,24 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isCopy()
+     */
+    @Override
+    public boolean isCopy() {
+        return WellKnownUnit.COPY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
      */
     @Override
     public boolean isNotApplicable() {
         return WellKnownUnit.NOT_APPLICABLE.id().equals(getId());
+    }
+
+    @Override
+    public boolean isSame() {
+        return WellKnownUnit.SAME.id().equals(getId());
     }
 
     /*

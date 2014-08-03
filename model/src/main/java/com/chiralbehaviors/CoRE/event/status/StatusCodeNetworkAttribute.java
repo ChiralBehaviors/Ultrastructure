@@ -40,7 +40,8 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  */
 @Entity
 @Table(name = "unit_network_attribute", schema = "ruleform")
-public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork> {
+public class StatusCodeNetworkAttribute extends
+AttributeValue<StatusCodeNetwork> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
@@ -51,7 +52,7 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
     // bi-directional many-to-one association to StatusCodeNetwork
     @ManyToOne
     @JoinColumn(name = "network_rule")
-    private StatusCodeNetwork   StatusCodeNetwork;
+    private StatusCodeNetwork StatusCodeNetwork;
 
     public StatusCodeNetworkAttribute() {
     }
@@ -84,7 +85,7 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
      * @param updatedBy
      */
     public StatusCodeNetworkAttribute(Attribute attribute, BigDecimal value,
-                                    Agency updatedBy) {
+                                      Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -94,7 +95,7 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
      * @param updatedBy
      */
     public StatusCodeNetworkAttribute(Attribute attribute, boolean value,
-                                    Agency updatedBy) {
+                                      Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -104,7 +105,7 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
      * @param updatedBy
      */
     public StatusCodeNetworkAttribute(Attribute attribute, int value,
-                                    Agency updatedBy) {
+                                      Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -114,7 +115,7 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
      * @param updatedBy
      */
     public StatusCodeNetworkAttribute(Attribute attribute, String value,
-                                    Agency updatedBy) {
+                                      Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -135,10 +136,6 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
 
     public Agency getAgency() {
         return agency;
-    }
-
-    public StatusCodeNetwork getStatusCodeNetwork() {
-        return StatusCodeNetwork;
     }
 
     /*
@@ -162,6 +159,10 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
         return StatusCodeNetwork.class;
     }
 
+    public StatusCodeNetwork getStatusCodeNetwork() {
+        return StatusCodeNetwork;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
     }
@@ -182,7 +183,7 @@ public class StatusCodeNetworkAttribute extends AttributeValue<StatusCodeNetwork
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (StatusCodeNetwork != null) {
             StatusCodeNetwork = (StatusCodeNetwork) StatusCodeNetwork.manageEntity(em,
-                                                                             knownObjects);
+                                                                                   knownObjects);
         }
         if (agency != null) {
             agency = (Agency) agency.manageEntity(em, knownObjects);

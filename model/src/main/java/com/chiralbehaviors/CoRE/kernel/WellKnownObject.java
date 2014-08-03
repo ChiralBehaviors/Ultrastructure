@@ -222,6 +222,22 @@ public interface WellKnownObject {
                 return WellKnownObject.SUPER_USER;
             }
 
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Agency that stands for copy agency";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
         };
 
         /* (non-Javadoc)
@@ -355,7 +371,24 @@ public interface WellKnownObject {
                 return WellKnownObject.PASSWORD_HASH;
             }
 
-        };
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Attribute that stands for the copy attribute";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
+        },
+        ;
 
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
@@ -444,6 +477,22 @@ public interface WellKnownObject {
             public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
             }
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Interval that stands for copy interval";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
         };
 
         @Override
@@ -531,6 +580,22 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.SAME;
+            }
+
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Location that stands for copy location";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
             }
 
         };
@@ -648,6 +713,22 @@ public interface WellKnownObject {
             public String wkoName() {
                 return WellKnownObject.WORKSPACE;
             }
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Product that stands for copy product";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
         };
 
         /* (non-Javadoc)
@@ -1523,6 +1604,32 @@ public interface WellKnownObject {
                 return true;
             }
 
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "The well known Relationship copy that represents the copy relationship";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.COPY;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
+            @Override
+            boolean preferred() {
+                return true;
+            }
+
         };
 
         /* (non-Javadoc)
@@ -1628,6 +1735,22 @@ public interface WellKnownObject {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special StatusCode that stands for copy status code";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
         };
 
         @Override
@@ -1731,6 +1854,22 @@ public interface WellKnownObject {
                 return WellKnownObject.NOT_APPLICABLE;
             }
 
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Unit that stands for copy unit";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
         };
 
         @Override
@@ -1755,6 +1894,7 @@ public interface WellKnownObject {
     String ANY                       = "(ANY)";
     String ANYTHING                  = "anything";
     String ATTRIBUTE                 = "Attribute";
+    String COPY                      = "(COPY)";
     String CONTAINS                  = "contains";
     String COORDINATE                = "Coordinate";
     String CORE                      = "CoRE";

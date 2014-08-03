@@ -288,6 +288,14 @@ implements Attributable<AgencyAttribute> {
         return AgencyAttribute.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
+     */
+    @Override
+    public String getCopyId() {
+        return WellKnownAgency.COPY.id();
+    }
+
     @Override
     public Set<AgencyNetwork> getNetworkByChild() {
         if (networkByChild == null) {
@@ -351,6 +359,14 @@ implements Attributable<AgencyAttribute> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
+     */
+    @Override
+    public boolean isAny() {
+        return WellKnownAgency.ANY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
      */
     @Override
@@ -360,11 +376,24 @@ implements Attributable<AgencyAttribute> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isCopy()
+     */
+    @Override
+    public boolean isCopy() {
+        return WellKnownAgency.COPY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
      */
     @Override
     public boolean isNotApplicable() {
         return WellKnownAgency.NOT_APPLICABLE.id().equals(getId());
+    }
+
+    @Override
+    public boolean isSame() {
+        return WellKnownAgency.SAME.id().equals(getId());
     }
 
     /*

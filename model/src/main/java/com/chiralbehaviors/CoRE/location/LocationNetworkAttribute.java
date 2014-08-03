@@ -51,7 +51,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
     // bi-directional many-to-one association to LocationNetwork
     @ManyToOne
     @JoinColumn(name = "network_rule")
-    private LocationNetwork    LocationNetwork;
+    private LocationNetwork   LocationNetwork;
 
     public LocationNetworkAttribute() {
     }
@@ -84,7 +84,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
      * @param updatedBy
      */
     public LocationNetworkAttribute(Attribute attribute, BigDecimal value,
-                                   Agency updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -94,7 +94,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
      * @param updatedBy
      */
     public LocationNetworkAttribute(Attribute attribute, boolean value,
-                                   Agency updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -104,7 +104,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
      * @param updatedBy
      */
     public LocationNetworkAttribute(Attribute attribute, int value,
-                                   Agency updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -114,7 +114,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
      * @param updatedBy
      */
     public LocationNetworkAttribute(Attribute attribute, String value,
-                                   Agency updatedBy) {
+                                    Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -182,7 +182,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
                                     Map<Ruleform, Ruleform> knownObjects) {
         if (LocationNetwork != null) {
             LocationNetwork = (LocationNetwork) LocationNetwork.manageEntity(em,
-                                                                          knownObjects);
+                                                                             knownObjects);
         }
         if (agency != null) {
             agency = (Agency) agency.manageEntity(em, knownObjects);

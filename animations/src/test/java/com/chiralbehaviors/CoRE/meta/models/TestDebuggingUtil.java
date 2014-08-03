@@ -46,8 +46,8 @@ public class TestDebuggingUtil {
      */
     public static void printProtocolGaps(Map<Protocol, List<String>> gaps) {
         for (Map.Entry<Protocol, List<String>> e : gaps.entrySet()) {
-            System.out.println(String.format("requestedService: %s, service: %s",
-                                             e.getKey().getRequestedService().getName(),
+            System.out.println(String.format("childService: %s, service: %s",
+                                             e.getKey().getChildService().getName(),
                                              e.getKey().getService().getName()));
             System.out.println("Unmatched fields: ");
             for (String f : e.getValue()) {
@@ -60,7 +60,7 @@ public class TestDebuggingUtil {
     public static void printProtocols(List<Protocol> protocols) {
         for (Protocol p : protocols) {
             System.out.println(String.format("Requested Service: %s, Service: %s",
-                                             p.getRequestedService().getName(),
+                                             p.getChildService().getName(),
                                              p.getService()));
         }
     }
@@ -79,8 +79,8 @@ public class TestDebuggingUtil {
      */
     public static void printMetaProtocolGaps(Map<Protocol, Map<MetaProtocol, List<String>>> gaps) {
         for (Map.Entry<Protocol, Map<MetaProtocol, List<String>>> e : gaps.entrySet()) {
-            System.out.println(String.format("requestedService: %s, service: %s",
-                                             e.getKey().getRequestedService().getName(),
+            System.out.println(String.format("requested service: %s, service: %s",
+                                             e.getKey().getService().getName(),
                                              e.getKey().getService().getName()));
             
             for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue().entrySet()) {

@@ -244,6 +244,14 @@ implements Attributable<LocationAttribute> {
         return LocationAttribute.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
+     */
+    @Override
+    public String getCopyId() {
+        return WellKnownLocation.COPY.id();
+    }
+
     public Set<ProductLocation> getEntities() {
         return entities;
     }
@@ -315,6 +323,14 @@ implements Attributable<LocationAttribute> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
+     */
+    @Override
+    public boolean isAny() {
+        return WellKnownLocation.ANY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
      */
     @Override
@@ -324,11 +340,24 @@ implements Attributable<LocationAttribute> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isCopy()
+     */
+    @Override
+    public boolean isCopy() {
+        return WellKnownLocation.COPY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
      */
     @Override
     public boolean isNotApplicable() {
         return WellKnownLocation.NOT_APPLICABLE.id().equals(getId());
+    }
+
+    @Override
+    public boolean isSame() {
+        return WellKnownLocation.SAME.id().equals(getId());
     }
 
     /*

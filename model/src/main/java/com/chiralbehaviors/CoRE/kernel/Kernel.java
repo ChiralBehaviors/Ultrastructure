@@ -60,6 +60,22 @@ public interface Kernel {
 
     Relationship getContains();
 
+    Agency getCopyAgency();
+
+    Attribute getCopyAttribute();
+
+    Interval getCopyInterval();
+
+    Location getCopyLocation();
+
+    Product getCopyProduct();
+
+    Relationship getCopyRelationship();
+
+    StatusCode getCopyStatusCode();
+
+    Unit getCopyUnit();
+
     Agency getCore();
 
     Agency getCoreAnimationSoftware();
@@ -166,9 +182,6 @@ public interface Kernel {
 
     Agency getSameAgency();
 
-    /**
-     * @return
-     */
     Attribute getSameAttribute();
 
     Interval getSameInterval();

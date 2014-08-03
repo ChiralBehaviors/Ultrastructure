@@ -280,6 +280,14 @@ ExistentialRuleform<Relationship, RelationshipNetwork> {
         return attributes;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
+     */
+    @Override
+    public String getCopyId() {
+        return WellKnownRelationship.COPY.id();
+    }
+
     public Relationship getInverse() {
         return inverse;
     }
@@ -359,6 +367,14 @@ ExistentialRuleform<Relationship, RelationshipNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
+     */
+    @Override
+    public boolean isAny() {
+        return WellKnownRelationship.ANY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
      */
     @Override
@@ -368,11 +384,24 @@ ExistentialRuleform<Relationship, RelationshipNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isCopy()
+     */
+    @Override
+    public boolean isCopy() {
+        return WellKnownRelationship.COPY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
      */
     @Override
     public boolean isNotApplicable() {
         return WellKnownRelationship.NOT_APPLICABLE.id().equals(getId());
+    }
+
+    @Override
+    public boolean isSame() {
+        return WellKnownRelationship.SAME.id().equals(getId());
     }
 
     /*
@@ -457,6 +486,5 @@ ExistentialRuleform<Relationship, RelationshipNetwork> {
             inverse = (Relationship) inverse.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
-
     }
 }

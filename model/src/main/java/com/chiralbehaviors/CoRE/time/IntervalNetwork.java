@@ -62,7 +62,8 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "intervalNetwork"
                                                                + GET_CHILDREN_SUFFIX;
-    public static final String GET_NETWORKS = "intervalNetwork" + GET_NETWORKS_SUFFIX;
+    public static final String GET_NETWORKS                  = "intervalNetwork"
+            + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "intervalNetwork"
                                                                + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                = "intervalNetwork"

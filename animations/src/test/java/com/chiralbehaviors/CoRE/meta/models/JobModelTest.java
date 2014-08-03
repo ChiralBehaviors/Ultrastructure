@@ -115,7 +115,7 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(childSequence);
 
         Protocol p = jobModel.newInitializedProtocol(kiki, kernel.getCore());
-        p.setRequestedProduct(bento);
+        p.setChildProduct(bento);
         p.setRequester(scenario.core);
         p.setDeliverTo(kernel.getAnyLocation());
         p.setDeliverFrom(kernel.getAnyLocation());
@@ -306,14 +306,12 @@ public class JobModelTest extends AbstractModelTest {
         Map<Protocol, InferenceMap> txfm = jobModel.getProtocols(job);
         assertEquals(2, txfm.size());
         List<Protocol> protocols = new ArrayList<>(txfm.keySet());
-        assertEquals(scenario.deliver, protocols.get(0).getRequestedService());
-        assertEquals(scenario.deliver, protocols.get(1).getRequestedService());
+        assertEquals(scenario.deliver, protocols.get(0).getService());
+        assertEquals(scenario.deliver, protocols.get(1).getService());
         assertEquals(scenario.anyAgency, protocols.get(0).getRequester());
         assertEquals(scenario.anyAgency, protocols.get(1).getRequester());
-        assertEquals(scenario.anyProduct,
-                     protocols.get(0).getRequestedProduct());
-        assertEquals(scenario.anyProduct,
-                     protocols.get(1).getRequestedProduct());
+        assertEquals(scenario.anyProduct, protocols.get(0).getProduct());
+        assertEquals(scenario.anyProduct, protocols.get(1).getProduct());
         assertEquals(scenario.anyLocation, protocols.get(0).getDeliverFrom());
         assertEquals(scenario.anyLocation, protocols.get(1).getDeliverFrom());
         assertEquals(scenario.anyLocation, protocols.get(0).getDeliverTo());

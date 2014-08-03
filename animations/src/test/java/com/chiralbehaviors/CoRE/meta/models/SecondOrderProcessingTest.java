@@ -154,9 +154,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         Agency georgeTownUniversity = w.georgeTownUniversity;
 
         Protocol checkCreditProtocol = newProtocol();
-        checkCreditProtocol.setRequestedService(pick);
+        checkCreditProtocol.setChildService(pick);
         checkCreditProtocol.setRequester(externalCust);
-        checkCreditProtocol.setRequestedProduct(anyProduct);
+        checkCreditProtocol.setChildProduct(anyProduct);
         checkCreditProtocol.setDeliverTo(us);
         checkCreditProtocol.setDeliverFrom(us);
         checkCreditProtocol.setAssignTo(cpu);
@@ -165,9 +165,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(checkCreditProtocol);
 
         Protocol checkLetterOfCreditProtocol = newProtocol();
-        checkLetterOfCreditProtocol.setRequestedService(pick);
+        checkLetterOfCreditProtocol.setChildService(pick);
         checkLetterOfCreditProtocol.setRequester(externalCust);
-        checkLetterOfCreditProtocol.setRequestedProduct(anyProduct);
+        checkLetterOfCreditProtocol.setChildProduct(anyProduct);
         checkLetterOfCreditProtocol.setDeliverTo(euro);
         checkLetterOfCreditProtocol.setDeliverFrom(us);
         checkLetterOfCreditProtocol.setAssignTo(creditDept);
@@ -176,9 +176,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(checkLetterOfCreditProtocol);
 
         Protocol printPurchaseOrderProtocol = newProtocol();
-        printPurchaseOrderProtocol.setRequestedService(ship);
+        printPurchaseOrderProtocol.setChildService(ship);
         printPurchaseOrderProtocol.setRequester(externalCust);
-        printPurchaseOrderProtocol.setRequestedProduct(abc486);
+        printPurchaseOrderProtocol.setChildProduct(abc486);
         printPurchaseOrderProtocol.setDeliverTo(anyLocation);
         printPurchaseOrderProtocol.setDeliverFrom(anyLocation);
         printPurchaseOrderProtocol.setAssignTo(creditDept);
@@ -187,9 +187,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(printPurchaseOrderProtocol);
 
         Protocol printCustomsDeclProtocol = newProtocol();
-        printCustomsDeclProtocol.setRequestedService(ship);
+        printCustomsDeclProtocol.setChildService(ship);
         printCustomsDeclProtocol.setRequester(externalCust);
-        printCustomsDeclProtocol.setRequestedProduct(abc486);
+        printCustomsDeclProtocol.setChildProduct(abc486);
         printCustomsDeclProtocol.setDeliverTo(euro);
         printCustomsDeclProtocol.setDeliverFrom(us);
         printCustomsDeclProtocol.setAssignTo(creditDept);
@@ -198,9 +198,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(printCustomsDeclProtocol);
 
         Protocol pickProtocol = newProtocol();
-        pickProtocol.setRequestedService(deliver);
+        pickProtocol.setChildService(deliver);
         pickProtocol.setRequester(anyAgency);
-        pickProtocol.setRequestedProduct(anyProduct);
+        pickProtocol.setChildProduct(anyProduct);
         pickProtocol.setDeliverTo(anyLocation);
         pickProtocol.setDeliverFrom(anyLocation);
         pickProtocol.setAssignTo(factory1Agency);
@@ -209,9 +209,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(pickProtocol);
 
         Protocol shipProtocol = newProtocol();
-        shipProtocol.setRequestedService(deliver);
+        shipProtocol.setChildService(deliver);
         shipProtocol.setRequester(anyAgency);
-        shipProtocol.setRequestedProduct(anyProduct);
+        shipProtocol.setChildProduct(anyProduct);
         shipProtocol.setDeliverTo(anyLocation);
         shipProtocol.setDeliverFrom(anyLocation);
         shipProtocol.setAssignTo(factory1Agency);
@@ -220,9 +220,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(shipProtocol);
 
         Protocol feeProtocol = newProtocol();
-        feeProtocol.setRequestedService(printPurchaseOrder);
+        feeProtocol.setChildService(printPurchaseOrder);
         feeProtocol.setRequester(externalCust);
-        feeProtocol.setRequestedProduct(abc486);
+        feeProtocol.setChildProduct(abc486);
         feeProtocol.setDeliverTo(anyLocation);
         feeProtocol.setDeliverFrom(us);
         feeProtocol.setAssignTo(billingComputer);
@@ -231,9 +231,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(feeProtocol);
 
         Protocol nonExemptProtocol = newProtocol();
-        nonExemptProtocol.setRequestedService(fee);
+        nonExemptProtocol.setChildService(fee);
         nonExemptProtocol.setRequester(nonExemptAgency);
-        nonExemptProtocol.setRequestedProduct(nonExempt);
+        nonExemptProtocol.setChildProduct(nonExempt);
         nonExemptProtocol.setDeliverTo(dc);
         nonExemptProtocol.setDeliverFrom(anyLocation);
         nonExemptProtocol.setAssignTo(billingComputer);
@@ -242,9 +242,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(nonExemptProtocol);
 
         Protocol discountProtocol = newProtocol();
-        discountProtocol.setRequestedService(fee);
+        discountProtocol.setChildService(fee);
         discountProtocol.setRequester(externalCust);
-        discountProtocol.setRequestedProduct(abc486);
+        discountProtocol.setChildProduct(abc486);
         discountProtocol.setDeliverTo(euro);
         discountProtocol.setDeliverFrom(us);
         discountProtocol.setAssignTo(billingComputer);
@@ -253,9 +253,9 @@ public class SecondOrderProcessingTest extends AbstractModelTest {
         em.persist(discountProtocol);
 
         Protocol georgetownFeeProtocol = newProtocol();
-        georgetownFeeProtocol.setRequestedService(printPurchaseOrder);
+        georgetownFeeProtocol.setChildService(printPurchaseOrder);
         georgetownFeeProtocol.setRequester(georgeTownUniversity);
-        georgetownFeeProtocol.setRequestedProduct(abc486);
+        georgetownFeeProtocol.setChildProduct(abc486);
         georgetownFeeProtocol.setDeliverTo(dc);
         georgetownFeeProtocol.setDeliverFrom(us);
         georgetownFeeProtocol.setAssignTo(billingComputer);

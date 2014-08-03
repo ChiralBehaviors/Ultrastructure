@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="protocol and metaprotocol refactoring" author="hhildebrand">
+        <renameColumn tableName="protocol" oldColumnName="requested_service" newColumnName="child_service" schemaName="ruleform" />
+        <dropForeignKeyConstraint baseTableName="protocol" constraintName="protocol_requested_service_fkey" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_service" baseTableName="protocol" constraintName="child_service_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+
+        <renameColumn tableName="protocol" oldColumnName="requested_product" newColumnName="child_product" schemaName="ruleform" />
+        <dropForeignKeyConstraint baseTableName="protocol" constraintName="protocol_product_ordered_fkey" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_product" baseTableName="protocol" constraintName="child_product_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+
+        <addColumn tableName="protocol" schemaName="ruleform">
+            <column name="child_assign_to" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_deliver_to" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_deliver_from" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_service_attribute" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_product_attribute" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_assign_to_attribute" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_deliver_to_attribute" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_deliver_from_attribute" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_assign_to" baseTableName="protocol" constraintName="child_assign_to_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_deliver_to" baseTableName="protocol" constraintName="child_deliver_to_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_deliver_from" baseTableName="protocol" constraintName="child_deliver_from_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_service_attribute" baseTableName="protocol" constraintName="child_service_attribute_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_product_attribute" baseTableName="protocol" constraintName="child_product_attribute_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_assign_to_attribute" baseTableName="protocol" constraintName="child_assign_to_attribute_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_deliver_to_attribute" baseTableName="protocol" constraintName="child_deliver_to_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_deliver_from_attribute" baseTableName="protocol" constraintName="child_deliver_from_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+
+        <createView viewName="protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
+             SELECT base_table.id,
+                    base_table.name,
+                    s.name AS service, 
+                    p.name AS product,
+                    r.name AS requester,  
+                    dt.name AS deliver_to, 
+                    df.name AS deliver_from,
+                    assign.name AS assign_to, 
+                    base_table.quantity,
+                    u.name AS quantity_unit,
+                    ra.name AS requester_attribute,
+                    sa.name AS service_attribute,
+                    pa.name AS product_attribute,
+                    dta.name AS deliver_to_attribute,
+                    dfa.name AS deliver_from_attribute,
+                    ata.name AS assign_to_attribute,
+                    cs.name AS child_service,
+                    cp.name AS child_product, 
+                    cat.name AS child_assign_to, 
+                    cdt.name AS child_deliver_to, 
+                    cdf.name AS child_deliver_from, 
+                    csa.name AS child_service_attribute,
+                    cpa.name AS child_product_attribute,
+                    cdta.name AS child_deliver_to_attribute,
+                    cdfa.name AS child_deliver_from_attribute,
+                    cata.name AS child_assign_to_attribute,
+                    base_table.sequence_number, 
+                    base_table.notes, 
+                    up.name AS updated_by,
+                    base_table.update_date
+               FROM protocol base_table
+               JOIN product s ON base_table.service = s.id
+               JOIN product p ON base_table.product = p.id
+               JOIN location dt ON base_table.deliver_to = dt.id
+               JOIN location df ON base_table.deliver_from = df.id
+               JOIN agency assign ON base_table.assign_to = assign.id
+               JOIN agency r ON base_table.requester = r.id
+               JOIN agency up ON base_table.updated_by = up.id
+               JOIN unit u ON base_table.quantity_unit = u.id
+               JOIN attribute ra ON base_table.requester_attribute = ra.id
+               JOIN attribute sa ON base_table.service_attribute = sa.id
+               JOIN attribute pa ON base_table.product_attribute = pa.id
+               JOIN attribute dta ON base_table.deliver_to_attribute = dta.id
+               JOIN attribute dfa ON base_table.deliver_from_attribute = dfa.id
+               JOIN attribute ata ON base_table.assign_to_attribute = ata.id
+               JOIN agency cat ON base_table.child_assign_to = cat.id
+               JOIN agency cata ON base_table.child_assign_to_attribute = cata.id
+               JOIN product cs ON base_table.child_service = cs.id
+               JOIN product cp ON base_table.child_product = cp.id
+               JOIN location cdt ON base_table.child_deliver_to = cdt.id
+               JOIN location cdf ON base_table.child_deliver_from = cdf.id
+               JOIN attribute csa ON base_table.child_service_attribute = csa.id
+               JOIN attribute cpa ON base_table.child_product_attribute = cpa.id
+               JOIN attribute cdta ON base_table.child_deliver_to_attribute = cdta.id
+               JOIN attribute cdfa ON base_table.child_deliver_from_attribute = cdfa.id;
+        ]]>
+        </createView>
+    </changeSet>
+
+</databaseChangeLog>

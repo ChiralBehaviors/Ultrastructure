@@ -921,7 +921,7 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<Protocol> getProtocolsFor(Product service) {
-        return em.createNamedQuery(Protocol.GET_FOR_SERVICE, Protocol.class).setParameter("requestedService",
+        return em.createNamedQuery(Protocol.GET_FOR_SERVICE, Protocol.class).setParameter("service",
                                                                                           service).getResultList();
     }
 
@@ -1201,9 +1201,9 @@ public class JobModelImpl implements JobModel {
     @Override
     public Protocol newInitializedProtocol(Product service, Agency updatedBy) {
         Protocol protocol = new Protocol();
-        protocol.setService(service);
-        protocol.setRequestedService(service);
         protocol.setUpdatedBy(updatedBy);
+        protocol.setService(service);
+        protocol.setServiceAttribute(kernel.getNotApplicableAttribute());
         protocol.setAssignTo(kernel.getNotApplicableAgency());
         protocol.setAssignToAttribute(kernel.getNotApplicableAttribute());
         protocol.setDeliverFrom(kernel.getNotApplicableLocation());
@@ -1211,12 +1211,20 @@ public class JobModelImpl implements JobModel {
         protocol.setDeliverTo(kernel.getNotApplicableLocation());
         protocol.setDeliverToAttribute(kernel.getNotApplicableAttribute());
         protocol.setProduct(kernel.getNotApplicableProduct());
-        protocol.setRequestedProduct(kernel.getNotApplicableProduct());
         protocol.setProductAttribute(kernel.getNotApplicableAttribute());
         protocol.setRequester(kernel.getNotApplicableAgency());
         protocol.setRequesterAttribute(kernel.getNotApplicableAttribute());
-        protocol.setServiceAttribute(kernel.getNotApplicableAttribute());
         protocol.setQuantityUnit(kernel.getNotApplicableUnit());
+        protocol.setChildAssignTo(kernel.getSameAgency());
+        protocol.setChildAssignToAttribute(kernel.getSameAttribute());
+        protocol.setChildDeliverFrom(kernel.getSameLocation());
+        protocol.setChildDeliverFromAttribute(kernel.getSameAttribute());
+        protocol.setChildDeliverTo(kernel.getSameLocation());
+        protocol.setChildDeliverToAttribute(kernel.getSameAttribute());
+        protocol.setChildProduct(kernel.getSameProduct());
+        protocol.setChildProductAttribute(kernel.getSameAttribute());
+        protocol.setChildService(kernel.getSameProduct());
+        protocol.setChildServiceAttribute(kernel.getSameAttribute());
         em.persist(protocol);
         return protocol;
     }
@@ -1368,50 +1376,42 @@ public class JobModelImpl implements JobModel {
 
     private void copyIntoChild(Job parent, Protocol protocol,
                                InferenceMap inferred, Job child) {
-        if (inferred.assignTo || protocol.getAssignTo().isAnyOrSame()) {
-            child.setAssignTo(parent.getAssignTo());
-        } else {
-            child.setAssignTo(protocol.getAssignTo());
-        }
-        if (inferred.assignToAttribute
-            || protocol.getAssignToAttribute().isAnyOrSame()) {
-            child.setAssignToAttribute(parent.getAssignToAttribute());
-        } else {
-            child.setAssignToAttribute(protocol.getAssignToAttribute());
-        }
-        if (inferred.deliverTo || protocol.getDeliverTo().isAnyOrSame()) {
-            child.setDeliverTo(parent.getDeliverTo());
-        } else {
-            child.setDeliverTo(protocol.getDeliverTo());
-        }
-        if (inferred.assignToAttribute
-            || protocol.getDeliverToAttribute().isAnyOrSame()) {
-            child.setDeliverToAttribute(parent.getDeliverToAttribute());
-        } else {
-            child.setDeliverToAttribute(protocol.getDeliverToAttribute());
-        }
-        if (inferred.deliverFrom || protocol.getDeliverFrom().isAnyOrSame()) {
-            child.setDeliverFrom(parent.getDeliverFrom());
-        } else {
-            child.setDeliverFrom(protocol.getDeliverFrom());
-        }
-        if (inferred.deliverFromAttribute
-            || protocol.getDeliverFromAttribute().isAnyOrSame()) {
-            child.setDeliverFromAttribute(parent.getDeliverFromAttribute());
-        } else {
-            child.setDeliverFromAttribute(protocol.getDeliverFromAttribute());
-        }
-        if (inferred.product || protocol.getProduct().isAnyOrSame()) {
-            child.setProduct(parent.getProduct());
-        } else {
-            child.setProduct(protocol.getProduct());
-        }
-        if (inferred.productAttribute
-            || protocol.getProductAttribute().isAnyOrSame()) {
-            child.setProductAttribute(parent.getProductAttribute());
-        } else {
-            child.setProductAttribute(protocol.getProductAttribute());
-        }
+        child.setAssignTo(resolve(inferred.assignTo, protocol.getAssignTo(),
+                                  parent.getAssignTo(),
+                                  protocol.getChildAssignTo()));
+        child.setAssignToAttribute(resolve(inferred.assignToAttribute,
+                                           protocol.getAssignToAttribute(),
+                                           parent.getAssignToAttribute(),
+                                           protocol.getChildAssignToAttribute()));
+        child.setDeliverTo(resolve(inferred.deliverTo, protocol.getDeliverTo(),
+                                   parent.getDeliverTo(),
+                                   protocol.getChildDeliverTo()));
+        child.setDeliverToAttribute(resolve(inferred.deliverToAttribute,
+                                            protocol.getDeliverToAttribute(),
+                                            parent.getDeliverToAttribute(),
+                                            protocol.getChildDeliverToAttribute()));
+        child.setDeliverFrom(resolve(inferred.deliverFrom,
+                                     protocol.getDeliverFrom(),
+                                     parent.getDeliverFrom(),
+                                     protocol.getChildDeliverFrom()));
+        child.setDeliverFromAttribute(resolve(inferred.deliverFromAttribute,
+                                              protocol.getDeliverFromAttribute(),
+                                              parent.getDeliverFromAttribute(),
+                                              protocol.getChildDeliverFromAttribute()));
+        child.setProduct(resolve(inferred.product, protocol.getProduct(),
+                                 parent.getProduct(),
+                                 protocol.getChildProduct()));
+        child.setProductAttribute(resolve(inferred.productAttribute,
+                                          protocol.getProductAttribute(),
+                                          parent.getProductAttribute(),
+                                          protocol.getChildProductAttribute()));
+        child.setService(resolve(false, protocol.getService(),
+                                 parent.getService(),
+                                 protocol.getChildService()));
+        child.setServiceAttribute(resolve(inferred.serviceAttribute,
+                                          protocol.getServiceAttribute(),
+                                          parent.getServiceAttribute(),
+                                          protocol.getChildServiceAttribute()));
         if (inferred.requester || protocol.getRequester().isAnyOrSame()) {
             child.setRequester(parent.getRequester());
         } else {
@@ -1423,12 +1423,6 @@ public class JobModelImpl implements JobModel {
         } else {
             child.setRequesterAttribute(protocol.getRequesterAttribute());
         }
-        if (inferred.serviceAttribute
-            || protocol.getServiceAttribute().isAnyOrSame()) {
-            child.setServiceAttribute(parent.getServiceAttribute());
-        } else {
-            child.setServiceAttribute(protocol.getServiceAttribute());
-        }
         if (inferred.quantityUnit || protocol.getQuantityUnit().isAnyOrSame()) {
             child.setQuantityUnit(parent.getQuantityUnit());
             child.setQuantity(parent.getQuantity());
@@ -1436,9 +1430,22 @@ public class JobModelImpl implements JobModel {
             child.setQuantityUnit(protocol.getQuantityUnit());
             child.setQuantity(protocol.getQuantity());
         }
+    }
 
-        //This is never transformed, so we always set to the protocol service.
-        child.setService(protocol.getService());
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> RuleForm resolve(boolean inferred,
+                                                                                 RuleForm protocol,
+                                                                                 RuleForm parent,
+                                                                                 RuleForm child) {
+        if (child.isSame()) {
+            if (inferred || protocol.isAny()) {
+                return parent;
+            }
+            return protocol;
+        }
+        if (child.isCopy()) {
+            return parent;
+        }
+        return child;
     }
 
     /**
@@ -1461,17 +1468,17 @@ public class JobModelImpl implements JobModel {
 
         // Service gets special handling.  we don't want infinite jobs due to ANY
         if (metaprotocol.getServiceType().equals(kernel.getSameRelationship())) {
-            masks.add(cb.equal(protocol.get(Protocol_.requestedService),
+            masks.add(cb.equal(protocol.get(Protocol_.service),
                                job.getService()));
         } else {
-            masks.add(protocol.get(Protocol_.requestedService).in(inferenceSubquery(job.getService(),
-                                                                                    metaprotocol.getServiceType(),
-                                                                                    Product.class,
-                                                                                    ProductNetwork.class,
-                                                                                    ProductNetwork_.parent,
-                                                                                    ProductNetwork_.child,
-                                                                                    cb,
-                                                                                    query)));
+            masks.add(protocol.get(Protocol_.service).in(inferenceSubquery(job.getService(),
+                                                                           metaprotocol.getServiceType(),
+                                                                           Product.class,
+                                                                           ProductNetwork.class,
+                                                                           ProductNetwork_.parent,
+                                                                           ProductNetwork_.child,
+                                                                           cb,
+                                                                           query)));
         }
 
         // Service Attribute
@@ -1582,7 +1589,7 @@ public class JobModelImpl implements JobModel {
     private List<Protocol> getProtocolsMatching(Job job) {
         TypedQuery<Protocol> query = em.createNamedQuery(Protocol.GET,
                                                          Protocol.class);
-        query.setParameter("requestedService", job.getService());
+        query.setParameter("service", job.getService());
         query.setParameter("requester", job.getRequester());
         query.setParameter("product", job.getProduct());
         query.setParameter("deliverTo", job.getDeliverTo());
@@ -1793,13 +1800,11 @@ public class JobModelImpl implements JobModel {
                     fieldsMissing.add("DeliverFrom");
                 }
                 if (!pathExists(job.getProduct(), mp.getProductOrdered(),
-                                p.getRequestedProduct(),
-                                model.getProductModel())) {
+                                p.getProduct(), model.getProductModel())) {
                     fieldsMissing.add("Product");
                 }
                 if (!pathExists(job.getService(), mp.getServiceType(),
-                                p.getRequestedService(),
-                                model.getProductModel())) {
+                                p.getService(), model.getProductModel())) {
                     fieldsMissing.add("Service");
                 }
                 if (!pathExists(job.getAssignToAttribute(),
@@ -1848,7 +1853,6 @@ public class JobModelImpl implements JobModel {
     /**
      * @param mpRelationship
      * @param child
-     *            TODO
      * @param job
      */
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> boolean pathExists(RuleForm rf,
@@ -1894,7 +1898,7 @@ public class JobModelImpl implements JobModel {
         if (!job.getRequester().equals(p.getRequester())) {
             missingFields.add("Requester");
         }
-        if (!job.getProduct().equals(p.getRequestedProduct())) {
+        if (!job.getProduct().equals(p.getProduct())) {
             missingFields.add("Product");
         }
         if (!job.getDeliverTo().equals(p.getDeliverTo())) {

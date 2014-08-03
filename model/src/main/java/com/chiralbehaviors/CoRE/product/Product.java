@@ -301,6 +301,14 @@ implements Attributable<ProductAttribute> {
         return ProductAttribute.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
+     */
+    @Override
+    public String getCopyId() {
+        return WellKnownProduct.COPY.id();
+    }
+
     public Set<ProductLocation> getLocations() {
         return locations;
     }
@@ -372,6 +380,14 @@ implements Attributable<ProductAttribute> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
+     */
+    @Override
+    public boolean isAny() {
+        return WellKnownProduct.ANY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAnyOrSame()
      */
     @Override
@@ -381,11 +397,24 @@ implements Attributable<ProductAttribute> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isCopy()
+     */
+    @Override
+    public boolean isCopy() {
+        return WellKnownProduct.COPY.id().equals(getId());
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isNotApplicable()
      */
     @Override
     public boolean isNotApplicable() {
         return WellKnownProduct.NOT_APPLICABLE.id().equals(getId());
+    }
+
+    @Override
+    public boolean isSame() {
+        return WellKnownProduct.SAME.id().equals(getId());
     }
 
     @Override

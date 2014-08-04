@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.chiralbehaviors.CoRE</groupId>
         <artifactId>CoRE.app</artifactId>
-        <version>0.0.2-rc3-SNAPSHOT</version>
+        <version>0.0.2-rc3</version>
     </parent>
     <artifactId>workspace-api</artifactId>
     <name>Workspace API</name>

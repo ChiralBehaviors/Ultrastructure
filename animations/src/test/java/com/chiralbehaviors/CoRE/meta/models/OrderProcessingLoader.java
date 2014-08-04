@@ -410,7 +410,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         pickProtocol.setProduct(anyProduct);
         pickProtocol.setDeliverTo(anyLocation);
         pickProtocol.setDeliverFrom(anyLocation);
-        pickProtocol.setAssignTo(factory1Agency);
+        pickProtocol.setChildAssignTo(factory1Agency);
         pickProtocol.setChildService(pick);
         pickProtocol.setChildProduct(sameProduct);
         em.persist(pickProtocol);
@@ -422,7 +422,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkCreditProtocol.setProduct(anyProduct);
         chkCreditProtocol.setDeliverTo(us);
         chkCreditProtocol.setDeliverFrom(us);
-        chkCreditProtocol.setAssignTo(cpu);
+        chkCreditProtocol.setChildAssignTo(cpu);
         chkCreditProtocol.setChildService(checkCredit);
         chkCreditProtocol.setChildProduct(sameProduct);
         em.persist(chkCreditProtocol);
@@ -434,7 +434,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkLtrCrdtProtocol.setProduct(anyProduct);
         chkLtrCrdtProtocol.setDeliverTo(euro);
         chkLtrCrdtProtocol.setDeliverFrom(us);
-        chkLtrCrdtProtocol.setAssignTo(creditDept);
+        chkLtrCrdtProtocol.setChildAssignTo(creditDept);
         chkLtrCrdtProtocol.setChildService(checkLetterOfCredit);
         chkLtrCrdtProtocol.setChildProduct(sameProduct);
         em.persist(chkLtrCrdtProtocol);
@@ -446,7 +446,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         shipProtocol.setProduct(anyProduct);
         shipProtocol.setDeliverTo(anyLocation);
         shipProtocol.setDeliverFrom(anyLocation);
-        shipProtocol.setAssignTo(factory1Agency);
+        shipProtocol.setChildAssignTo(factory1Agency);
         shipProtocol.setChildService(ship);
         shipProtocol.setChildProduct(sameProduct);
         em.persist(shipProtocol);
@@ -458,7 +458,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printCustDeclProtocol.setProduct(abc486);
         printCustDeclProtocol.setDeliverTo(euro);
         printCustDeclProtocol.setDeliverFrom(us);
-        printCustDeclProtocol.setAssignTo(cpu);
+        printCustDeclProtocol.setChildAssignTo(cpu);
         printCustDeclProtocol.setChildService(printCustomsDeclaration);
         printCustDeclProtocol.setChildProduct(sameProduct);
         em.persist(printCustDeclProtocol);
@@ -470,7 +470,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printPoProtocol.setProduct(abc486);
         printPoProtocol.setDeliverTo(anyLocation);
         printPoProtocol.setDeliverFrom(us);
-        printPoProtocol.setAssignTo(cpu);
+        printPoProtocol.setChildAssignTo(cpu);
         printPoProtocol.setChildService(printPurchaseOrder);
         printPoProtocol.setChildProduct(sameProduct);
         em.persist(printPoProtocol);
@@ -482,7 +482,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         feeProtocol.setProduct(abc486);
         feeProtocol.setDeliverTo(anyLocation);
         feeProtocol.setDeliverFrom(us);
-        feeProtocol.setAssignTo(billingComputer);
+        feeProtocol.setChildAssignTo(billingComputer);
         feeProtocol.setChildService(fee);
         feeProtocol.setChildProduct(sameProduct);
         em.persist(feeProtocol);
@@ -494,7 +494,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         salesTaxProtocol.setProduct(nonExempt);
         salesTaxProtocol.setDeliverTo(dc);
         salesTaxProtocol.setDeliverFrom(anyLocation);
-        salesTaxProtocol.setAssignTo(billingComputer);
+        salesTaxProtocol.setChildAssignTo(billingComputer);
         salesTaxProtocol.setChildService(salesTax);
         salesTaxProtocol.setChildProduct(sameProduct);
         em.persist(salesTaxProtocol);
@@ -506,7 +506,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         discountProtocol.setProduct(abc486);
         discountProtocol.setDeliverTo(euro);
         discountProtocol.setDeliverFrom(us);
-        discountProtocol.setAssignTo(billingComputer);
+        discountProtocol.setChildAssignTo(billingComputer);
         discountProtocol.setChildService(discount);
         discountProtocol.setChildProduct(sameProduct);
         em.persist(discountProtocol);
@@ -518,7 +518,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         gtuDiscountedPriceProtocol.setProduct(abc486);
         gtuDiscountedPriceProtocol.setDeliverTo(dc);
         gtuDiscountedPriceProtocol.setDeliverFrom(us);
-        gtuDiscountedPriceProtocol.setAssignTo(billingComputer);
+        gtuDiscountedPriceProtocol.setChildAssignTo(billingComputer);
         gtuDiscountedPriceProtocol.setChildService(salesTax);
         gtuDiscountedPriceProtocol.setChildProduct(sameProduct);
         em.persist(gtuDiscountedPriceProtocol);

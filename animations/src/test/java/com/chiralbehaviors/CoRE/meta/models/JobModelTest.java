@@ -316,8 +316,10 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(scenario.anyLocation, protocols.get(1).getDeliverFrom());
         assertEquals(scenario.anyLocation, protocols.get(0).getDeliverTo());
         assertEquals(scenario.anyLocation, protocols.get(1).getDeliverTo());
-        assertEquals(scenario.factory1Agency, protocols.get(0).getAssignTo());
-        assertEquals(scenario.factory1Agency, protocols.get(1).getAssignTo());
+        assertEquals(scenario.factory1Agency,
+                     protocols.get(0).getChildAssignTo());
+        assertEquals(scenario.factory1Agency,
+                     protocols.get(1).getChildAssignTo());
         if (protocols.get(0).getChildService().equals(scenario.pick)) {
             assertEquals(scenario.ship, protocols.get(1).getChildService());
         } else {

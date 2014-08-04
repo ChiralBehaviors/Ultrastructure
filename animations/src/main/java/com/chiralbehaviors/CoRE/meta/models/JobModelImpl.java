@@ -1187,10 +1187,10 @@ public class JobModelImpl implements JobModel {
         mp.setDeliverToAttribute(any);
         mp.setDeliverFrom(any);
         mp.setDeliverFromAttribute(any);
-        mp.setProductOrdered(any);
-        mp.setProductOrderedAttribute(any);
-        mp.setRequestingAgency(any);
-        mp.setRequestingAgencyAttribute(any);
+        mp.setProduct(any);
+        mp.setProductAttribute(any);
+        mp.setRequester(any);
+        mp.setRequesterAttribute(any);
         mp.setServiceAttribute(any);
         mp.setServiceType(kernel.getSameRelationship());
         mp.setQuantityUnit(any);
@@ -1506,21 +1506,21 @@ public class JobModelImpl implements JobModel {
                 masks);
 
         // Product
-        addMask(job.getProduct(), metaprotocol.getProductOrdered(),
+        addMask(job.getProduct(), metaprotocol.getProduct(),
                 AbstractProtocol_.product, cb, query, protocol, masks);
 
         // Product Attribute
         addMask(job.getProductAttribute(),
-                metaprotocol.getProductOrderedAttribute(),
+                metaprotocol.getProductAttribute(),
                 AbstractProtocol_.productAttribute, cb, query, protocol, masks);
 
         // Requester
-        addMask(job.getRequester(), metaprotocol.getRequestingAgency(),
+        addMask(job.getRequester(), metaprotocol.getRequester(),
                 AbstractProtocol_.requester, cb, query, protocol, masks);
 
         // Requester Attribute
         addMask(job.getRequesterAttribute(),
-                metaprotocol.getRequestingAgencyAttribute(),
+                metaprotocol.getRequesterAttribute(),
                 AbstractProtocol_.requesterAttribute, cb, query, protocol,
                 masks);
 
@@ -1675,10 +1675,10 @@ public class JobModelImpl implements JobModel {
                                 isTxfm(metaProtocol.getDeliverFromAttribute()),
                                 isTxfm(metaProtocol.getDeliverTo()),
                                 isTxfm(metaProtocol.getDeliverToAttribute()),
-                                isTxfm(metaProtocol.getProductOrdered()),
-                                isTxfm(metaProtocol.getProductOrderedAttribute()),
-                                isTxfm(metaProtocol.getRequestingAgency()),
-                                isTxfm(metaProtocol.getRequestingAgencyAttribute()),
+                                isTxfm(metaProtocol.getProduct()),
+                                isTxfm(metaProtocol.getProductAttribute()),
+                                isTxfm(metaProtocol.getRequester()),
+                                isTxfm(metaProtocol.getRequesterAttribute()),
                                 isTxfm(metaProtocol.getServiceAttribute()),
                                 isTxfm(metaProtocol.getQuantityUnit()));
     }
@@ -1787,7 +1787,7 @@ public class JobModelImpl implements JobModel {
                                 p.getAssignTo(), model.getAgencyModel())) {
                     fieldsMissing.add("AssignTo");
                 }
-                if (!pathExists(job.getRequester(), mp.getRequestingAgency(),
+                if (!pathExists(job.getRequester(), mp.getRequester(),
                                 p.getRequester(), model.getAgencyModel())) {
                     fieldsMissing.add("Requester");
                 }
@@ -1799,7 +1799,7 @@ public class JobModelImpl implements JobModel {
                                 p.getDeliverFrom(), model.getLocationModel())) {
                     fieldsMissing.add("DeliverFrom");
                 }
-                if (!pathExists(job.getProduct(), mp.getProductOrdered(),
+                if (!pathExists(job.getProduct(), mp.getProduct(),
                                 p.getProduct(), model.getProductModel())) {
                     fieldsMissing.add("Product");
                 }
@@ -1814,7 +1814,7 @@ public class JobModelImpl implements JobModel {
                     fieldsMissing.add("AssignToAttribute");
                 }
                 if (!pathExists(job.getRequesterAttribute(),
-                                mp.getRequestingAgencyAttribute(),
+                                mp.getRequesterAttribute(),
                                 p.getRequesterAttribute(),
                                 model.getAttributeModel())) {
                     fieldsMissing.add("RequesterAttribute");
@@ -1832,7 +1832,7 @@ public class JobModelImpl implements JobModel {
                     fieldsMissing.add("DeliverFromAttribute");
                 }
                 if (!pathExists(job.getProductAttribute(),
-                                mp.getProductOrderedAttribute(),
+                                mp.getProductAttribute(),
                                 p.getProductAttribute(),
                                 model.getAttributeModel())) {
                     fieldsMissing.add("ProductAttribute");

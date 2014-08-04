@@ -135,6 +135,69 @@
                JOIN ruleform.agency up ON base_table.updated_by = up.id;
         ]]>
         </createView>
-    </changeSet>
 
+        <renameColumn tableName="meta_protocol" oldColumnName="product_ordered" newColumnName="product" schemaName="ruleform" />
+        <dropForeignKeyConstraint baseTableName="meta_protocol" constraintName="meta_protocol_product_ordered_fkey" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="meta_protocol" constraintName="meta_protocol_product_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+
+        <renameColumn tableName="meta_protocol" oldColumnName="product_ordered_attribute" newColumnName="product_attribute"
+            schemaName="ruleform" />
+        <dropForeignKeyConstraint baseTableName="meta_protocol" constraintName="meta_protocol_product_ordered_attribute_fkey" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_product_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+
+        <renameColumn tableName="meta_protocol" oldColumnName="requesting_agency" newColumnName="requester" schemaName="ruleform" />
+        <dropForeignKeyConstraint baseTableName="meta_protocol" constraintName="meta_protocol_requesting_agency_fkey" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="requester" baseTableName="meta_protocol" constraintName="meta_requester_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+
+        <renameColumn tableName="meta_protocol" oldColumnName="requesting_agency_attribute" newColumnName="requester_attribute"
+            schemaName="ruleform" />
+        <dropForeignKeyConstraint baseTableName="meta_protocol" constraintName="meta_protocol_requesting_agency_attribute_fkey" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="requester_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_requester_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+
+        <createView viewName="meta_protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
+                 SELECT base_table.id, 
+                        s.name AS service,  
+                        st.name AS service_type, 
+                        rr.name AS requester, 
+                        po.name AS product,
+                        dt.name AS deliver_to, 
+                        df.name AS deliver_from, 
+                        at.name AS assign_to,
+                        u.name AS quantity_unit,
+                        raa.name AS requester_attribute, 
+                        sa.name AS service_attribute, 
+                        poa.name AS product_attribute, 
+                        dta.name AS deliver_to_attribute, 
+                        dfa.name AS deliver_from_attribute, 
+                        base_table.stop_on_match,
+                        base_table.sequence_number, 
+                        up.name AS updated_by, 
+                        base_table.update_date
+                   FROM meta_protocol base_table
+                   JOIN product s ON base_table.service = s.id
+                   LEFT JOIN relationship rr ON base_table.requester = rr.id
+                   LEFT JOIN relationship st ON base_table.service_type = st.id
+                   LEFT JOIN relationship po ON base_table.product = po.id
+                   LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
+                   LEFT JOIN relationship df ON base_table.deliver_from = df.id 
+                   LEFT JOIN relationship at ON base_table.assign_to = at.id 
+                   LEFT JOIN relationship u ON base_table.quantity_unit = u.id
+                   LEFT JOIN relationship raa ON base_table.requester_attribute = raa.id
+                   LEFT JOIN relationship sa ON base_table.service_attribute = sa.id
+                   LEFT JOIN relationship poa ON base_table.product_attribute = poa.id
+                   LEFT JOIN relationship dta ON base_table.deliver_to_attribute = dta.id
+                   LEFT JOIN relationship dfa ON base_table.deliver_from_attribute = dfa.id
+                   
+                   JOIN agency up ON base_table.updated_by = up.id;
+        ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

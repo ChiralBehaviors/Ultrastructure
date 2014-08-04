@@ -81,17 +81,17 @@ public class MetaProtocol extends Ruleform {
     private Relationship       deliverToAttribute;
 
     /**
-     * The relationship that transforms the product ordered
+     * The relationship that transforms the product
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "product_ordered")
-    private Relationship       productOrdered;
+    @JoinColumn(name = "product")
+    private Relationship       product;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "product_ordered_attribute")
-    private Relationship       productOrderedAttribute;
+    @JoinColumn(name = "product_attribute")
+    private Relationship       productAttribute;
 
     /**
      * the relationship that transforms the quantity unit type
@@ -106,13 +106,13 @@ public class MetaProtocol extends Ruleform {
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "requesting_agency")
-    private Relationship       requestingAgency;
+    @JoinColumn(name = "requester")
+    private Relationship       requester;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "requesting_agency_attribute")
-    private Relationship       requestingAgencyAttribute;
+    @JoinColumn(name = "requester_attribute")
+    private Relationship       requesterAttribute;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber   = 1;
@@ -134,7 +134,7 @@ public class MetaProtocol extends Ruleform {
     private Relationship       serviceAttribute;
 
     /**
-     * the relationship that transforms the service type
+     * the relationship that transforms the service
      */
     @NotNull
     @ManyToOne
@@ -232,15 +232,15 @@ public class MetaProtocol extends Ruleform {
     /**
      * @return the productOrdered
      */
-    public Relationship getProductOrdered() {
-        return productOrdered;
+    public Relationship getProduct() {
+        return product;
     }
 
     /**
      * @return the productOrderedAttribute
      */
-    public Relationship getProductOrderedAttribute() {
-        return productOrderedAttribute;
+    public Relationship getProductAttribute() {
+        return productAttribute;
     }
 
     public Relationship getQuantityUnit() {
@@ -250,15 +250,15 @@ public class MetaProtocol extends Ruleform {
     /**
      * @return the requestingAgency
      */
-    public Relationship getRequestingAgency() {
-        return requestingAgency;
+    public Relationship getRequester() {
+        return requester;
     }
 
     /**
      * @return the requestingAgencyAttribute
      */
-    public Relationship getRequestingAgencyAttribute() {
-        return requestingAgencyAttribute;
+    public Relationship getRequesterAttribute() {
+        return requesterAttribute;
     }
 
     public Integer getSequenceNumber() {
@@ -345,16 +345,16 @@ public class MetaProtocol extends Ruleform {
      * @param productOrdered
      *            the productOrdered to set
      */
-    public void setProductOrdered(Relationship productOrdered) {
-        this.productOrdered = productOrdered;
+    public void setProduct(Relationship productOrdered) {
+        this.product = productOrdered;
     }
 
     /**
      * @param productOrderedAttribute
      *            the productOrderedAttribute to set
      */
-    public void setProductOrderedAttribute(Relationship productOrderedAttribute) {
-        this.productOrderedAttribute = productOrderedAttribute;
+    public void setProductAttribute(Relationship productOrderedAttribute) {
+        this.productAttribute = productOrderedAttribute;
     }
 
     public void setQuantityUnit(Relationship quantityUnit) {
@@ -365,16 +365,16 @@ public class MetaProtocol extends Ruleform {
      * @param requestingAgency
      *            the requesting agency to set
      */
-    public void setRequestingAgency(Relationship requestingAgency) {
-        this.requestingAgency = requestingAgency;
+    public void setRequester(Relationship requestingAgency) {
+        this.requester = requestingAgency;
     }
 
     /**
      * @param requestingAgencyAttribute
      *            the requestingAgencyAttribute to set
      */
-    public void setRequestingAgencyAttribute(Relationship requestingAgencyAttribute) {
-        this.requestingAgencyAttribute = requestingAgencyAttribute;
+    public void setRequesterAttribute(Relationship requestingAgencyAttribute) {
+        this.requesterAttribute = requestingAgencyAttribute;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -426,13 +426,12 @@ public class MetaProtocol extends Ruleform {
      */
     @Override
     public String toString() {
-        return "MetaProtocol [requestingAgency=" + requestingAgency.getName()
+        return "MetaProtocol [requestingAgency=" + requester.getName()
                + ", service=" + service.getName() + ", serviceType="
                + serviceType.getName() + ", productOrdered="
-               + productOrdered.getName() + ", deliverFrom="
-               + deliverFrom.getName() + ", deliverTo=" + deliverTo.getName()
-               + ", stopOnMatch=" + stopOnMatch + ", sequenceNumber="
-               + sequenceNumber + "]";
+               + product.getName() + ", deliverFrom=" + deliverFrom.getName()
+               + ", deliverTo=" + deliverTo.getName() + ", stopOnMatch="
+               + stopOnMatch + ", sequenceNumber=" + sequenceNumber + "]";
     }
 
     /*
@@ -452,13 +451,11 @@ public class MetaProtocol extends Ruleform {
         if (deliverTo != null) {
             deliverTo = (Relationship) deliverTo.manageEntity(em, knownObjects);
         }
-        if (productOrdered != null) {
-            productOrdered = (Relationship) productOrdered.manageEntity(em,
-                                                                        knownObjects);
+        if (product != null) {
+            product = (Relationship) product.manageEntity(em, knownObjects);
         }
-        if (requestingAgency != null) {
-            requestingAgency = (Relationship) requestingAgency.manageEntity(em,
-                                                                            knownObjects);
+        if (requester != null) {
+            requester = (Relationship) requester.manageEntity(em, knownObjects);
         }
         if (service != null) {
             service = (Product) service.manageEntity(em, knownObjects);

@@ -172,7 +172,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         MetaProtocol m1 = model.getJobModel().newInitializedMetaProtocol(deliver,
                                                                          core);
         m1.setSequenceNumber(1);
-        m1.setProductOrdered(anyRelationship);
+        m1.setProduct(anyRelationship);
         m1.setDeliverTo(state);
         m1.setDeliverFrom(area);
 
@@ -181,8 +181,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         MetaProtocol m2 = model.getJobModel().newInitializedMetaProtocol(pick,
                                                                          core);
         m2.setSequenceNumber(1);
-        m2.setProductOrdered(anyRelationship);
-        m2.setRequestingAgency(customerType);
+        m2.setProduct(anyRelationship);
+        m2.setRequester(customerType);
         m2.setDeliverTo(area);
         m2.setDeliverFrom(area);
 
@@ -191,25 +191,16 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         MetaProtocol m3 = model.getJobModel().newInitializedMetaProtocol(ship,
                                                                          core);
         m3.setSequenceNumber(1);
-        m3.setProductOrdered(anyRelationship);
-        m3.setRequestingAgency(customerType);
+        m3.setProduct(anyRelationship);
+        m3.setRequester(customerType);
         m3.setDeliverTo(area);
         m3.setDeliverFrom(area);
-
-        //        em.persist(m3);
-        //
-        //        MetaProtocol m7 = model.getJobModel().newInitializedMetaProtocol(fee,
-        //                                                                         core);
-        //        m7.setSequenceNumber(1);
-        //        m7.setProductOrdered(anyRelationship);
-        //        m7.setRequestingAgency(anyRelationship);
-        //        m7.setDeliverTo(city);
 
         MetaProtocol m5 = model.getJobModel().newInitializedMetaProtocol(fee,
                                                                          core);
         m5.setSequenceNumber(1);
-        m5.setProductOrdered(anyRelationship);
-        m5.setRequestingAgency(salesTaxStatus);
+        m5.setProduct(anyRelationship);
+        m5.setRequester(salesTaxStatus);
         m5.setDeliverTo(city);
 
         em.persist(m5);
@@ -217,8 +208,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         MetaProtocol m6 = model.getJobModel().newInitializedMetaProtocol(printPurchaseOrder,
                                                                          core);
         m6.setSequenceNumber(1);
-        m6.setProductOrdered(anyRelationship);
-        m6.setRequestingAgency(anyRelationship);
+        m6.setProduct(anyRelationship);
+        m6.setRequester(anyRelationship);
         m6.setDeliverTo(anyRelationship);
         m6.setDeliverFrom(area);
 

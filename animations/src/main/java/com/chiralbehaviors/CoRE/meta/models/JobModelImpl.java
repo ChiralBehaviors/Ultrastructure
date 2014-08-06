@@ -1594,6 +1594,7 @@ public class JobModelImpl implements JobModel {
         query.setParameter("product", job.getProduct());
         query.setParameter("deliverTo", job.getDeliverTo());
         query.setParameter("deliverFrom", job.getDeliverFrom());
+        query.setParameter("assignTo", job.getAssignTo());
         query.setParameter("productAttribute", job.getProductAttribute());
         query.setParameter("assignToAttribute", job.getAssignToAttribute());
         query.setParameter("requesterAttribute", job.getRequesterAttribute());

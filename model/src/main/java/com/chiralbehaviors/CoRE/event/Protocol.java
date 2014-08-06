@@ -52,6 +52,7 @@ import com.chiralbehaviors.CoRE.product.Product;
             + "    AND p.requester = :requester"
             + "    AND p.deliverFrom = :deliverFrom"
             + "    AND p.deliverTo = :deliverTo"
+            + "    AND p.assignTo = :assignTo"
             + "    AND p.productAttribute = :productAttribute"
             + "    AND p.assignToAttribute = :assignToAttribute"
             + "    AND p.requesterAttribute = :requesterAttribute"

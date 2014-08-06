@@ -51,6 +51,13 @@ public class ProtocolTest extends AbstractModelTest {
         infiniteTest.setChildAssignTo(michaelPemulous);
         infiniteTest.setChildService(fireFuzzyGreenWarhead);
         em.persist(infiniteTest);
+        
+        Protocol infiniteTest2 = model.getJobModel().newInitializedProtocol(fireFuzzyGreenWarhead,
+                                                                           kernel.getCore());
+        infiniteTest2.setAssignTo(halIncandenza);
+        infiniteTest2.setChildAssignTo(michaelPemulous);
+        infiniteTest2.setChildService(fireFuzzyGreenWarhead);
+        em.persist(infiniteTest2);
 
         Job startWW3 = model.getJobModel().newInitializedJob(fireFuzzyGreenWarhead,
                                                              kernel.getCore());
@@ -58,7 +65,7 @@ public class ProtocolTest extends AbstractModelTest {
         em.persist(startWW3);
         em.getTransaction().commit();
 
-        assertEquals(1, model.getJobModel().getAllChildren(startWW3).size());
+        assertEquals(2, model.getJobModel().getAllChildren(startWW3).size());
 
     }
 }

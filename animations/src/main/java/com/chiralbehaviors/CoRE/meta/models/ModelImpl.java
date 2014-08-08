@@ -19,10 +19,13 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
+import java.io.ByteArrayInputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -30,11 +33,20 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
+import com.chiralbehaviors.CoRE.jsp.JSP;
+import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
@@ -55,6 +67,44 @@ import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
  *
  */
 public class ModelImpl implements Model {
+
+    private static class Call<T> implements StoredProcedure<T> {
+        private final Procedure<T> procedure;
+
+        public Call(Procedure<T> procedure) {
+            this.procedure = procedure;
+        }
+
+        @Override
+        public T call(EntityManager em) throws Exception {
+            return procedure.call(new ModelImpl(em));
+        }
+
+        @Override
+        public String toString() {
+            return "Call [" + procedure + "]";
+        }
+    }
+
+    private static interface Procedure<T> {
+        T call(ModelImpl model) throws Exception;
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
+    }
+
+    public static void set_log_configuration(final String logConfiguration)
+                                                                           throws Exception {
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(ModelImpl model) throws Exception {
+                model.reallySetLogConfiguration(logConfiguration);
+                return null;
+            }
+        });
+    }
+
     public static AuthenticatedPrincipal getPrincipal() {
         return principal;
     }
@@ -236,8 +286,8 @@ public class ModelImpl implements Model {
                                                                       Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
-                                                  + FIND_BY_NAME_SUFFIX).setParameter("name",
-                                                                                      name).getSingleResult();
+                                                          + FIND_BY_NAME_SUFFIX).setParameter("name",
+                                                                                              name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -368,6 +418,31 @@ public class ModelImpl implements Model {
     @Override
     public WorkspaceModel getWorkspaceModel() {
         return workspaceModel;
+    }
+
+    @Override
+    public void setLogConfiguration(String logbackConfig) {
+        Query query = em.createNativeQuery("select ruleform.set_log_configuration(?)");
+        query.setParameter(1, logbackConfig);
+        query.getResultList();
+    }
+
+    private void reallySetLogConfiguration(String logbackConfig) {
+        // assume SLF4J is bound to logback in the current environment
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        try {
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(context);
+            // Call context.reset() to clear any previous configuration, e.g. default 
+            // configuration. For multi-step configuration, omit calling context.reset().
+            context.reset();
+            configurator.doConfigure(new ByteArrayInputStream(
+                                                              logbackConfig.getBytes()));
+        } catch (JoranException je) {
+            // StatusPrinter will handle this
+        }
+        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     }
 
 }

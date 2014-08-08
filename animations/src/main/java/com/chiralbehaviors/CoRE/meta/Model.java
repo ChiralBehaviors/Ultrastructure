@@ -145,4 +145,6 @@ public interface Model {
      */
     WorkspaceModel getWorkspaceModel();
 
+    public abstract void setLogConfiguration(String logbackConfig);
+
 }

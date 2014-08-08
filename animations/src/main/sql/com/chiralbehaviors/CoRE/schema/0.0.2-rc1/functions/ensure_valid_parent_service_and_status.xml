@@ -10,7 +10,7 @@
             CREATE OR REPLACE FUNCTION ruleform.ensure_valid_parent_service_and_status()
                 RETURNS trigger
                 AS 'com.chiralbehaviors.CoRE.meta.models.JobModelImpl.ensure_valid_parent_service_and_status'
-                LANGUAGE javaU STABLE
+                LANGUAGE javaU VOLATILE
               COST 100;
             ALTER FUNCTION ruleform.ensure_valid_parent_service_and_status()
               OWNER TO core;

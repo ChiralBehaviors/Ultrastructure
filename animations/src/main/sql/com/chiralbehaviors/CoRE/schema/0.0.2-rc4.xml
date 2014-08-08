@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="Add ability to set logging configuration per session" author="hhildebrand">
+        <createProcedure encoding="utf8" procedureName="set_log_configuration" schemaName="ruleform"><![CDATA[
+            CREATE OR REPLACE FUNCTION set_log_configuration(logConfiguration character varying)
+                RETURNS void
+                AS 'com.chiralbehaviors.CoRE.meta.models.ModelImpl.set_log_configuration(java.lang.String)'
+                LANGUAGE javaU IMMUTABLE
+              COST 100;
+        ]]>
+        </createProcedure>
+    </changeSet>
+</databaseChangeLog>

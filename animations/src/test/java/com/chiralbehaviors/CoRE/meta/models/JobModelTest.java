@@ -46,6 +46,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand

@@ -1,0 +1,13 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.chiralbehaviors.CoRE</groupId>
+        <artifactId>CoRE.app</artifactId>
+        <version>0.0.2-rc4-SNAPSHOT</version>
+    </parent>
+    <artifactId>default-jsp-logging</artifactId>
+    <name>Default Java Stored Procedure Logging</name>
+    <description>Default logging configuration resource for Java Stored Procedures</description>
+</project>

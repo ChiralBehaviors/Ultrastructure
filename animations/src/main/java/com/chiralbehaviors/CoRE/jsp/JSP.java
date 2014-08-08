@@ -28,10 +28,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.RollbackException;
 
-import org.apache.openjpa.jdbc.sql.SQLExceptions;
-import org.apache.openjpa.util.StoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
@@ -41,16 +42,58 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
  *
  */
 public abstract class JSP {
+
+    /**
+     * 
+     */
+    private static final int                  MAX_REENTRANT_CALL_DEPTH = 10;
+    private static int                        depth                    = 0;
+    private static final EntityManagerFactory EMF;
+    private static final Logger               log                      = LoggerFactory.getLogger(JSP.class);
+    private static final Properties           PROPERTIES               = new Properties();
+    private static SQLException               rootCause;
+
+    static {
+        ClassLoader classLoader = JSP.class.getClassLoader();
+        Thread.currentThread().setContextClassLoader(classLoader);
+        // assume SLF4J is bound to logback in the current environment
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // print logback's internal status
+        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
+        if (is == null) {
+            log.error("Unable to read jpa.properties, resource is null");
+            throw new IllegalStateException(
+                                            "Unable to read jpa.properties, resource is null");
+        }
+        try {
+            PROPERTIES.load(is);
+        } catch (IOException e) {
+            log.error("Unable to read jpa properties", e);
+            throw new IllegalStateException("Unable to read jpa.properties", e);
+        }
+        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                     PROPERTIES);
+    }
+
     public static <T> T call(StoredProcedure<T> call) throws SQLException {
+        if (rootCause != null) {
+            return null;
+        }
         depth++;
+        if (depth > MAX_REENTRANT_CALL_DEPTH) {
+            rootCause = new SQLException(
+                                         String.format("Max reentrant call depth reached, call: %s",
+                                                       call));
+            depth--;
+            return null;
+        }
         if (log.isTraceEnabled()) {
             log.trace(String.format("nesting depth: %s", depth));
         }
         try {
             Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
-            if (rootCause != null) {
-                return null;
-            }
             EntityManager em = EMF.createEntityManager();
             em.getTransaction().begin();
             T value;
@@ -125,38 +168,5 @@ public abstract class JSP {
                 }
             }
         }
-    }
-
-    private static final Properties           PROPERTIES = new Properties();
-    private static final EntityManagerFactory EMF;
-    private static final Logger               log        = LoggerFactory.getLogger(JSP.class);
-    private static int                        depth      = 0;
-
-    private static SQLException               rootCause;
-
-    static {
-        ClassLoader classLoader = JSP.class.getClassLoader();
-        Thread.currentThread().setContextClassLoader(classLoader);
-        try {
-            Class.forName("org.apache.commons.collections.iterators.IteratorChain");
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e);
-        }
-        SQLExceptions.class.toString();
-        StoreException.class.toString();
-        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
-        if (is == null) {
-            log.error("Unable to read jpa.properties, resource is null");
-            throw new IllegalStateException(
-                                            "Unable to read jpa.properties, resource is null");
-        }
-        try {
-            PROPERTIES.load(is);
-        } catch (IOException e) {
-            log.error("Unable to read jpa properties", e);
-            throw new IllegalStateException("Unable to read jpa.properties", e);
-        }
-        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                     PROPERTIES);
     }
 }

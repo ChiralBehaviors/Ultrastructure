@@ -113,8 +113,8 @@ public class Loader {
         Connection connection = configuration.getDbaConnection();
         connection.setAutoCommit(true);
         log.info(String.format("Dropping db %s", configuration.coreDb));
-        execute(connection,
-                Utils.getDocument(getClass().getResourceAsStream(DROP_DATABASE_SQL)));
+        executeWithError(connection,
+                         Utils.getDocument(getClass().getResourceAsStream(DROP_DATABASE_SQL)));
         log.info(String.format("Dropping liquibase metadata in db %s",
                                configuration.dbaDb));
         execute(connection,
@@ -122,6 +122,20 @@ public class Loader {
         log.info(String.format("Dropping roles in db %s", configuration.coreDb));
         execute(connection,
                 Utils.getDocument(getClass().getResourceAsStream(DROP_ROLES_SQL)));
+    }
+
+    private void executeWithError(Connection connection, String sqlFile)
+                                                                        throws SQLException {
+        StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
+        while (tokes.hasMoreTokens()) {
+            String line = tokes.nextToken();
+            PreparedStatement exec = connection.prepareStatement(line);
+            try {
+                exec.execute();
+            } finally {
+                exec.close();
+            }
+        }
     }
 
     private void execute(Connection connection, String sqlFile)

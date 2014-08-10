@@ -7,5 +7,6 @@
     <include relativeToChangelogFile="true" file="create-sqlj.xml" />
     <include relativeToChangelogFile="true" file="0.0.2-rc1/core.xml" />
     <include relativeToChangelogFile="true" file="0.0.2-rc2.xml" />
+    <include relativeToChangelogFile="true" file="0.0.2-rc4.xml" />
 
 </databaseChangeLog>

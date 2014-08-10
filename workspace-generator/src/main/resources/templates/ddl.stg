@@ -1,0 +1,26 @@
+group workspace;
+
+generate(columns) ::= <<
+
+    \<createTable schemaName="ruleform"
+            remarks="A workspace authorization defines the entities in a workspace" 
+            tableName="workspace_authorization"
+    \>
+        \<column name="id" type="CHAR(22)"\>
+            \<constraints primaryKey="true" primaryKeyName="workspace_authorization_pkey" /\>
+        \</column\>
+        \<column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)"\>
+            \<constraints nullable="false" /\>
+        \</column\>
+<columns: {column|
+        \<column name="<column>" type="CHAR(22)"/\>}> 
+    \</createTable\> 
+<columns: {column|
+    \<addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+        baseColumnNames="<column>" baseTableName="workspace_authorization" constraintName="workspace_<column>_fkey" 
+        deferrable="true" initiallyDeferred="true"
+        onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="<column>" /\><\n>}>
+    \<createIndex schemaName="ruleform" indexName="agency_updated_by_fkey_idx" tableName="agency" unique="false"\>
+        \<column name="updated_by" /\>
+    \</createIndex\>
+>>

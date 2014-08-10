@@ -48,55 +48,39 @@ public class WorkspaceGenerator extends AbstractMojo {
     private static final String   DEFAULT         = "target/generated-sources/workspace";
     private static final String   PREFIX          = "com.chiralbehaviors.CoRE.";
     private static final String   SOURCE_FILE     = "com/chiralbehaviors/CoRE/workspace/WorkspaceAuthorization.java";
+    private static final String   CHANGESET_FILE  = "com/chiralbehaviors/CoRE/workspace/table.xml";
     private static final String[] imports         = { "agency.Agency",
             "agency.AgencyAttribute", "agency.AgencyAttributeAuthorization",
             "agency.AgencyLocation", "agency.AgencyLocationAttribute",
             "agency.AgencyNetwork", "agency.AgencyNetworkAttribute",
             "agency.AgencyNetworkAuthorization", "agency.AgencyProduct",
-            "agency.access.AgencyLocationAccessAuthorization",
-            "agency.access.AgencyProductAccessAuthorization",
-            "attribute.Attribute",
-            "attribute.AttributeMetaAttribute",
+            "attribute.Attribute", "attribute.AttributeMetaAttribute",
             "attribute.AttributeMetaAttributeAuthorization",
             "attribute.AttributeNetwork",
-            "attribute.AttributeNetworkAttribute",
-            "attribute.unit.Unit",
+            "attribute.AttributeNetworkAttribute", "attribute.unit.Unit",
             "attribute.unit.UnitAttribute",
             "attribute.unit.UnitAttributeAuthorization",
             "attribute.unit.UnitNetwork",
-            "attribute.unit.UnitNetworkAttribute",
-            "attribute.unit.UnitValue",
-            "location.Location",
+            "attribute.unit.UnitNetworkAttribute", "location.Location",
             "location.LocationAttribute",
             "location.LocationAttributeAuthorization",
-            "location.LocationNetwork",
-            "location.LocationNetworkAttribute",
-            "location.LocationNetworkAuthorization",
-            "product.Product",
+            "location.LocationNetwork", "location.LocationNetworkAttribute",
+            "location.LocationNetworkAuthorization", "product.Product",
             "product.ProductAttribute",
-            "product.ProductAttributeAuthorization",
-            "product.ProductNetwork",
-            "product.ProductNetworkAttribute",
-            "product.ProductLocation",
-            "product.ProductLocationAttribute",
-            "time.Interval",
-            "time.IntervalAttribute",
-            "time.IntervalAttributeAuthorization",
-            "time.IntervalNetwork",
-            "time.IntervalNetworkAttribute",
-            "event.status.StatusCode",
-            "event.status.StatusCodeAttribute",
+            "product.ProductAttributeAuthorization", "product.ProductNetwork",
+            "product.ProductNetworkAttribute", "product.ProductLocation",
+            "product.ProductLocationAttribute", "time.Interval",
+            "time.IntervalAttribute", "time.IntervalAttributeAuthorization",
+            "time.IntervalNetwork", "time.IntervalNetworkAttribute",
+            "event.status.StatusCode", "event.status.StatusCodeAttribute",
             "event.status.StatusCodeAttributeAuthorization",
             "event.status.StatusCodeNetwork",
             "event.status.StatusCodeNetworkAttribute",
-            "event.status.StatusCodeSequencing",
-            "event.Job",
-            "event.JobChronology",
-            "event.MetaProtocol",
+            "event.status.StatusCodeSequencing", "event.Job",
+            "event.JobChronology", "event.MetaProtocol",
             "event.ProductChildSequencingAuthorization",
             "event.ProductParentSequencingAuthorization",
-            "event.ProductSiblingSequencingAuthorization",
-            "event.Protocol"};
+            "event.ProductSiblingSequencingAuthorization", "event.Protocol" };
 
     /**
      * Target generation directory
@@ -112,12 +96,13 @@ public class WorkspaceGenerator extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         List<String> types = getTypes();
         List<String> variables = getVariables(types);
+        List<String> columns = getColumns(variables);
         STGroup group = new STGroupFile("templates/workspace.stg");
         ST workspace = group.getInstanceOf("generate");
         workspace.add("imports", getImports());
         workspace.add("types", types);
         workspace.add("variables", variables);
-        workspace.add("columns", getColumns(variables));
+        workspace.add("columns", columns);
 
         File sourceFile = new File(outputDirectory, SOURCE_FILE);
         try {
@@ -138,6 +123,35 @@ public class WorkspaceGenerator extends AbstractMojo {
         try (OutputStream os = new FileOutputStream(
                                                     Files.createFile(sourceFile.toPath()).toFile())) {
             os.write(workspace.render().getBytes());
+        } catch (IOException e) {
+            throw new MojoExecutionException(
+                                             String.format("Error writing file %s",
+                                                           sourceFile.getAbsolutePath(),
+                                                           e));
+        }
+
+        group = new STGroupFile("templates/ddl.stg");
+        ST cs = group.getInstanceOf("generate");
+        cs.add("columns", columns);
+        sourceFile = new File(outputDirectory, CHANGESET_FILE);
+        try {
+            Files.deleteIfExists(sourceFile.toPath());
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException(
+                                             String.format("Cannot find file for create %s",
+                                                           sourceFile.getAbsolutePath(),
+                                                           e));
+        } catch (IOException e) {
+
+            throw new MojoExecutionException(
+                                             String.format("Error creating file %s\nCause: %s",
+                                                           sourceFile.getAbsolutePath(),
+                                                           e.getMessage()));
+        }
+        sourceFile.getParentFile().mkdirs();
+        try (OutputStream os = new FileOutputStream(
+                                                    Files.createFile(sourceFile.toPath()).toFile())) {
+            os.write(cs.render().getBytes());
         } catch (IOException e) {
             throw new MojoExecutionException(
                                              String.format("Error writing file %s",

@@ -102,10 +102,6 @@ public class WorkspaceAuthorization extends Ruleform {
     private AgencyLocation                        agencyLocation;
 
     @ManyToOne
-    @JoinColumn(name = "agency_location_access_authorization")
-    private AgencyLocationAccessAuthorization     agencyLocationAccessAuthorization;
-
-    @ManyToOne
     @JoinColumn(name = "agency_location_attribute")
     private AgencyLocationAttribute               agencyLocationAttribute;
 
@@ -124,10 +120,6 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne
     @JoinColumn(name = "agency_product")
     private AgencyProduct                         agencyProduct;
-
-    @ManyToOne
-    @JoinColumn(name = "agency_product_access_authorization")
-    private AgencyProductAccessAuthorization      agencyProductAccessAuthorization;
 
     @ManyToOne
     @JoinColumn(name = "attribute")
@@ -319,10 +311,6 @@ public class WorkspaceAuthorization extends Ruleform {
         return agencyLocation;
     }
 
-    public AgencyLocationAccessAuthorization getAgencyLocationAccessAuthorization() {
-        return agencyLocationAccessAuthorization;
-    }
-
     public AgencyLocationAttribute getAgencyLocationAttribute() {
         return agencyLocationAttribute;
     }
@@ -341,10 +329,6 @@ public class WorkspaceAuthorization extends Ruleform {
 
     public AgencyProduct getAgencyProduct() {
         return agencyProduct;
-    }
-
-    public AgencyProductAccessAuthorization getAgencyProductAccessAuthorization() {
-        return agencyProductAccessAuthorization;
     }
 
     public Attribute getAttribute() {
@@ -392,10 +376,6 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getAgencyNetworkAuthorization();
             case "AgencyProduct":
                 return (T) getAgencyProduct();
-            case "AgencyLocationAccessAuthorization":
-                return (T) getAgencyLocationAccessAuthorization();
-            case "AgencyProductAccessAuthorization":
-                return (T) getAgencyProductAccessAuthorization();
             case "Attribute":
                 return (T) getAttribute();
             case "AttributeMetaAttribute":
@@ -660,11 +640,6 @@ public class WorkspaceAuthorization extends Ruleform {
         this.agencyLocation = agencyLocation;
     }
 
-    public void setAgencyLocationAccessAuthorization(AgencyLocationAccessAuthorization agencyLocationAccessAuthorization) {
-        type = "AgencyLocationAccessAuthorization";
-        this.agencyLocationAccessAuthorization = agencyLocationAccessAuthorization;
-    }
-
     public void setAgencyLocationAttribute(AgencyLocationAttribute agencyLocationAttribute) {
         type = "AgencyLocationAttribute";
         this.agencyLocationAttribute = agencyLocationAttribute;
@@ -688,11 +663,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setAgencyProduct(AgencyProduct agencyProduct) {
         type = "AgencyProduct";
         this.agencyProduct = agencyProduct;
-    }
-
-    public void setAgencyProductAccessAuthorization(AgencyProductAccessAuthorization agencyProductAccessAuthorization) {
-        type = "AgencyProductAccessAuthorization";
-        this.agencyProductAccessAuthorization = agencyProductAccessAuthorization;
     }
 
     public void setAttribute(Attribute attribute) {

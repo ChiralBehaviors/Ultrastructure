@@ -83,5 +83,6 @@
         <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization</class>
     </persistence-unit>
 </persistence>

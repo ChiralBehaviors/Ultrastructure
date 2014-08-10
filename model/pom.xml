@@ -106,6 +106,19 @@
         <plugins>
             <plugin>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
+                <artifactId>workspace-generator</artifactId>
+                <executions>
+                    <execution>
+                        <id>network-inference-generator</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>network-inference-generator</artifactId>
                 <configuration>
                     <outputDirectory>${project.build.directory}/generated-resources/queries</outputDirectory>
@@ -388,6 +401,19 @@
                                         <groupId>com.chiralbehaviors.CoRE</groupId>
                                         <artifactId>network-inference-generator</artifactId>
                                         <versionRange>[${project.version},)</versionRange>
+                                        <goals>
+                                            <goal>generate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.chiralbehaviors.CoRE</groupId>
+                                        <artifactId>workspace-generator</artifactId>
+                                        <versionRange>[0.0.2-rc4-SNAPSHOT,)</versionRange>
                                         <goals>
                                             <goal>generate</goal>
                                         </goals>

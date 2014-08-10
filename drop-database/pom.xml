@@ -29,6 +29,13 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>sql-maven-plugin</artifactId>
+                        <configuration>
+                            <driver>org.postgresql.Driver</driver>
+                            <url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/postgres</url>
+                            <username>${testing.db.login}</username>
+                            <password>${testing.db.password}</password>
+                            <autocommit>true</autocommit>
+                        </configuration>
                         <dependencies>
                             <dependency>
                                 <groupId>postgresql</groupId>
@@ -44,14 +51,20 @@
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/postgres</url>
-                                    <username>${testing.db.login}</username>
-                                    <password>${testing.db.password}</password>
-                                    <autocommit>true</autocommit>
-                                    <onError>continue</onError>
                                     <srcFiles>
                                         <srcFile>${project.build.outputDirectory}/drop-database.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>drop_roles</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <onError>continue</onError>
+                                    <srcFiles>
                                         <srcFile>${project.build.outputDirectory}/drop-roles.sql</srcFile>
                                         <srcFile>${project.build.outputDirectory}/drop-liquibase.sql</srcFile>
                                     </srcFiles>

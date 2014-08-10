@@ -35,8 +35,6 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct;
-import com.chiralbehaviors.CoRE.agency.access.AgencyLocationAccessAuthorization;
-import com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -130,7 +128,7 @@ public class WorkspaceAuthorization extends Ruleform {
     private AttributeMetaAttribute                attributeMetaAttribute;
 
     @ManyToOne
-    @JoinColumn(name = "attribute_meta_attribute_authorization")
+    @JoinColumn(name = "attr_meta_attr_auth")
     private AttributeMetaAttributeAuthorization   attributeMetaAttributeAuthorization;
 
     @ManyToOne
@@ -141,7 +139,8 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "attribute_network_attribute")
     private AttributeNetworkAttribute             attributeNetworkAttribute;
 
-    @Column(name = "defining_product")
+    @ManyToOne
+    @JoinColumn(name = "defining_product")
     private Product                               definingProduct;
 
     @ManyToOne

@@ -1080,7 +1080,13 @@ public class JobModelImpl implements JobModel {
     }
 
     public Job insert(Job parent, Protocol protocol, InferenceMap txfm) {
+        if (parent.getDepth() > MAXIMUM_JOB_DEPTH) {
+            throw new IllegalStateException(
+                                            String.format("Maximum job depth exceeded.  parent: %s, protocol: %s",
+                                                          parent, protocol));
+        }
         Job job = new Job(kernel.getCoreAnimationSoftware());
+        job.setDepth(parent.getDepth() + 1);
         job._setStatus(kernel.getUnset());
         job.setParent(parent);
         job.setProtocol(protocol);
@@ -1510,8 +1516,7 @@ public class JobModelImpl implements JobModel {
                 AbstractProtocol_.product, cb, query, protocol, masks);
 
         // Product Attribute
-        addMask(job.getProductAttribute(),
-                metaprotocol.getProductAttribute(),
+        addMask(job.getProductAttribute(), metaprotocol.getProductAttribute(),
                 AbstractProtocol_.productAttribute, cb, query, protocol, masks);
 
         // Requester
@@ -1669,8 +1674,7 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private InferenceMap map(Protocol protocol, MetaProtocol metaProtocol) {
-        return new InferenceMap(
-                                isTxfm(metaProtocol.getAssignTo()),
+        return new InferenceMap(isTxfm(metaProtocol.getAssignTo()),
                                 isTxfm(metaProtocol.getAssignToAttribute()),
                                 isTxfm(metaProtocol.getDeliverFrom()),
                                 isTxfm(metaProtocol.getDeliverFromAttribute()),

@@ -40,12 +40,18 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public interface JobModel {
-    static InferenceMap NO_TRANSFORMATION = new InferenceMap(false, false,
-                                                             false, false,
-                                                             false, false,
-                                                             false, false,
-                                                             false, false,
-                                                             false, false);
+    final static int          MAXIMUM_JOB_DEPTH = 20;
+    final static InferenceMap NO_TRANSFORMATION = new InferenceMap(false,
+                                                                   false,
+                                                                   false,
+                                                                   false,
+                                                                   false,
+                                                                   false,
+                                                                   false,
+                                                                   false,
+                                                                   false,
+                                                                   false,
+                                                                   false, false);
 
     /**
      * Sets the status of the given Job. This should not be done directly on the
@@ -96,7 +102,7 @@ public interface JobModel {
      */
     void ensureNextStateIsValid(Job job, Product service,
                                 StatusCode currentStatus, StatusCode nextStatus)
-                                        throws SQLException;
+                                                                                throws SQLException;
 
     /**
      * @param parent
@@ -112,7 +118,7 @@ public interface JobModel {
      */
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
-                                             throws SQLException;
+                                                                  throws SQLException;
 
     /**
      * For a given job, generates all the implicit jobs that need to be done

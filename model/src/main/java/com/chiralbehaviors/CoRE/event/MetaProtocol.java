@@ -42,8 +42,8 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Entity
 @Table(name = "meta_protocol", schema = "ruleform")
 @NamedQueries({ @NamedQuery(name = FOR_JOB, query = "SELECT mp from MetaProtocol mp "
-                                                    + "WHERE mp.service = :service "
-                                                    + "ORDER BY mp.sequenceNumber") })
+        + "WHERE mp.service = :service "
+        + "ORDER BY mp.sequenceNumber") })
 public class MetaProtocol extends Ruleform {
 
     public static final String FOR_JOB          = "metaprotocol.getForJob";
@@ -346,7 +346,7 @@ public class MetaProtocol extends Ruleform {
      *            the productOrdered to set
      */
     public void setProduct(Relationship productOrdered) {
-        this.product = productOrdered;
+        product = productOrdered;
     }
 
     /**
@@ -354,7 +354,7 @@ public class MetaProtocol extends Ruleform {
      *            the productOrderedAttribute to set
      */
     public void setProductAttribute(Relationship productOrderedAttribute) {
-        this.productAttribute = productOrderedAttribute;
+        productAttribute = productOrderedAttribute;
     }
 
     public void setQuantityUnit(Relationship quantityUnit) {
@@ -366,7 +366,7 @@ public class MetaProtocol extends Ruleform {
      *            the requesting agency to set
      */
     public void setRequester(Relationship requestingAgency) {
-        this.requester = requestingAgency;
+        requester = requestingAgency;
     }
 
     /**
@@ -374,7 +374,7 @@ public class MetaProtocol extends Ruleform {
      *            the requestingAgencyAttribute to set
      */
     public void setRequesterAttribute(Relationship requestingAgencyAttribute) {
-        this.requesterAttribute = requestingAgencyAttribute;
+        requesterAttribute = requestingAgencyAttribute;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -427,11 +427,11 @@ public class MetaProtocol extends Ruleform {
     @Override
     public String toString() {
         return "MetaProtocol [requestingAgency=" + requester.getName()
-               + ", service=" + service.getName() + ", serviceType="
-               + serviceType.getName() + ", productOrdered="
-               + product.getName() + ", deliverFrom=" + deliverFrom.getName()
-               + ", deliverTo=" + deliverTo.getName() + ", stopOnMatch="
-               + stopOnMatch + ", sequenceNumber=" + sequenceNumber + "]";
+                + ", service=" + service.getName() + ", serviceType="
+                + serviceType.getName() + ", productOrdered="
+                + product.getName() + ", deliverFrom=" + deliverFrom.getName()
+                + ", deliverTo=" + deliverTo.getName() + ", stopOnMatch="
+                + stopOnMatch + ", sequenceNumber=" + sequenceNumber + "]";
     }
 
     /*

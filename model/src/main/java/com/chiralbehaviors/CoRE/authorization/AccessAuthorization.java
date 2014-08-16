@@ -42,7 +42,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Table(name = "access_authorization", schema = "ruleform")
 @DiscriminatorColumn(name = "authorization_type")
 public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Parent, ?>, Child extends ExistentialRuleform<Child, ?>>
-        extends Ruleform {
+extends Ruleform {
 
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX = ".findAllAuthsForParentRelationshipChildMatchOnAllRelationships";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX                            = ".findAllAuthsForParentRelationshipChild";

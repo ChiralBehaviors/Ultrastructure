@@ -43,40 +43,6 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
  */
 public abstract class JSP {
 
-    /**
-     * 
-     */
-    private static final int                  MAX_REENTRANT_CALL_DEPTH = 10;
-    private static int                        depth                    = 0;
-    private static final EntityManagerFactory EMF;
-    private static final Logger               log                      = LoggerFactory.getLogger(JSP.class);
-    private static final Properties           PROPERTIES               = new Properties();
-    private static SQLException               rootCause;
-
-    static {
-        ClassLoader classLoader = JSP.class.getClassLoader();
-        Thread.currentThread().setContextClassLoader(classLoader);
-        // assume SLF4J is bound to logback in the current environment
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        // print logback's internal status
-        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-
-        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
-        if (is == null) {
-            log.error("Unable to read jpa.properties, resource is null");
-            throw new IllegalStateException(
-                                            "Unable to read jpa.properties, resource is null");
-        }
-        try {
-            PROPERTIES.load(is);
-        } catch (IOException e) {
-            log.error("Unable to read jpa properties", e);
-            throw new IllegalStateException("Unable to read jpa.properties", e);
-        }
-        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                     PROPERTIES);
-    }
-
     public static <T> T call(StoredProcedure<T> call) throws SQLException {
         if (rootCause != null) {
             return null;
@@ -131,7 +97,7 @@ public abstract class JSP {
                                                              String.format("** Java Stored procedure failed %s\n%s",
                                                                            call,
                                                                            string.toString()),
-                                                             e);
+                                                                           e);
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("Setting root cause to: %s",
                                             sqlException));
@@ -168,5 +134,40 @@ public abstract class JSP {
                 }
             }
         }
+    }
+
+    /**
+     *
+     */
+    private static final int                  MAX_REENTRANT_CALL_DEPTH = 10;
+    private static int                        depth                    = 0;
+    private static final EntityManagerFactory EMF;
+    private static final Logger               log                      = LoggerFactory.getLogger(JSP.class);
+    private static final Properties           PROPERTIES               = new Properties();
+
+    private static SQLException               rootCause;
+
+    static {
+        ClassLoader classLoader = JSP.class.getClassLoader();
+        Thread.currentThread().setContextClassLoader(classLoader);
+        // assume SLF4J is bound to logback in the current environment
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // print logback's internal status
+        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
+        if (is == null) {
+            log.error("Unable to read jpa.properties, resource is null");
+            throw new IllegalStateException(
+                    "Unable to read jpa.properties, resource is null");
+        }
+        try {
+            PROPERTIES.load(is);
+        } catch (IOException e) {
+            log.error("Unable to read jpa properties", e);
+            throw new IllegalStateException("Unable to read jpa.properties", e);
+        }
+        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                     PROPERTIES);
     }
 }

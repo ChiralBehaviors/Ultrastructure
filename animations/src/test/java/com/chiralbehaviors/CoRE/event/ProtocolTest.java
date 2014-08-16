@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2014 Chiral Behaviors, LLC, all rights reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,13 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.product.Product;
-
-import static org.junit.Assert.*;
 
 /**
  * @author hparry
@@ -51,9 +51,9 @@ public class ProtocolTest extends AbstractModelTest {
         infiniteTest.setChildAssignTo(michaelPemulous);
         infiniteTest.setChildService(fireFuzzyGreenWarhead);
         em.persist(infiniteTest);
-        
+
         Protocol infiniteTest2 = model.getJobModel().newInitializedProtocol(fireFuzzyGreenWarhead,
-                                                                           kernel.getCore());
+                                                                            kernel.getCore());
         infiniteTest2.setAssignTo(halIncandenza);
         infiniteTest2.setChildAssignTo(michaelPemulous);
         infiniteTest2.setChildService(fireFuzzyGreenWarhead);

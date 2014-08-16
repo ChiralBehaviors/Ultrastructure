@@ -90,21 +90,6 @@ public class ModelImpl implements Model {
         T call(ModelImpl model) throws Exception;
     }
 
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
-    }
-
-    public static void set_log_configuration(final String logConfiguration)
-                                                                           throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(ModelImpl model) throws Exception {
-                model.reallySetLogConfiguration(logConfiguration);
-                return null;
-            }
-        });
-    }
-
     public static AuthenticatedPrincipal getPrincipal() {
         return principal;
     }
@@ -115,6 +100,17 @@ public class ModelImpl implements Model {
         builder.append(Character.toLowerCase(simpleName.charAt(0)));
         builder.append(simpleName.substring(1));
         return builder.toString();
+    }
+
+    public static void set_log_configuration(final String logConfiguration)
+            throws Exception {
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(ModelImpl model) throws Exception {
+                model.reallySetLogConfiguration(logConfiguration);
+                return null;
+            }
+        });
     }
 
     /**
@@ -152,6 +148,10 @@ public class ModelImpl implements Model {
          * activeRoleAgencys[i]))); } principal = new
          * AuthenticatedPrincipal(em.find(Agency.class, agency), aspects); }
          */
+    }
+
+    private static <T> T execute(Procedure<T> procedure) throws SQLException {
+        return JSP.call(new Call<T>(procedure));
     }
 
     private static AuthenticatedPrincipal principal;
@@ -286,8 +286,8 @@ public class ModelImpl implements Model {
                                                                       Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
-                                                          + FIND_BY_NAME_SUFFIX).setParameter("name",
-                                                                                              name).getSingleResult();
+                                                  + FIND_BY_NAME_SUFFIX).setParameter("name",
+                                                                                      name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -434,7 +434,7 @@ public class ModelImpl implements Model {
         try {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(context);
-            // Call context.reset() to clear any previous configuration, e.g. default 
+            // Call context.reset() to clear any previous configuration, e.g. default
             // configuration. For multi-step configuration, omit calling context.reset().
             context.reset();
             configurator.doConfigure(new ByteArrayInputStream(

@@ -15,7 +15,12 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.JobChronology.*;
+import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
+import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
+import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
+import static com.chiralbehaviors.CoRE.event.JobChronology.GET_LOG_FOR_SEQUENCE;
+import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
+import static com.chiralbehaviors.CoRE.event.JobChronology.LAST_JOB_LOG;
 
 import java.util.Map;
 import java.util.UUID;
@@ -38,24 +43,24 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = FIND_ALL, query = "SELECT j FROM JobChronology j"),
-               @NamedQuery(name = FIND_FOR_JOB, query = "SELECT j FROM JobChronology j "
-                                                        + "WHERE j.job = :job "),
-               @NamedQuery(name = FIND_FOR_PRODUCT, query = "SELECT j FROM JobChronology j "
-                                                            + "WHERE j.product = :product "),
-               @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "SELECT MAX(j.sequenceNumber) FROM JobChronology j "
-                                                                    + "WHERE j.job = :job"),
-               @NamedQuery(name = GET_LOG_FOR_SEQUENCE, query = "SELECT j from JobChronology j "
-                                                                + "WHERE j.job = :job "
-                                                                + "    AND j.sequenceNumber = :sequence"),
-               @NamedQuery(name = LAST_JOB_LOG, query = "SELECT j from JobChronology j "
-                                                        + "WHERE j.job = :job "
-                                                        + "    AND j.sequenceNumber = j.job.currentLogSequence") })
+    @NamedQuery(name = FIND_ALL, query = "SELECT j FROM JobChronology j"),
+    @NamedQuery(name = FIND_FOR_JOB, query = "SELECT j FROM JobChronology j "
+            + "WHERE j.job = :job "),
+            @NamedQuery(name = FIND_FOR_PRODUCT, query = "SELECT j FROM JobChronology j "
+                    + "WHERE j.product = :product "),
+                    @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "SELECT MAX(j.sequenceNumber) FROM JobChronology j "
+                            + "WHERE j.job = :job"),
+                            @NamedQuery(name = GET_LOG_FOR_SEQUENCE, query = "SELECT j from JobChronology j "
+                                    + "WHERE j.job = :job "
+                                    + "    AND j.sequenceNumber = :sequence"),
+                                    @NamedQuery(name = LAST_JOB_LOG, query = "SELECT j from JobChronology j "
+                                            + "WHERE j.job = :job "
+                                            + "    AND j.sequenceNumber = j.job.currentLogSequence") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends AbstractProtocol {
     public static final String FIND_ALL                 = "jobChronology"
-                                                          + FIND_ALL_SUFFIX;
+            + FIND_ALL_SUFFIX;
     public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
     public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
     public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";

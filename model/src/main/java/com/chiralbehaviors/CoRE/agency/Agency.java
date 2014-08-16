@@ -64,79 +64,79 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({
-    @NamedQuery(name = FIND_ALL, query = "select a from Agency a"),
-    @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
-    @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-            + "  attrValue "
-            + "FROM "
-            + "       AgencyAttribute attrValue, "
-            + "       AgencyAttributeAuthorization auth, "
-            + "       AgencyNetwork network "
-            + "WHERE "
-            + "        auth.authorizedAttribute = attrValue.attribute AND "
-            + "        network.relationship = auth.classification AND "
-            + "        network.child = auth.classifier AND"
-            + "        attrValue.agency = :ruleform AND "
-            + "        auth.classification = :classification AND "
-            + "        auth.classifier = :classifier "),
-            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from AgencyAttributeAuthorization ra "
-                    + "WHERE ra.classification = :classification "
-                    + "AND ra.classifier = :classifier"),
-                    @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from AgencyAttributeAuthorization ra "
-                            + "WHERE ra.groupingAgency = :groupingAgency"),
-                            @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
-                                    + "FROM AgencyNetwork n "
-                                    + "WHERE n.parent = :p "
-                                    + "AND n.relationship = :r"),
-                                    @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                            + "FROM AgencyNetwork n "
-                                            + "WHERE n.child = :c"),
-                                            @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AgencyNetwork n "
-                                                    + "WHERE n.parent = :agency "
-                                                    + "AND n.relationship IN :relationships "
-                                                    + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+               @NamedQuery(name = FIND_ALL, query = "select a from Agency a"),
+               @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                            + "  attrValue "
+                                                                            + "FROM "
+                                                                            + "       AgencyAttribute attrValue, "
+                                                                            + "       AgencyAttributeAuthorization auth, "
+                                                                            + "       AgencyNetwork network "
+                                                                            + "WHERE "
+                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
+                                                                            + "        network.relationship = auth.classification AND "
+                                                                            + "        network.child = auth.classifier AND"
+                                                                            + "        attrValue.agency = :ruleform AND "
+                                                                            + "        auth.classification = :classification AND "
+                                                                            + "        auth.classifier = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from AgencyAttributeAuthorization ra "
+                                                                                    + "WHERE ra.classification = :classification "
+                                                                                    + "AND ra.classifier = :classifier"),
+               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from AgencyAttributeAuthorization ra "
+                                                                                 + "WHERE ra.groupingAgency = :groupingAgency"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                     + "FROM AgencyNetwork n "
+                                                     + "WHERE n.parent = :p "
+                                                     + "AND n.relationship = :r"),
+               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                        + "FROM AgencyNetwork n "
+                                                                        + "WHERE n.child = :c"),
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AgencyNetwork n "
+                                                                           + "WHERE n.parent = :agency "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
-    @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-            + "FROM agency AS unlinked "
-            + "JOIN ("
-            + "     SELECT id "
-            + "     FROM agency "
-            + "     EXCEPT ("
-            + "             SELECT distinct(net.child) "
-            + "             FROM agency_network as net "
-            + "             WHERE net.parent = agency_id('Agency') "
-            + "             AND relationship = relationship_id('includes') "
-            + "     )"
-            + ") AS linked ON unlinked.id = linked.id "
-            + "WHERE unlinked.id != agency_id('Agency');", resultClass = Agency.class),
-            // ?1 = :queryString, ?2 = :numberOfMatches
-            @NamedNativeQuery(name = "agency" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('agency', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
+                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                + "FROM agency AS unlinked "
+                                                                + "JOIN ("
+                                                                + "     SELECT id "
+                                                                + "     FROM agency "
+                                                                + "     EXCEPT ("
+                                                                + "             SELECT distinct(net.child) "
+                                                                + "             FROM agency_network as net "
+                                                                + "             WHERE net.parent = agency_id('Agency') "
+                                                                + "             AND relationship = relationship_id('includes') "
+                                                                + "     )"
+                                                                + ") AS linked ON unlinked.id = linked.id "
+                                                                + "WHERE unlinked.id != agency_id('Agency');", resultClass = Agency.class),
+                     // ?1 = :queryString, ?2 = :numberOfMatches
+                     @NamedNativeQuery(name = "agency" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('agency', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "agency", schema = "ruleform")
 public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
-implements Attributable<AgencyAttribute> {
+        implements Attributable<AgencyAttribute> {
     public static final String                AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
 
     public static final String                AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
     public static final String                FIND_ALL                                 = "agency"
-            + Ruleform.FIND_ALL_SUFFIX;
+                                                                                         + Ruleform.FIND_ALL_SUFFIX;
     public static final String                FIND_BY_NAME                             = "agency"
-            + FIND_BY_NAME_SUFFIX;
+                                                                                         + FIND_BY_NAME_SUFFIX;
     public static final String                FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "agency"
-            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+                                                                                         + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String                FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "agency"
-            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                                         + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String                FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "agency"
-            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                                         + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String                GET_ALL_PARENT_RELATIONSHIPS             = "agency"
-            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+                                                                                         + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String                GET_CHILD                                = "agency"
-            + GET_CHILDREN_SUFFIX;
+                                                                                         + GET_CHILDREN_SUFFIX;
     public static final String                GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
-            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+                                                                                         + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String                QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
     public static final String                UNLINKED                                 = "agency"
-            + UNLINKED_SUFFIX;
+                                                                                         + UNLINKED_SUFFIX;
     private static final long                 serialVersionUID                         = 1L;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
@@ -372,7 +372,7 @@ implements Attributable<AgencyAttribute> {
     @Override
     public boolean isAnyOrSame() {
         return WellKnownAgency.ANY.id().equals(getId())
-                || WellKnownAgency.SAME.id().equals(getId());
+               || WellKnownAgency.SAME.id().equals(getId());
     }
 
     /* (non-Javadoc)

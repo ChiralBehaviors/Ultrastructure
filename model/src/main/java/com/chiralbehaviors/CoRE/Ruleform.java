@@ -220,7 +220,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         traverseForeignKeys(em, knownObjects);
 
         if (getId() != null
-            && em.getReference(this.getClass(), getId()) != null) {
+                && em.getReference(this.getClass(), getId()) != null) {
             em.detach(this);
             knownObjects.put(this, em.merge(this));
         } else {

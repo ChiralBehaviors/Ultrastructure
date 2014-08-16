@@ -49,7 +49,7 @@ public class EdgeImpl<T> implements Edge<T> {
             Node<?> parent = ((EdgeImpl<?>) obj).getParent();
 
             if (this.parent.equals(parent) && this.model.equals(model)
-                && this.child.equals(child)) {
+                    && this.child.equals(child)) {
                 return true;
             }
         }

@@ -54,63 +54,63 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({
-    @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-            + "  attrValue "
-            + "FROM "
-            + "       UnitAttribute attrValue, "
-            + "       UnitAttributeAuthorization auth, "
-            + "       UnitNetwork network "
-            + "WHERE "
-            + "        auth.authorizedAttribute = attrValue.attribute AND "
-            + "        network.relationship = auth.classification AND "
-            + "        network.child = auth.classifier AND"
-            + "        attrValue.attribute = :ruleform AND "
-            + "        auth.classification = :classification AND "
-            + "        auth.classifier = :classifier "),
-            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from UnitAttributeAuthorization ama "
-                    + "WHERE ama.classification = :classification "
-                    + "AND ama.classifier = :classifier"),
-                    @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
-                    @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                            + "FROM UnitNetwork rn "
-                            + "WHERE rn.parent = :parent "
-                            + "AND rn.relationship = :relationship"),
-                            @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM UnitNetwork n "
-                                    + "WHERE n.parent = :attribute "
-                                    + "AND n.relationship IN :relationships "
-                                    + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                            + "  attrValue "
+                                                                            + "FROM "
+                                                                            + "       UnitAttribute attrValue, "
+                                                                            + "       UnitAttributeAuthorization auth, "
+                                                                            + "       UnitNetwork network "
+                                                                            + "WHERE "
+                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
+                                                                            + "        network.relationship = auth.classification AND "
+                                                                            + "        network.child = auth.classifier AND"
+                                                                            + "        attrValue.attribute = :ruleform AND "
+                                                                            + "        auth.classification = :classification AND "
+                                                                            + "        auth.classifier = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from UnitAttributeAuthorization ama "
+                                                                                    + "WHERE ama.classification = :classification "
+                                                                                    + "AND ama.classifier = :classifier"),
+               @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
+               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                     + "FROM UnitNetwork rn "
+                                                     + "WHERE rn.parent = :parent "
+                                                     + "AND rn.relationship = :relationship"),
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM UnitNetwork n "
+                                                                           + "WHERE n.parent = :attribute "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
-    @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-            + "FROM attribute AS unlinked "
-            + "JOIN ("
-            + "SELECT id "
-            + "FROM attribute "
-            + "EXCEPT ("
-            + "SELECT distinct(net.child) "
-            + "FROM unit_network as net "
-            + "WHERE net.parent = attribute_id('Attribute') "
-            + "AND relationship = relationship_id('includes') "
-            + ")"
-            + ") AS linked ON unlinked.id = linked.id "
-            + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class),
-            // ?1 = :queryString, ?2 = :numberOfMatches
-            @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
+                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                + "FROM attribute AS unlinked "
+                                                                + "JOIN ("
+                                                                + "SELECT id "
+                                                                + "FROM attribute "
+                                                                + "EXCEPT ("
+                                                                + "SELECT distinct(net.child) "
+                                                                + "FROM unit_network as net "
+                                                                + "WHERE net.parent = attribute_id('Attribute') "
+                                                                + "AND relationship = relationship_id('includes') "
+                                                                + ")"
+                                                                + ") AS linked ON unlinked.id = linked.id "
+                                                                + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class),
+                     // ?1 = :queryString, ?2 = :numberOfMatches
+                     @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "unit", schema = "ruleform")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     public static final String FIND_BY_NAME                             = "unit.findByName";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "unit"
-            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+                                                                          + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "unit"
-            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                          + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String GET_CHILD                                = "unit"
-            + GET_CHILDREN_SUFFIX;
+                                                                          + GET_CHILDREN_SUFFIX;
     public static final String GET_CHILD_RULES_BY_RELATIONSHIP          = "unit"
-            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+                                                                          + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String NAME_SEARCH                              = "unit"
-            + NAME_SEARCH_SUFFIX;
+                                                                          + NAME_SEARCH_SUFFIX;
     public static final String UNLINKED                                 = "unit"
-            + UNLINKED_SUFFIX;
+                                                                          + UNLINKED_SUFFIX;
     private static final long  serialVersionUID                         = 1L;
 
     private String             abbreviation;
@@ -326,7 +326,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     @Override
     public boolean isAnyOrSame() {
         return WellKnownUnit.ANY.id().equals(getId())
-                || WellKnownUnit.SAME.id().equals(getId());
+               || WellKnownUnit.SAME.id().equals(getId());
     }
 
     /* (non-Javadoc)

@@ -58,7 +58,7 @@ public class ProductTest extends DatabaseTest {
     public void createEntity() {
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
                                                        Agency.class).setParameter("name",
-                                                               "CoRE");
+                                                                                  "CoRE");
         Agency r = query.getSingleResult();
 
         LOG.debug(String.format("Agency: %s", r));
@@ -150,7 +150,7 @@ public class ProductTest extends DatabaseTest {
     public void testAttributes() {
         TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
                                                               Product.class).setParameter("name",
-                                                                      "Peptide Foo");
+                                                                                          "Peptide Foo");
         Product b = findProduct.getSingleResult();
         assertNotNull(b);
         assertEquals(b.getName(), "Peptide Foo");
@@ -158,7 +158,7 @@ public class ProductTest extends DatabaseTest {
 
         TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
                                                                   Attribute.class).setParameter("name",
-                                                                          "Length");
+                                                                                                "Length");
 
         Attribute a = findAttribute.getSingleResult();
         assertNotNull(a);

@@ -64,98 +64,98 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({
-    @NamedQuery(name = FIND_BY_ID, query = "select e from Product e where e.id = :id"),
-    @NamedQuery(name = FIND_BY_NAME, query = "select e from Product e where e.name = :name"),
-    @NamedQuery(name = FIND_ALL, query = "select e from Product e"),
-    @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy = :agency"),
-    @NamedQuery(name = UPDATED_BY_NAME, query = "select e from Product e where e.updatedBy.name = :name"),
-    @NamedQuery(name = SUBSUMING_ENTITIES, query = "SELECT distinct(bn.child) "
-            + "FROM ProductNetwork AS bn "
-            + "WHERE bn.relationship = :relationship "
-            + "AND bn.parent = :product"),
-            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                    + "  attrValue "
-                    + "FROM "
-                    + "       ProductAttribute attrValue, "
-                    + "       ProductAttributeAuthorization auth, "
-                    + "       ProductNetwork network "
-                    + "WHERE "
-                    + "        auth.authorizedAttribute = attrValue.attribute AND "
-                    + "        network.relationship = auth.classification AND "
-                    + "        network.child = auth.classifier AND"
-                    + "        attrValue.product = :ruleform AND "
-                    + "        auth.classification = :classification AND "
-                    + "        auth.classifier = :classifier "),
-                    @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_VALUES, query = "select attr from ProductAttribute attr where "
-                            + "attr.product = :ruleform "
-                            + "AND attr.id IN ("
-                            + "select ea.authorizedAttribute from ProductAttributeAuthorization ea "
-                            + "WHERE ea.groupingAgency = :agency)"),
-                            @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
-                                    + "WHERE ea.classification = :classification "
-                                    + "AND ea.classifier = :classifier"),
-                                    @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProductAttributeAuthorization ea "
-                                            + "WHERE ea.classification = :classification "
-                                            + "AND ea.classifier = :classifier AND ea.authorizedAttribute = :attribute"),
-                                            @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
-                                                    + "WHERE ea.groupingAgency = :groupingAgency"),
-                                                    @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProductAttributeAuthorization ea "
-                                                            + "WHERE ea.groupingAgency = :groupingAgency AND ea.authorizedAttribute = :attribute"),
-                                                            @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
-                                                                    + "WHERE ea.classification = :classification "
-                                                                    + "AND ea.classifier = :classifier "
-                                                                    + "AND ea.groupingAgency = :groupingAgency"),
-                                                                    @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
-                                                                            + "FROM ProductNetwork n "
-                                                                            + "WHERE n.parent = :p "
-                                                                            + "AND n.relationship = :r"),
-                                                                            @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                                                                    + "FROM ProductNetwork n "
-                                                                                    + "WHERE n.child = :c"),
-                                                                                    @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ProductNetwork n "
-                                                                                            + "WHERE n.parent = :product "
-                                                                                            + "AND n.relationship IN :relationships "
-                                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+               @NamedQuery(name = FIND_BY_ID, query = "select e from Product e where e.id = :id"),
+               @NamedQuery(name = FIND_BY_NAME, query = "select e from Product e where e.name = :name"),
+               @NamedQuery(name = FIND_ALL, query = "select e from Product e"),
+               @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy = :agency"),
+               @NamedQuery(name = UPDATED_BY_NAME, query = "select e from Product e where e.updatedBy.name = :name"),
+               @NamedQuery(name = SUBSUMING_ENTITIES, query = "SELECT distinct(bn.child) "
+                                                              + "FROM ProductNetwork AS bn "
+                                                              + "WHERE bn.relationship = :relationship "
+                                                              + "AND bn.parent = :product"),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                            + "  attrValue "
+                                                                            + "FROM "
+                                                                            + "       ProductAttribute attrValue, "
+                                                                            + "       ProductAttributeAuthorization auth, "
+                                                                            + "       ProductNetwork network "
+                                                                            + "WHERE "
+                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
+                                                                            + "        network.relationship = auth.classification AND "
+                                                                            + "        network.child = auth.classifier AND"
+                                                                            + "        attrValue.product = :ruleform AND "
+                                                                            + "        auth.classification = :classification AND "
+                                                                            + "        auth.classifier = :classifier "),
+               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_VALUES, query = "select attr from ProductAttribute attr where "
+                                                                         + "attr.product = :ruleform "
+                                                                         + "AND attr.id IN ("
+                                                                         + "select ea.authorizedAttribute from ProductAttributeAuthorization ea "
+                                                                         + "WHERE ea.groupingAgency = :agency)"),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
+                                                                                    + "WHERE ea.classification = :classification "
+                                                                                    + "AND ea.classifier = :classifier"),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProductAttributeAuthorization ea "
+                                                                                                  + "WHERE ea.classification = :classification "
+                                                                                                  + "AND ea.classifier = :classifier AND ea.authorizedAttribute = :attribute"),
+               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
+                                                                                 + "WHERE ea.groupingAgency = :groupingAgency"),
+               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "select ea from ProductAttributeAuthorization ea "
+                                                                                               + "WHERE ea.groupingAgency = :groupingAgency AND ea.authorizedAttribute = :attribute"),
+               @NamedQuery(name = FIND_ATTRIBUTE_AUTHORIZATIONS, query = "select ea from ProductAttributeAuthorization ea "
+                                                                         + "WHERE ea.classification = :classification "
+                                                                         + "AND ea.classifier = :classifier "
+                                                                         + "AND ea.groupingAgency = :groupingAgency"),
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
+                                                        + "FROM ProductNetwork n "
+                                                        + "WHERE n.parent = :p "
+                                                        + "AND n.relationship = :r"),
+               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                        + "FROM ProductNetwork n "
+                                                                        + "WHERE n.child = :c"),
+               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ProductNetwork n "
+                                                                           + "WHERE n.parent = :product "
+                                                                           + "AND n.relationship IN :relationships "
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @NamedNativeQueries({
-    // ?1 = #queryString, ?2 = #numberOfMatches
-    @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
+// ?1 = #queryString, ?2 = #numberOfMatches
+@NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "product", schema = "ruleform")
 public class Product extends ExistentialRuleform<Product, ProductNetwork>
-implements Attributable<ProductAttribute> {
+        implements Attributable<ProductAttribute> {
 
     public static final String    CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
     public static final String    FIND_ALL                                               = "product"
-            + Ruleform.FIND_ALL_SUFFIX;
+                                                                                           + Ruleform.FIND_ALL_SUFFIX;
     public static final String    FIND_ATTRIBUTE_AUTHORIZATIONS                          = "product.findAttributeAuthorizations";
     public static final String    FIND_BY_ID                                             = "product.findById";
     public static final String    FIND_BY_NAME                                           = "product"
-            + FIND_BY_NAME_SUFFIX;
+                                                                                           + FIND_BY_NAME_SUFFIX;
     public static final String    FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "product"
-            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String    FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "product"
-            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
     public static final String    FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "product"
-            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String    FIND_FLAGGED                                           = "product.findFlagged";
     public static final String    FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS                  = "product"
-            + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
+                                                                                           + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
     public static final String    FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE    = "product"
-            + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+                                                                                           + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
     public static final String    FIND_GROUPED_ATTRIBUTE_VALUES                          = "product"
-            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+                                                                                           + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String    GET_ALL_PARENT_RELATIONSHIPS                           = "product"
-            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+                                                                                           + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String    GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
-            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+                                                                                           + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String    GET_CHILDREN                                           = "product"
-            + GET_CHILDREN_SUFFIX;
+                                                                                           + GET_CHILDREN_SUFFIX;
     public static final String    NAME_SEARCH                                            = "product"
-            + NAME_SEARCH_SUFFIX;
+                                                                                           + NAME_SEARCH_SUFFIX;
     public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";
     public static final String    UNIQUE_ENTITY_BY_ATTRIBUTE_VALUE                       = "product.uniqueEntityByAttributeValue";
     public static final String    UPDATED_BY                                             = "product"
-            + GET_UPDATED_BY_SUFFIX;
+                                                                                           + GET_UPDATED_BY_SUFFIX;
     public static final String    UPDATED_BY_NAME                                        = "product.getUpdatedByName";
 
     private static final long     serialVersionUID                                       = 1L;
@@ -393,7 +393,7 @@ implements Attributable<ProductAttribute> {
     @Override
     public boolean isAnyOrSame() {
         return WellKnownProduct.ANY.id().equals(getId())
-                || WellKnownProduct.SAME.id().equals(getId());
+               || WellKnownProduct.SAME.id().equals(getId());
     }
 
     /* (non-Javadoc)

@@ -45,33 +45,33 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+    @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
+            + "WHERE n.parent = :parent "
+            + "AND n.relationship = :relationship"),
+            @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
+                    + "WHERE n.parent = :parent "
+                    + "AND n.relationship = :relationship "
+                    + "AND n.child = :child") })
 @Entity
 @Table(name = "unit_network", schema = "ruleform")
 public class UnitNetwork extends NetworkRuleform<Unit> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "unitNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+            + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "unitNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+            + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "unitNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
+            + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                  = "unitNetwork"
-                                                               + GET_NETWORKS_SUFFIX;
+            + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "unitNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
+            + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                = "unitNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
+            + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS = "unitNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "unitNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+            + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID              = 1L;                                    // bi-directional
     // many-to-one
     // association to Agency

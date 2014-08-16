@@ -53,6 +53,10 @@ public interface JobModel {
                                                                    false,
                                                                    false, false);
 
+    public abstract Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
+
+    public abstract Map<Protocol, List<String>> findProtocolGaps(Job job);
+
     /**
      * Sets the status of the given Job. This should not be done directly on the
      * job itself because we log the change in the JobChronology ruleform.
@@ -98,11 +102,12 @@ public interface JobModel {
      * @param service
      * @param currentStatus
      * @param nextStatus
+     * @return
      * @throws SQLException
      */
     void ensureNextStateIsValid(Job job, Product service,
                                 StatusCode currentStatus, StatusCode nextStatus)
-                                                                                throws SQLException;
+                                        throws SQLException;
 
     /**
      * @param parent
@@ -118,7 +123,7 @@ public interface JobModel {
      */
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
-                                                                  throws SQLException;
+                                             throws SQLException;
 
     /**
      * For a given job, generates all the implicit jobs that need to be done
@@ -492,19 +497,6 @@ public interface JobModel {
     boolean isTerminalState(StatusCode sc, Product service);
 
     /**
-     * Answer true if the next status code is a valid status transition of the
-     * service given the parent
-     *
-     * @param service
-     * @param parent
-     * @param next
-     * @return true if the next status code is a valid status transition of the
-     *         service given the
-     */
-    boolean isValidNextStatus(Product service, StatusCode parent,
-                              StatusCode next);
-
-    /**
      * Log the status change of a job at the timestamp
      *
      * @param job
@@ -574,9 +566,5 @@ public interface JobModel {
      * @throws SQLException
      */
     void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
-
-    public abstract Map<Protocol, List<String>> findProtocolGaps(Job job);
-
-    public abstract Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
 
 }

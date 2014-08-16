@@ -49,84 +49,84 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
-                                                                                                                   + "FROM ProductAgencyAccessAuthorization auth "
-                                                                                                                   + "WHERE auth.parent = :parent "
-                                                                                                                   + "AND auth.relationship = :relationship "
-                                                                                                                   + "AND auth.child = :child "
-                                                                                                                   + "AND auth.parentTransitiveRelationship = :parentRelationship "
-                                                                                                                   + "AND auth.childTransitiveRelationship = :childRelationship"),
-               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
-                                                                                        + "FROM ProductAgencyAccessAuthorization auth "
-                                                                                        + "WHERE auth.parent = :parent "
-                                                                                        + "AND auth.relationship = :relationship "
-                                                                                        + "AND auth.child = :child "),
-               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
-                                                                          + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork net "
-                                                                          + "WHERE auth.relationship = :relationship "
-                                                                          + "AND auth.child = :child "
-                                                                          + "AND net.relationship = :netRelationship "
-                                                                          + "AND net.child = :netChild "
-                                                                          + "AND auth.parent = net.parent "),
-               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
-                                                                         + "FROM ProductAgencyAccessAuthorization auth, AgencyNetwork net "
-                                                                         + "WHERE auth.relationship = :relationship "
-                                                                         + "AND auth.parent = :parent "
-                                                                         + "AND net.relationship = :netRelationship "
-                                                                         + "AND net.child = :netChild "
-                                                                         + "AND auth.child = net.parent "),
-               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
-                                                                                    + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork parentNet, AgencyNetwork childNet "
-                                                                                    + "WHERE auth.relationship = :relationship "
-                                                                                    + "AND parentNet.relationship = :parentNetRelationship "
-                                                                                    + "AND parentNet.child = :parentNetChild "
-                                                                                    + "AND childNet.relationship = :childNetRelationship "
-                                                                                    + "AND childNet.child = :childNetChild "
-                                                                                    + "AND auth.parent = parentNet.parent "
-                                                                                    + "AND auth.child = childNet.parent "),
-               @NamedQuery(name = FIND_RULEFORMS_REFERENCED_BY_AUTH, query = "select (p, auth.parent) AS products, (a, auth.child) AS agencies"
-                                                                             + " FROM Product p, Agency a, ProductAgencyAccessAuthorization auth, ProductNetwork pnet, AgencyNetwork anet "
-                                                                             + "WHERE "
-                                                                             + "auth.relationship = :relationship "
-                                                                             + "AND auth.parent = :parent "
-                                                                             + "AND "
-                                                                             + "  (auth.parentTransitiveRelationship IS NULL "
-                                                                             + "  OR (auth.parent = pnet.parent  "
-                                                                             + "  AND pnet.relationship = auth.parentTransitiveRelationship)) "
-                                                                             + "AND "
-                                                                             + "  (auth.childTransitiveRelationship IS NULL "
-                                                                             + "  OR (auth.child = anet.parent  "
-                                                                             + "  AND anet.relationship = auth.childTransitiveRelationship)) "
-                                                                             + "AND p = pnet.child "
-                                                                             + "AND a = anet.child "),
-               @NamedQuery(name = FIND_PARENT_CHILD_NETWORKS, query = "SELECT pnet, anet "
-                                                                      + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork pnet, AgencyNetwork anet "
-                                                                      + "WHERE auth.parent = :parent "
-                                                                      + "AND auth.relationship = :relationship "
-                                                                      + "AND auth.parent = pnet.parent "
-                                                                      + "AND auth.child = anet.parent"),
-               @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
-                                                              + "FROM ProductAgencyAccessAuthorization auth "
-                                                              + "WHERE auth.parent = :parent "
-                                                              + "AND auth.relationship = :relationship ") })
+    @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
+            + "FROM ProductAgencyAccessAuthorization auth "
+            + "WHERE auth.parent = :parent "
+            + "AND auth.relationship = :relationship "
+            + "AND auth.child = :child "
+            + "AND auth.parentTransitiveRelationship = :parentRelationship "
+            + "AND auth.childTransitiveRelationship = :childRelationship"),
+            @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
+                    + "FROM ProductAgencyAccessAuthorization auth "
+                    + "WHERE auth.parent = :parent "
+                    + "AND auth.relationship = :relationship "
+                    + "AND auth.child = :child "),
+                    @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
+                            + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork net "
+                            + "WHERE auth.relationship = :relationship "
+                            + "AND auth.child = :child "
+                            + "AND net.relationship = :netRelationship "
+                            + "AND net.child = :netChild "
+                            + "AND auth.parent = net.parent "),
+                            @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
+                                    + "FROM ProductAgencyAccessAuthorization auth, AgencyNetwork net "
+                                    + "WHERE auth.relationship = :relationship "
+                                    + "AND auth.parent = :parent "
+                                    + "AND net.relationship = :netRelationship "
+                                    + "AND net.child = :netChild "
+                                    + "AND auth.child = net.parent "),
+                                    @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
+                                            + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork parentNet, AgencyNetwork childNet "
+                                            + "WHERE auth.relationship = :relationship "
+                                            + "AND parentNet.relationship = :parentNetRelationship "
+                                            + "AND parentNet.child = :parentNetChild "
+                                            + "AND childNet.relationship = :childNetRelationship "
+                                            + "AND childNet.child = :childNetChild "
+                                            + "AND auth.parent = parentNet.parent "
+                                            + "AND auth.child = childNet.parent "),
+                                            @NamedQuery(name = FIND_RULEFORMS_REFERENCED_BY_AUTH, query = "select (p, auth.parent) AS products, (a, auth.child) AS agencies"
+                                                    + " FROM Product p, Agency a, ProductAgencyAccessAuthorization auth, ProductNetwork pnet, AgencyNetwork anet "
+                                                    + "WHERE "
+                                                    + "auth.relationship = :relationship "
+                                                    + "AND auth.parent = :parent "
+                                                    + "AND "
+                                                    + "  (auth.parentTransitiveRelationship IS NULL "
+                                                    + "  OR (auth.parent = pnet.parent  "
+                                                    + "  AND pnet.relationship = auth.parentTransitiveRelationship)) "
+                                                    + "AND "
+                                                    + "  (auth.childTransitiveRelationship IS NULL "
+                                                    + "  OR (auth.child = anet.parent  "
+                                                    + "  AND anet.relationship = auth.childTransitiveRelationship)) "
+                                                    + "AND p = pnet.child "
+                                                    + "AND a = anet.child "),
+                                                    @NamedQuery(name = FIND_PARENT_CHILD_NETWORKS, query = "SELECT pnet, anet "
+                                                            + "FROM ProductAgencyAccessAuthorization auth, ProductNetwork pnet, AgencyNetwork anet "
+                                                            + "WHERE auth.parent = :parent "
+                                                            + "AND auth.relationship = :relationship "
+                                                            + "AND auth.parent = pnet.parent "
+                                                            + "AND auth.child = anet.parent"),
+                                                            @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
+                                                                    + "FROM ProductAgencyAccessAuthorization auth "
+                                                                    + "WHERE auth.parent = :parent "
+                                                                    + "AND auth.relationship = :relationship ") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_AGENCY)
 public class ProductAgencyAccessAuthorization extends
-        ProductAccessAuthorization<Agency> {
+ProductAccessAuthorization<Agency> {
     public static final String PRODUCT_AGENCY_ACCESS_AUTH_PREFIX                                       = "productAgencyAccessAuthorization";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+            + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
 
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+            + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
     public static final String FIND_AUTHORIZATION                                                      = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHORIZATION_SUFFIX;
+            + FIND_AUTHORIZATION_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
+            + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+            + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_AGENCY_ACCESS_AUTH_PREFIX
-                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+            + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
 
     public static final String FIND_PARENT_CHILD_NETWORKS                                              = "test2";
     public static final String FIND_RULEFORMS_REFERENCED_BY_AUTH                                       = "test";

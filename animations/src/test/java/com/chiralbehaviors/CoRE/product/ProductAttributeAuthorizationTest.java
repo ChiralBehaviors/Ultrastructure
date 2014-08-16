@@ -89,8 +89,8 @@ public class ProductAttributeAuthorizationTest {
 
         model.getProductModel().getAllowedValues(authorizedAttribute,
                                                  new Aspect<Product>(
-                                                         classification,
-                                                         classificationProduct));
+                                                                     classification,
+                                                                     classificationProduct));
         em.getTransaction().rollback();
     }
 }

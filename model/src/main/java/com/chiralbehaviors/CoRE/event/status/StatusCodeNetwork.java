@@ -45,33 +45,33 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM StatusCodeNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM StatusCodeNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+    @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM StatusCodeNetwork n "
+            + "WHERE n.parent = :parent "
+            + "AND n.relationship = :relationship"),
+            @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM StatusCodeNetwork n "
+                    + "WHERE n.parent = :parent "
+                    + "AND n.relationship = :relationship "
+                    + "AND n.child = :child") })
 @Entity
 @Table(name = "status_code_network", schema = "ruleform")
 public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "statusCodeNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+            + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "statusCodeNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+            + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "statusCodeNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
+            + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                  = "statusCodeNetwork"
-                                                               + GET_NETWORKS_SUFFIX;
+            + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "statusCodeNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
+            + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                = "statusCodeNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
+            + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS = "statusCodeNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "statusCodeNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+            + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     private static final long  serialVersionUID              = 1L;                                    // bi-directional
     // many-to-one

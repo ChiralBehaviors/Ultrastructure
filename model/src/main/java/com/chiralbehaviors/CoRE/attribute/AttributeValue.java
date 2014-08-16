@@ -44,7 +44,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AttributeValue<RuleForm extends Ruleform> extends
-        Ruleform {
+Ruleform {
     private static final long serialVersionUID = 1L;
     // bi-directional many-to-one association to Attribute
     @ManyToOne(fetch = FetchType.LAZY)

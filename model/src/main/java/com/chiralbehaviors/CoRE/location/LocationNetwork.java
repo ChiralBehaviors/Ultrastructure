@@ -49,14 +49,14 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM LocationNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM LocationNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+    @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
+    @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM LocationNetwork n "
+            + "WHERE n.parent = :parent "
+            + "AND n.relationship = :relationship"),
+            @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM LocationNetwork n "
+                    + "WHERE n.parent = :parent "
+                    + "AND n.relationship = :relationship "
+                    + "AND n.child = :child") })
 @Entity
 @Table(name = "location_network", schema = "ruleform")
 public class LocationNetwork extends NetworkRuleform<Location> {
@@ -65,20 +65,20 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     }
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+            + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+            + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "locationNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
+            + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                  = "locationNetwork"
-                                                               + GET_NETWORKS_SUFFIX;
+            + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "locationNetwork.getUsedRelationships";
     public static final String INFERENCE_STEP                = "locationNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
+            + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS = "locationNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "locationNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+            + INSERT_NEW_NETWORK_RULES_SUFFIX;
 
     private static final long  serialVersionUID              = 1L;
 

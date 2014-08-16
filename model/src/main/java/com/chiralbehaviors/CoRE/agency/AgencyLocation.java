@@ -47,11 +47,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "agency_location", schema = "ruleform")
 @NamedQueries({ @NamedQuery(name = AGENCIES_AT_LOCATION, query = "SELECT n.agency "
-                                                                 + "FROM AgencyLocation n "
-                                                                 + "WHERE n.relationship = :relationship "
-                                                                 + "AND n.location = :location"), })
+        + "FROM AgencyLocation n "
+        + "WHERE n.relationship = :relationship "
+        + "AND n.location = :location"), })
 public class AgencyLocation extends Ruleform implements
-        Attributable<AgencyLocationAttribute> {
+Attributable<AgencyLocationAttribute> {
     public static final String           AGENCIES_AT_LOCATION = "agencyLocation.agenciesAtLocation";
     private static final long            serialVersionUID     = 1L;
 

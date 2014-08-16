@@ -349,7 +349,11 @@ public class Job extends AbstractProtocol {
     }
 
     public void setParent(Job job) {
+        if (equals(job)) {
+            throw new IllegalArgumentException("Cannot set the parent to self");
+        }
         parent = job;
+        depth = job.getDepth() + 1;
     }
 
     public void setProtocol(Protocol protocol) {

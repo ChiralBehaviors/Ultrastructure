@@ -40,7 +40,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Entity
 @Table(name = "location_attribute_authorization", schema = "ruleform")
 public class LocationAttributeAuthorization extends
-        ClassifiedAttributeAuthorization<Location> {
+ClassifiedAttributeAuthorization<Location> {
 
     private static final long serialVersionUID = 1L;
 

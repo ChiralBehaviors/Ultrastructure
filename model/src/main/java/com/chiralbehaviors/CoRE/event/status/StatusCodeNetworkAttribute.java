@@ -41,7 +41,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 @Entity
 @Table(name = "unit_network_attribute", schema = "ruleform")
 public class StatusCodeNetworkAttribute extends
-AttributeValue<StatusCodeNetwork> {
+        AttributeValue<StatusCodeNetwork> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency

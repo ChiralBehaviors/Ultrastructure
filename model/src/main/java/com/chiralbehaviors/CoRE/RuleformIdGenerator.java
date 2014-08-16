@@ -61,8 +61,8 @@ public class RuleformIdGenerator extends ObjectIdGenerator<String> {
     @Override
     public ObjectIdGenerator<String> forScope(Class<?> scope) {
         return this.scope == scope ? this
-                                  : new RuleformIdGenerator(
-                                                            (Class<? extends Ruleform>) scope);
+                                   : new RuleformIdGenerator(
+                                                             (Class<? extends Ruleform>) scope);
     }
 
     /*

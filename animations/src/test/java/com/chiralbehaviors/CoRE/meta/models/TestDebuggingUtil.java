@@ -37,8 +37,29 @@ public class TestDebuggingUtil {
                                              j.getService().getName(),
                                              j.getStatus().getName(),
                                              j.getParent() != null ? j.getParent().getService().getName()
-                                                                  : "null"));
+                                                                   : "null"));
         }
+    }
+
+    /**
+     * @param findMetaProtocolGaps
+     */
+    public static void printMetaProtocolGaps(Map<Protocol, Map<MetaProtocol, List<String>>> gaps) {
+        for (Map.Entry<Protocol, Map<MetaProtocol, List<String>>> e : gaps.entrySet()) {
+            System.out.println(String.format("requested service: %s, service: %s",
+                                             e.getKey().getService().getName(),
+                                             e.getKey().getService().getName()));
+
+            for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue().entrySet()) {
+                System.out.println(String.format("MetaProtocol: %s",
+                                                 mpe.getKey().getId()));
+                System.out.println("Unmatched fields: ");
+                for (String f : mpe.getValue()) {
+                    System.out.println(f);
+                }
+            }
+        }
+
     }
 
     /**
@@ -72,26 +93,6 @@ public class TestDebuggingUtil {
                                              s.getParentCode().getName(),
                                              s.getChildCode().getName()));
         }
-    }
-
-    /**
-     * @param findMetaProtocolGaps
-     */
-    public static void printMetaProtocolGaps(Map<Protocol, Map<MetaProtocol, List<String>>> gaps) {
-        for (Map.Entry<Protocol, Map<MetaProtocol, List<String>>> e : gaps.entrySet()) {
-            System.out.println(String.format("requested service: %s, service: %s",
-                                             e.getKey().getService().getName(),
-                                             e.getKey().getService().getName()));
-            
-            for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue().entrySet()) {
-                System.out.println(String.format("MetaProtocol: %s", mpe.getKey().getId()));
-                System.out.println("Unmatched fields: ");
-                for (String f : mpe.getValue()) {
-                    System.out.println(f);
-                }
-            }
-        }
-        
     }
 
 }

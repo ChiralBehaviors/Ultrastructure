@@ -42,7 +42,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class ClassifiedAttributeAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>>
-        extends AttributeAuthorization {
+extends AttributeAuthorization {
 
     private static final long serialVersionUID = 1L;
 

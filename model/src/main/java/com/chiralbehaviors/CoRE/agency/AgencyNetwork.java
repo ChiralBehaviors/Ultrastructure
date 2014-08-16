@@ -51,38 +51,38 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
-                                                                            + "where n.parent = :agency "
-                                                                            + "and n.inference.id = 'AAAAAAAAAAAAAAAAAAAAAA' "
-                                                                            + "and n.relationship.preferred = 1 "
-                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AgencyNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+    @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
+            + "where n.parent = :agency "
+            + "and n.inference.id = 'AAAAAAAAAAAAAAAAAAAAAA' "
+            + "and n.relationship.preferred = 1 "
+            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+            @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
+            @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
+                    + "WHERE n.parent = :parent "
+                    + "AND n.relationship = :relationship"),
+                    @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AgencyNetwork n "
+                            + "WHERE n.parent = :parent "
+                            + "AND n.relationship = :relationship "
+                            + "AND n.child = :child") })
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+            + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
-                                                                  + GENERATE_NETWORK_INVERSES_SUFFIX;
+            + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "agencyNetwork"
-                                                                  + GET_CHILDREN_SUFFIX;
+            + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                     = "agencyNetwork"
-                                                                  + GET_NETWORKS_SUFFIX;
+            + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
     public static final String INFERENCE_STEP                   = "agencyNetwork"
-                                                                  + INFERENCE_STEP_SUFFIX;
+            + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS    = "agencyNetwork"
-                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
+            + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Agency

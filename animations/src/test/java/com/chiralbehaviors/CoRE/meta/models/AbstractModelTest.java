@@ -89,7 +89,7 @@ public class AbstractModelTest {
     protected void alterTriggers(boolean enable) throws SQLException {
         Connection connection = em.unwrap(Connection.class);
         for (String table : new String[] { "ruleform.agency",
-                                           "ruleform.product", "ruleform.location" }) {
+                "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
                                          table, enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);

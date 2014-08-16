@@ -49,6 +49,6 @@ public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
     @Override
     public String toString() {
         return "Aspect [classification=" + classification + ", classifier="
-               + classifier + "]";
+                + classifier + "]";
     }
 }

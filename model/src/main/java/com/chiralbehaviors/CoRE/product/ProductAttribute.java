@@ -43,8 +43,8 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  *
  */
 @NamedQueries({ @NamedQuery(name = FIND_ATTRIBUTE_VALUE_FROM_AGENCY, query = "SELECT ea FROM ProductAttribute ea"
-                                                                             + "   WHERE ea.product = :product "
-                                                                             + "   AND ea.attribute = :attribute") })
+        + "   WHERE ea.product = :product "
+        + "   AND ea.attribute = :attribute") })
 @Entity
 @Table(name = "product_attribute", schema = "ruleform")
 public class ProductAttribute extends AttributeValue<Product> {

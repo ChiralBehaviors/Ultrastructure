@@ -84,7 +84,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Agency c : collection) {
             if (c.getId() == null
-                    || em.find(Agency.class, c.getPrimaryKey()) == null) {
+                || em.find(Agency.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -123,7 +123,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Attribute c : children) {
             if (c.getId() == null
-                    || em.find(Attribute.class, c.getPrimaryKey()) == null) {
+                || em.find(Attribute.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -153,7 +153,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Location c : children) {
             if (c.getId() == null
-                    || em.find(Location.class, c.getPrimaryKey()) == null) {
+                || em.find(Location.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -183,7 +183,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Product p : children) {
             if (p.getId() == null
-                    || em.find(Product.class, p.getPrimaryKey()) == null) {
+                || em.find(Product.class, p.getPrimaryKey()) == null) {
                 em.persist(p);
             } else {
                 System.out.println("found an existing product: " + p);
@@ -212,7 +212,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Relationship c : children) {
             if (c.getId() == null
-                    || em.find(Relationship.class, c.getPrimaryKey()) == null) {
+                || em.find(Relationship.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -243,7 +243,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         for (StatusCode c : children) {
 
             if (c.getId() == null
-                    || em.find(Agency.class, c.getPrimaryKey()) == null) {
+                || em.find(Agency.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -273,7 +273,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         }
         for (Unit c : children) {
             if (c.getId() == null
-                    || em.find(Unit.class, c.getPrimaryKey()) == null) {
+                || em.find(Unit.class, c.getPrimaryKey()) == null) {
                 em.persist(c);
             } else {
                 c = em.merge(c);
@@ -440,9 +440,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                     nodes.put(childCode, child);
                 }
                 Edge<StatusCodeSequencing> edge = new EdgeImpl<StatusCodeSequencing>(
-                        parent,
-                        sequence,
-                        child);
+                                                                                     parent,
+                                                                                     sequence,
+                                                                                     child);
                 edges.add(edge);
             }
         }
@@ -563,8 +563,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                 traverseStatusCodeSequencing(p, nodes, edges);
             }
             edges.add(new EdgeImpl<ProductParentSequencingAuthorization>(p,
-                    auth,
-                    current));
+                                                                         auth,
+                                                                         current));
         }
         for (ProductSiblingSequencingAuthorization auth : model.getJobModel().getSiblingActions(current.getNode())) {
             Node<Product> p = nodes.get(auth.getParent());
@@ -572,9 +572,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                 p = new NodeImpl<Product>(auth.getParent());
             }
             edges.add(new EdgeImpl<ProductSiblingSequencingAuthorization>(
-                    current,
-                    auth,
-                    p));
+                                                                          current,
+                                                                          auth,
+                                                                          p));
         }
         for (ProductChildSequencingAuthorization auth : model.getJobModel().getChildActions(current.getNode())) {
             Node<Product> p = nodes.get(auth.getParent());
@@ -582,8 +582,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                 p = new NodeImpl<Product>(auth.getParent());
             }
             edges.add(new EdgeImpl<ProductChildSequencingAuthorization>(
-                    current,
-                    auth, p));
+                                                                        current,
+                                                                        auth, p));
         }
     }
 }

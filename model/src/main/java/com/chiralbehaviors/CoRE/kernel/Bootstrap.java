@@ -182,7 +182,7 @@ public class Bootstrap {
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setInt(4, wko == WellKnownStatusCode.UNSET ? Ruleform.TRUE
-                                                         : Ruleform.FALSE);
+                                                        : Ruleform.FALSE);
             s.setByte(5, (byte) 1);
             s.setString(6, WellKnownAgency.CORE.id());
             s.execute();
@@ -224,17 +224,17 @@ public class Bootstrap {
 
     private void createRootNetworks() throws SQLException {
         for (WellKnownObject wko : new WellKnownObject[] {
-                                                          WellKnownAgency.AGENCY, WellKnownAttribute.ATTRIBUTE,
-                                                          WellKnownInterval.INTERVAL, WellKnownLocation.LOCATION,
-                                                          WellKnownProduct.PRODUCT, WellKnownRelationship.RELATIONSHIP,
-                                                          WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
+                WellKnownAgency.AGENCY, WellKnownAttribute.ATTRIBUTE,
+                WellKnownInterval.INTERVAL, WellKnownLocation.LOCATION,
+                WellKnownProduct.PRODUCT, WellKnownRelationship.RELATIONSHIP,
+                WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
             insertNetwork(wko);
         }
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {
         for (String table : new String[] { "ruleform.agency",
-                                           "ruleform.product", "ruleform.location" }) {
+                "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
                                          table, enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);

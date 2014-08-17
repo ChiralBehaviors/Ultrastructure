@@ -30,14 +30,14 @@ import com.chiralbehaviors.CoRE.product.ProductNetwork;
  */
 @Path("/v{version : \\d+}/services/data/ruleform/Product")
 public class ProductResource
-		extends
-		AbstractRuleformResource<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
+        extends
+        AbstractRuleformResource<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
 
-	/**
-	 * @param em
-	 */
-	public ProductResource(EntityManager em) {
-		super(em, new ProductModelImpl(em, null));
-	}
+    /**
+     * @param em
+     */
+    public ProductResource(EntityManager em) {
+        super(em, new ProductModelImpl(em, null));
+    }
 
 }

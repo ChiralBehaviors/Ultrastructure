@@ -34,20 +34,19 @@ import com.chiralbehaviors.CoRE.access.resource.Constants;
  * 
  */
 public class PropertiesFormatter extends XMLFormatter {
-	public Document createXML(String title, String tkey, String tvalue,
-			Map<String, Object> properties) {
-		Element root = newDocument(Constants.ROOT_ELEMENT_PROPERTIES);
-		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			Element property = root.getOwnerDocument()
-					.createElement("property");
-			Object value = entry.getValue();
-			String v = value == null ? Constants.NULL_VALUE : value.getClass()
-					.isArray() ? Arrays.toString((Object[]) value) : value
-					.toString();
-			property.setAttribute(Constants.ATTR_PROPERTY_KEY, entry.getKey());
-			property.setAttribute(Constants.ATTR_PROPERTY_VALUE, v);
-			root.appendChild(property);
-		}
-		return root.getOwnerDocument();
-	}
+    public Document createXML(String title, String tkey, String tvalue,
+                              Map<String, Object> properties) {
+        Element root = newDocument(Constants.ROOT_ELEMENT_PROPERTIES);
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            Element property = root.getOwnerDocument().createElement("property");
+            Object value = entry.getValue();
+            String v = value == null ? Constants.NULL_VALUE
+                                    : value.getClass().isArray() ? Arrays.toString((Object[]) value)
+                                                                : value.toString();
+            property.setAttribute(Constants.ATTR_PROPERTY_KEY, entry.getKey());
+            property.setAttribute(Constants.ATTR_PROPERTY_VALUE, v);
+            root.appendChild(property);
+        }
+        return root.getOwnerDocument();
+    }
 }

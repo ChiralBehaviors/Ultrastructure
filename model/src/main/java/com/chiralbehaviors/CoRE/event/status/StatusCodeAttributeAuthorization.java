@@ -40,7 +40,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Entity
 @Table(name = "status_code_attribute_authorization", schema = "ruleform")
 public class StatusCodeAttributeAuthorization extends
-ClassifiedAttributeAuthorization<StatusCode> {
+        ClassifiedAttributeAuthorization<StatusCode> {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY)

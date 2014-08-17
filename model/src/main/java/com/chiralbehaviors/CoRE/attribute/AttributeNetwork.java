@@ -51,36 +51,36 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  */
 
 @NamedQueries({
-    @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
-            + "WHERE n.parent = :attribute and n.inference.id = 'AAAAAAAAAAAAAAAAAAAAAA' "
-            + "AND n.relationship.preferred = 1 "
-            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
-            @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
-                    + "WHERE n.parent = :parent "
-                    + "AND n.relationship = :relationship"),
-                    @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AttributeNetwork n "
-                            + "WHERE n.parent = :parent "
-                            + "AND n.relationship = :relationship "
-                            + "AND n.child = :child") })
+               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
+                                                                            + "WHERE n.parent = :attribute and n.inference.id = 'AAAAAAAAAAAAAAAAAAAAAA' "
+                                                                            + "AND n.relationship.preferred = 1 "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship"),
+               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AttributeNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship "
+                                                        + "AND n.child = :child") })
 @Entity
 @Table(name = "attribute_network", schema = "ruleform")
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public static final String DEDUCE_NEW_NETWORK_RULES         = "attributeNetwork"
-            + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES        = "attributeNetwork"
-            + GENERATE_NETWORK_INVERSES_SUFFIX;
+                                                                  + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "attributeNetwork"
-            + GET_CHILDREN_SUFFIX;
+                                                                  + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                     = "attributeNetwork"
-            + GET_NETWORKS_SUFFIX;
+                                                                  + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS           = "attributeNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "attribute.immediateChildrenNetworkRules";
     public static final String INFERENCE_STEP                   = "attributeNetwork"
-            + INFERENCE_STEP_SUFFIX;
+                                                                  + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS    = "attributeNetwork"
-            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES         = "attributeNetwork"
-            + INSERT_NEW_NETWORK_RULES_SUFFIX;
+                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Attribute

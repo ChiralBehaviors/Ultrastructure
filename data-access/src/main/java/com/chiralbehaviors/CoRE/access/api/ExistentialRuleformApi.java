@@ -22,16 +22,16 @@ package com.chiralbehaviors.CoRE.access.api;
  */
 public class ExistentialRuleformApi {
 
-	// create
+    // create
 
-	// take individual args, create ruleform, persist or not as necessary
-	// public static ExistentialRuleform create(Map<String, Object> params) {
-	//
-	// }
-	// read
+    // take individual args, create ruleform, persist or not as necessary
+    // public static ExistentialRuleform create(Map<String, Object> params) {
+    //
+    // }
+    // read
 
-	// update
+    // update
 
-	// delete
+    // delete
 
 }

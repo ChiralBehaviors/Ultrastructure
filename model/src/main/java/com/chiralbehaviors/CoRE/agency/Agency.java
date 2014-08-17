@@ -22,7 +22,7 @@ import static com.chiralbehaviors.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_A
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_ALL_PARENT_RELATIONSHIPS;
-import static com.chiralbehaviors.CoRE.agency.Agency.GET_CHILD;
+import static com.chiralbehaviors.CoRE.agency.Agency.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.chiralbehaviors.CoRE.agency.Agency.UNLINKED;
 import static com.chiralbehaviors.CoRE.agency.AgencyAttribute.GET_ATTRIBUTE;
@@ -84,10 +84,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                     + "AND ra.classifier = :classifier"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from AgencyAttributeAuthorization ra "
                                                                                  + "WHERE ra.groupingAgency = :groupingAgency"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
-                                                     + "FROM AgencyNetwork n "
-                                                     + "WHERE n.parent = :p "
-                                                     + "AND n.relationship = :r"),
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
+                                                        + "FROM AgencyNetwork n "
+                                                        + "WHERE n.parent = :p "
+                                                        + "AND n.relationship = :r"),
                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
                                                                         + "FROM AgencyNetwork n "
                                                                         + "WHERE n.child = :c"),
@@ -130,7 +130,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
                                                                                          + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String                GET_ALL_PARENT_RELATIONSHIPS             = "agency"
                                                                                          + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String                GET_CHILD                                = "agency"
+    public static final String                GET_CHILDREN                             = "agency"
                                                                                          + GET_CHILDREN_SUFFIX;
     public static final String                GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
                                                                                          + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;

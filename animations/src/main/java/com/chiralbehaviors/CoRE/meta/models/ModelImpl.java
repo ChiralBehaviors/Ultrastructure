@@ -103,7 +103,7 @@ public class ModelImpl implements Model {
     }
 
     public static void set_log_configuration(final String logConfiguration)
-            throws Exception {
+                                                                           throws Exception {
         execute(new Procedure<Void>() {
             @Override
             public Void call(ModelImpl model) throws Exception {
@@ -286,8 +286,8 @@ public class ModelImpl implements Model {
                                                                       Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
-                                                  + FIND_BY_NAME_SUFFIX).setParameter("name",
-                                                                                      name).getSingleResult();
+                                                          + FIND_BY_NAME_SUFFIX).setParameter("name",
+                                                                                              name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

@@ -38,7 +38,7 @@ import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 @Entity
 @Table(name = "agency_attribute_authorization", schema = "ruleform")
 public class RelationshipAttributeAuthorization extends
-ClassifiedAttributeAuthorization<Relationship> {
+        ClassifiedAttributeAuthorization<Relationship> {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne

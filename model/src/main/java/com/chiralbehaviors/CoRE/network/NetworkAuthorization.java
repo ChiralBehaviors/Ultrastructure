@@ -40,7 +40,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>>
-extends Ruleform {
+        extends Ruleform {
 
     private static final long serialVersionUID = 1L;
 

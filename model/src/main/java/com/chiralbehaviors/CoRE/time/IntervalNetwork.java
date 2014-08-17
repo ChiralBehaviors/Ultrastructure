@@ -45,33 +45,33 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 @NamedQueries({
-    @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
-            + "WHERE n.parent = :parent "
-            + "AND n.relationship = :relationship"),
-            @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM IntervalNetwork n "
-                    + "WHERE n.parent = :parent "
-                    + "AND n.relationship = :relationship "
-                    + "AND n.child = :child") })
+               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship"),
+               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM IntervalNetwork n "
+                                                        + "WHERE n.parent = :parent "
+                                                        + "AND n.relationship = :relationship "
+                                                        + "AND n.child = :child") })
 @Entity
 @Table(name = "interval_network", schema = "ruleform")
 public class IntervalNetwork extends NetworkRuleform<Interval> {
 
     public static final String DEDUCE_NEW_NETWORK_RULES      = "intervalNetwork"
-            + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
     public static final String GENERATE_NETWORK_INVERSES     = "intervalNetwork"
-            + GENERATE_NETWORK_INVERSES_SUFFIX;
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "intervalNetwork"
-            + GET_CHILDREN_SUFFIX;
+                                                               + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                  = "intervalNetwork"
                                                                + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS        = "intervalNetwork"
-            + USED_RELATIONSHIPS_SUFFIX;
+                                                               + USED_RELATIONSHIPS_SUFFIX;
     public static final String INFERENCE_STEP                = "intervalNetwork"
-            + INFERENCE_STEP_SUFFIX;
+                                                               + INFERENCE_STEP_SUFFIX;
     public static final String INFERENCE_STEP_FROM_LAST_PASS = "intervalNetwork"
-            + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "intervalNetwork"
-            + INSERT_NEW_NETWORK_RULES_SUFFIX;
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID              = 1L;
 
     // bi-directional many-to-one association to Interval

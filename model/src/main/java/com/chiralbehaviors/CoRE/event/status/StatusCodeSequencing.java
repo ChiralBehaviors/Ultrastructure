@@ -49,35 +49,35 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({
-    @NamedQuery(name = ENSURE_VALID_SERVICE_STATUS, query = "SELECT COUNT(scs.id) "
-            + "FROM StatusCodeSequencing AS scs "
-            + "WHERE scs.service = :service "
-            + "  AND (scs.parentCode = :code "
-            + "       OR scs.childCode = :code)"),
-            @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT COUNT(scs.id) "
-                    + "FROM StatusCodeSequencing AS scs "
-                    + "WHERE scs.service = :service "
-                    + "  AND scs.parentCode = :parentCode "
-                    + "  AND scs.childCode = :childCode"),
-                    @NamedQuery(name = GET_PARENT_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.parentCode) "
-                            + " FROM StatusCodeSequencing scs "
-                            + " WHERE scs.service = :service"),
-                            @NamedQuery(name = GET_CHILD_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.childCode) "
-                                    + " FROM StatusCodeSequencing scs "
-                                    + " WHERE scs.service = :service"),
-                                    @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
-                                            + " WHERE scs.service = :service"
-                                            + "   AND scs.childCode = :statusCode"),
-                                            @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
-                                                    + " WHERE scs.parentCode = :statusCode"),
-                                                    @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
-                                                            + " WHERE scs.childCode = :statusCode"),
-                                                            @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
-                                                                    + " WHERE scs.service = :service"
-                                                                    + "   AND scs.parentCode = :statusCode"),
-                                                                    @NamedQuery(name = GET_ALL_STATUS_CODE_SEQUENCING, query = "SELECT scs "
-                                                                            + " FROM StatusCodeSequencing scs "
-                                                                            + " WHERE scs.service = :service") })
+               @NamedQuery(name = ENSURE_VALID_SERVICE_STATUS, query = "SELECT COUNT(scs.id) "
+                                                                       + "FROM StatusCodeSequencing AS scs "
+                                                                       + "WHERE scs.service = :service "
+                                                                       + "  AND (scs.parentCode = :code "
+                                                                       + "       OR scs.childCode = :code)"),
+               @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT COUNT(scs.id) "
+                                                                + "FROM StatusCodeSequencing AS scs "
+                                                                + "WHERE scs.service = :service "
+                                                                + "  AND scs.parentCode = :parentCode "
+                                                                + "  AND scs.childCode = :childCode"),
+               @NamedQuery(name = GET_PARENT_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.parentCode) "
+                                                                           + " FROM StatusCodeSequencing scs "
+                                                                           + " WHERE scs.service = :service"),
+               @NamedQuery(name = GET_CHILD_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.childCode) "
+                                                                          + " FROM StatusCodeSequencing scs "
+                                                                          + " WHERE scs.service = :service"),
+               @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                                    + " WHERE scs.service = :service"
+                                                                                    + "   AND scs.childCode = :statusCode"),
+               @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                             + " WHERE scs.parentCode = :statusCode"),
+               @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                            + " WHERE scs.childCode = :statusCode"),
+               @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                                     + " WHERE scs.service = :service"
+                                                                                     + "   AND scs.parentCode = :statusCode"),
+               @NamedQuery(name = GET_ALL_STATUS_CODE_SEQUENCING, query = "SELECT scs "
+                                                                          + " FROM StatusCodeSequencing scs "
+                                                                          + " WHERE scs.service = :service") })
 @Entity
 @Table(name = "status_code_sequencing", schema = "ruleform")
 public class StatusCodeSequencing extends Ruleform {

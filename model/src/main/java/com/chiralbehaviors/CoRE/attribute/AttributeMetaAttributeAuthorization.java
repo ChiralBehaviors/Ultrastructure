@@ -39,7 +39,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Entity
 @Table(name = "attr_meta_attr_auth", schema = "ruleform")
 public class AttributeMetaAttributeAuthorization extends
-ClassifiedAttributeAuthorization<Attribute> {
+        ClassifiedAttributeAuthorization<Attribute> {
 
     private static final long serialVersionUID = 1L;
 

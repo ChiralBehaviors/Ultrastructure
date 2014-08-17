@@ -45,69 +45,69 @@ import com.chiralbehaviors.CoRE.product.Product;
  *
  */
 @NamedQueries({
-    @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
-            + "FROM ProductLocationAccessAuthorization auth "
-            + "WHERE auth.parent = :parent "
-            + "AND auth.relationship = :relationship "
-            + "AND auth.child = :child "
-            + "AND auth.parentTransitiveRelationship = :parentRelationship "
-            + "AND auth.childTransitiveRelationship = :childRelationship"),
-            @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
-                    + "FROM ProductLocationAccessAuthorization auth "
-                    + "WHERE auth.parent = :parent "
-                    + "AND auth.relationship = :relationship "
-                    + "AND auth.child = :child "),
-                    @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
-                            + "FROM ProductLocationAccessAuthorization auth, ProductNetwork net "
-                            + "WHERE auth.relationship = :relationship "
-                            + "AND auth.child = :child "
-                            + "AND net.relationship = :netRelationship "
-                            + "AND net.child = :netChild "
-                            + "AND auth.parent = net.parent "),
-                            @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
-                                    + "FROM ProductLocationAccessAuthorization auth, LocationNetwork net "
-                                    + "WHERE auth.relationship = :relationship "
-                                    + "AND auth.parent = :parent "
-                                    + "AND net.relationship = :netRelationship "
-                                    + "AND net.child = :netChild "
-                                    + "AND auth.child = net.parent "),
-                                    @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
-                                            + "FROM ProductLocationAccessAuthorization auth, ProductNetwork parentNet, LocationNetwork childNet "
-                                            + "WHERE auth.relationship = :relationship "
-                                            + "AND parentNet.relationship = :parentNetRelationship "
-                                            + "AND parentNet.child = :parentNetChild "
-                                            + "AND childNet.relationship = :childNetRelationship "
-                                            + "AND childNet.child = :childNetChild "
-                                            + "AND auth.parent = parentNet.parent "
-                                            + "AND auth.child = childNet.parent "),
-                                            @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
-                                                    + "FROM ProductLocationAccessAuthorization auth "
-                                                    + "WHERE auth.parent = :parent "
-                                                    + "AND auth.relationship = :relationship "),
-                                                    @NamedQuery(name = FIND_PRODUCTS_IN_LOCATION, query = "SELECT auth.parent "
-                                                            + "FROM ProductLocationAccessAuthorization auth "
-                                                            + "WHERE auth.child = :location "
-                                                            + "AND auth.relationship = :relationship") })
+               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS, query = "SELECT auth "
+                                                                                                                   + "FROM ProductLocationAccessAuthorization auth "
+                                                                                                                   + "WHERE auth.parent = :parent "
+                                                                                                                   + "AND auth.relationship = :relationship "
+                                                                                                                   + "AND auth.child = :child "
+                                                                                                                   + "AND auth.parentTransitiveRelationship = :parentRelationship "
+                                                                                                                   + "AND auth.childTransitiveRelationship = :childRelationship"),
+               @NamedQuery(name = FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD, query = "SELECT auth "
+                                                                                        + "FROM ProductLocationAccessAuthorization auth "
+                                                                                        + "WHERE auth.parent = :parent "
+                                                                                        + "AND auth.relationship = :relationship "
+                                                                                        + "AND auth.child = :child "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT, query = "SELECT auth "
+                                                                          + "FROM ProductLocationAccessAuthorization auth, ProductNetwork net "
+                                                                          + "WHERE auth.relationship = :relationship "
+                                                                          + "AND auth.child = :child "
+                                                                          + "AND net.relationship = :netRelationship "
+                                                                          + "AND net.child = :netChild "
+                                                                          + "AND auth.parent = net.parent "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_CHILD, query = "SELECT auth "
+                                                                         + "FROM ProductLocationAccessAuthorization auth, LocationNetwork net "
+                                                                         + "WHERE auth.relationship = :relationship "
+                                                                         + "AND auth.parent = :parent "
+                                                                         + "AND net.relationship = :netRelationship "
+                                                                         + "AND net.child = :netChild "
+                                                                         + "AND auth.child = net.parent "),
+               @NamedQuery(name = FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD, query = "SELECT auth "
+                                                                                    + "FROM ProductLocationAccessAuthorization auth, ProductNetwork parentNet, LocationNetwork childNet "
+                                                                                    + "WHERE auth.relationship = :relationship "
+                                                                                    + "AND parentNet.relationship = :parentNetRelationship "
+                                                                                    + "AND parentNet.child = :parentNetChild "
+                                                                                    + "AND childNet.relationship = :childNetRelationship "
+                                                                                    + "AND childNet.child = :childNetChild "
+                                                                                    + "AND auth.parent = parentNet.parent "
+                                                                                    + "AND auth.child = childNet.parent "),
+               @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
+                                                              + "FROM ProductLocationAccessAuthorization auth "
+                                                              + "WHERE auth.parent = :parent "
+                                                              + "AND auth.relationship = :relationship "),
+               @NamedQuery(name = FIND_PRODUCTS_IN_LOCATION, query = "SELECT auth.parent "
+                                                                     + "FROM ProductLocationAccessAuthorization auth "
+                                                                     + "WHERE auth.child = :location "
+                                                                     + "AND auth.relationship = :relationship") })
 @Entity
 @DiscriminatorValue(AccessAuthorization.PRODUCT_LOCATION)
 public class ProductLocationAccessAuthorization extends
-ProductAccessAuthorization<Location> {
+        ProductAccessAuthorization<Location> {
     public static final String PRODUCT_LOCATION_ACCESS_AUTH_PREFIX                                     = "productLocationAccessAuthorization";
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD                            = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-            + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_SUFFIX;
 
     public static final String FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-            + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
+                                                                                                         + FIND_ALL_AUTHS_FOR_PARENT_RELATIONSHIP_CHILD_MATCH_ON_ALL_RELATIONSHIPS_SUFFIX;
     public static final String FIND_AUTHORIZATION                                                      = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-            + FIND_AUTHORIZATION_SUFFIX;
+                                                                                                         + FIND_AUTHORIZATION_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_CHILD                                           = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-            + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_CHILD_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT                                          = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-            + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_SUFFIX;
     public static final String FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD                                = PRODUCT_LOCATION_ACCESS_AUTH_PREFIX
-            + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
+                                                                                                         + FIND_AUTHS_FOR_INDIRECT_PARENT_AND_CHILD_SUFFIX;
     public static final String FIND_PRODUCTS_IN_LOCATION                                               = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
-            + ".findProductsInLocation";
+                                                                                                         + ".findProductsInLocation";
     private static final long  serialVersionUID                                                        = 1L;
 
     @ManyToOne

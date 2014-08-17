@@ -29,30 +29,30 @@ import com.sun.jersey.spi.inject.InjectableProvider;
  * 
  */
 public abstract class AbstractInjectableProvider<E> extends
-		AbstractHttpContextInjectable<E> implements
-		InjectableProvider<Context, Type> {
+        AbstractHttpContextInjectable<E> implements
+        InjectableProvider<Context, Type> {
 
-	private final Type t;
+    private final Type t;
 
-	public AbstractInjectableProvider(Type t) {
-		this.t = t;
-	}
+    public AbstractInjectableProvider(Type t) {
+        this.t = t;
+    }
 
-	public Injectable<E> getInjectable(ComponentContext ic, Context a) {
-		return this;
-	}
+    public Injectable<E> getInjectable(ComponentContext ic, Context a) {
+        return this;
+    }
 
-	@Override
-	public Injectable<E> getInjectable(ComponentContext ic, Context a, Type c) {
-		if (c.equals(t)) {
-			return getInjectable(ic, a);
-		}
+    @Override
+    public Injectable<E> getInjectable(ComponentContext ic, Context a, Type c) {
+        if (c.equals(t)) {
+            return getInjectable(ic, a);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public ComponentScope getScope() {
-		return ComponentScope.PerRequest;
-	}
+    @Override
+    public ComponentScope getScope() {
+        return ComponentScope.PerRequest;
+    }
 }

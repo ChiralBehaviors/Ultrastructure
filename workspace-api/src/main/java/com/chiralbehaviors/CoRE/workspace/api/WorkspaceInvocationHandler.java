@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  */
 public class WorkspaceInvocationHandler implements InvocationHandler {
 
-    private Workspace w;
+    private Workspace                        w;
     private static final Map<String, String> functionMap;
     static {
         Map<String, String> map = new HashMap<String, String>();
@@ -47,7 +47,7 @@ public class WorkspaceInvocationHandler implements InvocationHandler {
         map.put(StatusCode.class.getSimpleName(), "getStatusCode");
         map.put(Unit.class.getSimpleName(), "getUnit");
         functionMap = map;
-        
+
     }
 
     public WorkspaceInvocationHandler(Workspace workspace) {
@@ -60,11 +60,11 @@ public class WorkspaceInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
                                                                     throws Throwable {
-        
+
         Class<?> type = method.getReturnType();
-        
+
         String name = getObjectName(method);
-        
+
         String functionName = functionMap.get(type.getSimpleName());
         Method getter = w.getClass().getMethod(functionName, String.class);
         return getter.invoke(w, name);

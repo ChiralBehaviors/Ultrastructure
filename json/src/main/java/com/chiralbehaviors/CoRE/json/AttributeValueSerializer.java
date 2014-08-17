@@ -31,8 +31,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  * 
  * @param <T>
  */
-public class AttributeValueSerializer<T extends Ruleform>
-        extends StdSerializer<AttributeValue<? extends Ruleform>> {
+public class AttributeValueSerializer<T extends Ruleform> extends
+        StdSerializer<AttributeValue<? extends Ruleform>> {
 
     public AttributeValueSerializer(Class<?> t, boolean dummy) {
         super(t, dummy);

@@ -37,7 +37,7 @@ public class TestDebuggingUtil {
                                              j.getService().getName(),
                                              j.getStatus().getName(),
                                              j.getParent() != null ? j.getParent().getService().getName()
-                                                                   : "null"));
+                                                                  : "null"));
         }
     }
 

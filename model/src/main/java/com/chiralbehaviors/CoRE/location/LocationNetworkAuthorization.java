@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 @Entity
 @Table(name = "location_network_authorization", schema = "ruleform")
 public class LocationNetworkAuthorization extends
-NetworkAuthorization<Location> {
+        NetworkAuthorization<Location> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Event

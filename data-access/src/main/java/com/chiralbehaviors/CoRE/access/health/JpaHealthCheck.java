@@ -24,22 +24,22 @@ import com.codahale.metrics.health.HealthCheck;
  * 
  */
 public class JpaHealthCheck extends HealthCheck {
-	private final EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
-	public JpaHealthCheck(EntityManagerFactory emf) {
-		super();
-		this.emf = emf;
-	}
+    public JpaHealthCheck(EntityManagerFactory emf) {
+        super();
+        this.emf = emf;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.metrics.core.HealthCheck#check()
-	 */
-	@Override
-	protected Result check() throws Exception {
-		return emf.isOpen() ? Result.healthy() : Result
-				.unhealthy("Product Manager Factory offline");
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see io.metrics.core.HealthCheck#check()
+     */
+    @Override
+    protected Result check() throws Exception {
+        return emf.isOpen() ? Result.healthy()
+                           : Result.unhealthy("Product Manager Factory offline");
+    }
 
 }

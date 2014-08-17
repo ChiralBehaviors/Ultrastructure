@@ -37,17 +37,17 @@ import com.chiralbehaviors.CoRE.authorization.AccessAuthorization;
  */
 @NamedQueries({
 
-    @NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
-            + "FROM AgencyAccessAuthorization auth "
-            + "WHERE auth.relationship = :r "
-            + "AND auth.parent = :rf ") })
+@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+                                                                               + "FROM AgencyAccessAuthorization auth "
+                                                                               + "WHERE auth.relationship = :r "
+                                                                               + "AND auth.parent = :rf ") })
 @Entity
 public abstract class AgencyAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
-extends AccessAuthorization<Agency, Child> {
+        extends AccessAuthorization<Agency, Child> {
 
     public static final String AGENCY_ACCESS_AUTHORIZATION_PREFIX                 = "agencyAccessAuthorization";
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = AGENCY_ACCESS_AUTHORIZATION_PREFIX
-            + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+                                                                                    + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
     private static final long  serialVersionUID                                   = 1L;
 

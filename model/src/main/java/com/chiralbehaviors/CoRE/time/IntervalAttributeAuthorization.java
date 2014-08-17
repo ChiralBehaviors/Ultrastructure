@@ -39,7 +39,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Entity
 @Table(name = "interval_attribute_authorization", schema = "ruleform")
 public class IntervalAttributeAuthorization extends
-ClassifiedAttributeAuthorization<Interval> {
+        ClassifiedAttributeAuthorization<Interval> {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne

@@ -37,16 +37,16 @@ import com.chiralbehaviors.CoRE.location.Location;
  */
 @NamedQueries({
 
-    @NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
-            + "FROM LocationAccessAuthorization auth "
-            + "WHERE auth.relationship = :r "
-            + "AND auth.parent = :rf ") })
+@NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+                                                                               + "FROM LocationAccessAuthorization auth "
+                                                                               + "WHERE auth.relationship = :r "
+                                                                               + "AND auth.parent = :rf ") })
 @Entity
 public abstract class LocationAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
-extends AccessAuthorization<Location, Child> {
+        extends AccessAuthorization<Location, Child> {
     public static final String LOCATION_ACCESS_AUTHORIZATION_PREFIX               = "locationAccessAuthorization";
     public static final String GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = LOCATION_ACCESS_AUTHORIZATION_PREFIX
-            + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+                                                                                    + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
     private static final long  serialVersionUID                                   = 1L;
 

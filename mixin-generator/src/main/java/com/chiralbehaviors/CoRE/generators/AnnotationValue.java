@@ -18,23 +18,22 @@ package com.chiralbehaviors.CoRE.generators;
 public class AnnotationValue {
     final String className;
     final String propName;
-    
+
     public AnnotationValue(String className, String propName) {
         this.className = className;
         this.propName = propName;
     }
-    
+
     public String getClassName() {
         return this.className;
     }
-    
+
     public String getPropName() {
         return this.propName;
     }
 
     @Override
     public String toString() {
-        return String.format("AnnotationValue [%s, %s]",
-                             className, propName);
+        return String.format("AnnotationValue [%s, %s]", className, propName);
     }
 }

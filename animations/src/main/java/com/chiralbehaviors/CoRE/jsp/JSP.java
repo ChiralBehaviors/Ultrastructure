@@ -97,7 +97,7 @@ public abstract class JSP {
                                                              String.format("** Java Stored procedure failed %s\n%s",
                                                                            call,
                                                                            string.toString()),
-                                                                           e);
+                                                             e);
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("Setting root cause to: %s",
                                             sqlException));
@@ -159,7 +159,7 @@ public abstract class JSP {
         if (is == null) {
             log.error("Unable to read jpa.properties, resource is null");
             throw new IllegalStateException(
-                    "Unable to read jpa.properties, resource is null");
+                                            "Unable to read jpa.properties, resource is null");
         }
         try {
             PROPERTIES.load(is);

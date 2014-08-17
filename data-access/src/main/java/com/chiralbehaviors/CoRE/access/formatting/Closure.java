@@ -39,80 +39,79 @@ import org.apache.openjpa.meta.JavaTypes;
  * 
  */
 public class Closure implements Iterable<OpenJPAStateManager> {
-	private Set<OpenJPAStateManager> _visited = new LinkedHashSet<OpenJPAStateManager>();
+    private Set<OpenJPAStateManager> _visited = new LinkedHashSet<OpenJPAStateManager>();
 
-	public Closure(Collection<OpenJPAStateManager> roots) {
-		for (OpenJPAStateManager sm : roots) {
-			visit(sm);
-		}
-	}
+    public Closure(Collection<OpenJPAStateManager> roots) {
+        for (OpenJPAStateManager sm : roots) {
+            visit(sm);
+        }
+    }
 
-	public Closure(OpenJPAStateManager root) {
-		this(Collections.singleton(root));
-	}
+    public Closure(OpenJPAStateManager root) {
+        this(Collections.singleton(root));
+    }
 
-	@Override
-	public Iterator<OpenJPAStateManager> iterator() {
-		return _visited.iterator();
-	}
+    @Override
+    public Iterator<OpenJPAStateManager> iterator() {
+        return _visited.iterator();
+    }
 
-	private void visit(OpenJPAStateManager sm) {
-		if (sm == null) {
-			return;
-		}
-		boolean isVisited = !_visited.add(sm);
-		if (isVisited) {
-			return;
-		}
-		BitSet loaded = sm.getLoaded();
-		FieldMetaData[] fmds = sm.getMetaData().getFields();
-		for (FieldMetaData fmd : fmds) {
-			int idx = fmd.getIndex();
-			if (!loaded.get(idx)) {
-				continue;
-			}
-			if (fmd.getElement().getTypeMetaData() == null
-					&& fmd.getValue().getTypeMetaData() == null) {
-				continue;
-			}
-			switch (fmd.getDeclaredTypeCode()) {
-			case JavaTypes.PC:
-				visit(toStateManager(sm.fetch(idx)));
-				break;
-			case JavaTypes.ARRAY:
-				Object[] values = (Object[]) sm.fetch(idx);
-				for (Object o : values) {
-					visit(toStateManager(o));
-				}
-				break;
-			case JavaTypes.COLLECTION:
-				Collection<?> members = (Collection<?>) sm.fetch(idx);
-				for (Object o : members) {
-					visit(toStateManager(o));
-				}
-				break;
-			case JavaTypes.MAP:
-				Map<?, ?> map = (Map<?, ?>) sm.fetch(idx);
-				for (Map.Entry<?, ?> entry : map.entrySet()) {
-					visit(toStateManager(entry.getKey()));
-					visit(toStateManager(entry.getValue()));
-				}
-				break;
-			default:
-			}
-		}
-	}
+    private void visit(OpenJPAStateManager sm) {
+        if (sm == null) {
+            return;
+        }
+        boolean isVisited = !_visited.add(sm);
+        if (isVisited) {
+            return;
+        }
+        BitSet loaded = sm.getLoaded();
+        FieldMetaData[] fmds = sm.getMetaData().getFields();
+        for (FieldMetaData fmd : fmds) {
+            int idx = fmd.getIndex();
+            if (!loaded.get(idx)) {
+                continue;
+            }
+            if (fmd.getElement().getTypeMetaData() == null
+                && fmd.getValue().getTypeMetaData() == null) {
+                continue;
+            }
+            switch (fmd.getDeclaredTypeCode()) {
+                case JavaTypes.PC:
+                    visit(toStateManager(sm.fetch(idx)));
+                    break;
+                case JavaTypes.ARRAY:
+                    Object[] values = (Object[]) sm.fetch(idx);
+                    for (Object o : values) {
+                        visit(toStateManager(o));
+                    }
+                    break;
+                case JavaTypes.COLLECTION:
+                    Collection<?> members = (Collection<?>) sm.fetch(idx);
+                    for (Object o : members) {
+                        visit(toStateManager(o));
+                    }
+                    break;
+                case JavaTypes.MAP:
+                    Map<?, ?> map = (Map<?, ?>) sm.fetch(idx);
+                    for (Map.Entry<?, ?> entry : map.entrySet()) {
+                        visit(toStateManager(entry.getKey()));
+                        visit(toStateManager(entry.getValue()));
+                    }
+                    break;
+                default:
+            }
+        }
+    }
 
-	String ior(OpenJPAStateManager sm) {
-		return sm.getMetaData().getDescribedType().getSimpleName() + '-'
-				+ sm.getObjectId();
-	}
+    String ior(OpenJPAStateManager sm) {
+        return sm.getMetaData().getDescribedType().getSimpleName() + '-'
+               + sm.getObjectId();
+    }
 
-	OpenJPAStateManager toStateManager(Object o) {
-		if (o instanceof PersistenceCapable) {
-			return (OpenJPAStateManager) ((PersistenceCapable) o)
-					.pcGetStateManager();
-		}
-		return null;
-	}
+    OpenJPAStateManager toStateManager(Object o) {
+        if (o instanceof PersistenceCapable) {
+            return (OpenJPAStateManager) ((PersistenceCapable) o).pcGetStateManager();
+        }
+        return null;
+    }
 }

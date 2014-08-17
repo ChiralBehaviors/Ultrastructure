@@ -40,168 +40,159 @@ import org.apache.openjpa.persistence.meta.Members;
  * 
  */
 public class MetamodelHelper {
-	/**
-	 * Attribute Category makes a finer distinction over PersistentAttributeType
-	 * declared in {@link Attribute.PersistentAttributeType} such as id,
-	 * version, lob or enum. <br>
-	 * <b>Important</b>: The name of the enumerated elements is important
-	 * because a) some of these names are same as in
-	 * Attribute.PersistentAttributeType enumeration b) names are used by XML
-	 * serialization with underscores replaced by dash and decapitalized
-	 * 
-	 */
-	public static enum AttributeCategory {
-		BASIC, ELEMENT_COLLECTION, EMBEDDED, ENUM, ID, LOB, MANY_TO_MANY, MANY_TO_ONE, ONE_TO_MANY, ONE_TO_ONE, VERSION
-	}
+    /**
+     * Attribute Category makes a finer distinction over PersistentAttributeType
+     * declared in {@link Attribute.PersistentAttributeType} such as id,
+     * version, lob or enum. <br>
+     * <b>Important</b>: The name of the enumerated elements is important
+     * because a) some of these names are same as in
+     * Attribute.PersistentAttributeType enumeration b) names are used by XML
+     * serialization with underscores replaced by dash and decapitalized
+     * 
+     */
+    public static enum AttributeCategory {
+        BASIC, ELEMENT_COLLECTION, EMBEDDED, ENUM, ID, LOB, MANY_TO_MANY,
+        MANY_TO_ONE, ONE_TO_MANY, ONE_TO_ONE, VERSION
+    }
 
-	/**
-	 * Compares attribute by their category and within the same category by
-	 * name.
-	 * 
-	 */
-	public static class AttributeComparator implements
-			Comparator<Attribute<?, ?>> {
-		@Override
-		public int compare(Attribute<?, ?> a1, Attribute<?, ?> a2) {
-			AttributeCategory t1 = getAttributeCategory(a1);
-			AttributeCategory t2 = getAttributeCategory(a2);
-			if (t1.equals(t2)) {
-				return a1.getName().compareTo(a2.getName());
-			} else {
-				return t1.compareTo(t2);
-			}
-		}
-	}
+    /**
+     * Compares attribute by their category and within the same category by
+     * name.
+     * 
+     */
+    public static class AttributeComparator implements
+            Comparator<Attribute<?, ?>> {
+        @Override
+        public int compare(Attribute<?, ?> a1, Attribute<?, ?> a2) {
+            AttributeCategory t1 = getAttributeCategory(a1);
+            AttributeCategory t2 = getAttributeCategory(a2);
+            if (t1.equals(t2)) {
+                return a1.getName().compareTo(a2.getName());
+            } else {
+                return t1.compareTo(t2);
+            }
+        }
+    }
 
-	public static final char DASH = '-';
+    public static final char DASH       = '-';
 
-	public static final char UNDERSCORE = '_';
+    public static final char UNDERSCORE = '_';
 
-	/**
-	 * Gets a ordinal value of enumerated persistent attribute category.
-	 * 
-	 * @param attr
-	 * @return
-	 */
-	public static AttributeCategory getAttributeCategory(Attribute<?, ?> attr) {
-		if (isId(attr)) {
-			return AttributeCategory.ID;
-		}
-		if (isVersion(attr)) {
-			return AttributeCategory.VERSION;
-		}
-		if (isLob(attr)) {
-			return AttributeCategory.LOB;
-		}
-		if (isEnum(attr)) {
-			return AttributeCategory.ENUM;
-		}
-		switch (attr.getPersistentAttributeType()) {
-		case BASIC:
-			return AttributeCategory.BASIC;
-		case EMBEDDED:
-			return AttributeCategory.EMBEDDED;
-		case ONE_TO_ONE:
-			return AttributeCategory.ONE_TO_ONE;
-		case MANY_TO_ONE:
-			return AttributeCategory.MANY_TO_ONE;
-		case ONE_TO_MANY:
-		case ELEMENT_COLLECTION:
-			return AttributeCategory.ONE_TO_MANY;
-		case MANY_TO_MANY:
-			return AttributeCategory.MANY_TO_MANY;
-		}
-		throw new RuntimeException(attr.toString());
-	}
+    /**
+     * Gets a ordinal value of enumerated persistent attribute category.
+     * 
+     * @param attr
+     * @return
+     */
+    public static AttributeCategory getAttributeCategory(Attribute<?, ?> attr) {
+        if (isId(attr)) {
+            return AttributeCategory.ID;
+        }
+        if (isVersion(attr)) {
+            return AttributeCategory.VERSION;
+        }
+        if (isLob(attr)) {
+            return AttributeCategory.LOB;
+        }
+        if (isEnum(attr)) {
+            return AttributeCategory.ENUM;
+        }
+        switch (attr.getPersistentAttributeType()) {
+            case BASIC:
+                return AttributeCategory.BASIC;
+            case EMBEDDED:
+                return AttributeCategory.EMBEDDED;
+            case ONE_TO_ONE:
+                return AttributeCategory.ONE_TO_ONE;
+            case MANY_TO_ONE:
+                return AttributeCategory.MANY_TO_ONE;
+            case ONE_TO_MANY:
+            case ELEMENT_COLLECTION:
+                return AttributeCategory.ONE_TO_MANY;
+            case MANY_TO_MANY:
+                return AttributeCategory.MANY_TO_MANY;
+        }
+        throw new RuntimeException(attr.toString());
+    }
 
-	public static List<Attribute<?, ?>> getAttributesInOrder(Class<?> cls,
-			Metamodel model) {
-		return getAttributesInOrder(model.managedType(cls));
-	}
+    public static List<Attribute<?, ?>> getAttributesInOrder(Class<?> cls,
+                                                             Metamodel model) {
+        return getAttributesInOrder(model.managedType(cls));
+    }
 
-	public static List<Attribute<?, ?>> getAttributesInOrder(
-			ClassMetaData meta, Metamodel model) {
-		return getAttributesInOrder(meta.getDescribedType(), model);
-	}
+    public static List<Attribute<?, ?>> getAttributesInOrder(ClassMetaData meta,
+                                                             Metamodel model) {
+        return getAttributesInOrder(meta.getDescribedType(), model);
+    }
 
-	/**
-	 * Gets the attributes of the given type in defined order.
-	 * 
-	 * @param type
-	 * @return
-	 */
-	public static List<Attribute<?, ?>> getAttributesInOrder(ManagedType<?> type) {
-		List<Attribute<?, ?>> list = new ArrayList<Attribute<?, ?>>(
-				type.getAttributes());
-		Collections.sort(list, new AttributeComparator());
-		return list;
-	}
+    /**
+     * Gets the attributes of the given type in defined order.
+     * 
+     * @param type
+     * @return
+     */
+    public static List<Attribute<?, ?>> getAttributesInOrder(ManagedType<?> type) {
+        List<Attribute<?, ?>> list = new ArrayList<Attribute<?, ?>>(
+                                                                    type.getAttributes());
+        Collections.sort(list, new AttributeComparator());
+        return list;
+    }
 
-	/**
-	 * Gets name of the attribute type. For collection and map type attribute,
-	 * the name is appended with generic type argument names.
-	 * 
-	 * @param attr
-	 * @return
-	 */
-	public static String getAttributeTypeName(Attribute<?, ?> attr) {
-		StringBuilder name = new StringBuilder(attr.getJavaType()
-				.getSimpleName());
-		switch (attr.getPersistentAttributeType()) {
-		case ONE_TO_MANY:
-		case ELEMENT_COLLECTION:
-			name.append("&lt;")
-					.append(((PluralAttribute<?, ?, ?>) attr)
-							.getBindableJavaType().getSimpleName())
-					.append("&gt;");
-			break;
-		case MANY_TO_MANY:
-			name.append("&lt;")
-					.append(((MapAttribute<?, ?, ?>) attr).getKeyJavaType()
-							.getSimpleName())
-					.append(',')
-					.append(((MapAttribute<?, ?, ?>) attr)
-							.getBindableJavaType().getSimpleName())
-					.append("&gt;");
-			break;
-		default:
-		}
-		return name.toString();
-	}
+    /**
+     * Gets name of the attribute type. For collection and map type attribute,
+     * the name is appended with generic type argument names.
+     * 
+     * @param attr
+     * @return
+     */
+    public static String getAttributeTypeName(Attribute<?, ?> attr) {
+        StringBuilder name = new StringBuilder(
+                                               attr.getJavaType().getSimpleName());
+        switch (attr.getPersistentAttributeType()) {
+            case ONE_TO_MANY:
+            case ELEMENT_COLLECTION:
+                name.append("&lt;").append(((PluralAttribute<?, ?, ?>) attr).getBindableJavaType().getSimpleName()).append("&gt;");
+                break;
+            case MANY_TO_MANY:
+                name.append("&lt;").append(((MapAttribute<?, ?, ?>) attr).getKeyJavaType().getSimpleName()).append(',').append(((MapAttribute<?, ?, ?>) attr).getBindableJavaType().getSimpleName()).append("&gt;");
+                break;
+            default:
+        }
+        return name.toString();
+    }
 
-	public static String getTagByAttributeType(Attribute<?, ?> attr) {
-		return getAttributeCategory(attr).name().replace(UNDERSCORE, DASH)
-				.toLowerCase();
-	}
+    public static String getTagByAttributeType(Attribute<?, ?> attr) {
+        return getAttributeCategory(attr).name().replace(UNDERSCORE, DASH).toLowerCase();
+    }
 
-	public static boolean isEnum(Attribute<?, ?> a) {
-		if (a instanceof Members.Member) {
-			int type = ((Members.Member<?, ?>) a).fmd.getDeclaredTypeCode();
-			return type == JavaTypes.ENUM;
-		}
-		return false;
-	}
+    public static boolean isEnum(Attribute<?, ?> a) {
+        if (a instanceof Members.Member) {
+            int type = ((Members.Member<?, ?>) a).fmd.getDeclaredTypeCode();
+            return type == JavaTypes.ENUM;
+        }
+        return false;
+    }
 
-	public static boolean isId(Attribute<?, ?> a) {
-		if (a instanceof SingularAttribute) {
-			return ((SingularAttribute<?, ?>) a).isId();
-		}
-		return false;
-	}
+    public static boolean isId(Attribute<?, ?> a) {
+        if (a instanceof SingularAttribute) {
+            return ((SingularAttribute<?, ?>) a).isId();
+        }
+        return false;
+    }
 
-	public static boolean isLob(Attribute<?, ?> a) {
-		if (a instanceof Members.Member) {
-			int type = ((Members.Member<?, ?>) a).fmd.getDeclaredTypeCode();
-			return type == JavaTypes.INPUT_READER
-					|| type == JavaTypes.INPUT_STREAM;
-		}
-		return false;
-	}
+    public static boolean isLob(Attribute<?, ?> a) {
+        if (a instanceof Members.Member) {
+            int type = ((Members.Member<?, ?>) a).fmd.getDeclaredTypeCode();
+            return type == JavaTypes.INPUT_READER
+                   || type == JavaTypes.INPUT_STREAM;
+        }
+        return false;
+    }
 
-	public static boolean isVersion(Attribute<?, ?> a) {
-		if (a instanceof SingularAttribute) {
-			return ((SingularAttribute<?, ?>) a).isVersion();
-		}
-		return false;
-	}
+    public static boolean isVersion(Attribute<?, ?> a) {
+        if (a instanceof SingularAttribute) {
+            return ((SingularAttribute<?, ?>) a).isVersion();
+        }
+        return false;
+    }
 }

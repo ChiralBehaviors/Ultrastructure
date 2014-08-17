@@ -42,7 +42,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Access(AccessType.FIELD)
 abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
-extends Ruleform {
+        extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -94,8 +94,8 @@ extends Ruleform {
         @SuppressWarnings("unchecked")
         NetworkRuleform<E> other = (NetworkRuleform<E>) obj;
         return getParent().equals(other.getParent())
-                && getRelationship().equals(other.getRelationship())
-                && getChild().equals(other.getChild());
+               && getRelationship().equals(other.getRelationship())
+               && getChild().equals(other.getChild());
     }
 
     abstract public E getChild();
@@ -125,11 +125,11 @@ extends Ruleform {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result
-                + (getParent() == null ? 0 : getParent().hashCode());
+                 + (getParent() == null ? 0 : getParent().hashCode());
         result = prime * result
-                + (relationship == null ? 0 : relationship.hashCode());
+                 + (relationship == null ? 0 : relationship.hashCode());
         result = prime * result
-                + (getChild() == null ? 0 : getChild().hashCode());
+                 + (getChild() == null ? 0 : getChild().hashCode());
         return result;
     }
 

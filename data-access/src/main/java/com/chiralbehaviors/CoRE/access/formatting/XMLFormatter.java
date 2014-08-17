@@ -74,156 +74,147 @@ import org.w3c.dom.Element;
  */
 public class XMLFormatter {
 
-	public static final Schema _xsd;
-	private static final DocumentBuilder _builder;
-	private static final Transformer _transformer;
-	protected static Localizer _loc = Localizer.forPackage(XMLFormatter.class);
-	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"MMM dd, yyyy");
+    public static final Schema           _xsd;
+    private static final DocumentBuilder _builder;
+    private static final Transformer     _transformer;
+    protected static Localizer           _loc       = Localizer.forPackage(XMLFormatter.class);
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                                                                           "MMM dd, yyyy");
 
-	static {
-		try {
-			_builder = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
-			_transformer = TransformerFactory.newInstance().newTransformer();
-			SchemaFactory factory = SchemaFactory
-					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			InputStream xsd = XMLFormatter.class
-					.getResourceAsStream(JEST_INSTANCE_XSD);
-			_xsd = factory.newSchema(new StreamSource(xsd));
+    static {
+        try {
+            _builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            _transformer = TransformerFactory.newInstance().newTransformer();
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            InputStream xsd = XMLFormatter.class.getResourceAsStream(JEST_INSTANCE_XSD);
+            _xsd = factory.newSchema(new StreamSource(xsd));
 
-			_transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-			_transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
-					"no");
-			_transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			_transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
-			_transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			_transformer.setOutputProperty(
-					"{http://xml.apache.org/xslt}indent-amount", "2");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+            _transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            _transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+                                           "no");
+            _transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            _transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
+            _transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            _transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
+                                           "2");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
-	 * Encodes the given meta-model into a new XML document according to JEST
-	 * Domain XML Schema.
-	 * 
-	 * @param model
-	 *            a persistent domain model. Must not be null.
-	 */
-	public Document encode(Metamodel model) {
-		Element root = newDocument(ROOT_ELEMENT_MODEL);
-		for (ManagedType<?> t : model.getManagedTypes()) {
-			encodeManagedType(t, root);
-		}
-		return root.getOwnerDocument();
-	}
+    /**
+     * Encodes the given meta-model into a new XML document according to JEST
+     * Domain XML Schema.
+     * 
+     * @param model
+     *            a persistent domain model. Must not be null.
+     */
+    public Document encode(Metamodel model) {
+        Element root = newDocument(ROOT_ELEMENT_MODEL);
+        for (ManagedType<?> t : model.getManagedTypes()) {
+            encodeManagedType(t, root);
+        }
+        return root.getOwnerDocument();
+    }
 
-	public String getMimeType() {
-		return MIME_TYPE_XML;
-	}
+    public String getMimeType() {
+        return MIME_TYPE_XML;
+    }
 
-	/**
-	 * Create a new document with the given tag as the root element.
-	 * 
-	 * @param rootTag
-	 *            the tag of the root element
-	 * 
-	 * @return the document element of a new document
-	 */
-	public Element newDocument(String rootTag) {
-		Document doc = _builder.newDocument();
-		Element root = doc.createElement(rootTag);
-		doc.appendChild(root);
-		String[] nvpairs = new String[] { "xmlns:xsi",
-				XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
-				// "xsi:noNamespaceSchemaLocation", JEST_INSTANCE_XSD,
-				ATTR_VERSION, "1.0", };
-		for (int i = 0; i < nvpairs.length; i += 2) {
-			root.setAttribute(nvpairs[i], nvpairs[i + 1]);
-		}
-		return root;
-	}
+    /**
+     * Create a new document with the given tag as the root element.
+     * 
+     * @param rootTag
+     *            the tag of the root element
+     * 
+     * @return the document element of a new document
+     */
+    public Element newDocument(String rootTag) {
+        Document doc = _builder.newDocument();
+        Element root = doc.createElement(rootTag);
+        doc.appendChild(root);
+        String[] nvpairs = new String[] { "xmlns:xsi",
+                XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                // "xsi:noNamespaceSchemaLocation", JEST_INSTANCE_XSD,
+                ATTR_VERSION, "1.0", };
+        for (int i = 0; i < nvpairs.length; i += 2) {
+            root.setAttribute(nvpairs[i], nvpairs[i + 1]);
+        }
+        return root;
+    }
 
-	public void write(Document doc, OutputStream out) throws IOException {
-		try {
-			_transformer.transform(new DOMSource(doc), new StreamResult(out));
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-	}
+    public void write(Document doc, OutputStream out) throws IOException {
+        try {
+            _transformer.transform(new DOMSource(doc), new StreamResult(out));
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
 
-	public Document writeOut(Metamodel model, String title, String desc,
-			String uri, OutputStream out) throws IOException {
-		Document doc = encode(model);
-		decorate(doc, title, desc, uri);
-		write(doc, out);
-		return doc;
-	}
+    public Document writeOut(Metamodel model, String title, String desc,
+                             String uri, OutputStream out) throws IOException {
+        Document doc = encode(model);
+        decorate(doc, title, desc, uri);
+        write(doc, out);
+        return doc;
+    }
 
-	private void encodeManagedType(ManagedType<?> type, Element parent) {
-		Document doc = parent.getOwnerDocument();
-		Element root = doc.createElement(type.getPersistenceType().toString()
-				.toLowerCase());
-		parent.appendChild(root);
-		root.setAttribute(ATTR_NAME, type.getJavaType().getSimpleName());
-		List<Attribute<?, ?>> attributes = MetamodelHelper
-				.getAttributesInOrder(type);
-		for (Attribute<?, ?> a : attributes) {
-			String tag = MetamodelHelper.getTagByAttributeType(a);
+    private void encodeManagedType(ManagedType<?> type, Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element root = doc.createElement(type.getPersistenceType().toString().toLowerCase());
+        parent.appendChild(root);
+        root.setAttribute(ATTR_NAME, type.getJavaType().getSimpleName());
+        List<Attribute<?, ?>> attributes = MetamodelHelper.getAttributesInOrder(type);
+        for (Attribute<?, ?> a : attributes) {
+            String tag = MetamodelHelper.getTagByAttributeType(a);
 
-			Element child = doc.createElement(tag);
-			root.appendChild(child);
-			child.setAttribute(ATTR_TYPE, typeOf(a.getJavaType()));
-			if (a instanceof PluralAttribute) {
-				if (a instanceof MapAttribute) {
-					child.setAttribute(
-							ATTR_KEY_TYPE,
-							typeOf(((MapAttribute<?, ?, ?>) a).getKeyJavaType()));
-					child.setAttribute(ATTR_VALUE_TYPE,
-							typeOf(((MapAttribute<?, ?, ?>) a)
-									.getBindableJavaType()));
-				} else {
-					child.setAttribute(ATTR_MEMBER_TYPE,
-							typeOf(((PluralAttribute<?, ?, ?>) a)
-									.getBindableJavaType()));
-				}
-			}
-			child.setTextContent(a.getName());
-		}
-	}
+            Element child = doc.createElement(tag);
+            root.appendChild(child);
+            child.setAttribute(ATTR_TYPE, typeOf(a.getJavaType()));
+            if (a instanceof PluralAttribute) {
+                if (a instanceof MapAttribute) {
+                    child.setAttribute(ATTR_KEY_TYPE,
+                                       typeOf(((MapAttribute<?, ?, ?>) a).getKeyJavaType()));
+                    child.setAttribute(ATTR_VALUE_TYPE,
+                                       typeOf(((MapAttribute<?, ?, ?>) a).getBindableJavaType()));
+                } else {
+                    child.setAttribute(ATTR_MEMBER_TYPE,
+                                       typeOf(((PluralAttribute<?, ?, ?>) a).getBindableJavaType()));
+                }
+            }
+            child.setTextContent(a.getName());
+        }
+    }
 
-	Document decorate(Document doc, String title, String desc, String uri) {
-		Element root = doc.getDocumentElement();
-		Element instance = (Element) root
-				.getElementsByTagName(ELEMENT_INSTANCE).item(0);
-		Element uriElement = doc.createElement(ELEMENT_URI);
-		uriElement.setTextContent(uri == null ? NULL_VALUE : uri);
-		Element descElement = doc.createElement(ELEMENT_DESCRIPTION);
-		descElement.setTextContent(desc == null ? NULL_VALUE : desc);
-		root.insertBefore(uriElement, instance);
-		root.insertBefore(descElement, instance);
-		return doc;
-	}
+    Document decorate(Document doc, String title, String desc, String uri) {
+        Element root = doc.getDocumentElement();
+        Element instance = (Element) root.getElementsByTagName(ELEMENT_INSTANCE).item(0);
+        Element uriElement = doc.createElement(ELEMENT_URI);
+        uriElement.setTextContent(uri == null ? NULL_VALUE : uri);
+        Element descElement = doc.createElement(ELEMENT_DESCRIPTION);
+        descElement.setTextContent(desc == null ? NULL_VALUE : desc);
+        root.insertBefore(uriElement, instance);
+        root.insertBefore(descElement, instance);
+        return doc;
+    }
 
-	String typeOf(Class<?> cls) {
-		return cls.getSimpleName();
-	}
+    String typeOf(Class<?> cls) {
+        return cls.getSimpleName();
+    }
 
-	String typeOf(ClassMetaData meta) {
-		return meta.getDescribedType().getSimpleName();
-	}
+    String typeOf(ClassMetaData meta) {
+        return meta.getDescribedType().getSimpleName();
+    }
 
-	String typeOf(ValueMetaData vm) {
-		if (vm.getTypeMetaData() == null) {
-			return typeOf(vm.getType());
-		}
-		return typeOf(vm.getTypeMetaData());
-	}
+    String typeOf(ValueMetaData vm) {
+        if (vm.getTypeMetaData() == null) {
+            return typeOf(vm.getType());
+        }
+        return typeOf(vm.getTypeMetaData());
+    }
 
-	void validate(Document doc) throws Exception {
-		Validator validator = _xsd.newValidator();
-		validator.validate(new DOMSource(doc));
-	}
+    void validate(Document doc) throws Exception {
+        Validator validator = _xsd.newValidator();
+        validator.validate(new DOMSource(doc));
+    }
 }

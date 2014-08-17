@@ -643,7 +643,7 @@ public class WorkspaceSnapshot implements Workspace {
      * @throws IllegalAccessException
      */
     public void merge(EntityManager em) throws IllegalArgumentException,
-    IllegalAccessException {
+                                       IllegalAccessException {
 
         Map<Ruleform, Ruleform> merged = new HashMap<>();
         for (Field field : WorkspaceSnapshot.class.getDeclaredFields()) {
@@ -1188,7 +1188,7 @@ public class WorkspaceSnapshot implements Workspace {
 
     private void mergeList(EntityManager em, Map<Ruleform, Ruleform> merged,
                            Field field) throws IllegalArgumentException,
-                           IllegalAccessException {
+                                       IllegalAccessException {
         @SuppressWarnings("unchecked")
         List<Object> oldList = (List<Object>) field.get(this);
         List<Object> newList = new ArrayList<>(oldList.size());

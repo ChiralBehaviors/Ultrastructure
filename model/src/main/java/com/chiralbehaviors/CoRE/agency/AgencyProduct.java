@@ -42,9 +42,9 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Entity
 @Table(name = "agency_product", schema = "ruleform")
 @NamedQueries({ @NamedQuery(name = AGENCIES_FOR_PRODUCTS, query = "SELECT n.agency "
-        + "FROM AgencyProduct n "
-        + "WHERE n.relationship = :relationship "
-        + "AND n.product = :product"), })
+                                                                  + "FROM AgencyProduct n "
+                                                                  + "WHERE n.relationship = :relationship "
+                                                                  + "AND n.product = :product"), })
 public class AgencyProduct extends Ruleform {
     public static final String AGENCIES_FOR_PRODUCTS = "agencyProduct.agenciesForProducts";
     private static final long  serialVersionUID      = 1L;

@@ -42,8 +42,8 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Entity
 @Table(name = "meta_protocol", schema = "ruleform")
 @NamedQueries({ @NamedQuery(name = FOR_JOB, query = "SELECT mp from MetaProtocol mp "
-        + "WHERE mp.service = :service "
-        + "ORDER BY mp.sequenceNumber") })
+                                                    + "WHERE mp.service = :service "
+                                                    + "ORDER BY mp.sequenceNumber") })
 public class MetaProtocol extends Ruleform {
 
     public static final String FOR_JOB          = "metaprotocol.getForJob";
@@ -427,11 +427,11 @@ public class MetaProtocol extends Ruleform {
     @Override
     public String toString() {
         return "MetaProtocol [requestingAgency=" + requester.getName()
-                + ", service=" + service.getName() + ", serviceType="
-                + serviceType.getName() + ", productOrdered="
-                + product.getName() + ", deliverFrom=" + deliverFrom.getName()
-                + ", deliverTo=" + deliverTo.getName() + ", stopOnMatch="
-                + stopOnMatch + ", sequenceNumber=" + sequenceNumber + "]";
+               + ", service=" + service.getName() + ", serviceType="
+               + serviceType.getName() + ", productOrdered="
+               + product.getName() + ", deliverFrom=" + deliverFrom.getName()
+               + ", deliverTo=" + deliverTo.getName() + ", stopOnMatch="
+               + stopOnMatch + ", sequenceNumber=" + sequenceNumber + "]";
     }
 
     /*

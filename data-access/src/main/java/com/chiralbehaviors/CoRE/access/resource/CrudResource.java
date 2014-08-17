@@ -62,203 +62,203 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  */
 @Path("/v{version : \\d+}/services/data/")
 public class CrudResource {
-	public static final String CONTEXT_ROOT = "/";
-	public static final String QUALIFIER_FIRSTRESULT = "first";
-	public static final String QUALIFIER_MAXRESULT = "max";
-	public static final String QUALIFIER_NAMED = "named";
-	public static final String QUALIFIER_SINGLE = "single";
-	private static final String ARG_QUERY = "q";
-	private static final String ARG_TYPE = "type";
-	private static Localizer loc = Localizer.forPackage(CrudResource.class);
-	private static final List<String> mandatoryFindArgs = Arrays
-			.asList(ARG_TYPE);
-	private static final List<String> mandatoryQueryArgs = Arrays
-			.asList(ARG_QUERY);
-	private static final List<String> validFindQualifiers = Arrays
-			.asList(QUALIFIER_PLAN);
+    public static final String                CONTEXT_ROOT          = "/";
+    public static final String                QUALIFIER_FIRSTRESULT = "first";
+    public static final String                QUALIFIER_MAXRESULT   = "max";
+    public static final String                QUALIFIER_NAMED       = "named";
+    public static final String                QUALIFIER_SINGLE      = "single";
+    private static final String               ARG_QUERY             = "q";
+    private static final String               ARG_TYPE              = "type";
+    private static Localizer                  loc                   = Localizer.forPackage(CrudResource.class);
+    private static final List<String>         mandatoryFindArgs     = Arrays.asList(ARG_TYPE);
+    private static final List<String>         mandatoryQueryArgs    = Arrays.asList(ARG_QUERY);
+    private static final List<String>         validFindQualifiers   = Arrays.asList(QUALIFIER_PLAN);
 
-	private static final List<String> validQueryQualifiers = Arrays.asList(
-			QUALIFIER_PLAN, QUALIFIER_NAMED, QUALIFIER_SINGLE,
-			QUALIFIER_FIRSTRESULT, QUALIFIER_MAXRESULT);
-	private final OpenJPAEntityManagerFactory emf;
+    private static final List<String>         validQueryQualifiers  = Arrays.asList(QUALIFIER_PLAN,
+                                                                                    QUALIFIER_NAMED,
+                                                                                    QUALIFIER_SINGLE,
+                                                                                    QUALIFIER_FIRSTRESULT,
+                                                                                    QUALIFIER_MAXRESULT);
+    private final OpenJPAEntityManagerFactory emf;
 
-	public CrudResource(EntityManagerFactory emf) {
-		this.emf = (OpenJPAEntityManagerFactory) emf;
-	}
+    public CrudResource(EntityManagerFactory emf) {
+        this.emf = (OpenJPAEntityManagerFactory) emf;
+    }
 
-	@DELETE
-	@Path("/delete/{qualifiers : .+}")
-	@Timed
-	public Response delete(@PathParam("version") int version,
-			@PathParam("qualifiers") String qualifiers,
-			@Context UriInfo uriInfo, @Context HttpHeaders headers)
-			throws JsonGenerationException, JsonMappingException, IOException,
-			JAXBException {
-		OpenJPAEntityManager em = getPersistenceContext();
-		@SuppressWarnings("unchecked")
-		Parse parse = new Parse(qualifiers, uriInfo, mandatoryFindArgs,
-				Collections.EMPTY_LIST, 1, Integer.MAX_VALUE);
-		String type = parse.getMandatoryArgument(ARG_TYPE);
-		ClassMetaData meta = resolve(type);
-		Map<String, String> parameters = parse.getArguments();
-		Object[] pks = new Object[parameters.size()];
-		int i = 0;
-		for (String key : parameters.keySet()) {
-			pks[i++] = key;
-		}
-		Object oid = ApplicationIds.fromPKValues(pks, meta);
-		pushFetchPlan(em, parse);
-		try {
-			Object pc = em.find(meta.getDescribedType(), oid);
-			if (pc != null) {
-				em.remove(pc);
-				return Response.status(Status.NO_CONTENT).build();
-			} else {
-				return Response
-						.status(Status.NOT_FOUND)
-						.entity(loc.get("product-not-found", type,
-								Arrays.toString(pks)).getMessage()).build();
-			}
-		} finally {
-			popFetchPlan(true, parse);
-		}
-	}
+    @DELETE
+    @Path("/delete/{qualifiers : .+}")
+    @Timed
+    public Response delete(@PathParam("version") int version,
+                           @PathParam("qualifiers") String qualifiers,
+                           @Context UriInfo uriInfo,
+                           @Context HttpHeaders headers)
+                                                        throws JsonGenerationException,
+                                                        JsonMappingException,
+                                                        IOException,
+                                                        JAXBException {
+        OpenJPAEntityManager em = getPersistenceContext();
+        @SuppressWarnings("unchecked")
+        Parse parse = new Parse(qualifiers, uriInfo, mandatoryFindArgs,
+                                Collections.EMPTY_LIST, 1, Integer.MAX_VALUE);
+        String type = parse.getMandatoryArgument(ARG_TYPE);
+        ClassMetaData meta = resolve(type);
+        Map<String, String> parameters = parse.getArguments();
+        Object[] pks = new Object[parameters.size()];
+        int i = 0;
+        for (String key : parameters.keySet()) {
+            pks[i++] = key;
+        }
+        Object oid = ApplicationIds.fromPKValues(pks, meta);
+        pushFetchPlan(em, parse);
+        try {
+            Object pc = em.find(meta.getDescribedType(), oid);
+            if (pc != null) {
+                em.remove(pc);
+                return Response.status(Status.NO_CONTENT).build();
+            } else {
+                return Response.status(Status.NOT_FOUND).entity(loc.get("product-not-found",
+                                                                        type,
+                                                                        Arrays.toString(pks)).getMessage()).build();
+            }
+        } finally {
+            popFetchPlan(true, parse);
+        }
+    }
 
-	@GET
-	@Path("/find/{qualifiers : .+}")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	@Timed
-	public Object find(@PathParam("version") int version,
-			@PathParam("qualifiers") String qualifiers,
-			@Context UriInfo uriInfo, @Context HttpHeaders headers)
-			throws JsonGenerationException, JsonMappingException, IOException,
-			JAXBException {
-		OpenJPAEntityManager em = getPersistenceContext();
-		Parse parse = new Parse(qualifiers, uriInfo, mandatoryFindArgs,
-				validFindQualifiers, 1, Integer.MAX_VALUE);
-		String type = parse.getMandatoryArgument(ARG_TYPE);
-		ClassMetaData meta = resolve(type);
-		Map<String, String> parameters = parse.getArguments();
-		Object[] pks = new Object[parameters.size()];
-		int i = 0;
-		for (String key : parameters.keySet()) {
-			pks[i++] = key;
-		}
-		Object oid = ApplicationIds.fromPKValues(pks, meta);
-		pushFetchPlan(em, parse);
-		try {
-			Object pc = em.find(meta.getDescribedType(), oid);
-			if (pc != null) {
-				return pc;
-			} else {
-				return Response
-						.status(Status.NOT_FOUND)
-						.entity(loc.get("product-not-found", type,
-								Arrays.toString(pks)).getMessage()).build();
-			}
-		} finally {
-			popFetchPlan(true, parse);
-		}
-	}
+    @GET
+    @Path("/find/{qualifiers : .+}")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    @Timed
+    public Object find(@PathParam("version") int version,
+                       @PathParam("qualifiers") String qualifiers,
+                       @Context UriInfo uriInfo, @Context HttpHeaders headers)
+                                                                              throws JsonGenerationException,
+                                                                              JsonMappingException,
+                                                                              IOException,
+                                                                              JAXBException {
+        OpenJPAEntityManager em = getPersistenceContext();
+        Parse parse = new Parse(qualifiers, uriInfo, mandatoryFindArgs,
+                                validFindQualifiers, 1, Integer.MAX_VALUE);
+        String type = parse.getMandatoryArgument(ARG_TYPE);
+        ClassMetaData meta = resolve(type);
+        Map<String, String> parameters = parse.getArguments();
+        Object[] pks = new Object[parameters.size()];
+        int i = 0;
+        for (String key : parameters.keySet()) {
+            pks[i++] = key;
+        }
+        Object oid = ApplicationIds.fromPKValues(pks, meta);
+        pushFetchPlan(em, parse);
+        try {
+            Object pc = em.find(meta.getDescribedType(), oid);
+            if (pc != null) {
+                return pc;
+            } else {
+                return Response.status(Status.NOT_FOUND).entity(loc.get("product-not-found",
+                                                                        type,
+                                                                        Arrays.toString(pks)).getMessage()).build();
+            }
+        } finally {
+            popFetchPlan(true, parse);
+        }
+    }
 
-	@GET
-	@Path("/query/{qualifiers : .+}")
-	@Produces({ MediaType.APPLICATION_JSON, "text/json" })
-	@Timed
-	public Object query(@PathParam("version") int version,
-			@PathParam("qualifiers") String qualifiers,
-			@Context UriInfo uriInfo, @Context HttpHeaders headers) {
-		OpenJPAEntityManager em = getPersistenceContext();
-		Parse parse = new Parse(qualifiers, uriInfo, mandatoryQueryArgs,
-				validQueryQualifiers, 1, Integer.MAX_VALUE);
-		String spec = parse.getMandatoryArgument(ARG_QUERY);
-		try {
-			Query query = parse.isBooleanQualifier(QUALIFIER_NAMED) ? em
-					.createNamedQuery(spec) : em.createQuery(spec);
-			if (parse.hasQualifier(QUALIFIER_FIRSTRESULT)) {
-				query.setFirstResult(Integer.parseInt(parse
-						.getQualifier(QUALIFIER_FIRSTRESULT)));
-			}
-			if (parse.hasQualifier(QUALIFIER_MAXRESULT)) {
-				query.setMaxResults(Integer.parseInt(parse
-						.getQualifier(QUALIFIER_MAXRESULT)));
-			}
+    @GET
+    @Path("/query/{qualifiers : .+}")
+    @Produces({ MediaType.APPLICATION_JSON, "text/json" })
+    @Timed
+    public Object query(@PathParam("version") int version,
+                        @PathParam("qualifiers") String qualifiers,
+                        @Context UriInfo uriInfo, @Context HttpHeaders headers) {
+        OpenJPAEntityManager em = getPersistenceContext();
+        Parse parse = new Parse(qualifiers, uriInfo, mandatoryQueryArgs,
+                                validQueryQualifiers, 1, Integer.MAX_VALUE);
+        String spec = parse.getMandatoryArgument(ARG_QUERY);
+        try {
+            Query query = parse.isBooleanQualifier(QUALIFIER_NAMED) ? em.createNamedQuery(spec)
+                                                                   : em.createQuery(spec);
+            if (parse.hasQualifier(QUALIFIER_FIRSTRESULT)) {
+                query.setFirstResult(Integer.parseInt(parse.getQualifier(QUALIFIER_FIRSTRESULT)));
+            }
+            if (parse.hasQualifier(QUALIFIER_MAXRESULT)) {
+                query.setMaxResults(Integer.parseInt(parse.getQualifier(QUALIFIER_MAXRESULT)));
+            }
 
-			pushFetchPlan(query, parse);
+            pushFetchPlan(query, parse);
 
-			Map<String, String> args = parse.getArguments();
-			for (Map.Entry<String, String> entry : args.entrySet()) {
-				query.setParameter(entry.getKey(), entry.getValue());
-			}
-			if (parse.isBooleanQualifier(QUALIFIER_SINGLE)) {
-				return query.getSingleResult();
-			} else {
-				return query.getResultList();
-			}
+            Map<String, String> args = parse.getArguments();
+            for (Map.Entry<String, String> entry : args.entrySet()) {
+                query.setParameter(entry.getKey(), entry.getValue());
+            }
+            if (parse.isBooleanQualifier(QUALIFIER_SINGLE)) {
+                return query.getSingleResult();
+            } else {
+                return query.getResultList();
+            }
 
-		} catch (ArgumentException e) {
-			ExceptionFormatter formatter = new ExceptionFormatter();
-			Document xml = formatter.createXML(
-					"Request URI: " + uriInfo.getRequestUri(), e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR)
-					.type(MediaType.APPLICATION_XML).entity(xml).build();
-		} catch (Exception e) {
-			ExceptionFormatter formatter = new ExceptionFormatter();
-			Document xml = formatter.createXML(
-					"Request URI: " + uriInfo.getRequestUri(), e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR)
-					.type(MediaType.APPLICATION_XML).entity(xml).build();
-		} finally {
-			popFetchPlan(false, parse);
-		}
-	}
+        } catch (ArgumentException e) {
+            ExceptionFormatter formatter = new ExceptionFormatter();
+            Document xml = formatter.createXML("Request URI: "
+                                                       + uriInfo.getRequestUri(),
+                                               e);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_XML).entity(xml).build();
+        } catch (Exception e) {
+            ExceptionFormatter formatter = new ExceptionFormatter();
+            Document xml = formatter.createXML("Request URI: "
+                                                       + uriInfo.getRequestUri(),
+                                               e);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_XML).entity(xml).build();
+        } finally {
+            popFetchPlan(false, parse);
+        }
+    }
 
-	protected OpenJPAEntityManager getPersistenceContext() {
-		return emf.createEntityManager();
-	}
+    protected OpenJPAEntityManager getPersistenceContext() {
+        return emf.createEntityManager();
+    }
 
-	protected void popFetchPlan(boolean finder, Parse parse) {
-		if (!parse.hasQualifier(QUALIFIER_PLAN)) {
-			return;
-		}
-		OpenJPAEntityManager em = getPersistenceContext();
-		BrokerImpl broker = (BrokerImpl) JPAFacadeHelper.toBroker(em);
-		if (finder) {
-			broker.setCacheFinderQuery(false);
-		} else {
-			broker.setCachePreparedQuery(false);
-		}
-	}
+    protected void popFetchPlan(boolean finder, Parse parse) {
+        if (!parse.hasQualifier(QUALIFIER_PLAN)) {
+            return;
+        }
+        OpenJPAEntityManager em = getPersistenceContext();
+        BrokerImpl broker = (BrokerImpl) JPAFacadeHelper.toBroker(em);
+        if (finder) {
+            broker.setCacheFinderQuery(false);
+        } else {
+            broker.setCachePreparedQuery(false);
+        }
+    }
 
-	protected void pushFetchPlan(Object target, Parse parse) {
-		if (!parse.hasQualifier(QUALIFIER_PLAN)) {
-			return;
-		}
-		OpenJPAEntityManager em = getPersistenceContext();
-		FetchPlan plan = em.pushFetchPlan();
-		BrokerImpl broker = (BrokerImpl) JPAFacadeHelper.toBroker(em);
-		if (target instanceof OpenJPAEntityManager) {
-			broker.setCacheFinderQuery(false);
-		} else if (target instanceof OpenJPAQuery) {
-			broker.setCachePreparedQuery(false);
-		}
+    protected void pushFetchPlan(Object target, Parse parse) {
+        if (!parse.hasQualifier(QUALIFIER_PLAN)) {
+            return;
+        }
+        OpenJPAEntityManager em = getPersistenceContext();
+        FetchPlan plan = em.pushFetchPlan();
+        BrokerImpl broker = (BrokerImpl) JPAFacadeHelper.toBroker(em);
+        if (target instanceof OpenJPAEntityManager) {
+            broker.setCacheFinderQuery(false);
+        } else if (target instanceof OpenJPAQuery) {
+            broker.setCachePreparedQuery(false);
+        }
 
-		String[] plans = parse.getQualifier(QUALIFIER_PLAN).split(",");
-		for (String p : plans) {
-			p = p.trim();
-			if (p.charAt(0) == '-') {
-				plan.removeFetchGroup(p.substring(1));
-			} else {
-				plan.addFetchGroup(p);
-			}
-		}
-	}
+        String[] plans = parse.getQualifier(QUALIFIER_PLAN).split(",");
+        for (String p : plans) {
+            p = p.trim();
+            if (p.charAt(0) == '-') {
+                plan.removeFetchGroup(p.substring(1));
+            } else {
+                plan.addFetchGroup(p);
+            }
+        }
+    }
 
-	protected ClassMetaData resolve(String alias) {
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		return ((OpenJPAEntityManagerFactorySPI) emf).getConfiguration()
-				.getMetaDataRepositoryInstance()
-				.getMetaData(alias, loader, true);
-	}
+    protected ClassMetaData resolve(String alias) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        return ((OpenJPAEntityManagerFactorySPI) emf).getConfiguration().getMetaDataRepositoryInstance().getMetaData(alias,
+                                                                                                                     loader,
+                                                                                                                     true);
+    }
 
 }

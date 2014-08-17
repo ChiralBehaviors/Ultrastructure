@@ -30,10 +30,10 @@ import com.chiralbehaviors.CoRE.meta.models.StatusCodeModelImpl;
  */
 @Path("/v{version : \\d+}/services/data/ruleform/StatusCode")
 public class StatusCodeResource
-		extends
-		AbstractRuleformResource<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
+        extends
+        AbstractRuleformResource<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
 
-	public StatusCodeResource(EntityManager em) {
-		super(em, new StatusCodeModelImpl(em));
-	}
+    public StatusCodeResource(EntityManager em) {
+        super(em, new StatusCodeModelImpl(em));
+    }
 }

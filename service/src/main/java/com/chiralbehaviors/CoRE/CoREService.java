@@ -56,7 +56,7 @@ public class CoREService extends Application<CoREServiceConfiguration> {
         bootstrap.addBundle(new DataAccessBundle());
 
         //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
-       
+
         bootstrap.addBundle(new AssetsBundle("/ui/", "/ui/"));
         SimpleModule testModule = new SimpleModule("MyModule",
                                                    new Version(1, 0, 0, null,
@@ -81,9 +81,9 @@ public class CoREService extends Application<CoREServiceConfiguration> {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
                                                                           properties);
         environment.jersey().register(new BasicAuthProvider<AuthenticatedPrincipal>(
-                                                                              new AgencyAuthenticator(
-                                                                                                      new ModelImpl(
-                                                                                                                    emf.createEntityManager())),
-                                                                              "CoRE"));
+                                                                                    new AgencyAuthenticator(
+                                                                                                            new ModelImpl(
+                                                                                                                          emf.createEntityManager())),
+                                                                                    "CoRE"));
     }
 }

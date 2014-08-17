@@ -67,9 +67,11 @@ public class WorkspaceResource {
         WorkspaceLoader loader = new WorkspaceLoader(p, r, model);
         return loader.getWorkspace();
     }
-    
+
     @POST
-    public void importWorkspaceSnapshot(WorkspaceSnapshot workspace) throws IllegalArgumentException, IllegalAccessException {
+    public void importWorkspaceSnapshot(WorkspaceSnapshot workspace)
+                                                                    throws IllegalArgumentException,
+                                                                    IllegalAccessException {
         em.getTransaction().begin();
         workspace.merge(em);
         em.getTransaction().commit();

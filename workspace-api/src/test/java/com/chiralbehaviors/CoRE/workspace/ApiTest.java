@@ -39,8 +39,8 @@ public class ApiTest {
 
         WorkspaceInvocationHandler handler = new WorkspaceInvocationHandler(w);
         RogueKernel kernel = (RogueKernel) Proxy.newProxyInstance(RogueKernel.class.getClassLoader(),
-                                                    new Class<?>[] { RogueKernel.class },
-                                                    handler);
+                                                                  new Class<?>[] { RogueKernel.class },
+                                                                  handler);
         assertNotNull(kernel.getRogueAgency());
     }
 

@@ -50,7 +50,7 @@ abstract public class Facet<RuleForm extends ExistentialRuleform<RuleForm, ?>, A
         this.aspect = aspect;
         this.instance = instance;
         HashMap<Attribute, AttributeType> map = new HashMap<Attribute, AttributeType>(
-                attributes.size());
+                                                                                      attributes.size());
         for (AttributeType value : attributes) {
             map.put(value.getAttribute(), value);
         }

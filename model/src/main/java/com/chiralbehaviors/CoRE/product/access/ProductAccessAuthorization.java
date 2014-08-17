@@ -42,23 +42,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @NamedQueries({
 
-    @NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
-            + "FROM ProductAccessAuthorization auth "
-            + "WHERE auth.relationship = :r "
-            + "AND auth.parent = :rf "),
-            @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
-                    + "FROM ProductAccessAuthorization auth "
-                    + "WHERE auth.parent = :parent "
-                    + "AND auth.relationship = :relationship ") })
+               @NamedQuery(name = GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP, query = "SELECT auth "
+                                                                                              + "FROM ProductAccessAuthorization auth "
+                                                                                              + "WHERE auth.relationship = :r "
+                                                                                              + "AND auth.parent = :rf "),
+               @NamedQuery(name = FIND_AUTHORIZATION, query = "SELECT auth "
+                                                              + "FROM ProductAccessAuthorization auth "
+                                                              + "WHERE auth.parent = :parent "
+                                                              + "AND auth.relationship = :relationship ") })
 @Entity
 public abstract class ProductAccessAuthorization<Child extends ExistentialRuleform<Child, ?>>
-extends AccessAuthorization<Product, Child> {
+        extends AccessAuthorization<Product, Child> {
     public static final String  PRODUCT_ACCESS_AUTHORIZATION_PREFIX                = "productAccessAuthorization";
     public static final String  FIND_AUTHORIZATION                                 = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
-            + FIND_AUTHORIZATION_SUFFIX;
+                                                                                     + FIND_AUTHORIZATION_SUFFIX;
 
     public static final String  GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP = PRODUCT_ACCESS_AUTHORIZATION_PREFIX
-            + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
+                                                                                     + GET_ALL_AUTHORIZATIONS_FOR_PARENT_AND_RELATIONSHIP_SUFFIX;
 
     private static final long   serialVersionUID                                   = 1L;
 

@@ -39,7 +39,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 @Entity
 @Table(name = "agency_attribute_authorization", schema = "ruleform")
 public class AgencyAttributeAuthorization extends
-ClassifiedAttributeAuthorization<Agency> {
+        ClassifiedAttributeAuthorization<Agency> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency

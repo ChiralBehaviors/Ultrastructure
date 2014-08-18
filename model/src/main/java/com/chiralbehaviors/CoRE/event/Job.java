@@ -130,8 +130,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                   + "JOIN ruleform.job AS j ON jc.job = j.id "
                                                                                   + "WHERE j.assign_to = ? "
                                                                                   + "  AND NOT ruleform.is_terminal_state(j.service, jc.status) "
-                                                                                  + "  AND jc.sequence = "
-                                                                                  + "    (SELECT max(sequence) FROM ruleform.job_chronology WHERE job = jc.job)"),
+                                                                                  + "  AND jc.sequence_number = "
+                                                                                  + "    (SELECT max(sequence_number) FROM ruleform.job_chronology WHERE job = jc.job)"),
                      // Probably a candidate for 8.4 WITH query...
                      @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.id  FROM ruleform.job AS j "
                                                                             + "JOIN ruleform.product_sibling_sequencing_authorization AS seq "

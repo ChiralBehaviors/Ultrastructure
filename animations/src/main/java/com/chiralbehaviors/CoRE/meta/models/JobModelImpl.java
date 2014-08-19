@@ -728,7 +728,7 @@ public class JobModelImpl implements JobModel {
         for (Job subJob : query.getResultList()) {
             if (isActive(subJob)) {
                 jobs.add(subJob);
-                getAllActiveSubJobsOf(parent, agency, jobs);
+                getAllActiveSubJobsOf(subJob, agency);
             }
         }
         return jobs;

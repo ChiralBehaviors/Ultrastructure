@@ -93,7 +93,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                               + "  AND j.parent = :parent"),
                @NamedQuery(name = GET_SUB_JOBS_ASSIGNED_TO, query = "SELECT j "
                                                                     + "FROM Job AS j "
-                                                                    + "WHERE j.parent = :job "
+                                                                    + "WHERE j.parent = :parent "
                                                                     + "  AND j.assignTo = :agency") })
 @NamedNativeQueries({
                      @NamedNativeQuery(name = GET_TERMINAL_STATES, query = "SELECT DISTINCT(sc.*) "

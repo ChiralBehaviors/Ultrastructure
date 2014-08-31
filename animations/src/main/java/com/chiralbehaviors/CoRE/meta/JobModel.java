@@ -165,6 +165,17 @@ public interface JobModel {
     List<Job> getActiveJobsFor(Agency agency);
 
     /**
+     * Answer the list of active jobs that are assigned to a agency, in a
+     * particular state
+     *
+     * @param agency
+     * @param desiredState
+     * @return the list of active jobs assigned to the agency that have the
+     *         desired status
+     */
+    List<Job> getActiveJobsFor(Agency agency, StatusCode desiredState);
+
+    /**
      *
      * @param job
      * @param service

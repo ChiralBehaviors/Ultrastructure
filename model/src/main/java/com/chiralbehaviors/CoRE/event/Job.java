@@ -20,6 +20,7 @@ import static com.chiralbehaviors.CoRE.event.Job.EXISTING_JOB_WITH_PARENT_AND_PR
 import static com.chiralbehaviors.CoRE.event.Job.FIND_ALL;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_EXPLICIT_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
+import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
@@ -72,6 +73,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                              + "FROM Job AS j "
                                                                              + "WHERE j.parent = :parent "
                                                                              + "  AND j.status <> :unset"),
+               @NamedQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS, query = "SELECT j "
+                                                                                + "FROM Job AS j "
+                                                                                + "WHERE j.assignTo = :agency "
+                                                                                + "  AND j.status = :status"),
                @NamedQuery(name = GET_CHILD_JOBS_FOR_SERVICE, query = "SELECT j "
                                                                       + "FROM Job AS j "
                                                                       + "WHERE j.parent = :parent "
@@ -173,6 +178,7 @@ public class Job extends AbstractProtocol {
     public static final String FIND_ALL                              = "job.findAll";
     public static final String GET_ACTIVE_EXPLICIT_JOBS              = "job.getActiveExplicitJobs";
     public static final String GET_ACTIVE_JOBS_FOR_AGENCY            = "job.getActiveJobsForAgency";
+    public static final String GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS  = "job.getActiveJobsForAgencyInStatus";
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS     = "job.getActiveOrTerminatedSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS                   = "job.getActiveSubJobs";
     public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE       = "job.getActiveSubJobsForService";

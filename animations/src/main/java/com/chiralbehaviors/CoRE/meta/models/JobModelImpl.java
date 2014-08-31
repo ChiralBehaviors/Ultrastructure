@@ -685,6 +685,15 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public List<Job> getActiveJobsFor(Agency agency, StatusCode desiredState) {
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS,
+                                                    Job.class);
+        query.setParameter("agency", agency);
+        query.setParameter("status", desiredState);
+        return query.getResultList();
+    }
+
+    @Override
     public List<Job> getActiveSubJobsForService(Job job, Product service) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE,
                                                     Job.class);

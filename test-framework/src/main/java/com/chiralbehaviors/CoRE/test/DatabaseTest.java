@@ -60,7 +60,7 @@ abstract public class DatabaseTest {
 
     @AfterClass
     public static void afterClass() {
-        if (em.getTransaction().isActive()) {
+        if (em != null && em.getTransaction().isActive()) {
             em.getTransaction().rollback();
             em.clear();
             em.close();

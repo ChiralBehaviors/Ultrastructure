@@ -47,6 +47,9 @@ import com.chiralbehaviors.CoRE.meta.Model;
 public class AbstractModelTest {
     @BeforeClass
     public static void initializeDatabase() throws IOException, SQLException {
+        if (em != null) { 
+            em.close();
+        }
         em = getEntityManager();
         BootstrapLoader loader = new BootstrapLoader(em);
         em.getTransaction().begin();
@@ -81,7 +84,7 @@ public class AbstractModelTest {
 
     @AfterClass
     public static void afterClass() {
-        if (em.getTransaction().isActive()) {
+        if (em != null && em.getTransaction().isActive()) {
             em.getTransaction().rollback();
             em.clear();
             em.close();

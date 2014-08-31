@@ -26,6 +26,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -55,6 +56,15 @@ abstract public class DatabaseTest {
         }
         r.close();
         alterAllTriggers(true);
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+            em.clear();
+            em.close();
+        }
     }
 
     @Before

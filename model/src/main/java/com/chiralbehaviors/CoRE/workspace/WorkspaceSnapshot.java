@@ -647,6 +647,9 @@ public class WorkspaceSnapshot implements Workspace {
 
         Map<Ruleform, Ruleform> merged = new HashMap<>();
         for (Field field : WorkspaceSnapshot.class.getDeclaredFields()) {
+            if (!Ruleform.class.isAssignableFrom(field.getType())) {
+                continue;
+            }
             log.debug(String.format("Merging: %s", field.getName()));
             if (List.class.isAssignableFrom(field.getType())) {
                 mergeList(em, merged, field);

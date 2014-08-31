@@ -2,6 +2,7 @@ jpa:
   debug: true
   persistenceUnit: CoRE
   properties: 
+      openjpa.jdbc.DriverDataSource: dbcp
       openjpa.ConnectionUserName: ${testing.db.login}
       openjpa.ConnectionPassword: ${testing.db.password}
       openjpa.ConnectionURL: jdbc:postgresql://${testing.db.server}:${testing.db.port}/${testing.db.database}

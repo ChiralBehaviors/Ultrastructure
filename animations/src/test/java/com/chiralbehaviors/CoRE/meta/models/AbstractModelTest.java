@@ -30,6 +30,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -76,6 +77,15 @@ public class AbstractModelTest {
 
     public AbstractModelTest() {
         super();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+            em.clear();
+            em.close();
+        }
     }
 
     @After

@@ -41,13 +41,13 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
  * @author hhildebrand
  * 
  */
-public class CoREService extends Application<CoREServiceConfiguration> {
+public class CoREApplication extends Application<CoREServiceConfiguration> {
 
     public static void main(String[] argv) throws Exception {
-        new CoREService().run(argv);
+        new CoREApplication().run(argv);
     }
 
-    protected CoREService() {
+    protected CoREApplication() {
 
     }
 
@@ -77,7 +77,6 @@ public class CoREService extends Application<CoREServiceConfiguration> {
 
         String unit = jpaConfig.getPersistenceUnit();
         Map<String, String> properties = jpaConfig.getProperties();
-        properties.put("openjpa.EntityManagerFactoryPool", "true");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(unit,
                                                                           properties);
         environment.jersey().register(new BasicAuthProvider<AuthenticatedPrincipal>(

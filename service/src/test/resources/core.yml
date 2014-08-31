@@ -2,6 +2,7 @@ jpa:
   debug: true
   persistenceUnit: CoRE
   properties: 
+      openjpa.EntityManagerFactoryPool: true
       openjpa.jdbc.DriverDataSource: dbcp
       openjpa.ConnectionUserName: ${testing.db.login}
       openjpa.ConnectionPassword: ${testing.db.password}

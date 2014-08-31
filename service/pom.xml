@@ -14,7 +14,7 @@
     <artifactId>service</artifactId>
 
     <properties>
-        <main.class>com.chiralbehaviors.CoRE.CoREService</main.class>
+        <main.class>com.chiralbehaviors.CoRE.CoREApplication</main.class>
     </properties>
 
     <dependencies>

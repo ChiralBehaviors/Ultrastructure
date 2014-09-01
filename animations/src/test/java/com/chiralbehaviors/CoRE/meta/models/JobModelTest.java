@@ -442,6 +442,8 @@ public class JobModelTest extends AbstractModelTest {
         txn.commit();
         txn.begin();
         em.clear();
+        query.setParameter("service", scenario.pick);
+        pick = query.getSingleResult();
         query.setParameter("service", scenario.ship);
         Job ship = query.getSingleResult();
         List<Job> pickSiblings = jobModel.getActiveSubJobsForService(pick.getParent(),

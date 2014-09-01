@@ -223,11 +223,11 @@ public class Job extends AbstractProtocol {
     /**
      * The parent of this job
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent", updatable = false)
     private Job                parent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "protocol", updatable = false)
     private Protocol           protocol;
 

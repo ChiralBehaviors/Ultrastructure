@@ -124,6 +124,7 @@ public abstract class JSP {
         } finally {
             depth--;
             if (depth == 0) {
+                EMF.getCache().evictAll();
                 if (log.isTraceEnabled()) {
                     log.trace("clearing root cause");
                 }
@@ -139,13 +140,13 @@ public abstract class JSP {
     /**
      *
      */
-    private static final int                  MAX_REENTRANT_CALL_DEPTH = 10;
-    private static int                        depth                    = 0;
-    private static final EntityManagerFactory EMF;
-    private static final Logger               log                      = LoggerFactory.getLogger(JSP.class);
-    private static final Properties           PROPERTIES               = new Properties();
+    private static final int                 MAX_REENTRANT_CALL_DEPTH = 10;
+    private static int                       depth                    = 0;
+    public static final EntityManagerFactory EMF;
+    private static final Logger              log                      = LoggerFactory.getLogger(JSP.class);
+    private static final Properties          PROPERTIES               = new Properties();
 
-    private static SQLException               rootCause;
+    private static SQLException              rootCause;
 
     static {
         ClassLoader classLoader = JSP.class.getClassLoader();

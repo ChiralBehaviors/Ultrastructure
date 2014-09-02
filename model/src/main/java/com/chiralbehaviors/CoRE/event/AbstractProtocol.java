@@ -30,6 +30,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
+import org.apache.openjpa.persistence.LoadFetchGroup;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.RuleformIdGenerator;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -57,7 +59,8 @@ public abstract class AbstractProtocol extends Ruleform {
      * The agency assigned to this job
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "assign_to")
     private Agency            assignTo;
 
@@ -65,15 +68,16 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute for the agency assigned to this job
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "assign_to_attribute")
+    @LoadFetchGroup("job.animation")
     private Attribute         assignToAttribute;
 
     /**
      * The location where the product will be delivered from
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "deliver_from")
     private Location          deliverFrom;
     /**
@@ -81,30 +85,32 @@ public abstract class AbstractProtocol extends Ruleform {
      * from
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "deliver_from_attribute")
+    @LoadFetchGroup("job.animation")
     private Attribute         deliverFromAttribute;
     /**
      * The location to deliver the product of this job
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deliver_to")
+    @ManyToOne()
+    @JoinColumn(name = "deliver_to") 
     private Location          deliverTo;
 
     /**
      * The attribute on the location to deliver the product of this job
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "deliver_to_attribute")
+    @LoadFetchGroup("job.animation")
     private Attribute         deliverToAttribute;
 
     /**
      * The product of this job
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "product")
     private Product           product;
 
@@ -112,15 +118,17 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the product of this job
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "product_attribute")
+    @LoadFetchGroup("job.animation")
     private Attribute         productAttribute;
 
     @Column(name = "quantity")
     private BigDecimal        quantity;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "quantity_unit")
     private Unit              quantityUnit;
 
@@ -128,7 +136,8 @@ public abstract class AbstractProtocol extends Ruleform {
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "requester")
     private Agency            requester;
 
@@ -136,7 +145,8 @@ public abstract class AbstractProtocol extends Ruleform {
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "requester_attribute")
     private Attribute         requesterAttribute;
 
@@ -144,7 +154,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The service this job is performing
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne() 
     @JoinColumn(name = "service")
     private Product           service;
 
@@ -152,7 +162,8 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the service this job is performing
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "service_attribute")
     private Attribute         serviceAttribute;
 

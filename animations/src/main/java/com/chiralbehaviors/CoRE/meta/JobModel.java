@@ -480,7 +480,7 @@ public interface JobModel {
      *         connected components
      * @throws SQLException
      */
-    boolean hasTerminalSCCs(Product service) throws SQLException;
+    boolean hasNonTerminalSCCs(Product service) throws SQLException;
 
     /**
      * Insert a new job

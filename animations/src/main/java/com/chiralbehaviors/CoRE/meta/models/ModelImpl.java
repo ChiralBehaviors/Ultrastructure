@@ -110,6 +110,11 @@ public class ModelImpl implements Model {
                 model.reallySetLogConfiguration(logConfiguration);
                 return null;
             }
+
+            @Override
+            public String toString() {
+                return "Model.set_log_configuration";
+            }
         });
     }
 

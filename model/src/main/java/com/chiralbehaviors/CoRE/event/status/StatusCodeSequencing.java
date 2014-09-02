@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -109,12 +110,12 @@ public class StatusCodeSequencing extends Ruleform {
     private Product             service;
 
     // bi-directional many-to-one association to StatusCode
-    @OneToMany(mappedBy = "child")
+    @OneToMany(mappedBy = "child", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ProductNetwork> statusCodeByChild;
 
     // bi-directional many-to-one association to StatusCode
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ProductNetwork> statusCodeByParent;
 

@@ -210,7 +210,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
                                                              state1, core);
         em.persist(loop);
 
-        assertTrue(jobModel.hasTerminalSCCs(service));
+        assertTrue(jobModel.hasNonTerminalSCCs(service));
         service = em.merge(service);
 
         assertTrue(jobModel.hasScs(service));

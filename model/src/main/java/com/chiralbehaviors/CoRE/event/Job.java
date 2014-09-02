@@ -54,6 +54,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.apache.openjpa.persistence.LoadFetchGroup;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -224,6 +226,7 @@ public class Job extends AbstractProtocol {
      * The parent of this job
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "parent", updatable = false)
     private Job                parent;
 

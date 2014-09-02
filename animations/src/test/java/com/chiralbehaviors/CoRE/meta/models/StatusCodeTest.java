@@ -24,8 +24,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.RollbackException;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,6 +35,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
+import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -54,6 +53,7 @@ public class StatusCodeTest extends AbstractModelTest {
 
     @Test
     public void testIsTerminalState() throws Exception {
+        model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/test-log-config.xml")));
         JobModel jobModel = model.getJobModel();
         StatusCode startState = new StatusCode("top-level", kernel.getCore());
         em.persist(startState);
@@ -89,6 +89,7 @@ public class StatusCodeTest extends AbstractModelTest {
                     jobModel.isTerminalState(state1, service));
         assertFalse(String.format("%s is a terminal state", state2),
                     jobModel.isTerminalState(state2, service));
+        assertEquals(4, jobModel.getStatusCodesFor(service).size());
 
         em.getTransaction().begin();
 
@@ -99,15 +100,18 @@ public class StatusCodeTest extends AbstractModelTest {
         em.persist(loop);
         try {
             em.getTransaction().commit();
+            emf.getCache().evictAll();
             fail("Expected failure due to circularity");
-        } catch (RollbackException e) {
+        } catch (Exception e) {
             // expected
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            em.getTransaction().begin();
         }
 
         assertTrue(String.format("%s is not a terminal state", terminalState),
                    jobModel.isTerminalState(terminalState, service));
-
-        em.getTransaction().begin();
 
         StatusCode loopState = new StatusCode("loop-state", kernel.getCore());
         em.persist(loopState);

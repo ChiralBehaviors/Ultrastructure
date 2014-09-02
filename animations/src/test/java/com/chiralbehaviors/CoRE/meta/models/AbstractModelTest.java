@@ -47,7 +47,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 public class AbstractModelTest {
     @BeforeClass
     public static void initializeDatabase() throws IOException, SQLException {
-        if (em != null) { 
+        if (em != null) {
             em.close();
         }
         em = getEntityManager();
@@ -65,18 +65,19 @@ public class AbstractModelTest {
         assertNotNull("jpa properties missing", is);
         Properties properties = new Properties();
         properties.load(is);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
+        emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                     properties);
         EntityManager em = emf.createEntityManager();
         return em;
     }
 
-    private static final String    SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-    protected static Model         model;
+    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    protected static Model                model;
 
-    protected static Kernel        kernel;
+    protected static Kernel               kernel;
 
-    protected static EntityManager em;
+    protected static EntityManager        em;
+    protected static EntityManagerFactory emf;
 
     public AbstractModelTest() {
         super();

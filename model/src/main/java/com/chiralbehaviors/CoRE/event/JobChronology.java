@@ -79,7 +79,7 @@ public class JobChronology extends AbstractProtocol {
     private int                sequenceNumber           = 0;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode         status;
 

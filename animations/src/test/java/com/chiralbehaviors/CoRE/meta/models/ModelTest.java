@@ -19,7 +19,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
@@ -31,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -101,24 +99,5 @@ public class ModelTest extends AbstractModelTest {
         assertNotNull(foundAgencies);
         assertEquals(1, foundAgencies.size());
         assertEquals(agency, foundAgencies.get(0));
-    }
-
-    @Test
-    public void testSetLoggingConfiguration() throws IOException {
-        model.setLogConfiguration(Utils.getDocument(JobModelTest.class.getResourceAsStream("/test-log-config.xml")));
-        em.getTransaction().begin();
-
-        Agency agency = new Agency("Test Agency", kernel.getCore());
-        em.persist(agency);
-        Attribute attribute = new Attribute("Test Attribute", kernel.getCore());
-        attribute.setValueType(ValueType.TEXT);
-        em.persist(attribute);
-        AgencyAttribute agencyAttribute = new AgencyAttribute(kernel.getCore());
-        agencyAttribute.setAgency(agency);
-        agencyAttribute.setAttribute(attribute);
-        agencyAttribute.setTextValue("Hello World");
-        em.persist(agencyAttribute);
-
-        em.getTransaction().commit();
     }
 }

@@ -307,7 +307,7 @@ public class JobModelImpl implements JobModel {
                 outgoing.remove(n);
             }
             // If you can't get to any other nodes outside the SCC, then it's
-            // terminal
+            // non terminal
             if (outgoing.size() == 0) {
                 return true;
             }
@@ -406,15 +406,15 @@ public class JobModelImpl implements JobModel {
         return JSP.call(new Call<T>(procedure));
     }
 
-    private static final Logger       log               = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final Logger      log               = LoggerFactory.getLogger(JobModelImpl.class);
 
-    private static final List<String> MODIFIED_SERVICES = new ArrayList<>();
+    private static final Set<String> MODIFIED_SERVICES = new HashSet<>();
 
-    protected final EntityManager     em;
+    protected final EntityManager    em;
 
-    protected final Kernel            kernel;
+    protected final Kernel           kernel;
 
-    protected final Model             model;
+    protected final Model            model;
 
     public JobModelImpl(Model model) {
         this.model = model;
@@ -458,6 +458,7 @@ public class JobModelImpl implements JobModel {
                                             Agency updatedBy) {
         for (Tuple<StatusCode, StatusCode> p : codes) {
             em.persist(new StatusCodeSequencing(service, p.a, p.b, updatedBy));
+            em.flush();
         }
     }
 
@@ -1166,9 +1167,14 @@ public class JobModelImpl implements JobModel {
      * @throws SQLException
      */
     @Override
-    public boolean hasTerminalSCCs(Product service) throws SQLException {
+    public boolean hasNonTerminalSCCs(Product service) throws SQLException {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        for (StatusCode currentCode : getStatusCodesFor(service)) {
+        Set<StatusCode> statusCodes = getStatusCodesFor(service);
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Status codes for %s: %s",
+                                    service.getName(), statusCodes));
+        }
+        for (StatusCode currentCode : statusCodes) {
             List<StatusCode> codes = getNextStatusCodes(service, currentCode);
             graph.put(currentCode, codes);
         }
@@ -1530,14 +1536,28 @@ public class JobModelImpl implements JobModel {
     @Override
     public void validateStateGraph(List<Product> modifiedServices)
                                                                   throws SQLException {
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("modified services %s", modifiedServices));
+        }
         for (Product modifiedService : modifiedServices) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Validating state graph for %s",
+                                        modifiedService.getName()));
+            }
             if (modifiedService == null) {
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("null modified service!"));
+                }
                 continue;
             }
             if (!hasScs(modifiedService) || !hasInitialState(modifiedService)) {
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("No sccs or no initial state for %s",
+                                            modifiedService.getName()));
+                }
                 continue;
             }
-            if (hasTerminalSCCs(modifiedService)) {
+            if (hasNonTerminalSCCs(modifiedService)) {
                 throw new SQLException(
                                        String.format("Event '%s' has at least one terminal SCC defined in its status code graph",
                                                      modifiedService.getName()));
@@ -1549,8 +1569,10 @@ public class JobModelImpl implements JobModel {
      * @param job
      */
     private void automaticallyGenerateImplicitJobsForExplicitJobs(String job) {
+        JSP.EMF.getCache().evict(Job.class);
         generateImplicitJobsForExplicitJobs(em.find(Job.class, job),
                                             kernel.getCoreAnimationSoftware());
+        em.flush();
     }
 
     private void copyIntoChild(Job parent, Protocol protocol,
@@ -1840,6 +1862,7 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTerminalState(String service, String statusCode) {
+        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
         return isTerminalState(em.find(StatusCode.class, statusCode),
                                em.find(Product.class, service));
     }
@@ -1854,10 +1877,12 @@ public class JobModelImpl implements JobModel {
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {
+        JSP.EMF.getCache().evict(Job.class);
         Job job = em.find(Job.class, jobId);
         if (job.getCurrentLogSequence() == 0) {
             log(job, "Initial insertion of job");
         }
+        em.flush();
     }
 
     /**
@@ -1899,10 +1924,12 @@ public class JobModelImpl implements JobModel {
     }
 
     private void processJobChange(String jobId) {
+        JSP.EMF.getCache().evict(Job.class);
         Job job = em.find(Job.class, jobId);
         processJobSequencing(job);
         generateImplicitJobsForExplicitJobs(job,
                                             kernel.getCoreAnimationSoftware());
+        em.flush();
     }
 
     /**
@@ -1943,8 +1970,10 @@ public class JobModelImpl implements JobModel {
      * @param modifiedServices
      * @throws SQLException
      */
-    private void validate_State_Graph(List<String> modifiedServices)
-                                                                    throws SQLException {
+    private void validate_State_Graph(Collection<String> modifiedServices)
+                                                                          throws SQLException {
+        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
+        JSP.EMF.getCache().evict(StatusCode.class);
         List<Product> modified = new ArrayList<Product>(modifiedServices.size());
         for (String id : modifiedServices) {
             modified.add(em.find(Product.class, id));
@@ -1953,6 +1982,7 @@ public class JobModelImpl implements JobModel {
     }
 
     private void validateStateGraph() throws SQLException {
+        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
         try {
             validate_State_Graph(MODIFIED_SERVICES);
         } finally {

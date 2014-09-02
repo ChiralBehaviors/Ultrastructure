@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -60,7 +59,6 @@ public abstract class AbstractProtocol extends Ruleform {
      */
     @NotNull
     @ManyToOne()
-    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "assign_to")
     private Agency            assignTo;
 
@@ -70,7 +68,6 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "assign_to_attribute")
-    @LoadFetchGroup("job.animation")
     private Attribute         assignToAttribute;
 
     /**
@@ -87,14 +84,13 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "deliver_from_attribute")
-    @LoadFetchGroup("job.animation")
     private Attribute         deliverFromAttribute;
     /**
      * The location to deliver the product of this job
      */
     @NotNull
     @ManyToOne()
-    @JoinColumn(name = "deliver_to") 
+    @JoinColumn(name = "deliver_to")
     private Location          deliverTo;
 
     /**
@@ -103,7 +99,6 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "deliver_to_attribute")
-    @LoadFetchGroup("job.animation")
     private Attribute         deliverToAttribute;
 
     /**
@@ -120,7 +115,6 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "product_attribute")
-    @LoadFetchGroup("job.animation")
     private Attribute         productAttribute;
 
     @Column(name = "quantity")
@@ -129,7 +123,6 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne()
     @LoadFetchGroup("job.animation")
-    @JoinColumn(name = "quantity_unit")
     private Unit              quantityUnit;
 
     /**
@@ -138,7 +131,6 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne()
     @LoadFetchGroup("job.animation")
-    @JoinColumn(name = "requester")
     private Agency            requester;
 
     /**
@@ -147,14 +139,13 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne()
     @LoadFetchGroup("job.animation")
-    @JoinColumn(name = "requester_attribute")
     private Attribute         requesterAttribute;
 
     /**
      * The service this job is performing
      */
     @NotNull
-    @ManyToOne() 
+    @ManyToOne()
     @JoinColumn(name = "service")
     private Product           service;
 
@@ -163,7 +154,6 @@ public abstract class AbstractProtocol extends Ruleform {
      */
     @NotNull
     @ManyToOne()
-    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "service_attribute")
     private Attribute         serviceAttribute;
 
@@ -209,20 +199,20 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     public void copyFrom(AbstractProtocol protocol) {
-        assignTo = protocol.getAssignTo();
-        assignToAttribute = protocol.assignToAttribute;
-        deliverTo = protocol.deliverTo;
-        deliverToAttribute = protocol.deliverToAttribute;
-        deliverFrom = protocol.deliverFrom;
-        deliverFromAttribute = protocol.deliverFromAttribute;
-        product = protocol.product;
-        productAttribute = protocol.productAttribute;
-        requester = protocol.requester;
-        requesterAttribute = protocol.requesterAttribute;
-        service = protocol.service;
-        serviceAttribute = protocol.serviceAttribute;
-        quantityUnit = protocol.quantityUnit;
-        quantity = protocol.quantity;
+        setAssignTo(protocol.getAssignTo());
+        setAssignToAttribute(protocol.getAssignToAttribute());
+        setDeliverTo(protocol.getDeliverTo());
+        setDeliverToAttribute(protocol.getDeliverToAttribute());
+        setDeliverFrom(protocol.getDeliverFrom());
+        setDeliverFromAttribute(protocol.getDeliverFromAttribute());
+        setProduct(protocol.getProduct());
+        setProductAttribute(protocol.getProductAttribute());
+        setRequester(protocol.getRequester());
+        setRequesterAttribute(protocol.getRequesterAttribute());
+        setService(protocol.getService());
+        setServiceAttribute(protocol.getServiceAttribute());
+        setQuantityUnit(protocol.getQuantityUnit());
+        setQuantity(protocol.getQuantity());
     }
 
     public boolean equalsProtocol(AbstractProtocol other) {

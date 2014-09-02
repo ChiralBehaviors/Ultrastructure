@@ -114,6 +114,13 @@ public class JobChronology extends AbstractProtocol {
     }
 
     /**
+     * @param job
+     */
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    /**
      * @param sequenceNumber
      *            the sequence to set
      */
@@ -146,8 +153,8 @@ public class JobChronology extends AbstractProtocol {
     }
 
     protected void initializeFrom(Job job) {
-        this.job = job;
-        status = job.getStatus();
+        setJob(job);
+        setStatus(job.getStatus());
         setUpdateDate(job.getUpdateDate());
         copyFrom(job);
     }

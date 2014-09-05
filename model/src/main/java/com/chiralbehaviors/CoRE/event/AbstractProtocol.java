@@ -29,8 +29,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
-import org.apache.openjpa.persistence.LoadFetchGroup;
-
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.RuleformIdGenerator;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -121,16 +119,16 @@ public abstract class AbstractProtocol extends Ruleform {
     private BigDecimal        quantity;
 
     @NotNull
-    @ManyToOne()
-    @LoadFetchGroup("job.animation")
+    @ManyToOne() 
+    @JoinColumn(name = "quantity_unit")
     private Unit              quantityUnit;
 
     /**
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne()
-    @LoadFetchGroup("job.animation")
+    @ManyToOne() 
+    @JoinColumn(name = "requester")
     private Agency            requester;
 
     /**
@@ -138,7 +136,7 @@ public abstract class AbstractProtocol extends Ruleform {
      */
     @NotNull
     @ManyToOne()
-    @LoadFetchGroup("job.animation")
+    @JoinColumn(name = "requester_attribute")
     private Attribute         requesterAttribute;
 
     /**

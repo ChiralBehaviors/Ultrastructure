@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
-import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -53,7 +52,7 @@ public class StatusCodeTest extends AbstractModelTest {
 
     @Test
     public void testIsTerminalState() throws Exception {
-        model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/test-log-config.xml")));
+        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/test-log-config.xml")));
         JobModel jobModel = model.getJobModel();
         StatusCode startState = new StatusCode("top-level", kernel.getCore());
         em.persist(startState);

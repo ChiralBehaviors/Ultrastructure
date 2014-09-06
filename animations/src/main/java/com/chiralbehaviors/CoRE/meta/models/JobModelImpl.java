@@ -1568,7 +1568,7 @@ public class JobModelImpl implements JobModel {
     /**
      * @param jobId
      */
-    private void automaticallyGenerateImplicitJobsForExplicitJobs(String jobId) { 
+    private void automaticallyGenerateImplicitJobsForExplicitJobs(String jobId) {
         Job job = em.find(Job.class, jobId);
         em.refresh(job);
         generateImplicitJobsForExplicitJobs(job,
@@ -1878,7 +1878,7 @@ public class JobModelImpl implements JobModel {
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {
-        JSP.EMF.getCache().evict(Job.class);
+        JSP.EMF.getCache().evict(Job.class, jobId);
         Job job = em.find(Job.class, jobId);
         if (job.getCurrentLogSequence() == 0) {
             log(job, "Initial insertion of job");

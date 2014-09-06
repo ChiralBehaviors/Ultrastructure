@@ -124,7 +124,6 @@ public abstract class JSP {
         } finally {
             depth--;
             if (depth == 0) {
-                EMF.getCache().evictAll();
                 if (log.isTraceEnabled()) {
                     log.trace("clearing root cause");
                 }

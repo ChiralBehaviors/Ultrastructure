@@ -1566,11 +1566,12 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * @param job
+     * @param jobId
      */
-    private void automaticallyGenerateImplicitJobsForExplicitJobs(String job) {
-        JSP.EMF.getCache().evict(Job.class);
-        generateImplicitJobsForExplicitJobs(em.find(Job.class, job),
+    private void automaticallyGenerateImplicitJobsForExplicitJobs(String jobId) { 
+        Job job = em.find(Job.class, jobId);
+        em.refresh(job);
+        generateImplicitJobsForExplicitJobs(job,
                                             kernel.getCoreAnimationSoftware());
         em.flush();
     }

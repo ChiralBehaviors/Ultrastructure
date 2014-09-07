@@ -57,7 +57,6 @@ public class RuleformResource {
     }
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     public Set<String> getRuleformTypes() {
         return entityMap.keySet();

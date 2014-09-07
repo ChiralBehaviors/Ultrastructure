@@ -66,7 +66,6 @@ public class CrudGuiResource {
     }
 
     @GET
-    @Path("/")
     @Produces(MediaType.TEXT_HTML)
     public Response getRoot(@PathParam("version") int version,
                             @Context UriInfo uriInfo) throws IOException {

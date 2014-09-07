@@ -58,7 +58,7 @@ public class CollectionResource {
     }
 
     @POST
-    @Path("/{parentId}")
+    @Path("{parentId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Product createNewProduct(@PathParam("parentId") String parentId,
                                     @QueryParam("relId") String relId,
@@ -104,7 +104,7 @@ public class CollectionResource {
     // }
 
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Product> get(@PathParam("id") String id,
                              @QueryParam("relId") List<String> relIds)
@@ -125,7 +125,6 @@ public class CollectionResource {
     }
 
     @POST
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Ruleform post(Ruleform graph) throws JsonProcessingException {
         em.getTransaction().begin();

@@ -37,23 +37,21 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
  */
 public interface ExistentialRuleformResource<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> {
 
-    @Path("/")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     List<RuleForm> getAll() throws ClassNotFoundException;
 
-    @Path("/{id}/networks")
+    @Path("{id}/networks")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     Collection<Network> getNetworks(@PathParam("id") UUID id);
 
-    @Path("/{id}")
+    @Path("{id}")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "text/json" })
     RuleForm getResource(@PathParam("id") UUID id)
                                                   throws ClassNotFoundException;
 
-    @Path("/")
     @PUT
     UUID insert(RuleForm rf);
 

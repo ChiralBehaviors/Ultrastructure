@@ -34,6 +34,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The abstract attribute value.
@@ -195,6 +196,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return numericValue;
     }
 
+    @JsonIgnore
     abstract public SingularAttribute<? extends AttributeValue<RuleForm>, RuleForm> getRuleformAttribute();
 
     /**

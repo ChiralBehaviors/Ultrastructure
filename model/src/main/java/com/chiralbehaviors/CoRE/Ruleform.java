@@ -38,6 +38,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The superclass of all rule forms.
@@ -173,6 +174,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return notes;
     }
 
+    @JsonIgnore
     public final String getPrimaryKey() {
         return id;
     }
@@ -191,6 +193,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return updatedBy;
     }
 
+    @JsonIgnore
     public final UUID getUUID() {
         String primaryKey = getPrimaryKey();
         return primaryKey == null ? null : UuidGenerator.fromBase64(primaryKey);

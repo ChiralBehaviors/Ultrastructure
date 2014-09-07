@@ -29,6 +29,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A ruleform that declares existence.
@@ -113,8 +114,10 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     abstract public void addParentRelationship(Network relationship);
 
+    @JsonIgnore
     abstract public String getAnyId();
 
+    @JsonIgnore
     abstract public String getCopyId();
 
     /**
@@ -131,16 +134,22 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
         return name;
     }
 
+    @JsonIgnore
     abstract public Set<Network> getNetworkByChild();
 
+    @JsonIgnore
     abstract public Set<Network> getNetworkByParent();
 
+    @JsonIgnore
     abstract public SingularAttribute<Network, RuleForm> getNetworkChildAttribute();
 
+    @JsonIgnore
     abstract public Class<Network> getNetworkClass();
 
+    @JsonIgnore
     abstract public SingularAttribute<Network, RuleForm> getNetworkParentAttribute();
 
+    @JsonIgnore
     abstract public String getNotApplicableId();
 
     /**
@@ -155,16 +164,22 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
         return (Class<RuleForm>) getClass();
     }
 
+    @JsonIgnore
     abstract public String getSameId();
 
+    @JsonIgnore
     public abstract boolean isAny();
 
+    @JsonIgnore
     public abstract boolean isAnyOrSame();
 
+    @JsonIgnore
     public abstract boolean isCopy();
 
+    @JsonIgnore
     public abstract boolean isNotApplicable();
 
+    @JsonIgnore
     public abstract boolean isSame();
 
     abstract public void link(Relationship r, RuleForm child, Agency updatedBy,

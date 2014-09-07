@@ -28,6 +28,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.RollbackException;
 
+import org.postgresql.pljava.Session;
+import org.postgresql.pljava.SessionManager;
+import org.postgresql.pljava.TransactionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,5 +172,29 @@ public abstract class JSP {
         }
         EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                      PROPERTIES);
+
+        Session session;
+        try {
+            session = SessionManager.current();
+        } catch (SQLException e) {
+            log.error("Unable to obtain current session", e);
+            throw new IllegalStateException("Unable to obtain current session",
+                                            e);
+        }
+        session.addTransactionListener(new TransactionListener() {
+
+            @Override
+            public void onPrepare(Session arg0) throws SQLException {
+            }
+
+            @Override
+            public void onCommit(Session arg0) throws SQLException {
+            }
+
+            @Override
+            public void onAbort(Session arg0) throws SQLException {
+                EMF.getCache().evictAll();
+            }
+        });
     }
 }

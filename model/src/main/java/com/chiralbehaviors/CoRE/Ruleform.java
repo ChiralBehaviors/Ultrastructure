@@ -39,6 +39,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The superclass of all rule forms.
@@ -235,10 +236,12 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return knownObjects.get(this);
     }
 
+    @JsonProperty
     public void setId(String id) {
         setPrimaryKey(id);
     }
 
+    @JsonIgnore
     public void setId(UUID id) {
         setPrimaryKey(UuidGenerator.toBase64(id));
     }

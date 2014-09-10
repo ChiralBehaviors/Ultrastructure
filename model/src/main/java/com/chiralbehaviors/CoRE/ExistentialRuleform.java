@@ -160,6 +160,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     }
 
     @SuppressWarnings("unchecked")
+    @JsonIgnore
     public Class<RuleForm> getRuleformClass() {
         return (Class<RuleForm>) getClass();
     }

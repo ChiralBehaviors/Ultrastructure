@@ -295,14 +295,6 @@ public class Protocol extends AbstractProtocol {
         this.sequenceNumber = sequenceNumber;
     }
 
-    /**
-     * @param sequenceNumber
-     *            the sequenceNumber to set
-     */
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */

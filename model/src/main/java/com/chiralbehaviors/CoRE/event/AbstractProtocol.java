@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -404,6 +405,7 @@ public abstract class AbstractProtocol extends Ruleform {
         return serviceAttribute;
     }
 
+    @JsonIgnore
     public String getToString() {
         return String.format("requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, quantity=%s, quantityUnit=%s",
                              requester.getName(), assignTo.getName(),

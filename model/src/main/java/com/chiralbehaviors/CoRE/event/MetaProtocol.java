@@ -413,14 +413,6 @@ public class MetaProtocol extends Ruleform {
         this.stopOnMatch = toInteger(stopOnMatch);
     }
 
-    /**
-     * @param stopOnMatch
-     *            the stopOnMatch to set
-     */
-    public void setStopOnMatch(Integer stopOnMatch) {
-        this.stopOnMatch = stopOnMatch;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */

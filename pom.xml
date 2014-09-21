@@ -74,6 +74,7 @@
         <module>loader-plugin</module>
         <module>network-inference-generator</module>
         <module>default-jsp-logging</module>
+        <module>swing-ui</module>
     </modules>
 
     <dependencyManagement>

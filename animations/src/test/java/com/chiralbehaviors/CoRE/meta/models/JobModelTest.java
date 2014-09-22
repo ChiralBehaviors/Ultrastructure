@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -488,6 +489,38 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.deliver);
         Job deliver = query.getSingleResult();
         assertEquals(scenario.completed, deliver.getStatus());
+    }
+
+    @Test
+    public void testGetActiveJobs() throws Exception {
+        clearJobs();
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                          scenario.core);
+        order.setAssignTo(scenario.orderFullfillment);
+        order.setProduct(scenario.abc486);
+        order.setDeliverTo(scenario.rsb225);
+        order.setDeliverFrom(scenario.factory1);
+        order.setRequester(scenario.georgeTownUniversity);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        em.refresh(order);
+        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
+                              "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
+                              "transition during test");
+        txn.commit();
+
+        List<StatusCode> states = Arrays.asList(scenario.active,
+                                                scenario.available,
+                                                scenario.abandoned);
+        List<Job> active = jobModel.getActiveJobsFor(scenario.orderFullfillment,
+                                                     states);
+        assertEquals(1, active.size());
     }
 
     private void clearJobs() throws SQLException {

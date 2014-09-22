@@ -53,10 +53,6 @@ public interface JobModel {
                                                                    false,
                                                                    false, false);
 
-    public abstract Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
-
-    public abstract Map<Protocol, List<String>> findProtocolGaps(Job job);
-
     /**
      * Sets the status of the given Job. This should not be done directly on the
      * job itself because we log the change in the JobChronology ruleform.
@@ -125,6 +121,10 @@ public interface JobModel {
                                      StatusCode nextSiblingStatus)
                                                                   throws SQLException;
 
+    Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
+
+    Map<Protocol, List<String>> findProtocolGaps(Job job);
+
     /**
      * For a given job, generates all the implicit jobs that need to be done
      *
@@ -163,6 +163,17 @@ public interface JobModel {
      * @return the list of active jobs assigned to the agency
      */
     List<Job> getActiveJobsFor(Agency agency);
+
+    /**
+     * Answer the list of active jobs that are assigned to a agency, in a any of
+     * the indicated states
+     *
+     * @param agency
+     * @param desiredStates
+     * @return the list of active jobs assigned to the agency that have the
+     *         desired status
+     */
+    List<Job> getActiveJobsFor(Agency agency, List<StatusCode> desiredStates);
 
     /**
      * Answer the list of active jobs that are assigned to a agency, in a
@@ -462,16 +473,6 @@ public interface JobModel {
     boolean hasInitialState(Product service);
 
     /**
-     * Answer true if the service's status graph has strongly connected
-     * components
-     *
-     * @param service
-     * @return true if the service's status graph has strongly connected
-     *         components
-     */
-    boolean hasScs(Product service);
-
-    /**
      * Answer true if the service's status graph has terminal strongly connected
      * components
      *
@@ -481,6 +482,16 @@ public interface JobModel {
      * @throws SQLException
      */
     boolean hasNonTerminalSCCs(Product service) throws SQLException;
+
+    /**
+     * Answer true if the service's status graph has strongly connected
+     * components
+     *
+     * @param service
+     * @return true if the service's status graph has strongly connected
+     *         components
+     */
+    boolean hasScs(Product service);
 
     /**
      * Insert a new job

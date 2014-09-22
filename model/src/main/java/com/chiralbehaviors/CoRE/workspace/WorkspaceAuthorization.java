@@ -171,6 +171,8 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "job_chronology")
     private JobChronology                         jobChronology;
 
+    private String                                key;
+
     @ManyToOne
     @JoinColumn(name = "location")
     private Location                              location;
@@ -495,6 +497,10 @@ public class WorkspaceAuthorization extends Ruleform {
         return jobChronology;
     }
 
+    public String getKey() {
+        return key;
+    }
+
     public Location getLocation() {
         return location;
     }
@@ -726,6 +732,10 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setJobChronology(JobChronology jobChronology) {
         type = "JobChronology";
         this.jobChronology = jobChronology;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void setLocation(Location location) {

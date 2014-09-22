@@ -115,6 +115,10 @@ public class JobModelImpl implements JobModel {
         T call(JobModelImpl jobModel) throws Exception;
     }
 
+    private static final Logger      log               = LoggerFactory.getLogger(JobModelImpl.class);
+
+    private static final Set<String> MODIFIED_SERVICES = new HashSet<>();
+
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
         execute(new Procedure<Void>() {
@@ -406,15 +410,11 @@ public class JobModelImpl implements JobModel {
         return JSP.call(new Call<T>(procedure));
     }
 
-    private static final Logger      log               = LoggerFactory.getLogger(JobModelImpl.class);
+    protected final EntityManager em;
 
-    private static final Set<String> MODIFIED_SERVICES = new HashSet<>();
+    protected final Kernel        kernel;
 
-    protected final EntityManager    em;
-
-    protected final Kernel           kernel;
-
-    protected final Model            model;
+    protected final Model         model;
 
     public JobModelImpl(Model model) {
         this.model = model;
@@ -682,6 +682,16 @@ public class JobModelImpl implements JobModel {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_JOBS_FOR_AGENCY,
                                                     Job.class);
         query.setParameter(1, agency.getPrimaryKey());
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Job> getActiveJobsFor(Agency agency,
+                                      List<StatusCode> desiredStates) {
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES,
+                                                    Job.class);
+        query.setParameter("agency", agency);
+        query.setParameter("statuses", desiredStates);
         return query.getResultList();
     }
 
@@ -1154,14 +1164,6 @@ public class JobModelImpl implements JobModel {
         return !query.getResultList().isEmpty();
     }
 
-    @Override
-    public boolean hasScs(Product service) {
-        Query query = em.createNamedQuery(Job.HAS_SCS);
-        query.setParameter("service", service);
-        query.setMaxResults(1);
-        return !query.getResultList().isEmpty();
-    }
-
     /**
      * @param service
      * @throws SQLException
@@ -1179,6 +1181,14 @@ public class JobModelImpl implements JobModel {
             graph.put(currentCode, codes);
         }
         return hasScc(graph);
+    }
+
+    @Override
+    public boolean hasScs(Product service) {
+        Query query = em.createNamedQuery(Job.HAS_SCS);
+        query.setParameter("service", service);
+        query.setMaxResults(1);
+        return !query.getResultList().isEmpty();
     }
 
     /**

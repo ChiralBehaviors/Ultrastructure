@@ -33,6 +33,9 @@
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
+            <column name="key" type="VARCHAR(1024)">
+                <constraints nullable="false" />
+            </column>
             <column name="agency" type="CHAR(22)" />
             <column name="agency_attribute" type="CHAR(22)" />
             <column name="agency_attribute_authorization" type="CHAR(22)" />
@@ -87,6 +90,7 @@
             <column name="product_sibling_sequencing_authorization" type="CHAR(22)" />
             <column name="protocol" type="CHAR(22)" />
         </createTable>
+        <addUniqueConstraint columnNames="defining_product, key" tableName="workspace_authorization" schemaName="ruleform" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"

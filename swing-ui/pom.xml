@@ -10,4 +10,10 @@
     <artifactId>swing-ui</artifactId>
     <name>Swing UI</name>
     <description>A simple Swing GUI for Ultrastructure</description>
+    <dependencies>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>animations</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -40,6 +40,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
@@ -47,6 +48,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -522,7 +524,48 @@ public class JobModelTest extends AbstractModelTest {
         Job deliver = query.getSingleResult();
         assertEquals(scenario.completed, deliver.getStatus());
     }
-
+    
+    public void testSelfSequencing() {
+        em.getTransaction().begin();
+        Product service = new Product("My Service", null, kernel.getCore());
+        em.persist(service);
+        StatusCode a = new StatusCode("A", null, kernel.getCore());
+        em.persist(a);
+        StatusCode b = new StatusCode("B", null, kernel.getCore());
+        em.persist(b);
+        StatusCode c = new StatusCode("C", null, kernel.getCore());
+        em.persist(c);
+        
+        List<Tuple<StatusCode, StatusCode>> sequences = new ArrayList<>();
+        sequences.add(new Tuple<StatusCode, StatusCode>(a, b));
+        sequences.add(new Tuple<StatusCode, StatusCode>(b, c));
+        model.getJobModel().createStatusCodeSequencings(service, sequences, kernel.getCore());
+        
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization();
+        auth.setService(service);
+        auth.setStatusCode(b);
+        auth.setStatusToSet(c);
+        auth.setUpdatedBy(kernel.getCore());
+        em.persist(auth);
+        
+        em.getTransaction().commit();
+        
+        em.getTransaction().begin();
+        Job job = model.getJobModel().newInitializedJob(service, kernel.getCore());
+        em.persist(job);
+        model.getJobModel().changeStatus(job, a, kernel.getCore(), null);
+        em.getTransaction().commit();
+        
+        em.getTransaction().begin();
+        model.getJobModel().changeStatus(job, b, kernel.getCore(), null);
+        em.getTransaction().commit();
+        
+        em.refresh(job);
+        
+        assertEquals(c, job.getStatus());
+        
+        
+    }
     private void clearJobs() throws SQLException {
         Connection connection = em.unwrap(Connection.class);
         boolean prev = connection.getAutoCommit();

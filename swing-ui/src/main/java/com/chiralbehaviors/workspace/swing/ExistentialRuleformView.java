@@ -25,6 +25,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -45,26 +47,17 @@ import javax.swing.border.TitledBorder;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
 
 /**
  * @author hhildebrand
  *
  */
-public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
+public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends JFrame {
-    private static final long       serialVersionUID = 1L;
-
-    private JTextField              textField;
-    private JTextField              name;
-    private JTextArea               notes;
-    private JComboBox<Relationship> childRelationship;
-    private JList<T>                children;
-    private JComboBox<Relationship> parentRelationship;
-    private JList<T>                parents;
-    private JComboBox<String>       key;
-    private JPanel                  contentPane;
-    private JComboBox<Relationship> classifier;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Launch the application.
@@ -83,6 +76,42 @@ public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
             }
         });
     }
+
+    private static void addPopup(Component component, final JPopupMenu popup) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
+            }
+
+            private void showMenu(MouseEvent e) {
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+    }
+
+    private JPanel                    contentPane;
+    protected JList<Attribute>        authorizedAttributes;
+    protected JComboBox<Relationship> childRelationship;
+    protected JList<RuleForm>         children;
+    protected JComboBox<Relationship> classifier;
+    protected JTextField              description;
+    protected JComboBox<RuleForm>     key;
+    protected JTextField              name;
+    protected JTextArea               notes;
+    protected JComboBox<Relationship> parentRelationship;
+    protected JList<RuleForm>         parents;
+    protected RuleForm                ruleform;
+    protected WorkspaceEditor         workspace;
 
     /**
      * Create the frame.
@@ -187,21 +216,21 @@ public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
         gbc_lblNewLabel_3.gridy = 2;
         ruleformPanel.add(lblNewLabel_3, gbc_lblNewLabel_3);
 
-        textField = new JTextField();
-        textField.addActionListener(new ActionListener() {
+        description = new JTextField();
+        description.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 changeDescription(e);
             }
         });
-        GridBagConstraints gbc_textField = new GridBagConstraints();
-        gbc_textField.anchor = GridBagConstraints.NORTH;
-        gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textField.insets = new Insets(0, 0, 5, 0);
-        gbc_textField.gridx = 0;
-        gbc_textField.gridy = 3;
-        ruleformPanel.add(textField, gbc_textField);
-        textField.setColumns(10);
+        GridBagConstraints gbc_description = new GridBagConstraints();
+        gbc_description.anchor = GridBagConstraints.NORTH;
+        gbc_description.fill = GridBagConstraints.HORIZONTAL;
+        gbc_description.insets = new Insets(0, 0, 5, 0);
+        gbc_description.gridx = 0;
+        gbc_description.gridy = 3;
+        ruleformPanel.add(description, gbc_description);
+        description.setColumns(10);
 
         JLabel lblNewLabel_4 = new JLabel("Notes");
         GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
@@ -276,6 +305,17 @@ public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
         workspacePanel.add(lblNewLabel_5);
 
         key = new JComboBox<>();
+        key.setEnabled(false);
+        key.addInputMethodListener(new InputMethodListener() {
+            @Override
+            public void caretPositionChanged(InputMethodEvent event) {
+            }
+
+            @Override
+            public void inputMethodTextChanged(InputMethodEvent event) {
+                searchKey(event);
+            }
+        });
         key.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -333,7 +373,7 @@ public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
         });
         panel.add(classifier);
 
-        JList<Attribute> authorizedAttributes = new JList<>();
+        authorizedAttributes = new JList<>();
 
         JPopupMenu popupMenu_2 = new JPopupMenu();
         addPopup(authorizedAttributes, popupMenu_2);
@@ -354,18 +394,43 @@ public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
 
     }
 
+    public void setRuleform(RuleForm ruleform) {
+
+    }
+
     /**
-     * @param e
+     * 
      */
-    protected void selectClassifier(ActionEvent e) {
+    private void refresh() {
+        refreshWorkspace();
+        refreshRuleform();
+        setParentRelationships();
+        setParents();
+        setChildRelationships();
+        setChildren();
+        setAuthorizedAttributes();
+    }
+
+    /**
+     * 
+     */
+    private void refreshWorkspace() {
         // TODO Auto-generated method stub
 
     }
 
     /**
-     * @param e
+     * 
      */
-    protected void selectParentRelationship(ActionEvent e) {
+    private void setChildRelationships() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * 
+     */
+    private void setParentRelationships() {
         // TODO Auto-generated method stub
 
     }
@@ -374,16 +439,29 @@ public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
      * @param e
      */
     protected void changeDescription(ActionEvent e) {
-        // TODO Auto-generated method stub
-
+        ruleform.setDescription(description.getText());
     }
 
     /**
      * @param e
      */
     protected void changeName(ActionEvent e) {
+        ruleform.setName(name.getText());
+    }
+
+    /**
+     * @param e
+     *
+     */
+    protected void newRuleform(ActionEvent e) {
         // TODO Auto-generated method stub
 
+    }
+
+    protected void refreshRuleform() {
+        name.setText(ruleform.getName());
+        description.setText(ruleform.getDescription());
+        notes.setText(ruleform.getNotes());
     }
 
     /**
@@ -395,50 +473,58 @@ public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
     }
 
     /**
+     * @param event
+     */
+    protected void searchKey(InputMethodEvent event) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
      * @param e
      */
     protected void selectChildRelationship(ActionEvent e) {
-        // TODO Auto-generated method stub
-
+        setChildren();
     }
 
     /**
      * @param e
-     * 
      */
+    protected void selectClassifier(ActionEvent e) {
+        setAuthorizedAttributes();
+    }
+
+    /**
+     * @param e
+     *
+     */
+    @SuppressWarnings("unchecked")
     protected void selectFromWorkspace(ActionEvent e) {
-        // TODO Auto-generated method stub
-
+        ruleform = (RuleForm) key.getSelectedItem();
+        refresh();
     }
 
     /**
      * @param e
-     * 
      */
-    protected void newRuleform(ActionEvent e) {
-        // TODO Auto-generated method stub
-
+    protected void selectParentRelationship(ActionEvent e) {
+        setParents();
     }
 
-    private static void addPopup(Component component, final JPopupMenu popup) {
-        component.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showMenu(e);
-                }
-            }
+    protected void setAuthorizedAttributes() {
+        authorizedAttributes.setListData((Attribute[]) workspace.getAttributeAuthorizations(ruleform,
+                                                                                            (Relationship) classifier.getSelectedItem()).toArray());
+    }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showMenu(e);
-                }
-            }
+    @SuppressWarnings("unchecked")
+    protected void setChildren() {
+        children.setListData((RuleForm[]) workspace.getChildren(ruleform,
+                                                                (Relationship) childRelationship.getSelectedItem()).toArray());
+    }
 
-            private void showMenu(MouseEvent e) {
-                popup.show(e.getComponent(), e.getX(), e.getY());
-            }
-        });
+    @SuppressWarnings("unchecked")
+    protected void setParents() {
+        parents.setListData((RuleForm[]) workspace.getParents(ruleform,
+                                                              (Relationship) parentRelationship.getSelectedItem()).toArray());
     }
 }

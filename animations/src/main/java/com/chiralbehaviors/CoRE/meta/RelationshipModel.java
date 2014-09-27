@@ -25,8 +25,8 @@ import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
  *
  */
 public interface RelationshipModel
-extends
-NetworkedModel<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute> {
+        extends
+        NetworkedModel<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute> {
 
     /**
      * Creates two relationships and sets them as inverses of each other

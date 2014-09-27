@@ -49,9 +49,9 @@ import com.chiralbehaviors.CoRE.product.Product;
                                                          + " WHERE seq.service = :service"
                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
-@Table(name = "product_parent_sequencing_authorization", schema = "ruleform")
+@Table(name = "product_self_sequencing_authorization", schema = "ruleform")
 public class ProductSelfSequencingAuthorization extends Ruleform {
-    public static final String GET_SELF_ACTIONS  = "productSelfSequencingAuthorization.getParentActions";
+    public static final String GET_SELF_ACTIONS  = "productSelfSequencingAuthorization.getSelfActions";
     public static final String GET_SEQUENCES       = "productSelfSequencingAuthorization.getSequences";
 
     private static final long  serialVersionUID    = 1L;

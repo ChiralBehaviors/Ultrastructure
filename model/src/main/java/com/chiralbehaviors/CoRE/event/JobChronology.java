@@ -38,6 +38,7 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -157,5 +158,22 @@ public class JobChronology extends AbstractProtocol {
         setStatus(job.getStatus());
         setUpdateDate(job.getUpdateDate());
         copyFrom(job);
+    }
+
+    @JsonIgnore
+    @Override
+    public String getToString() {
+        return String.format("requester=%s, assignTo=%s, service=%s, product=%s, status=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, quantity=%s, quantityUnit=%s",
+                             getRequester().getName(), getAssignTo().getName(),
+                             getService().getName(), getProduct().getName(),
+                             getStatus(), getDeliverTo().getName(),
+                             getDeliverFrom().getName(),
+                             getRequesterAttribute().getName(),
+                             getAssignToAttribute().getName(),
+                             getServiceAttribute().getName(),
+                             getProductAttribute().getName(),
+                             getDeliverToAttribute().getName(),
+                             getDeliverFromAttribute().getName(),
+                             getQuantity(), getQuantityUnit().getName());
     }
 }

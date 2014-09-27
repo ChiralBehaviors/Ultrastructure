@@ -1055,7 +1055,11 @@ public class JobModelImpl implements JobModel {
                                                                                    ProductSelfSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
-        return query.getResultList();
+        try {
+            return query.getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     /**

@@ -69,6 +69,7 @@ public class WorkspaceView {
     private JList<WorkspaceAuthorization>                              keys;
     private ProtocolView                                               protocols;
     private JobView                                                    jobs;
+    private StatusCodeSequencingView                                   statusCodeSequencing;
 
     /**
      * Launch the application.
@@ -151,6 +152,10 @@ public class WorkspaceView {
         jobs = new JobView();
         events.addTab("Jobs", null, jobs, null);
         events.setEnabledAt(1, true);
+
+        statusCodeSequencing = new StatusCodeSequencingView();
+        events.addTab("Sequencing", null, statusCodeSequencing, null);
+        events.setEnabledAt(2, true);
 
         JPanel workspace = new JPanel();
         frame.getContentPane().add(workspace, BorderLayout.NORTH);

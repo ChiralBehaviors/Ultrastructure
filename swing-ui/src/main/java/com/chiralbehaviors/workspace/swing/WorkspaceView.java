@@ -18,9 +18,17 @@ package com.chiralbehaviors.workspace.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.border.TitledBorder;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
@@ -36,6 +44,8 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
 
 /**
  * @author hhildebrand
@@ -52,6 +62,11 @@ public class WorkspaceView {
     private ExistentialRuleformView<StatusCode, StatusCodeNetwork>     statusCodes;
     private ExistentialRuleformView<Unit, UnitNetwork>                 units;
     private ExistentialRuleformView<Attribute, AttributeNetwork>       agencies;
+    private JTabbedPane                                                constellations;
+    private JTabbedPane                                                events;
+    private JLabel                                                     lblWorkspace;
+    private JComboBox<WorkspaceEditor>                                 workspaces;
+    private JList<WorkspaceAuthorization>                              keys;
 
     /**
      * Launch the application.
@@ -82,43 +97,93 @@ public class WorkspaceView {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(0, 0, 1024, 400);
+        frame.setBounds(0, 0, 1024, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        constellations = new JTabbedPane(JTabbedPane.TOP);
+        frame.getContentPane().add(constellations, BorderLayout.CENTER);
+
+        JTabbedPane existentialRuleforms = new JTabbedPane(JTabbedPane.TOP);
+        constellations.addTab("Existential Ruleforms", null,
+                              existentialRuleforms, null);
 
         agencies = new ExistentialRuleformView<Attribute, AttributeNetwork>();
-        tabbedPane.addTab("Agencies", null, agencies, null);
-        tabbedPane.setEnabledAt(0, true);
+        existentialRuleforms.addTab("Agencies", null, agencies, null);
+        existentialRuleforms.setEnabledAt(0, true);
 
         attributes = new ExistentialRuleformView<>();
-        tabbedPane.addTab("Attributes", null, attributes, null);
-        tabbedPane.setEnabledAt(1, true);
+        existentialRuleforms.addTab("Attributes", null, attributes, null);
+        existentialRuleforms.setEnabledAt(1, true);
 
         intervals = new ExistentialRuleformView<>();
-        tabbedPane.addTab("Intervals", null, intervals, null);
-        tabbedPane.setEnabledAt(2, true);
+        existentialRuleforms.addTab("Intervals", null, intervals, null);
+        existentialRuleforms.setEnabledAt(2, true);
 
         locations = new ExistentialRuleformView<>();
-        tabbedPane.addTab("Locations", null, locations, null);
-        tabbedPane.setEnabledAt(3, true);
+        existentialRuleforms.addTab("Locations", null, locations, null);
+        existentialRuleforms.setEnabledAt(3, true);
 
         products = new ExistentialRuleformView<>();
-        tabbedPane.addTab("Products", null, products, null);
-        tabbedPane.setEnabledAt(4, true);
+        existentialRuleforms.addTab("Products", null, products, null);
+        existentialRuleforms.setEnabledAt(4, true);
 
         relationhips = new ExistentialRuleformView<>();
-        tabbedPane.addTab("Relationships", null, relationhips, null);
-        tabbedPane.setEnabledAt(5, true);
+        existentialRuleforms.addTab("Relationships", null, relationhips, null);
+        existentialRuleforms.setEnabledAt(5, true);
 
         statusCodes = new ExistentialRuleformView<>();
-        tabbedPane.addTab("Status Codes", null, statusCodes, null);
-        tabbedPane.setEnabledAt(6, true);
+        existentialRuleforms.addTab("Status Codes", null, statusCodes, null);
+        existentialRuleforms.setEnabledAt(6, true);
 
         units = new ExistentialRuleformView<>();
-        tabbedPane.addTab("Units", null, units, null);
-        tabbedPane.setEnabledAt(7, true);
+        existentialRuleforms.addTab("Units", null, units, null);
+        existentialRuleforms.setEnabledAt(7, true);
+
+        events = new JTabbedPane(JTabbedPane.TOP);
+        constellations.addTab("Events", null, events, null);
+
+        JPanel workspace = new JPanel();
+        frame.getContentPane().add(workspace, BorderLayout.NORTH);
+        GridBagLayout gbl_workspace = new GridBagLayout();
+        gbl_workspace.columnWidths = new int[] { 0, 0, 0, 0 };
+        gbl_workspace.rowHeights = new int[] { 0 };
+        gbl_workspace.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+        gbl_workspace.rowWeights = new double[] { 0.0 };
+        workspace.setLayout(gbl_workspace);
+
+        lblWorkspace = new JLabel("Workspace");
+        GridBagConstraints gbc_lblWorkspace = new GridBagConstraints();
+        gbc_lblWorkspace.insets = new Insets(0, 0, 0, 5);
+        gbc_lblWorkspace.anchor = GridBagConstraints.EAST;
+        gbc_lblWorkspace.gridx = 0;
+        gbc_lblWorkspace.gridy = 0;
+        workspace.add(lblWorkspace, gbc_lblWorkspace);
+
+        workspaces = new JComboBox<>();
+        GridBagConstraints gbc_workspaces = new GridBagConstraints();
+        gbc_workspaces.fill = GridBagConstraints.HORIZONTAL;
+        gbc_workspaces.gridx = 1;
+        gbc_workspaces.gridy = 0;
+        workspace.add(workspaces, gbc_workspaces);
+
+        JPanel keysPanel = new JPanel();
+        keysPanel.setBorder(new TitledBorder(null, "Keys",
+                                             TitledBorder.LEADING,
+                                             TitledBorder.TOP, null, null));
+        frame.getContentPane().add(keysPanel, BorderLayout.WEST);
+        GridBagLayout gbl_keysPanel = new GridBagLayout();
+        gbl_keysPanel.columnWidths = new int[] { 100 };
+        gbl_keysPanel.rowHeights = new int[] { 0 };
+        gbl_keysPanel.columnWeights = new double[] { 1.0 };
+        gbl_keysPanel.rowWeights = new double[] { 1.0 };
+        keysPanel.setLayout(gbl_keysPanel);
+
+        keys = new JList<>();
+        GridBagConstraints gbc_keys = new GridBagConstraints();
+        gbc_keys.fill = GridBagConstraints.BOTH;
+        gbc_keys.gridx = 0;
+        gbc_keys.gridy = 0;
+        keysPanel.add(keys, gbc_keys);
     }
 
 }

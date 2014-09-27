@@ -350,10 +350,9 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         JPanel attributesPanel = new JPanel();
         add(attributesPanel, BorderLayout.SOUTH);
         GridBagLayout gbl_attributesPanel = new GridBagLayout();
-        gbl_attributesPanel.columnWidths = new int[] { 261, 261, 0 };
+        gbl_attributesPanel.columnWidths = new int[] { 100, 300 };
         gbl_attributesPanel.rowHeights = new int[] { 75 };
-        gbl_attributesPanel.columnWeights = new double[] { 1.0, 0.0,
-                Double.MIN_VALUE };
+        gbl_attributesPanel.columnWeights = new double[] { 1.0, 0.0 };
         gbl_attributesPanel.rowWeights = new double[] { 1.0 };
         attributesPanel.setLayout(gbl_attributesPanel);
 

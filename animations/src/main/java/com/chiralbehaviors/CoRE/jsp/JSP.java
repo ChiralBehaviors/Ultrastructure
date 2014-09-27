@@ -46,6 +46,69 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
  */
 public abstract class JSP {
 
+    public static final EntityManagerFactory EMF;
+
+    private static int                       depth                    = 0;
+    private static int                       jobProcessingCount       = 0;
+    private static final Logger              log                      = LoggerFactory.getLogger(JSP.class);
+    private static final int                 MAX_JOB_PROCESSING       = 100;
+    /**
+     *
+     */
+    private static final int                 MAX_REENTRANT_CALL_DEPTH = 10;
+    private static final Properties          PROPERTIES               = new Properties();
+    private static SQLException              rootCause;
+
+    static {
+        ClassLoader classLoader = JSP.class.getClassLoader();
+        Thread.currentThread().setContextClassLoader(classLoader);
+        // assume SLF4J is bound to logback in the current environment
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // print logback's internal status
+        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
+        if (is == null) {
+            log.error("Unable to read jpa.properties, resource is null");
+            throw new IllegalStateException(
+                                            "Unable to read jpa.properties, resource is null");
+        }
+        try {
+            PROPERTIES.load(is);
+        } catch (IOException e) {
+            log.error("Unable to read jpa properties", e);
+            throw new IllegalStateException("Unable to read jpa.properties", e);
+        }
+        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                     PROPERTIES);
+
+        Session session;
+        try {
+            session = SessionManager.current();
+        } catch (SQLException e) {
+            log.error("Unable to obtain current session", e);
+            throw new IllegalStateException("Unable to obtain current session",
+                                            e);
+        }
+        session.addTransactionListener(new TransactionListener() {
+
+            @Override
+            public void onAbort(Session arg0) throws SQLException {
+                EMF.getCache().evictAll();
+                jobProcessingCount = 0;
+            }
+
+            @Override
+            public void onCommit(Session arg0) throws SQLException {
+                jobProcessingCount = 0;
+            }
+
+            @Override
+            public void onPrepare(Session arg0) throws SQLException {
+            }
+        });
+    }
+
     public static <T> T call(StoredProcedure<T> call) throws SQLException {
         if (rootCause != null) {
             return null;
@@ -139,62 +202,13 @@ public abstract class JSP {
         }
     }
 
-    /**
-     *
-     */
-    private static final int                 MAX_REENTRANT_CALL_DEPTH = 10;
-    private static int                       depth                    = 0;
-    public static final EntityManagerFactory EMF;
-    private static final Logger              log                      = LoggerFactory.getLogger(JSP.class);
-    private static final Properties          PROPERTIES               = new Properties();
-
-    private static SQLException              rootCause;
-
-    static {
-        ClassLoader classLoader = JSP.class.getClassLoader();
-        Thread.currentThread().setContextClassLoader(classLoader);
-        // assume SLF4J is bound to logback in the current environment
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        // print logback's internal status
-        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-
-        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
-        if (is == null) {
-            log.error("Unable to read jpa.properties, resource is null");
-            throw new IllegalStateException(
-                                            "Unable to read jpa.properties, resource is null");
+    public static void incJobProcessingCount() throws SQLException {
+        jobProcessingCount++;
+        if (jobProcessingCount >= MAX_JOB_PROCESSING) {
+            throw new SQLException(
+                                   String.format("The number of jobs processed [%s} exceeds the maximum allowed [%s]",
+                                                 jobProcessingCount,
+                                                 MAX_JOB_PROCESSING));
         }
-        try {
-            PROPERTIES.load(is);
-        } catch (IOException e) {
-            log.error("Unable to read jpa properties", e);
-            throw new IllegalStateException("Unable to read jpa.properties", e);
-        }
-        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                     PROPERTIES);
-
-        Session session;
-        try {
-            session = SessionManager.current();
-        } catch (SQLException e) {
-            log.error("Unable to obtain current session", e);
-            throw new IllegalStateException("Unable to obtain current session",
-                                            e);
-        }
-        session.addTransactionListener(new TransactionListener() {
-
-            @Override
-            public void onAbort(Session arg0) throws SQLException {
-                EMF.getCache().evictAll();
-            }
-
-            @Override
-            public void onCommit(Session arg0) throws SQLException {
-            }
-
-            @Override
-            public void onPrepare(Session arg0) throws SQLException {
-            }
-        });
     }
 }

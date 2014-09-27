@@ -19,10 +19,16 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE;
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_WORKSPACE;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -79,9 +85,20 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@NamedQueries({
+               @NamedQuery(name = GET_WORKSPACE, query = "SELECT auth FROM WorkspaceAuthorization auth WHERE auth.definingProduct = :product"),
+               @NamedQuery(name = GET_AUTHORIZATION, query = "SELECT auth FROM WorkspaceAuthorization auth "
+                                                             + "WHERE auth.definingProduct = :product "
+                                                             + "AND auth.key = :key"),
+               @NamedQuery(name = GET_AUTHORIZATIONS_BY_TYPE, query = "SELECT auth FROM WorkspaceAuthorization auth "
+                                                                      + "WHERE auth.definingProduct = :product "
+                                                                      + "AND auth.type= :type"), })
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
 public class WorkspaceAuthorization extends Ruleform {
+    public static final String                    GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
+    public static final String                    GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
+    public static final String                    GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
     public static final String                    AGENCY                                   = "Agency";
     public static final String                    AGENCY_ATTRIBUTE                         = "AgencyAttribute";
     public static final String                    AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";

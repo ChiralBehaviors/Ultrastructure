@@ -94,6 +94,7 @@ public class WorkspaceView {
         agencies = new ExistentialRuleformView<>();
         tabbedPane.addTab("Agencies", null, agencies, null);
         tabbedPane.setEnabledAt(0, true);
+        tabbedPane.setVisible(true);
         agencies.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         attributes = new ExistentialRuleformView<>();

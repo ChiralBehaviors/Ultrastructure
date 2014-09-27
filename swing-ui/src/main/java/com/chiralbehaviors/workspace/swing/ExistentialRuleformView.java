@@ -29,7 +29,13 @@ import java.awt.event.InputMethodEvent;
 import java.awt.event.InputMethodListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -46,9 +52,12 @@ import javax.swing.border.TitledBorder;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
+import com.chiralbehaviors.workspace.swing.model.impl.DatabaseEditor;
 
 /**
  * @author hhildebrand
@@ -56,24 +65,36 @@ import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
  */
 public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends JPanel {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        InputStream is = new FileInputStream(args[0]);
+        Properties properties = new Properties();
+        properties.load(is);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                                          properties);
+        final EntityManager em = emf.createEntityManager();
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
-                    @SuppressWarnings("rawtypes")
-                    ExistentialRuleformView frame = new ExistentialRuleformView();
+                    @SuppressWarnings({ "rawtypes", "unchecked" })
+                    ExistentialRuleformView frame = new ExistentialRuleformView(
+                                                                                new DatabaseEditor(
+                                                                                                   new ModelImpl(
+                                                                                                                 em),
+                                                                                                   null),
+                                                                                null);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+        do {
+            Thread.sleep(1000);
+        } while (true);
     }
 
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -97,6 +118,8 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
             }
         });
     }
+
+    private static final long         serialVersionUID = 1L;
 
     private JPanel                    contentPane;
     protected JList<Attribute>        authorizedAttributes;
@@ -392,6 +415,67 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
 
     }
 
+    public ExistentialRuleformView(WorkspaceEditor workspace, RuleForm ruleform) {
+        this();
+        this.workspace = workspace;
+        setRuleform(ruleform);
+    }
+
+    public void setRuleform(RuleForm ruleform) {
+
+    }
+
+    /**
+     *
+     */
+    private void refresh() {
+        refreshWorkspace();
+        refreshRuleform();
+        setParentRelationships();
+        setParents();
+        setChildRelationships();
+        setChildren();
+        setAuthorizedAttributes();
+    }
+
+    /**
+     *
+     */
+    private void refreshWorkspace() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     *
+     */
+    private void setChildRelationships() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     *
+     */
+    private void setParentRelationships() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     */
+    protected void changeDescription(ActionEvent e) {
+        ruleform.setDescription(description.getText());
+    }
+
+    /**
+     * @param e
+     */
+    protected void changeName(ActionEvent e) {
+        ruleform.setName(name.getText());
+    }
+
     protected void createView() {
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -666,61 +750,6 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         gbc_authorizedAttributes.gridx = 1;
         gbc_authorizedAttributes.gridy = 0;
         attributesPanel.add(authorizedAttributes, gbc_authorizedAttributes);
-    }
-
-    public void setRuleform(RuleForm ruleform) {
-
-    }
-
-    /**
-     * 
-     */
-    private void refresh() {
-        refreshWorkspace();
-        refreshRuleform();
-        setParentRelationships();
-        setParents();
-        setChildRelationships();
-        setChildren();
-        setAuthorizedAttributes();
-    }
-
-    /**
-     * 
-     */
-    private void refreshWorkspace() {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * 
-     */
-    private void setChildRelationships() {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * 
-     */
-    private void setParentRelationships() {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * @param e
-     */
-    protected void changeDescription(ActionEvent e) {
-        ruleform.setDescription(description.getText());
-    }
-
-    /**
-     * @param e
-     */
-    protected void changeName(ActionEvent e) {
-        ruleform.setName(name.getText());
     }
 
     /**

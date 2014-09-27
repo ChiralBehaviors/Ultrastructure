@@ -53,11 +53,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     @JoinColumn(name = "product_location")
     private ProductLocation   productLocation;
 
-    // bi-directional many-to-one association to Product
-    @ManyToOne
-    @JoinColumn(name = "product_value")
-    private Product           productValue;
-
     public ProductLocationAttribute() {
     }
 
@@ -146,10 +141,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         return productLocation;
     }
 
-    public Product getEntityValue() {
-        return productValue;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -179,10 +170,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         this.productLocation = productLocation;
     }
 
-    public void setEntityValue(Product product) {
-        productValue = product;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -196,9 +183,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         if (productLocation != null) {
             productLocation = (ProductLocation) productLocation.manageEntity(em,
                                                                              knownObjects);
-        }
-        if (productValue != null) {
-            productValue = (Product) productValue.manageEntity(em, knownObjects);
         }
         if (agency != null) {
             agency = (Agency) agency.manageEntity(em, knownObjects);

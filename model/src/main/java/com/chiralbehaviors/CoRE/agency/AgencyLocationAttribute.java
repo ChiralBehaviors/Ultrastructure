@@ -39,7 +39,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
  *
  */
 @Entity
-@Table(name = "product_location_attribute", schema = "ruleform")
+@Table(name = "agency_location_attribute", schema = "ruleform")
 public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
     private static final long serialVersionUID = 1L;
 

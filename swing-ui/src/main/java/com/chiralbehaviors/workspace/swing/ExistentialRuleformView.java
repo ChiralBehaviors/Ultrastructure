@@ -29,16 +29,11 @@ import java.awt.event.InputMethodEvent;
 import java.awt.event.InputMethodListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Properties;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -52,12 +47,9 @@ import javax.swing.border.TitledBorder;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
-import com.chiralbehaviors.workspace.swing.model.impl.DatabaseEditor;
 
 /**
  * @author hhildebrand
@@ -69,24 +61,17 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
      * Launch the application.
      */
     public static void main(String[] args) throws Exception {
-        InputStream is = new FileInputStream(args[0]);
-        Properties properties = new Properties();
-        properties.load(is);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
-        final EntityManager em = emf.createEntityManager();
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
-                    @SuppressWarnings({ "rawtypes", "unchecked" })
-                    ExistentialRuleformView frame = new ExistentialRuleformView(
-                                                                                new DatabaseEditor(
-                                                                                                   new ModelImpl(
-                                                                                                                 em),
-                                                                                                   null),
-                                                                                null);
+                    ExistentialRuleformView<?, ?> frame = new ExistentialRuleformView<>();
                     frame.setVisible(true);
+                    JFrame enclosure = new JFrame();
+                    enclosure.setBounds(0, 0, 600, 400);
+                    enclosure.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    enclosure.getContentPane().add(frame);
+                    enclosure.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -121,7 +106,6 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
 
     private static final long         serialVersionUID = 1L;
 
-    private JPanel                    contentPane;
     protected JList<Attribute>        authorizedAttributes;
     protected JComboBox<Relationship> childRelationship;
     protected JList<RuleForm>         children;
@@ -139,10 +123,10 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
      * Create the frame.
      */
     public ExistentialRuleformView() {
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BorderLayout(0, 0));
-        BorderLayout borderLayout = (BorderLayout) contentPane.getLayout();
+        // contentPane = new JPanel();
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        setLayout(new BorderLayout(0, 0));
+        BorderLayout borderLayout = (BorderLayout) getLayout();
         borderLayout.setVgap(1);
         borderLayout.setHgap(1);
         setBounds(100, 100, 532, 367);
@@ -153,7 +137,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
                                                               new Color(0, 0, 0)),
                                                "Parents", TitledBorder.CENTER,
                                                TitledBorder.TOP, null, null));
-        contentPane.add(parentPanel, BorderLayout.WEST);
+        add(parentPanel, BorderLayout.WEST);
         GridBagLayout gbl_parentPanel = new GridBagLayout();
         gbl_parentPanel.columnWidths = new int[] { 145 };
         gbl_parentPanel.rowHeights = new int[] { 0, 0, 0 };
@@ -195,7 +179,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         parentPanel.add(parents, gbc_parents);
 
         JPanel ruleformPanel = new JPanel();
-        contentPane.add(ruleformPanel, BorderLayout.CENTER);
+        add(ruleformPanel, BorderLayout.CENTER);
         GridBagLayout gbl_ruleformPanel = new GridBagLayout();
         gbl_ruleformPanel.columnWidths = new int[] { 216 };
         gbl_ruleformPanel.rowHeights = new int[] { 14, 28, 16, 28, 16, 94, 0 };
@@ -275,7 +259,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
                                                  TitledBorder.CENTER,
                                                  TitledBorder.TOP, null,
                                                  new Color(0, 0, 0)));
-        contentPane.add(childrenPanel, BorderLayout.EAST);
+        add(childrenPanel, BorderLayout.EAST);
         GridBagLayout gbl_childrenPanel = new GridBagLayout();
         gbl_childrenPanel.columnWidths = new int[] { 145 };
         gbl_childrenPanel.rowHeights = new int[] { 0, 0, 0 };
@@ -318,7 +302,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         childrenPanel.add(children, gbc_children);
 
         JPanel workspacePanel = new JPanel();
-        contentPane.add(workspacePanel, BorderLayout.NORTH);
+        add(workspacePanel, BorderLayout.NORTH);
         workspacePanel.setLayout(new BoxLayout(workspacePanel, BoxLayout.X_AXIS));
 
         JLabel lblNewLabel_5 = new JLabel("Key");
@@ -364,7 +348,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         workspacePanel.add(btnNewButton_1);
 
         JPanel attributesPanel = new JPanel();
-        contentPane.add(attributesPanel, BorderLayout.SOUTH);
+        add(attributesPanel, BorderLayout.SOUTH);
         GridBagLayout gbl_attributesPanel = new GridBagLayout();
         gbl_attributesPanel.columnWidths = new int[] { 261, 261, 0 };
         gbl_attributesPanel.rowHeights = new int[] { 75 };
@@ -477,10 +461,9 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
     }
 
     protected void createView() {
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BorderLayout(0, 0));
-        BorderLayout borderLayout = (BorderLayout) contentPane.getLayout();
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        setLayout(new BorderLayout(0, 0));
+        BorderLayout borderLayout = (BorderLayout) getLayout();
         borderLayout.setVgap(1);
         borderLayout.setHgap(1);
         setBounds(100, 100, 532, 367);
@@ -491,7 +474,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
                                                               new Color(0, 0, 0)),
                                                "Parents", TitledBorder.CENTER,
                                                TitledBorder.TOP, null, null));
-        contentPane.add(parentPanel, BorderLayout.WEST);
+        add(parentPanel, BorderLayout.WEST);
         GridBagLayout gbl_parentPanel = new GridBagLayout();
         gbl_parentPanel.columnWidths = new int[] { 145 };
         gbl_parentPanel.rowHeights = new int[] { 0, 0, 0 };
@@ -533,7 +516,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         parentPanel.add(parents, gbc_parents);
 
         JPanel ruleformPanel = new JPanel();
-        contentPane.add(ruleformPanel, BorderLayout.CENTER);
+        add(ruleformPanel, BorderLayout.CENTER);
         GridBagLayout gbl_ruleformPanel = new GridBagLayout();
         gbl_ruleformPanel.columnWidths = new int[] { 216 };
         gbl_ruleformPanel.rowHeights = new int[] { 14, 28, 16, 28, 16, 94, 0 };
@@ -613,7 +596,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
                                                  TitledBorder.CENTER,
                                                  TitledBorder.TOP, null,
                                                  new Color(0, 0, 0)));
-        contentPane.add(childrenPanel, BorderLayout.EAST);
+        add(childrenPanel, BorderLayout.EAST);
         GridBagLayout gbl_childrenPanel = new GridBagLayout();
         gbl_childrenPanel.columnWidths = new int[] { 145 };
         gbl_childrenPanel.rowHeights = new int[] { 0, 0, 0 };
@@ -656,7 +639,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         childrenPanel.add(children, gbc_children);
 
         JPanel workspacePanel = new JPanel();
-        contentPane.add(workspacePanel, BorderLayout.NORTH);
+        add(workspacePanel, BorderLayout.NORTH);
         workspacePanel.setLayout(new BoxLayout(workspacePanel, BoxLayout.X_AXIS));
 
         JLabel lblNewLabel_5 = new JLabel("Key");
@@ -702,7 +685,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         workspacePanel.add(btnNewButton_1);
 
         JPanel attributesPanel = new JPanel();
-        contentPane.add(attributesPanel, BorderLayout.SOUTH);
+        add(attributesPanel, BorderLayout.SOUTH);
         GridBagLayout gbl_attributesPanel = new GridBagLayout();
         gbl_attributesPanel.columnWidths = new int[] { 261, 261, 0 };
         gbl_attributesPanel.rowHeights = new int[] { 75 };

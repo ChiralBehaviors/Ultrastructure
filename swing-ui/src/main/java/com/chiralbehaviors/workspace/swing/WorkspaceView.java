@@ -18,13 +18,10 @@ package com.chiralbehaviors.workspace.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
@@ -47,7 +44,6 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 public class WorkspaceView {
 
     private JFrame                                                     frame;
-    private ExistentialRuleformView<Agency, AgencyNetwork>             agencies;
     private ExistentialRuleformView<Attribute, AttributeNetwork>       attributes;
     private ExistentialRuleformView<Interval, IntervalNetwork>         intervals;
     private ExistentialRuleformView<Location, LocationNetwork>         locations;
@@ -55,6 +51,7 @@ public class WorkspaceView {
     private ExistentialRuleformView<Relationship, RelationshipNetwork> relationhips;
     private ExistentialRuleformView<StatusCode, StatusCodeNetwork>     statusCodes;
     private ExistentialRuleformView<Unit, UnitNetwork>                 units;
+    private ExistentialRuleformView<Attribute, AttributeNetwork>       agencies;
 
     /**
      * Launch the application.
@@ -91,11 +88,9 @@ public class WorkspaceView {
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
-        agencies = new ExistentialRuleformView<>();
+        agencies = new ExistentialRuleformView<Attribute, AttributeNetwork>();
         tabbedPane.addTab("Agencies", null, agencies, null);
         tabbedPane.setEnabledAt(0, true);
-        tabbedPane.setVisible(true);
-        agencies.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         attributes = new ExistentialRuleformView<>();
         tabbedPane.addTab("Attributes", null, attributes, null);

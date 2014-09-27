@@ -40,6 +40,7 @@ import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
  *
  */
 public class DatabaseEditor implements WorkspaceEditor {
+    @SuppressWarnings("unused")
     private final Product definingProduct;
     private final Model   model;
 

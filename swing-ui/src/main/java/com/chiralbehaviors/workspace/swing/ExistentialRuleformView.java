@@ -23,6 +23,10 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -30,30 +34,37 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.network.Relationship;
+
 /**
  * @author hhildebrand
  *
  */
-public class ExistentialRuleformView extends JFrame {
-    private static final long serialVersionUID = 1L;
+public class ExistentialRuleformView<T extends ExistentialRuleform<?, ?>>
+        extends JFrame {
+    private static final long       serialVersionUID = 1L;
 
-    private JTextField        textField;
-    private JTextField        name;
-    private JTextArea         notes;
-    private JComboBox<?>      childRelationship;
-    private JList<?>          children;
-    private JComboBox<?>      parentRelationship;
-    private JList<?>          parents;
-    private JComboBox<?>      key;
-
-    private JPanel            contentPane;
+    private JTextField              textField;
+    private JTextField              name;
+    private JTextArea               notes;
+    private JComboBox<Relationship> childRelationship;
+    private JList<T>                children;
+    private JComboBox<Relationship> parentRelationship;
+    private JList<T>                parents;
+    private JComboBox<String>       key;
+    private JPanel                  contentPane;
+    private JComboBox<Relationship> classifier;
 
     /**
      * Launch the application.
@@ -63,6 +74,7 @@ public class ExistentialRuleformView extends JFrame {
             @Override
             public void run() {
                 try {
+                    @SuppressWarnings("rawtypes")
                     ExistentialRuleformView frame = new ExistentialRuleformView();
                     frame.setVisible(true);
                 } catch (Exception e) {
@@ -100,6 +112,12 @@ public class ExistentialRuleformView extends JFrame {
         parentPanel.setLayout(gbl_parentPanel);
 
         parentRelationship = new JComboBox<>();
+        parentRelationship.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectParentRelationship(e);
+            }
+        });
         GridBagConstraints gbc_parentRelationship = new GridBagConstraints();
         gbc_parentRelationship.insets = new Insets(0, 0, 5, 0);
         gbc_parentRelationship.fill = GridBagConstraints.HORIZONTAL;
@@ -108,6 +126,18 @@ public class ExistentialRuleformView extends JFrame {
         parentPanel.add(parentRelationship, gbc_parentRelationship);
 
         parents = new JList<>();
+
+        JPopupMenu popupMenu_1 = new JPopupMenu();
+        addPopup(parents, popupMenu_1);
+
+        JMenuItem mntmNew_1 = new JMenuItem("New");
+        popupMenu_1.add(mntmNew_1);
+
+        JMenuItem mntmRemove_1 = new JMenuItem("Remove");
+        popupMenu_1.add(mntmRemove_1);
+
+        JMenuItem mntmPick_1 = new JMenuItem("Select");
+        popupMenu_1.add(mntmPick_1);
         GridBagConstraints gbc_parents = new GridBagConstraints();
         gbc_parents.fill = GridBagConstraints.BOTH;
         gbc_parents.gridx = 0;
@@ -134,6 +164,12 @@ public class ExistentialRuleformView extends JFrame {
         ruleformPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
 
         name = new JTextField();
+        name.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeName(e);
+            }
+        });
         GridBagConstraints gbc_name = new GridBagConstraints();
         gbc_name.fill = GridBagConstraints.HORIZONTAL;
         gbc_name.anchor = GridBagConstraints.NORTH;
@@ -152,6 +188,12 @@ public class ExistentialRuleformView extends JFrame {
         ruleformPanel.add(lblNewLabel_3, gbc_lblNewLabel_3);
 
         textField = new JTextField();
+        textField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeDescription(e);
+            }
+        });
         GridBagConstraints gbc_textField = new GridBagConstraints();
         gbc_textField.anchor = GridBagConstraints.NORTH;
         gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -193,6 +235,12 @@ public class ExistentialRuleformView extends JFrame {
         childrenPanel.setLayout(gbl_childrenPanel);
 
         childRelationship = new JComboBox<>();
+        childRelationship.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectChildRelationship(e);
+            }
+        });
         GridBagConstraints gbc_childRelationship = new GridBagConstraints();
         gbc_childRelationship.insets = new Insets(0, 0, 5, 0);
         gbc_childRelationship.fill = GridBagConstraints.HORIZONTAL;
@@ -201,6 +249,18 @@ public class ExistentialRuleformView extends JFrame {
         childrenPanel.add(childRelationship, gbc_childRelationship);
 
         children = new JList<>();
+
+        JPopupMenu popupMenu = new JPopupMenu();
+        addPopup(children, popupMenu);
+
+        JMenuItem mntmNew = new JMenuItem("New");
+        popupMenu.add(mntmNew);
+
+        JMenuItem mntmRemove = new JMenuItem("Remove");
+        popupMenu.add(mntmRemove);
+
+        JMenuItem mntmPick = new JMenuItem("Select");
+        popupMenu.add(mntmPick);
         GridBagConstraints gbc_children = new GridBagConstraints();
         gbc_children.fill = GridBagConstraints.BOTH;
         gbc_children.gridx = 0;
@@ -216,13 +276,169 @@ public class ExistentialRuleformView extends JFrame {
         workspacePanel.add(lblNewLabel_5);
 
         key = new JComboBox<>();
+        key.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectFromWorkspace(e);
+            }
+        });
         workspacePanel.add(key);
 
         JButton btnNewButton = new JButton("New");
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newRuleform(e);
+            }
+        });
         workspacePanel.add(btnNewButton);
 
         JButton btnNewButton_1 = new JButton("Save");
+        btnNewButton_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveRuleform(e);
+            }
+        });
         workspacePanel.add(btnNewButton_1);
 
+        JPanel attributesPanel = new JPanel();
+        contentPane.add(attributesPanel, BorderLayout.SOUTH);
+        GridBagLayout gbl_attributesPanel = new GridBagLayout();
+        gbl_attributesPanel.columnWidths = new int[] { 261, 261, 0 };
+        gbl_attributesPanel.rowHeights = new int[] { 75 };
+        gbl_attributesPanel.columnWeights = new double[] { 1.0, 0.0,
+                Double.MIN_VALUE };
+        gbl_attributesPanel.rowWeights = new double[] { 1.0 };
+        attributesPanel.setLayout(gbl_attributesPanel);
+
+        JPanel panel = new JPanel();
+        GridBagConstraints gbc_panel = new GridBagConstraints();
+        gbc_panel.insets = new Insets(0, 0, 0, 5);
+        gbc_panel.fill = GridBagConstraints.BOTH;
+        gbc_panel.gridx = 0;
+        gbc_panel.gridy = 0;
+        attributesPanel.add(panel, gbc_panel);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel lblNewLabel = new JLabel("Classification");
+        panel.add(lblNewLabel);
+
+        classifier = new JComboBox<>();
+        classifier.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectClassifier(e);
+            }
+        });
+        panel.add(classifier);
+
+        JList<Attribute> authorizedAttributes = new JList<>();
+
+        JPopupMenu popupMenu_2 = new JPopupMenu();
+        addPopup(authorizedAttributes, popupMenu_2);
+
+        JMenuItem mntmNew_2 = new JMenuItem("New");
+        popupMenu_2.add(mntmNew_2);
+
+        JMenuItem mntmRemove_2 = new JMenuItem("Remove");
+        popupMenu_2.add(mntmRemove_2);
+
+        JMenuItem mntmPick_2 = new JMenuItem("Select");
+        popupMenu_2.add(mntmPick_2);
+        GridBagConstraints gbc_authorizedAttributes = new GridBagConstraints();
+        gbc_authorizedAttributes.fill = GridBagConstraints.BOTH;
+        gbc_authorizedAttributes.gridx = 1;
+        gbc_authorizedAttributes.gridy = 0;
+        attributesPanel.add(authorizedAttributes, gbc_authorizedAttributes);
+
+    }
+
+    /**
+     * @param e
+     */
+    protected void selectClassifier(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     */
+    protected void selectParentRelationship(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     */
+    protected void changeDescription(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     */
+    protected void changeName(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     */
+    protected void saveRuleform(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     */
+    protected void selectChildRelationship(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     * 
+     */
+    protected void selectFromWorkspace(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param e
+     * 
+     */
+    protected void newRuleform(ActionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    private static void addPopup(Component component, final JPopupMenu popup) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
+            }
+
+            private void showMenu(MouseEvent e) {
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
     }
 }

@@ -42,6 +42,7 @@
     <include relativeToChangelogFile="true" file="tables/location_relationship-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_self_sequencing_authorization/product_self_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/attr_meta_attr_auth-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization.xml" />

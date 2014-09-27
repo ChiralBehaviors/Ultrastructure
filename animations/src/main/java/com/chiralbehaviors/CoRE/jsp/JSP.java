@@ -184,7 +184,8 @@ public abstract class JSP {
         session.addTransactionListener(new TransactionListener() {
 
             @Override
-            public void onPrepare(Session arg0) throws SQLException {
+            public void onAbort(Session arg0) throws SQLException {
+                EMF.getCache().evictAll();
             }
 
             @Override
@@ -192,8 +193,7 @@ public abstract class JSP {
             }
 
             @Override
-            public void onAbort(Session arg0) throws SQLException {
-                EMF.getCache().evictAll();
+            public void onPrepare(Session arg0) throws SQLException {
             }
         });
     }

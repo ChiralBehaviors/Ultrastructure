@@ -11,6 +11,9 @@
         file="functions.xml" />
     <include
         relativeToChangelogFile="true"
+        file="triggerFunctions.xml" />
+    <include
+        relativeToChangelogFile="true"
         file="roles.xml" />
     <include
         relativeToChangelogFile="true"
@@ -18,9 +21,6 @@
     <include
         relativeToChangelogFile="true"
         file="tables.xml" />
-    <include
-        relativeToChangelogFile="true"
-        file="triggerFunctions.xml" />
     <include
         relativeToChangelogFile="true"
         file="triggers.xml" />

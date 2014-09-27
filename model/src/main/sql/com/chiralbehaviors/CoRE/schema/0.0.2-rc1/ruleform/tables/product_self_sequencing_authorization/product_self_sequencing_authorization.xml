@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet
+        id="0.0.2-rc4 create product self sequencing authorization table"
+        author="hparry">
+        <createTable schemaName="ruleform"
+            remarks="Determines what the next available product should be, based on the status code returned for the previous product"
+            tableName="product_self_sequencing_authorization">
+            <column name="id" type="CHAR(22)">
+                <constraints primaryKey="true"
+                    primaryKeyName="product_self_sequencing_authorization_pkey" />
+            </column>
+            <column name="service"
+                remarks="The last product of a given protocol that was completed"
+                type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_code"
+                remarks="The status of the last product completed" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products"
+                type="sequence_number">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_to_set" remarks="The status to set for this job"
+                type="CHAR(22)" />
+            <column name="set_if_active_siblings"
+                remarks="Determines if we set this job to the status denoted by &quot;status_to_set&quot; if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say those sibling jobs might have."
+                type="SMALLINT" />
+            <column name="replace_product" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes"
+                remarks="Additional notes regarding usage of this particular rule"
+                type="VARCHAR(10485760)" />
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ"
+                remarks="The agency that last updated this rule" type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+                name="update_date" remarks="The date this rule was last changed"
+                type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_self_sequencing_authorization" />
+        </rollback>
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="service" baseTableName="product_self_sequencing_authorization"
+            constraintName="product_self_sequencing_authorization_parent_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+            onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_to_set" baseTableName="product_self_sequencing_authorization"
+            constraintName="product_self_sequencing_authorization_parent_status_to_set_fk"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+            onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="status_code" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code" baseTableName="product_self_sequencing_authorization"
+            constraintName="product_self_sequencing_authorization_status_code_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+            onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="status_code" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_self_sequencing_authorization"
+            constraintName="product_self_sequencing_authorization_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
+            onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="service, status_code, sequence_number"
+            constraintName="product_self_sequencing_authorization_parent_status_code_sequ"
+            deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="product_self_sequencing_authorization" />
+        <createIndex schemaName="ruleform"
+            indexName="product_self_sequencing_authorization_updated_by_fkey_idx"
+            tableName="product_self_sequencing_authorization" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+        <sql><![CDATA[
+            GRANT ALL ON TABLE product_self_sequencing_authorization TO core;
+            GRANT SELECT ON TABLE product_self_sequencing_authorization TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE product_self_sequencing_authorization TO core_read_write;
+            ]]>
+        </sql>
+        <rollback />
+        <sql> ALTER TABLE product_self_sequencing_authorization OWNER
+            TO
+            core;
+        </sql>
+        <rollback />
+        <sql> CREATE TRIGGER
+            product_self_sequencing_authorization_update_date BEFORE
+            INSERT OR UPDATE ON
+            product_self_sequencing_authorization
+            FOR
+            EACH ROW EXECUTE PROCEDURE set_update_date();
+        </sql>
+        <rollback> DROP TRIGGER
+            product_self_sequencing_authorization_update_date ON
+            product_self_sequencing_authorization;
+        </rollback>
+    </changeSet>
+    <changeSet id="0.0.2-rc4 product_self_sequencing_authorization readable view" author="hparry">
+        <sql><![CDATA[
+            CREATE OR REPLACE VIEW readable.product_self_sequencing_authorization AS 
+             SELECT base_table.id, s.name AS service, sc.name AS status_code, 
+                    base_table.sequence_number, base_table.notes,
+                    up.name AS updated_by, base_table.update_date
+               FROM product_self_sequencing_authorization base_table
+               JOIN product s ON base_table.service = s.id
+               JOIN status_code sc ON base_table.status_code = sc.id
+               JOIN agency up ON base_table.updated_by = up.id;
+            
+            ALTER TABLE readable.product_self_sequencing_authorization
+              OWNER TO core;
+            GRANT ALL ON TABLE readable.product_self_sequencing_authorization TO core;
+            GRANT SELECT ON TABLE readable.product_self_sequencing_authorization TO core_read_write;
+            GRANT SELECT ON TABLE readable.product_self_sequencing_authorization TO core_read_only;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView
+                viewName="readable.product_self_sequencing_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

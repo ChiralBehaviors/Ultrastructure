@@ -77,11 +77,63 @@ import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
 public class WorkspaceAuthorization extends Ruleform {
-    private static final long                     serialVersionUID = 1L;
+    public static final String                    AGENCY                                   = "Agency";
+    public static final String                    AGENCY_ATTRIBUTE                         = "AgencyAttribute";
+    public static final String                    AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
+    public static final String                    AGENCY_LOCATION                          = "AgencyLocation";
+    public static final String                    AGENCY_LOCATION_ATTRIBUTE                = "AgencyLocationAttribute";
+    public static final String                    AGENCY_NETWORK                           = "AgencyNetwork";
+    public static final String                    AGENCY_NETWORK_ATTRIBUTE                 = "AgencyNetworkAttribute";
+    public static final String                    AGENCY_NETWORK_AUTHORIZATION             = "AgencyNetworkAuthorization";
+    public static final String                    AGENCY_PRODUCT                           = "AgencyProduct";
+    public static final String                    ATTRIBUTE                                = "Attribute";
+    public static final String                    ATTRIBUTE_META_ATTRIBUTE                 = "AttributeMetaAttribute";
+    public static final String                    ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
+    public static final String                    ATTRIBUTE_NETWORK                        = "AttributeNetwork";
+    public static final String                    ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
+    public static final String                    INTERVAL                                 = "Interval";
+    public static final String                    INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
+    public static final String                    INTERVAL_NETWORK                         = "IntervalNetwork";
+    public static final String                    INTERVAL_NETWORK_ATTRIBUTE               = "IntervalNetworkAttribute";
+    public static final String                    JOB                                      = "Job";
+    public static final String                    JOB_CHRONOLOGY                           = "JobChronology";
+    public static final String                    LOCATION                                 = "Location";
+    public static final String                    LOCATION_ATTRIBUTE                       = "LocationAttribute";
+    public static final String                    LOCATION_ATTRIBUTE_AUTHORIZATION         = "LocationAttributeAuthorization";
+    public static final String                    LOCATION_NETWORK                         = "LocationNetwork";
+    public static final String                    LOCATION_NETWORK_ATTRIBUTE               = "LocationNetworkAttribute";
+    public static final String                    LOCATION_NETWORK_AUTHORIZATION           = "LocationNetworkAuthorization";
+    public static final String                    META_PROTOCOL                            = "MetaProtocol";
+    public static final String                    PRODUCT_ATTRIBUTE                        = "ProductAttribute";
+    public static final String                    PRODUCT_ATTRIBUTE_AUTHORIZATION          = "ProductAttributeAuthorization";
+    public static final String                    PRODUCT_CHILD_SEQUENCING_AUTHORIZATION   = "ProductChildSequencingAuthorization";
+    public static final String                    PRODUCT_LOCATION                         = "ProductLocation";
+    public static final String                    PRODUCT_LOCATION_ATTRIBUTE               = "ProductLocationAttribute";
+    public static final String                    PRODUCT_NETWORK                          = "ProductNetwork";
+    public static final String                    PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
+    public static final String                    PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
+    public static final String                    PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
+    public static final String                    PRODUCT2                                 = "Product";
+    public static final String                    PROTOCOL                                 = "Protocol";
+    public static final String                    STATUS_CODE                              = "StatusCode";
+    public static final String                    STATUS_CODE_ATTRIBUTE                    = "StatusCodeAttribute";
+    public static final String                    STATUS_CODE_ATTRIBUTE_AUTHORIZATION      = "StatusCodeAttributeAuthorization";
+    public static final String                    STATUS_CODE_NETWORK                      = "StatusCodeNetwork";
+    public static final String                    STATUS_CODE_NETWORK_ATTRIBUTE            = "StatusCodeNetworkAttribute";
+    public static final String                    STATUS_CODE_SEQUENCING                   = "StatusCodeSequencing";
+    public static final String                    UNIT                                     = "Unit";
+    public static final String                    UNIT_ATTRIBUTE                           = "UnitAttribute";
+    public static final String                    UNIT_ATTRIBUTE_AUTHORIZATION             = "UnitAttributeAuthorization";
+    public static final String                    UNIT_NETWORK                             = "UnitNetwork";
+    public static final String                    UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
+    public static final String                    UNIT_VALUE                               = "UnitValue";
+
+    private static final long                     serialVersionUID                         = 1L;
 
     @ManyToOne
     @JoinColumn(name = "agency")
@@ -357,109 +409,110 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     @SuppressWarnings("unchecked")
+    @JsonIgnore
     public <T extends Ruleform> T getEntity() {
         switch (type) {
-            case "Agency":
+            case AGENCY:
                 return (T) getAgency();
-            case "AgencyAttribute":
+            case AGENCY_ATTRIBUTE:
                 return (T) getAgencyAttribute();
-            case "AgencyAttributeAuthorization":
+            case AGENCY_ATTRIBUTE_AUTHORIZATION:
                 return (T) getAgencyAttributeAuthorization();
-            case "AgencyLocation":
+            case AGENCY_LOCATION:
                 return (T) getAgencyLocation();
-            case "AgencyLocationAttribute":
+            case AGENCY_LOCATION_ATTRIBUTE:
                 return (T) getAgencyLocationAttribute();
-            case "AgencyNetwork":
+            case AGENCY_NETWORK:
                 return (T) getAgencyNetwork();
-            case "AgencyNetworkAttribute":
+            case AGENCY_NETWORK_ATTRIBUTE:
                 return (T) getAgencyNetworkAttribute();
-            case "AgencyNetworkAuthorization":
+            case AGENCY_NETWORK_AUTHORIZATION:
                 return (T) getAgencyNetworkAuthorization();
-            case "AgencyProduct":
+            case AGENCY_PRODUCT:
                 return (T) getAgencyProduct();
-            case "Attribute":
+            case ATTRIBUTE:
                 return (T) getAttribute();
-            case "AttributeMetaAttribute":
+            case ATTRIBUTE_META_ATTRIBUTE:
                 return (T) getAttributeMetaAttribute();
-            case "AttributeMetaAttributeAuthorization":
+            case ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION:
                 return (T) getAttributeMetaAttributeAuthorization();
-            case "AttributeNetwork":
+            case ATTRIBUTE_NETWORK:
                 return (T) getAttributeNetwork();
-            case "AttributeNetworkAttribute":
+            case ATTRIBUTE_NETWORK_ATTRIBUTE:
                 return (T) getAttributeNetworkAttribute();
-            case "Unit":
+            case UNIT:
                 return (T) getUnit();
-            case "UnitAttribute":
+            case UNIT_ATTRIBUTE:
                 return (T) getUnitAttribute();
-            case "UnitAttributeAuthorization":
+            case UNIT_ATTRIBUTE_AUTHORIZATION:
                 return (T) getUnitAttributeAuthorization();
-            case "UnitNetwork":
+            case UNIT_NETWORK:
                 return (T) getUnitNetwork();
-            case "UnitNetworkAttribute":
+            case UNIT_NETWORK_ATTRIBUTE:
                 return (T) getUnitNetworkAttribute();
-            case "UnitValue":
+            case UNIT_VALUE:
                 return (T) getUnitValue();
-            case "Location":
+            case LOCATION:
                 return (T) getLocation();
-            case "LocationAttribute":
+            case LOCATION_ATTRIBUTE:
                 return (T) getLocationAttribute();
-            case "LocationAttributeAuthorization":
+            case LOCATION_ATTRIBUTE_AUTHORIZATION:
                 return (T) getLocationAttributeAuthorization();
-            case "LocationNetwork":
+            case LOCATION_NETWORK:
                 return (T) getLocationNetwork();
-            case "LocationNetworkAttribute":
+            case LOCATION_NETWORK_ATTRIBUTE:
                 return (T) getLocationNetworkAttribute();
-            case "LocationNetworkAuthorization":
+            case LOCATION_NETWORK_AUTHORIZATION:
                 return (T) getLocationNetworkAuthorization();
-            case "Product":
+            case PRODUCT2:
                 return (T) getProduct();
-            case "ProductAttribute":
+            case PRODUCT_ATTRIBUTE:
                 return (T) getProductAttribute();
-            case "ProductAttributeAuthorization":
+            case PRODUCT_ATTRIBUTE_AUTHORIZATION:
                 return (T) getProductAttributeAuthorization();
-            case "ProductNetwork":
+            case PRODUCT_NETWORK:
                 return (T) getProductNetwork();
-            case "ProductNetworkAttribute":
+            case PRODUCT_NETWORK_ATTRIBUTE:
                 return (T) getProductNetworkAttribute();
-            case "ProductLocation":
+            case PRODUCT_LOCATION:
                 return (T) getProductLocation();
-            case "ProductLocationAttribute":
+            case PRODUCT_LOCATION_ATTRIBUTE:
                 return (T) getProductLocationAttribute();
-            case "Interval":
+            case INTERVAL:
                 return (T) getInterval();
-            case "IntervalAttribute":
+            case INTERVAL_ATTRIBUTE:
                 return (T) getIntervalAttribute();
             case "IntervalAttributeAuthorization":
                 return (T) getIntervalAttributeAuthorization();
-            case "IntervalNetwork":
+            case INTERVAL_NETWORK:
                 return (T) getIntervalNetwork();
-            case "IntervalNetworkAttribute":
+            case INTERVAL_NETWORK_ATTRIBUTE:
                 return (T) getIntervalNetworkAttribute();
-            case "StatusCode":
+            case STATUS_CODE:
                 return (T) getStatusCode();
-            case "StatusCodeAttribute":
+            case STATUS_CODE_ATTRIBUTE:
                 return (T) getStatusCodeAttribute();
-            case "StatusCodeAttributeAuthorization":
+            case STATUS_CODE_ATTRIBUTE_AUTHORIZATION:
                 return (T) getStatusCodeAttributeAuthorization();
-            case "StatusCodeNetwork":
+            case STATUS_CODE_NETWORK:
                 return (T) getStatusCodeNetwork();
-            case "StatusCodeNetworkAttribute":
+            case STATUS_CODE_NETWORK_ATTRIBUTE:
                 return (T) getStatusCodeNetworkAttribute();
-            case "StatusCodeSequencing":
+            case STATUS_CODE_SEQUENCING:
                 return (T) getStatusCodeSequencing();
-            case "Job":
+            case JOB:
                 return (T) getJob();
-            case "JobChronology":
+            case JOB_CHRONOLOGY:
                 return (T) getJobChronology();
-            case "MetaProtocol":
+            case META_PROTOCOL:
                 return (T) getMetaProtocol();
-            case "ProductChildSequencingAuthorization":
+            case PRODUCT_CHILD_SEQUENCING_AUTHORIZATION:
                 return (T) getProductChildSequencingAuthorization();
-            case "ProductParentSequencingAuthorization":
+            case PRODUCT_PARENT_SEQUENCING_AUTHORIZATION:
                 return (T) getProductParentSequencingAuthorization();
-            case "ProductSiblingSequencingAuthorization":
+            case PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION:
                 return (T) getProductSiblingSequencingAuthorization();
-            case "Protocol":
+            case PROTOCOL:
                 return (T) getProtocol();
 
             default:
@@ -626,72 +679,72 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setAgency(Agency agency) {
-        type = "Agency";
+        type = AGENCY;
         this.agency = agency;
     }
 
     public void setAgencyAttribute(AgencyAttribute agencyAttribute) {
-        type = "AgencyAttribute";
+        type = AGENCY_ATTRIBUTE;
         this.agencyAttribute = agencyAttribute;
     }
 
     public void setAgencyAttributeAuthorization(AgencyAttributeAuthorization agencyAttributeAuthorization) {
-        type = "AgencyAttributeAuthorization";
+        type = AGENCY_ATTRIBUTE_AUTHORIZATION;
         this.agencyAttributeAuthorization = agencyAttributeAuthorization;
     }
 
     public void setAgencyLocation(AgencyLocation agencyLocation) {
-        type = "AgencyLocation";
+        type = AGENCY_LOCATION;
         this.agencyLocation = agencyLocation;
     }
 
     public void setAgencyLocationAttribute(AgencyLocationAttribute agencyLocationAttribute) {
-        type = "AgencyLocationAttribute";
+        type = AGENCY_LOCATION_ATTRIBUTE;
         this.agencyLocationAttribute = agencyLocationAttribute;
     }
 
     public void setAgencyNetwork(AgencyNetwork agencyNetwork) {
-        type = "AgencyNetwork";
+        type = AGENCY_NETWORK;
         this.agencyNetwork = agencyNetwork;
     }
 
     public void setAgencyNetworkAttribute(AgencyNetworkAttribute agencyNetworkAttribute) {
-        type = "AgencyNetworkAttribute";
+        type = AGENCY_NETWORK_ATTRIBUTE;
         this.agencyNetworkAttribute = agencyNetworkAttribute;
     }
 
     public void setAgencyNetworkAuthorization(AgencyNetworkAuthorization agencyNetworkAuthorization) {
-        type = "AgencyNetworkAuthorization";
+        type = AGENCY_NETWORK_AUTHORIZATION;
         this.agencyNetworkAuthorization = agencyNetworkAuthorization;
     }
 
     public void setAgencyProduct(AgencyProduct agencyProduct) {
-        type = "AgencyProduct";
+        type = AGENCY_PRODUCT;
         this.agencyProduct = agencyProduct;
     }
 
     public void setAttribute(Attribute attribute) {
-        type = "Attribute";
+        type = ATTRIBUTE;
         this.attribute = attribute;
     }
 
     public void setAttributeMetaAttribute(AttributeMetaAttribute attributeMetaAttribute) {
-        type = "AttributeMetaAttribute";
+        type = ATTRIBUTE_META_ATTRIBUTE;
         this.attributeMetaAttribute = attributeMetaAttribute;
     }
 
     public void setAttributeMetaAttributeAuthorization(AttributeMetaAttributeAuthorization attributeMetaAttributeAuthorization) {
-        type = "AttributeMetaAttributeAuthorization";
+        type = ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION;
         this.attributeMetaAttributeAuthorization = attributeMetaAttributeAuthorization;
     }
 
     public void setAttributeNetwork(AttributeNetwork attributeNetwork) {
-        type = "AttributeNetwork";
+        type = ATTRIBUTE_NETWORK;
         this.attributeNetwork = attributeNetwork;
     }
 
     public void setAttributeNetworkAttribute(AttributeNetworkAttribute attributeNetworkAttribute) {
-        type = "AttributeNetworkAttribute";
+        type = ATTRIBUTE_NETWORK_ATTRIBUTE;
         this.attributeNetworkAttribute = attributeNetworkAttribute;
     }
 
@@ -700,12 +753,12 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setInterval(Interval interval) {
-        type = "Interval";
+        type = INTERVAL;
         this.interval = interval;
     }
 
     public void setIntervalAttribute(IntervalAttribute intervalAttribute) {
-        type = "IntervalAttribute";
+        type = INTERVAL_ATTRIBUTE;
         this.intervalAttribute = intervalAttribute;
     }
 
@@ -715,22 +768,22 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setIntervalNetwork(IntervalNetwork intervalNetwork) {
-        type = "IntervalNetwork";
+        type = INTERVAL_NETWORK;
         this.intervalNetwork = intervalNetwork;
     }
 
     public void setIntervalNetworkAttribute(IntervalNetworkAttribute intervalNetworkAttribute) {
-        type = "IntervalNetworkAttribute";
+        type = INTERVAL_NETWORK_ATTRIBUTE;
         this.intervalNetworkAttribute = intervalNetworkAttribute;
     }
 
     public void setJob(Job job) {
-        type = "Job";
+        type = JOB;
         this.job = job;
     }
 
     public void setJobChronology(JobChronology jobChronology) {
-        type = "JobChronology";
+        type = JOB_CHRONOLOGY;
         this.jobChronology = jobChronology;
     }
 
@@ -739,152 +792,152 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setLocation(Location location) {
-        type = "Location";
+        type = LOCATION;
         this.location = location;
     }
 
     public void setLocationAttribute(LocationAttribute locationAttribute) {
-        type = "LocationAttribute";
+        type = LOCATION_ATTRIBUTE;
         this.locationAttribute = locationAttribute;
     }
 
     public void setLocationAttributeAuthorization(LocationAttributeAuthorization locationAttributeAuthorization) {
-        type = "LocationAttributeAuthorization";
+        type = LOCATION_ATTRIBUTE_AUTHORIZATION;
         this.locationAttributeAuthorization = locationAttributeAuthorization;
     }
 
     public void setLocationNetwork(LocationNetwork locationNetwork) {
-        type = "LocationNetwork";
+        type = LOCATION_NETWORK;
         this.locationNetwork = locationNetwork;
     }
 
     public void setLocationNetworkAttribute(LocationNetworkAttribute locationNetworkAttribute) {
-        type = "LocationNetworkAttribute";
+        type = LOCATION_NETWORK_ATTRIBUTE;
         this.locationNetworkAttribute = locationNetworkAttribute;
     }
 
     public void setLocationNetworkAuthorization(LocationNetworkAuthorization locationNetworkAuthorization) {
-        type = "LocationNetworkAuthorization";
+        type = LOCATION_NETWORK_AUTHORIZATION;
         this.locationNetworkAuthorization = locationNetworkAuthorization;
     }
 
     public void setMetaProtocol(MetaProtocol metaProtocol) {
-        type = "MetaProtocol";
+        type = META_PROTOCOL;
         this.metaProtocol = metaProtocol;
     }
 
     public void setProduct(Product product) {
-        type = "Product";
+        type = PRODUCT2;
         this.product = product;
     }
 
     public void setProductAttribute(ProductAttribute productAttribute) {
-        type = "ProductAttribute";
+        type = PRODUCT_ATTRIBUTE;
         this.productAttribute = productAttribute;
     }
 
     public void setProductAttributeAuthorization(ProductAttributeAuthorization productAttributeAuthorization) {
-        type = "ProductAttributeAuthorization";
+        type = PRODUCT_ATTRIBUTE_AUTHORIZATION;
         this.productAttributeAuthorization = productAttributeAuthorization;
     }
 
     public void setProductChildSequencingAuthorization(ProductChildSequencingAuthorization productChildSequencingAuthorization) {
-        type = "ProductChildSequencingAuthorization";
+        type = PRODUCT_CHILD_SEQUENCING_AUTHORIZATION;
         this.productChildSequencingAuthorization = productChildSequencingAuthorization;
     }
 
     public void setProductLocation(ProductLocation productLocation) {
-        type = "ProductLocation";
+        type = PRODUCT_LOCATION;
         this.productLocation = productLocation;
     }
 
     public void setProductLocationAttribute(ProductLocationAttribute productLocationAttribute) {
-        type = "ProductLocationAttribute";
+        type = PRODUCT_LOCATION_ATTRIBUTE;
         this.productLocationAttribute = productLocationAttribute;
     }
 
     public void setProductNetwork(ProductNetwork productNetwork) {
-        type = "ProductNetwork";
+        type = PRODUCT_NETWORK;
         this.productNetwork = productNetwork;
     }
 
     public void setProductNetworkAttribute(ProductNetworkAttribute productNetworkAttribute) {
-        type = "ProductNetworkAttribute";
+        type = PRODUCT_NETWORK_ATTRIBUTE;
         this.productNetworkAttribute = productNetworkAttribute;
     }
 
     public void setProductParentSequencingAuthorization(ProductParentSequencingAuthorization productParentSequencingAuthorization) {
-        type = "ProductParentSequencingAuthorization";
+        type = PRODUCT_PARENT_SEQUENCING_AUTHORIZATION;
         this.productParentSequencingAuthorization = productParentSequencingAuthorization;
     }
 
     public void setProductSiblingSequencingAuthorization(ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization) {
-        type = "ProductSiblingSequencingAuthorization";
+        type = PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION;
         this.productSiblingSequencingAuthorization = productSiblingSequencingAuthorization;
     }
 
     public void setProtocol(Protocol protocol) {
-        type = "Protocol";
+        type = PROTOCOL;
         this.protocol = protocol;
     }
 
     public void setStatusCode(StatusCode statusCode) {
-        type = "StatusCode";
+        type = STATUS_CODE;
         this.statusCode = statusCode;
     }
 
     public void setStatusCodeAttribute(StatusCodeAttribute statusCodeAttribute) {
-        type = "StatusCodeAttribute";
+        type = STATUS_CODE_ATTRIBUTE;
         this.statusCodeAttribute = statusCodeAttribute;
     }
 
     public void setStatusCodeAttributeAuthorization(StatusCodeAttributeAuthorization statusCodeAttributeAuthorization) {
-        type = "StatusCodeAttributeAuthorization";
+        type = STATUS_CODE_ATTRIBUTE_AUTHORIZATION;
         this.statusCodeAttributeAuthorization = statusCodeAttributeAuthorization;
     }
 
     public void setStatusCodeNetwork(StatusCodeNetwork statusCodeNetwork) {
-        type = "StatusCodeNetwork";
+        type = STATUS_CODE_NETWORK;
         this.statusCodeNetwork = statusCodeNetwork;
     }
 
     public void setStatusCodeNetworkAttribute(StatusCodeNetworkAttribute statusCodeNetworkAttribute) {
-        type = "StatusCodeNetworkAttribute";
+        type = STATUS_CODE_NETWORK_ATTRIBUTE;
         this.statusCodeNetworkAttribute = statusCodeNetworkAttribute;
     }
 
     public void setStatusCodeSequencing(StatusCodeSequencing statusCodeSequencing) {
-        type = "StatusCodeSequencing";
+        type = STATUS_CODE_SEQUENCING;
         this.statusCodeSequencing = statusCodeSequencing;
     }
 
     public void setUnit(Unit unit) {
-        type = "Unit";
+        type = UNIT;
         this.unit = unit;
     }
 
     public void setUnitAttribute(UnitAttribute unitAttribute) {
-        type = "UnitAttribute";
+        type = UNIT_ATTRIBUTE;
         this.unitAttribute = unitAttribute;
     }
 
     public void setUnitAttributeAuthorization(UnitAttributeAuthorization unitAttributeAuthorization) {
-        type = "UnitAttributeAuthorization";
+        type = UNIT_ATTRIBUTE_AUTHORIZATION;
         this.unitAttributeAuthorization = unitAttributeAuthorization;
     }
 
     public void setUnitNetwork(UnitNetwork unitNetwork) {
-        type = "UnitNetwork";
+        type = UNIT_NETWORK;
         this.unitNetwork = unitNetwork;
     }
 
     public void setUnitNetworkAttribute(UnitNetworkAttribute unitNetworkAttribute) {
-        type = "UnitNetworkAttribute";
+        type = UNIT_NETWORK_ATTRIBUTE;
         this.unitNetworkAttribute = unitNetworkAttribute;
     }
 
     public void setUnitValue(UnitValue unitValue) {
-        type = "UnitValue";
+        type = UNIT_VALUE;
         this.unitValue = unitValue;
     }
 

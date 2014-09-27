@@ -25,39 +25,45 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.product.Product;
+
 /**
  * @author hhildebrand
  *
  */
 public class AbstractProtocolView extends JPanel {
 
-    private static final long serialVersionUID = 1L;
-    private JComboBox         assignTo;
-    private JComboBox         assignToAttribute;
-    private JLabel            lblDeliverFrom;
-    private JComboBox         deliverFrom;
-    private JLabel            lblDeliverFromAttribute;
-    private JComboBox         deliverFromAttribute;
-    private JLabel            lblDeliverTo;
-    private JLabel            lblDeliverToAttribute;
-    private JLabel            lblRequester;
-    private JLabel            lblProductAttribute;
-    private JLabel            lblRequester_1;
-    private JLabel            lblRequesterAttribute;
-    private JComboBox         deliverTo;
-    private JComboBox         deliverToAttribute;
-    private JComboBox         product;
-    private JComboBox         productAttribute;
-    private JComboBox         requester;
-    private JComboBox         requesterAttribute;
-    private JLabel            lblQuantity;
-    private JTextField        quantity;
-    private JLabel            lblQuantityUnit;
-    private JComboBox         quantityUnit;
-    private JLabel            lblService;
-    private JComboBox         service;
-    private JLabel            lblServiceAttribute;
-    private JComboBox         comboBox;
+    private static final long    serialVersionUID = 1L;
+    private JComboBox<Agency>    assignTo;
+    private JComboBox<Attribute> assignToAttribute;
+    private JComboBox<Location>  deliverFrom;
+    private JComboBox<Attribute> deliverFromAttribute;
+    private JComboBox<Location>  deliverTo;
+    private JComboBox<Attribute> deliverToAttribute;
+    private JLabel               lblDeliverFrom;
+    private JLabel               lblDeliverFromAttribute;
+    private JLabel               lblDeliverTo;
+    private JLabel               lblDeliverToAttribute;
+    private JLabel               lblProductAttribute;
+    private JLabel               lblQuantity;
+    private JLabel               lblQuantityUnit;
+    private JLabel               lblRequester;
+    private JLabel               lblRequester_1;
+    private JLabel               lblRequesterAttribute;
+    private JLabel               lblService;
+    private JLabel               lblServiceAttribute;
+    private JComboBox<Product>   product;
+    private JComboBox<Attribute> productAttribute;
+    private JTextField           quantity;
+    private JComboBox<Unit>      quantityUnit;
+    private JComboBox<Agency>    requester;
+    private JComboBox<Attribute> requesterAttribute;
+    private JComboBox<Product>   service;
+    private JComboBox<Attribute> serviceAttribute;
 
     /**
      * Create the panel.
@@ -79,7 +85,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblAssignTo.gridy = 0;
         add(lblAssignTo, gbc_lblAssignTo);
 
-        assignTo = new JComboBox();
+        assignTo = new JComboBox<>();
         GridBagConstraints gbc_assignTo = new GridBagConstraints();
         gbc_assignTo.insets = new Insets(0, 0, 5, 5);
         gbc_assignTo.fill = GridBagConstraints.BOTH;
@@ -95,7 +101,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblAssignToAttribute.gridy = 0;
         add(lblAssignToAttribute, gbc_lblAssignToAttribute);
 
-        assignToAttribute = new JComboBox();
+        assignToAttribute = new JComboBox<>();
         GridBagConstraints gbc_assignToAttribute = new GridBagConstraints();
         gbc_assignToAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_assignToAttribute.fill = GridBagConstraints.HORIZONTAL;
@@ -111,7 +117,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblDeliverFrom.gridy = 1;
         add(lblDeliverFrom, gbc_lblDeliverFrom);
 
-        deliverFrom = new JComboBox();
+        deliverFrom = new JComboBox<>();
         GridBagConstraints gbc_deliverFrom = new GridBagConstraints();
         gbc_deliverFrom.insets = new Insets(0, 0, 5, 5);
         gbc_deliverFrom.fill = GridBagConstraints.HORIZONTAL;
@@ -127,7 +133,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblDeliverFromAttribute.gridy = 1;
         add(lblDeliverFromAttribute, gbc_lblDeliverFromAttribute);
 
-        deliverFromAttribute = new JComboBox();
+        deliverFromAttribute = new JComboBox<>();
         GridBagConstraints gbc_deliverFromAttribute = new GridBagConstraints();
         gbc_deliverFromAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_deliverFromAttribute.fill = GridBagConstraints.HORIZONTAL;
@@ -143,7 +149,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblDeliverTo.gridy = 2;
         add(lblDeliverTo, gbc_lblDeliverTo);
 
-        deliverTo = new JComboBox();
+        deliverTo = new JComboBox<>();
         GridBagConstraints gbc_deliverTo = new GridBagConstraints();
         gbc_deliverTo.insets = new Insets(0, 0, 5, 5);
         gbc_deliverTo.fill = GridBagConstraints.HORIZONTAL;
@@ -159,7 +165,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblDeliverToAttribute.gridy = 2;
         add(lblDeliverToAttribute, gbc_lblDeliverToAttribute);
 
-        deliverToAttribute = new JComboBox();
+        deliverToAttribute = new JComboBox<>();
         GridBagConstraints gbc_deliverToAttribute = new GridBagConstraints();
         gbc_deliverToAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_deliverToAttribute.fill = GridBagConstraints.HORIZONTAL;
@@ -175,7 +181,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblRequester.gridy = 3;
         add(lblRequester, gbc_lblRequester);
 
-        product = new JComboBox();
+        product = new JComboBox<>();
         GridBagConstraints gbc_product = new GridBagConstraints();
         gbc_product.insets = new Insets(0, 0, 5, 5);
         gbc_product.fill = GridBagConstraints.HORIZONTAL;
@@ -191,7 +197,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblProductAttribute.gridy = 3;
         add(lblProductAttribute, gbc_lblProductAttribute);
 
-        productAttribute = new JComboBox();
+        productAttribute = new JComboBox<>();
         GridBagConstraints gbc_productAttribute = new GridBagConstraints();
         gbc_productAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_productAttribute.fill = GridBagConstraints.HORIZONTAL;
@@ -207,7 +213,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblRequester_1.gridy = 4;
         add(lblRequester_1, gbc_lblRequester_1);
 
-        requester = new JComboBox();
+        requester = new JComboBox<>();
         GridBagConstraints gbc_requester = new GridBagConstraints();
         gbc_requester.insets = new Insets(0, 0, 5, 5);
         gbc_requester.fill = GridBagConstraints.HORIZONTAL;
@@ -223,7 +229,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblRequesterAttribute.gridy = 4;
         add(lblRequesterAttribute, gbc_lblRequesterAttribute);
 
-        requesterAttribute = new JComboBox();
+        requesterAttribute = new JComboBox<>();
         GridBagConstraints gbc_requesterAttribute = new GridBagConstraints();
         gbc_requesterAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_requesterAttribute.fill = GridBagConstraints.HORIZONTAL;
@@ -256,7 +262,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblQuantityUnit.gridy = 5;
         add(lblQuantityUnit, gbc_lblQuantityUnit);
 
-        quantityUnit = new JComboBox();
+        quantityUnit = new JComboBox<>();
         GridBagConstraints gbc_quantityUnit = new GridBagConstraints();
         gbc_quantityUnit.insets = new Insets(0, 0, 5, 0);
         gbc_quantityUnit.fill = GridBagConstraints.HORIZONTAL;
@@ -272,7 +278,7 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblService.gridy = 6;
         add(lblService, gbc_lblService);
 
-        service = new JComboBox();
+        service = new JComboBox<>();
         GridBagConstraints gbc_service = new GridBagConstraints();
         gbc_service.insets = new Insets(0, 0, 0, 5);
         gbc_service.fill = GridBagConstraints.HORIZONTAL;
@@ -288,12 +294,12 @@ public class AbstractProtocolView extends JPanel {
         gbc_lblServiceAttribute.gridy = 6;
         add(lblServiceAttribute, gbc_lblServiceAttribute);
 
-        comboBox = new JComboBox();
+        serviceAttribute = new JComboBox<>();
         GridBagConstraints gbc_comboBox = new GridBagConstraints();
         gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBox.gridx = 3;
         gbc_comboBox.gridy = 6;
-        add(comboBox, gbc_comboBox);
+        add(serviceAttribute, gbc_comboBox);
 
     }
 

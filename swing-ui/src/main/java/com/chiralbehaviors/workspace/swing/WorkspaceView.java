@@ -67,6 +67,8 @@ public class WorkspaceView {
     private JLabel                                                     lblWorkspace;
     private JComboBox<WorkspaceEditor>                                 workspaces;
     private JList<WorkspaceAuthorization>                              keys;
+    private ProtocolView                                               protocols;
+    private JobView                                                    jobs;
 
     /**
      * Launch the application.
@@ -141,6 +143,14 @@ public class WorkspaceView {
 
         events = new JTabbedPane(JTabbedPane.TOP);
         constellations.addTab("Events", null, events, null);
+
+        protocols = new ProtocolView();
+        events.addTab("Protocols", null, protocols, null);
+        events.setEnabledAt(0, true);
+
+        jobs = new JobView();
+        events.addTab("Jobs", null, jobs, null);
+        events.setEnabledAt(1, true);
 
         JPanel workspace = new JPanel();
         frame.getContentPane().add(workspace, BorderLayout.NORTH);

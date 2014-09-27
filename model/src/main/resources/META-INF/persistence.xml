@@ -33,6 +33,7 @@
         <class>com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization</class>
         <class>com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization</class>
         <class>com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization</class>
         <class>com.chiralbehaviors.CoRE.event.AbstractProtocol</class>
         <class>com.chiralbehaviors.CoRE.event.Job</class>
         <class>com.chiralbehaviors.CoRE.event.JobChronology</class>

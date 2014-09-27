@@ -45,6 +45,15 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AbstractModelTest {
+    @AfterClass
+    public static void afterClass() {
+        if (em != null && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+            em.clear();
+            em.close();
+        }
+    }
+
     @BeforeClass
     public static void initializeDatabase() throws IOException, SQLException {
         if (em != null) {
@@ -72,24 +81,16 @@ public class AbstractModelTest {
     }
 
     private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+
     protected static Model                model;
 
     protected static Kernel               kernel;
-
     protected static EntityManager        em;
+
     protected static EntityManagerFactory emf;
 
     public AbstractModelTest() {
         super();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        if (em != null && em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-            em.clear();
-            em.close();
-        }
     }
 
     @After
@@ -103,7 +104,7 @@ public class AbstractModelTest {
     protected void alterTriggers(boolean enable) throws SQLException {
         Connection connection = em.unwrap(Connection.class);
         for (String table : new String[] { "ruleform.agency",
-                "ruleform.product", "ruleform.location" }) {
+                                           "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
                                          table, enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);

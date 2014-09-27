@@ -100,7 +100,7 @@ public abstract class JSP {
                                                              String.format("** Java Stored procedure failed %s\n%s",
                                                                            call,
                                                                            string.toString()),
-                                                             e);
+                                                                           e);
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("Setting root cause to: %s",
                                             sqlException));
@@ -162,7 +162,7 @@ public abstract class JSP {
         if (is == null) {
             log.error("Unable to read jpa.properties, resource is null");
             throw new IllegalStateException(
-                                            "Unable to read jpa.properties, resource is null");
+                    "Unable to read jpa.properties, resource is null");
         }
         try {
             PROPERTIES.load(is);
@@ -184,7 +184,8 @@ public abstract class JSP {
         session.addTransactionListener(new TransactionListener() {
 
             @Override
-            public void onPrepare(Session arg0) throws SQLException {
+            public void onAbort(Session arg0) throws SQLException {
+                EMF.getCache().evictAll();
             }
 
             @Override
@@ -192,8 +193,7 @@ public abstract class JSP {
             }
 
             @Override
-            public void onAbort(Session arg0) throws SQLException {
-                EMF.getCache().evictAll();
+            public void onPrepare(Session arg0) throws SQLException {
             }
         });
     }

@@ -28,6 +28,7 @@ import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -103,7 +104,7 @@ public interface JobModel {
      */
     void ensureNextStateIsValid(Job job, Product service,
                                 StatusCode currentStatus, StatusCode nextStatus)
-                                                                                throws SQLException;
+                                        throws SQLException;
 
     /**
      * @param parent
@@ -119,7 +120,7 @@ public interface JobModel {
      */
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
-                                                                  throws SQLException;
+                                             throws SQLException;
 
     Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
 
@@ -396,6 +397,12 @@ public interface JobModel {
     List<Protocol> getProtocolsFor(Product service);
 
     /**
+     * @param job
+     * @return
+     */
+    List<ProductSelfSequencingAuthorization> getSelfActions(Job job);
+
+    /**
      * Answer the list of sibling actions for the job
      *
      * @param job
@@ -572,6 +579,11 @@ public interface JobModel {
      * @param job
      */
     void processParentSequencing(Job job);
+
+    /**
+     * @param job
+     */
+    void processSelfSequencing(Job job);
 
     /**
      * Process all the implicit status changes of the siblings of a job

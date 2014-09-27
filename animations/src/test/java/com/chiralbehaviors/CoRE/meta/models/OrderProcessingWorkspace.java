@@ -118,7 +118,7 @@ public class OrderProcessingWorkspace {
     }
 
     public void merge(EntityManager em) throws IllegalArgumentException,
-                                       IllegalAccessException {
+    IllegalAccessException {
 
         Map<Ruleform, Ruleform> translated = new HashMap<>();
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {

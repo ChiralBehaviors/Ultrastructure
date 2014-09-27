@@ -35,8 +35,8 @@ import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
  *
  */
 public interface ProductModel
-        extends
-        NetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
+extends
+NetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
 
     List<ProductAgencyAccessAuthorization> getAgencyAccessAuths(Product parent,
                                                                 Relationship relationship);

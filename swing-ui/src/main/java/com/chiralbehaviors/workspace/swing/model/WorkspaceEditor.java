@@ -16,10 +16,25 @@
 
 package com.chiralbehaviors.workspace.swing.model;
 
+import java.util.List;
+
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.Relationship;
+
 /**
  * @author hhildebrand
  *
  */
 public interface WorkspaceEditor {
 
+    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getChildren(RuleForm parent,
+                                                                                                                                    Relationship relationship);
+
+    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getParents(RuleForm child,
+                                                                                                                                   Relationship relationship);
+
+    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Attribute> getAttributeAuthorizations(RuleForm parent,
+                                                                                                                                                    Relationship relationship);
 }

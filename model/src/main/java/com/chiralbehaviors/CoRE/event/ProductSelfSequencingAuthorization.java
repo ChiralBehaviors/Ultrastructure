@@ -42,37 +42,30 @@ import com.chiralbehaviors.CoRE.product.Product;
  */
 @NamedQueries({
                @NamedQuery(name = GET_SELF_ACTIONS, query = "SELECT seq FROM ProductSelfSequencingAuthorization AS seq"
-                                                              + " WHERE seq.service = :service"
-                                                              + "   AND seq.statusCode = :status"
-                                                              + " ORDER BY seq.sequenceNumber"),
+                                                            + " WHERE seq.service = :service"
+                                                            + "   AND seq.statusCode = :status"
+                                                            + " ORDER BY seq.sequenceNumber"),
                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSelfSequencingAuthorization AS seq"
                                                          + " WHERE seq.service = :service"
                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_self_sequencing_authorization", schema = "ruleform")
 public class ProductSelfSequencingAuthorization extends Ruleform {
-    public static final String GET_SELF_ACTIONS  = "productSelfSequencingAuthorization.getSelfActions";
-    public static final String GET_SEQUENCES       = "productSelfSequencingAuthorization.getSequences";
+    public static final String GET_SELF_ACTIONS = "productSelfSequencingAuthorization.getSelfActions";
+    public static final String GET_SEQUENCES    = "productSelfSequencingAuthorization.getSequences";
 
-    private static final long  serialVersionUID    = 1L;
-
+    private static final long  serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_to_set")
     private StatusCode         statusToSet;
 
-    @Column(name = "replace_product")
-    private Integer            replaceProduct      = FALSE;
-
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber      = 1;
+    private Integer            sequenceNumber   = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service")
     private Product            service;
-
-    @Column(name = "set_if_active_siblings")
-    private Integer            setIfActiveSiblings = TRUE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
@@ -90,9 +83,9 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
     }
 
     public ProductSelfSequencingAuthorization(Product service,
-                                                StatusCode statusCode,
-                                                StatusCode statusToSet,
-                                                Agency updatedBy) {
+                                              StatusCode statusCode,
+                                              StatusCode statusToSet,
+                                              Agency updatedBy) {
         super(updatedBy);
         setService(service);
         setStatusCode(statusCode);
@@ -141,31 +134,12 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
         return service;
     }
 
-    public Boolean getSetIfActiveSiblings() {
-        return toBoolean(setIfActiveSiblings);
-    }
-
     public StatusCode getStatusCode() {
         return statusCode;
     }
 
-    /**
-     * @return the replaceProduct
-     */
-    public boolean isReplaceProduct() {
-        return replaceProduct.equals(TRUE);
-    }
-
     public void setStatusToSet(StatusCode statusToSet) {
         this.statusToSet = statusToSet;
-    }
-
-    /**
-     * @param replaceProduct
-     *            the replaceProduct to set
-     */
-    public void setReplaceProduct(boolean replaceProduct) {
-        this.replaceProduct = replaceProduct ? TRUE : FALSE;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -176,20 +150,15 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
         this.service = service;
     }
 
-    public void setSetIfActiveSiblings(Boolean setIfActiveSiblings) {
-        this.setIfActiveSiblings = toInteger(setIfActiveSiblings);
-    }
-
     public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
 
     @Override
     public String toString() {
-        return String.format("ProductSelfSequencingAuthorization [service=%s, statusCode=%s, statusToSet=%s, setIfActiveSiblings=%s, replaceProduct=%s, sequenceNumber=%s]",
-                             service.getName(), statusCode.getName(), statusToSet.getName(),
-                             setIfActiveSiblings, replaceProduct,
-                             sequenceNumber);
+        return String.format("ProductSelfSequencingAuthorization [service=%s, statusCode=%s, statusToSet=%s, sequenceNumber=%s]",
+                             service.getName(), statusCode.getName(),
+                             statusToSet.getName(), sequenceNumber);
     }
 
     /*
@@ -207,7 +176,7 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
         }
         if (statusToSet != null) {
             statusToSet = (StatusCode) statusToSet.manageEntity(em,
-                                                                            knownObjects);
+                                                                knownObjects);
         }
         if (statusCode != null) {
             statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);

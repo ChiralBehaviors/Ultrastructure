@@ -1518,9 +1518,6 @@ public class JobModelImpl implements JobModel {
                 changeStatus(job, seq.getStatusToSet(),
                              kernel.getCoreAnimationSoftware(),
                              "Automatically switching staus via direct communication from sibling jobs");
-                if (seq.isReplaceProduct()) {
-                    job.setProduct(job.getProduct());
-                }
             } catch (Throwable e) {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("invalid parent status sequencing %s",

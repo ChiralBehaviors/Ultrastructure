@@ -63,10 +63,19 @@ public class WorkspaceView {
     private ExistentialRuleformView<Unit, UnitNetwork>                 units;
     private ExistentialRuleformView<Attribute, AttributeNetwork>       agencies;
     private JTabbedPane                                                constellations;
-    private JTabbedPane                                                events;
+    private JTabbedPane                                                sequencing;
     private JLabel                                                     lblWorkspace;
     private JComboBox<WorkspaceEditor>                                 workspaces;
     private JList<WorkspaceAuthorization>                              keys;
+    private ProtocolView                                               protocols;
+    private JobView                                                    jobs;
+    private StatusCodeSequencingView                                   statusCodeSequencing;
+    private ParentSeqAuthView                                          parentSequencing;
+    private SiblingSeqAuthView                                         siblingSequencing;
+    private ChildAuthSeqView                                           childSequencing;
+    private SelfAuthSeqView                                            selfSequencing;
+    private JTabbedPane                                                events;
+    private MetaProtocolView                                           metaProtocols;
 
     /**
      * Launch the application.
@@ -141,6 +150,39 @@ public class WorkspaceView {
 
         events = new JTabbedPane(JTabbedPane.TOP);
         constellations.addTab("Events", null, events, null);
+
+        protocols = new ProtocolView();
+        events.addTab("Protocols", null, protocols, null);
+
+        metaProtocols = new MetaProtocolView();
+        events.addTab("Meta Protocols", null, metaProtocols, null);
+        events.setEnabledAt(1, true);
+
+        jobs = new JobView();
+        events.addTab("Jobs", null, jobs, null);
+
+        sequencing = new JTabbedPane(JTabbedPane.TOP);
+        constellations.addTab("Sequencing", null, sequencing, null);
+
+        statusCodeSequencing = new StatusCodeSequencingView();
+        sequencing.addTab("Sequencing", null, statusCodeSequencing, null);
+        sequencing.setEnabledAt(0, true);
+
+        parentSequencing = new ParentSeqAuthView();
+        sequencing.addTab("Parent Sequencing", null, parentSequencing, null);
+        sequencing.setEnabledAt(1, true);
+
+        siblingSequencing = new SiblingSeqAuthView();
+        sequencing.addTab("Sibling Sequencing", null, siblingSequencing, null);
+        sequencing.setEnabledAt(2, true);
+
+        childSequencing = new ChildAuthSeqView();
+        sequencing.addTab("Child Sequencing", null, childSequencing, null);
+        sequencing.setEnabledAt(3, true);
+
+        selfSequencing = new SelfAuthSeqView();
+        sequencing.addTab("Self Sequencing", null, selfSequencing, null);
+        sequencing.setEnabledAt(3, true);
 
         JPanel workspace = new JPanel();
         frame.getContentPane().add(workspace, BorderLayout.NORTH);

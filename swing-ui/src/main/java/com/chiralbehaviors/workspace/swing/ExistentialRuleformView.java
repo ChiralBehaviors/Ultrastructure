@@ -66,7 +66,8 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
             @Override
             public void run() {
                 try {
-                    ExistentialRuleformView frame = new ExistentialRuleformView<>();
+                    @SuppressWarnings("rawtypes")
+                    ExistentialRuleformView frame = new ExistentialRuleformView();
                     frame.setVisible(true);
                     JFrame enclosure = new JFrame();
                     enclosure.setBounds(0, 0, 600, 400);
@@ -358,6 +359,9 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         attributesPanel.setLayout(gbl_attributesPanel);
 
         JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder(null, "Classifier",
+                                         TitledBorder.LEADING,
+                                         TitledBorder.TOP, null, null));
         GridBagConstraints gbc_panel = new GridBagConstraints();
         gbc_panel.insets = new Insets(0, 0, 0, 5);
         gbc_panel.fill = GridBagConstraints.BOTH;
@@ -365,9 +369,6 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         gbc_panel.gridy = 0;
         attributesPanel.add(panel, gbc_panel);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        JLabel lblNewLabel = new JLabel("Classification");
-        panel.add(lblNewLabel);
 
         classifier = new JComboBox<>();
         classifier.addActionListener(new ActionListener() {

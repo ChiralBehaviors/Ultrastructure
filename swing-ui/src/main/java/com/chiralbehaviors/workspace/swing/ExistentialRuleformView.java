@@ -65,7 +65,8 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
             @Override
             public void run() {
                 try {
-                    ExistentialRuleformView frame = new ExistentialRuleformView<>();
+                    @SuppressWarnings("rawtypes")
+                    ExistentialRuleformView frame = new ExistentialRuleformView();
                     frame.setVisible(true);
                     JFrame enclosure = new JFrame();
                     enclosure.setBounds(0, 0, 600, 400);

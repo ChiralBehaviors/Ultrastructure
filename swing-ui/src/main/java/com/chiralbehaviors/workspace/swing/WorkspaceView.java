@@ -75,6 +75,7 @@ public class WorkspaceView {
     private ChildAuthSeqView                                           childSequencing;
     private SelfAuthSeqView                                            selfSequencing;
     private JTabbedPane                                                events;
+    private MetaProtocolView                                           metaProtocols;
 
     /**
      * Launch the application.
@@ -152,6 +153,10 @@ public class WorkspaceView {
 
         protocols = new ProtocolView();
         events.addTab("Protocols", null, protocols, null);
+
+        metaProtocols = new MetaProtocolView();
+        events.addTab("Meta Protocols", null, metaProtocols, null);
+        events.setEnabledAt(1, true);
 
         jobs = new JobView();
         events.addTab("Jobs", null, jobs, null);

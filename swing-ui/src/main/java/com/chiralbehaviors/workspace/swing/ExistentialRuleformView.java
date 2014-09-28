@@ -29,6 +29,7 @@ import java.awt.event.InputMethodEvent;
 import java.awt.event.InputMethodListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -65,7 +66,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
             @Override
             public void run() {
                 try {
-                    ExistentialRuleformView<?, ?> frame = new ExistentialRuleformView<>();
+                    ExistentialRuleformView frame = new ExistentialRuleformView<>();
                     frame.setVisible(true);
                     JFrame enclosure = new JFrame();
                     enclosure.setBounds(0, 0, 600, 400);
@@ -402,10 +403,11 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
         this();
         this.workspace = workspace;
         setRuleform(ruleform);
+        refresh();
     }
 
     public void setRuleform(RuleForm ruleform) {
-
+        this.ruleform = ruleform;
     }
 
     /**
@@ -797,19 +799,38 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
     }
 
     protected void setAuthorizedAttributes() {
+        if (classifier.getSelectedItem() == null) {
+            return;
+        }
         authorizedAttributes.setListData((Attribute[]) workspace.getAttributeAuthorizations(ruleform,
                                                                                             (Relationship) classifier.getSelectedItem()).toArray());
     }
 
     @SuppressWarnings("unchecked")
     protected void setChildren() {
-        children.setListData((RuleForm[]) workspace.getChildren(ruleform,
-                                                                (Relationship) childRelationship.getSelectedItem()).toArray());
+        if (childRelationship.getSelectedItem() == null) {
+            return;
+        }
+        List<RuleForm> childItems = workspace.getChildren(ruleform,
+                                                          (Relationship) childRelationship.getSelectedItem());
+        if (childItems == null) {
+            children.removeAll();
+        } else {
+            children.setListData((RuleForm[]) childItems.toArray());
+        }
     }
 
     @SuppressWarnings("unchecked")
     protected void setParents() {
-        parents.setListData((RuleForm[]) workspace.getParents(ruleform,
-                                                              (Relationship) parentRelationship.getSelectedItem()).toArray());
+        if (parentRelationship.getSelectedItem() == null) {
+            return;
+        }
+        List<RuleForm> parentItems = workspace.getParents(ruleform,
+                                                          (Relationship) parentRelationship.getSelectedItem());
+        if (parentItems == null) {
+            parents.removeAll();
+        } else {
+            parents.setListData((RuleForm[]) parentItems.toArray());
+        }
     }
 }

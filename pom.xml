@@ -360,7 +360,7 @@
         </pluginRepository>
         <pluginRepository>
             <id>chiralbehaviors-snapshots</id>
-            <url>>http://repository-chiralbehaviors.forge.cloudbees.com/snapshot/</url>
+            <url>http://repository-chiralbehaviors.forge.cloudbees.com/snapshot/</url>
         </pluginRepository>
         <pluginRepository>
             <id>reflections-repo</id>

@@ -46,6 +46,9 @@ public class MetaProtocolView extends JPanel {
     private JComboBox<Relationship> assignTo;
     private JComboBox<Object>       service;
     private JComboBox<Object>       keys;
+    private JComboBox<Object>       requester;
+    private JComboBox<Object>       requesterAttribute;
+    private JComboBox<Object>       quantityUnit;
 
     /**
      * Create the panel.
@@ -56,7 +59,7 @@ public class MetaProtocolView extends JPanel {
         abstractProtocol = new AbstractProtocolView();
 
         JPanel panel = new JPanel();
-        add(panel, BorderLayout.CENTER);
+        add(panel, BorderLayout.WEST);
         GridBagLayout gbl_panel = new GridBagLayout();
         gbl_panel.columnWidths = new int[] { 0, 0, 0, 0, 0 };
         gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
@@ -96,6 +99,21 @@ public class MetaProtocolView extends JPanel {
         gbc_serviceType.gridx = 1;
         gbc_serviceType.gridy = 1;
         panel.add(serviceType, gbc_serviceType);
+
+        JLabel lblQuantityUnit = new JLabel("Quantity Unit");
+        GridBagConstraints gbc_lblQuantityUnit = new GridBagConstraints();
+        gbc_lblQuantityUnit.insets = new Insets(0, 0, 5, 5);
+        gbc_lblQuantityUnit.gridx = 2;
+        gbc_lblQuantityUnit.gridy = 1;
+        panel.add(lblQuantityUnit, gbc_lblQuantityUnit);
+
+        quantityUnit = new JComboBox<>();
+        GridBagConstraints gbc_quantityUnit = new GridBagConstraints();
+        gbc_quantityUnit.insets = new Insets(0, 0, 5, 5);
+        gbc_quantityUnit.fill = GridBagConstraints.HORIZONTAL;
+        gbc_quantityUnit.gridx = 3;
+        gbc_quantityUnit.gridy = 1;
+        panel.add(quantityUnit, gbc_quantityUnit);
 
         JLabel lblAssignTo = new JLabel("Assign To");
         GridBagConstraints gbc_lblAssignTo = new GridBagConstraints();
@@ -223,6 +241,37 @@ public class MetaProtocolView extends JPanel {
         gbc_serviceAttribute.gridx = 3;
         gbc_serviceAttribute.gridy = 5;
         panel.add(serviceAttribute, gbc_serviceAttribute);
+
+        JLabel lblRequester = new JLabel("Requester");
+        GridBagConstraints gbc_lblRequester = new GridBagConstraints();
+        gbc_lblRequester.anchor = GridBagConstraints.EAST;
+        gbc_lblRequester.insets = new Insets(0, 0, 0, 5);
+        gbc_lblRequester.gridx = 0;
+        gbc_lblRequester.gridy = 6;
+        panel.add(lblRequester, gbc_lblRequester);
+
+        requester = new JComboBox<>();
+        GridBagConstraints gbc_requester = new GridBagConstraints();
+        gbc_requester.insets = new Insets(0, 0, 0, 5);
+        gbc_requester.fill = GridBagConstraints.HORIZONTAL;
+        gbc_requester.gridx = 1;
+        gbc_requester.gridy = 6;
+        panel.add(requester, gbc_requester);
+
+        JLabel lblRequesterAttribute = new JLabel("Requester Attribute");
+        GridBagConstraints gbc_lblRequesterAttribute = new GridBagConstraints();
+        gbc_lblRequesterAttribute.insets = new Insets(0, 0, 0, 5);
+        gbc_lblRequesterAttribute.gridx = 2;
+        gbc_lblRequesterAttribute.gridy = 6;
+        panel.add(lblRequesterAttribute, gbc_lblRequesterAttribute);
+
+        requesterAttribute = new JComboBox<>();
+        GridBagConstraints gbc_requesterAttribute = new GridBagConstraints();
+        gbc_requesterAttribute.insets = new Insets(0, 0, 0, 5);
+        gbc_requesterAttribute.fill = GridBagConstraints.HORIZONTAL;
+        gbc_requesterAttribute.gridx = 3;
+        gbc_requesterAttribute.gridy = 6;
+        panel.add(requesterAttribute, gbc_requesterAttribute);
 
     }
 }

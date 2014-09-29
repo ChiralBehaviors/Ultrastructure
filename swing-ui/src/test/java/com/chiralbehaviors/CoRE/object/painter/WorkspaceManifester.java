@@ -58,14 +58,12 @@ public class WorkspaceManifester {
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor pd : descriptors) {
                 try {
-                    @SuppressWarnings("unused")
                     Ruleform rf = (Ruleform) pd.getReadMethod().invoke(workspace,
                                                                        (Object[]) null);
                     WorkspaceAuthorization auth = new WorkspaceAuthorization();
                     auth.setDefiningProduct(parent);
-                    //                switch (rf.getClass().getSimpleName()) {
-                    //                    case 
-                    //                }
+                    auth.setEntity(rf);
+                    em.persist(auth);
                 } catch (IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException e) {
                     if (log.isDebugEnabled()) {
@@ -75,7 +73,6 @@ public class WorkspaceManifester {
                 }
             }
         } catch (IntrospectionException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         return parent;

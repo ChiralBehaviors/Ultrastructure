@@ -874,8 +874,8 @@ public class JobModelImpl implements JobModel {
             return query.getSingleResult();
         } catch (NonUniqueResultException e) {
             throw new IllegalStateException(
-                                            String.format("Service %s has multiple initial states",
-                                                          service));
+                                            String.format("Service %s has multiple initial states: %s",
+                                                          service, query.getResultList()));
         }
     }
 

@@ -96,9 +96,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
 public class WorkspaceAuthorization extends Ruleform {
-    public static final String                    GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
-    public static final String                    GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
-    public static final String                    GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
     public static final String                    AGENCY                                   = "Agency";
     public static final String                    AGENCY_ATTRIBUTE                         = "AgencyAttribute";
     public static final String                    AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
@@ -113,6 +110,9 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String                    ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
     public static final String                    ATTRIBUTE_NETWORK                        = "AttributeNetwork";
     public static final String                    ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
+    public static final String                    GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
+    public static final String                    GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
+    public static final String                    GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
     public static final String                    INTERVAL                                 = "Interval";
     public static final String                    INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
     public static final String                    INTERVAL_NETWORK                         = "IntervalNetwork";
@@ -126,6 +126,7 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String                    LOCATION_NETWORK_ATTRIBUTE               = "LocationNetworkAttribute";
     public static final String                    LOCATION_NETWORK_AUTHORIZATION           = "LocationNetworkAuthorization";
     public static final String                    META_PROTOCOL                            = "MetaProtocol";
+    public static final String                    PRODUCT                                  = "Product";
     public static final String                    PRODUCT_ATTRIBUTE                        = "ProductAttribute";
     public static final String                    PRODUCT_ATTRIBUTE_AUTHORIZATION          = "ProductAttributeAuthorization";
     public static final String                    PRODUCT_CHILD_SEQUENCING_AUTHORIZATION   = "ProductChildSequencingAuthorization";
@@ -135,7 +136,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String                    PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
     public static final String                    PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
     public static final String                    PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
-    public static final String                    PRODUCT2                                 = "Product";
     public static final String                    PROTOCOL                                 = "Protocol";
     public static final String                    STATUS_CODE                              = "StatusCode";
     public static final String                    STATUS_CODE_ATTRIBUTE                    = "StatusCodeAttribute";
@@ -149,6 +149,10 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String                    UNIT_NETWORK                             = "UnitNetwork";
     public static final String                    UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
     public static final String                    UNIT_VALUE                               = "UnitValue";
+    /**
+     * 
+     */
+    private static final String                   INTERVAL_ATTRIBUTE_AUTHORIZATION         = "IntervalAttributeAuthorization";
 
     private static final long                     serialVersionUID                         = 1L;
 
@@ -481,7 +485,7 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getLocationNetworkAttribute();
             case LOCATION_NETWORK_AUTHORIZATION:
                 return (T) getLocationNetworkAuthorization();
-            case PRODUCT2:
+            case PRODUCT:
                 return (T) getProduct();
             case PRODUCT_ATTRIBUTE:
                 return (T) getProductAttribute();
@@ -499,7 +503,7 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getInterval();
             case INTERVAL_ATTRIBUTE:
                 return (T) getIntervalAttribute();
-            case "IntervalAttributeAuthorization":
+            case INTERVAL_ATTRIBUTE_AUTHORIZATION:
                 return (T) getIntervalAttributeAuthorization();
             case INTERVAL_NETWORK:
                 return (T) getIntervalNetwork();
@@ -769,6 +773,169 @@ public class WorkspaceAuthorization extends Ruleform {
         this.definingProduct = definingProduct;
     }
 
+    public <T extends Ruleform> void setEntity(T entity) {
+        switch (entity.getClass().getSimpleName()) {
+            case AGENCY:
+                setAgency((Agency) entity);
+                break;
+            case AGENCY_ATTRIBUTE:
+                setAgencyAttribute((AgencyAttribute) entity);
+                break;
+            case AGENCY_ATTRIBUTE_AUTHORIZATION:
+                setAgencyAttributeAuthorization((AgencyAttributeAuthorization) entity);
+                break;
+            case AGENCY_LOCATION:
+                setAgencyLocation((AgencyLocation) entity);
+                break;
+            case AGENCY_LOCATION_ATTRIBUTE:
+                setAgencyLocationAttribute((AgencyLocationAttribute) entity);
+                break;
+            case AGENCY_NETWORK:
+                setAgencyNetwork((AgencyNetwork) entity);
+                break;
+            case AGENCY_NETWORK_ATTRIBUTE:
+                setAgencyNetworkAttribute((AgencyNetworkAttribute) entity);
+                break;
+            case AGENCY_NETWORK_AUTHORIZATION:
+                setAgencyNetworkAuthorization((AgencyNetworkAuthorization) entity);
+                break;
+            case AGENCY_PRODUCT:
+                setAgencyProduct((AgencyProduct) entity);
+                break;
+            case ATTRIBUTE:
+                setAttribute((Attribute) entity);
+                break;
+            case ATTRIBUTE_META_ATTRIBUTE:
+                setAttributeMetaAttribute((AttributeMetaAttribute) entity);
+                break;
+            case ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION:
+                setAttributeMetaAttributeAuthorization((AttributeMetaAttributeAuthorization) entity);
+                break;
+            case ATTRIBUTE_NETWORK:
+                setAttributeNetwork((AttributeNetwork) entity);
+                break;
+            case ATTRIBUTE_NETWORK_ATTRIBUTE:
+                setAttributeNetworkAttribute((AttributeNetworkAttribute) entity);
+                break;
+            case UNIT:
+                setUnit((Unit) entity);
+                break;
+            case UNIT_ATTRIBUTE:
+                setUnitAttribute((UnitAttribute) entity);
+                break;
+            case UNIT_ATTRIBUTE_AUTHORIZATION:
+                setUnitAttributeAuthorization((UnitAttributeAuthorization) entity);
+                break;
+            case UNIT_NETWORK:
+                setUnitNetwork((UnitNetwork) entity);
+                break;
+            case UNIT_NETWORK_ATTRIBUTE:
+                setUnitNetwork((UnitNetwork) entity);
+                break;
+            case UNIT_VALUE:
+                setUnitValue((UnitValue) entity);
+                break;
+            case LOCATION:
+                setLocation((Location) entity);
+                break;
+            case LOCATION_ATTRIBUTE:
+                setLocationAttribute((LocationAttribute) entity);
+                break;
+            case LOCATION_ATTRIBUTE_AUTHORIZATION:
+                setLocationAttributeAuthorization((LocationAttributeAuthorization) entity);
+                break;
+            case LOCATION_NETWORK:
+                setLocationNetwork((LocationNetwork) entity);
+                break;
+            case LOCATION_NETWORK_ATTRIBUTE:
+                setLocationNetworkAttribute((LocationNetworkAttribute) entity);
+                break;
+            case LOCATION_NETWORK_AUTHORIZATION:
+                setLocationNetworkAuthorization((LocationNetworkAuthorization) entity);
+                break;
+            case PRODUCT:
+                setProduct((Product) entity);
+                break;
+            case PRODUCT_ATTRIBUTE:
+                setProductAttribute((ProductAttribute) entity);
+                break;
+            case PRODUCT_ATTRIBUTE_AUTHORIZATION:
+                setProductAttributeAuthorization((ProductAttributeAuthorization) entity);
+                break;
+            case PRODUCT_NETWORK:
+                setProductNetwork((ProductNetwork) entity);
+                break;
+            case PRODUCT_NETWORK_ATTRIBUTE:
+                setProductNetworkAttribute((ProductNetworkAttribute) entity);
+                break;
+            case PRODUCT_LOCATION:
+                setProductLocation((ProductLocation) entity);
+                break;
+            case PRODUCT_LOCATION_ATTRIBUTE:
+                setProductLocationAttribute((ProductLocationAttribute) entity);
+                break;
+            case INTERVAL:
+                setInterval((Interval) entity);
+                break;
+            case INTERVAL_ATTRIBUTE:
+                setIntervalAttribute((IntervalAttribute) entity);
+                break;
+            case INTERVAL_ATTRIBUTE_AUTHORIZATION:
+                setIntervalAttributeAuthorization((IntervalAttributeAuthorization) entity);
+                break;
+            case INTERVAL_NETWORK:
+                setIntervalNetwork((IntervalNetwork) entity);
+                break;
+            case INTERVAL_NETWORK_ATTRIBUTE:
+                setIntervalNetworkAttribute((IntervalNetworkAttribute) entity);
+                break;
+            case STATUS_CODE:
+                setStatusCode((StatusCode) entity);
+                break;
+            case STATUS_CODE_ATTRIBUTE:
+                setStatusCodeAttribute((StatusCodeAttribute) entity);
+                break;
+            case STATUS_CODE_ATTRIBUTE_AUTHORIZATION:
+                setStatusCodeAttributeAuthorization((StatusCodeAttributeAuthorization) entity);
+                break;
+            case STATUS_CODE_NETWORK:
+                setStatusCodeNetwork((StatusCodeNetwork) entity);
+                break;
+            case STATUS_CODE_NETWORK_ATTRIBUTE:
+                setStatusCodeNetworkAttribute((StatusCodeNetworkAttribute) entity);
+                break;
+            case STATUS_CODE_SEQUENCING:
+                setStatusCodeSequencing((StatusCodeSequencing) entity);
+                break;
+            case JOB:
+                setJob((Job) entity);
+                break;
+            case JOB_CHRONOLOGY:
+                setJobChronology((JobChronology) entity);
+                break;
+            case META_PROTOCOL:
+                setMetaProtocol((MetaProtocol) entity);
+                break;
+            case PRODUCT_CHILD_SEQUENCING_AUTHORIZATION:
+                setProductChildSequencingAuthorization((ProductChildSequencingAuthorization) entity);
+                break;
+            case PRODUCT_PARENT_SEQUENCING_AUTHORIZATION:
+                setProductParentSequencingAuthorization((ProductParentSequencingAuthorization) entity);
+                break;
+            case PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION:
+                setProductSiblingSequencingAuthorization((ProductSiblingSequencingAuthorization) entity);
+                break;
+            case PROTOCOL:
+                setProtocol((Protocol) entity);
+                break;
+
+            default:
+                throw new IllegalStateException(
+                                                String.format("Invalid type: %s",
+                                                              entity.getClass().getSimpleName()));
+        }
+    }
+
     public void setInterval(Interval interval) {
         type = INTERVAL;
         this.interval = interval;
@@ -780,7 +947,7 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setIntervalAttributeAuthorization(IntervalAttributeAuthorization intervalAttributeAuthorization) {
-        type = "IntervalAttributeAuthorization";
+        type = INTERVAL_ATTRIBUTE_AUTHORIZATION;
         this.intervalAttributeAuthorization = intervalAttributeAuthorization;
     }
 
@@ -844,7 +1011,7 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setProduct(Product product) {
-        type = PRODUCT2;
+        type = PRODUCT;
         this.product = product;
     }
 

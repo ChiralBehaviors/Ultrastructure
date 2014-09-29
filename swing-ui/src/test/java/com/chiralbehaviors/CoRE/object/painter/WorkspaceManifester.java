@@ -40,7 +40,6 @@ public class WorkspaceManifester {
     private final Logger  log = LoggerFactory.getLogger(getClass());
     private Object        workspace;
     private EntityManager em;
-    private Model         model;
     private Product       parent;
 
     public WorkspaceManifester(Product parent, Object workspace,
@@ -48,7 +47,6 @@ public class WorkspaceManifester {
         this.parent = parent;
         this.workspace = workspace;
         this.em = em;
-        this.model = model;
     }
 
     public Product manifestWorkspace() {
@@ -60,6 +58,7 @@ public class WorkspaceManifester {
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor pd : descriptors) {
                 try {
+                    @SuppressWarnings("unused")
                     Ruleform rf = (Ruleform) pd.getReadMethod().invoke(workspace,
                                                                        (Object[]) null);
                     WorkspaceAuthorization auth = new WorkspaceAuthorization();

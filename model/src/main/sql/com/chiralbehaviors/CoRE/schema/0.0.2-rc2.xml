@@ -43,6 +43,10 @@
             <column name="child_deliver_from_attribute" type="CHAR(22)">
                 <constraints nullable=" false " />
             </column>
+            <column name="child_quantity" type="INT" />
+            <column name="child_quantity_unit" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
         </addColumn>
 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -77,6 +81,10 @@
             baseColumnNames="child_deliver_from_attribute" baseTableName="protocol" constraintName="child_deliver_from_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
 
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_quantity_unit" baseTableName="protocol" constraintName="child_quantity_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+
         <createView viewName="protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT base_table.id,
                 base_table.name,
@@ -97,6 +105,8 @@
                 cs.name AS child_service,
                 cp.name AS child_product,
                 cat.name AS child_assign_to,
+                base_table.child_quantity,
+                cqu.name AS child_quantity_unit,
                 cdt.name AS child_deliver_to,
                 cdf.name AS child_deliver_from,
                 csa.name AS child_service_attribute,
@@ -116,6 +126,7 @@
                JOIN ruleform.location df ON base_table.deliver_from = df.id
                JOIN ruleform.agency assign ON base_table.assign_to = assign.id
                JOIN ruleform.unit u ON base_table.quantity_unit = u.id
+               JOIN ruleform.unit cqu ON base_table.child_quantity_unit = cqu.id
                JOIN ruleform.attribute ra ON base_table.requester_attribute = ra.id
                JOIN ruleform.attribute sa ON base_table.service_attribute = sa.id
                JOIN ruleform.attribute pa ON base_table.product_attribute = pa.id

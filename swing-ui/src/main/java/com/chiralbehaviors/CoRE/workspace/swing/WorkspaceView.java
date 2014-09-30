@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.workspace.swing;
+package com.chiralbehaviors.CoRE.workspace.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -42,10 +42,18 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.swing.ChildAuthSeqView;
+import com.chiralbehaviors.CoRE.swing.ExistentialRuleformView;
+import com.chiralbehaviors.CoRE.swing.JobView;
+import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
+import com.chiralbehaviors.CoRE.swing.ParentSeqAuthView;
+import com.chiralbehaviors.CoRE.swing.ProtocolView;
+import com.chiralbehaviors.CoRE.swing.SelfAuthSeqView;
+import com.chiralbehaviors.CoRE.swing.SiblingSeqAuthView;
+import com.chiralbehaviors.CoRE.swing.StatusCodeSequencingView;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
 
 /**
  * @author hhildebrand

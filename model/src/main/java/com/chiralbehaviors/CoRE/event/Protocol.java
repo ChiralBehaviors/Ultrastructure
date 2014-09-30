@@ -19,6 +19,7 @@ import static com.chiralbehaviors.CoRE.event.Protocol.GET;
 import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,6 +37,7 @@ import javax.persistence.Table;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 
@@ -136,6 +138,12 @@ public class Protocol extends AbstractProtocol {
     @JoinColumn(name = "child_product_attribute")
     private Attribute          childProductAttribute;
 
+    @Column(name = "child_quantity")
+    private BigDecimal         childQuantity;
+
+    @ManyToOne
+    @JoinColumn(name = "child_quantity_unit")
+    private Unit               childQuantityUnit;
     /**
      * The service of the child job
      */
@@ -146,6 +154,7 @@ public class Protocol extends AbstractProtocol {
     @ManyToOne
     @JoinColumn(name = "child_service_attribute")
     private Attribute          childServiceAttribute;
+
     @Column(name = "name")
     private String             name;
 
@@ -224,6 +233,14 @@ public class Protocol extends AbstractProtocol {
         return childProductAttribute;
     }
 
+    public BigDecimal getChildQuantity() {
+        return childQuantity;
+    }
+
+    public Unit getChildQuantityUnit() {
+        return childQuantityUnit;
+    }
+
     public Product getChildService() {
         return childService;
     }
@@ -273,6 +290,14 @@ public class Protocol extends AbstractProtocol {
 
     public void setChildProductAttribute(Attribute childProductAttribute) {
         this.childProductAttribute = childProductAttribute;
+    }
+
+    public void setChildQuantity(BigDecimal childQuantity) {
+        this.childQuantity = childQuantity;
+    }
+
+    public void setChildQuantityUnit(Unit childQuantityUnit) {
+        this.childQuantityUnit = childQuantityUnit;
     }
 
     public void setChildService(Product childService) {

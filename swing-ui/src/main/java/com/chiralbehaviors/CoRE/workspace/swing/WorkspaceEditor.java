@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.workspace.swing.model;
+package com.chiralbehaviors.CoRE.workspace.swing;
 
 import java.util.List;
 

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.workspace.swing;
+package com.chiralbehaviors.CoRE.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -24,6 +25,8 @@ import java.awt.Insets;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSpinner;
 
 /**
  * @author hhildebrand
@@ -34,8 +37,9 @@ public class JobView extends JPanel {
     private static final long    serialVersionUID = 1L;
     private AbstractProtocolView abstractProtocol;
     private JComboBox<Object>    parent;
-    private JLabel               lblNewLabel;
-    private JComboBox<Object>    keys;
+    private JLabel               lblSequenceNumber;
+    private JSpinner             spinner;
+    private JPanel               panel;
 
     /**
      * Create the panel.
@@ -44,51 +48,55 @@ public class JobView extends JPanel {
         setLayout(new BorderLayout(0, 0));
 
         abstractProtocol = new AbstractProtocolView();
+        GridBagLayout gridBagLayout = (GridBagLayout) abstractProtocol.getLayout();
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 30, 0, 30 };
         add(abstractProtocol, BorderLayout.CENTER);
 
-        JPanel panel = new JPanel();
+        panel = new JPanel();
         add(panel, BorderLayout.NORTH);
         GridBagLayout gbl_panel = new GridBagLayout();
-        gbl_panel.columnWidths = new int[] { 0, 200 };
-        gbl_panel.rowHeights = new int[] { 0, 0 };
-        gbl_panel.columnWeights = new double[] { Double.MIN_VALUE };
-        gbl_panel.rowWeights = new double[] { 0.0, 0.0 };
+        gbl_panel.columnWidths = new int[] { 88, 254, 42, 113, 37, 0 };
+        gbl_panel.rowHeights = new int[] { 28, 0 };
+        gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
+                Double.MIN_VALUE };
+        gbl_panel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
         panel.setLayout(gbl_panel);
-
-        lblNewLabel = new JLabel("Key");
-        GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-        gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
-        gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-        gbc_lblNewLabel.gridx = 0;
-        gbc_lblNewLabel.gridy = 0;
-        panel.add(lblNewLabel, gbc_lblNewLabel);
-
-        keys = new JComboBox<>();
-        GridBagConstraints gbc_keys = new GridBagConstraints();
-        gbc_keys.gridwidth = 3;
-        gbc_keys.insets = new Insets(0, 0, 5, 0);
-        gbc_keys.fill = GridBagConstraints.HORIZONTAL;
-        gbc_keys.gridx = 1;
-        gbc_keys.gridy = 0;
-        panel.add(keys, gbc_keys);
 
         JLabel lblParent = new JLabel("Parent");
         GridBagConstraints gbc_lblParent = new GridBagConstraints();
         gbc_lblParent.anchor = GridBagConstraints.EAST;
-        gbc_lblParent.insets = new Insets(0, 0, 5, 5);
+        gbc_lblParent.insets = new Insets(0, 0, 0, 5);
         gbc_lblParent.gridx = 0;
-        gbc_lblParent.gridy = 1;
+        gbc_lblParent.gridy = 0;
         panel.add(lblParent, gbc_lblParent);
 
         parent = new JComboBox<>();
         GridBagConstraints gbc_parent = new GridBagConstraints();
-        gbc_parent.gridwidth = 3;
-        gbc_parent.insets = new Insets(0, 0, 5, 0);
         gbc_parent.fill = GridBagConstraints.HORIZONTAL;
+        gbc_parent.anchor = GridBagConstraints.NORTH;
+        gbc_parent.insets = new Insets(0, 0, 0, 5);
         gbc_parent.gridx = 1;
-        gbc_parent.gridy = 1;
+        gbc_parent.gridy = 0;
         panel.add(parent, gbc_parent);
+
+        lblSequenceNumber = new JLabel("Sequence Number");
+        GridBagConstraints gbc_lblSequenceNumber = new GridBagConstraints();
+        gbc_lblSequenceNumber.anchor = GridBagConstraints.EAST;
+        gbc_lblSequenceNumber.insets = new Insets(0, 0, 0, 5);
+        gbc_lblSequenceNumber.gridx = 3;
+        gbc_lblSequenceNumber.gridy = 0;
+        panel.add(lblSequenceNumber, gbc_lblSequenceNumber);
+
+        spinner = new JSpinner();
+        GridBagConstraints gbc_spinner = new GridBagConstraints();
+        gbc_spinner.anchor = GridBagConstraints.NORTHWEST;
+        gbc_spinner.gridx = 4;
+        gbc_spinner.gridy = 0;
+        panel.add(spinner, gbc_spinner);
 
     }
 
+    @SuppressWarnings("unused")
+    private static void addPopup(Component component, final JPopupMenu popup) {
+    }
 }

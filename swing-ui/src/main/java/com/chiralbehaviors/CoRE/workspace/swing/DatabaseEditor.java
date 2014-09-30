@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.workspace.swing.model.impl;
+package com.chiralbehaviors.CoRE.workspace.swing;
 
 import java.util.List;
 
@@ -33,7 +33,6 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.time.Interval;
-import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
 
 /**
  * @author hhildebrand

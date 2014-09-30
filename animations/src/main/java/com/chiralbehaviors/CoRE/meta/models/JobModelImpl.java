@@ -1360,6 +1360,7 @@ public class JobModelImpl implements JobModel {
         protocol.setChildProductAttribute(kernel.getSameAttribute());
         protocol.setChildService(kernel.getSameProduct());
         protocol.setChildServiceAttribute(kernel.getSameAttribute());
+        protocol.setChildQuantityUnit(kernel.getNotApplicableUnit());
         em.persist(protocol);
         return protocol;
     }
@@ -1681,12 +1682,18 @@ public class JobModelImpl implements JobModel {
         } else {
             child.setRequesterAttribute(protocol.getRequesterAttribute());
         }
-        if (inferred.quantityUnit || protocol.getQuantityUnit().isAnyOrSame()) {
-            child.setQuantityUnit(parent.getQuantityUnit());
+
+        if (protocol.getChildQuantityUnit().isSame()) {
+            if (inferred.quantityUnit || protocol.getQuantityUnit().isAny()) {
+                child.setQuantity(parent.getQuantity());
+                child.setQuantityUnit(parent.getQuantityUnit());
+            }
+        } else if (protocol.getChildQuantityUnit().isCopy()) {
             child.setQuantity(parent.getQuantity());
+            child.setQuantityUnit(parent.getQuantityUnit());
         } else {
-            child.setQuantityUnit(protocol.getQuantityUnit());
-            child.setQuantity(protocol.getQuantity());
+            child.setQuantity(protocol.getChildQuantity());
+            child.setQuantityUnit(protocol.getChildQuantityUnit());
         }
     }
 

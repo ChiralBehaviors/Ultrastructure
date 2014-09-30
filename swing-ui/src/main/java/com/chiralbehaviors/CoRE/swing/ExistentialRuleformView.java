@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.workspace.swing;
+package com.chiralbehaviors.CoRE.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -50,7 +50,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.workspace.swing.model.WorkspaceEditor;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceEditor;
 
 /**
  * @author hhildebrand

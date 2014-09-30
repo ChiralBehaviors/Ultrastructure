@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.workspace.swing;
+package com.chiralbehaviors.CoRE.swing;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

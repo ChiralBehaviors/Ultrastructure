@@ -24,8 +24,9 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.object.painter.PainterWorkspaceImpl;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.swing.ExistentialRuleformView;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.workspace.swing.model.impl.DatabaseEditor;
+import com.chiralbehaviors.CoRE.workspace.swing.DatabaseEditor;
 
 /**
  * @author hparry

@@ -875,8 +875,20 @@ public class JobModelImpl implements JobModel {
         } catch (NonUniqueResultException e) {
             throw new IllegalStateException(
                                             String.format("Service %s has multiple initial states: %s",
-                                                          service, query.getResultList()));
+                                                          service,
+                                                          query.getResultList()));
         }
+    }
+
+    /**
+     * Returns the list of initial states of a service
+     */
+    @Override
+    public List<StatusCode> getInitialStates(Product service) {
+        TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
+                                                           StatusCode.class);
+        query.setParameter(1, service.getPrimaryKey());
+        return query.getResultList();
     }
 
     /**
@@ -1607,16 +1619,33 @@ public class JobModelImpl implements JobModel {
                 }
                 continue;
             }
-            if (!hasScs(modifiedService) || !hasInitialState(modifiedService)) {
+            if (!hasScs(modifiedService)) {
                 if (log.isTraceEnabled()) {
-                    log.trace(String.format("No sccs or no initial state for %s",
+                    log.trace(String.format("No status code sequencing for %s",
                                             modifiedService.getName()));
                 }
                 continue;
             }
             if (hasNonTerminalSCCs(modifiedService)) {
                 throw new SQLException(
-                                       String.format("Event '%s' has at least one terminal SCC defined in its status code graph",
+                                       String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",
+                                                     modifiedService.getName()));
+            }
+            List<StatusCode> initialStates = getInitialStates(modifiedService);
+            if (initialStates.isEmpty()) {
+                throw new SQLException(
+                                       String.format("Event '%s' has no initial state defined in its status code graph",
+                                                     modifiedService.getName()));
+            }
+            if (initialStates.size() > 1) {
+                throw new SQLException(
+                                       String.format("Event '%s' has multiple initial state defined in its status code graph: %s",
+                                                     modifiedService.getName(),
+                                                     initialStates));
+            }
+            if (hasNonTerminalSCCs(modifiedService)) {
+                throw new SQLException(
+                                       String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",
                                                      modifiedService.getName()));
             }
         }

@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.event;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -161,6 +162,74 @@ public class StatusCodeSequencingTest extends DatabaseTest {
     }
 
     @Test
+    public void testMultipleInitialStates() throws SQLException {
+        Agency core = new Agency("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
+
+        Model model = new ModelImpl(em);
+        JobModel jobModel = model.getJobModel();
+
+        StatusCode startState = new StatusCode("top-level", core);
+        em.persist(startState);
+
+        StatusCode startState2 = new StatusCode("top-level 2", core);
+        em.persist(startState2);
+
+        StatusCode state1 = new StatusCode("state-1", core);
+        em.persist(state1);
+
+        StatusCode state2 = new StatusCode("state-2", core);
+        em.persist(state2);
+
+        StatusCode terminalState = new StatusCode("terminal state", core);
+        em.persist(terminalState);
+
+        Product service = new Product("My Service", core);
+        em.persist(service);
+        em.flush();
+
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
+                                                                  startState,
+                                                                  state1, core);
+        em.persist(sequence1);
+
+        StatusCodeSequencing sequence1a = new StatusCodeSequencing(service,
+                                                                   startState2,
+                                                                   state1, core);
+        em.persist(sequence1a);
+
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
+                                                                  state1,
+                                                                  state2, core);
+        em.persist(sequence2);
+
+        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
+                                                                  service,
+                                                                  state2,
+                                                                  terminalState,
+                                                                  core);
+        em.persist(sequence3);
+
+        em.flush();
+        em.clear();
+
+        List<StatusCode> initialStates = jobModel.getInitialStates(service);
+        assertEquals(2, initialStates.size());
+        assertTrue(initialStates.contains(startState));
+        assertTrue(initialStates.contains(startState2));
+        service = em.merge(service);
+        try {
+            jobModel.validateStateGraph(Arrays.asList(service));
+            fail("Did not catch event with non terminal loop");
+        } catch (SQLException e) {
+            // expected
+            assertTrue(e.getMessage(),
+                       e.getMessage().contains("has multiple initial state defined in its status code graph"));
+        }
+    }
+
+    @Test
     public void testHasSccs() throws SQLException {
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
@@ -219,7 +288,8 @@ public class StatusCodeSequencingTest extends DatabaseTest {
             fail("Did not catch event with non terminal loop");
         } catch (SQLException e) {
             // expected
-            assertTrue(e.getMessage().endsWith("has at least one terminal SCC defined in its status code graph"));
+            assertTrue(e.getMessage(),
+                       e.getMessage().endsWith("has at least one non terminal SCC defined in its status code graph"));
         }
     }
 

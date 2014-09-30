@@ -311,6 +311,8 @@ public interface JobModel {
      */
     StatusCode getInitialState(Product service);
 
+    List<StatusCode> getInitialStates(Product service);
+
     /**
      * Returns a list of initially available sub-jobs (i.e., ones that do not
      * depend on any others having been completed yet) of a given job

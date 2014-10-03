@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
 
@@ -181,12 +182,13 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
-        List<Job> jobs = findAllJobs();
-        assertEquals(7, jobs.size());
+        List<Job> jobs = jobModel.getAllChildren(order);
+        assertEquals(6, jobs.size());
     }
 
     @Test
     public void testGenerateJobs() throws Exception {
+        clearJobs();
         em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.deliver,
                                                         scenario.core);
@@ -204,7 +206,8 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testGenerateJobsFromProtocols() {
+    public void testGenerateJobsFromProtocols() throws Exception {
+        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Product service = new Product("test service", kernel.getCore());
@@ -250,6 +253,48 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testIteration() throws Exception {
+        clearJobs();
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Product service = new Product("test service", kernel.getCore());
+        em.persist(service);
+        Product parent = new Product("Parent", kernel.getCore());
+        em.persist(parent);
+        Product child1 = new Product("Child 1", kernel.getCore());
+        em.persist(child1);
+        Product child2 = new Product("Child 2", kernel.getCore());
+        em.persist(child2);
+        Product child3 = new Product("Child 3", kernel.getCore());
+        em.persist(child3);
+        Relationship childRelationship = model.getRelationshipModel().create("child of",
+                                                                             "test relationship",
+                                                                             "parentOf",
+                                                                             "test relationship inverse");
+        parent.link(childRelationship, child1, kernel.getCore(),
+                    kernel.getCore(), em);
+        parent.link(childRelationship, child2, kernel.getCore(),
+                    kernel.getCore(), em);
+        parent.link(childRelationship, child3, kernel.getCore(),
+                    kernel.getCore(), em);
+
+        Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
+        p.setChildrenRelationship(childRelationship);
+        em.persist(p);
+        Job order = jobModel.newInitializedJob(service, kernel.getCore());
+        order.setProduct(parent);
+        order._setStatus(kernel.getUnset());
+        Location loc = new Location("crap location", null, kernel.getCore());
+        em.persist(loc);
+        order.setDeliverTo(loc);
+        em.persist(order);
+        List<Protocol> protocols = model.getJobModel().getProtocolsFor(order.getService());
+        assertEquals(1, protocols.size());
+        List<Job> jobs = model.getJobModel().insert(order, protocols.get(0));
+        assertEquals(3, jobs.size());
+    }
+
+    @Test
     public void testGetActiveJobs() throws Exception {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
@@ -281,10 +326,9 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(1, active.size());
     }
 
-    //    TODO this test won't pass until we make job chronology saves fire from
-    //    job update triggers
-    // @Test
+    @Test
     public void testJobChronologyOnStatusUpdate() throws Exception {
+        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         alterTriggers(false);
@@ -305,17 +349,17 @@ public class JobModelTest extends AbstractModelTest {
             txn.commit();
             em.refresh(order);
             List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(1, chronologies.size());
+            assertEquals(2, chronologies.size());
             List<String> fieldErrors = verifyChronologyFields(order,
                                                               chronologies.get(0));
 
             assertEquals(0, fieldErrors.size());
             txn.begin();
-            model.getJobModel().changeStatus(order, scenario.available,
+            model.getJobModel().changeStatus(order, scenario.active,
                                              kernel.getCore(), null);
             txn.commit();
             chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(2, chronologies.size());
+            assertEquals(3, chronologies.size());
             fieldErrors = verifyChronologyFields(order, chronologies.get(0));
             System.out.println(String.format("Errors: %s", fieldErrors));
             assertEquals(0, fieldErrors.size());
@@ -326,6 +370,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testMetaProtocols() throws Exception {
+        clearJobs();
         em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.deliver,
                                                         scenario.core);
@@ -447,8 +492,8 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
-        List<Job> jobs = findAllJobs();
-        assertEquals(6, jobs.size());
+        List<Job> jobs = jobModel.getAllChildren(order);
+        assertEquals(5, jobs.size());
 
         txn.begin();
         TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
@@ -524,7 +569,7 @@ public class JobModelTest extends AbstractModelTest {
         Job deliver = query.getSingleResult();
         assertEquals(scenario.completed, deliver.getStatus());
     }
-    
+
     public void testSelfSequencing() {
         em.getTransaction().begin();
         Product service = new Product("My Service", null, kernel.getCore());
@@ -535,37 +580,39 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(b);
         StatusCode c = new StatusCode("C", null, kernel.getCore());
         em.persist(c);
-        
+
         List<Tuple<StatusCode, StatusCode>> sequences = new ArrayList<>();
         sequences.add(new Tuple<StatusCode, StatusCode>(a, b));
         sequences.add(new Tuple<StatusCode, StatusCode>(b, c));
-        model.getJobModel().createStatusCodeSequencings(service, sequences, kernel.getCore());
-        
+        model.getJobModel().createStatusCodeSequencings(service, sequences,
+                                                        kernel.getCore());
+
         ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization();
         auth.setService(service);
         auth.setStatusCode(b);
         auth.setStatusToSet(c);
         auth.setUpdatedBy(kernel.getCore());
         em.persist(auth);
-        
+
         em.getTransaction().commit();
-        
+
         em.getTransaction().begin();
-        Job job = model.getJobModel().newInitializedJob(service, kernel.getCore());
+        Job job = model.getJobModel().newInitializedJob(service,
+                                                        kernel.getCore());
         em.persist(job);
         model.getJobModel().changeStatus(job, a, kernel.getCore(), null);
         em.getTransaction().commit();
-        
+
         em.getTransaction().begin();
         model.getJobModel().changeStatus(job, b, kernel.getCore(), null);
         em.getTransaction().commit();
-        
+
         em.refresh(job);
-        
+
         assertEquals(c, job.getStatus());
-        
-        
+
     }
+
     private void clearJobs() throws SQLException {
         Connection connection = em.unwrap(Connection.class);
         boolean prev = connection.getAutoCommit();
@@ -576,12 +623,6 @@ public class JobModelTest extends AbstractModelTest {
         alterTriggers(true);
         connection.commit();
         connection.setAutoCommit(prev);
-    }
-
-    private List<Job> findAllJobs() {
-        TypedQuery<Job> query = model.getEntityManager().createQuery("select j from Job j",
-                                                                     Job.class);
-        return query.getResultList();
     }
 
     /**
@@ -601,7 +642,7 @@ public class JobModelTest extends AbstractModelTest {
                                                 JobChronology jobChronology)
                                                                             throws Exception {
         String[] fieldsToMatch = new String[] { "status", "requester",
-                "assignTo", "deliverFrom", "deliverTo", "notes" };
+                "assignTo", "deliverFrom", "deliverTo" };
         List<String> unmatchedFields = new LinkedList<>();
         if (!jobChronology.getJob().equals(job)) {
             unmatchedFields.add("job");

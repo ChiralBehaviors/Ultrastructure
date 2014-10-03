@@ -13,7 +13,7 @@
         <level value="${testing.logging.core}" />
     </logger>
     <logger name="com.chiralbehaviors.CoRE.meta.model">
-        <level value="TRACE" />
+        <level value="INFO" />
     </logger>
     <logger name="openjpa.Runtime">
         <level value="warn" />

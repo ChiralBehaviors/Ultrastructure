@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <include relativeToChangelogFile="true"
-        file="0.0.2-rc1/ruleform/functions" />
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+    <include relativeToChangelogFile="true" file="0.0.2-rc1/ruleform/functions" />
     <changeSet id="workspace authorization" author="hhildebrand">
-        <createProcedure encoding="utf8" procedureName="null_zero"
-            schemaName="ruleform"><![CDATA[
+        <createProcedure encoding="utf8" procedureName="null_zero" schemaName="ruleform"><![CDATA[
             CREATE OR REPLACE FUNCTION null_zero(thing anyelement)
               RETURNS integer AS
             $BODY$
@@ -18,12 +16,9 @@
               COST 100;
         ]]>
         </createProcedure>
-        <createTable schemaName="ruleform"
-            remarks="A workspace authorization defines the entities in a workspace"
-            tableName="workspace_authorization">
+        <createTable schemaName="ruleform" remarks="A workspace authorization defines the entities in a workspace" tableName="workspace_authorization">
             <column name="id" type="CHAR(22)">
-                <constraints primaryKey="true"
-                    primaryKeyName="workspace_authorization_pkey" />
+                <constraints primaryKey="true" primaryKeyName="workspace_authorization_pkey" />
             </column>
             <column name="notes" type="VARCHAR(10485760)" />
             <column name="defining_product" type="CHAR(22)">
@@ -32,12 +27,10 @@
             <column name="type" type="VARCHAR(256)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ"
-                type="CHAR(22)">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone"
-                name="update_date" type="TIMESTAMPTZ">
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="VARCHAR(1024)">
@@ -52,10 +45,8 @@
             <column name="agency_network_attribute" type="CHAR(22)" />
             <column name="agency_network_authorization" type="CHAR(22)" />
             <column name="agency_product" type="CHAR(22)" />
-            <column name="agency_location_access_authorization"
-                type="CHAR(22)" />
-            <column name="agency_product_access_authorization"
-                type="CHAR(22)" />
+            <column name="agency_location_access_authorization" type="CHAR(22)" />
+            <column name="agency_product_access_authorization" type="CHAR(22)" />
             <column name="attribute" type="CHAR(22)" />
             <column name="attribute_meta_attribute" type="CHAR(22)" />
             <column name="attr_meta_attr_auth" type="CHAR(22)" />
@@ -87,413 +78,231 @@
             <column name="interval_network_attribute" type="CHAR(22)" />
             <column name="status_code" type="CHAR(22)" />
             <column name="status_code_attribute" type="CHAR(22)" />
-            <column name="status_code_attribute_authorization"
-                type="CHAR(22)" />
+            <column name="status_code_attribute_authorization" type="CHAR(22)" />
             <column name="status_code_network" type="CHAR(22)" />
             <column name="status_code_network_attribute" type="CHAR(22)" />
             <column name="status_code_sequencing" type="CHAR(22)" />
             <column name="job" type="CHAR(22)" />
             <column name="job_chronology" type="CHAR(22)" />
             <column name="meta_protocol" type="CHAR(22)" />
-            <column name="product_child_sequencing_authorization"
-                type="CHAR(22)" />
-            <column name="product_parent_sequencing_authorization"
-                type="CHAR(22)" />
-            <column name="product_sibling_sequencing_authorization"
-                type="CHAR(22)" />
-            <column name="product_self_sequencing_authorization"
-                type="CHAR(22)" />
+            <column name="product_child_sequencing_authorization" type="CHAR(22)" />
+            <column name="product_parent_sequencing_authorization" type="CHAR(22)" />
+            <column name="product_sibling_sequencing_authorization" type="CHAR(22)" />
+            <column name="product_self_sequencing_authorization" type="CHAR(22)" />
             <column name="protocol" type="CHAR(22)" />
         </createTable>
-        <addUniqueConstraint columnNames="defining_product, key"
-            tableName="workspace_authorization" schemaName="ruleform" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addUniqueConstraint columnNames="defining_product, key" tableName="workspace_authorization" schemaName="ruleform" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_attribute_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_attribute_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_attribute_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_attribute_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_attribute_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_location" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_location_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_location" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_location_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_location" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_location_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_location_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_location_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_location_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_location_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_network" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_network_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_network_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_network_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_network_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_network_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_network_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_network_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency_product" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_agency_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_product" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="attribute_meta_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_attribute_meta_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute_meta_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_meta_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute_meta_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="attr_meta_attr_auth" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_attr_meta_attr_auth_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attr_meta_attr_auth" baseTableName="workspace_authorization" constraintName="workspace_authorization_attr_meta_attr_auth_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attr_meta_attr_auth" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="attribute_network" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_attribute_network_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="attribute_network_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_attribute_network_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute_network_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_unit_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_unit_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit_attribute_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_unit_attribute_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit_attribute_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_attribute_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit_attribute_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit_network" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_unit_network_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit_network_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_unit_network_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit_network_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit_value" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_unit_value_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit_value" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_value_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit_values" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="location" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_location_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location" baseTableName="workspace_authorization" constraintName="workspace_authorization_location_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="location_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_location_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_location_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="location_attribute_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_location_attribute_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location_attribute_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_location_attribute_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location_attribute_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="location_network" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_location_network_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_location_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="location_network_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_location_network_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_location_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location_network_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="location_network_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_location_network_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_location_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location_network_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_attribute_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_attribute_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_attribute_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_attribute_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_attribute_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_network" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_network_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_network_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_network_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_network_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_location" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_location_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_location" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_location_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_location" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_location_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_location_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_location_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_location_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_location_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="interval" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_interval_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="interval" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="interval" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="interval_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_interval_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="interval_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="interval_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="interval_attribute_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_interval_attribute_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="interval_attribute_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_attribute_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="interval_attribute_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="interval_network" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_interval_network_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="interval_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="interval_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="interval_network_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_interval_network_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="interval_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="interval_network_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status_code" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_status_code_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code" baseTableName="workspace_authorization" constraintName="workspace_authorization_status_code_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status_code_attribute" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_status_code_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_status_code_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status_code_attribute_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_status_code_attribute_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="status_code_attribute_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status_code_network" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_status_code_network_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code_attribute_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_status_code_attribute_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_attribute_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_status_code_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status_code_network_attribute"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_status_code_network_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_status_code_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code_network_attribute" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status_code_sequencing" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_status_code_sequencing_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code_sequencing" baseTableName="workspace_authorization" constraintName="workspace_authorization_status_code_sequencing_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code_sequencing" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="job" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_job_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="job" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="job_chronology" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_job_chronology_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="job" baseTableName="workspace_authorization" constraintName="workspace_authorization_job_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="job" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="job_chronology" baseTableName="workspace_authorization" constraintName="workspace_authorization_job_chronology_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="job_chronology" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="meta_protocol" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_meta_protocol_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="meta_protocol" baseTableName="workspace_authorization" constraintName="workspace_authorization_meta_protocol_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="meta_protocol" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_child_sequencing_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_child_sequencing_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product_child_sequencing_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_parent_sequencing_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_parent_sequencing_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product_parent_sequencing_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_sibling_sequencing_authorization"
-            baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_product_sibling_sequencing_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product_sibling_sequencing_authorization" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="protocol" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_protocol_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_child_sequencing_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_product_child_sequencing_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_child_sequencing_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_parent_sequencing_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_product_parent_sequencing_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_parent_sequencing_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_sibling_sequencing_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_product_sibling_sequencing_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_sibling_sequencing_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="protocol" baseTableName="workspace_authorization" constraintName="workspace_authorization_protocol_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="protocol" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
-            onUpdate="CASCADE" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="workspace_authorization" constraintName="workspace_authorization_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="workspace_authorization"
-            constraintName="workspace_authorization_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
-            onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
 
-        <createIndex schemaName="ruleform"
-            indexName="workspace_authorization_updated_by_fkey_idx"
-            tableName="agency" unique="false">
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_fkey_idx" tableName="agency" unique="false">
             <column name="updated_by" />
         </createIndex>
         <sql><![CDATA[
@@ -560,8 +369,7 @@
         <addColumn tableName="job" schemaName="ruleform">
             <column name="depth" type="SMALLINT" />
         </addColumn>
-        <createView viewName="job" schemaName="readable"
-            replaceIfExists="true"><![CDATA[
+        <createView viewName="job" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT base_table.id, 
                     base_table.depth,
                     s.name AS service, 
@@ -601,6 +409,78 @@
                JOIN attribute dfa ON base_table.deliver_from_attribute = dfa.id
                JOIN unit u ON base_table.quantity_unit = u.id
                JOIN attribute ata ON base_table.assign_to_attribute = ata.id;
+        ]]>
+        </createView>
+
+        <addColumn tableName="protocol" schemaName="ruleform">
+            <column name="children_relationship" type="CHAR(22)">
+                <constraints nullable=" false " />
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="children_relationship" baseTableName="protocol" constraintName="protocol_children_relationship_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <createView viewName="protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
+             SELECT base_table.id,
+                base_table.name,
+                s.name AS service,
+                p.name AS product,
+                r.name AS requester,
+                dt.name AS deliver_to,
+                df.name AS deliver_from,
+                assign.name AS assign_to,
+                base_table.quantity,
+                u.name AS quantity_unit,
+                ra.name AS requester_attribute,
+                sa.name AS service_attribute,
+                pa.name AS product_attribute,
+                dta.name AS deliver_to_attribute,
+                dfa.name AS deliver_from_attribute,
+                ata.name AS assign_to_attribute,
+                cs.name AS child_service,
+                cp.name AS child_product,
+                cr.name AS children_relationship,
+                cat.name AS child_assign_to,
+                base_table.child_quantity,
+                cqu.name AS child_quantity_unit,
+                cdt.name AS child_deliver_to,
+                cdf.name AS child_deliver_from,
+                csa.name AS child_service_attribute,
+                cpa.name AS child_product_attribute,
+                cdta.name AS child_deliver_to_attribute,
+                cdfa.name AS child_deliver_from_attribute,
+                cata.name AS child_assign_to_attribute,
+                base_table.sequence_number,
+                base_table.notes,
+                up.name AS updated_by,
+                base_table.update_date
+               FROM ruleform.protocol base_table
+               JOIN ruleform.product s ON base_table.service = s.id
+               JOIN ruleform.product p ON base_table.product = p.id
+               JOIN ruleform.agency r ON base_table.requester = r.id
+               JOIN ruleform.location dt ON base_table.deliver_to = dt.id
+               JOIN ruleform.location df ON base_table.deliver_from = df.id
+               JOIN ruleform.agency assign ON base_table.assign_to = assign.id
+               JOIN ruleform.unit u ON base_table.quantity_unit = u.id
+               JOIN ruleform.unit cqu ON base_table.child_quantity_unit = cqu.id
+               JOIN ruleform.attribute ra ON base_table.requester_attribute = ra.id
+               JOIN ruleform.attribute sa ON base_table.service_attribute = sa.id
+               JOIN ruleform.attribute pa ON base_table.product_attribute = pa.id
+               JOIN ruleform.attribute dta ON base_table.deliver_to_attribute = dta.id
+               JOIN ruleform.attribute dfa ON base_table.deliver_from_attribute = dfa.id
+               JOIN ruleform.attribute ata ON base_table.assign_to_attribute = ata.id
+               JOIN ruleform.product cs ON base_table.child_service = cs.id
+               JOIN ruleform.product cp ON base_table.child_product = cp.id
+               JOIN ruleform.relationship cr ON base_table.children_relationship = cr.id
+               JOIN ruleform.agency cat ON base_table.child_assign_to = cat.id
+               JOIN ruleform.location cdt ON base_table.child_deliver_to = cdt.id
+               JOIN ruleform.location cdf ON base_table.child_deliver_from = cdf.id
+               JOIN ruleform.attribute csa ON base_table.child_service_attribute = csa.id
+               JOIN ruleform.attribute cpa ON base_table.child_product_attribute = cpa.id
+               JOIN ruleform.attribute cdta ON base_table.child_deliver_to_attribute = cdta.id
+               JOIN ruleform.attribute cdfa ON base_table.child_deliver_from_attribute = cdfa.id
+               JOIN ruleform.attribute cata ON base_table.child_assign_to_attribute = cata.id
+               JOIN ruleform.agency up ON base_table.updated_by = up.id;
         ]]>
         </createView>
     </changeSet>

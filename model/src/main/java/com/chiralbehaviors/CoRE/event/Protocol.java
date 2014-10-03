@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -127,9 +128,6 @@ public class Protocol extends AbstractProtocol {
     @JoinColumn(name = "child_deliver_to_attribute")
     private Attribute          childDeliverToAttribute;
 
-    /**
-     * The product of the child job
-     */
     @ManyToOne
     @JoinColumn(name = "child_product")
     private Product            childProduct;
@@ -144,6 +142,10 @@ public class Protocol extends AbstractProtocol {
     @ManyToOne
     @JoinColumn(name = "child_quantity_unit")
     private Unit               childQuantityUnit;
+
+    @ManyToOne
+    @JoinColumn(name = "children_relationship")
+    private Relationship       childrenRelationship;
     /**
      * The service of the child job
      */
@@ -241,6 +243,10 @@ public class Protocol extends AbstractProtocol {
         return childQuantityUnit;
     }
 
+    public Relationship getChildrenRelationship() {
+        return childrenRelationship;
+    }
+
     public Product getChildService() {
         return childService;
     }
@@ -298,6 +304,10 @@ public class Protocol extends AbstractProtocol {
 
     public void setChildQuantityUnit(Unit childQuantityUnit) {
         this.childQuantityUnit = childQuantityUnit;
+    }
+
+    public void setChildrenRelationship(Relationship childrenRelationship) {
+        this.childrenRelationship = childrenRelationship;
     }
 
     public void setChildService(Product childService) {

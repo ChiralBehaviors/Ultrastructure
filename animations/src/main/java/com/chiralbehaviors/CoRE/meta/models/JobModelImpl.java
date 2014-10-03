@@ -116,6 +116,10 @@ public class JobModelImpl implements JobModel {
         T call(JobModelImpl jobModel) throws Exception;
     }
 
+    private static final Logger      log               = LoggerFactory.getLogger(JobModelImpl.class);
+
+    private static final Set<String> MODIFIED_SERVICES = new HashSet<>();
+
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
         execute(new Procedure<Void>() {
@@ -407,13 +411,9 @@ public class JobModelImpl implements JobModel {
         return JSP.call(new Call<T>(procedure));
     }
 
-    private static final Logger      log               = LoggerFactory.getLogger(JobModelImpl.class);
-
-    private static final Set<String> MODIFIED_SERVICES = new HashSet<>();
-
-    protected final EntityManager    em;
-    protected final Kernel           kernel;
-    protected final Model            model;
+    protected final EntityManager em;
+    protected final Kernel        kernel;
+    protected final Model         model;
 
     public JobModelImpl(Model model) {
         this.model = model;
@@ -643,7 +643,7 @@ public class JobModelImpl implements JobModel {
             query.setParameter("parent", job);
             query.setParameter("protocol", protocol);
             if (query.getSingleResult() == 0) {
-                jobs.add(insert(job, protocol, txfm.getValue()));
+                jobs.addAll(insert(job, protocol, txfm.getValue()));
             } else {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
@@ -995,7 +995,10 @@ public class JobModelImpl implements JobModel {
     @Override
     public Map<Protocol, InferenceMap> getProtocols(Job job) {
         if (job.getStatus() == null) {
-            // Bail because, dude.  We have even been initialized
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("job has no status set %s", job));
+            }
+            // Bail because, dude.  We haven't even been initialized
             return Collections.emptyMap();
         }
         // First we try for protocols which match the current job
@@ -1008,12 +1011,21 @@ public class JobModelImpl implements JobModel {
                 }
             }
             return matches;
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("job has no direct matches %s", job));
+            }
         }
 
         for (MetaProtocol metaProtocol : getMetaprotocols(job)) {
-            for (Map.Entry<Protocol, InferenceMap> transformed : getProtocols(
-                                                                              job,
-                                                                              metaProtocol).entrySet()) {
+            Set<Entry<Protocol, InferenceMap>> infered = getProtocols(job,
+                                                                      metaProtocol).entrySet();
+            if (infered.size() == 0) {
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("job has no direct matches %s", job));
+                }
+            }
+            for (Map.Entry<Protocol, InferenceMap> transformed : infered) {
                 if (!matches.containsKey(transformed.getKey())) {
                     matches.put(transformed.getKey(), transformed.getValue());
                 }
@@ -1220,36 +1232,42 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * Insert the new job defined by the protocol
+     * Insert new jobs defined by the protocol
      *
      * @param parent
      * @param protocol
      * @return the newly created job
      */
     @Override
-    public Job insert(Job parent, Protocol protocol) {
+    public List<Job> insert(Job parent, Protocol protocol) {
         return insert(parent, protocol, NO_TRANSFORMATION);
     }
 
-    public Job insert(Job parent, Protocol protocol, InferenceMap txfm) {
+    public List<Job> insert(Job parent, Protocol protocol, InferenceMap txfm) {
         if (parent.getDepth() > MAXIMUM_JOB_DEPTH) {
             throw new IllegalStateException(
                                             String.format("Maximum job depth exceeded.  parent: %s, protocol: %s",
                                                           parent, protocol));
         }
-        Job job = new Job(kernel.getCoreAnimationSoftware());
-        job.setDepth(parent.getDepth() + 1);
-        job._setStatus(kernel.getUnset());
-        job.setParent(parent);
-        job.setProtocol(protocol);
-        copyIntoChild(parent, protocol, txfm, job);
-        em.persist(job);
-        log(job, String.format("Inserted from protocol match"));
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
-                                    job, protocol, txfm));
+        List<Job> jobs = new ArrayList<>();
+        if (protocol.getChildrenRelationship().equals(kernel.getNotApplicableRelationship())) {
+            Job job = new Job(kernel.getCoreAnimationSoftware());
+            insert(job,
+                   parent,
+                   protocol,
+                   txfm,
+                   resolve(txfm.product, protocol.getProduct(),
+                           parent.getProduct(), protocol.getChildProduct()));
+            jobs.add(job);
+        } else {
+            for (Product child : model.getProductModel().getChildren(parent.getProduct(),
+                                                                     protocol.getChildrenRelationship())) {
+                Job job = new Job(kernel.getCoreAnimationSoftware());
+                insert(job, parent, protocol, txfm, child);
+                jobs.add(job);
+            }
         }
-        return job;
+        return jobs;
     }
 
     @Override
@@ -1368,6 +1386,7 @@ public class JobModelImpl implements JobModel {
         protocol.setChildDeliverFromAttribute(kernel.getSameAttribute());
         protocol.setChildDeliverTo(kernel.getSameLocation());
         protocol.setChildDeliverToAttribute(kernel.getSameAttribute());
+        protocol.setChildrenRelationship(kernel.getNotApplicableRelationship());
         protocol.setChildProduct(kernel.getSameProduct());
         protocol.setChildProductAttribute(kernel.getSameAttribute());
         protocol.setChildService(kernel.getSameProduct());
@@ -1686,9 +1705,6 @@ public class JobModelImpl implements JobModel {
                                               protocol.getDeliverFromAttribute(),
                                               parent.getDeliverFromAttribute(),
                                               protocol.getChildDeliverFromAttribute()));
-        child.setProduct(resolve(inferred.product, protocol.getProduct(),
-                                 parent.getProduct(),
-                                 protocol.getChildProduct()));
         child.setProductAttribute(resolve(inferred.productAttribute,
                                           protocol.getProductAttribute(),
                                           parent.getProductAttribute(),
@@ -2094,6 +2110,22 @@ public class JobModelImpl implements JobModel {
                               protocol);
         if (mask != null) {
             masks.add(mask);
+        }
+    }
+
+    protected void insert(Job child, Job parent, Protocol protocol,
+                          InferenceMap txfm, Product product) {
+        child.setDepth(parent.getDepth() + 1);
+        child._setStatus(kernel.getUnset());
+        child.setParent(parent);
+        child.setProtocol(protocol);
+        child.setProduct(product);
+        copyIntoChild(parent, protocol, txfm, child);
+        em.persist(child);
+        log(child, String.format("Inserted from protocol match"));
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
+                                    child, protocol, txfm));
         }
     }
 

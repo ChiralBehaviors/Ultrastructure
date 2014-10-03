@@ -509,7 +509,7 @@ public interface JobModel {
      * @param protocol
      * @return
      */
-    Job insert(Job parent, Protocol protocol);
+    List<Job> insert(Job parent, Protocol protocol);
 
     /**
      * @param job

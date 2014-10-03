@@ -81,6 +81,51 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testSelfSequencingAuthorization() {
+        em.getTransaction().begin();
+        Product service = new Product("Kick ass", null, kernel.getCore());
+        em.persist(service);
+
+        StatusCode kickingAss = new StatusCode("Kicking Ass", null,
+                                               kernel.getCore());
+        em.persist(kickingAss);
+
+        StatusCode takingNames = new StatusCode("Taking Names", null,
+                                                kernel.getCore());
+        em.persist(takingNames);
+
+        StatusCodeSequencing sequence = new StatusCodeSequencing(
+                                                                 service,
+                                                                 kickingAss,
+                                                                 takingNames,
+                                                                 kernel.getCore());
+        em.persist(sequence);
+
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
+                                                                                         service,
+                                                                                         kickingAss,
+                                                                                         takingNames,
+                                                                                         kernel.getCore());
+        em.persist(auth);
+
+        Job job = model.getJobModel().newInitializedJob(service,
+                                                        kernel.getCore());
+        em.persist(job);
+
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
+                                         null);
+
+        em.getTransaction().commit();
+
+        em.refresh(job);
+
+        assertEquals(takingNames, job.getStatus());
+    }
+
+    @Test
     public void testDeliverWithoutMetaProtocol() {
         em.getTransaction().begin();
 

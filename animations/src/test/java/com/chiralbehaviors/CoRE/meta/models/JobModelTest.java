@@ -40,6 +40,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -304,6 +305,9 @@ public class JobModelTest extends AbstractModelTest {
         txn.begin();
         Product service = new Product("test service", kernel.getCore());
         em.persist(service);
+        Product childService = new Product("child test service",
+                                           kernel.getCore());
+        em.persist(childService);
         Product parent = new Product("Parent", kernel.getCore());
         em.persist(parent);
         Product child1 = new Product("Child 1", kernel.getCore());
@@ -323,20 +327,45 @@ public class JobModelTest extends AbstractModelTest {
         parent.link(childRelationship, child3, kernel.getCore(),
                     kernel.getCore(), em);
 
+        List<Tuple<StatusCode, StatusCode>> sequencings = new ArrayList<>();
+        sequencings.add(new Tuple<StatusCode, StatusCode>(scenario.available,
+                                                          scenario.completed));
+        model.getJobModel().createStatusCodeSequencings(service, sequencings,
+                                                        kernel.getCore());
+        model.getJobModel().createStatusCodeSequencings(childService,
+                                                        sequencings,
+                                                        kernel.getCore());
+
+        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
+                                                                                           service,
+                                                                                           scenario.available,
+                                                                                           childService,
+                                                                                           scenario.available,
+                                                                                           kernel.getCore());
+        em.persist(auth);
         Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
         p.setChildrenRelationship(childRelationship);
+        p.setChildService(childService);
         em.persist(p);
         Job order = jobModel.newInitializedJob(service, kernel.getCore());
         order.setProduct(parent);
         order._setStatus(kernel.getUnset());
-        Location loc = new Location("crap location", null, kernel.getCore());
-        em.persist(loc);
-        order.setDeliverTo(loc);
         em.persist(order);
         List<Protocol> protocols = model.getJobModel().getProtocolsFor(order.getService());
         assertEquals(1, protocols.size());
         List<Job> jobs = model.getJobModel().insert(order, protocols.get(0));
         assertEquals(3, jobs.size());
+        em.getTransaction().commit();
+        
+        em.getTransaction().begin();
+        jobModel.changeStatus(order, scenario.available, kernel.getCore(), null);
+        em.getTransaction().commit();
+        
+        
+        for (Job j : jobs) {
+            em.refresh(j);
+            assertEquals(scenario.available, j.getStatus());
+        }
     }
 
     @Test

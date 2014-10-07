@@ -1463,6 +1463,7 @@ public class JobModelImpl implements JobModel {
                 log.trace(String.format("No parent of job, not processing parent sequencing: %s",
                                         job));
             }
+            return;
         }
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing parent of Job %s", job));
@@ -1490,7 +1491,7 @@ public class JobModelImpl implements JobModel {
                     } catch (Throwable e) {
                         if (log.isTraceEnabled()) {
                             log.trace(String.format("invalid parent status sequencing %s",
-                                                    job.getParent()));
+                                                    job.getParent()), e);
                         }
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s \n %s",
@@ -1515,7 +1516,7 @@ public class JobModelImpl implements JobModel {
                     } catch (Throwable e) {
                         if (log.isTraceEnabled()) {
                             log.trace(String.format("invalid parent status sequencing %s",
-                                                    job.getParent()));
+                                                    job.getParent()), e);
                         }
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s\n%s",
@@ -1552,8 +1553,8 @@ public class JobModelImpl implements JobModel {
                              "Automatically switching staus via direct communication from sibling jobs");
             } catch (Throwable e) {
                 if (log.isTraceEnabled()) {
-                    log.trace(String.format("invalid parent status sequencing %s",
-                                            job.getParent()));
+                    log.trace(String.format("invalid self status sequencing %s",
+                                            job), e);
                 }
                 log(job,
                     String.format("error changing status of job of %s to: %s in self sequencing %s\n%s",
@@ -1603,8 +1604,8 @@ public class JobModelImpl implements JobModel {
                         }
                     } catch (Throwable e) {
                         if (log.isTraceEnabled()) {
-                            log.trace(String.format("invalid parent status sequencing %s",
-                                                    job.getParent()));
+                            log.trace(String.format("invalid sibling status sequencing %s",
+                                                    job));
                         }
                         log(sibling,
                             String.format("error changing status of sibling of %s to: %s in sibling sequencing %s\n%s",
@@ -2035,9 +2036,9 @@ public class JobModelImpl implements JobModel {
     private void processJobChange(String jobId) {
         JSP.EMF.getCache().evict(Job.class);
         Job job = em.find(Job.class, jobId);
-        processJobSequencing(job);
         generateImplicitJobsForExplicitJobs(job,
                                             kernel.getCoreAnimationSoftware());
+        processJobSequencing(job);
         em.flush();
     }
 

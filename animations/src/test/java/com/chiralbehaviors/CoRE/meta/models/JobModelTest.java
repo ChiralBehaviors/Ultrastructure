@@ -51,6 +51,7 @@ import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
+import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -356,12 +357,11 @@ public class JobModelTest extends AbstractModelTest {
         List<Job> jobs = model.getJobModel().insert(order, protocols.get(0));
         assertEquals(3, jobs.size());
         em.getTransaction().commit();
-        
+
         em.getTransaction().begin();
         jobModel.changeStatus(order, scenario.available, kernel.getCore(), null);
         em.getTransaction().commit();
-        
-        
+
         for (Job j : jobs) {
             em.refresh(j);
             assertEquals(scenario.available, j.getStatus());
@@ -434,12 +434,73 @@ public class JobModelTest extends AbstractModelTest {
             txn.commit();
             chronologies = model.getJobModel().getChronologyForJob(order);
             assertEquals(3, chronologies.size());
-            fieldErrors = verifyChronologyFields(order, chronologies.get(0));
+            for (JobChronology c : chronologies) {
+                fieldErrors = verifyChronologyFields(order, c);
+                if (fieldErrors == null || fieldErrors.size() == 0) {
+                    break;
+                }
+            }
             System.out.println(String.format("Errors: %s", fieldErrors));
             assertEquals(0, fieldErrors.size());
         } finally {
             alterTriggers(true);
         }
+    }
+
+    @Test
+    public void testJobGenerationAndSequencing() throws Exception {
+        model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
+        em.getTransaction().begin();
+        Product pushit = new Product("Pushit Service", null, scenario.core);
+        em.persist(pushit);
+
+        Product shoveit = new Product("shoveit Service", null, scenario.core);
+        em.persist(shoveit);
+
+        StatusCode pushingMe = new StatusCode("Pushing Me", null, scenario.core);
+        pushingMe.setPropagateChildren(true);
+        em.persist(pushingMe);
+
+        StatusCode shovingMe = new StatusCode("Shoving Me", null, scenario.core);
+        em.persist(shovingMe);
+
+        Protocol p = model.getJobModel().newInitializedProtocol(pushit,
+                                                                scenario.core);
+        p.setProduct(pushit);
+        p.setChildService(shoveit);
+        em.persist(p);
+
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
+                                                                                         pushit,
+                                                                                         pushingMe,
+                                                                                         shovingMe,
+                                                                                         scenario.core);
+        em.persist(auth);
+        model.getJobModel().createStatusCodeChain(pushit,
+                                                  new StatusCode[] { pushingMe,
+                                                          shovingMe, scenario.completed },
+                                                  scenario.core);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
+
+        
+        em.getTransaction().commit();
+        
+
+        List<Job> children = model.getJobModel().getAllChildren(push);
+        assertEquals(0, children.size());
+
+        em.getTransaction().begin();
+        model.getJobModel().changeStatus(push, pushingMe, scenario.core, null);
+        push.setProduct(pushit);
+        em.getTransaction().commit();
+
+        children = model.getJobModel().getAllChildren(push);
+        assertEquals(1, children.size());
+        em.refresh(push);
+        assertEquals(shovingMe, push.getStatus());
     }
 
     @Test

@@ -51,9 +51,9 @@ public class JobExplorer extends JPanel {
     public JobExplorer() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 30, 30, 100 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 30, 0, 30, 100 };
         gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
         setLayout(gridBagLayout);
 
         JLabel lblProtocol = new JLabel("Meta Protocol");
@@ -95,22 +95,24 @@ public class JobExplorer extends JPanel {
         gbc_generate.gridy = 2;
         add(generate, gbc_generate);
 
+        generateAll = new JButton("Generate All");
+        GridBagConstraints gbc_generateAll = new GridBagConstraints();
+        gbc_generateAll.anchor = GridBagConstraints.WEST;
+        gbc_generateAll.insets = new Insets(0, 0, 5, 0);
+        gbc_generateAll.gridx = 1;
+        gbc_generateAll.gridy = 2;
+        add(generateAll, gbc_generateAll);
+
         generated = new JList<>();
         generated.setBorder(new LineBorder(new Color(0, 0, 0)));
         GridBagConstraints gbc_list = new GridBagConstraints();
+        gbc_list.gridwidth = 2;
+        gbc_list.insets = new Insets(0, 0, 0, 5);
         gbc_list.gridheight = 4;
-        gbc_list.insets = new Insets(0, 0, 5, 0);
         gbc_list.fill = GridBagConstraints.BOTH;
-        gbc_list.gridx = 1;
-        gbc_list.gridy = 2;
+        gbc_list.gridx = 0;
+        gbc_list.gridy = 3;
         add(generated, gbc_list);
-
-        generateAll = new JButton("Generate All");
-        GridBagConstraints gbc_generateAll = new GridBagConstraints();
-        gbc_generateAll.insets = new Insets(0, 0, 0, 5);
-        gbc_generateAll.gridx = 0;
-        gbc_generateAll.gridy = 3;
-        add(generateAll, gbc_generateAll);
 
     }
 

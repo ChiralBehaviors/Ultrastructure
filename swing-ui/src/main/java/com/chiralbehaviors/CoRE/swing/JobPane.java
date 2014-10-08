@@ -20,6 +20,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
@@ -30,46 +33,66 @@ import javax.swing.border.TitledBorder;
 public class JobPane extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    private JComboBox<String> keys;
+    private JobView           job;
+    private JobExplorer       match;
 
     /**
      * Create the panel.
      */
     public JobPane() {
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 1.0, 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+        gridBagLayout.columnWidths = new int[] { 0, 0, 264, 264, 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
+        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, Double.MIN_VALUE };
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0,
+                Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
-        JPanel panel_1 = new JPanel();
-        panel_1.setBorder(new TitledBorder(null, "Job", TitledBorder.LEADING,
-                                           TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-        gbc_panel_1.insets = new Insets(0, 0, 0, 5);
-        gbc_panel_1.fill = GridBagConstraints.BOTH;
-        gbc_panel_1.gridx = 0;
-        gbc_panel_1.gridy = 0;
-        add(panel_1, gbc_panel_1);
+        JLabel lblKey = new JLabel("Key");
+        GridBagConstraints gbc_lblKey = new GridBagConstraints();
+        gbc_lblKey.insets = new Insets(0, 0, 5, 5);
+        gbc_lblKey.anchor = GridBagConstraints.EAST;
+        gbc_lblKey.gridx = 1;
+        gbc_lblKey.gridy = 1;
+        add(lblKey, gbc_lblKey);
 
-        JobView jobView = new JobView();
-        jobView.setBorder(null);
-        panel_1.add(jobView);
+        keys = new JComboBox<>();
+        GridBagConstraints gbc_keys = new GridBagConstraints();
+        gbc_keys.insets = new Insets(0, 0, 5, 5);
+        gbc_keys.fill = GridBagConstraints.HORIZONTAL;
+        gbc_keys.gridx = 2;
+        gbc_keys.gridy = 1;
+        add(keys, gbc_keys);
 
-        JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder(null, "Explore", TitledBorder.LEADING,
+        JButton btnNew = new JButton("New");
+        GridBagConstraints gbc_btnNew = new GridBagConstraints();
+        gbc_btnNew.insets = new Insets(0, 0, 5, 5);
+        gbc_btnNew.gridx = 3;
+        gbc_btnNew.gridy = 1;
+        add(btnNew, gbc_btnNew);
+
+        job = new JobView();
+        job.setBorder(new TitledBorder(null, "Job", TitledBorder.LEADING,
+                                       TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_job = new GridBagConstraints();
+        gbc_job.insets = new Insets(0, 0, 5, 5);
+        gbc_job.gridwidth = 2;
+        gbc_job.fill = GridBagConstraints.BOTH;
+        gbc_job.gridx = 2;
+        gbc_job.gridy = 3;
+        add(job, gbc_job);
+
+        match = new JobExplorer();
+        match.setBorder(new TitledBorder(null, "Match", TitledBorder.LEADING,
                                          TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_panel = new GridBagConstraints();
-        gbc_panel.fill = GridBagConstraints.BOTH;
-        gbc_panel.gridx = 1;
-        gbc_panel.gridy = 0;
-        add(panel, gbc_panel);
-
-        JobExplorer jobExplorer = new JobExplorer();
-        GridBagLayout gridBagLayout_1 = (GridBagLayout) jobExplorer.getLayout();
-        gridBagLayout_1.columnWidths = new int[] { 0, 200, 0 };
-        gridBagLayout_1.rowHeights = new int[] { 30, 30, 100 };
-        panel.add(jobExplorer);
+        GridBagConstraints gbc_match = new GridBagConstraints();
+        gbc_match.insets = new Insets(0, 0, 5, 5);
+        gbc_match.fill = GridBagConstraints.BOTH;
+        gbc_match.gridx = 4;
+        gbc_match.gridy = 3;
+        add(match, gbc_match);
 
     }
 

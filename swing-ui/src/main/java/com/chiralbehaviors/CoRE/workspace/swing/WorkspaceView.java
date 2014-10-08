@@ -114,7 +114,7 @@ public class WorkspaceView {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(0, 0, 1024, 500);
+        frame.setBounds(0, 0, 1024, 698);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         constellations = new JTabbedPane(JTabbedPane.TOP);

@@ -1483,10 +1483,10 @@ public class JobModelImpl implements JobModel {
                             job.getParent().setProduct(job.getProduct());
                         }
                     } catch (Throwable e) {
-                        if (log.isTraceEnabled()) {
+                        //if (log.isTraceEnabled()) {
                             log.trace(String.format("invalid parent status sequencing %s",
                                                     job.getParent()), e);
-                        }
+                        //}
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s \n %s",
                                           job.getId(),
@@ -1508,10 +1508,10 @@ public class JobModelImpl implements JobModel {
                             job.getParent().setProduct(job.getProduct());
                         }
                     } catch (Throwable e) {
-                        if (log.isTraceEnabled()) {
+                        //if (log.isTraceEnabled()) {
                             log.trace(String.format("invalid parent status sequencing %s",
                                                     job.getParent()), e);
-                        }
+                        //}
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s\n%s",
                                           job.getId(),

@@ -1450,9 +1450,10 @@ public class JobModelImpl implements JobModel {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing change in Job %s", job));
         }
+        //process parents last so we can close out child jobs
         processChildSequencing(job);
-        processParentSequencing(job);
         processSiblingSequencing(job);
+        processParentSequencing(job);
         processSelfSequencing(job);
     }
 

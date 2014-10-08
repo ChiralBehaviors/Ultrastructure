@@ -1425,7 +1425,7 @@ public class JobModelImpl implements JobModel {
                     } catch (Throwable e) {
                         if (log.isTraceEnabled()) {
                             log.trace(String.format("invalid child status sequencing %s",
-                                                    child));
+                                                    child), e);
                         }
                         log(child,
                             String.format("error changing status of child of %s to: %s in child sequencing %s\n%s",
@@ -1599,7 +1599,7 @@ public class JobModelImpl implements JobModel {
                     } catch (Throwable e) {
                         if (log.isTraceEnabled()) {
                             log.trace(String.format("invalid sibling status sequencing %s",
-                                                    job));
+                                                    job), e);
                         }
                         log(sibling,
                             String.format("error changing status of sibling of %s to: %s in sibling sequencing %s\n%s",

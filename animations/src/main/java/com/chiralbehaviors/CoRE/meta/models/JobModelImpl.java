@@ -495,13 +495,6 @@ public class JobModelImpl implements JobModel {
                                                  nextStatus, service,
                                                  currentStatus));
         }
-        if (getTerminalStates(job).contains(nextStatus)) {
-            if (!getAllActiveSubJobsOf(job).isEmpty()) {
-                throw new SQLException(
-                                       String.format("Cannot enter terminal state %s for %s, as subjobs are still active",
-                                                     nextStatus, job));
-            }
-        }
     }
 
     @Override
@@ -1453,8 +1446,8 @@ public class JobModelImpl implements JobModel {
         //process parents last so we can close out child jobs
         processChildSequencing(job);
         processSiblingSequencing(job);
-        processParentSequencing(job);
         processSelfSequencing(job);
+        processParentSequencing(job); 
     }
 
     @Override

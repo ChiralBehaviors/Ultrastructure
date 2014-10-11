@@ -59,9 +59,9 @@ public class AbstractProtocolView extends JPanel {
      */
     public AbstractProtocolView() {
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 3, -25, 3, 0 };
+        gridBagLayout.columnWidths = new int[] { 0, 3, 3, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 2.0,
+        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 2.0,
                 Double.MIN_VALUE };
         gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                 0.0, 0.0, 0.0, Double.MIN_VALUE };
@@ -77,7 +77,7 @@ public class AbstractProtocolView extends JPanel {
         JLabel lblAttributes = new JLabel("Attributes");
         GridBagConstraints gbc_lblAttributes = new GridBagConstraints();
         gbc_lblAttributes.insets = new Insets(0, 0, 5, 0);
-        gbc_lblAttributes.gridx = 3;
+        gbc_lblAttributes.gridx = 2;
         gbc_lblAttributes.gridy = 0;
         add(lblAttributes, gbc_lblAttributes);
 
@@ -101,14 +101,14 @@ public class AbstractProtocolView extends JPanel {
         GridBagConstraints gbc_serviceAttribute = new GridBagConstraints();
         gbc_serviceAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_serviceAttribute.fill = GridBagConstraints.HORIZONTAL;
-        gbc_serviceAttribute.gridx = 3;
+        gbc_serviceAttribute.gridx = 2;
         gbc_serviceAttribute.gridy = 1;
         add(serviceAttribute, gbc_serviceAttribute);
 
         JLabel lblRequester = new JLabel("Requester");
         GridBagConstraints gbc_lblRequester = new GridBagConstraints();
-        gbc_lblRequester.insets = new Insets(0, 0, 5, 5);
         gbc_lblRequester.anchor = GridBagConstraints.EAST;
+        gbc_lblRequester.insets = new Insets(0, 0, 5, 5);
         gbc_lblRequester.gridx = 0;
         gbc_lblRequester.gridy = 2;
         add(lblRequester, gbc_lblRequester);
@@ -125,7 +125,7 @@ public class AbstractProtocolView extends JPanel {
         GridBagConstraints gbc_requesterAttribute = new GridBagConstraints();
         gbc_requesterAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_requesterAttribute.fill = GridBagConstraints.HORIZONTAL;
-        gbc_requesterAttribute.gridx = 3;
+        gbc_requesterAttribute.gridx = 2;
         gbc_requesterAttribute.gridy = 2;
         add(requesterAttribute, gbc_requesterAttribute);
 
@@ -149,7 +149,7 @@ public class AbstractProtocolView extends JPanel {
         GridBagConstraints gbc_assignToAttribute = new GridBagConstraints();
         gbc_assignToAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_assignToAttribute.fill = GridBagConstraints.HORIZONTAL;
-        gbc_assignToAttribute.gridx = 3;
+        gbc_assignToAttribute.gridx = 2;
         gbc_assignToAttribute.gridy = 3;
         add(assignToAttribute, gbc_assignToAttribute);
 
@@ -173,7 +173,7 @@ public class AbstractProtocolView extends JPanel {
         GridBagConstraints gbc_productAttribute = new GridBagConstraints();
         gbc_productAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_productAttribute.fill = GridBagConstraints.HORIZONTAL;
-        gbc_productAttribute.gridx = 3;
+        gbc_productAttribute.gridx = 2;
         gbc_productAttribute.gridy = 4;
         add(productAttribute, gbc_productAttribute);
 
@@ -197,7 +197,7 @@ public class AbstractProtocolView extends JPanel {
         GridBagConstraints gbc_deliverToAttribute = new GridBagConstraints();
         gbc_deliverToAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_deliverToAttribute.fill = GridBagConstraints.HORIZONTAL;
-        gbc_deliverToAttribute.gridx = 3;
+        gbc_deliverToAttribute.gridx = 2;
         gbc_deliverToAttribute.gridy = 5;
         add(deliverToAttribute, gbc_deliverToAttribute);
 
@@ -221,19 +221,20 @@ public class AbstractProtocolView extends JPanel {
         GridBagConstraints gbc_deliverFromAttribute = new GridBagConstraints();
         gbc_deliverFromAttribute.insets = new Insets(0, 0, 5, 0);
         gbc_deliverFromAttribute.fill = GridBagConstraints.HORIZONTAL;
-        gbc_deliverFromAttribute.gridx = 3;
+        gbc_deliverFromAttribute.gridx = 2;
         gbc_deliverFromAttribute.gridy = 6;
         add(deliverFromAttribute, gbc_deliverFromAttribute);
 
         JLabel lblUnit = new JLabel("Quantity Unit");
         GridBagConstraints gbc_lblUnit = new GridBagConstraints();
         gbc_lblUnit.insets = new Insets(0, 0, 5, 0);
-        gbc_lblUnit.gridx = 3;
+        gbc_lblUnit.gridx = 2;
         gbc_lblUnit.gridy = 7;
         add(lblUnit, gbc_lblUnit);
 
         JLabel lblQuantity = new JLabel("Quantity");
         GridBagConstraints gbc_lblQuantity = new GridBagConstraints();
+        gbc_lblQuantity.anchor = GridBagConstraints.EAST;
         gbc_lblQuantity.insets = new Insets(0, 0, 0, 5);
         gbc_lblQuantity.gridx = 0;
         gbc_lblQuantity.gridy = 8;
@@ -251,7 +252,7 @@ public class AbstractProtocolView extends JPanel {
         quantityUnit = new JComboBox<>();
         GridBagConstraints gbc_quantityUnit = new GridBagConstraints();
         gbc_quantityUnit.fill = GridBagConstraints.HORIZONTAL;
-        gbc_quantityUnit.gridx = 3;
+        gbc_quantityUnit.gridx = 2;
         gbc_quantityUnit.gridy = 8;
         add(quantityUnit, gbc_quantityUnit);
 

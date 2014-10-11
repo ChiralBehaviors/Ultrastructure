@@ -44,10 +44,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.swing.ChildAuthSeqView;
 import com.chiralbehaviors.CoRE.swing.ExistentialRuleformView;
-import com.chiralbehaviors.CoRE.swing.JobView;
-import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
 import com.chiralbehaviors.CoRE.swing.ParentSeqAuthView;
-import com.chiralbehaviors.CoRE.swing.ProtocolView;
 import com.chiralbehaviors.CoRE.swing.SelfAuthSeqView;
 import com.chiralbehaviors.CoRE.swing.SiblingSeqAuthView;
 import com.chiralbehaviors.CoRE.swing.StatusCodeSequencingView;
@@ -75,15 +72,15 @@ public class WorkspaceView {
     private JLabel                                                     lblWorkspace;
     private JComboBox<WorkspaceEditor>                                 workspaces;
     private JList<WorkspaceAuthorization>                              keys;
-    private ProtocolView                                               protocols;
-    private JobView                                                    jobs;
     private StatusCodeSequencingView                                   statusCodeSequencing;
     private ParentSeqAuthView                                          parentSequencing;
     private SiblingSeqAuthView                                         siblingSequencing;
     private ChildAuthSeqView                                           childSequencing;
     private SelfAuthSeqView                                            selfSequencing;
     private JTabbedPane                                                events;
-    private MetaProtocolView                                           metaProtocols;
+    private JobPane                                                    jobs;
+    private MetaProtocolPane                                           metaProtocols;
+    private ProtocolPane                                               protocols;
 
     /**
      * Launch the application.
@@ -159,14 +156,13 @@ public class WorkspaceView {
         events = new JTabbedPane(JTabbedPane.TOP);
         constellations.addTab("Events", null, events, null);
 
-        protocols = new ProtocolView();
+        protocols = new ProtocolPane();
         events.addTab("Protocols", null, protocols, null);
 
-        metaProtocols = new MetaProtocolView();
+        metaProtocols = new MetaProtocolPane();
         events.addTab("Meta Protocols", null, metaProtocols, null);
-        events.setEnabledAt(1, true);
 
-        jobs = new JobView();
+        jobs = new JobPane();
         events.addTab("Jobs", null, jobs, null);
 
         sequencing = new JTabbedPane(JTabbedPane.TOP);

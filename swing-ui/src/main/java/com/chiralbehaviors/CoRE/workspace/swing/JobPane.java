@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.swing;
+package com.chiralbehaviors.CoRE.workspace.swing;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,6 +25,9 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
+import com.chiralbehaviors.CoRE.swing.JobExplorer;
+import com.chiralbehaviors.CoRE.swing.JobView;
 
 /**
  * @author hhildebrand
@@ -42,56 +45,55 @@ public class JobPane extends JPanel {
      */
     public JobPane() {
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0, 264, 264, 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0,
+        gridBagLayout.columnWidths = new int[] { 0, 264, 264, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0 };
+        gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 0.0, 1.0,
                 Double.MIN_VALUE };
+        gridBagLayout.rowWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
         JLabel lblKey = new JLabel("Key");
         GridBagConstraints gbc_lblKey = new GridBagConstraints();
         gbc_lblKey.insets = new Insets(0, 0, 5, 5);
         gbc_lblKey.anchor = GridBagConstraints.EAST;
-        gbc_lblKey.gridx = 1;
-        gbc_lblKey.gridy = 1;
+        gbc_lblKey.gridx = 0;
+        gbc_lblKey.gridy = 0;
         add(lblKey, gbc_lblKey);
 
         keys = new JComboBox<>();
         GridBagConstraints gbc_keys = new GridBagConstraints();
         gbc_keys.insets = new Insets(0, 0, 5, 5);
         gbc_keys.fill = GridBagConstraints.HORIZONTAL;
-        gbc_keys.gridx = 2;
-        gbc_keys.gridy = 1;
+        gbc_keys.gridx = 1;
+        gbc_keys.gridy = 0;
         add(keys, gbc_keys);
 
         JButton btnNew = new JButton("New");
         GridBagConstraints gbc_btnNew = new GridBagConstraints();
+        gbc_btnNew.anchor = GridBagConstraints.WEST;
         gbc_btnNew.insets = new Insets(0, 0, 5, 5);
-        gbc_btnNew.gridx = 3;
-        gbc_btnNew.gridy = 1;
+        gbc_btnNew.gridx = 2;
+        gbc_btnNew.gridy = 0;
         add(btnNew, gbc_btnNew);
 
         job = new JobView();
         job.setBorder(new TitledBorder(null, "Job", TitledBorder.LEADING,
                                        TitledBorder.TOP, null, null));
         GridBagConstraints gbc_job = new GridBagConstraints();
-        gbc_job.insets = new Insets(0, 0, 5, 5);
-        gbc_job.gridwidth = 2;
+        gbc_job.insets = new Insets(0, 0, 0, 5);
+        gbc_job.gridwidth = 3;
         gbc_job.fill = GridBagConstraints.BOTH;
-        gbc_job.gridx = 2;
-        gbc_job.gridy = 3;
+        gbc_job.gridx = 0;
+        gbc_job.gridy = 1;
         add(job, gbc_job);
 
         match = new JobExplorer();
         match.setBorder(new TitledBorder(null, "Match", TitledBorder.LEADING,
                                          TitledBorder.TOP, null, null));
         GridBagConstraints gbc_match = new GridBagConstraints();
-        gbc_match.insets = new Insets(0, 0, 5, 5);
         gbc_match.fill = GridBagConstraints.BOTH;
-        gbc_match.gridx = 4;
-        gbc_match.gridy = 3;
+        gbc_match.gridx = 3;
+        gbc_match.gridy = 1;
         add(match, gbc_match);
 
     }

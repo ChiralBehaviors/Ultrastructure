@@ -51,9 +51,9 @@ public class JobExplorer extends JPanel {
     public JobExplorer() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 30, 0, 30, 100 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 30 };
         gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0 };
         setLayout(gridBagLayout);
 
         JLabel lblProtocol = new JLabel("Meta Protocol");
@@ -107,8 +107,6 @@ public class JobExplorer extends JPanel {
         generated.setBorder(new LineBorder(new Color(0, 0, 0)));
         GridBagConstraints gbc_list = new GridBagConstraints();
         gbc_list.gridwidth = 2;
-        gbc_list.insets = new Insets(0, 0, 0, 5);
-        gbc_list.gridheight = 4;
         gbc_list.fill = GridBagConstraints.BOTH;
         gbc_list.gridx = 0;
         gbc_list.gridy = 3;

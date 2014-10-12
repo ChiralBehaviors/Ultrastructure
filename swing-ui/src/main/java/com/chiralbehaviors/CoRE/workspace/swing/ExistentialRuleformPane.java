@@ -51,6 +51,7 @@ public class ExistentialRuleformPane extends JPanel {
     /**
      * Create the panel.
      */
+    @SuppressWarnings("rawtypes")
     public ExistentialRuleformPane() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 94, 94, 0, 0, 0 };
@@ -129,7 +130,7 @@ public class ExistentialRuleformPane extends JPanel {
         gbc_parents.gridy = 1;
         parentsPanel.add(parents, gbc_parents);
 
-        ruleformView = new ExistentialRuleformView<>();
+        ruleformView = new ExistentialRuleformView();
         GridBagConstraints gbc_ruleformView = new GridBagConstraints();
         gbc_ruleformView.insets = new Insets(0, 0, 5, 0);
         gbc_ruleformView.gridwidth = 2;

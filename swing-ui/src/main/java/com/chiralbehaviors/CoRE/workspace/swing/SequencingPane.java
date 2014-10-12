@@ -41,9 +41,13 @@ public class SequencingPane extends JPanel {
 
     private static final long     serialVersionUID = 1L;
     private JComboBox<StatusCode> statusCode;
-    private JList<StatusCode>     parentStatusCodes;
     private JComboBox<Product>    service;
-    private JList<StatusCode>     childStatusCodes;
+    private JList<StatusCode>     parentStatusCodes;
+    private JList<StatusCode>     childrenStatusCodes;
+    private SelfAuthSeqView       selfAuthSeq;
+    private ParentSeqAuthView     parentSeqAuth;
+    private SiblingSeqAuthView    siblingSeqAuth;
+    private ChildAuthSeqView      childAuthSeq;
 
     /**
      * Create the panel.
@@ -52,9 +56,9 @@ public class SequencingPane extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 0.0,
+        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0,
                 Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 1.0, 0.0,
                 0.0, Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
@@ -88,94 +92,106 @@ public class SequencingPane extends JPanel {
         gbc_service.gridy = 0;
         add(service, gbc_service);
 
-        JLabel lblParentStatusCodes = new JLabel("Parent Status Codes");
-        GridBagConstraints gbc_lblParentStatusCodes = new GridBagConstraints();
-        gbc_lblParentStatusCodes.gridwidth = 2;
-        gbc_lblParentStatusCodes.insets = new Insets(0, 0, 5, 5);
-        gbc_lblParentStatusCodes.gridx = 0;
-        gbc_lblParentStatusCodes.gridy = 1;
-        add(lblParentStatusCodes, gbc_lblParentStatusCodes);
+        selfAuthSeq = new SelfAuthSeqView();
+        selfAuthSeq.setBorder(new TitledBorder(null, "Self Sequencing",
+                                               TitledBorder.LEADING,
+                                               TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_selfAuthSeq = new GridBagConstraints();
+        gbc_selfAuthSeq.gridwidth = 2;
+        gbc_selfAuthSeq.gridheight = 2;
+        gbc_selfAuthSeq.insets = new Insets(0, 0, 5, 0);
+        gbc_selfAuthSeq.fill = GridBagConstraints.BOTH;
+        gbc_selfAuthSeq.gridx = 2;
+        gbc_selfAuthSeq.gridy = 1;
+        add(selfAuthSeq, gbc_selfAuthSeq);
 
-        parentStatusCodes = new JList<StatusCode>();
+        JPanel parents = new JPanel();
+        parents.setBorder(new TitledBorder(null, "Parent Status Codes",
+                                           TitledBorder.LEADING,
+                                           TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_parents = new GridBagConstraints();
+        gbc_parents.gridwidth = 2;
+        gbc_parents.gridheight = 3;
+        gbc_parents.insets = new Insets(0, 0, 5, 5);
+        gbc_parents.fill = GridBagConstraints.BOTH;
+        gbc_parents.gridx = 0;
+        gbc_parents.gridy = 1;
+        add(parents, gbc_parents);
+        GridBagLayout gbl_parents = new GridBagLayout();
+        gbl_parents.columnWidths = new int[] { 0, 0 };
+        gbl_parents.rowHeights = new int[] { 0, 0 };
+        gbl_parents.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+        gbl_parents.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+        parents.setLayout(gbl_parents);
+
+        parentStatusCodes = new JList<>();
         GridBagConstraints gbc_parentStatusCodes = new GridBagConstraints();
-        gbc_parentStatusCodes.gridwidth = 2;
-        gbc_parentStatusCodes.gridheight = 2;
-        gbc_parentStatusCodes.insets = new Insets(0, 0, 5, 5);
         gbc_parentStatusCodes.fill = GridBagConstraints.BOTH;
         gbc_parentStatusCodes.gridx = 0;
-        gbc_parentStatusCodes.gridy = 2;
-        add(parentStatusCodes, gbc_parentStatusCodes);
+        gbc_parentStatusCodes.gridy = 0;
+        parents.add(parentStatusCodes, gbc_parentStatusCodes);
 
-        SelfAuthSeqView selfAuthSeqView = new SelfAuthSeqView();
-        selfAuthSeqView.setBorder(new TitledBorder(null, "Self Sequencing",
-                                                   TitledBorder.LEADING,
-                                                   TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_selfAuthSeqView = new GridBagConstraints();
-        gbc_selfAuthSeqView.gridwidth = 2;
-        gbc_selfAuthSeqView.gridheight = 2;
-        gbc_selfAuthSeqView.insets = new Insets(0, 0, 5, 0);
-        gbc_selfAuthSeqView.fill = GridBagConstraints.BOTH;
-        gbc_selfAuthSeqView.gridx = 2;
-        gbc_selfAuthSeqView.gridy = 1;
-        add(selfAuthSeqView, gbc_selfAuthSeqView);
+        parentSeqAuth = new ParentSeqAuthView();
+        parentSeqAuth.setBorder(new TitledBorder(null, "Parent Sequencing",
+                                                 TitledBorder.LEADING,
+                                                 TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_parentSeqAuth = new GridBagConstraints();
+        gbc_parentSeqAuth.gridwidth = 2;
+        gbc_parentSeqAuth.insets = new Insets(0, 0, 5, 0);
+        gbc_parentSeqAuth.fill = GridBagConstraints.BOTH;
+        gbc_parentSeqAuth.gridx = 2;
+        gbc_parentSeqAuth.gridy = 3;
+        add(parentSeqAuth, gbc_parentSeqAuth);
 
-        ParentSeqAuthView parentSeqAuthView = new ParentSeqAuthView();
-        parentSeqAuthView.setBorder(new TitledBorder(null, "Parent Sequencing",
-                                                     TitledBorder.LEADING,
-                                                     TitledBorder.TOP, null,
-                                                     null));
-        GridBagConstraints gbc_parentSeqAuthView = new GridBagConstraints();
-        gbc_parentSeqAuthView.gridwidth = 2;
-        gbc_parentSeqAuthView.insets = new Insets(0, 0, 5, 0);
-        gbc_parentSeqAuthView.fill = GridBagConstraints.BOTH;
-        gbc_parentSeqAuthView.gridx = 2;
-        gbc_parentSeqAuthView.gridy = 3;
-        add(parentSeqAuthView, gbc_parentSeqAuthView);
+        JPanel children = new JPanel();
+        children.setBorder(new TitledBorder(null, "Child Status Codes",
+                                            TitledBorder.LEADING,
+                                            TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_children = new GridBagConstraints();
+        gbc_children.gridwidth = 2;
+        gbc_children.gridheight = 3;
+        gbc_children.insets = new Insets(0, 0, 5, 5);
+        gbc_children.fill = GridBagConstraints.BOTH;
+        gbc_children.gridx = 0;
+        gbc_children.gridy = 4;
+        add(children, gbc_children);
+        GridBagLayout gbl_children = new GridBagLayout();
+        gbl_children.columnWidths = new int[] { 0, 0 };
+        gbl_children.rowHeights = new int[] { 0, 0 };
+        gbl_children.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+        gbl_children.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+        children.setLayout(gbl_children);
 
-        JLabel lblChildStatusCodes = new JLabel("Child Status Codes");
-        GridBagConstraints gbc_lblChildStatusCodes = new GridBagConstraints();
-        gbc_lblChildStatusCodes.gridwidth = 2;
-        gbc_lblChildStatusCodes.insets = new Insets(0, 0, 5, 5);
-        gbc_lblChildStatusCodes.gridx = 0;
-        gbc_lblChildStatusCodes.gridy = 4;
-        add(lblChildStatusCodes, gbc_lblChildStatusCodes);
+        childrenStatusCodes = new JList<>();
+        GridBagConstraints gbc_childrenStatusCodes = new GridBagConstraints();
+        gbc_childrenStatusCodes.fill = GridBagConstraints.BOTH;
+        gbc_childrenStatusCodes.gridx = 0;
+        gbc_childrenStatusCodes.gridy = 0;
+        children.add(childrenStatusCodes, gbc_childrenStatusCodes);
 
-        childStatusCodes = new JList<>();
-        GridBagConstraints gbc_childStatusCodes = new GridBagConstraints();
-        gbc_childStatusCodes.gridwidth = 2;
-        gbc_childStatusCodes.gridheight = 2;
-        gbc_childStatusCodes.insets = new Insets(0, 0, 0, 5);
-        gbc_childStatusCodes.fill = GridBagConstraints.BOTH;
-        gbc_childStatusCodes.gridx = 0;
-        gbc_childStatusCodes.gridy = 5;
-        add(childStatusCodes, gbc_childStatusCodes);
+        siblingSeqAuth = new SiblingSeqAuthView();
+        siblingSeqAuth.setBorder(new TitledBorder(null, "Sibling Sequencing",
+                                                  TitledBorder.LEADING,
+                                                  TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_siblingSeqAuth = new GridBagConstraints();
+        gbc_siblingSeqAuth.gridwidth = 2;
+        gbc_siblingSeqAuth.gridheight = 2;
+        gbc_siblingSeqAuth.insets = new Insets(0, 0, 5, 0);
+        gbc_siblingSeqAuth.fill = GridBagConstraints.BOTH;
+        gbc_siblingSeqAuth.gridx = 2;
+        gbc_siblingSeqAuth.gridy = 4;
+        add(siblingSeqAuth, gbc_siblingSeqAuth);
 
-        SiblingSeqAuthView siblingSeqAuthView = new SiblingSeqAuthView();
-        siblingSeqAuthView.setBorder(new TitledBorder(null,
-                                                      "Sibling Sequencing",
-                                                      TitledBorder.LEADING,
-                                                      TitledBorder.TOP, null,
-                                                      null));
-        GridBagConstraints gbc_siblingSeqAuthView = new GridBagConstraints();
-        gbc_siblingSeqAuthView.gridwidth = 2;
-        gbc_siblingSeqAuthView.gridheight = 2;
-        gbc_siblingSeqAuthView.insets = new Insets(0, 0, 5, 0);
-        gbc_siblingSeqAuthView.fill = GridBagConstraints.BOTH;
-        gbc_siblingSeqAuthView.gridx = 2;
-        gbc_siblingSeqAuthView.gridy = 4;
-        add(siblingSeqAuthView, gbc_siblingSeqAuthView);
-
-        ChildAuthSeqView childAuthSeqView = new ChildAuthSeqView();
-        childAuthSeqView.setBorder(new TitledBorder(null, "Child Sequencing",
-                                                    TitledBorder.LEADING,
-                                                    TitledBorder.TOP, null,
-                                                    null));
-        GridBagConstraints gbc_childAuthSeqView = new GridBagConstraints();
-        gbc_childAuthSeqView.gridwidth = 2;
-        gbc_childAuthSeqView.fill = GridBagConstraints.BOTH;
-        gbc_childAuthSeqView.gridx = 2;
-        gbc_childAuthSeqView.gridy = 6;
-        add(childAuthSeqView, gbc_childAuthSeqView);
+        childAuthSeq = new ChildAuthSeqView();
+        childAuthSeq.setBorder(new TitledBorder(null, "Child Sequencing",
+                                                TitledBorder.LEADING,
+                                                TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_childAuthSeq = new GridBagConstraints();
+        gbc_childAuthSeq.gridwidth = 2;
+        gbc_childAuthSeq.fill = GridBagConstraints.BOTH;
+        gbc_childAuthSeq.gridx = 2;
+        gbc_childAuthSeq.gridy = 6;
+        add(childAuthSeq, gbc_childAuthSeq);
 
     }
 

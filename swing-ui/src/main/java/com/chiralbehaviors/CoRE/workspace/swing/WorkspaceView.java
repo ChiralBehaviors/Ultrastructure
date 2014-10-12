@@ -42,7 +42,7 @@ public class WorkspaceView {
     private JobPane                    jobs;
     private MetaProtocolPane           metaProtocols;
     private ProtocolPane               protocols;
-    private SequencingPane             sequencingAuths;
+    private SequencingPane             sequencing;
     private ExistentialRuleformPane    agencies;
     private ExistentialRuleformPane    attributes;
     private ExistentialRuleformPane    intervals;
@@ -118,8 +118,8 @@ public class WorkspaceView {
         events = new JTabbedPane(JTabbedPane.TOP);
         constellations.addTab("Events", null, events, null);
 
-        sequencingAuths = new SequencingPane();
-        events.addTab("New tab", null, sequencingAuths, null);
+        sequencing = new SequencingPane();
+        events.addTab("Sequencing", null, sequencing, null);
 
         protocols = new ProtocolPane();
         events.addTab("Protocols", null, protocols, null);

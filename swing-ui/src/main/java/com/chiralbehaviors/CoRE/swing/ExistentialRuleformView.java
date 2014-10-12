@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -81,14 +82,12 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
     public ExistentialRuleformView() {
         // contentPane = new JPanel();
         setBorder(new EmptyBorder(5, 5, 5, 5));
-        setBounds(100, 100, 532, 172);
+        setBounds(100, 100, 532, 276);
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0,
-                Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0,
-                Double.MIN_VALUE };
+        gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 79, 0, 0 };
+        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 1.0 };
         setLayout(gridBagLayout);
 
         JLabel lblName = new JLabel("Name");
@@ -101,28 +100,12 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
 
         name = new JTextField();
         GridBagConstraints gbc_name = new GridBagConstraints();
-        gbc_name.insets = new Insets(0, 0, 5, 5);
+        gbc_name.insets = new Insets(0, 0, 5, 0);
         gbc_name.fill = GridBagConstraints.HORIZONTAL;
         gbc_name.gridx = 1;
         gbc_name.gridy = 0;
         add(name, gbc_name);
         name.setColumns(10);
-
-        JLabel lblAttributes = new JLabel("Attributes");
-        GridBagConstraints gbc_lblAttributes = new GridBagConstraints();
-        gbc_lblAttributes.insets = new Insets(0, 0, 5, 5);
-        gbc_lblAttributes.gridx = 2;
-        gbc_lblAttributes.gridy = 0;
-        add(lblAttributes, gbc_lblAttributes);
-
-        attributes = new JComboBox<>();
-        GridBagConstraints gbc_attributes = new GridBagConstraints();
-        gbc_attributes.gridwidth = 2;
-        gbc_attributes.insets = new Insets(0, 0, 5, 0);
-        gbc_attributes.fill = GridBagConstraints.HORIZONTAL;
-        gbc_attributes.gridx = 3;
-        gbc_attributes.gridy = 0;
-        add(attributes, gbc_attributes);
 
         JLabel lblDescription = new JLabel("Description");
         GridBagConstraints gbc_lblDescription = new GridBagConstraints();
@@ -134,36 +117,58 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
 
         description = new JTextField();
         GridBagConstraints gbc_description = new GridBagConstraints();
-        gbc_description.insets = new Insets(0, 0, 5, 5);
+        gbc_description.insets = new Insets(0, 0, 5, 0);
         gbc_description.fill = GridBagConstraints.HORIZONTAL;
         gbc_description.gridx = 1;
         gbc_description.gridy = 1;
         add(description, gbc_description);
         description.setColumns(10);
 
-        JLabel lblNotes = new JLabel("Notes");
-        GridBagConstraints gbc_lblNotes = new GridBagConstraints();
-        gbc_lblNotes.fill = GridBagConstraints.VERTICAL;
-        gbc_lblNotes.insets = new Insets(0, 0, 0, 5);
-        gbc_lblNotes.gridx = 0;
-        gbc_lblNotes.gridy = 2;
-        add(lblNotes, gbc_lblNotes);
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder(null, "Notes", TitledBorder.LEADING,
+                                         TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_panel = new GridBagConstraints();
+        gbc_panel.gridwidth = 2;
+        gbc_panel.insets = new Insets(0, 0, 5, 0);
+        gbc_panel.fill = GridBagConstraints.BOTH;
+        gbc_panel.gridx = 0;
+        gbc_panel.gridy = 2;
+        add(panel, gbc_panel);
+        GridBagLayout gbl_panel = new GridBagLayout();
+        gbl_panel.columnWidths = new int[] { 261, 0 };
+        gbl_panel.rowHeights = new int[] { 16, 0 };
+        gbl_panel.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+        gbl_panel.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+        panel.setLayout(gbl_panel);
 
-        JTextPane notes = new JTextPane();
-        GridBagConstraints gbc_notes = new GridBagConstraints();
-        gbc_notes.insets = new Insets(0, 0, 0, 5);
-        gbc_notes.fill = GridBagConstraints.BOTH;
-        gbc_notes.gridx = 1;
-        gbc_notes.gridy = 2;
-        add(notes, gbc_notes);
+        JTextPane textPane = new JTextPane();
+        GridBagConstraints gbc_textPane = new GridBagConstraints();
+        gbc_textPane.fill = GridBagConstraints.BOTH;
+        gbc_textPane.gridx = 0;
+        gbc_textPane.gridy = 0;
+        panel.add(textPane, gbc_textPane);
+
+        JLabel lblAttributes = new JLabel("Attributes");
+        GridBagConstraints gbc_lblAttributes = new GridBagConstraints();
+        gbc_lblAttributes.insets = new Insets(0, 0, 5, 5);
+        gbc_lblAttributes.gridx = 0;
+        gbc_lblAttributes.gridy = 3;
+        add(lblAttributes, gbc_lblAttributes);
+
+        attributes = new JComboBox<>();
+        GridBagConstraints gbc_attributes = new GridBagConstraints();
+        gbc_attributes.insets = new Insets(0, 0, 5, 0);
+        gbc_attributes.fill = GridBagConstraints.HORIZONTAL;
+        gbc_attributes.gridx = 1;
+        gbc_attributes.gridy = 3;
+        add(attributes, gbc_attributes);
 
         attributeValue = new AttributeValuePane();
         GridBagConstraints gbc_attributeValue = new GridBagConstraints();
-        gbc_attributeValue.gridheight = 2;
-        gbc_attributeValue.gridwidth = 3;
+        gbc_attributeValue.gridwidth = 2;
         gbc_attributeValue.fill = GridBagConstraints.BOTH;
-        gbc_attributeValue.gridx = 2;
-        gbc_attributeValue.gridy = 1;
+        gbc_attributeValue.gridx = 0;
+        gbc_attributeValue.gridy = 4;
         add(attributeValue, gbc_attributeValue);
 
     }

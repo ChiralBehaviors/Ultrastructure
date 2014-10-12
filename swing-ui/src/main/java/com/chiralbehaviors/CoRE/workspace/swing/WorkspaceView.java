@@ -25,28 +25,8 @@ import java.awt.Insets;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.TitledBorder;
-
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
-import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.swing.ExistentialRuleformView;
-import com.chiralbehaviors.CoRE.swing.StatusCodeSequencingView;
-import com.chiralbehaviors.CoRE.time.Interval;
-import com.chiralbehaviors.CoRE.time.IntervalNetwork;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
  * @author hhildebrand
@@ -54,26 +34,23 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
  */
 public class WorkspaceView {
 
-    private JFrame                                                     frame;
-    private ExistentialRuleformView<Attribute, AttributeNetwork>       attributes;
-    private ExistentialRuleformView<Interval, IntervalNetwork>         intervals;
-    private ExistentialRuleformView<Location, LocationNetwork>         locations;
-    private ExistentialRuleformView<Product, ProductNetwork>           products;
-    private ExistentialRuleformView<Relationship, RelationshipNetwork> relationhips;
-    private ExistentialRuleformView<StatusCode, StatusCodeNetwork>     statusCodes;
-    private ExistentialRuleformView<Unit, UnitNetwork>                 units;
-    private ExistentialRuleformView<Attribute, AttributeNetwork>       agencies;
-    private JTabbedPane                                                constellations;
-    private JTabbedPane                                                sequencing;
-    private JLabel                                                     lblWorkspace;
-    private JComboBox<WorkspaceEditor>                                 workspaces;
-    private JList<WorkspaceAuthorization>                              keys;
-    private StatusCodeSequencingView                                   statusCodeSequencing;
-    private JTabbedPane                                                events;
-    private JobPane                                                    jobs;
-    private MetaProtocolPane                                           metaProtocols;
-    private ProtocolPane                                               protocols;
-    private SequencingPane                                             sequencingAuths;
+    private JFrame                     frame;
+    private JTabbedPane                constellations;
+    private JLabel                     lblWorkspace;
+    private JComboBox<WorkspaceEditor> workspaces;
+    private JTabbedPane                events;
+    private JobPane                    jobs;
+    private MetaProtocolPane           metaProtocols;
+    private ProtocolPane               protocols;
+    private SequencingPane             sequencingAuths;
+    private ExistentialRuleformPane    agencies;
+    private ExistentialRuleformPane    attributes;
+    private ExistentialRuleformPane    intervals;
+    private ExistentialRuleformPane    locations;
+    private ExistentialRuleformPane    products;
+    private ExistentialRuleformPane    relationships;
+    private ExistentialRuleformPane    statusCodes;
+    private ExistentialRuleformPane    units;
 
     /**
      * Launch the application.
@@ -114,40 +91,35 @@ public class WorkspaceView {
         constellations.addTab("Existential Ruleforms", null,
                               existentialRuleforms, null);
 
-        agencies = new ExistentialRuleformView<Attribute, AttributeNetwork>();
+        agencies = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Agencies", null, agencies, null);
-        existentialRuleforms.setEnabledAt(0, true);
 
-        attributes = new ExistentialRuleformView<>();
+        attributes = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Attributes", null, attributes, null);
-        existentialRuleforms.setEnabledAt(1, true);
 
-        intervals = new ExistentialRuleformView<>();
+        intervals = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Intervals", null, intervals, null);
-        existentialRuleforms.setEnabledAt(2, true);
 
-        locations = new ExistentialRuleformView<>();
+        locations = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Locations", null, locations, null);
-        existentialRuleforms.setEnabledAt(3, true);
 
-        products = new ExistentialRuleformView<>();
+        products = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Products", null, products, null);
-        existentialRuleforms.setEnabledAt(4, true);
 
-        relationhips = new ExistentialRuleformView<>();
-        existentialRuleforms.addTab("Relationships", null, relationhips, null);
-        existentialRuleforms.setEnabledAt(5, true);
+        relationships = new ExistentialRuleformPane();
+        existentialRuleforms.addTab("Relationships", null, relationships, null);
 
-        statusCodes = new ExistentialRuleformView<>();
+        statusCodes = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Status Codes", null, statusCodes, null);
-        existentialRuleforms.setEnabledAt(6, true);
 
-        units = new ExistentialRuleformView<>();
+        units = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Units", null, units, null);
-        existentialRuleforms.setEnabledAt(7, true);
 
         events = new JTabbedPane(JTabbedPane.TOP);
         constellations.addTab("Events", null, events, null);
+
+        sequencingAuths = new SequencingPane();
+        events.addTab("New tab", null, sequencingAuths, null);
 
         protocols = new ProtocolPane();
         events.addTab("Protocols", null, protocols, null);
@@ -157,18 +129,6 @@ public class WorkspaceView {
 
         jobs = new JobPane();
         events.addTab("Jobs", null, jobs, null);
-
-        sequencing = new JTabbedPane(JTabbedPane.TOP);
-        constellations.addTab("Sequencing", null, sequencing, null);
-
-        statusCodeSequencing = new StatusCodeSequencingView();
-        sequencing.addTab("Status Code Sequencing", null, statusCodeSequencing,
-                          null);
-        sequencing.setEnabledAt(0, true);
-
-        sequencingAuths = new SequencingPane();
-        sequencing.addTab("Sequencing Authorizations", null, sequencingAuths,
-                          null);
 
         JPanel workspace = new JPanel();
         frame.getContentPane().add(workspace, BorderLayout.NORTH);
@@ -193,25 +153,6 @@ public class WorkspaceView {
         gbc_workspaces.gridx = 1;
         gbc_workspaces.gridy = 0;
         workspace.add(workspaces, gbc_workspaces);
-
-        JPanel keysPanel = new JPanel();
-        keysPanel.setBorder(new TitledBorder(null, "Keys",
-                                             TitledBorder.LEADING,
-                                             TitledBorder.TOP, null, null));
-        frame.getContentPane().add(keysPanel, BorderLayout.WEST);
-        GridBagLayout gbl_keysPanel = new GridBagLayout();
-        gbl_keysPanel.columnWidths = new int[] { 100 };
-        gbl_keysPanel.rowHeights = new int[] { 0 };
-        gbl_keysPanel.columnWeights = new double[] { 1.0 };
-        gbl_keysPanel.rowWeights = new double[] { 1.0 };
-        keysPanel.setLayout(gbl_keysPanel);
-
-        keys = new JList<>();
-        GridBagConstraints gbc_keys = new GridBagConstraints();
-        gbc_keys.fill = GridBagConstraints.BOTH;
-        gbc_keys.gridx = 0;
-        gbc_keys.gridy = 0;
-        keysPanel.add(keys, gbc_keys);
     }
 
 }

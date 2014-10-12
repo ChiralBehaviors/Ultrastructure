@@ -48,9 +48,9 @@ public class WorkspaceView {
     private ExistentialRuleformPane    intervals;
     private ExistentialRuleformPane    locations;
     private ExistentialRuleformPane    products;
-    private ExistentialRuleformPane    relationships;
     private ExistentialRuleformPane    statusCodes;
     private ExistentialRuleformPane    units;
+    private RelationshipPane           relationships;
 
     /**
      * Launch the application.
@@ -106,7 +106,7 @@ public class WorkspaceView {
         products = new ExistentialRuleformPane();
         existentialRuleforms.addTab("Products", null, products, null);
 
-        relationships = new ExistentialRuleformPane();
+        relationships = new RelationshipPane();
         existentialRuleforms.addTab("Relationships", null, relationships, null);
 
         statusCodes = new ExistentialRuleformPane();

@@ -32,13 +32,13 @@ import javax.swing.border.TitledBorder;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.swing.ExistentialRuleformView;
+import com.chiralbehaviors.CoRE.swing.RelationshipView;
 
 /**
  * @author hhildebrand
  *
  */
-public class ExistentialRuleformPane extends JPanel {
+public class RelationshipPane extends JPanel {
 
     private static final long                serialVersionUID = 1L;
     private JComboBox<Relationship>          parentRelationship;
@@ -46,16 +46,16 @@ public class ExistentialRuleformPane extends JPanel {
     private JList<ExistentialRuleform<?, ?>> parents;
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
-    private ExistentialRuleformView          ruleformView;
+    private RelationshipView                 relationshipView;
 
     /**
      * Create the panel.
      */
-    public ExistentialRuleformPane() {
+    public RelationshipPane() {
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 94, 94, 0, 0, 0 };
+        gridBagLayout.columnWidths = new int[] { 37, 175, 0, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 1.0, 1.0,
+        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 1.0,
                 Double.MIN_VALUE };
         gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 1.0,
                 Double.MIN_VALUE };
@@ -71,7 +71,6 @@ public class ExistentialRuleformPane extends JPanel {
 
         keys = new JComboBox<>();
         GridBagConstraints gbc_keys = new GridBagConstraints();
-        gbc_keys.gridwidth = 2;
         gbc_keys.insets = new Insets(0, 0, 5, 5);
         gbc_keys.fill = GridBagConstraints.HORIZONTAL;
         gbc_keys.gridx = 1;
@@ -81,7 +80,7 @@ public class ExistentialRuleformPane extends JPanel {
         JButton btnNew = new JButton("New");
         GridBagConstraints gbc_btnNew = new GridBagConstraints();
         gbc_btnNew.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNew.gridx = 3;
+        gbc_btnNew.gridx = 2;
         gbc_btnNew.gridy = 0;
         add(btnNew, gbc_btnNew);
 
@@ -128,14 +127,13 @@ public class ExistentialRuleformPane extends JPanel {
         gbc_parents.gridy = 1;
         parentsPanel.add(parents, gbc_parents);
 
-        ruleformView = new ExistentialRuleformView();
-        GridBagConstraints gbc_ruleformView = new GridBagConstraints();
-        gbc_ruleformView.gridwidth = 2;
-        gbc_ruleformView.gridheight = 2;
-        gbc_ruleformView.fill = GridBagConstraints.BOTH;
-        gbc_ruleformView.gridx = 2;
-        gbc_ruleformView.gridy = 1;
-        add(ruleformView, gbc_ruleformView);
+        relationshipView = new RelationshipView();
+        GridBagConstraints gbc_relationshipView = new GridBagConstraints();
+        gbc_relationshipView.gridheight = 2;
+        gbc_relationshipView.fill = GridBagConstraints.BOTH;
+        gbc_relationshipView.gridx = 2;
+        gbc_relationshipView.gridy = 1;
+        add(relationshipView, gbc_relationshipView);
 
         JPanel childrenPanel = new JPanel();
         childrenPanel.setBorder(new TitledBorder(

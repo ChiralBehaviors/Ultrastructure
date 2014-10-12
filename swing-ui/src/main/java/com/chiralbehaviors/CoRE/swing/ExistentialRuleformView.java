@@ -30,17 +30,14 @@ import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceEditor;
 
 /**
  * @author hhildebrand
  *
  */
-public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
-        extends JPanel {
+public class ExistentialRuleformView extends JPanel {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -51,7 +48,6 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
             @Override
             public void run() {
                 try {
-                    @SuppressWarnings("rawtypes")
                     ExistentialRuleformView frame = new ExistentialRuleformView();
                     frame.setVisible(true);
                     JFrame enclosure = new JFrame();
@@ -71,7 +67,6 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
 
     private JTextField           name;
     private JTextField           description;
-    protected RuleForm           ruleform;
     protected WorkspaceEditor    workspace;
     private JComboBox<Attribute> attributes;
     private AttributeValuePane   attributeValue;
@@ -82,7 +77,7 @@ public class ExistentialRuleformView<RuleForm extends ExistentialRuleform<RuleFo
     public ExistentialRuleformView() {
         // contentPane = new JPanel();
         setBorder(new EmptyBorder(5, 5, 5, 5));
-        setBounds(100, 100, 532, 276);
+        setBounds(100, 100, 335, 276);
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0, 79, 0, 0 };

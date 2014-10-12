@@ -42,11 +42,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.swing.ChildAuthSeqView;
 import com.chiralbehaviors.CoRE.swing.ExistentialRuleformView;
-import com.chiralbehaviors.CoRE.swing.ParentSeqAuthView;
-import com.chiralbehaviors.CoRE.swing.SelfAuthSeqView;
-import com.chiralbehaviors.CoRE.swing.SiblingSeqAuthView;
 import com.chiralbehaviors.CoRE.swing.StatusCodeSequencingView;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
@@ -73,14 +69,11 @@ public class WorkspaceView {
     private JComboBox<WorkspaceEditor>                                 workspaces;
     private JList<WorkspaceAuthorization>                              keys;
     private StatusCodeSequencingView                                   statusCodeSequencing;
-    private ParentSeqAuthView                                          parentSequencing;
-    private SiblingSeqAuthView                                         siblingSequencing;
-    private ChildAuthSeqView                                           childSequencing;
-    private SelfAuthSeqView                                            selfSequencing;
     private JTabbedPane                                                events;
     private JobPane                                                    jobs;
     private MetaProtocolPane                                           metaProtocols;
     private ProtocolPane                                               protocols;
+    private SequencingPane                                             sequencingAuths;
 
     /**
      * Launch the application.
@@ -169,24 +162,13 @@ public class WorkspaceView {
         constellations.addTab("Sequencing", null, sequencing, null);
 
         statusCodeSequencing = new StatusCodeSequencingView();
-        sequencing.addTab("Sequencing", null, statusCodeSequencing, null);
+        sequencing.addTab("Status Code Sequencing", null, statusCodeSequencing,
+                          null);
         sequencing.setEnabledAt(0, true);
 
-        parentSequencing = new ParentSeqAuthView();
-        sequencing.addTab("Parent Sequencing", null, parentSequencing, null);
-        sequencing.setEnabledAt(1, true);
-
-        siblingSequencing = new SiblingSeqAuthView();
-        sequencing.addTab("Sibling Sequencing", null, siblingSequencing, null);
-        sequencing.setEnabledAt(2, true);
-
-        childSequencing = new ChildAuthSeqView();
-        sequencing.addTab("Child Sequencing", null, childSequencing, null);
-        sequencing.setEnabledAt(3, true);
-
-        selfSequencing = new SelfAuthSeqView();
-        sequencing.addTab("Self Sequencing", null, selfSequencing, null);
-        sequencing.setEnabledAt(3, true);
+        sequencingAuths = new SequencingPane();
+        sequencing.addTab("Sequencing Authorizations", null, sequencingAuths,
+                          null);
 
         JPanel workspace = new JPanel();
         frame.getContentPane().add(workspace, BorderLayout.NORTH);

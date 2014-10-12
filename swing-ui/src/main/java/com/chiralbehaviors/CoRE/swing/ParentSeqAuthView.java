@@ -54,11 +54,11 @@ public class ParentSeqAuthView extends JPanel {
      */
     public ParentSeqAuthView() {
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 0.0,
+        gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+        gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 1.0,
                 Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0,
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                 Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
@@ -72,27 +72,12 @@ public class ParentSeqAuthView extends JPanel {
 
         service = new JComboBox<>();
         GridBagConstraints gbc_service = new GridBagConstraints();
-        gbc_service.insets = new Insets(0, 0, 5, 5);
+        gbc_service.gridwidth = 2;
+        gbc_service.insets = new Insets(0, 0, 5, 0);
         gbc_service.fill = GridBagConstraints.HORIZONTAL;
         gbc_service.gridx = 1;
         gbc_service.gridy = 0;
         add(service, gbc_service);
-
-        lblSequence = new JLabel("Sequence #");
-        GridBagConstraints gbc_lblSequence = new GridBagConstraints();
-        gbc_lblSequence.anchor = GridBagConstraints.EAST;
-        gbc_lblSequence.insets = new Insets(0, 0, 5, 5);
-        gbc_lblSequence.gridx = 2;
-        gbc_lblSequence.gridy = 0;
-        add(lblSequence, gbc_lblSequence);
-
-        sequenceNumber = new JSpinner();
-        GridBagConstraints gbc_sequenceNumber = new GridBagConstraints();
-        gbc_sequenceNumber.anchor = GridBagConstraints.WEST;
-        gbc_sequenceNumber.insets = new Insets(0, 0, 5, 0);
-        gbc_sequenceNumber.gridx = 3;
-        gbc_sequenceNumber.gridy = 0;
-        add(sequenceNumber, gbc_sequenceNumber);
 
         lblStatusCode = new JLabel("Status Code");
         GridBagConstraints gbc_lblStatusCode = new GridBagConstraints();
@@ -104,19 +89,12 @@ public class ParentSeqAuthView extends JPanel {
 
         statusCode = new JComboBox<>();
         GridBagConstraints gbc_statusCode = new GridBagConstraints();
-        gbc_statusCode.insets = new Insets(0, 0, 5, 5);
+        gbc_statusCode.gridwidth = 2;
+        gbc_statusCode.insets = new Insets(0, 0, 5, 0);
         gbc_statusCode.fill = GridBagConstraints.HORIZONTAL;
         gbc_statusCode.gridx = 1;
         gbc_statusCode.gridy = 1;
         add(statusCode, gbc_statusCode);
-
-        chckbxSetIfActive = new JCheckBox("Set If Active Siblings");
-        GridBagConstraints gbc_chckbxSetIfActive = new GridBagConstraints();
-        gbc_chckbxSetIfActive.insets = new Insets(0, 0, 5, 0);
-        gbc_chckbxSetIfActive.gridwidth = 2;
-        gbc_chckbxSetIfActive.gridx = 2;
-        gbc_chckbxSetIfActive.gridy = 1;
-        add(chckbxSetIfActive, gbc_chckbxSetIfActive);
 
         lblParent = new JLabel("Parent");
         GridBagConstraints gbc_lblParent = new GridBagConstraints();
@@ -128,36 +106,60 @@ public class ParentSeqAuthView extends JPanel {
 
         parent = new JComboBox<>();
         GridBagConstraints gbc_parent = new GridBagConstraints();
-        gbc_parent.insets = new Insets(0, 0, 5, 5);
+        gbc_parent.gridwidth = 2;
+        gbc_parent.insets = new Insets(0, 0, 5, 0);
         gbc_parent.fill = GridBagConstraints.HORIZONTAL;
         gbc_parent.gridx = 1;
         gbc_parent.gridy = 2;
         add(parent, gbc_parent);
 
-        chckbxReplaceProduct = new JCheckBox("Replace Product");
-        GridBagConstraints gbc_chckbxReplaceProduct = new GridBagConstraints();
-        gbc_chckbxReplaceProduct.anchor = GridBagConstraints.WEST;
-        gbc_chckbxReplaceProduct.gridwidth = 2;
-        gbc_chckbxReplaceProduct.insets = new Insets(0, 0, 5, 0);
-        gbc_chckbxReplaceProduct.gridx = 2;
-        gbc_chckbxReplaceProduct.gridy = 2;
-        add(chckbxReplaceProduct, gbc_chckbxReplaceProduct);
-
         lblNextStatus = new JLabel("Status To Set");
         GridBagConstraints gbc_lblNextStatus = new GridBagConstraints();
         gbc_lblNextStatus.anchor = GridBagConstraints.EAST;
-        gbc_lblNextStatus.insets = new Insets(0, 0, 0, 5);
+        gbc_lblNextStatus.insets = new Insets(0, 0, 5, 5);
         gbc_lblNextStatus.gridx = 0;
         gbc_lblNextStatus.gridy = 3;
         add(lblNextStatus, gbc_lblNextStatus);
 
         parentStatusToSet = new JComboBox<>();
         GridBagConstraints gbc_parentStatusToSet = new GridBagConstraints();
-        gbc_parentStatusToSet.insets = new Insets(0, 0, 0, 5);
+        gbc_parentStatusToSet.gridwidth = 2;
+        gbc_parentStatusToSet.insets = new Insets(0, 0, 5, 0);
         gbc_parentStatusToSet.fill = GridBagConstraints.HORIZONTAL;
         gbc_parentStatusToSet.gridx = 1;
         gbc_parentStatusToSet.gridy = 3;
         add(parentStatusToSet, gbc_parentStatusToSet);
+
+        lblSequence = new JLabel("Sequence #");
+        GridBagConstraints gbc_lblSequence = new GridBagConstraints();
+        gbc_lblSequence.anchor = GridBagConstraints.EAST;
+        gbc_lblSequence.insets = new Insets(0, 0, 5, 5);
+        gbc_lblSequence.gridx = 0;
+        gbc_lblSequence.gridy = 4;
+        add(lblSequence, gbc_lblSequence);
+
+        sequenceNumber = new JSpinner();
+        GridBagConstraints gbc_sequenceNumber = new GridBagConstraints();
+        gbc_sequenceNumber.anchor = GridBagConstraints.WEST;
+        gbc_sequenceNumber.insets = new Insets(0, 0, 5, 5);
+        gbc_sequenceNumber.gridx = 1;
+        gbc_sequenceNumber.gridy = 4;
+        add(sequenceNumber, gbc_sequenceNumber);
+
+        chckbxSetIfActive = new JCheckBox("Set If Active Siblings");
+        GridBagConstraints gbc_chckbxSetIfActive = new GridBagConstraints();
+        gbc_chckbxSetIfActive.anchor = GridBagConstraints.WEST;
+        gbc_chckbxSetIfActive.insets = new Insets(0, 0, 5, 0);
+        gbc_chckbxSetIfActive.gridx = 2;
+        gbc_chckbxSetIfActive.gridy = 4;
+        add(chckbxSetIfActive, gbc_chckbxSetIfActive);
+
+        chckbxReplaceProduct = new JCheckBox("Replace Product");
+        GridBagConstraints gbc_chckbxReplaceProduct = new GridBagConstraints();
+        gbc_chckbxReplaceProduct.anchor = GridBagConstraints.WEST;
+        gbc_chckbxReplaceProduct.gridx = 2;
+        gbc_chckbxReplaceProduct.gridy = 5;
+        add(chckbxReplaceProduct, gbc_chckbxReplaceProduct);
 
     }
 

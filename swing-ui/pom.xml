@@ -33,10 +33,10 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>com.mxgraph</groupId>
             <artifactId>jgraphx</artifactId>
             <version>3.1.0.1</version>
-        </dependency>
+        </dependency> -->
     </dependencies>
 </project>

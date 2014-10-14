@@ -47,8 +47,8 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.access.AgencyAccessAuthorization;
-import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
@@ -113,8 +113,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                      @NamedNativeQuery(name = "agency" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('agency', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "agency", schema = "ruleform")
-public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
-        implements Attributable<AgencyAttribute> {
+public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
     public static final String                AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
 
     public static final String                AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
@@ -273,19 +272,10 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
                                                                                                          attribute).getSingleResult();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<AgencyAttribute> getAttributes() {
         return attributes;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<AgencyAttribute> getAttributeType() {
-        return AgencyAttribute.class;
     }
 
     /* (non-Javadoc)
@@ -419,9 +409,10 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork>
         em.persist(inverse);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setAttributes(Set<AgencyAttribute> attributes) {
-        this.attributes = attributes;
+    public <A extends AttributeValue<Agency>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<AgencyAttribute>) attributes;
     }
 
     @Override

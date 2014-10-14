@@ -117,16 +117,6 @@ public class ProductLocation extends Ruleform implements
         return attributes;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<ProductLocationAttribute> getAttributeType() {
-        return ProductLocationAttribute.class;
-    }
-
     public Location getLocation() {
         return location;
     }
@@ -143,9 +133,10 @@ public class ProductLocation extends Ruleform implements
         agency = agency2;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setAttributes(Set<ProductLocationAttribute> productLocationAttributes) {
-        attributes = productLocationAttributes;
+    public <A extends ProductLocationAttribute> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<ProductLocationAttribute>) attributes;
     }
 
     public void setLocation(Location location) {

@@ -53,7 +53,6 @@ import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
-import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -111,6 +110,8 @@ public class JobModelTest extends AbstractModelTest {
                                                                                          takingNames,
                                                                                          kernel.getCore());
         em.persist(auth);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
 
         Job job = model.getJobModel().newInitializedJob(service,
                                                         kernel.getCore());
@@ -508,7 +509,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testTerminateChildrenParent() throws IOException {
-        model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
+        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
         em.getTransaction().begin();
         Product pushit = new Product("Pushit Service", null, scenario.core);
         em.persist(pushit);
@@ -538,15 +539,15 @@ public class JobModelTest extends AbstractModelTest {
 
         model.getJobModel().createStatusCodeChain(pushit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe},
+                                                          shovingMe },
                                                   scenario.core);
         model.getJobModel().createStatusCodeChain(shoveit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe},
+                                                          shovingMe },
                                                   scenario.core);
         model.getJobModel().createStatusCodeChain(pullit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe},
+                                                          shovingMe },
                                                   scenario.core);
 
         ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
@@ -575,16 +576,17 @@ public class JobModelTest extends AbstractModelTest {
 
         em.getTransaction().begin();
         for (Job j : children) {
-            model.getJobModel().changeStatus(j, pushingMe, kernel.getCore(), null);
+            model.getJobModel().changeStatus(j, pushingMe, kernel.getCore(),
+                                             null);
         }
         model.getJobModel().changeStatus(push, pushingMe, scenario.core, null);
         em.getTransaction().commit();
 
-
-        Job shovingJob = model.getJobModel().getActiveSubJobsForService(push, shoveit).get(0);
+        Job shovingJob = model.getJobModel().getActiveSubJobsForService(push,
+                                                                        shoveit).get(0);
         em.getTransaction().begin();
         em.refresh(shovingJob);
-        
+
         model.getJobModel().changeStatus(shovingJob, shovingMe, null, null);
         em.getTransaction().commit();
         em.refresh(push);

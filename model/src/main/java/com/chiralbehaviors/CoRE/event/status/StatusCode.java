@@ -46,6 +46,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -260,6 +261,8 @@ public class StatusCode extends
         return WellKnownStatusCode.ANY.id();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     public Set<StatusCodeAttribute> getAttributes() {
         return attributes;
     }
@@ -409,8 +412,10 @@ public class StatusCode extends
         em.persist(inverse);
     }
 
-    public void setAttributes(Set<StatusCodeAttribute> attributes) {
-        this.attributes = attributes;
+    @SuppressWarnings("unchecked")
+    @Override
+    public <A extends AttributeValue<StatusCode>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<StatusCodeAttribute>) attributes;
     }
 
     public void setFailParent(Boolean failParent) {

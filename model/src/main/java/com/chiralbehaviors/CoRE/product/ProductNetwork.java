@@ -168,16 +168,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         return attributes;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<ProductNetworkAttribute> getAttributeType() {
-        return ProductNetworkAttribute.class;
-    }
-
     @Override
     public Product getChild() {
         return child;
@@ -204,9 +194,10 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
         return premise2;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setAttributes(Set<ProductNetworkAttribute> productNetworkAttributes) {
-        attributes = productNetworkAttributes;
+    public <A extends ProductNetworkAttribute> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<ProductNetworkAttribute>) attributes;
     }
 
     @Override

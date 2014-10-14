@@ -99,8 +99,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                      @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "attribute", schema = "ruleform")
-public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
-        implements Attributable<AttributeMetaAttribute> {
+public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> {
     public static final String          FIND_BY_NAME                             = "attribute.findByName";
     public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "attribute"
                                                                                    + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
@@ -257,19 +256,10 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
         return WellKnownAttribute.ANY.id();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<AttributeMetaAttribute> getAttributes() {
         return attributes;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<AttributeMetaAttribute> getAttributeType() {
-        return AttributeMetaAttribute.class;
     }
 
     /* (non-Javadoc)
@@ -400,9 +390,10 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork>
         em.persist(inverse);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setAttributes(Set<AttributeMetaAttribute> attributeMetaAttributes1) {
-        attributes = attributeMetaAttributes1;
+    public <A extends AttributeValue<Attribute>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<AttributeMetaAttribute>) attributes;
     }
 
     public void setInheritable(Boolean inheritable) {

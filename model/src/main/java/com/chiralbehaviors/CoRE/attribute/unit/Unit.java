@@ -43,6 +43,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -218,6 +219,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         return WellKnownUnit.ANY.id();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public Set<UnitAttribute> getAttributes() {
         return attributes;
     }
@@ -379,8 +382,10 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         this.abbreviation = abbreviation;
     }
 
-    public void setAttributes(Set<UnitAttribute> attributes) {
-        this.attributes = attributes;
+    @SuppressWarnings("unchecked")
+    @Override
+    public <A extends AttributeValue<Unit>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<UnitAttribute>) attributes;
     }
 
     public void setDatatype(String datatype) {

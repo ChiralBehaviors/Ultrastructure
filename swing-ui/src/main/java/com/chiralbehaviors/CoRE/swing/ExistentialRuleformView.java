@@ -30,6 +30,7 @@ import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceEditor;
 
@@ -65,11 +66,13 @@ public class ExistentialRuleformView extends JPanel {
         } while (true);
     }
 
-    private JTextField           name;
-    private JTextField           description;
-    protected WorkspaceEditor    workspace;
-    private JComboBox<Attribute> attributes;
-    private AttributeValuePane   attributeValue;
+    private JComboBox<Attribute>      attributes;
+    private AttributeValuePane        attributeValue;
+    private JTextField                description;
+    private JTextField                name;
+    private ExistentialRuleform<?, ?> ruleform;
+    protected WorkspaceEditor         workspace;
+    private JTextPane                 notes;
 
     /**
      * Create the frame.
@@ -136,12 +139,12 @@ public class ExistentialRuleformView extends JPanel {
         gbl_panel.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
         panel.setLayout(gbl_panel);
 
-        JTextPane textPane = new JTextPane();
-        GridBagConstraints gbc_textPane = new GridBagConstraints();
-        gbc_textPane.fill = GridBagConstraints.BOTH;
-        gbc_textPane.gridx = 0;
-        gbc_textPane.gridy = 0;
-        panel.add(textPane, gbc_textPane);
+        notes = new JTextPane();
+        GridBagConstraints gbc_notes = new GridBagConstraints();
+        gbc_notes.fill = GridBagConstraints.BOTH;
+        gbc_notes.gridx = 0;
+        gbc_notes.gridy = 0;
+        panel.add(notes, gbc_notes);
 
         JLabel lblAttributes = new JLabel("Attributes");
         GridBagConstraints gbc_lblAttributes = new GridBagConstraints();
@@ -166,5 +169,16 @@ public class ExistentialRuleformView extends JPanel {
         gbc_attributeValue.gridy = 4;
         add(attributeValue, gbc_attributeValue);
 
+    }
+
+    public ExistentialRuleform<?, ?> getRuleform() {
+        return ruleform;
+    }
+
+    public void setRuleform(ExistentialRuleform<?, ?> ruleform) {
+        this.ruleform = ruleform;
+        name.setText(ruleform.getName());
+        description.setText(ruleform.getDescription());
+        notes.setText(ruleform.getNotes());
     }
 }

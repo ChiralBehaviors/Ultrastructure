@@ -47,7 +47,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attributable;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -109,8 +109,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "interval", schema = "ruleform")
-public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
-        implements Attributable<IntervalAttribute> {
+public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
 
     public static final String     AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "interval.IntervalAttributesByClassification";
 
@@ -249,19 +248,10 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
      *
      * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributes()
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Set<IntervalAttribute> getAttributes() {
         return attributes;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<IntervalAttribute> getAttributeType() {
-        return IntervalAttribute.class;
     }
 
     /* (non-Javadoc)
@@ -421,16 +411,10 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork>
         em.persist(inverse);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.attribute.Attributable#setAttributes(java.util
-     * .Set)
-     */
+    @SuppressWarnings("unchecked")
     @Override
-    public void setAttributes(Set<IntervalAttribute> attributes) {
-        this.attributes = attributes;
+    public <A extends AttributeValue<Interval>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<IntervalAttribute>) attributes;
     }
 
     /**

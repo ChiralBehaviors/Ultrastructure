@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -154,7 +155,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     private BigDecimal             start;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit")
     private Unit                   unit;
 

@@ -29,6 +29,7 @@ import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHIL
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -84,20 +85,20 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "child")
     private Attribute          child;
 
     //bi-directional many-to-one association to Attribute
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent")
     private Attribute          parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise1")
     private AttributeNetwork   premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise2")
     private AttributeNetwork   premise2;
 

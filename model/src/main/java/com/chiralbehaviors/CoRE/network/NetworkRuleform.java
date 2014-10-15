@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -45,11 +46,11 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "inference", insertable = false)
     private NetworkInference  inference;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "relationship")
     private Relationship      relationship;
 

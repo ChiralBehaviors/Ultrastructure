@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.network;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -39,17 +40,17 @@ public class NetworkInference extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "inference")
     private Relationship      inference;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "premise1")
     private Relationship      premise1;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "premise2")
     private Relationship      premise2;
 

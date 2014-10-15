@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.location;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -39,12 +40,12 @@ public class LocationNetworkAuthorization extends
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Event
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "authorized_parent")
     private Location          authorizedParent;
 
     // bi-directional many-to-one association to Event
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "classifier")
     private Location          classifier;
 

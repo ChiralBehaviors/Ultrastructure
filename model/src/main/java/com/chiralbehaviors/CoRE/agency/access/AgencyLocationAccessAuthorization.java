@@ -23,6 +23,7 @@ import static com.chiralbehaviors.CoRE.agency.access.AgencyLocationAccessAuthori
 
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -97,7 +98,7 @@ public class AgencyLocationAccessAuthorization extends
 
     private static final long  serialVersionUID                                                        = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location2")
     private Location           child;
 

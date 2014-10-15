@@ -17,6 +17,7 @@ package com.chiralbehaviors.CoRE.authorization;
 
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -69,16 +70,16 @@ public abstract class AccessAuthorization<Parent extends ExistentialRuleform<Par
     @Column(name = "authorization_type")
     private String             authorizationType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "child_transitive_relationship")
     protected Relationship     childTransitiveRelationship;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent_transitive_relationship")
     protected Relationship     parentTransitiveRelationship;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "relationship")
     protected Relationship     relationship;
 

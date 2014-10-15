@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -42,7 +43,7 @@ public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Location
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location")
     private Location          location;
 

@@ -21,10 +21,10 @@ import static com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorizati
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -56,22 +56,22 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
 
     private static final long  serialVersionUID    = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "next_sibling")
     private Product            nextSibling;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "next_sibling_status")
     private StatusCode         nextSiblingStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent")
     private Product            parent;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 

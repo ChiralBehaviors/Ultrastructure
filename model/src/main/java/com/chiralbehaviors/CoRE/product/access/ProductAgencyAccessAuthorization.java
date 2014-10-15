@@ -27,6 +27,7 @@ import static com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthori
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -133,7 +134,7 @@ public class ProductAgencyAccessAuthorization extends
 
     private static final long  serialVersionUID                                                        = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency2")
     private Agency             child;
 

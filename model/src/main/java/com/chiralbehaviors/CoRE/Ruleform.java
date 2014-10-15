@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -94,7 +95,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     private Timestamp           updateDate            = new Timestamp(
                                                                       System.currentTimeMillis());
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "updated_by")
     protected Agency            updatedBy;
 

@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.product.access.ProductStatusCodeAccessAut
 
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -105,7 +106,7 @@ public class ProductStatusCodeAccessAuthorization extends
 
     private static final long  serialVersionUID                                                        = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code2")
     private StatusCode         child;
 

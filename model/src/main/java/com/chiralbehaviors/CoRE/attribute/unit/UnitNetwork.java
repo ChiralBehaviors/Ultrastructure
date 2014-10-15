@@ -28,6 +28,7 @@ import static com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork.GET_NETWORKS;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -76,20 +77,20 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     // many-to-one
     // association to Agency
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "child")
     private Unit               child;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent")
     private Unit               parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise1")
     private UnitNetwork        premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise2")
     private UnitNetwork        premise2;
 

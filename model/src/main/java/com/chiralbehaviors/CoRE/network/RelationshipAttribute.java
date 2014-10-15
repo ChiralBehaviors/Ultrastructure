@@ -20,6 +20,7 @@ import static com.chiralbehaviors.CoRE.network.RelationshipAttribute.GET_ATTRIBU
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -46,7 +47,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     // bi-directional many-to-one association to Relationship
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 

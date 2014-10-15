@@ -25,6 +25,7 @@ import static com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAutho
 
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -110,7 +111,7 @@ public class ProductLocationAccessAuthorization extends
                                                                                                          + ".findProductsInLocation";
     private static final long  serialVersionUID                                                        = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location2")
     private Location           child;
 

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -57,7 +58,7 @@ public class ProductLocation extends Ruleform implements
     private static final long             serialVersionUID     = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency")
     private Agency                        agency;
 
@@ -67,17 +68,17 @@ public class ProductLocation extends Ruleform implements
     private Set<ProductLocationAttribute> attributes;
 
     // bi-directional many-to-one association to Location
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location")
     private Location                      location;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product")
     private Product                       product;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "relationship")
     private Relationship                  relationship;
 

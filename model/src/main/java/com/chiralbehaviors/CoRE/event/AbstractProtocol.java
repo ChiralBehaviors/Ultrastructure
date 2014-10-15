@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
@@ -57,7 +58,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The agency assigned to this job
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "assign_to")
     private Agency            assignTo;
 
@@ -65,7 +66,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute for the agency assigned to this job
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "assign_to_attribute")
     private Attribute         assignToAttribute;
 
@@ -73,7 +74,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The location where the product will be delivered from
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "deliver_from")
     private Location          deliverFrom;
     /**
@@ -81,14 +82,14 @@ public abstract class AbstractProtocol extends Ruleform {
      * from
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "deliver_from_attribute")
     private Attribute         deliverFromAttribute;
     /**
      * The location to deliver the product of this job
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "deliver_to")
     private Location          deliverTo;
 
@@ -96,7 +97,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the location to deliver the product of this job
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "deliver_to_attribute")
     private Attribute         deliverToAttribute;
 
@@ -104,7 +105,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The product of this job
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product")
     private Product           product;
 
@@ -112,7 +113,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the product of this job
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_attribute")
     private Attribute         productAttribute;
 
@@ -120,7 +121,7 @@ public abstract class AbstractProtocol extends Ruleform {
     private BigDecimal        quantity;
 
     @NotNull
-    @ManyToOne() 
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "quantity_unit")
     private Unit              quantityUnit;
 
@@ -128,7 +129,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne() 
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "requester")
     private Agency            requester;
 
@@ -136,7 +137,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "requester_attribute")
     private Attribute         requesterAttribute;
 
@@ -144,7 +145,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The service this job is performing
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "service")
     private Product           service;
 
@@ -152,7 +153,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the service this job is performing
      */
     @NotNull
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "service_attribute")
     private Attribute         serviceAttribute;
 

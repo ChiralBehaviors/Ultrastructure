@@ -28,6 +28,7 @@ import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_NETWORKS;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -75,20 +76,20 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     private static final long  serialVersionUID              = 1L;
 
     // bi-directional many-to-one association to Interval
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "child")
     private Interval           child;
 
     //bi-directional many-to-one association to Agency
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent")
     private Interval           parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise1")
     private IntervalNetwork    premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise2")
     private IntervalNetwork    premise2;
 

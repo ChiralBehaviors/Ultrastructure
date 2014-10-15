@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -95,17 +96,17 @@ public class StatusCodeSequencing extends Ruleform {
     private static final long   serialVersionUID                          = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "child_code")
     private StatusCode          childCode;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent_code")
     private StatusCode          parentCode;
 
     // bi-directional many-to-one association to Event
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "service")
     private Product             service;
 

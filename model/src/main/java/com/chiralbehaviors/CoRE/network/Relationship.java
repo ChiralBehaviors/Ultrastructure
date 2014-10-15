@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -142,7 +143,7 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "inverse")
     @JsonIgnore
     private Relationship               inverse;

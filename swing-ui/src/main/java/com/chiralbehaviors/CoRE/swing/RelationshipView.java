@@ -99,6 +99,7 @@ public class RelationshipView extends WorkspaceBackedView {
         this.relationship = relationship;
     }
 
+    @SuppressWarnings("rawtypes")
     protected void initDataBindings() {
         BeanProperty<Relationship, Boolean> relationshipBeanProperty = BeanProperty.create("preferred");
         BeanProperty<JCheckBox, Boolean> jCheckBoxBeanProperty = BeanProperty.create("selected");
@@ -110,12 +111,12 @@ public class RelationshipView extends WorkspaceBackedView {
         autoBinding.bind();
         //
         BeanProperty<Relationship, Relationship> relationshipBeanProperty_1 = BeanProperty.create("inverse");
-        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<Relationship, Relationship, JComboBox<?>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 relationship,
-                                                                                                                 relationshipBeanProperty_1,
-                                                                                                                 inverse,
-                                                                                                                 jComboBoxBeanProperty);
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<Relationship, Relationship, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              relationship,
+                                                                                                              relationshipBeanProperty_1,
+                                                                                                              inverse,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_1.bind();
         //
         BeanProperty<ExistentialRuleformView, ExistentialRuleform<?, ?>> existentialRuleformViewBeanProperty = BeanProperty.create("ruleform");

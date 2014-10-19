@@ -108,22 +108,23 @@ public class SiblingSeqAuthView extends WorkspaceBackedView {
         this.auth = auth;
     }
 
+    @SuppressWarnings("rawtypes")
     protected void initDataBindings() {
         BeanProperty<ProductSiblingSequencingAuthorization, Product> productSiblingSequencingAuthorizationBeanProperty = BeanProperty.create("nextSibling");
-        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<ProductSiblingSequencingAuthorization, Product, JComboBox<?>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                                   auth,
-                                                                                                                                   productSiblingSequencingAuthorizationBeanProperty,
-                                                                                                                                   nextSibling,
-                                                                                                                                   jComboBoxBeanProperty);
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<ProductSiblingSequencingAuthorization, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                auth,
+                                                                                                                                productSiblingSequencingAuthorizationBeanProperty,
+                                                                                                                                nextSibling,
+                                                                                                                                jComboBoxBeanProperty);
         autoBinding.bind();
         //
         BeanProperty<ProductSiblingSequencingAuthorization, StatusCode> productSiblingSequencingAuthorizationBeanProperty_1 = BeanProperty.create("nextSiblingStatus");
-        AutoBinding<ProductSiblingSequencingAuthorization, StatusCode, JComboBox<?>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                                        auth,
-                                                                                                                                        productSiblingSequencingAuthorizationBeanProperty_1,
-                                                                                                                                        statusToSet,
-                                                                                                                                        jComboBoxBeanProperty);
+        AutoBinding<ProductSiblingSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                     auth,
+                                                                                                                                     productSiblingSequencingAuthorizationBeanProperty_1,
+                                                                                                                                     statusToSet,
+                                                                                                                                     jComboBoxBeanProperty);
         autoBinding_1.bind();
         //
         BeanProperty<ProductSiblingSequencingAuthorization, Boolean> productSiblingSequencingAuthorizationBeanProperty_2 = BeanProperty.create("replaceProduct");

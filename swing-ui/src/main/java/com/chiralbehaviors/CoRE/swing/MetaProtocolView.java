@@ -302,14 +302,15 @@ public class MetaProtocolView extends WorkspaceBackedView {
         this.metaProtocol = metaProtocol;
     }
 
+    @SuppressWarnings("rawtypes")
     protected void initDataBindings() {
         BeanProperty<MetaProtocol, Product> metaProtocolBeanProperty = BeanProperty.create("service");
-        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<MetaProtocol, Product, JComboBox<?>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                          metaProtocol,
-                                                                                                          metaProtocolBeanProperty,
-                                                                                                          service,
-                                                                                                          jComboBoxBeanProperty);
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<MetaProtocol, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                       metaProtocol,
+                                                                                                       metaProtocolBeanProperty,
+                                                                                                       service,
+                                                                                                       jComboBoxBeanProperty);
         autoBinding.bind();
         //
         BeanProperty<MetaProtocol, Integer> metaProtocolBeanProperty_1 = BeanProperty.create("sequenceNumber");
@@ -331,108 +332,108 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_2.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_3 = BeanProperty.create("serviceType");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 metaProtocol,
-                                                                                                                 metaProtocolBeanProperty_3,
-                                                                                                                 serviceType,
-                                                                                                                 jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              metaProtocol,
+                                                                                                              metaProtocolBeanProperty_3,
+                                                                                                              serviceType,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_3.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_4 = BeanProperty.create("serviceAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 metaProtocol,
-                                                                                                                 metaProtocolBeanProperty_4,
-                                                                                                                 serviceAttribute,
-                                                                                                                 jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              metaProtocol,
+                                                                                                              metaProtocolBeanProperty_4,
+                                                                                                              serviceAttribute,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_4.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_5 = BeanProperty.create("requester");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 metaProtocol,
-                                                                                                                 metaProtocolBeanProperty_5,
-                                                                                                                 requester,
-                                                                                                                 jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              metaProtocol,
+                                                                                                              metaProtocolBeanProperty_5,
+                                                                                                              requester,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_5.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_6 = BeanProperty.create("requesterAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 metaProtocol,
-                                                                                                                 metaProtocolBeanProperty_6,
-                                                                                                                 requesterAttribute,
-                                                                                                                 jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              metaProtocol,
+                                                                                                              metaProtocolBeanProperty_6,
+                                                                                                              requesterAttribute,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_6.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_7 = BeanProperty.create("assignTo");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 metaProtocol,
-                                                                                                                 metaProtocolBeanProperty_7,
-                                                                                                                 assignTo,
-                                                                                                                 jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              metaProtocol,
+                                                                                                              metaProtocolBeanProperty_7,
+                                                                                                              assignTo,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_7.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_8 = BeanProperty.create("assignToAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 metaProtocol,
-                                                                                                                 metaProtocolBeanProperty_8,
-                                                                                                                 assignToAttribute,
-                                                                                                                 jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              metaProtocol,
+                                                                                                              metaProtocolBeanProperty_8,
+                                                                                                              assignToAttribute,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_8.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_9 = BeanProperty.create("product");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                 metaProtocol,
-                                                                                                                 metaProtocolBeanProperty_9,
-                                                                                                                 product,
-                                                                                                                 jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              metaProtocol,
+                                                                                                              metaProtocolBeanProperty_9,
+                                                                                                              product,
+                                                                                                              jComboBoxBeanProperty);
         autoBinding_9.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_10 = BeanProperty.create("productAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  metaProtocol,
-                                                                                                                  metaProtocolBeanProperty_10,
-                                                                                                                  productAttribute,
-                                                                                                                  jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                               metaProtocol,
+                                                                                                               metaProtocolBeanProperty_10,
+                                                                                                               productAttribute,
+                                                                                                               jComboBoxBeanProperty);
         autoBinding_10.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_11 = BeanProperty.create("deliverFrom");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  metaProtocol,
-                                                                                                                  metaProtocolBeanProperty_11,
-                                                                                                                  deliverFrom,
-                                                                                                                  jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                               metaProtocol,
+                                                                                                               metaProtocolBeanProperty_11,
+                                                                                                               deliverFrom,
+                                                                                                               jComboBoxBeanProperty);
         autoBinding_11.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_12 = BeanProperty.create("deliverFromAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_12 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  metaProtocol,
-                                                                                                                  metaProtocolBeanProperty_12,
-                                                                                                                  deliverFromAttribute,
-                                                                                                                  jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_12 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                               metaProtocol,
+                                                                                                               metaProtocolBeanProperty_12,
+                                                                                                               deliverFromAttribute,
+                                                                                                               jComboBoxBeanProperty);
         autoBinding_12.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_13 = BeanProperty.create("deliverTo");
-        BeanProperty<JComboBox<?>, Integer> jComboBoxBeanProperty_1 = BeanProperty.create("selectedIndex");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Integer> autoBinding_13 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                   metaProtocol,
-                                                                                                                   metaProtocolBeanProperty_13,
-                                                                                                                   deliverTo,
-                                                                                                                   jComboBoxBeanProperty_1);
+        BeanProperty<JComboBox, Integer> jComboBoxBeanProperty_1 = BeanProperty.create("selectedIndex");
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Integer> autoBinding_13 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                metaProtocol,
+                                                                                                                metaProtocolBeanProperty_13,
+                                                                                                                deliverTo,
+                                                                                                                jComboBoxBeanProperty_1);
         autoBinding_13.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_14 = BeanProperty.create("deliverToAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Integer> autoBinding_14 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                   metaProtocol,
-                                                                                                                   metaProtocolBeanProperty_14,
-                                                                                                                   deliverToAttribute,
-                                                                                                                   jComboBoxBeanProperty_1);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Integer> autoBinding_14 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                metaProtocol,
+                                                                                                                metaProtocolBeanProperty_14,
+                                                                                                                deliverToAttribute,
+                                                                                                                jComboBoxBeanProperty_1);
         autoBinding_14.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_15 = BeanProperty.create("quantityUnit");
-        AutoBinding<MetaProtocol, Relationship, JComboBox<?>, Object> autoBinding_15 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  metaProtocol,
-                                                                                                                  metaProtocolBeanProperty_15,
-                                                                                                                  quantityUnit,
-                                                                                                                  jComboBoxBeanProperty);
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_15 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                               metaProtocol,
+                                                                                                               metaProtocolBeanProperty_15,
+                                                                                                               quantityUnit,
+                                                                                                               jComboBoxBeanProperty);
         autoBinding_15.bind();
     }
 }

@@ -141,22 +141,23 @@ public class ParentSeqAuthView extends WorkspaceBackedView {
         this.auth = auth;
     }
 
+    @SuppressWarnings("rawtypes")
     protected void initDataBindings() {
         BeanProperty<ProductParentSequencingAuthorization, Product> productParentSequencingAuthorizationBeanProperty = BeanProperty.create("parent");
-        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<ProductParentSequencingAuthorization, Product, JComboBox<?>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                                  auth,
-                                                                                                                                  productParentSequencingAuthorizationBeanProperty,
-                                                                                                                                  parent,
-                                                                                                                                  jComboBoxBeanProperty);
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<ProductParentSequencingAuthorization, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                               auth,
+                                                                                                                               productParentSequencingAuthorizationBeanProperty,
+                                                                                                                               parent,
+                                                                                                                               jComboBoxBeanProperty);
         autoBinding.bind();
         //
         BeanProperty<ProductParentSequencingAuthorization, StatusCode> productParentSequencingAuthorizationBeanProperty_1 = BeanProperty.create("parentStatusToSet");
-        AutoBinding<ProductParentSequencingAuthorization, StatusCode, JComboBox<?>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                                       auth,
-                                                                                                                                       productParentSequencingAuthorizationBeanProperty_1,
-                                                                                                                                       parentStatusToSet,
-                                                                                                                                       jComboBoxBeanProperty);
+        AutoBinding<ProductParentSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                    auth,
+                                                                                                                                    productParentSequencingAuthorizationBeanProperty_1,
+                                                                                                                                    parentStatusToSet,
+                                                                                                                                    jComboBoxBeanProperty);
         autoBinding_1.bind();
         //
         BeanProperty<ProductParentSequencingAuthorization, Integer> productParentSequencingAuthorizationBeanProperty_2 = BeanProperty.create("sequenceNumber");

@@ -79,14 +79,15 @@ public class SelfAuthSeqView extends WorkspaceBackedView {
         this.auth = auth;
     }
 
+    @SuppressWarnings("rawtypes")
     protected void initDataBindings() {
         BeanProperty<ProductSelfSequencingAuthorization, StatusCode> productSelfSequencingAuthorizationBeanProperty = BeanProperty.create("statusToSet");
-        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<ProductSelfSequencingAuthorization, StatusCode, JComboBox<?>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                                   auth,
-                                                                                                                                   productSelfSequencingAuthorizationBeanProperty,
-                                                                                                                                   statusToSet,
-                                                                                                                                   jComboBoxBeanProperty);
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<ProductSelfSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                auth,
+                                                                                                                                productSelfSequencingAuthorizationBeanProperty,
+                                                                                                                                statusToSet,
+                                                                                                                                jComboBoxBeanProperty);
         autoBinding.bind();
     }
 }

@@ -31,14 +31,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceEditor;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class ExistentialRuleformView extends JPanel {
+public class ExistentialRuleformView extends WorkspaceBackedView {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -66,19 +66,17 @@ public class ExistentialRuleformView extends JPanel {
         } while (true);
     }
 
-    private JComboBox<Attribute>      attributes;
-    private AttributeValuePane        attributeValue;
-    private JTextField                description;
-    private JTextField                name;
-    private ExistentialRuleform<?, ?> ruleform;
-    protected WorkspaceEditor         workspace;
-    private JTextPane                 notes;
+    private JComboBox<AttributeValue<?>> attributes;
+    private AttributeValuePane           attributeValue;
+    private JTextField                   description;
+    private JTextField                   name;
+    private JTextPane                    notes;
+    private ExistentialRuleform<?, ?>    ruleform;
 
     /**
      * Create the frame.
      */
     public ExistentialRuleformView() {
-        // contentPane = new JPanel();
         setBorder(new EmptyBorder(5, 5, 5, 5));
         setBounds(100, 100, 335, 276);
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -171,14 +169,16 @@ public class ExistentialRuleformView extends JPanel {
 
     }
 
+    public ExistentialRuleformView(ExistentialRuleform<?, ?> ruleform) {
+        this();
+        setRuleform(ruleform);
+    }
+
     public ExistentialRuleform<?, ?> getRuleform() {
         return ruleform;
     }
 
     public void setRuleform(ExistentialRuleform<?, ?> ruleform) {
         this.ruleform = ruleform;
-        name.setText(ruleform.getName());
-        description.setText(ruleform.getDescription());
-        notes.setText(ruleform.getNotes());
     }
 }

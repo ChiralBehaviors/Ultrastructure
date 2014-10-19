@@ -29,6 +29,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
 
@@ -38,9 +44,10 @@ import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
  */
 public class MetaProtocolPane extends JPanel {
 
-    private static final long serialVersionUID = 1L;
-    private JComboBox<String> keys;
-    private JList<Protocol>   matchingProtocols;
+    private static final long       serialVersionUID = 1L;
+    private JComboBox<MetaProtocol> keys;
+    private JList<Protocol>         matchingProtocols;
+    private MetaProtocolView        metaProtocolView;
 
     /**
      * Create the panel.
@@ -78,7 +85,7 @@ public class MetaProtocolPane extends JPanel {
         gbc_btnNew.gridy = 0;
         add(btnNew, gbc_btnNew);
 
-        MetaProtocolView metaProtocolView = new MetaProtocolView();
+        metaProtocolView = new MetaProtocolView();
         metaProtocolView.setBorder(new TitledBorder(null, "MetaProtocol",
                                                     TitledBorder.LEADING,
                                                     TitledBorder.TOP, null,
@@ -108,7 +115,18 @@ public class MetaProtocolPane extends JPanel {
         gbc_matchingProtocols.gridx = 3;
         gbc_matchingProtocols.gridy = 1;
         add(matchingProtocols, gbc_matchingProtocols);
+        initDataBindings();
 
     }
 
+    protected void initDataBindings() {
+        BeanProperty<JComboBox<MetaProtocol>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        BeanProperty<MetaProtocolView, MetaProtocol> metaProtocolViewBeanProperty = BeanProperty.create("metaProtocol");
+        AutoBinding<JComboBox<MetaProtocol>, Object, MetaProtocolView, MetaProtocol> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                              keys,
+                                                                                                                              jComboBoxBeanProperty,
+                                                                                                                              metaProtocolView,
+                                                                                                                              metaProtocolViewBeanProperty);
+        autoBinding.bind();
+    }
 }

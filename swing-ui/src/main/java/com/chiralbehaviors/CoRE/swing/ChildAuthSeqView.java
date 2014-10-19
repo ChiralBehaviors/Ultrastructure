@@ -23,21 +23,28 @@ import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class ChildAuthSeqView extends JPanel {
+public class ChildAuthSeqView extends WorkspaceBackedView {
 
-    private static final long     serialVersionUID = 1L;
-    private JComboBox<Product>    child;
-    private JCheckBox             replaceProduct;
-    private JComboBox<StatusCode> statusToSet;
+    private static final long                   serialVersionUID = 1L;
+    private JComboBox<Product>                  child;
+    private JCheckBox                           replaceProduct;
+    private JComboBox<StatusCode>               statusToSet;
+    private ProductChildSequencingAuthorization auth;
 
     /**
      * Create the panel.
@@ -89,7 +96,43 @@ public class ChildAuthSeqView extends JPanel {
         gbc_replaceProduct.gridx = 1;
         gbc_replaceProduct.gridy = 2;
         add(replaceProduct, gbc_replaceProduct);
+        initDataBindings();
 
     }
 
+    public ProductChildSequencingAuthorization getAuth() {
+        return auth;
+    }
+
+    public void setAuth(ProductChildSequencingAuthorization auth) {
+        this.auth = auth;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<ProductChildSequencingAuthorization, Product> productChildSequencingAuthorizationBeanProperty = BeanProperty.create("nextChild");
+        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<ProductChildSequencingAuthorization, Product, JComboBox<?>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                 auth,
+                                                                                                                                 productChildSequencingAuthorizationBeanProperty,
+                                                                                                                                 child,
+                                                                                                                                 jComboBoxBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<ProductChildSequencingAuthorization, StatusCode> productChildSequencingAuthorizationBeanProperty_1 = BeanProperty.create("nextChildStatus");
+        AutoBinding<ProductChildSequencingAuthorization, StatusCode, JComboBox<?>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                      auth,
+                                                                                                                                      productChildSequencingAuthorizationBeanProperty_1,
+                                                                                                                                      statusToSet,
+                                                                                                                                      jComboBoxBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<ProductChildSequencingAuthorization, Boolean> productChildSequencingAuthorizationBeanProperty_2 = BeanProperty.create("replaceProduct");
+        BeanProperty<JCheckBox, Boolean> jCheckBoxBeanProperty = BeanProperty.create("selected");
+        AutoBinding<ProductChildSequencingAuthorization, Boolean, JCheckBox, Boolean> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                 auth,
+                                                                                                                                 productChildSequencingAuthorizationBeanProperty_2,
+                                                                                                                                 replaceProduct,
+                                                                                                                                 jCheckBoxBeanProperty);
+        autoBinding_2.bind();
+    }
 }

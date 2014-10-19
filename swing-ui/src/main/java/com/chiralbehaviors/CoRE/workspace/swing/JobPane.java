@@ -26,6 +26,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.swing.JobExplorer;
 import com.chiralbehaviors.CoRE.swing.JobView;
 
@@ -36,7 +42,7 @@ import com.chiralbehaviors.CoRE.swing.JobView;
 public class JobPane extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private JComboBox<String> keys;
+    private JComboBox<Job>    keys;
     private JobView           job;
     private JobExplorer       match;
 
@@ -95,7 +101,26 @@ public class JobPane extends JPanel {
         gbc_match.gridx = 3;
         gbc_match.gridy = 1;
         add(match, gbc_match);
+        initDataBindings();
 
     }
 
+    protected void initDataBindings() {
+        BeanProperty<JComboBox<Job>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        BeanProperty<JobView, Job> jobViewBeanProperty = BeanProperty.create("job");
+        AutoBinding<JComboBox<Job>, Object, JobView, Job> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                   keys,
+                                                                                                   jComboBoxBeanProperty,
+                                                                                                   job,
+                                                                                                   jobViewBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<JobExplorer, Job> jobExplorerBeanProperty = BeanProperty.create("job");
+        AutoBinding<JobView, Job, JobExplorer, Job> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                               job,
+                                                                                               jobViewBeanProperty,
+                                                                                               match,
+                                                                                               jobExplorerBeanProperty);
+        autoBinding_1.bind();
+    }
 }

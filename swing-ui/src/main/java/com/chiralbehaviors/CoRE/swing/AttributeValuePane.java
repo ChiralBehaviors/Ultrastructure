@@ -22,23 +22,25 @@ import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class AttributeValuePane extends JPanel {
+public class AttributeValuePane extends WorkspaceBackedView {
 
     private static final long serialVersionUID = 1L;
-    private JSpinner          sequenceNumber;
+    private AttributeValue<?> attributeValue;
     private JTextField        key;
-    private JTextField        value;
+    private JSpinner          sequenceNumber;
     private JComboBox<Unit>   unit;
+    private JTextField        value;
 
     /**
      * Create the panel.
@@ -118,6 +120,14 @@ public class AttributeValuePane extends JPanel {
         add(value, gbc_value);
         value.setColumns(10);
 
+    }
+
+    public AttributeValue<?> getAttributeValue() {
+        return attributeValue;
+    }
+
+    public void setAttributeValue(AttributeValue<?> attributeValue) {
+        this.attributeValue = attributeValue;
     }
 
 }

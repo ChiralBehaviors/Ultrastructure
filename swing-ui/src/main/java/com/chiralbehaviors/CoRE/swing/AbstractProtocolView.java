@@ -19,40 +19,48 @@ package com.chiralbehaviors.CoRE.swing;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.math.BigDecimal;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class AbstractProtocolView extends JPanel {
+public class AbstractProtocolView extends WorkspaceBackedView {
 
     private static final long    serialVersionUID = 1L;
-    private JLabel               lblService;
-    private JComboBox<Product>   service;
-    private JComboBox<Attribute> serviceAttribute;
-    private JComboBox<Agency>    requester;
-    private JComboBox<Location>  deliverFrom;
-    private JComboBox<Attribute> deliverToAttribute;
-    private JComboBox<Location>  deliverTo;
-    private JComboBox<Attribute> productAttribute;
-    private JComboBox<Product>   product;
-    private JComboBox<Attribute> assignToAttribute;
     private JComboBox<Agency>    assignTo;
-    private JComboBox<Attribute> requesterAttribute;
+    private JComboBox<Attribute> assignToAttribute;
+    private JComboBox<Location>  deliverFrom;
     private JComboBox<Location>  deliverFromAttribute;
+    private JComboBox<Location>  deliverTo;
+    private JComboBox<Attribute> deliverToAttribute;
+    private JLabel               lblService;
+    private JComboBox<Product>   product;
+    private JComboBox<Attribute> productAttribute;
     private JTextField           quantity;
     private JComboBox<Unit>      quantityUnit;
+    private JComboBox<Agency>    requester;
+    private JComboBox<Attribute> requesterAttribute;
+    private JComboBox<Product>   service;
+    private JComboBox<Attribute> serviceAttribute;
+    private AbstractProtocol     protocol;
 
     /**
      * Create the panel.
@@ -255,7 +263,130 @@ public class AbstractProtocolView extends JPanel {
         gbc_quantityUnit.gridx = 2;
         gbc_quantityUnit.gridy = 8;
         add(quantityUnit, gbc_quantityUnit);
+        initDataBindings();
 
     }
 
+    /**
+     * @param job
+     */
+    public void setAbstractProtocol(AbstractProtocol protocol) {
+        this.protocol = protocol;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<AbstractProtocol, Product> abstractProtocolBeanProperty = BeanProperty.create("service");
+        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<AbstractProtocol, Product, JComboBox<?>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              protocol,
+                                                                                                              abstractProtocolBeanProperty,
+                                                                                                              service,
+                                                                                                              jComboBoxBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<AbstractProtocol, Attribute> abstractProtocolBeanProperty_1 = BeanProperty.create("serviceAttribute");
+        AutoBinding<AbstractProtocol, Attribute, JComboBox<?>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  protocol,
+                                                                                                                  abstractProtocolBeanProperty_1,
+                                                                                                                  serviceAttribute,
+                                                                                                                  jComboBoxBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<AbstractProtocol, Agency> abstractProtocolBeanProperty_2 = BeanProperty.create("requester");
+        AutoBinding<AbstractProtocol, Agency, JComboBox<?>, Object> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                               protocol,
+                                                                                                               abstractProtocolBeanProperty_2,
+                                                                                                               requester,
+                                                                                                               jComboBoxBeanProperty);
+        autoBinding_2.bind();
+        //
+        BeanProperty<AbstractProtocol, Attribute> abstractProtocolBeanProperty_3 = BeanProperty.create("requesterAttribute");
+        AutoBinding<AbstractProtocol, Attribute, JComboBox<?>, Object> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  protocol,
+                                                                                                                  abstractProtocolBeanProperty_3,
+                                                                                                                  requesterAttribute,
+                                                                                                                  jComboBoxBeanProperty);
+        autoBinding_3.bind();
+        //
+        BeanProperty<AbstractProtocol, Agency> abstractProtocolBeanProperty_4 = BeanProperty.create("assignTo");
+        AutoBinding<AbstractProtocol, Agency, JComboBox<?>, Object> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                               protocol,
+                                                                                                               abstractProtocolBeanProperty_4,
+                                                                                                               assignTo,
+                                                                                                               jComboBoxBeanProperty);
+        autoBinding_4.bind();
+        //
+        BeanProperty<AbstractProtocol, Attribute> abstractProtocolBeanProperty_5 = BeanProperty.create("assignToAttribute");
+        AutoBinding<AbstractProtocol, Attribute, JComboBox<?>, Object> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  protocol,
+                                                                                                                  abstractProtocolBeanProperty_5,
+                                                                                                                  assignToAttribute,
+                                                                                                                  jComboBoxBeanProperty);
+        autoBinding_5.bind();
+        //
+        BeanProperty<AbstractProtocol, Product> abstractProtocolBeanProperty_6 = BeanProperty.create("product");
+        AutoBinding<AbstractProtocol, Product, JComboBox<?>, Object> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                protocol,
+                                                                                                                abstractProtocolBeanProperty_6,
+                                                                                                                product,
+                                                                                                                jComboBoxBeanProperty);
+        autoBinding_6.bind();
+        //
+        BeanProperty<AbstractProtocol, Attribute> abstractProtocolBeanProperty_7 = BeanProperty.create("productAttribute");
+        AutoBinding<AbstractProtocol, Attribute, JComboBox<?>, Object> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  protocol,
+                                                                                                                  abstractProtocolBeanProperty_7,
+                                                                                                                  productAttribute,
+                                                                                                                  jComboBoxBeanProperty);
+        autoBinding_7.bind();
+        //
+        BeanProperty<AbstractProtocol, Location> abstractProtocolBeanProperty_8 = BeanProperty.create("deliverTo");
+        AutoBinding<AbstractProtocol, Location, JComboBox<?>, Object> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                 protocol,
+                                                                                                                 abstractProtocolBeanProperty_8,
+                                                                                                                 deliverTo,
+                                                                                                                 jComboBoxBeanProperty);
+        autoBinding_8.bind();
+        //
+        BeanProperty<AbstractProtocol, Attribute> abstractProtocolBeanProperty_9 = BeanProperty.create("deliverToAttribute");
+        AutoBinding<AbstractProtocol, Attribute, JComboBox<?>, Object> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  protocol,
+                                                                                                                  abstractProtocolBeanProperty_9,
+                                                                                                                  deliverToAttribute,
+                                                                                                                  jComboBoxBeanProperty);
+        autoBinding_9.bind();
+        //
+        BeanProperty<AbstractProtocol, Location> abstractProtocolBeanProperty_10 = BeanProperty.create("deliverFrom");
+        AutoBinding<AbstractProtocol, Location, JComboBox<?>, Object> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  protocol,
+                                                                                                                  abstractProtocolBeanProperty_10,
+                                                                                                                  deliverFrom,
+                                                                                                                  jComboBoxBeanProperty);
+        autoBinding_10.bind();
+        //
+        BeanProperty<AbstractProtocol, Attribute> abstractProtocolBeanProperty_11 = BeanProperty.create("deliverFromAttribute");
+        AutoBinding<AbstractProtocol, Attribute, JComboBox<?>, Object> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                   protocol,
+                                                                                                                   abstractProtocolBeanProperty_11,
+                                                                                                                   deliverFromAttribute,
+                                                                                                                   jComboBoxBeanProperty);
+        autoBinding_11.bind();
+        //
+        BeanProperty<AbstractProtocol, BigDecimal> abstractProtocolBeanProperty_12 = BeanProperty.create("quantity");
+        BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
+        AutoBinding<AbstractProtocol, BigDecimal, JTextField, String> autoBinding_12 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  protocol,
+                                                                                                                  abstractProtocolBeanProperty_12,
+                                                                                                                  quantity,
+                                                                                                                  jTextFieldBeanProperty);
+        autoBinding_12.bind();
+        //
+        BeanProperty<AbstractProtocol, Unit> abstractProtocolBeanProperty_13 = BeanProperty.create("quantityUnit");
+        AutoBinding<AbstractProtocol, Unit, JComboBox<?>, Object> autoBinding_13 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              protocol,
+                                                                                                              abstractProtocolBeanProperty_13,
+                                                                                                              quantityUnit,
+                                                                                                              jComboBoxBeanProperty);
+        autoBinding_13.bind();
+    }
 }

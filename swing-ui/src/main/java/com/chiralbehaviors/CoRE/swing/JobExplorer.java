@@ -25,18 +25,18 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class JobExplorer extends JPanel {
+public class JobExplorer extends WorkspaceBackedView {
 
     private static final long       serialVersionUID = 1L;
     private JComboBox<MetaProtocol> metaProtocol;
@@ -44,6 +44,7 @@ public class JobExplorer extends JPanel {
     private JButton                 generate;
     private JButton                 generateAll;
     private JList<Job>              generated;
+    private Job                     job;
 
     /**
      * Create the panel.
@@ -112,6 +113,14 @@ public class JobExplorer extends JPanel {
         gbc_list.gridy = 3;
         add(generated, gbc_list);
 
+    }
+
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
     }
 
 }

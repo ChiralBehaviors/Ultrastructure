@@ -22,21 +22,28 @@ import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
 
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class StatusCodeSequencingView extends JPanel {
+public class StatusCodeSequencingView extends WorkspaceBackedView {
 
     private static final long     serialVersionUID = 1L;
     private JComboBox<Product>    service;
     private JComboBox<StatusCode> parent;
     private JComboBox<StatusCode> child;
+    private StatusCodeSequencing  sequencing;
 
     /**
      * Create the panel.
@@ -96,7 +103,42 @@ public class StatusCodeSequencingView extends JPanel {
         gbc_child.gridx = 1;
         gbc_child.gridy = 2;
         add(child, gbc_child);
+        initDataBindings();
 
     }
 
+    public StatusCodeSequencing getSequencing() {
+        return sequencing;
+    }
+
+    public void setSequencing(StatusCodeSequencing sequencing) {
+        this.sequencing = sequencing;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<StatusCodeSequencing, Product> statusCodeSequencingBeanProperty = BeanProperty.create("service");
+        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<StatusCodeSequencing, Product, JComboBox<?>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  sequencing,
+                                                                                                                  statusCodeSequencingBeanProperty,
+                                                                                                                  service,
+                                                                                                                  jComboBoxBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<StatusCodeSequencing, StatusCode> statusCodeSequencingBeanProperty_1 = BeanProperty.create("parentCode");
+        AutoBinding<StatusCodeSequencing, StatusCode, JComboBox<?>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                       sequencing,
+                                                                                                                       statusCodeSequencingBeanProperty_1,
+                                                                                                                       parent,
+                                                                                                                       jComboBoxBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<StatusCodeSequencing, StatusCode> statusCodeSequencingBeanProperty_2 = BeanProperty.create("childCode");
+        AutoBinding<StatusCodeSequencing, StatusCode, JComboBox<?>, Object> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                       sequencing,
+                                                                                                                       statusCodeSequencingBeanProperty_2,
+                                                                                                                       child,
+                                                                                                                       jComboBoxBeanProperty);
+        autoBinding_2.bind();
+    }
 }

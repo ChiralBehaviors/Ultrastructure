@@ -23,17 +23,27 @@ import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class RelationshipView extends JPanel {
+public class RelationshipView extends WorkspaceBackedView {
 
-    private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID = 1L;
+    private Relationship            relationship;
+    private JCheckBox               preferred;
+    private ExistentialRuleformView ruleform;
+    private JComboBox<Relationship> inverse;
 
     /**
      * Create the panel.
@@ -47,12 +57,12 @@ public class RelationshipView extends JPanel {
         gridBagLayout.rowWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
-        JCheckBox chckbxPreferred = new JCheckBox("Preferred");
-        GridBagConstraints gbc_chckbxPreferred = new GridBagConstraints();
-        gbc_chckbxPreferred.insets = new Insets(0, 0, 5, 5);
-        gbc_chckbxPreferred.gridx = 0;
-        gbc_chckbxPreferred.gridy = 0;
-        add(chckbxPreferred, gbc_chckbxPreferred);
+        preferred = new JCheckBox("Preferred");
+        GridBagConstraints gbc_preferred = new GridBagConstraints();
+        gbc_preferred.insets = new Insets(0, 0, 5, 5);
+        gbc_preferred.gridx = 0;
+        gbc_preferred.gridy = 0;
+        add(preferred, gbc_preferred);
 
         JLabel lblInverse = new JLabel("Inverse");
         GridBagConstraints gbc_lblInverse = new GridBagConstraints();
@@ -62,22 +72,57 @@ public class RelationshipView extends JPanel {
         gbc_lblInverse.gridy = 0;
         add(lblInverse, gbc_lblInverse);
 
-        JComboBox<Relationship> comboBox = new JComboBox<>();
-        GridBagConstraints gbc_comboBox = new GridBagConstraints();
-        gbc_comboBox.insets = new Insets(0, 0, 5, 0);
-        gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-        gbc_comboBox.gridx = 2;
-        gbc_comboBox.gridy = 0;
-        add(comboBox, gbc_comboBox);
+        inverse = new JComboBox<>();
+        GridBagConstraints gbc_inverse = new GridBagConstraints();
+        gbc_inverse.insets = new Insets(0, 0, 5, 0);
+        gbc_inverse.fill = GridBagConstraints.HORIZONTAL;
+        gbc_inverse.gridx = 2;
+        gbc_inverse.gridy = 0;
+        add(inverse, gbc_inverse);
 
-        ExistentialRuleformView existentialRuleformView = new ExistentialRuleformView();
-        GridBagConstraints gbc_existentialRuleformView = new GridBagConstraints();
-        gbc_existentialRuleformView.gridwidth = 3;
-        gbc_existentialRuleformView.fill = GridBagConstraints.BOTH;
-        gbc_existentialRuleformView.gridx = 0;
-        gbc_existentialRuleformView.gridy = 1;
-        add(existentialRuleformView, gbc_existentialRuleformView);
+        ruleform = new ExistentialRuleformView();
+        GridBagConstraints gbc_ruleform = new GridBagConstraints();
+        gbc_ruleform.gridwidth = 3;
+        gbc_ruleform.fill = GridBagConstraints.BOTH;
+        gbc_ruleform.gridx = 0;
+        gbc_ruleform.gridy = 1;
+        add(ruleform, gbc_ruleform);
+        initDataBindings();
 
     }
 
+    public Relationship getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(Relationship relationship) {
+        this.relationship = relationship;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<Relationship, Boolean> relationshipBeanProperty = BeanProperty.create("preferred");
+        BeanProperty<JCheckBox, Boolean> jCheckBoxBeanProperty = BeanProperty.create("selected");
+        AutoBinding<Relationship, Boolean, JCheckBox, Boolean> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                        relationship,
+                                                                                                        relationshipBeanProperty,
+                                                                                                        preferred,
+                                                                                                        jCheckBoxBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<Relationship, Relationship> relationshipBeanProperty_1 = BeanProperty.create("inverse");
+        BeanProperty<JComboBox<?>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<Relationship, Relationship, JComboBox<?>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                 relationship,
+                                                                                                                 relationshipBeanProperty_1,
+                                                                                                                 inverse,
+                                                                                                                 jComboBoxBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<ExistentialRuleformView, ExistentialRuleform<?, ?>> existentialRuleformViewBeanProperty = BeanProperty.create("ruleform");
+        AutoBinding<Relationship, Relationship, ExistentialRuleformView, ExistentialRuleform<?, ?>> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                               relationship,
+                                                                                                                                               ruleform,
+                                                                                                                                               existentialRuleformViewBeanProperty);
+        autoBinding_2.bind();
+    }
 }

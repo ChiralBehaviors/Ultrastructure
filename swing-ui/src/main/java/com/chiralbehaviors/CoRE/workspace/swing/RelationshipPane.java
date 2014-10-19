@@ -30,6 +30,11 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.swing.RelationshipView;
@@ -42,7 +47,7 @@ public class RelationshipPane extends JPanel {
 
     private static final long                serialVersionUID = 1L;
     private JComboBox<Relationship>          parentRelationship;
-    private JComboBox<String>                keys;
+    private JComboBox<Relationship>          keys;
     private JList<ExistentialRuleform<?, ?>> parents;
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
@@ -183,7 +188,18 @@ public class RelationshipPane extends JPanel {
         gbc_children.gridx = 0;
         gbc_children.gridy = 1;
         childrenPanel.add(children, gbc_children);
+        initDataBindings();
 
     }
 
+    protected void initDataBindings() {
+        BeanProperty<JComboBox<Relationship>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        BeanProperty<RelationshipView, Relationship> relationshipViewBeanProperty = BeanProperty.create("relationship");
+        AutoBinding<JComboBox<Relationship>, Object, RelationshipView, Relationship> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                              keys,
+                                                                                                                              jComboBoxBeanProperty,
+                                                                                                                              relationshipView,
+                                                                                                                              relationshipViewBeanProperty);
+        autoBinding.bind();
+    }
 }

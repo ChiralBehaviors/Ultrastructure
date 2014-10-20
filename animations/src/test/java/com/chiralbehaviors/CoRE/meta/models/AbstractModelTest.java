@@ -56,7 +56,7 @@ public class AbstractModelTest {
 
     @BeforeClass
     public static void initializeDatabase() throws IOException, SQLException {
-        if (em != null) {
+        if (em != null && em.isOpen()) {
             em.close();
         }
         em = getEntityManager();

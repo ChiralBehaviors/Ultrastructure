@@ -306,7 +306,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
     protected void initDataBindings() {
         BeanProperty<MetaProtocol, Product> metaProtocolBeanProperty = BeanProperty.create("service");
         BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<MetaProtocol, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                        metaProtocol,
                                                                                                        metaProtocolBeanProperty,
                                                                                                        service,
@@ -315,7 +315,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         //
         BeanProperty<MetaProtocol, Integer> metaProtocolBeanProperty_1 = BeanProperty.create("sequenceNumber");
         BeanProperty<JSpinner, Object> jSpinnerBeanProperty = BeanProperty.create("value");
-        AutoBinding<MetaProtocol, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                         metaProtocol,
                                                                                                         metaProtocolBeanProperty_1,
                                                                                                         sequenceNumber,
@@ -324,7 +324,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         //
         BeanProperty<MetaProtocol, Boolean> metaProtocolBeanProperty_2 = BeanProperty.create("stopOnMatch");
         BeanProperty<JCheckBox, Boolean> jCheckBoxBeanProperty = BeanProperty.create("selected");
-        AutoBinding<MetaProtocol, Boolean, JCheckBox, Boolean> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Boolean, JCheckBox, Boolean> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                           metaProtocol,
                                                                                                           metaProtocolBeanProperty_2,
                                                                                                           stopOnMatch,
@@ -332,7 +332,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_2.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_3 = BeanProperty.create("serviceType");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               metaProtocol,
                                                                                                               metaProtocolBeanProperty_3,
                                                                                                               serviceType,
@@ -340,7 +340,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_3.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_4 = BeanProperty.create("serviceAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               metaProtocol,
                                                                                                               metaProtocolBeanProperty_4,
                                                                                                               serviceAttribute,
@@ -348,7 +348,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_4.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_5 = BeanProperty.create("requester");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               metaProtocol,
                                                                                                               metaProtocolBeanProperty_5,
                                                                                                               requester,
@@ -356,7 +356,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_5.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_6 = BeanProperty.create("requesterAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               metaProtocol,
                                                                                                               metaProtocolBeanProperty_6,
                                                                                                               requesterAttribute,
@@ -364,7 +364,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_6.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_7 = BeanProperty.create("assignTo");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               metaProtocol,
                                                                                                               metaProtocolBeanProperty_7,
                                                                                                               assignTo,
@@ -372,7 +372,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_7.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_8 = BeanProperty.create("assignToAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               metaProtocol,
                                                                                                               metaProtocolBeanProperty_8,
                                                                                                               assignToAttribute,
@@ -380,7 +380,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_8.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_9 = BeanProperty.create("product");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               metaProtocol,
                                                                                                               metaProtocolBeanProperty_9,
                                                                                                               product,
@@ -388,7 +388,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_9.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_10 = BeanProperty.create("productAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                metaProtocol,
                                                                                                                metaProtocolBeanProperty_10,
                                                                                                                productAttribute,
@@ -396,7 +396,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_10.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_11 = BeanProperty.create("deliverFrom");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                metaProtocol,
                                                                                                                metaProtocolBeanProperty_11,
                                                                                                                deliverFrom,
@@ -404,7 +404,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_11.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_12 = BeanProperty.create("deliverFromAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_12 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_12 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                metaProtocol,
                                                                                                                metaProtocolBeanProperty_12,
                                                                                                                deliverFromAttribute,
@@ -413,7 +413,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_13 = BeanProperty.create("deliverTo");
         BeanProperty<JComboBox, Integer> jComboBoxBeanProperty_1 = BeanProperty.create("selectedIndex");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Integer> autoBinding_13 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Integer> autoBinding_13 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                 metaProtocol,
                                                                                                                 metaProtocolBeanProperty_13,
                                                                                                                 deliverTo,
@@ -421,7 +421,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_13.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_14 = BeanProperty.create("deliverToAttribute");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Integer> autoBinding_14 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Integer> autoBinding_14 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                 metaProtocol,
                                                                                                                 metaProtocolBeanProperty_14,
                                                                                                                 deliverToAttribute,
@@ -429,7 +429,7 @@ public class MetaProtocolView extends WorkspaceBackedView {
         autoBinding_14.bind();
         //
         BeanProperty<MetaProtocol, Relationship> metaProtocolBeanProperty_15 = BeanProperty.create("quantityUnit");
-        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_15 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<MetaProtocol, Relationship, JComboBox, Object> autoBinding_15 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                metaProtocol,
                                                                                                                metaProtocolBeanProperty_15,
                                                                                                                quantityUnit,

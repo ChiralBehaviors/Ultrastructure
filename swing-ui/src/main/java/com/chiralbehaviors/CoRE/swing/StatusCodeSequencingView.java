@@ -119,7 +119,7 @@ public class StatusCodeSequencingView extends WorkspaceBackedView {
     protected void initDataBindings() {
         BeanProperty<StatusCodeSequencing, Product> statusCodeSequencingBeanProperty = BeanProperty.create("service");
         BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<StatusCodeSequencing, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<StatusCodeSequencing, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                sequencing,
                                                                                                                statusCodeSequencingBeanProperty,
                                                                                                                service,
@@ -127,7 +127,7 @@ public class StatusCodeSequencingView extends WorkspaceBackedView {
         autoBinding.bind();
         //
         BeanProperty<StatusCodeSequencing, StatusCode> statusCodeSequencingBeanProperty_1 = BeanProperty.create("parentCode");
-        AutoBinding<StatusCodeSequencing, StatusCode, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<StatusCodeSequencing, StatusCode, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                     sequencing,
                                                                                                                     statusCodeSequencingBeanProperty_1,
                                                                                                                     parent,
@@ -135,7 +135,7 @@ public class StatusCodeSequencingView extends WorkspaceBackedView {
         autoBinding_1.bind();
         //
         BeanProperty<StatusCodeSequencing, StatusCode> statusCodeSequencingBeanProperty_2 = BeanProperty.create("childCode");
-        AutoBinding<StatusCodeSequencing, StatusCode, JComboBox, Object> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<StatusCodeSequencing, StatusCode, JComboBox, Object> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                     sequencing,
                                                                                                                     statusCodeSequencingBeanProperty_2,
                                                                                                                     child,

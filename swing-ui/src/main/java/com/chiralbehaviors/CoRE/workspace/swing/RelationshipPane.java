@@ -38,6 +38,7 @@ import org.jdesktop.beansbinding.Bindings;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.swing.RelationshipView;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -52,6 +53,7 @@ public class RelationshipPane extends JPanel {
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
     private RelationshipView                 relationshipView;
+    private Workspace                        workspace;
 
     /**
      * Create the panel.
@@ -192,6 +194,14 @@ public class RelationshipPane extends JPanel {
 
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
     protected void initDataBindings() {
         BeanProperty<JComboBox<Relationship>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
         BeanProperty<RelationshipView, Relationship> relationshipViewBeanProperty = BeanProperty.create("relationship");
@@ -201,5 +211,12 @@ public class RelationshipPane extends JPanel {
                                                                                                                               relationshipView,
                                                                                                                               relationshipViewBeanProperty);
         autoBinding.bind();
+        //
+        BeanProperty<RelationshipView, Workspace> relationshipViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, RelationshipView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  workspace,
+                                                                                                                  relationshipView,
+                                                                                                                  relationshipViewBeanProperty_1);
+        autoBinding_1.bind();
     }
 }

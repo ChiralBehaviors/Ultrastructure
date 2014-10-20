@@ -30,6 +30,11 @@ import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
@@ -71,7 +76,8 @@ public class ExistentialRuleformView extends WorkspaceBackedView {
     private JTextField                   description;
     private JTextField                   name;
     private JTextPane                    notes;
-    private ExistentialRuleform<?, ?>    ruleform;
+    @SuppressWarnings("rawtypes")
+    private ExistentialRuleform          ruleform;
 
     /**
      * Create the frame.
@@ -166,6 +172,7 @@ public class ExistentialRuleformView extends WorkspaceBackedView {
         gbc_attributeValue.gridx = 0;
         gbc_attributeValue.gridy = 4;
         add(attributeValue, gbc_attributeValue);
+        initDataBindings();
 
     }
 
@@ -180,5 +187,35 @@ public class ExistentialRuleformView extends WorkspaceBackedView {
 
     public void setRuleform(ExistentialRuleform<?, ?> ruleform) {
         this.ruleform = ruleform;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected void initDataBindings() {
+        BeanProperty<ExistentialRuleform, String> existentialRuleformBeanProperty = BeanProperty.create("description");
+        BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
+        AutoBinding<ExistentialRuleform, String, JTextField, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                              ruleform,
+                                                                                                              existentialRuleformBeanProperty,
+                                                                                                              description,
+                                                                                                              jTextFieldBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<ExistentialRuleform, String> existentialRuleformBeanProperty_1 = BeanProperty.create("name");
+        BeanProperty<JTextField, String> jTextFieldBeanProperty_1 = BeanProperty.create("text");
+        AutoBinding<ExistentialRuleform, String, JTextField, String> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                                ruleform,
+                                                                                                                existentialRuleformBeanProperty_1,
+                                                                                                                name,
+                                                                                                                jTextFieldBeanProperty_1);
+        autoBinding_1.bind();
+        //
+        BeanProperty<ExistentialRuleform, String> existentialRuleformBeanProperty_2 = BeanProperty.create("notes");
+        BeanProperty<JTextPane, String> jTextPaneBeanProperty = BeanProperty.create("text");
+        AutoBinding<ExistentialRuleform, String, JTextPane, String> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                               ruleform,
+                                                                                                               existentialRuleformBeanProperty_2,
+                                                                                                               notes,
+                                                                                                               jTextPaneBeanProperty);
+        autoBinding_2.bind();
     }
 }

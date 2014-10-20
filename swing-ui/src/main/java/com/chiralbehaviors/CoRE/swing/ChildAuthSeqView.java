@@ -112,7 +112,7 @@ public class ChildAuthSeqView extends WorkspaceBackedView {
     protected void initDataBindings() {
         BeanProperty<ProductChildSequencingAuthorization, Product> productChildSequencingAuthorizationBeanProperty = BeanProperty.create("nextChild");
         BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<ProductChildSequencingAuthorization, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<ProductChildSequencingAuthorization, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                               auth,
                                                                                                                               productChildSequencingAuthorizationBeanProperty,
                                                                                                                               child,
@@ -120,7 +120,7 @@ public class ChildAuthSeqView extends WorkspaceBackedView {
         autoBinding.bind();
         //
         BeanProperty<ProductChildSequencingAuthorization, StatusCode> productChildSequencingAuthorizationBeanProperty_1 = BeanProperty.create("nextChildStatus");
-        AutoBinding<ProductChildSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<ProductChildSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                                    auth,
                                                                                                                                    productChildSequencingAuthorizationBeanProperty_1,
                                                                                                                                    statusToSet,
@@ -129,7 +129,7 @@ public class ChildAuthSeqView extends WorkspaceBackedView {
         //
         BeanProperty<ProductChildSequencingAuthorization, Boolean> productChildSequencingAuthorizationBeanProperty_2 = BeanProperty.create("replaceProduct");
         BeanProperty<JCheckBox, Boolean> jCheckBoxBeanProperty = BeanProperty.create("selected");
-        AutoBinding<ProductChildSequencingAuthorization, Boolean, JCheckBox, Boolean> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<ProductChildSequencingAuthorization, Boolean, JCheckBox, Boolean> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                                  auth,
                                                                                                                                  productChildSequencingAuthorizationBeanProperty_2,
                                                                                                                                  replaceProduct,

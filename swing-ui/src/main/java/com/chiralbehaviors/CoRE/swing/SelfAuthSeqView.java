@@ -83,7 +83,7 @@ public class SelfAuthSeqView extends WorkspaceBackedView {
     protected void initDataBindings() {
         BeanProperty<ProductSelfSequencingAuthorization, StatusCode> productSelfSequencingAuthorizationBeanProperty = BeanProperty.create("statusToSet");
         BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<ProductSelfSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<ProductSelfSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                                 auth,
                                                                                                                                 productSelfSequencingAuthorizationBeanProperty,
                                                                                                                                 statusToSet,

@@ -23,7 +23,6 @@ import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
 import javax.swing.JTextPane;
@@ -35,12 +34,13 @@ import org.jdesktop.beansbinding.Bindings;
 
 import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class JobView extends JPanel {
+public class JobView extends WorkspaceBackedView {
 
     private static final long    serialVersionUID = 1L;
     private JSpinner             sequenceNumber;
@@ -136,7 +136,7 @@ public class JobView extends JPanel {
     protected void initDataBindings() {
         BeanProperty<Job, Job> jobBeanProperty = BeanProperty.create("parent");
         BeanProperty<JComboBox<Job>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<Job, Job, JComboBox<Job>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<Job, Job, JComboBox<Job>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                job,
                                                                                                jobBeanProperty,
                                                                                                parent,
@@ -145,7 +145,7 @@ public class JobView extends JPanel {
         //
         BeanProperty<Job, Integer> jobBeanProperty_1 = BeanProperty.create("sequenceNumber");
         BeanProperty<JSpinner, Object> jSpinnerBeanProperty = BeanProperty.create("value");
-        AutoBinding<Job, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<Job, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                job,
                                                                                                jobBeanProperty_1,
                                                                                                sequenceNumber,
@@ -153,7 +153,7 @@ public class JobView extends JPanel {
         autoBinding_1.bind();
         //
         BeanProperty<AbstractProtocolView, AbstractProtocol> abstractProtocolViewBeanProperty = BeanProperty.create("protocol");
-        AutoBinding<Job, Job, AbstractProtocolView, AbstractProtocol> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<Job, Job, AbstractProtocolView, AbstractProtocol> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                                  job,
                                                                                                                  abstractProtocol,
                                                                                                                  abstractProtocolViewBeanProperty);
@@ -161,7 +161,7 @@ public class JobView extends JPanel {
         //
         BeanProperty<Job, String> jobBeanProperty_2 = BeanProperty.create("notes");
         BeanProperty<JTextPane, String> jTextPaneBeanProperty = BeanProperty.create("text");
-        AutoBinding<Job, String, JTextPane, String> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<Job, String, JTextPane, String> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                job,
                                                                                                jobBeanProperty_2,
                                                                                                notes,

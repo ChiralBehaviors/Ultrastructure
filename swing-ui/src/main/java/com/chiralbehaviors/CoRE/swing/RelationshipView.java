@@ -103,7 +103,7 @@ public class RelationshipView extends WorkspaceBackedView {
     protected void initDataBindings() {
         BeanProperty<Relationship, Boolean> relationshipBeanProperty = BeanProperty.create("preferred");
         BeanProperty<JCheckBox, Boolean> jCheckBoxBeanProperty = BeanProperty.create("selected");
-        AutoBinding<Relationship, Boolean, JCheckBox, Boolean> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<Relationship, Boolean, JCheckBox, Boolean> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                         relationship,
                                                                                                         relationshipBeanProperty,
                                                                                                         preferred,
@@ -112,18 +112,18 @@ public class RelationshipView extends WorkspaceBackedView {
         //
         BeanProperty<Relationship, Relationship> relationshipBeanProperty_1 = BeanProperty.create("inverse");
         BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
-        AutoBinding<Relationship, Relationship, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<Relationship, Relationship, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                               relationship,
                                                                                                               relationshipBeanProperty_1,
                                                                                                               inverse,
                                                                                                               jComboBoxBeanProperty);
         autoBinding_1.bind();
         //
-        BeanProperty<ExistentialRuleformView, ExistentialRuleform<?, ?>> existentialRuleformViewBeanProperty = BeanProperty.create("ruleform");
-        AutoBinding<Relationship, Relationship, ExistentialRuleformView, ExistentialRuleform<?, ?>> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                                               relationship,
-                                                                                                                                               ruleform,
-                                                                                                                                               existentialRuleformViewBeanProperty);
+        BeanProperty<ExistentialRuleformView, ExistentialRuleform> existentialRuleformViewBeanProperty = BeanProperty.create("ruleform");
+        AutoBinding<Relationship, Relationship, ExistentialRuleformView, ExistentialRuleform> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                                                         relationship,
+                                                                                                                                         ruleform,
+                                                                                                                                         existentialRuleformViewBeanProperty);
         autoBinding_2.bind();
     }
 }

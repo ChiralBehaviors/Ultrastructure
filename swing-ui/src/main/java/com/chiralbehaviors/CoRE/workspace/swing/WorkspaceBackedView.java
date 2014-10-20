@@ -26,7 +26,7 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  */
 public class WorkspaceBackedView extends JPanel {
     private static final long serialVersionUID = 1L;
-    private Workspace         workspace;
+    protected Workspace       workspace;
 
     public Workspace getWorkspace() {
         return workspace;

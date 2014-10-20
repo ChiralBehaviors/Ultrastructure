@@ -141,7 +141,7 @@ public class ProtocolView extends WorkspaceBackedView {
     protected void initDataBindings() {
         BeanProperty<AbstractProtocol, String> protocolBeanProperty = BeanProperty.create("name");
         BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-        AutoBinding<AbstractProtocol, String, JTextField, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<AbstractProtocol, String, JTextField, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                            abstractProtocol,
                                                                                                            protocolBeanProperty,
                                                                                                            name,
@@ -150,7 +150,7 @@ public class ProtocolView extends WorkspaceBackedView {
         //
         BeanProperty<AbstractProtocol, Integer> protocolBeanProperty_1 = BeanProperty.create("sequenceNumber");
         BeanProperty<JSpinner, Object> jSpinnerBeanProperty = BeanProperty.create("value");
-        AutoBinding<AbstractProtocol, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<AbstractProtocol, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                             abstractProtocol,
                                                                                                             protocolBeanProperty_1,
                                                                                                             sequenceNumber,
@@ -159,7 +159,7 @@ public class ProtocolView extends WorkspaceBackedView {
         //
         BeanProperty<AbstractProtocol, String> protocolBeanProperty_2 = BeanProperty.create("notes");
         BeanProperty<JTextPane, String> jTextPaneBeanProperty = BeanProperty.create("text");
-        AutoBinding<AbstractProtocol, String, JTextPane, String> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        AutoBinding<AbstractProtocol, String, JTextPane, String> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
                                                                                                             abstractProtocol,
                                                                                                             protocolBeanProperty_2,
                                                                                                             notes,

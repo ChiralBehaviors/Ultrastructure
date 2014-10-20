@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.time;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -42,7 +43,7 @@ public class IntervalAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Interval> {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "classifier")
     private Interval          classifier;
 

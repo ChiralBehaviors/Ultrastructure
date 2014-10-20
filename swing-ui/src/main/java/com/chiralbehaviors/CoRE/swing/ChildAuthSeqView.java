@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class ChildAuthSeqView extends JPanel {
 
     private static final long     serialVersionUID = 1L;
-    private JComboBox<Product>    parent;
     private JComboBox<Product>    child;
     private JCheckBox             replaceProduct;
     private JComboBox<StatusCode> statusToSet;
@@ -46,34 +45,18 @@ public class ChildAuthSeqView extends JPanel {
     public ChildAuthSeqView() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
         gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0,
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0,
                 Double.MIN_VALUE };
         setLayout(gridBagLayout);
-
-        JLabel lblParent = new JLabel("Parent");
-        GridBagConstraints gbc_lblParent = new GridBagConstraints();
-        gbc_lblParent.insets = new Insets(0, 0, 5, 5);
-        gbc_lblParent.anchor = GridBagConstraints.EAST;
-        gbc_lblParent.gridx = 0;
-        gbc_lblParent.gridy = 0;
-        add(lblParent, gbc_lblParent);
-
-        parent = new JComboBox<>();
-        GridBagConstraints gbc_parent = new GridBagConstraints();
-        gbc_parent.insets = new Insets(0, 0, 5, 0);
-        gbc_parent.fill = GridBagConstraints.HORIZONTAL;
-        gbc_parent.gridx = 1;
-        gbc_parent.gridy = 0;
-        add(parent, gbc_parent);
 
         JLabel lblNewLabel = new JLabel("Child");
         GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
         gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
         gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
         gbc_lblNewLabel.gridx = 0;
-        gbc_lblNewLabel.gridy = 1;
+        gbc_lblNewLabel.gridy = 0;
         add(lblNewLabel, gbc_lblNewLabel);
 
         child = new JComboBox<>();
@@ -81,7 +64,7 @@ public class ChildAuthSeqView extends JPanel {
         gbc_child.insets = new Insets(0, 0, 5, 0);
         gbc_child.fill = GridBagConstraints.HORIZONTAL;
         gbc_child.gridx = 1;
-        gbc_child.gridy = 1;
+        gbc_child.gridy = 0;
         add(child, gbc_child);
 
         JLabel lblStatusToSet = new JLabel("Status To Set");
@@ -89,7 +72,7 @@ public class ChildAuthSeqView extends JPanel {
         gbc_lblStatusToSet.anchor = GridBagConstraints.EAST;
         gbc_lblStatusToSet.insets = new Insets(0, 0, 5, 5);
         gbc_lblStatusToSet.gridx = 0;
-        gbc_lblStatusToSet.gridy = 2;
+        gbc_lblStatusToSet.gridy = 1;
         add(lblStatusToSet, gbc_lblStatusToSet);
 
         statusToSet = new JComboBox<>();
@@ -97,14 +80,14 @@ public class ChildAuthSeqView extends JPanel {
         gbc_statusToSet.insets = new Insets(0, 0, 5, 0);
         gbc_statusToSet.fill = GridBagConstraints.HORIZONTAL;
         gbc_statusToSet.gridx = 1;
-        gbc_statusToSet.gridy = 2;
+        gbc_statusToSet.gridy = 1;
         add(statusToSet, gbc_statusToSet);
 
         replaceProduct = new JCheckBox("Replace Product");
         GridBagConstraints gbc_replaceProduct = new GridBagConstraints();
         gbc_replaceProduct.anchor = GridBagConstraints.WEST;
         gbc_replaceProduct.gridx = 1;
-        gbc_replaceProduct.gridy = 3;
+        gbc_replaceProduct.gridy = 2;
         add(replaceProduct, gbc_replaceProduct);
 
     }

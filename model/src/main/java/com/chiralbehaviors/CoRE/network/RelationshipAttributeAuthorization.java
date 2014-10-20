@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.network;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -41,7 +42,7 @@ public class RelationshipAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Relationship> {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "classifier")
     private Relationship      classifier;
 

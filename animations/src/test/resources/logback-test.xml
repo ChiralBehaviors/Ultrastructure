@@ -10,7 +10,7 @@
         <level value="${testing.logging.dbunit}" />
     </logger>
     <logger name="com.chiralbehaviors.CoRE">
-        <level value="TRACE" />
+        <level value="INFO" />
     </logger>
     <logger name="openjpa.Runtime">
         <level value="warn" />

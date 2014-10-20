@@ -16,15 +16,12 @@
 
 package com.chiralbehaviors.CoRE.swing;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -37,89 +34,68 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class StatusCodeSequencingView extends JPanel {
 
     private static final long     serialVersionUID = 1L;
-    private JComboBox<StatusCode> parents;
-    private JComboBox<Product>    products;
-    private JList<StatusCode>     children;
+    private JComboBox<Product>    service;
+    private JComboBox<StatusCode> parent;
+    private JComboBox<StatusCode> child;
 
     /**
      * Create the panel.
      */
     public StatusCodeSequencingView() {
-        setLayout(new BorderLayout(0, 0));
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
+        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0,
+                Double.MIN_VALUE };
+        setLayout(gridBagLayout);
 
-        JPanel panel = new JPanel();
-        add(panel, BorderLayout.NORTH);
-        GridBagLayout gbl_panel = new GridBagLayout();
-        gbl_panel.columnWidths = new int[] { 0, 0, 200 };
-        gbl_panel.rowHeights = new int[] { 30 };
-        gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0 };
-        gbl_panel.rowWeights = new double[] { 0.0 };
-        panel.setLayout(gbl_panel);
+        JLabel lblService = new JLabel("Service");
+        GridBagConstraints gbc_lblService = new GridBagConstraints();
+        gbc_lblService.anchor = GridBagConstraints.EAST;
+        gbc_lblService.insets = new Insets(0, 0, 5, 5);
+        gbc_lblService.gridx = 0;
+        gbc_lblService.gridy = 0;
+        add(lblService, gbc_lblService);
 
-        JLabel lblProduct = new JLabel("Product");
-        GridBagConstraints gbc_lblProduct = new GridBagConstraints();
-        gbc_lblProduct.fill = GridBagConstraints.HORIZONTAL;
-        gbc_lblProduct.insets = new Insets(0, 0, 0, 5);
-        gbc_lblProduct.gridx = 0;
-        gbc_lblProduct.gridy = 0;
-        panel.add(lblProduct, gbc_lblProduct);
-
-        products = new JComboBox<>();
-        GridBagConstraints gbc_products = new GridBagConstraints();
-        gbc_products.gridwidth = 5;
-        gbc_products.fill = GridBagConstraints.HORIZONTAL;
-        gbc_products.insets = new Insets(0, 0, 0, 5);
-        gbc_products.anchor = GridBagConstraints.NORTH;
-        gbc_products.gridx = 1;
-        gbc_products.gridy = 0;
-        panel.add(products, gbc_products);
-
-        JButton btnNew = new JButton("new");
-        GridBagConstraints gbc_btnNew = new GridBagConstraints();
-        gbc_btnNew.gridx = 6;
-        gbc_btnNew.gridy = 0;
-        panel.add(btnNew, gbc_btnNew);
-
-        JPanel panel_1 = new JPanel();
-        add(panel_1, BorderLayout.CENTER);
-        GridBagLayout gbl_panel_1 = new GridBagLayout();
-        gbl_panel_1.columnWidths = new int[] { 0, 0, 0, 0 };
-        gbl_panel_1.rowHeights = new int[] { 0, 0, 0 };
-        gbl_panel_1.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-        gbl_panel_1.rowWeights = new double[] { 0.0, 1.0 };
-        panel_1.setLayout(gbl_panel_1);
+        service = new JComboBox<>();
+        GridBagConstraints gbc_service = new GridBagConstraints();
+        gbc_service.insets = new Insets(0, 0, 5, 0);
+        gbc_service.fill = GridBagConstraints.HORIZONTAL;
+        gbc_service.gridx = 1;
+        gbc_service.gridy = 0;
+        add(service, gbc_service);
 
         JLabel lblParent = new JLabel("Parent");
         GridBagConstraints gbc_lblParent = new GridBagConstraints();
-        gbc_lblParent.insets = new Insets(0, 0, 5, 5);
         gbc_lblParent.anchor = GridBagConstraints.EAST;
+        gbc_lblParent.insets = new Insets(0, 0, 5, 5);
         gbc_lblParent.gridx = 0;
-        gbc_lblParent.gridy = 0;
-        panel_1.add(lblParent, gbc_lblParent);
+        gbc_lblParent.gridy = 1;
+        add(lblParent, gbc_lblParent);
 
-        parents = new JComboBox<StatusCode>();
-        GridBagConstraints gbc_parents = new GridBagConstraints();
-        gbc_parents.insets = new Insets(0, 0, 5, 5);
-        gbc_parents.fill = GridBagConstraints.HORIZONTAL;
-        gbc_parents.gridx = 1;
-        gbc_parents.gridy = 0;
-        panel_1.add(parents, gbc_parents);
+        parent = new JComboBox<>();
+        GridBagConstraints gbc_parent = new GridBagConstraints();
+        gbc_parent.insets = new Insets(0, 0, 5, 0);
+        gbc_parent.fill = GridBagConstraints.HORIZONTAL;
+        gbc_parent.gridx = 1;
+        gbc_parent.gridy = 1;
+        add(parent, gbc_parent);
 
-        JLabel lblChildren = new JLabel("Children");
-        GridBagConstraints gbc_lblChildren = new GridBagConstraints();
-        gbc_lblChildren.insets = new Insets(0, 0, 5, 5);
-        gbc_lblChildren.gridx = 0;
-        gbc_lblChildren.gridy = 1;
-        panel_1.add(lblChildren, gbc_lblChildren);
+        JLabel lblChild = new JLabel("Child");
+        GridBagConstraints gbc_lblChild = new GridBagConstraints();
+        gbc_lblChild.anchor = GridBagConstraints.EAST;
+        gbc_lblChild.insets = new Insets(0, 0, 0, 5);
+        gbc_lblChild.gridx = 0;
+        gbc_lblChild.gridy = 2;
+        add(lblChild, gbc_lblChild);
 
-        children = new JList<>();
-        GridBagConstraints gbc_children = new GridBagConstraints();
-        gbc_children.insets = new Insets(0, 0, 5, 5);
-        gbc_children.fill = GridBagConstraints.BOTH;
-        gbc_children.gridx = 1;
-        gbc_children.gridy = 1;
-        panel_1.add(children, gbc_children);
+        child = new JComboBox<>();
+        GridBagConstraints gbc_child = new GridBagConstraints();
+        gbc_child.fill = GridBagConstraints.HORIZONTAL;
+        gbc_child.gridx = 1;
+        gbc_child.gridy = 2;
+        add(child, gbc_child);
 
     }
 

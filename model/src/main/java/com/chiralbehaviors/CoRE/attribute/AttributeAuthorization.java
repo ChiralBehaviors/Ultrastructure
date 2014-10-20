@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -56,7 +57,7 @@ abstract public class AttributeAuthorization extends Ruleform {
     private Integer           booleanValue;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "grouping_agency")
     private Agency            groupingAgency;
 

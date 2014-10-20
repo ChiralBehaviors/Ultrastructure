@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -142,7 +143,7 @@ public class AgencyModelImpl
                                      kernel.getCoreModel(),
                                      kernel.getInverseSoftware(), em);
         }
-        for (AgencyAttribute attribute : prototype.getAttributes()) {
+        for (AttributeValue<Agency> attribute : prototype.getAttributes()) {
             AgencyAttribute clone = (AgencyAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);

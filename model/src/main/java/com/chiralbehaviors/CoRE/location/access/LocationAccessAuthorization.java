@@ -19,6 +19,7 @@ import static com.chiralbehaviors.CoRE.location.access.LocationAccessAuthorizati
 
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -50,7 +51,7 @@ public abstract class LocationAccessAuthorization<Child extends ExistentialRulef
 
     private static final long  serialVersionUID                                   = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location1")
     private Location           parent;
 

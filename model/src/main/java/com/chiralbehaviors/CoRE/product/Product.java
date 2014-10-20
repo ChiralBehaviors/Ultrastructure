@@ -52,7 +52,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attributable;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -121,8 +121,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "product", schema = "ruleform")
-public class Product extends ExistentialRuleform<Product, ProductNetwork>
-        implements Attributable<ProductAttribute> {
+public class Product extends ExistentialRuleform<Product, ProductNetwork> {
 
     public static final String    CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
     public static final String    FIND_ALL                                               = "product"
@@ -286,19 +285,10 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
         return WellKnownProduct.ANY.id();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<ProductAttribute> getAttributes() {
         return attributes;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<ProductAttribute> getAttributeType() {
-        return ProductAttribute.class;
     }
 
     /* (non-Javadoc)
@@ -427,9 +417,10 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork>
         em.persist(inverse);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setAttributes(Set<ProductAttribute> productAttributes1) {
-        attributes = productAttributes1;
+    public <A extends AttributeValue<Product>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<ProductAttribute>) attributes;
     }
 
     public void setLocations(Set<ProductLocation> productLocations) {

@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -42,17 +43,17 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "attribute_value")
     private Attribute         attributeValue;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "meta_attribute")
     private Attribute         metaAttribute;
 

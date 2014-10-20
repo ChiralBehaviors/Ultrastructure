@@ -20,6 +20,7 @@ import static com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute.GET_ATTR
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -46,7 +47,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 

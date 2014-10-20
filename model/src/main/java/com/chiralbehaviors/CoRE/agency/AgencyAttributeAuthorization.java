@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.agency;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -43,7 +44,7 @@ public class AgencyAttributeAuthorization extends
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "classifier")
     private Agency            classifier;
 

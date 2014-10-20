@@ -23,6 +23,7 @@ import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTH
 import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE;
 import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_WORKSPACE;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -156,216 +157,216 @@ public class WorkspaceAuthorization extends Ruleform {
 
     private static final long                     serialVersionUID                         = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency")
     private Agency                                agency;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_attribute")
     private AgencyAttribute                       agencyAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_attribute_authorization")
     private AgencyAttributeAuthorization          agencyAttributeAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_location")
     private AgencyLocation                        agencyLocation;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_location_attribute")
     private AgencyLocationAttribute               agencyLocationAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_network")
     private AgencyNetwork                         agencyNetwork;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_network_attribute")
     private AgencyNetworkAttribute                agencyNetworkAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_network_authorization")
     private AgencyNetworkAuthorization            agencyNetworkAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency_product")
     private AgencyProduct                         agencyProduct;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "attribute")
     private Attribute                             attribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "attribute_meta_attribute")
     private AttributeMetaAttribute                attributeMetaAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "attr_meta_attr_auth")
     private AttributeMetaAttributeAuthorization   attributeMetaAttributeAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "attribute_network")
     private AttributeNetwork                      attributeNetwork;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "attribute_network_attribute")
     private AttributeNetworkAttribute             attributeNetworkAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "defining_product")
     private Product                               definingProduct;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "interval")
     private Interval                              interval;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "interval_attribute")
     private IntervalAttribute                     intervalAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "interval_attribute_authorization")
     private IntervalAttributeAuthorization        intervalAttributeAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "interval_network")
     private IntervalNetwork                       intervalNetwork;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "interval_network_attribute")
     private IntervalNetworkAttribute              intervalNetworkAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "job")
     private Job                                   job;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "job_chronology")
     private JobChronology                         jobChronology;
 
     private String                                key;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location")
     private Location                              location;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_attribute")
     private LocationAttribute                     locationAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_attribute_authorization")
     private LocationAttributeAuthorization        locationAttributeAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_network")
     private LocationNetwork                       locationNetwork;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_network_attribute")
     private LocationNetworkAttribute              locationNetworkAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_network_authorization")
     private LocationNetworkAuthorization          locationNetworkAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "meta_protocol")
     private MetaProtocol                          metaProtocol;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product")
     private Product                               product;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_attribute")
     private ProductAttribute                      productAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_attribute_authorization")
     private ProductAttributeAuthorization         productAttributeAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_child_sequencing_authorization")
     private ProductChildSequencingAuthorization   productChildSequencingAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_location")
     private ProductLocation                       productLocation;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_location_attribute")
     private ProductLocationAttribute              productLocationAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_network")
     private ProductNetwork                        productNetwork;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_network_attribute")
     private ProductNetworkAttribute               productNetworkAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_parent_sequencing_authorization")
     private ProductParentSequencingAuthorization  productParentSequencingAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_sibling_sequencing_authorization")
     private ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "protocol")
     private Protocol                              protocol;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code")
     private StatusCode                            statusCode;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code_attribute")
     private StatusCodeAttribute                   statusCodeAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code_attribute_authorization")
     private StatusCodeAttributeAuthorization      statusCodeAttributeAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code_network")
     private StatusCodeNetwork                     statusCodeNetwork;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code_network_attribute")
     private StatusCodeNetworkAttribute            statusCodeNetworkAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code_sequencing")
     private StatusCodeSequencing                  statusCodeSequencing;
 
     @Column(name = "type")
     private String                                type;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit")
     private Unit                                  unit;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit_attribute")
     private UnitAttribute                         unitAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit_attribute_authorization")
     private UnitAttributeAuthorization            unitAttributeAuthorization;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit_network")
     private UnitNetwork                           unitNetwork;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit_network_attribute")
     private UnitNetworkAttribute                  unitNetworkAttribute;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit_value")
     private UnitValue                             unitValue;
 

@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessA
 
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -103,7 +104,7 @@ public class ProductRelationshipAccessAuthorization extends
 
     private static final long  serialVersionUID                                                        = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "relationship2")
     private Relationship       child;
 

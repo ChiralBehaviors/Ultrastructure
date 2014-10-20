@@ -44,7 +44,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attributable;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
@@ -96,8 +96,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedNativeQueries({
 // ?1 = :queryString, ?2 = :numberOfMatches
 @NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
-public class Location extends ExistentialRuleform<Location, LocationNetwork>
-        implements Attributable<LocationAttribute> {
+public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     public static final String     FIND_ATTRIBUTE_AUTHORIZATIONS            = "location.findAttributeAuthorizations";
     public static final String     FIND_BY_ID                               = "location.findById";
     public static final String     FIND_BY_NAME                             = "location.findByName";
@@ -229,19 +228,10 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
         return WellKnownLocation.ANY.id();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<LocationAttribute> getAttributes() {
         return attributes;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.Attributable#getAttributeType()
-     */
-    @Override
-    public Class<LocationAttribute> getAttributeType() {
-        return LocationAttribute.class;
     }
 
     /* (non-Javadoc)
@@ -378,9 +368,10 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork>
         em.persist(inverse);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setAttributes(Set<LocationAttribute> locationAttributes) {
-        attributes = locationAttributes;
+    public <A extends AttributeValue<Location>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<LocationAttribute>) attributes;
     }
 
     public void setEntities(Set<ProductLocation> productLocations) {

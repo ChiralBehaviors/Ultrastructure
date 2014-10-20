@@ -18,9 +18,9 @@ package com.chiralbehaviors.CoRE.event.status;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -43,7 +43,7 @@ public class StatusCodeAttributeAuthorization extends
         ClassifiedAttributeAuthorization<StatusCode> {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "classifier")
     private StatusCode        classifier;
 

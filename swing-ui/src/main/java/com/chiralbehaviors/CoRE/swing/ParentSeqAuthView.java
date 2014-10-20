@@ -16,7 +16,6 @@
 
 package com.chiralbehaviors.CoRE.swing;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,6 +24,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -36,107 +36,92 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class ParentSeqAuthView extends JPanel {
 
     private static final long     serialVersionUID = 1L;
-    private JComboBox<StatusCode> statusCode;
-    private JComboBox<Product>    service;
+    private JLabel                lblSequence;
+    private JSpinner              sequenceNumber;
+    private JCheckBox             chckbxSetIfActive;
+    private JLabel                lblParent;
+    private JLabel                lblNextStatus;
+    private JCheckBox             chckbxReplaceProduct;
     private JComboBox<Product>    parent;
-    private JComboBox<StatusCode> statusToSet;
-    private JCheckBox             setIfActiveSiblings;
-    private JCheckBox             replaceProduct;
+    private JComboBox<StatusCode> parentStatusToSet;
 
     /**
      * Create the panel.
      */
     public ParentSeqAuthView() {
-        setLayout(new BorderLayout(0, 0));
-
-        JPanel panel = new JPanel();
-        add(panel, BorderLayout.CENTER);
-        GridBagLayout gbl_panel = new GridBagLayout();
-        gbl_panel.columnWidths = new int[] { 0, 0, 0 };
-        gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
-        gbl_panel.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-        gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+        gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 1.0,
                 Double.MIN_VALUE };
-        panel.setLayout(gbl_panel);
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0,
+                Double.MIN_VALUE };
+        setLayout(gridBagLayout);
 
-        JLabel lblStatusCode = new JLabel("Status Code");
-        GridBagConstraints gbc_lblStatusCode = new GridBagConstraints();
-        gbc_lblStatusCode.anchor = GridBagConstraints.EAST;
-        gbc_lblStatusCode.insets = new Insets(0, 0, 5, 5);
-        gbc_lblStatusCode.gridx = 0;
-        gbc_lblStatusCode.gridy = 0;
-        panel.add(lblStatusCode, gbc_lblStatusCode);
-
-        statusCode = new JComboBox<>();
-        GridBagConstraints gbc_statusCode = new GridBagConstraints();
-        gbc_statusCode.insets = new Insets(0, 0, 5, 0);
-        gbc_statusCode.fill = GridBagConstraints.HORIZONTAL;
-        gbc_statusCode.gridx = 1;
-        gbc_statusCode.gridy = 0;
-        panel.add(statusCode, gbc_statusCode);
-
-        JLabel lblNewLabel = new JLabel("Service");
-        GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-        gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
-        gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-        gbc_lblNewLabel.gridx = 0;
-        gbc_lblNewLabel.gridy = 1;
-        panel.add(lblNewLabel, gbc_lblNewLabel);
-
-        service = new JComboBox<>();
-        GridBagConstraints gbc_service = new GridBagConstraints();
-        gbc_service.insets = new Insets(0, 0, 5, 0);
-        gbc_service.fill = GridBagConstraints.HORIZONTAL;
-        gbc_service.gridx = 1;
-        gbc_service.gridy = 1;
-        panel.add(service, gbc_service);
-
-        JLabel lblParent = new JLabel("Parent");
+        lblParent = new JLabel("Parent");
         GridBagConstraints gbc_lblParent = new GridBagConstraints();
         gbc_lblParent.anchor = GridBagConstraints.EAST;
         gbc_lblParent.insets = new Insets(0, 0, 5, 5);
         gbc_lblParent.gridx = 0;
-        gbc_lblParent.gridy = 2;
-        panel.add(lblParent, gbc_lblParent);
+        gbc_lblParent.gridy = 0;
+        add(lblParent, gbc_lblParent);
 
         parent = new JComboBox<>();
         GridBagConstraints gbc_parent = new GridBagConstraints();
+        gbc_parent.gridwidth = 2;
         gbc_parent.insets = new Insets(0, 0, 5, 0);
         gbc_parent.fill = GridBagConstraints.HORIZONTAL;
         gbc_parent.gridx = 1;
-        gbc_parent.gridy = 2;
-        panel.add(parent, gbc_parent);
+        gbc_parent.gridy = 0;
+        add(parent, gbc_parent);
 
-        JLabel lblStatusToSet = new JLabel("Status To Set");
-        GridBagConstraints gbc_lblStatusToSet = new GridBagConstraints();
-        gbc_lblStatusToSet.anchor = GridBagConstraints.EAST;
-        gbc_lblStatusToSet.insets = new Insets(0, 0, 5, 5);
-        gbc_lblStatusToSet.gridx = 0;
-        gbc_lblStatusToSet.gridy = 3;
-        panel.add(lblStatusToSet, gbc_lblStatusToSet);
+        lblNextStatus = new JLabel("Status To Set");
+        GridBagConstraints gbc_lblNextStatus = new GridBagConstraints();
+        gbc_lblNextStatus.anchor = GridBagConstraints.EAST;
+        gbc_lblNextStatus.insets = new Insets(0, 0, 5, 5);
+        gbc_lblNextStatus.gridx = 0;
+        gbc_lblNextStatus.gridy = 1;
+        add(lblNextStatus, gbc_lblNextStatus);
 
-        statusToSet = new JComboBox<>();
-        GridBagConstraints gbc_statusToSet = new GridBagConstraints();
-        gbc_statusToSet.insets = new Insets(0, 0, 5, 0);
-        gbc_statusToSet.fill = GridBagConstraints.HORIZONTAL;
-        gbc_statusToSet.gridx = 1;
-        gbc_statusToSet.gridy = 3;
-        panel.add(statusToSet, gbc_statusToSet);
+        parentStatusToSet = new JComboBox<>();
+        GridBagConstraints gbc_parentStatusToSet = new GridBagConstraints();
+        gbc_parentStatusToSet.gridwidth = 2;
+        gbc_parentStatusToSet.insets = new Insets(0, 0, 5, 0);
+        gbc_parentStatusToSet.fill = GridBagConstraints.HORIZONTAL;
+        gbc_parentStatusToSet.gridx = 1;
+        gbc_parentStatusToSet.gridy = 1;
+        add(parentStatusToSet, gbc_parentStatusToSet);
 
-        replaceProduct = new JCheckBox("Replace Product");
-        GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
-        gbc_chckbxNewCheckBox.insets = new Insets(0, 0, 5, 0);
-        gbc_chckbxNewCheckBox.anchor = GridBagConstraints.WEST;
-        gbc_chckbxNewCheckBox.gridx = 1;
-        gbc_chckbxNewCheckBox.gridy = 4;
-        panel.add(replaceProduct, gbc_chckbxNewCheckBox);
+        lblSequence = new JLabel("Sequence #");
+        GridBagConstraints gbc_lblSequence = new GridBagConstraints();
+        gbc_lblSequence.anchor = GridBagConstraints.EAST;
+        gbc_lblSequence.insets = new Insets(0, 0, 5, 5);
+        gbc_lblSequence.gridx = 0;
+        gbc_lblSequence.gridy = 2;
+        add(lblSequence, gbc_lblSequence);
 
-        setIfActiveSiblings = new JCheckBox("Set If Active Siblings");
+        sequenceNumber = new JSpinner();
+        GridBagConstraints gbc_sequenceNumber = new GridBagConstraints();
+        gbc_sequenceNumber.anchor = GridBagConstraints.WEST;
+        gbc_sequenceNumber.insets = new Insets(0, 0, 5, 5);
+        gbc_sequenceNumber.gridx = 1;
+        gbc_sequenceNumber.gridy = 2;
+        add(sequenceNumber, gbc_sequenceNumber);
+
+        chckbxSetIfActive = new JCheckBox("Set If Active Siblings");
         GridBagConstraints gbc_chckbxSetIfActive = new GridBagConstraints();
         gbc_chckbxSetIfActive.anchor = GridBagConstraints.WEST;
-        gbc_chckbxSetIfActive.gridx = 1;
-        gbc_chckbxSetIfActive.gridy = 5;
-        panel.add(setIfActiveSiblings, gbc_chckbxSetIfActive);
+        gbc_chckbxSetIfActive.insets = new Insets(0, 0, 5, 0);
+        gbc_chckbxSetIfActive.gridx = 2;
+        gbc_chckbxSetIfActive.gridy = 2;
+        add(chckbxSetIfActive, gbc_chckbxSetIfActive);
+
+        chckbxReplaceProduct = new JCheckBox("Replace Product");
+        GridBagConstraints gbc_chckbxReplaceProduct = new GridBagConstraints();
+        gbc_chckbxReplaceProduct.anchor = GridBagConstraints.WEST;
+        gbc_chckbxReplaceProduct.gridx = 2;
+        gbc_chckbxReplaceProduct.gridy = 3;
+        add(chckbxReplaceProduct, gbc_chckbxReplaceProduct);
 
     }
 

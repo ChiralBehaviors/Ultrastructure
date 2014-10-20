@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -49,6 +50,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -141,7 +143,7 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "inverse")
     @JsonIgnore
     private Relationship               inverse;
@@ -276,6 +278,8 @@ public class Relationship extends
         return WellKnownRelationship.ANY.id();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public Set<RelationshipAttribute> getAttributes() {
         return attributes;
     }
@@ -431,8 +435,10 @@ public class Relationship extends
         em.persist(inverse);
     }
 
-    public void setAttributes(Set<RelationshipAttribute> attributes) {
-        this.attributes = attributes;
+    @SuppressWarnings("unchecked")
+    @Override
+    public <A extends AttributeValue<Relationship>> void setAttributes(Set<A> attributes) {
+        this.attributes = (Set<RelationshipAttribute>) attributes;
     }
 
     public void setInverse(Relationship relationship) {

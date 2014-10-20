@@ -18,10 +18,10 @@ package com.chiralbehaviors.CoRE.attribute.unit;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -52,7 +52,7 @@ public class UnitValue extends Ruleform {
     private BigDecimal        numericValue;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_value")
     private Product           productValue;
 
@@ -63,7 +63,7 @@ public class UnitValue extends Ruleform {
     private String            textValue;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "unit")
     private Unit              unit;
 

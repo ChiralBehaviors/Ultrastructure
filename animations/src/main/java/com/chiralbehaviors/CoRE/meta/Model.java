@@ -34,8 +34,6 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
  */
 public interface Model {
 
-    public abstract void setLogConfiguration(String logbackConfig);
-
     /**
      * Find the ruleform instances that match the supplied attribute
      *
@@ -146,5 +144,7 @@ public interface Model {
      * @return the UnitCode model
      */
     WorkspaceModel getWorkspaceModel();
+
+    void setLogConfiguration(String logbackConfig);
 
 }

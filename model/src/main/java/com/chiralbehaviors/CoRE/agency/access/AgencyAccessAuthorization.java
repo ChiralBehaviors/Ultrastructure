@@ -19,6 +19,7 @@ import static com.chiralbehaviors.CoRE.agency.access.AgencyAccessAuthorization.G
 
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -51,7 +52,7 @@ public abstract class AgencyAccessAuthorization<Child extends ExistentialRulefor
 
     private static final long  serialVersionUID                                   = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency1")
     private Agency             parent;
 

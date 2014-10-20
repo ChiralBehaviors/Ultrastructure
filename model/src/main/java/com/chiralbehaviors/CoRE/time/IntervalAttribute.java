@@ -20,6 +20,7 @@ import static com.chiralbehaviors.CoRE.time.IntervalAttribute.GET_ATTRIBUTE;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -45,7 +46,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Interval
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "interval")
     private Interval           interval;
 

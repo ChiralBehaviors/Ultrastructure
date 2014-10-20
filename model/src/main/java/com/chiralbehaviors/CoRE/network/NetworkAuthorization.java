@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.network;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
@@ -44,16 +45,16 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "authorized_relationship")
     private Relationship      authorizedRelationship;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "grouping_agency")
     private Agency            groupingAgency;
 

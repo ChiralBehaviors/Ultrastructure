@@ -10,3 +10,5 @@
 /.project
 /db.changelog.xml
 /.DS_Store
+**/.metadata
+/.metadata/*

@@ -171,4 +171,22 @@
             baseColumnNames="protocol" baseTableName="job" constraintName="job_protocol_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="protocol" />
     </changeSet>
+
+    <changeSet author="hhildebrand" id="0.0.2-rc4">
+        <createIndex schemaName="ruleform" indexName="job_deliver_to_fkey_idx" tableName="job" unique="false">
+            <column name="deliver_to" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="job_deliver_from_fkey_idx" tableName="job" unique="false">
+            <column name="deliver_from" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="job_product_fkey_idx" tableName="job" unique="false">
+            <column name="product" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="job_requester_fkey_idx" tableName="job" unique="false">
+            <column name="requester" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="job_service_fkey_idx" tableName="job" unique="false">
+            <column name="service" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

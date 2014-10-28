@@ -32,6 +32,9 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the location_attribute database table.
@@ -62,6 +65,15 @@ public class LocationAttribute extends AttributeValue<Location> {
      */
     public LocationAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationAttribute;
     }
 
     /**

@@ -52,6 +52,8 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -165,6 +167,15 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
 
     public Interval(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Interval> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.interval;
     }
 
     public Interval(BigDecimal start, BigDecimal duration, Unit unit,

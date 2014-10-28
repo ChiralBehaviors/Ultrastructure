@@ -38,11 +38,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The network relationships of attributes.
@@ -103,6 +107,15 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private AttributeNetwork   premise2;
 
     public AttributeNetwork() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeNetwork;
     }
 
     /**

@@ -28,10 +28,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorization rule form that defines rules for relating agencies to
@@ -100,6 +104,15 @@ public class AgencyProduct extends Ruleform {
 
     public Relationship getRelationship() {
         return relationship;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AgencyProduct> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyProduct;
     }
 
     public void setAgency(Agency agency) {

@@ -39,11 +39,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -121,6 +124,15 @@ public class StatusCodeSequencing extends Ruleform {
     private Set<ProductNetwork> statusCodeByParent;
 
     public StatusCodeSequencing() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeSequencing> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeSequencing;
     }
 
     /**

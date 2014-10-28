@@ -78,6 +78,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
 
+    private static Logger log = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+
     /**
      * @param attr
      */
@@ -109,8 +111,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
         }
     }
-
-    private static Logger                          log = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
     private final Class<AttributeType>             attribute;
 
@@ -355,6 +355,49 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                   getAttributesClassifiedBy(ruleform,
                                                                             aspect)) {
         };
+    }
+
+    @Override
+    public RuleForm getImmediateChild(RuleForm parent, Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
+        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        Path<RuleForm> path;
+        try {
+            path = networkRoot.get("child");
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                 parent),
+                                        cb.equal(networkRoot.get("relationship"),
+                                                 relationship),
+                                        cb.equal(networkRoot.get("inference").get("id"),
+                                                 "AAAAAAAAAAAAAAAAAAAAAA")));
+        TypedQuery<RuleForm> q = em.createQuery(query);
+        return q.getSingleResult();
+    }
+
+    @Override
+    public List<RuleForm> getImmediateChildren(RuleForm parent,
+                                               Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
+        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        Path<RuleForm> path;
+        try {
+            path = networkRoot.get("child");
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                 parent),
+                                        cb.equal(networkRoot.get("relationship"),
+                                                 relationship),
+                                        cb.equal(networkRoot.get("inference").get("id"),
+                                                 "AAAAAAAAAAAAAAAAAAAAAA")));
+        TypedQuery<RuleForm> q = em.createQuery(query);
+        return q.getResultList();
     }
 
     @Override

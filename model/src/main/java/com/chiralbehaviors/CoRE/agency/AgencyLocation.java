@@ -31,11 +31,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -58,11 +61,6 @@ public class AgencyLocation extends Ruleform implements
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "authority")
-    private Agency                       authority;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agency")
     private Agency                       agency;
 
@@ -70,6 +68,11 @@ public class AgencyLocation extends Ruleform implements
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "agencyLocation")
     @JsonIgnore
     private Set<AgencyLocationAttribute> attributes;
+
+    // bi-directional many-to-one association to Agency
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "authority")
+    private Agency                       authority;
 
     // bi-directional many-to-one association to Location
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -123,6 +126,15 @@ public class AgencyLocation extends Ruleform implements
 
     public Relationship getRelationship() {
         return relationship;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AgencyLocation> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyLocation;
     }
 
     public void setAgency(Agency agency) {

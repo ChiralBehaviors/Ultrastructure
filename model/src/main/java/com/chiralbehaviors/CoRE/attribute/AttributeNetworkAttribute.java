@@ -31,6 +31,9 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product attributes
@@ -54,6 +57,15 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
     private AttributeNetwork  AttributeNetwork;
 
     public AttributeNetworkAttribute() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeNetworkAttribute;
     }
 
     /**

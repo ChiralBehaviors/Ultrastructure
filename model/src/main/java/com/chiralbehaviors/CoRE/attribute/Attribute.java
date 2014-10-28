@@ -46,6 +46,8 @@ import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -137,6 +139,15 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
     private ValueType                   valueType;
 
     public Attribute() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Attribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attribute;
     }
 
     /**

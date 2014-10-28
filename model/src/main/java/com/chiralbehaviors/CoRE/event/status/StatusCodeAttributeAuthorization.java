@@ -24,12 +24,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorizations for attributes on entities.
@@ -48,6 +52,15 @@ public class StatusCodeAttributeAuthorization extends
     private StatusCode        classifier;
 
     public StatusCodeAttributeAuthorization() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeAttributeAuthorization;
     }
 
     /**

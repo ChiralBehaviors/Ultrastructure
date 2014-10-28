@@ -33,6 +33,9 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -64,6 +67,15 @@ public class IntervalAttribute extends AttributeValue<Interval> {
 
     public IntervalAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, IntervalAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalAttribute;
     }
 
     public IntervalAttribute(Attribute attribute, BigDecimal value,

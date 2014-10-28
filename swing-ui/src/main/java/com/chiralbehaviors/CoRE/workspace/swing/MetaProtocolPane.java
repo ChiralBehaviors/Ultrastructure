@@ -37,7 +37,7 @@ import org.jdesktop.beansbinding.Bindings;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
 
 /**
  * @author hhildebrand
@@ -49,7 +49,7 @@ public class MetaProtocolPane extends JPanel {
     private JComboBox<MetaProtocol> keys;
     private JList<Protocol>         matchingProtocols;
     private MetaProtocolView        metaProtocol;
-    private Workspace               workspace;
+    private NeuvoWorkspace          workspace;
 
     /**
      * Create the panel.
@@ -120,11 +120,11 @@ public class MetaProtocolPane extends JPanel {
 
     }
 
-    public Workspace getWorkspace() {
+    public NeuvoWorkspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(Workspace workspace) {
+    public void setWorkspace(NeuvoWorkspace workspace) {
         this.workspace = workspace;
     }
 
@@ -138,11 +138,11 @@ public class MetaProtocolPane extends JPanel {
                                                                                                                               metaProtocolViewBeanProperty);
         autoBinding.bind();
         //
-        BeanProperty<MetaProtocolView, Workspace> metaProtocolViewBeanProperty_1 = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, MetaProtocolView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  workspace,
-                                                                                                                  metaProtocol,
-                                                                                                                  metaProtocolViewBeanProperty_1);
+        BeanProperty<MetaProtocolView, NeuvoWorkspace> metaProtocolViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, MetaProtocolView, NeuvoWorkspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                 workspace,
+                                                                                                                                 metaProtocol,
+                                                                                                                                 metaProtocolViewBeanProperty_1);
         autoBinding_1.bind();
     }
 }

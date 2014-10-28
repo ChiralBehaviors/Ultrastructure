@@ -34,10 +34,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -89,6 +93,15 @@ public class JobChronology extends AbstractProtocol {
     public JobChronology(Job job, String notes) {
         super(notes, job.getUpdatedBy());
         initializeFrom(job);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, JobChronology> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.jobChronology;
     }
 
     /**

@@ -36,6 +36,9 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value of an agency attribute
@@ -156,6 +159,15 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     @Override
     public Class<Agency> getRuleformClass() {
         return Agency.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AgencyAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyAttribute;
     }
 
     public void setAgency(Agency agency2) {

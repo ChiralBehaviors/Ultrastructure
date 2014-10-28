@@ -55,6 +55,8 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -265,6 +267,15 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     public void addParentRelationship(ProductNetwork relationship) {
         relationship.setParent(this);
         networkByParent.add(relationship);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Product> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.product;
     }
 
     @Override

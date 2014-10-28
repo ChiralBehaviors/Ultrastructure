@@ -34,7 +34,7 @@ import org.jdesktop.beansbinding.Bindings;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.swing.JobExplorer;
 import com.chiralbehaviors.CoRE.swing.JobView;
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
 
 /**
  * @author hhildebrand
@@ -46,7 +46,7 @@ public class JobPane extends JPanel {
     private JComboBox<Job>    keys;
     private JobView           job;
     private JobExplorer       match;
-    private Workspace         workspace;
+    private NeuvoWorkspace    workspace;
 
     /**
      * Create the panel.
@@ -107,20 +107,20 @@ public class JobPane extends JPanel {
 
     }
 
-    public Workspace getWorkspace() {
+    public NeuvoWorkspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(Workspace workspace) {
+    public void setWorkspace(NeuvoWorkspace workspace) {
         this.workspace = workspace;
     }
 
     protected void initDataBindings() {
-        BeanProperty<JobView, Workspace> jobViewBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, JobView, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                       workspace,
-                                                                                                       job,
-                                                                                                       jobViewBeanProperty);
+        BeanProperty<JobView, NeuvoWorkspace> jobViewBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, JobView, NeuvoWorkspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                      workspace,
+                                                                                                                      job,
+                                                                                                                      jobViewBeanProperty);
         autoBinding.bind();
         //
         BeanProperty<JobView, Job> jobViewBeanProperty_1 = BeanProperty.create("job");
@@ -140,11 +140,11 @@ public class JobPane extends JPanel {
                                                                                                          jobExplorerBeanProperty);
         autoBinding_2.bind();
         //
-        BeanProperty<JobExplorer, Workspace> jobExplorerBeanProperty_1 = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, JobExplorer, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                             workspace,
-                                                                                                             match,
-                                                                                                             jobExplorerBeanProperty_1);
+        BeanProperty<JobExplorer, NeuvoWorkspace> jobExplorerBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, JobExplorer, NeuvoWorkspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                            workspace,
+                                                                                                                            match,
+                                                                                                                            jobExplorerBeanProperty_1);
         autoBinding_3.bind();
     }
 }

@@ -52,6 +52,8 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -129,10 +131,10 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
                                                                                          + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String                GET_ALL_PARENT_RELATIONSHIPS             = "agency"
                                                                                          + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String                GET_CHILDREN                             = "agency"
-                                                                                         + GET_CHILDREN_SUFFIX;
     public static final String                GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
                                                                                          + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String                GET_CHILDREN                             = "agency"
+                                                                                         + GET_CHILDREN_SUFFIX;
     public static final String                QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
     public static final String                UNLINKED                                 = "agency"
                                                                                          + UNLINKED_SUFFIX;
@@ -346,6 +348,15 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
     @Override
     public String getSameId() {
         return WellKnownAgency.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Agency> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agency;
     }
 
     /* (non-Javadoc)

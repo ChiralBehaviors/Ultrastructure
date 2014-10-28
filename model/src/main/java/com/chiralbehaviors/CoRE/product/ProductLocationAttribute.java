@@ -32,6 +32,9 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product location attributes
@@ -62,6 +65,15 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      */
     public ProductLocationAttribute(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductLocationAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productLocationAttribute;
     }
 
     /**

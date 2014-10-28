@@ -33,7 +33,7 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
 
 /**
  * @author hhildebrand
@@ -41,24 +41,24 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  */
 public class WorkspaceView {
 
-    private JFrame                     frame;
-    private JTabbedPane                constellations;
-    private JLabel                     lblWorkspace;
-    private JComboBox<WorkspaceEditor> workspaces;
-    private JTabbedPane                events;
-    private JobPane                    jobs;
-    private MetaProtocolPane           metaProtocols;
-    private ProtocolPane               protocols;
-    private SequencingPane             sequencing;
-    private ExistentialRuleformPane    agencies;
-    private ExistentialRuleformPane    attributes;
-    private ExistentialRuleformPane    intervals;
-    private ExistentialRuleformPane    locations;
-    private ExistentialRuleformPane    products;
-    private ExistentialRuleformPane    statusCodes;
-    private ExistentialRuleformPane    units;
-    private RelationshipPane           relationships;
-    private Workspace                  workspace;
+    private JFrame                    frame;
+    private JTabbedPane               constellations;
+    private JLabel                    lblWorkspace;
+    private JComboBox<NeuvoWorkspace> workspaces;
+    private JTabbedPane               events;
+    private JobPane                   jobs;
+    private MetaProtocolPane          metaProtocols;
+    private ProtocolPane              protocols;
+    private SequencingPane            sequencing;
+    private ExistentialRuleformPane   agencies;
+    private ExistentialRuleformPane   attributes;
+    private ExistentialRuleformPane   intervals;
+    private ExistentialRuleformPane   locations;
+    private ExistentialRuleformPane   products;
+    private ExistentialRuleformPane   statusCodes;
+    private ExistentialRuleformPane   units;
+    private RelationshipPane          relationships;
+    private NeuvoWorkspace            workspace;
 
     /**
      * Launch the application.
@@ -164,91 +164,91 @@ public class WorkspaceView {
         initDataBindings();
     }
 
-    public Workspace getWorkspace() {
+    public NeuvoWorkspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(Workspace workspace) {
+    public void setWorkspace(NeuvoWorkspace workspace) {
         this.workspace = workspace;
     }
 
     protected void initDataBindings() {
-        BeanProperty<ExistentialRuleformPane, Workspace> existentialRuleformPaneBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                       workspace,
-                                                                                                                       agencies,
-                                                                                                                       existentialRuleformPaneBeanProperty);
+        BeanProperty<ExistentialRuleformPane, NeuvoWorkspace> existentialRuleformPaneBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ExistentialRuleformPane, NeuvoWorkspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                      workspace,
+                                                                                                                                      agencies,
+                                                                                                                                      existentialRuleformPaneBeanProperty);
         autoBinding.bind();
         //
-        AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         attributes,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ExistentialRuleformPane, NeuvoWorkspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                        workspace,
+                                                                                                                                        attributes,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_1.bind();
         //
-        AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         intervals,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ExistentialRuleformPane, NeuvoWorkspace> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                        workspace,
+                                                                                                                                        intervals,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_2.bind();
         //
-        AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         locations,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ExistentialRuleformPane, NeuvoWorkspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                        workspace,
+                                                                                                                                        locations,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_3.bind();
         //
-        AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         products,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ExistentialRuleformPane, NeuvoWorkspace> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                        workspace,
+                                                                                                                                        products,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_4.bind();
         //
-        BeanProperty<RelationshipPane, Workspace> relationshipPaneBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, RelationshipPane, Workspace> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  workspace,
-                                                                                                                  relationships,
-                                                                                                                  relationshipPaneBeanProperty);
+        BeanProperty<RelationshipPane, NeuvoWorkspace> relationshipPaneBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, RelationshipPane, NeuvoWorkspace> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                 workspace,
+                                                                                                                                 relationships,
+                                                                                                                                 relationshipPaneBeanProperty);
         autoBinding_5.bind();
         //
-        AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         statusCodes,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ExistentialRuleformPane, NeuvoWorkspace> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                        workspace,
+                                                                                                                                        statusCodes,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_6.bind();
         //
-        AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         units,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ExistentialRuleformPane, NeuvoWorkspace> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                        workspace,
+                                                                                                                                        units,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_7.bind();
         //
-        BeanProperty<SequencingPane, Workspace> sequencingPaneBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, SequencingPane, Workspace> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                workspace,
-                                                                                                                sequencing,
-                                                                                                                sequencingPaneBeanProperty);
+        BeanProperty<SequencingPane, NeuvoWorkspace> sequencingPaneBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, SequencingPane, NeuvoWorkspace> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                               workspace,
+                                                                                                                               sequencing,
+                                                                                                                               sequencingPaneBeanProperty);
         autoBinding_8.bind();
         //
-        BeanProperty<ProtocolPane, Workspace> protocolPaneBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, ProtocolPane, Workspace> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                              workspace,
-                                                                                                              protocols,
-                                                                                                              protocolPaneBeanProperty);
+        BeanProperty<ProtocolPane, NeuvoWorkspace> protocolPaneBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ProtocolPane, NeuvoWorkspace> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                             workspace,
+                                                                                                                             protocols,
+                                                                                                                             protocolPaneBeanProperty);
         autoBinding_9.bind();
         //
-        BeanProperty<MetaProtocolPane, Workspace> metaProtocolPaneBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, MetaProtocolPane, Workspace> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                   workspace,
-                                                                                                                   metaProtocols,
-                                                                                                                   metaProtocolPaneBeanProperty);
+        BeanProperty<MetaProtocolPane, NeuvoWorkspace> metaProtocolPaneBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, MetaProtocolPane, NeuvoWorkspace> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                                  workspace,
+                                                                                                                                  metaProtocols,
+                                                                                                                                  metaProtocolPaneBeanProperty);
         autoBinding_10.bind();
         //
-        BeanProperty<JobPane, Workspace> jobPaneBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, JobPane, Workspace> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                          workspace,
-                                                                                                          jobs,
-                                                                                                          jobPaneBeanProperty);
+        BeanProperty<JobPane, NeuvoWorkspace> jobPaneBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, JobPane, NeuvoWorkspace> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                         workspace,
+                                                                                                                         jobs,
+                                                                                                                         jobPaneBeanProperty);
         autoBinding_11.bind();
     }
 }

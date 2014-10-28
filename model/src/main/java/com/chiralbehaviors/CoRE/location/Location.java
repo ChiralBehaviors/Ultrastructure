@@ -48,6 +48,8 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -136,6 +138,15 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     private Set<LocationNetwork>   networkByParent;
 
     public Location() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Location> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.location;
     }
 
     /**

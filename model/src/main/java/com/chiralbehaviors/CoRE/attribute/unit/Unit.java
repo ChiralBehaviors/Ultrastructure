@@ -46,6 +46,8 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -196,6 +198,15 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     public void addParentRelationship(UnitNetwork relationship) {
         relationship.setParent(this);
         networkByParent.add(relationship);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Unit> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unit;
     }
 
     @Override

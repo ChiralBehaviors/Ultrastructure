@@ -31,6 +31,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -58,6 +59,7 @@ import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -72,6 +74,11 @@ import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAttribute;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkInference;
+import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
@@ -127,6 +134,7 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String                    LOCATION_NETWORK_ATTRIBUTE               = "LocationNetworkAttribute";
     public static final String                    LOCATION_NETWORK_AUTHORIZATION           = "LocationNetworkAuthorization";
     public static final String                    META_PROTOCOL                            = "MetaProtocol";
+    public static final String                    NETWORK_INFERENCE                        = "NetworkInference";
     public static final String                    PRODUCT                                  = "Product";
     public static final String                    PRODUCT_ATTRIBUTE                        = "ProductAttribute";
     public static final String                    PRODUCT_ATTRIBUTE_AUTHORIZATION          = "ProductAttributeAuthorization";
@@ -137,7 +145,12 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String                    PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
     public static final String                    PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
     public static final String                    PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
+    public static final String                    PRODUCT_SELF_SEQUENCING_AUTHORIZATION    = "ProductSelfSequencingAuthorization";
     public static final String                    PROTOCOL                                 = "Protocol";
+    public static final String                    RELATIONSHIP                             = "Relationship";
+    public static final String                    RELATIONSHIP_ATTRIBUTE                   = "RelationshipAttribute";
+    public static final String                    RELATIONSHIP_ATTRIBUTE_AUTHORIZATION     = "RelationshipAttributeAuthorization";
+    public static final String                    RELATIONSHIP_NETWORK                     = "RelationshipNetwork";
     public static final String                    STATUS_CODE                              = "StatusCode";
     public static final String                    STATUS_CODE_ATTRIBUTE                    = "StatusCodeAttribute";
     public static final String                    STATUS_CODE_ATTRIBUTE_AUTHORIZATION      = "StatusCodeAttributeAuthorization";
@@ -276,6 +289,10 @@ public class WorkspaceAuthorization extends Ruleform {
     private MetaProtocol                          metaProtocol;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "network_inference")
+    private NetworkInference                      networkInference;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product")
     private Product                               product;
 
@@ -312,12 +329,32 @@ public class WorkspaceAuthorization extends Ruleform {
     private ProductParentSequencingAuthorization  productParentSequencingAuthorization;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "product_self_sequencing_authorization")
+    private ProductSelfSequencingAuthorization    productSelfSequencingAuthorization;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_sibling_sequencing_authorization")
     private ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "protocol")
     private Protocol                              protocol;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "relationship")
+    private Relationship                          relationship;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "relationship_attribute")
+    private RelationshipAttribute                 relationshipAttribute;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "relationship_attribute_authorization")
+    private RelationshipAttributeAuthorization    relationshipAttributeAuthorization;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "relationship_network")
+    private RelationshipNetwork                   relationshipNetwork;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_code")
@@ -528,14 +565,24 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getJobChronology();
             case META_PROTOCOL:
                 return (T) getMetaProtocol();
+            case NETWORK_INFERENCE:
+                return (T) getNetworkInference();
             case PRODUCT_CHILD_SEQUENCING_AUTHORIZATION:
                 return (T) getProductChildSequencingAuthorization();
             case PRODUCT_PARENT_SEQUENCING_AUTHORIZATION:
                 return (T) getProductParentSequencingAuthorization();
+            case PRODUCT_SELF_SEQUENCING_AUTHORIZATION:
+                return (T) getProductSelfSequencingAuthorization();
             case PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION:
                 return (T) getProductSiblingSequencingAuthorization();
             case PROTOCOL:
                 return (T) getProtocol();
+            case RELATIONSHIP_ATTRIBUTE:
+                return (T) getRelationshipAttribute();
+            case RELATIONSHIP_ATTRIBUTE_AUTHORIZATION:
+                return (T) getRelationshipAttributeAuthorization();
+            case RELATIONSHIP_NETWORK:
+                return (T) getRelationshipNetwork();
 
             default:
                 throw new IllegalStateException(
@@ -917,17 +964,35 @@ public class WorkspaceAuthorization extends Ruleform {
             case META_PROTOCOL:
                 setMetaProtocol((MetaProtocol) entity);
                 break;
+            case NETWORK_INFERENCE:
+                setNetworkInference((NetworkInference) entity);
+                break;
             case PRODUCT_CHILD_SEQUENCING_AUTHORIZATION:
                 setProductChildSequencingAuthorization((ProductChildSequencingAuthorization) entity);
                 break;
             case PRODUCT_PARENT_SEQUENCING_AUTHORIZATION:
                 setProductParentSequencingAuthorization((ProductParentSequencingAuthorization) entity);
                 break;
+            case PRODUCT_SELF_SEQUENCING_AUTHORIZATION:
+                setProductSelfSequencingAuthorization((ProductSelfSequencingAuthorization) entity);
+                break;
             case PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION:
                 setProductSiblingSequencingAuthorization((ProductSiblingSequencingAuthorization) entity);
                 break;
             case PROTOCOL:
                 setProtocol((Protocol) entity);
+                break;
+            case RELATIONSHIP:
+                setRelationship((Relationship) entity);
+                break;
+            case RELATIONSHIP_ATTRIBUTE:
+                setRelationshipAttribute((RelationshipAttribute) entity);
+                break;
+            case RELATIONSHIP_ATTRIBUTE_AUTHORIZATION:
+                setRelationshipAttributeAuthorization((RelationshipAttributeAuthorization) entity);
+                break;
+            case RELATIONSHIP_NETWORK:
+                setRelationshipNetwork((RelationshipNetwork) entity);
                 break;
 
             default:
@@ -1124,6 +1189,67 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setUnitValue(UnitValue unitValue) {
         type = UNIT_VALUE;
         this.unitValue = unitValue;
+    }
+
+    public ProductSelfSequencingAuthorization getProductSelfSequencingAuthorization() {
+        return productSelfSequencingAuthorization;
+    }
+
+    public void setProductSelfSequencingAuthorization(ProductSelfSequencingAuthorization productSelfSequencingAuthorization) {
+        this.productSelfSequencingAuthorization = productSelfSequencingAuthorization;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
+        return null;
+    }
+
+    public NetworkInference getNetworkInference() {
+        return networkInference;
+    }
+
+    public void setNetworkInference(NetworkInference networkInference) {
+        type = NETWORK_INFERENCE;
+        this.networkInference = networkInference;
+    }
+
+    public Relationship getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(Relationship relationship) {
+        type = RELATIONSHIP;
+        this.relationship = relationship;
+    }
+
+    public RelationshipAttribute getRelationshipAttribute() {
+        return relationshipAttribute;
+    }
+
+    public void setRelationshipAttribute(RelationshipAttribute relationshipAttribute) {
+        type = RELATIONSHIP_ATTRIBUTE;
+        this.relationshipAttribute = relationshipAttribute;
+    }
+
+    public RelationshipAttributeAuthorization getRelationshipAttributeAuthorization() {
+        return relationshipAttributeAuthorization;
+    }
+
+    public void setRelationshipAttributeAuthorization(RelationshipAttributeAuthorization relationshipAttributeAuthorization) {
+        type = RELATIONSHIP_ATTRIBUTE_AUTHORIZATION;
+        this.relationshipAttributeAuthorization = relationshipAttributeAuthorization;
+    }
+
+    public RelationshipNetwork getRelationshipNetwork() {
+        return relationshipNetwork;
+    }
+
+    public void setRelationshipNetwork(RelationshipNetwork relationshipNetwork) {
+        type = RELATIONSHIP_NETWORK;
+        this.relationshipNetwork = relationshipNetwork;
     }
 
 }

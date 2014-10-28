@@ -33,6 +33,9 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -52,6 +55,15 @@ public class UnitAttribute extends AttributeValue<Unit> {
 
     public UnitAttribute() {
         super();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, UnitAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitAttribute;
     }
 
     public UnitAttribute(Agency updatedBy) {

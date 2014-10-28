@@ -32,6 +32,9 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for unit networks
@@ -63,6 +66,15 @@ public class StatusCodeNetworkAttribute extends
      */
     public StatusCodeNetworkAttribute(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeNetworkAttribute;
     }
 
     /**

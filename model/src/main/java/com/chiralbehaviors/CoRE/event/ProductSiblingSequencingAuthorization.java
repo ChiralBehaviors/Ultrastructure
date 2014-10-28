@@ -30,11 +30,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -79,6 +83,15 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
     private Integer            replaceProduct      = FALSE;
 
     public ProductSiblingSequencingAuthorization() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductSiblingSequencingAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productSiblingSequencingAuthorization;
     }
 
     /**

@@ -22,7 +22,7 @@ import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 
 /**
- * The repository of the ids of well known objects, as well as string contants
+ * The repository of the ids of well known objects, as well as string constants
  * for naming them.
  *
  * @author hhildebrand

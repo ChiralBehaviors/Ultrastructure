@@ -32,6 +32,9 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * An attribute value on an attribute
@@ -61,6 +64,15 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private Integer           sequenceNumber;
 
     public AttributeMetaAttribute() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeMetaAttribute;
     }
 
     /**

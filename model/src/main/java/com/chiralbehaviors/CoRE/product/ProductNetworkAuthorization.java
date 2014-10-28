@@ -24,10 +24,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorization for product networks
@@ -62,6 +65,15 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
      */
     public ProductNetworkAuthorization(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductNetworkAuthorization> getWorkspaceAuthAttribute() {
+        return null;
     }
 
     /**

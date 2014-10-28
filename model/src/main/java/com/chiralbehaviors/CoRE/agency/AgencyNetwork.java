@@ -40,10 +40,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The network relationships of agencies
@@ -86,23 +90,32 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AgencyNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyNetwork;
+    }
+
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "child")
-    private Agency             child;
+    private Agency        child;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent")
-    private Agency             parent;
+    private Agency        parent;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise1")
-    private AgencyNetwork      premise1;
+    private AgencyNetwork premise1;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(insertable = false, name = "premise2")
-    private AgencyNetwork      premise2;
+    private AgencyNetwork premise2;
 
     public AgencyNetwork() {
     }

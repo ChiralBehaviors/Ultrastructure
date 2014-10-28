@@ -34,8 +34,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -200,6 +202,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
         String primaryKey = getPrimaryKey();
         return primaryKey == null ? null : UuidGenerator.fromBase64(primaryKey);
     }
+
+    @JsonIgnore
+    abstract public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute();
 
     /*
      * (non-Javadoc)

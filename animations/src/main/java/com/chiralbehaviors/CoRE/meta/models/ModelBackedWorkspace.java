@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
@@ -43,7 +43,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
  *
  *         A workspace backed by a database
  */
-public class ModelBackedWorkspace implements NeuvoWorkspace {
+public class ModelBackedWorkspace implements Workspace {
 
     private class EntityList<T extends Ruleform> extends AbstractList<T> {
         private final List<WorkspaceAuthorization> backingList;

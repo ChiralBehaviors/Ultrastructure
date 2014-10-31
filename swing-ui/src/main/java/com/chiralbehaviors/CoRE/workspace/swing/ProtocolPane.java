@@ -36,7 +36,7 @@ import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.swing.ProtocolView;
-import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -48,7 +48,7 @@ public class ProtocolPane extends JPanel {
     private JComboBox<Protocol> keys;
     private ProtocolView        protocol;
     private JList<MetaProtocol> matchingMetaProtocols;
-    private NeuvoWorkspace      workspace;
+    private Workspace      workspace;
 
     /**
      * Create the panel.
@@ -113,11 +113,11 @@ public class ProtocolPane extends JPanel {
 
     }
 
-    public NeuvoWorkspace getWorkspace() {
+    public Workspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(NeuvoWorkspace workspace) {
+    public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
 
@@ -131,8 +131,8 @@ public class ProtocolPane extends JPanel {
                                                                                                                           protocolViewBeanProperty);
         autoBinding.bind();
         //
-        BeanProperty<ProtocolView, NeuvoWorkspace> protocolViewBeanProperty_1 = BeanProperty.create("workspace");
-        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ProtocolView, NeuvoWorkspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<ProtocolView, Workspace> protocolViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, ProtocolView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                              workspace,
                                                                                                                              protocol,
                                                                                                                              protocolViewBeanProperty_1);

@@ -33,7 +33,6 @@ import com.chiralbehaviors.CoRE.access.resource.CrudResource;
 import com.chiralbehaviors.CoRE.access.resource.DomainResource;
 import com.chiralbehaviors.CoRE.access.resource.RuleformResource;
 import com.chiralbehaviors.CoRE.access.resource.TraversalResource;
-import com.chiralbehaviors.CoRE.access.resource.WorkspaceResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.AgencyResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.AttributeResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.IntervalResource;
@@ -91,7 +90,6 @@ public class DataAccessBundle implements
         environment.jersey().register(new TraversalResource(emf));
         environment.jersey().register(new JpaHealthCheck(emf));
         environment.jersey().register(new CollectionResource(emf));
-        environment.jersey().register(new WorkspaceResource(emf));
         environment.jersey().register(new RuleformResource(emf));
         environment.jersey().register(new ProductResource(
                                                           emf.createEntityManager()));

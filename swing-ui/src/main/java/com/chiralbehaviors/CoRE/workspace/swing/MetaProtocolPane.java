@@ -37,7 +37,7 @@ import org.jdesktop.beansbinding.Bindings;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
-import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -49,7 +49,7 @@ public class MetaProtocolPane extends JPanel {
     private JComboBox<MetaProtocol> keys;
     private JList<Protocol>         matchingProtocols;
     private MetaProtocolView        metaProtocol;
-    private NeuvoWorkspace          workspace;
+    private Workspace          workspace;
 
     /**
      * Create the panel.
@@ -120,11 +120,11 @@ public class MetaProtocolPane extends JPanel {
 
     }
 
-    public NeuvoWorkspace getWorkspace() {
+    public Workspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(NeuvoWorkspace workspace) {
+    public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
 
@@ -138,8 +138,8 @@ public class MetaProtocolPane extends JPanel {
                                                                                                                               metaProtocolViewBeanProperty);
         autoBinding.bind();
         //
-        BeanProperty<MetaProtocolView, NeuvoWorkspace> metaProtocolViewBeanProperty_1 = BeanProperty.create("workspace");
-        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, MetaProtocolView, NeuvoWorkspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<MetaProtocolView, Workspace> metaProtocolViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, MetaProtocolView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                                  workspace,
                                                                                                                                  metaProtocol,
                                                                                                                                  metaProtocolViewBeanProperty_1);

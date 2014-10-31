@@ -37,7 +37,7 @@ import com.chiralbehaviors.CoRE.swing.ChildAuthSeqView;
 import com.chiralbehaviors.CoRE.swing.ParentSeqAuthView;
 import com.chiralbehaviors.CoRE.swing.SelfAuthSeqView;
 import com.chiralbehaviors.CoRE.swing.SiblingSeqAuthView;
-import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -54,7 +54,7 @@ public class SequencingPane extends JPanel {
     private ParentSeqAuthView     parentSeqAuth;
     private SiblingSeqAuthView    siblingSeqAuth;
     private ChildAuthSeqView      childAuthSeq;
-    private NeuvoWorkspace        workspace;
+    private Workspace        workspace;
 
     /**
      * Create the panel.
@@ -203,38 +203,38 @@ public class SequencingPane extends JPanel {
 
     }
 
-    public NeuvoWorkspace getWorkspace() {
+    public Workspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(NeuvoWorkspace workspace) {
+    public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
 
     protected void initDataBindings() {
-        BeanProperty<SelfAuthSeqView, NeuvoWorkspace> selfAuthSeqViewBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, SelfAuthSeqView, NeuvoWorkspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<SelfAuthSeqView, Workspace> selfAuthSeqViewBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, SelfAuthSeqView, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                               workspace,
                                                                                                                               selfAuthSeq,
                                                                                                                               selfAuthSeqViewBeanProperty);
         autoBinding.bind();
         //
-        BeanProperty<ParentSeqAuthView, NeuvoWorkspace> parentSeqAuthViewBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ParentSeqAuthView, NeuvoWorkspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<ParentSeqAuthView, Workspace> parentSeqAuthViewBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, ParentSeqAuthView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                                   workspace,
                                                                                                                                   parentSeqAuth,
                                                                                                                                   parentSeqAuthViewBeanProperty);
         autoBinding_1.bind();
         //
-        BeanProperty<SiblingSeqAuthView, NeuvoWorkspace> siblingSeqAuthViewBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, SiblingSeqAuthView, NeuvoWorkspace> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<SiblingSeqAuthView, Workspace> siblingSeqAuthViewBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, SiblingSeqAuthView, Workspace> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                                    workspace,
                                                                                                                                    siblingSeqAuth,
                                                                                                                                    siblingSeqAuthViewBeanProperty);
         autoBinding_2.bind();
         //
-        BeanProperty<ChildAuthSeqView, NeuvoWorkspace> childAuthSeqViewBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<NeuvoWorkspace, NeuvoWorkspace, ChildAuthSeqView, NeuvoWorkspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<ChildAuthSeqView, Workspace> childAuthSeqViewBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, ChildAuthSeqView, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                                  workspace,
                                                                                                                                  childAuthSeq,
                                                                                                                                  childAuthSeqViewBeanProperty);

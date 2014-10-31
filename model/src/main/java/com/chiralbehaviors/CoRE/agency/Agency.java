@@ -46,7 +46,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.access.AgencyAccessAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
@@ -116,49 +115,45 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "agency", schema = "ruleform")
 public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
-    public static final String                AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
+    public static final String   AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
 
-    public static final String                AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
-    public static final String                FIND_ALL                                 = "agency"
-                                                                                         + Ruleform.FIND_ALL_SUFFIX;
-    public static final String                FIND_BY_NAME                             = "agency"
-                                                                                         + FIND_BY_NAME_SUFFIX;
-    public static final String                FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "agency"
-                                                                                         + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String                FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "agency"
-                                                                                         + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String                FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "agency"
-                                                                                         + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String                GET_ALL_PARENT_RELATIONSHIPS             = "agency"
-                                                                                         + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String                GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
-                                                                                         + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String                GET_CHILDREN                             = "agency"
-                                                                                         + GET_CHILDREN_SUFFIX;
-    public static final String                QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
-    public static final String                UNLINKED                                 = "agency"
-                                                                                         + UNLINKED_SUFFIX;
-    private static final long                 serialVersionUID                         = 1L;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-    @JsonIgnore
-    private Set<AgencyAccessAuthorization<?>> accessAuthsByParent;
+    public static final String   AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
+    public static final String   FIND_ALL                                 = "agency"
+                                                                            + Ruleform.FIND_ALL_SUFFIX;
+    public static final String   FIND_BY_NAME                             = "agency"
+                                                                            + FIND_BY_NAME_SUFFIX;
+    public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "agency"
+                                                                            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String   FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "agency"
+                                                                            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String   FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "agency"
+                                                                            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String   GET_ALL_PARENT_RELATIONSHIPS             = "agency"
+                                                                            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String   GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
+                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String   GET_CHILDREN                             = "agency"
+                                                                            + GET_CHILDREN_SUFFIX;
+    public static final String   QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
+    public static final String   UNLINKED                                 = "agency"
+                                                                            + UNLINKED_SUFFIX;
+    private static final long    serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AgencyAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "agency")
     @JsonIgnore
-    private Set<AgencyAttribute>              attributes;
+    private Set<AgencyAttribute> attributes;
 
     // bi-directional many-to-one association to AgencyNetwork
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
-    private Set<AgencyNetwork>                networkByChild;
+    private Set<AgencyNetwork>   networkByChild;
 
     // bi-directional many-to-one association to AgencyNetwork
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
-    private Set<AgencyNetwork>                networkByParent;
+    private Set<AgencyNetwork>   networkByParent;
 
     public Agency() {
     }

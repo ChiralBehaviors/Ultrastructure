@@ -2021,7 +2021,7 @@ public class JobModelImpl implements JobModel {
         if (mpRelationship.isAnyOrSame() || mpRelationship.isNotApplicable()) {
             return true;
         }
-        if (!netModel.isAccessible(rf, null, mpRelationship, child, null)) {
+        if (!netModel.isAccessible(rf, mpRelationship, child)) {
             return false;
         }
         return true;

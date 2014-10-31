@@ -40,12 +40,6 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductAttributeAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductStatusCodeAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
 
 /**
  * @author hhildebrand
@@ -195,26 +189,6 @@ public class ProductModelImpl
         return product;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getAgencyAccessAuths(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
-    public List<ProductAgencyAccessAuthorization> getAgencyAccessAuths(Product parent,
-                                                                       Relationship relationship) {
-        return em.createNamedQuery(ProductAgencyAccessAuthorization.FIND_AUTHORIZATION,
-                                   ProductAgencyAccessAuthorization.class).getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getAttributeAccessAuths(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
-    public List<ProductAttributeAccessAuthorization> getAttributeAccessAuths(Product parent,
-                                                                             Relationship relationship) {
-        return em.createNamedQuery(ProductAttributeAccessAuthorization.FIND_AUTHORIZATION,
-                                   ProductAttributeAccessAuthorization.class).getResultList();
-    }
-
     @Override
     public List<ProductNetwork> getInterconnections(Collection<Product> parents,
                                                     Collection<Relationship> relationships,
@@ -230,46 +204,6 @@ public class ProductModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getLocationAccessAuths(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
-    public List<ProductLocationAccessAuthorization> getLocationAccessAuths(Product parent,
-                                                                           Relationship relationship) {
-        return em.createNamedQuery(ProductLocationAccessAuthorization.FIND_AUTHORIZATION,
-                                   ProductLocationAccessAuthorization.class).getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getRelationshipAccessAuths(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
-    public List<ProductRelationshipAccessAuthorization> getRelationshipAccessAuths(Product parent,
-                                                                                   Relationship relationship) {
-        return em.createNamedQuery(ProductRelationshipAccessAuthorization.FIND_AUTHORIZATION,
-                                   ProductRelationshipAccessAuthorization.class).getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getStatusCodeAccessAuths(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
-    public List<ProductStatusCodeAccessAuthorization> getStatusCodeAccessAuths(Product parent,
-                                                                               Relationship relationship) {
-        return em.createNamedQuery(ProductStatusCodeAccessAuthorization.FIND_AUTHORIZATION,
-                                   ProductStatusCodeAccessAuthorization.class).getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getUnitAccessAuths(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
-    public List<ProductUnitAccessAuthorization> getUnitAccessAuths(Product parent,
-                                                                   Relationship relationship) {
-        return em.createNamedQuery(ProductUnitAccessAuthorization.FIND_AUTHORIZATION,
-                                   ProductUnitAccessAuthorization.class).getResultList();
     }
 
     /**

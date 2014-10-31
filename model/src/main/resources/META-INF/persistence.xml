@@ -12,7 +12,6 @@
         <mapping-file>com/chiralbehaviors/CoRE/network/relationshipNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/product/productNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/time/intervalNetwork.xml</mapping-file>
-        <class>com.chiralbehaviors.CoRE.authorization.AccessAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.Attribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization</class>
@@ -56,22 +55,9 @@
         <class>com.chiralbehaviors.CoRE.agency.Agency</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyAttribute</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.access.AgencyAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.access.AgencyProductAccessAuthorization</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.ExistentialRuleform</class>
         <class>com.chiralbehaviors.CoRE.Ruleform</class>
-        <class>com.chiralbehaviors.CoRE.agency.access.AgencyLocationAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.access.ProductAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.access.ProductAttributeAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.access.ProductStatusCodeAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.location.access.LocationAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.location.access.LocationProductAccessAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.location.access.LocationAgencyAccessAuthorization</class>
         <class>com.chiralbehaviors.CoRE.time.Interval</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalAttribute</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization</class>

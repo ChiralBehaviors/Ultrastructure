@@ -18,7 +18,7 @@ package com.chiralbehaviors.CoRE.workspace.swing;
 
 import javax.swing.JPanel;
 
-import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -26,13 +26,13 @@ import com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace;
  */
 public class WorkspaceBackedView extends JPanel {
     private static final long serialVersionUID = 1L;
-    protected NeuvoWorkspace  workspace;
+    protected Workspace  workspace;
 
-    public NeuvoWorkspace getWorkspace() {
+    public Workspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(NeuvoWorkspace workspace) {
+    public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
 

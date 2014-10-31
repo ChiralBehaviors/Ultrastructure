@@ -321,15 +321,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      *
      * @param parent
-     * @param parentRelationship
-     * @param authorizingRelationship
+     * @param relationship
      * @param child
      * @return
      */
-    boolean isAccessible(RuleForm parent, Relationship parentRelationship,
-                         Relationship authorizingRelationship,
-                         ExistentialRuleform<?, ?> child,
-                         Relationship childRelationship);
+    boolean isAccessible(RuleForm parent, Relationship relationship,
+                         RuleForm child);
 
     /**
      *

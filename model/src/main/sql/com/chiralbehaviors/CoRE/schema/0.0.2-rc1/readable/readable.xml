@@ -47,17 +47,6 @@
     <include relativeToChangelogFile="true" file="views/unit_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/unit_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/unit_network.xml" />
-    <include relativeToChangelogFile="true" file="views/product_agency_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/product_location_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/product_attribute_access_authorization.xml" />
-    <!-- <include relativeToChangelogFile="true" file="views/product_relationship_access_authorization.xml"
-        /> TODO can't do this join right at the moment ;) -->
-    <include relativeToChangelogFile="true" file="views/product_status_code_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/product_unit_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/agency_location_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/agency_product_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/location_product_access_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/location_agency_access_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/interval.xml" />
     <include relativeToChangelogFile="true" file="views/interval_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/interval_attribute_authorization.xml" />

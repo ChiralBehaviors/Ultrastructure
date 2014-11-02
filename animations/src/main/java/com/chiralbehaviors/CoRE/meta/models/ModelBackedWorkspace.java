@@ -38,6 +38,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
@@ -70,6 +71,10 @@ public class ModelBackedWorkspace implements Workspace {
             return backingList.size();
         }
 
+    }
+
+    public static String getAttributeColumnName(Ruleform ruleform) {
+        return ruleform.getClass().getSimpleName().toLowerCase();
     }
 
     private final Product definingProduct;
@@ -127,8 +132,21 @@ public class ModelBackedWorkspace implements Workspace {
      * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#getAttributes()
      */
     @Override
-    public <Value extends AttributeValue<?>, RuleForm extends ExistentialRuleform<RuleForm, ?>> Value getAttributes(RuleForm ruleform) {
-        return null;
+    public <Value extends AttributeValue<RuleForm>, RuleForm extends ExistentialRuleform<RuleForm, ?>> List<Value> getAttributes(RuleForm ruleform) {
+        CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
+        @SuppressWarnings("unchecked")
+        CriteriaQuery<Value> query = (CriteriaQuery<Value>) cb.createQuery(ruleform.getAttributeValueClass());
+        @SuppressWarnings("unchecked")
+        Root<Value> attributeRoot = (Root<Value>) query.from(ruleform.getAttributeValueClass());
+        Root<WorkspaceAuthorization> workspaceAuthRoot = query.from(WorkspaceAuthorization.class);
+        query.select(attributeRoot).where(cb.and(cb.equal(attributeRoot.get(getAttributeColumnName(ruleform)),
+                                                          ruleform),
+                                                 cb.equal(workspaceAuthRoot.get(WorkspaceAuthorization.getWorkspaceAuthorizationColumnName(ruleform.getAttributeValueClass())),
+                                                          attributeRoot),
+                                                 cb.equal(workspaceAuthRoot.get(WorkspaceAuthorization_.definingProduct),
+                                                          definingProduct)));
+        TypedQuery<Value> q = model.getEntityManager().createQuery(query);
+        return q.getResultList();
     }
 
     /* (non-Javadoc)
@@ -201,6 +219,11 @@ public class ModelBackedWorkspace implements Workspace {
                                                        "AAAAAAAAAAAAAAAAAAAAAA")));
         TypedQuery<RuleForm> q = model.getEntityManager().createQuery(query);
         return q.getResultList();
+    }
+
+    @Override
+    public WorkspaceSnapshot getSnapshot() {
+        return new WorkspaceSnapshot(definingProduct, model.getEntityManager());
     }
 
     /* (non-Javadoc)

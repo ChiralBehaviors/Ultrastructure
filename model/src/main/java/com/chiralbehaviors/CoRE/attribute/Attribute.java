@@ -264,6 +264,12 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<AttributeMetaAttribute> getAttributeValueClass() {
+        return AttributeMetaAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

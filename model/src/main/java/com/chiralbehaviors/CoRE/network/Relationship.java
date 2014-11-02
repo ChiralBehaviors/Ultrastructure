@@ -285,6 +285,12 @@ public class Relationship extends
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<RelationshipAttribute> getAttributeValueClass() {
+        return RelationshipAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

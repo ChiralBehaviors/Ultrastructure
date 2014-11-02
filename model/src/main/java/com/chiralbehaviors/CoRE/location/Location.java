@@ -236,6 +236,12 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<LocationAttribute> getAttributeValueClass() {
+        return LocationAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

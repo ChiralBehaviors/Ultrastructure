@@ -293,6 +293,12 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<ProductAttribute> getAttributeValueClass() {
+        return ProductAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

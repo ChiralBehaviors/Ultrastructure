@@ -227,6 +227,12 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<UnitAttribute> getAttributeValueClass() {
+        return UnitAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

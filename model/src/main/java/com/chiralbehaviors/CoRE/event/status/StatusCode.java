@@ -269,6 +269,12 @@ public class StatusCode extends
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<StatusCodeAttribute> getAttributeValueClass() {
+        return StatusCodeAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

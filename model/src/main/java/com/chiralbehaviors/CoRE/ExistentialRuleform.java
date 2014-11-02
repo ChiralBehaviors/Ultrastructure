@@ -121,6 +121,9 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     abstract public String getAnyId();
 
     @JsonIgnore
+    abstract public <Value extends AttributeValue<RuleForm>> Class<Value> getAttributeValueClass();
+
+    @JsonIgnore
     abstract public String getCopyId();
 
     /**

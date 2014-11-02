@@ -275,6 +275,12 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<AgencyAttribute> getAttributeValueClass() {
+        return AgencyAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

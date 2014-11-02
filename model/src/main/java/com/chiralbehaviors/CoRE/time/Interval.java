@@ -258,6 +258,12 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<IntervalAttribute> getAttributeValueClass() {
+        return IntervalAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */

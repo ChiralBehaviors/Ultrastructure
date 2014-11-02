@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.access;
+package com.chiralbehaviors.CoRE.json;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.json.PolymorphicRuleformMixin;
+import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
@@ -38,6 +38,9 @@ public class CoREModule extends SimpleModule {
 
         context.setMixInAnnotations(Ruleform.class,
                                     PolymorphicRuleformMixin.class);
+        addSerializer(new AttributeValueSerializer<AgencyAttribute>(
+                                                                    AgencyAttribute.class,
+                                                                    true));
         super.setupModule(context);
     }
 }

@@ -44,6 +44,7 @@ import com.chiralbehaviors.CoRE.access.resource.ruleform.impl.UnitResource;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.workflow.JobResource;
 import com.chiralbehaviors.CoRE.configuration.CoREServiceConfiguration;
 import com.chiralbehaviors.CoRE.configuration.JpaConfiguration;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 
 /**

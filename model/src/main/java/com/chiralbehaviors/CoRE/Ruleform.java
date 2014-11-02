@@ -17,13 +17,11 @@ package com.chiralbehaviors.CoRE;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -97,7 +95,8 @@ abstract public class Ruleform implements Serializable, Cloneable {
     private Timestamp           updateDate            = new Timestamp(
                                                                       System.currentTimeMillis());
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "updated_by")
     protected Agency            updatedBy;
 
@@ -219,29 +218,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return getPrimaryKey().hashCode();
     }
 
-    public Ruleform manageEntity(EntityManager em,
-                                 Map<Ruleform, Ruleform> knownObjects) {
-        if (knownObjects.containsKey(this)) {
-            return knownObjects.get(this);
-        }
-
-        // need to traverse leaf nodes first, before persisting this entity.
-        knownObjects.put(this, this);
-        traverseForeignKeys(em, knownObjects);
-
-        if (getId() != null
-            && em.getReference(this.getClass(), getId()) != null) {
-            em.detach(this);
-            knownObjects.put(this, em.merge(this));
-        } else {
-            em.persist(this);
-            em.refresh(this);
-            knownObjects.put(this, this);
-        }
-
-        return knownObjects.get(this);
-    }
-
     @JsonProperty
     public void setId(String id) {
         setPrimaryKey(id);
@@ -279,23 +255,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Override
     public String toString() {
         return String.format("%s[%s]", getClass(), getId());
-    }
-
-    // am I traversing the merged entity or the non-merged uploaded state?
-    // might as well make it merged
-    /**
-     * Calls manageEntity on each foreign key and replaces non-managed foreign
-     * key objects with managed objects
-     *
-     * @param em
-     * @param knownObjects
-     */
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (updatedBy != null) {
-            updatedBy = (Agency) updatedBy.manageEntity(em, knownObjects);
-        }
-
     }
 
     protected final void setPrimaryKey(String id) {

@@ -18,13 +18,11 @@ package com.chiralbehaviors.CoRE.event;
 import static com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization.GET_SEQUENCES;
 import static com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization.GET_SIBLING_ACTIONS;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -60,22 +58,22 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
 
     private static final long  serialVersionUID    = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "next_sibling")
     private Product            nextSibling;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "next_sibling_status")
     private StatusCode         nextSiblingStatus;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Product            parent;
 
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
@@ -205,32 +203,5 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
                              nextSibling.getName(),
                              nextSiblingStatus.getName(), replaceProduct,
                              sequenceNumber);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (nextSibling != null) {
-            nextSibling = (Product) nextSibling.manageEntity(em, knownObjects);
-        }
-        if (nextSiblingStatus != null) {
-            nextSiblingStatus = (StatusCode) nextSiblingStatus.manageEntity(em,
-                                                                            knownObjects);
-        }
-        if (parent != null) {
-            parent = (Product) parent.manageEntity(em, knownObjects);
-        }
-        if (statusCode != null) {
-            statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

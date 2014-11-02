@@ -80,20 +80,20 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     private static final long  serialVersionUID              = 1L;
 
     // bi-directional many-to-one association to Interval
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Interval           child;
 
     //bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Interval           parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private IntervalNetwork    premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private IntervalNetwork    premise2;
 

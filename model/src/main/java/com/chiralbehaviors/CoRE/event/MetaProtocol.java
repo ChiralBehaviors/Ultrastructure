@@ -17,13 +17,11 @@ package com.chiralbehaviors.CoRE.event;
 
 import static com.chiralbehaviors.CoRE.event.MetaProtocol.FOR_JOB;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -56,32 +54,32 @@ public class MetaProtocol extends Ruleform {
     private static final long  serialVersionUID = 1L;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "assign_to")
     private Relationship       assignTo;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "assign_to_attribute")
     private Relationship       assignToAttribute;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from_attribute")
     private Relationship       deliverFromAttribute;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_to_attribute")
     private Relationship       deliverToAttribute;
 
@@ -89,12 +87,12 @@ public class MetaProtocol extends Ruleform {
      * The relationship that transforms the product
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Relationship       product;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_attribute")
     private Relationship       productAttribute;
 
@@ -102,7 +100,7 @@ public class MetaProtocol extends Ruleform {
      * the relationship that transforms the quantity unit type
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "quantity_unit")
     private Relationship       quantityUnit;
 
@@ -110,12 +108,12 @@ public class MetaProtocol extends Ruleform {
      * the relationship that transforms the requesting agency
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "requester")
     private Relationship       requester;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "requester_attribute")
     private Relationship       requesterAttribute;
 
@@ -126,7 +124,7 @@ public class MetaProtocol extends Ruleform {
      * The service factor for this rule
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
     private Product            service;
 
@@ -134,7 +132,7 @@ public class MetaProtocol extends Ruleform {
      * the relationship that transforms the service type
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service_attribute")
     private Relationship       serviceAttribute;
 
@@ -142,7 +140,7 @@ public class MetaProtocol extends Ruleform {
      * the relationship that transforms the service
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service_type")
     private Relationship       serviceType;
 
@@ -439,39 +437,4 @@ public class MetaProtocol extends Ruleform {
                + ", deliverTo=" + deliverTo.getName() + ", stopOnMatch="
                + stopOnMatch + ", sequenceNumber=" + sequenceNumber + "]";
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (deliverFrom != null) {
-            deliverFrom = (Relationship) deliverFrom.manageEntity(em,
-                                                                  knownObjects);
-        }
-        if (deliverTo != null) {
-            deliverTo = (Relationship) deliverTo.manageEntity(em, knownObjects);
-        }
-        if (product != null) {
-            product = (Relationship) product.manageEntity(em, knownObjects);
-        }
-        if (requester != null) {
-            requester = (Relationship) requester.manageEntity(em, knownObjects);
-        }
-        if (service != null) {
-            service = (Product) service.manageEntity(em, knownObjects);
-        }
-        if (serviceType != null) {
-            serviceType = (Relationship) serviceType.manageEntity(em,
-                                                                  knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
-    }
-
 }

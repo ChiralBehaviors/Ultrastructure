@@ -15,12 +15,10 @@
  */
 package com.chiralbehaviors.CoRE.network;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -44,17 +42,17 @@ public class NetworkInference extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "inference")
     private Relationship      inference;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
     private Relationship      premise1;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise2")
     private Relationship      premise2;
 
@@ -145,28 +143,5 @@ public class NetworkInference extends Ruleform {
 
     public void setPremise2(Relationship premise2) {
         this.premise2 = premise2;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (inference != null) {
-            inference = (Relationship) inference.manageEntity(em, knownObjects);
-        }
-        if (premise1 != null) {
-            premise1 = (Relationship) premise1.manageEntity(em, knownObjects);
-        }
-        if (premise2 != null) {
-            premise2 = (Relationship) premise2.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

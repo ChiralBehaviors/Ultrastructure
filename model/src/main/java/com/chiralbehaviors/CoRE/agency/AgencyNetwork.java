@@ -28,7 +28,6 @@ import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_USED_RELATIONSHI
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -42,7 +41,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -100,20 +98,22 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     }
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Agency        child;
 
     //bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Agency        parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private AgencyNetwork premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private AgencyNetwork premise2;
 
@@ -209,21 +209,5 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setPremise2(NetworkRuleform<Agency> premise2) {
         this.premise2 = (AgencyNetwork) premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null) {
-            child = (Agency) child.manageEntity(em, knownObjects);
-        }
-        if (parent != null) {
-            parent = (Agency) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

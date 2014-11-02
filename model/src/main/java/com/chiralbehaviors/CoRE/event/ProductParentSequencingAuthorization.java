@@ -18,13 +18,11 @@ package com.chiralbehaviors.CoRE.event;
 import static com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization.GET_PARENT_ACTIONS;
 import static com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization.GET_SEQUENCES;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -60,11 +58,11 @@ public class ProductParentSequencingAuthorization extends Ruleform {
 
     private static final long  serialVersionUID    = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Product            parent;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent_status_to_set")
     private StatusCode         parentStatusToSet;
 
@@ -74,14 +72,14 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
     private Product            service;
 
     @Column(name = "set_if_active_siblings")
     private Integer            setIfActiveSiblings = TRUE;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
@@ -217,32 +215,5 @@ public class ProductParentSequencingAuthorization extends Ruleform {
                              parent.getName(), parentStatusToSet.getName(),
                              setIfActiveSiblings, replaceProduct,
                              sequenceNumber);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (parent != null) {
-            parent = (Product) parent.manageEntity(em, knownObjects);
-        }
-        if (service != null) {
-            service = (Product) service.manageEntity(em, knownObjects);
-        }
-        if (parentStatusToSet != null) {
-            parentStatusToSet = (StatusCode) parentStatusToSet.manageEntity(em,
-                                                                            knownObjects);
-        }
-        if (statusCode != null) {
-            statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

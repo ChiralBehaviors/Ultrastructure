@@ -144,8 +144,8 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String                    PRODUCT_NETWORK                          = "ProductNetwork";
     public static final String                    PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
     public static final String                    PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
-    public static final String                    PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
     public static final String                    PRODUCT_SELF_SEQUENCING_AUTHORIZATION    = "ProductSelfSequencingAuthorization";
+    public static final String                    PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
     public static final String                    PROTOCOL                                 = "Protocol";
     public static final String                    RELATIONSHIP                             = "Relationship";
     public static final String                    RELATIONSHIP_ATTRIBUTE                   = "RelationshipAttribute";
@@ -170,242 +170,262 @@ public class WorkspaceAuthorization extends Ruleform {
 
     private static final long                     serialVersionUID                         = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency                                agency;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_attribute")
     private AgencyAttribute                       agencyAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_attribute_authorization")
     private AgencyAttributeAuthorization          agencyAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_location")
     private AgencyLocation                        agencyLocation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_location_attribute")
     private AgencyLocationAttribute               agencyLocationAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_network")
     private AgencyNetwork                         agencyNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_network_attribute")
     private AgencyNetworkAttribute                agencyNetworkAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_network_authorization")
     private AgencyNetworkAuthorization            agencyNetworkAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_product")
     private AgencyProduct                         agencyProduct;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute")
     private Attribute                             attribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute_meta_attribute")
     private AttributeMetaAttribute                attributeMetaAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attr_meta_attr_auth")
     private AttributeMetaAttributeAuthorization   attributeMetaAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute_network")
     private AttributeNetwork                      attributeNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute_network_attribute")
     private AttributeNetworkAttribute             attributeNetworkAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "defining_product")
     private Product                               definingProduct;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval")
     private Interval                              interval;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_attribute")
     private IntervalAttribute                     intervalAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_attribute_authorization")
     private IntervalAttributeAuthorization        intervalAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_network")
     private IntervalNetwork                       intervalNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_network_attribute")
     private IntervalNetworkAttribute              intervalNetworkAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "job")
     private Job                                   job;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "job_chronology")
     private JobChronology                         jobChronology;
 
     private String                                key;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
     private Location                              location;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location_attribute")
     private LocationAttribute                     locationAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location_attribute_authorization")
     private LocationAttributeAuthorization        locationAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location_network")
     private LocationNetwork                       locationNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location_network_attribute")
     private LocationNetworkAttribute              locationNetworkAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location_network_authorization")
     private LocationNetworkAuthorization          locationNetworkAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "meta_protocol")
     private MetaProtocol                          metaProtocol;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_inference")
     private NetworkInference                      networkInference;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Product                               product;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_attribute")
     private ProductAttribute                      productAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_attribute_authorization")
     private ProductAttributeAuthorization         productAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_child_sequencing_authorization")
     private ProductChildSequencingAuthorization   productChildSequencingAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_location")
     private ProductLocation                       productLocation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_location_attribute")
     private ProductLocationAttribute              productLocationAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_network")
     private ProductNetwork                        productNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_network_attribute")
     private ProductNetworkAttribute               productNetworkAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_parent_sequencing_authorization")
     private ProductParentSequencingAuthorization  productParentSequencingAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_self_sequencing_authorization")
     private ProductSelfSequencingAuthorization    productSelfSequencingAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_sibling_sequencing_authorization")
     private ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "protocol")
     private Protocol                              protocol;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship                          relationship;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship_attribute")
     private RelationshipAttribute                 relationshipAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship_attribute_authorization")
     private RelationshipAttributeAuthorization    relationshipAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship_network")
     private RelationshipNetwork                   relationshipNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode                            statusCode;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code_attribute")
     private StatusCodeAttribute                   statusCodeAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code_attribute_authorization")
     private StatusCodeAttributeAuthorization      statusCodeAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code_network")
     private StatusCodeNetwork                     statusCodeNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code_network_attribute")
     private StatusCodeNetworkAttribute            statusCodeNetworkAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code_sequencing")
     private StatusCodeSequencing                  statusCodeSequencing;
 
     @Column(name = "type")
     private String                                type;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit")
     private Unit                                  unit;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_attribute")
     private UnitAttribute                         unitAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_attribute_authorization")
     private UnitAttributeAuthorization            unitAttributeAuthorization;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_network")
     private UnitNetwork                           unitNetwork;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_network_attribute")
     private UnitNetworkAttribute                  unitNetworkAttribute;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_value")
     private UnitValue                             unitValue;
+
+    public WorkspaceAuthorization() {
+        super();
+    }
+
+    public WorkspaceAuthorization(Ruleform ruleform) {
+        super();
+        setEntity(ruleform);
+    }
+
+    public WorkspaceAuthorization(Ruleform ruleform, Agency updatedBy) {
+        this(updatedBy);
+        setUpdatedBy(updatedBy);
+    }
+
+    public WorkspaceAuthorization(String key, Ruleform ruleform,
+                                  Agency updatedBy) {
+        this(updatedBy, updatedBy);
+        setKey(key);
+    }
 
     public Agency getAgency() {
         return agency;
@@ -651,6 +671,10 @@ public class WorkspaceAuthorization extends Ruleform {
         return metaProtocol;
     }
 
+    public NetworkInference getNetworkInference() {
+        return networkInference;
+    }
+
     public Product getProduct() {
         return product;
     }
@@ -687,12 +711,32 @@ public class WorkspaceAuthorization extends Ruleform {
         return productParentSequencingAuthorization;
     }
 
+    public ProductSelfSequencingAuthorization getProductSelfSequencingAuthorization() {
+        return productSelfSequencingAuthorization;
+    }
+
     public ProductSiblingSequencingAuthorization getProductSiblingSequencingAuthorization() {
         return productSiblingSequencingAuthorization;
     }
 
     public Protocol getProtocol() {
         return protocol;
+    }
+
+    public Relationship getRelationship() {
+        return relationship;
+    }
+
+    public RelationshipAttribute getRelationshipAttribute() {
+        return relationshipAttribute;
+    }
+
+    public RelationshipAttributeAuthorization getRelationshipAttributeAuthorization() {
+        return relationshipAttributeAuthorization;
+    }
+
+    public RelationshipNetwork getRelationshipNetwork() {
+        return relationshipNetwork;
     }
 
     public StatusCode getStatusCode() {
@@ -745,6 +789,14 @@ public class WorkspaceAuthorization extends Ruleform {
 
     public UnitValue getUnitValue() {
         return unitValue;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
+        return null;
     }
 
     public void setAgency(Agency agency) {
@@ -1076,6 +1128,11 @@ public class WorkspaceAuthorization extends Ruleform {
         this.metaProtocol = metaProtocol;
     }
 
+    public void setNetworkInference(NetworkInference networkInference) {
+        type = NETWORK_INFERENCE;
+        this.networkInference = networkInference;
+    }
+
     public void setProduct(Product product) {
         type = PRODUCT;
         this.product = product;
@@ -1121,6 +1178,10 @@ public class WorkspaceAuthorization extends Ruleform {
         this.productParentSequencingAuthorization = productParentSequencingAuthorization;
     }
 
+    public void setProductSelfSequencingAuthorization(ProductSelfSequencingAuthorization productSelfSequencingAuthorization) {
+        this.productSelfSequencingAuthorization = productSelfSequencingAuthorization;
+    }
+
     public void setProductSiblingSequencingAuthorization(ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization) {
         type = PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION;
         this.productSiblingSequencingAuthorization = productSiblingSequencingAuthorization;
@@ -1129,6 +1190,26 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setProtocol(Protocol protocol) {
         type = PROTOCOL;
         this.protocol = protocol;
+    }
+
+    public void setRelationship(Relationship relationship) {
+        type = RELATIONSHIP;
+        this.relationship = relationship;
+    }
+
+    public void setRelationshipAttribute(RelationshipAttribute relationshipAttribute) {
+        type = RELATIONSHIP_ATTRIBUTE;
+        this.relationshipAttribute = relationshipAttribute;
+    }
+
+    public void setRelationshipAttributeAuthorization(RelationshipAttributeAuthorization relationshipAttributeAuthorization) {
+        type = RELATIONSHIP_ATTRIBUTE_AUTHORIZATION;
+        this.relationshipAttributeAuthorization = relationshipAttributeAuthorization;
+    }
+
+    public void setRelationshipNetwork(RelationshipNetwork relationshipNetwork) {
+        type = RELATIONSHIP_NETWORK;
+        this.relationshipNetwork = relationshipNetwork;
     }
 
     public void setStatusCode(StatusCode statusCode) {
@@ -1189,67 +1270,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setUnitValue(UnitValue unitValue) {
         type = UNIT_VALUE;
         this.unitValue = unitValue;
-    }
-
-    public ProductSelfSequencingAuthorization getProductSelfSequencingAuthorization() {
-        return productSelfSequencingAuthorization;
-    }
-
-    public void setProductSelfSequencingAuthorization(ProductSelfSequencingAuthorization productSelfSequencingAuthorization) {
-        this.productSelfSequencingAuthorization = productSelfSequencingAuthorization;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return null;
-    }
-
-    public NetworkInference getNetworkInference() {
-        return networkInference;
-    }
-
-    public void setNetworkInference(NetworkInference networkInference) {
-        type = NETWORK_INFERENCE;
-        this.networkInference = networkInference;
-    }
-
-    public Relationship getRelationship() {
-        return relationship;
-    }
-
-    public void setRelationship(Relationship relationship) {
-        type = RELATIONSHIP;
-        this.relationship = relationship;
-    }
-
-    public RelationshipAttribute getRelationshipAttribute() {
-        return relationshipAttribute;
-    }
-
-    public void setRelationshipAttribute(RelationshipAttribute relationshipAttribute) {
-        type = RELATIONSHIP_ATTRIBUTE;
-        this.relationshipAttribute = relationshipAttribute;
-    }
-
-    public RelationshipAttributeAuthorization getRelationshipAttributeAuthorization() {
-        return relationshipAttributeAuthorization;
-    }
-
-    public void setRelationshipAttributeAuthorization(RelationshipAttributeAuthorization relationshipAttributeAuthorization) {
-        type = RELATIONSHIP_ATTRIBUTE_AUTHORIZATION;
-        this.relationshipAttributeAuthorization = relationshipAttributeAuthorization;
-    }
-
-    public RelationshipNetwork getRelationshipNetwork() {
-        return relationshipNetwork;
-    }
-
-    public void setRelationshipNetwork(RelationshipNetwork relationshipNetwork) {
-        type = RELATIONSHIP_NETWORK;
-        this.relationshipNetwork = relationshipNetwork;
     }
 
 }

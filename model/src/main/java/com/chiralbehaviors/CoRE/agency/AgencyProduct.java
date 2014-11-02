@@ -17,12 +17,10 @@ package com.chiralbehaviors.CoRE.agency;
 
 import static com.chiralbehaviors.CoRE.agency.AgencyProduct.AGENCIES_FOR_PRODUCTS;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -55,17 +53,17 @@ public class AgencyProduct extends Ruleform {
     private static final long  serialVersionUID      = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency             agency;
 
     // bi-directional many-to-one association to Location
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Product            product;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 
@@ -125,29 +123,5 @@ public class AgencyProduct extends Ruleform {
 
     public void setRelationship(Relationship relationship) {
         this.relationship = relationship;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        if (relationship != null) {
-            relationship = (Relationship) relationship.manageEntity(em,
-                                                                    knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

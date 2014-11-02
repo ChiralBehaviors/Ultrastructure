@@ -28,7 +28,6 @@ import static com.chiralbehaviors.CoRE.product.ProductNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.product.ProductNetwork.GET_USED_RELATIONSHIPS;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,7 +43,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -101,20 +99,22 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     private Set<ProductNetworkAttribute> attributes;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Product                      child;
 
     //bi-directional many-to-one association to Product
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Product                      parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private ProductNetwork               premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private ProductNetwork               premise2;
 
@@ -239,29 +239,5 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @Override
     public void setPremise2(NetworkRuleform<Product> premise2) {
         this.premise2 = (ProductNetwork) premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-    =======
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-    >>>>>>> refs/heads/master
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null) {
-            child = (Product) child.manageEntity(em, knownObjects);
-        }
-        if (parent != null) {
-            parent = (Product) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

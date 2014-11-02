@@ -76,20 +76,20 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
                                                                 + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long   serialVersionUID              = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Relationship        child;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Relationship        parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private RelationshipNetwork premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private RelationshipNetwork premise2;
 

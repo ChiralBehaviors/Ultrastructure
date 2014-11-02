@@ -15,12 +15,10 @@
  */
 package com.chiralbehaviors.CoRE.network;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -45,16 +43,16 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_relationship")
     private Relationship      authorizedRelationship;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "grouping_agency")
     private Agency            groupingAgency;
 
@@ -117,31 +115,5 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (authorizedRelationship != null) {
-            authorizedRelationship = (Relationship) authorizedRelationship.manageEntity(em,
-                                                                                        knownObjects);
-        }
-        if (classification != null) {
-            classification = (Relationship) classification.manageEntity(em,
-                                                                        knownObjects);
-        }
-        if (groupingAgency != null) {
-            groupingAgency = (Agency) groupingAgency.manageEntity(em,
-                                                                  knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

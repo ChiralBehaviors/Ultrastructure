@@ -82,20 +82,20 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     // many-to-one
     // association to Agency
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private StatusCode         child;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private StatusCode         parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private StatusCodeNetwork  premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private StatusCodeNetwork  premise2;
 

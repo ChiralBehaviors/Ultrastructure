@@ -27,7 +27,6 @@ import static com.chiralbehaviors.CoRE.network.Relationship.ORDERED_ATTRIBUTES;
 import static com.chiralbehaviors.CoRE.network.Relationship.UNLINKED;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,7 +47,6 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
@@ -145,7 +143,8 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "inverse")
     @JsonIgnore
     private Relationship               inverse;
@@ -487,21 +486,5 @@ public class Relationship extends
 
     public void setPreferred(Boolean preferred) {
         this.preferred = toInteger(preferred);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (inverse != null) {
-            inverse = (Relationship) inverse.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
     }
 }

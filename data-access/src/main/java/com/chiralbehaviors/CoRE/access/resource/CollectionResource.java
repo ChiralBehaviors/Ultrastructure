@@ -15,10 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.access.resource;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -129,10 +127,7 @@ public class CollectionResource {
     public Ruleform post(Ruleform graph) throws JsonProcessingException {
         em.getTransaction().begin();
         try {
-
-            Map<Ruleform, Ruleform> knownObjects = new HashMap<>();
-            graph.manageEntity(em, knownObjects);
-
+            em.persist(graph);
             em.getTransaction().commit();
             em.refresh(graph);
             return graph;

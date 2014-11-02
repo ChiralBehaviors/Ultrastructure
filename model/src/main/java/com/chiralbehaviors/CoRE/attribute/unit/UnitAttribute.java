@@ -49,7 +49,7 @@ public class UnitAttribute extends AttributeValue<Unit> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_rf")
     private Unit               unitRf;
 

@@ -37,13 +37,11 @@ import static com.chiralbehaviors.CoRE.event.Job.INITIAL_STATE;
 import static com.chiralbehaviors.CoRE.event.Job.STATUS_CODE;
 import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -58,7 +56,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.openjpa.persistence.LoadFetchGroup;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -399,26 +396,6 @@ public class Job extends AbstractProtocol {
         return String.format("Job [status=%s, %s, sequenceNumber=%s, currentLogSequence=%s]",
                              status != null ? status.getName() : "null",
                              getToString(), sequenceNumber, currentLogSequence);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (parent != null) {
-            parent = (Job) parent.manageEntity(em, knownObjects);
-        }
-        if (status != null) {
-            status = (StatusCode) status.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 
     /* (non-Javadoc)

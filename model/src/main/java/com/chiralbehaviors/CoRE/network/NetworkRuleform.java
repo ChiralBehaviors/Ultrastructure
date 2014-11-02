@@ -15,13 +15,11 @@
  */
 package com.chiralbehaviors.CoRE.network;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -46,11 +44,12 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "inference", insertable = false)
     private NetworkInference  inference;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship      relationship;
 
@@ -172,23 +171,5 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
                              getParent().getName(),
                              getRelationship().getName(), getChild().getName(),
                              isInferred());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (relationship != null) {
-            relationship = (Relationship) relationship.manageEntity(em,
-                                                                    knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

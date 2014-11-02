@@ -15,11 +15,9 @@
  */
 package com.chiralbehaviors.CoRE.attribute;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -28,7 +26,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
@@ -47,7 +44,8 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
@@ -102,23 +100,4 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
     }
 
     abstract public void setClassifier(RuleForm classifier);
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (classification != null) {
-            classification = (Relationship) classification.manageEntity(em,
-                                                                        knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
-    }
-
 }

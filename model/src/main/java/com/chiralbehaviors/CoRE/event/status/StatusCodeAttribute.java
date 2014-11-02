@@ -50,7 +50,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 

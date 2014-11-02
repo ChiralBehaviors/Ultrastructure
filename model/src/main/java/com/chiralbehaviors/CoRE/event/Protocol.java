@@ -20,12 +20,10 @@ import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
@@ -35,7 +33,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
@@ -351,57 +348,5 @@ public class Protocol extends AbstractProtocol {
         return String.format("Protocol [%s, sequenceNumber=%s, requestedProduct=%s, requestedService=%s]",
                              getToString(), sequenceNumber,
                              childProduct.getName(), childService.getName());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (childProduct != null) {
-            childProduct = (Product) childProduct.manageEntity(em, knownObjects);
-        }
-        if (childProductAttribute != null) {
-            childProductAttribute = (Attribute) childProductAttribute.manageEntity(em,
-                                                                                   knownObjects);
-        }
-        if (childService != null) {
-            childService = (Product) childService.manageEntity(em, knownObjects);
-        }
-        if (childServiceAttribute != null) {
-            childServiceAttribute = (Attribute) childServiceAttribute.manageEntity(em,
-                                                                                   knownObjects);
-        }
-        if (childAssignTo != null) {
-            childAssignTo = (Agency) childAssignTo.manageEntity(em,
-                                                                knownObjects);
-        }
-        if (childAssignToAttribute != null) {
-            childAssignToAttribute = (Attribute) childAssignToAttribute.manageEntity(em,
-                                                                                     knownObjects);
-        }
-        if (childDeliverFrom != null) {
-            childDeliverFrom = (Location) childDeliverFrom.manageEntity(em,
-                                                                        knownObjects);
-        }
-        if (childDeliverFromAttribute != null) {
-            childDeliverFromAttribute = (Attribute) childDeliverFromAttribute.manageEntity(em,
-                                                                                           knownObjects);
-        }
-        if (childDeliverTo != null) {
-            childDeliverTo = (Location) childDeliverTo.manageEntity(em,
-                                                                    knownObjects);
-        }
-        if (childDeliverToAttribute != null) {
-            childDeliverToAttribute = (Attribute) childDeliverToAttribute.manageEntity(em,
-                                                                                       knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

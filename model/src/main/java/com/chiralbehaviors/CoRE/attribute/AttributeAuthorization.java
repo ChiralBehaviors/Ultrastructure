@@ -17,12 +17,10 @@ package com.chiralbehaviors.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -57,7 +55,8 @@ abstract public class AttributeAuthorization extends Ruleform {
     private Integer           booleanValue;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "grouping_agency")
     private Agency            groupingAgency;
 
@@ -194,27 +193,5 @@ abstract public class AttributeAuthorization extends Ruleform {
      */
     public void setTimestampValue(Timestamp timestampValue) {
         this.timestampValue = timestampValue;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (authorizedAttribute != null) {
-            authorizedAttribute = (Attribute) authorizedAttribute.manageEntity(em,
-                                                                               knownObjects);
-        }
-        if (groupingAgency != null) {
-            groupingAgency = (Agency) groupingAgency.manageEntity(em,
-                                                                  knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

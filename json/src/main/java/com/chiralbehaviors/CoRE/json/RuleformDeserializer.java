@@ -1,8 +1,6 @@
 package com.chiralbehaviors.CoRE.json;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -36,10 +34,7 @@ public class RuleformDeserializer extends StdDeserializer<Ruleform> implements
                                                                            JsonProcessingException {
         Ruleform deserializedRuleform = (Ruleform) defaultDeserializer.deserialize(jp,
                                                                                    ctxt);
-
-        Map<Ruleform, Ruleform> knownObjects = new HashMap<Ruleform, Ruleform>();
-        deserializedRuleform.traverseForeignKeys(em, knownObjects);
-
+        em.persist(deserializedRuleform);
         return deserializedRuleform;
     }
 

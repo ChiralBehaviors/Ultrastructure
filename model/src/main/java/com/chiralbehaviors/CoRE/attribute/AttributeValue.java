@@ -17,12 +17,10 @@ package com.chiralbehaviors.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -48,7 +46,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         Ruleform {
     private static final long serialVersionUID = 1L;
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
@@ -77,7 +76,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private Timestamp         timestampValue;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "unit")
     private Unit              unit;
 
@@ -320,21 +320,5 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
 
     public void setUnit(Unit unit) {
         this.unit = unit;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (attribute != null) {
-            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
     }
 }

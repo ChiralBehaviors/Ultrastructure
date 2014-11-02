@@ -50,7 +50,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     // bi-directional many-to-one association to Relationship
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 

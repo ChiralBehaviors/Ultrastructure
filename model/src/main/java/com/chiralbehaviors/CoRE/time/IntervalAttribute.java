@@ -49,7 +49,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Interval
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval")
     private Interval           interval;
 

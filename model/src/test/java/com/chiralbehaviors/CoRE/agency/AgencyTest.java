@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.resource;
+package com.chiralbehaviors.CoRE.agency;
 
 import javax.persistence.TypedQuery;
 

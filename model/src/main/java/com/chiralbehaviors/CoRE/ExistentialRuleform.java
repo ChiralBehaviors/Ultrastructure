@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -150,6 +151,9 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     @JsonIgnore
     abstract public SingularAttribute<Network, RuleForm> getNetworkParentAttribute();
+
+    @JsonIgnore
+    abstract public SingularAttribute<WorkspaceAuthorization, Network> getNetworkWorkspaceAuthAttribute();
 
     @JsonIgnore
     abstract public String getNotApplicableId();

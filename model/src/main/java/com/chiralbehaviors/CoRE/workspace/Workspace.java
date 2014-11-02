@@ -37,7 +37,7 @@ public interface Workspace {
     <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Attribute> getAttributeAuthorizations(RuleForm parent,
                                                                                                                                                     Relationship relationship);
 
-    <Value extends AttributeValue<?>, RuleForm extends ExistentialRuleform<RuleForm, ?>> Value getAttributes();
+    <Value extends AttributeValue<?>, RuleForm extends ExistentialRuleform<RuleForm, ?>> Value getAttributes(RuleForm ruleform);
 
     <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getChildren(RuleForm parent,
                                                                                                                                     Relationship relationship);

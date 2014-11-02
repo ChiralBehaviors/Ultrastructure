@@ -141,15 +141,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
     public Attribute() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Attribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attribute;
-    }
-
     /**
      * @param updatedBy
      */
@@ -326,6 +317,14 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, AttributeNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -343,6 +342,15 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
 
     public ValueType getValueType() {
         return valueType;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Attribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attribute;
     }
 
     /* (non-Javadoc)

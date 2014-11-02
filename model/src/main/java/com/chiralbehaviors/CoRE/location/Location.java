@@ -140,15 +140,6 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     public Location() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Location> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.location;
-    }
-
     /**
      * @param updatedBy
      */
@@ -308,6 +299,14 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, LocationNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -321,6 +320,15 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     @Override
     public String getSameId() {
         return WellKnownLocation.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Location> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.location;
     }
 
     /* (non-Javadoc)

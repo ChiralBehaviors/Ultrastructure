@@ -236,15 +236,6 @@ public class Relationship extends
         super(id);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Relationship> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationship;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -357,6 +348,14 @@ public class Relationship extends
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -378,6 +377,15 @@ public class Relationship extends
     @Override
     public String getSameId() {
         return WellKnownRelationship.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Relationship> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationship;
     }
 
     /* (non-Javadoc)

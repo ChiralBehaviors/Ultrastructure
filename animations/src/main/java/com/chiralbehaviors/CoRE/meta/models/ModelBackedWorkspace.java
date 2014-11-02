@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -98,14 +99,15 @@ public class ModelBackedWorkspace implements Workspace {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null");
         }
-        TypedQuery<WorkspaceAuthorization> query = model.getEntityManager().createQuery("SELECT auth FROM WorkspaceAuthorization auth "
-                                                                                                + "WHERE auth.key = :key "
-                                                                                                + "AND auth.definingProduct = :definingProduct",
-                                                                                        WorkspaceAuthorization.class);
-        query.setParameter("key", key);
-        query.setParameter("definingProduct", definingProduct);
+        CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
+        Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
+        query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.key),
+                                                 key),
+                                        cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
+                                                 definingProduct)));
         try {
-            WorkspaceAuthorization authorization = query.getSingleResult();
+            WorkspaceAuthorization authorization = model.getEntityManager().createQuery(query).getSingleResult();
             return authorization.getEntity();
         } catch (NoResultException e) {
             return null;
@@ -125,7 +127,7 @@ public class ModelBackedWorkspace implements Workspace {
      * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#getAttributes()
      */
     @Override
-    public <Value extends AttributeValue<?>, RuleForm extends ExistentialRuleform<RuleForm, ?>> Value getAttributes() {
+    public <Value extends AttributeValue<?>, RuleForm extends ExistentialRuleform<RuleForm, ?>> Value getAttributes(RuleForm ruleform) {
         return null;
     }
 
@@ -140,19 +142,19 @@ public class ModelBackedWorkspace implements Workspace {
         CriteriaQuery<RuleForm> query = (CriteriaQuery<RuleForm>) cb.createQuery(parent.getClass());
         @SuppressWarnings("unchecked")
         Root<NetworkRuleform<RuleForm>> networkRoot = (Root<NetworkRuleform<RuleForm>>) query.from(parent.getNetworkClass());
-        // Join<RuleForm, WorkspaceAuthorization> inWorkspace = networkRoot.join(networkRoot.fetch("parent"), null);
-        Path<RuleForm> path;
-        try {
-            path = networkRoot.get("child");
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        query.select(path).where(cb.and(cb.equal(networkRoot.get("parent"),
-                                                 parent),
-                                        cb.equal(networkRoot.get("relationship"),
-                                                 relationship),
-                                        cb.equal(networkRoot.get("inference").get("id"),
-                                                 "AAAAAAAAAAAAAAAAAAAAAA")));
+        Root<WorkspaceAuthorization> workspaceAuthRoot = query.from(WorkspaceAuthorization.class);
+        Path<RuleForm> childPath = networkRoot.get("child");
+        Path<Product> definingProductPath = workspaceAuthRoot.get(WorkspaceAuthorization_.definingProduct);
+        query.select(childPath).where(cb.and(cb.equal(definingProductPath,
+                                                      definingProduct),
+                                             cb.equal(workspaceAuthRoot.get(parent.getNetworkWorkspaceAuthAttribute()),
+                                                      networkRoot),
+                                             cb.equal(networkRoot.get("parent"),
+                                                      parent),
+                                             cb.equal(networkRoot.get("relationship"),
+                                                      relationship),
+                                             cb.equal(networkRoot.get("inference").get("id"),
+                                                      "AAAAAAAAAAAAAAAAAAAAAA")));
         TypedQuery<RuleForm> q = model.getEntityManager().createQuery(query);
         return q.getResultList();
     }
@@ -162,13 +164,15 @@ public class ModelBackedWorkspace implements Workspace {
      */
     @Override
     public <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass) {
-        TypedQuery<WorkspaceAuthorization> query = model.getEntityManager().createQuery("SELECT auth FROM WorkspaceAuthorization auth "
-                                                                                                + "WHERE auth.type = :type "
-                                                                                                + "AND auth.definingProduct = :definingProduct",
-                                                                                        WorkspaceAuthorization.class);
-        query.setParameter("type", ruleformClass.getSimpleName());
-        query.setParameter("definingProduct", definingProduct);
-        return new EntityList<T>(query.getResultList());
+        CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
+        Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
+        query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.type),
+                                                 ruleformClass.getSimpleName()),
+                                        cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
+                                                 definingProduct)));
+        return new EntityList<T>(
+                                 model.getEntityManager().createQuery(query).getResultList());
     }
 
     /* (non-Javadoc)
@@ -177,7 +181,26 @@ public class ModelBackedWorkspace implements Workspace {
     @Override
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getParents(RuleForm child,
                                                                                                                                           Relationship relationship) {
-        return Collections.emptyList();
+        CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
+        @SuppressWarnings("unchecked")
+        CriteriaQuery<RuleForm> query = (CriteriaQuery<RuleForm>) cb.createQuery(child.getClass());
+        @SuppressWarnings("unchecked")
+        Root<NetworkRuleform<RuleForm>> networkRoot = (Root<NetworkRuleform<RuleForm>>) query.from(child.getNetworkClass());
+        Root<WorkspaceAuthorization> workspaceAuthRoot = query.from(WorkspaceAuthorization.class);
+        Path<RuleForm> parentPath = networkRoot.get("parent");
+        Path<Product> definingProductPath = workspaceAuthRoot.get(WorkspaceAuthorization_.definingProduct);
+        query.select(parentPath).where(cb.and(cb.equal(definingProductPath,
+                                                       definingProduct),
+                                              cb.equal(workspaceAuthRoot.get(child.getNetworkWorkspaceAuthAttribute()),
+                                                       networkRoot),
+                                              cb.equal(networkRoot.get("child"),
+                                                       child),
+                                              cb.equal(networkRoot.get("relationship"),
+                                                       relationship),
+                                              cb.equal(networkRoot.get("inference").get("id"),
+                                                       "AAAAAAAAAAAAAAAAAAAAAA")));
+        TypedQuery<RuleForm> q = model.getEntityManager().createQuery(query);
+        return q.getResultList();
     }
 
     /* (non-Javadoc)

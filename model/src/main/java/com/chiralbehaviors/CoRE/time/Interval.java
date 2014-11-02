@@ -157,7 +157,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     private BigDecimal             start;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "unit")
     private Unit                   unit;
 
@@ -167,15 +168,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
 
     public Interval(Agency updatedBy) {
         super(updatedBy);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Interval> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.interval;
     }
 
     public Interval(BigDecimal start, BigDecimal duration, Unit unit,
@@ -332,6 +324,14 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, IntervalNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -359,6 +359,15 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      */
     public Unit getUnit() {
         return unit;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Interval> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.interval;
     }
 
     /* (non-Javadoc)

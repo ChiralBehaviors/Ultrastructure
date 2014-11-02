@@ -324,6 +324,14 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, AgencyNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override

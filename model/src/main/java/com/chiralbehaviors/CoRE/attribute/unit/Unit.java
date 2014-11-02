@@ -200,15 +200,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         networkByParent.add(relationship);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Unit> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unit;
-    }
-
     @Override
     public Unit clone() {
         Unit clone = (Unit) super.clone();
@@ -311,6 +302,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, UnitNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -324,6 +323,15 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     @Override
     public String getSameId() {
         return WellKnownUnit.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Unit> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unit;
     }
 
     /* (non-Javadoc)

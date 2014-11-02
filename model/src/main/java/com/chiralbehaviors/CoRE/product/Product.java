@@ -269,15 +269,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
         networkByParent.add(relationship);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Product> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.product;
-    }
-
     @Override
     public Product clone() {
         Product clone = (Product) super.clone();
@@ -365,6 +356,14 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, ProductNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -378,6 +377,15 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     @Override
     public String getSameId() {
         return WellKnownProduct.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Product> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.product;
     }
 
     /* (non-Javadoc)

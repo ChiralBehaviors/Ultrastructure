@@ -170,15 +170,6 @@ public class StatusCode extends
     public StatusCode() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCode> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCode;
-    }
-
     /**
      * @param updatedBy
      */
@@ -341,6 +332,14 @@ public class StatusCode extends
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -358,6 +357,15 @@ public class StatusCode extends
     @Override
     public String getSameId() {
         return WellKnownStatusCode.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCode> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCode;
     }
 
     /* (non-Javadoc)

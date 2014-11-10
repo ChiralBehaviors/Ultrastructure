@@ -28,6 +28,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -79,6 +80,7 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
      * ()
      */
     @Override
+    @JsonGetter
     public Agency getAuthorizedParent() {
         return authorizedParent;
     }
@@ -90,6 +92,7 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
      * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
      */
     @Override
+    @JsonGetter
     public Agency getClassifier() {
         return classifier;
     }

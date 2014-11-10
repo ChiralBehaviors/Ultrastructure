@@ -347,6 +347,7 @@ public class Protocol extends AbstractProtocol {
     public String toString() {
         return String.format("Protocol [%s, sequenceNumber=%s, requestedProduct=%s, requestedService=%s]",
                              getToString(), sequenceNumber,
-                             childProduct.getName(), childService.getName());
+                             getChildProduct().getName(),
+                             getChildService().getName());
     }
 }

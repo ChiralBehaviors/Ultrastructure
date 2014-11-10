@@ -156,7 +156,7 @@ public class JobChronology extends AbstractProtocol {
     @Override
     public String toString() {
         return String.format("JobChronology [status=%s, %s, sequenceNumber=%s, notes=%s]",
-                             status != null ? status.getName() : "null",
-                             getToString(), sequenceNumber, getNotes());
+                             getStatus().getName(), getToString(),
+                             sequenceNumber, getNotes());
     }
 }

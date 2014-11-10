@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -49,7 +50,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Interval
-    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval")
     private Interval           interval;
 
@@ -104,6 +105,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         super(id);
     }
 
+    @JsonGetter
     public Interval getInterval() {
         return interval;
     }

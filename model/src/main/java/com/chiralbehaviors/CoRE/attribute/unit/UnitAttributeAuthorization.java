@@ -30,6 +30,7 @@ import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -109,6 +110,7 @@ public class UnitAttributeAuthorization extends
      * getClassifier()
      */
     @Override
+    @JsonGetter
     public Unit getClassifier() {
         return classifier;
     }

@@ -27,6 +27,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -88,6 +89,7 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
      * ()
      */
     @Override
+    @JsonGetter
     public Product getAuthorizedParent() {
         return authorizedParent;
     }
@@ -99,6 +101,7 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
      * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
      */
     @Override
+    @JsonGetter
     public Product getClassifier() {
         return classifier;
     }

@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -126,14 +127,17 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     }
 
     @Override
+    @JsonGetter
     public Attribute getAttribute() {
         return attribute;
     }
 
+    @JsonGetter
     public Attribute getAttributeValue() {
         return attributeValue;
     }
 
+    @JsonGetter
     public Attribute getMetaAttribute() {
         return metaAttribute;
     }

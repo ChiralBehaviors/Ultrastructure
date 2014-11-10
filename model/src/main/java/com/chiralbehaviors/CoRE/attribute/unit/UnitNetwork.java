@@ -43,6 +43,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -81,20 +82,22 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     // many-to-one
     // association to Agency
 
-    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Unit               child;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Unit               parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private UnitNetwork        premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private UnitNetwork        premise2;
 
@@ -153,6 +156,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
+    @JsonGetter
     public Unit getChild() {
         return child;
     }
@@ -161,6 +165,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
+    @JsonGetter
     public Unit getParent() {
         return parent;
     }
@@ -177,6 +182,7 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public UnitNetwork getPremise2() {
         return premise2;
     }

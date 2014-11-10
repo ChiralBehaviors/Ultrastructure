@@ -211,9 +211,10 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @Override
     public String toString() {
         return String.format("ProductParentSequencingAuthorization [service=%s, statusCode=%s, parent=%s, parentStatusToSet=%s, setIfActiveSiblings=%s, replaceProduct=%s, sequenceNumber=%s]",
-                             service.getName(), statusCode.getName(),
-                             parent.getName(), parentStatusToSet.getName(),
-                             setIfActiveSiblings, replaceProduct,
-                             sequenceNumber);
+                             getService().getName(), getStatusCode().getName(),
+                             getParent().getName(),
+                             getParentStatusToSet().getName(),
+                             getSetIfActiveSiblings(), isReplaceProduct(),
+                             getSequenceNumber());
     }
 }

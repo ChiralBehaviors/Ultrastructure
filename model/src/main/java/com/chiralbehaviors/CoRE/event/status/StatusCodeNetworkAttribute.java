@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -53,7 +54,7 @@ public class StatusCodeNetworkAttribute extends
     // bi-directional many-to-one association to StatusCodeNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private StatusCodeNetwork StatusCodeNetwork;
+    private StatusCodeNetwork statusCodeNetwork;
 
     public StatusCodeNetworkAttribute() {
     }
@@ -144,6 +145,7 @@ public class StatusCodeNetworkAttribute extends
         super(id);
     }
 
+    @JsonGetter
     public Agency getAgency() {
         return agency;
     }
@@ -156,7 +158,7 @@ public class StatusCodeNetworkAttribute extends
      */
     @Override
     public SingularAttribute<StatusCodeNetworkAttribute, StatusCodeNetwork> getRuleformAttribute() {
-        return StatusCodeNetworkAttribute_.StatusCodeNetwork;
+        return StatusCodeNetworkAttribute_.statusCodeNetwork;
     }
 
     /*
@@ -169,8 +171,9 @@ public class StatusCodeNetworkAttribute extends
         return StatusCodeNetwork.class;
     }
 
+    @JsonGetter
     public StatusCodeNetwork getStatusCodeNetwork() {
-        return StatusCodeNetwork;
+        return statusCodeNetwork;
     }
 
     public void setAgency(Agency agency2) {
@@ -178,6 +181,6 @@ public class StatusCodeNetworkAttribute extends
     }
 
     public void setStatusCodeNetwork(StatusCodeNetwork StatusCodeNetwork) {
-        this.StatusCodeNetwork = StatusCodeNetwork;
+        this.statusCodeNetwork = StatusCodeNetwork;
     }
 }

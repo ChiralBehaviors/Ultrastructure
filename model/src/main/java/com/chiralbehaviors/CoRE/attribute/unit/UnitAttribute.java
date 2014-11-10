@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -49,7 +50,8 @@ public class UnitAttribute extends AttributeValue<Unit> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "unit_rf")
     private Unit               unitRf;
 
@@ -123,6 +125,7 @@ public class UnitAttribute extends AttributeValue<Unit> {
         return Unit.class;
     }
 
+    @JsonGetter
     public Unit getUnitRf() {
         return unitRf;
     }

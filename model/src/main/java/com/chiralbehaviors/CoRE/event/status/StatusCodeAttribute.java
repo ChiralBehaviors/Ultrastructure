@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -50,7 +51,8 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(fetch = FetchType.LAZY, cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
@@ -127,6 +129,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         return StatusCode.class;
     }
 
+    @JsonGetter
     public StatusCode getStatusCode() {
         return statusCode;
     }

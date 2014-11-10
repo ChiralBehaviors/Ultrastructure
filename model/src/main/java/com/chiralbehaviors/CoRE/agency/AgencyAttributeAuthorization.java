@@ -30,6 +30,7 @@ import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -102,6 +103,7 @@ public class AgencyAttributeAuthorization extends
      * getClassifier()
      */
     @Override
+    @JsonGetter
     public Agency getClassifier() {
         return classifier;
     }

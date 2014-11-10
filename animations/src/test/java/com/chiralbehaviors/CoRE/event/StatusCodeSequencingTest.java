@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -39,38 +37,20 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.JobModelImpl;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
  *
  */
-public class StatusCodeSequencingTest extends DatabaseTest {
-
-    @AfterClass
-    public static void teardown() throws SQLException {
-        alterTrigger(true);
-    }
-
-    protected static void alterTrigger(boolean enable) throws SQLException {
-        String query = String.format("ALTER TABLE ruleform.status_code_sequencing %s TRIGGER ensure_valid_state_graph",
-                                     enable ? "ENABLE" : "DISABLE");
-        connection.createStatement().execute(query);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.test.DatabaseTest#clear()
-     */
-    @Before
-    public void disableTriggers() throws SQLException {
-        alterTrigger(false);
-    }
+public class StatusCodeSequencingTest extends AbstractModelTest {
 
     @Test
     public void testHasNoSccs() throws Exception {
+        em.getTransaction().begin();
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
@@ -163,6 +143,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
 
     @Test
     public void testMultipleInitialStates() throws SQLException {
+        em.getTransaction().begin();
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
@@ -231,6 +212,7 @@ public class StatusCodeSequencingTest extends DatabaseTest {
 
     @Test
     public void testHasSccs() throws SQLException {
+        em.getTransaction().begin();
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);

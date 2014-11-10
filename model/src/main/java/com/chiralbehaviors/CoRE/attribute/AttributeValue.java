@@ -32,6 +32,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -137,6 +138,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         super(id);
     }
 
+    @JsonGetter
     public Attribute getAttribute() {
         return attribute;
     }

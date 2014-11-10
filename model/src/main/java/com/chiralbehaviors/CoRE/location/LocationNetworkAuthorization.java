@@ -28,6 +28,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -88,6 +89,7 @@ public class LocationNetworkAuthorization extends
      * ()
      */
     @Override
+    @JsonGetter
     public Location getAuthorizedParent() {
         return authorizedParent;
     }
@@ -99,6 +101,7 @@ public class LocationNetworkAuthorization extends
      * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
      */
     @Override
+    @JsonGetter
     public Location getClassifier() {
         return classifier;
     }

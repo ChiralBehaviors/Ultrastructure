@@ -62,16 +62,17 @@ public class DatabaseBackedWorkspace implements Workspace {
     }
 
     public static Kernel getKernel(EntityManager em) {
-        return new DatabaseBackedWorkspace(
-                                           em.find(Product.class,
-                                                   WellKnownProduct.KERNEL_WORKSPACE),
-                                           em).getAccesor(Kernel.class);
+        return new CachedWorkspace(
+                                   em.find(Product.class,
+                                           WellKnownProduct.KERNEL_WORKSPACE.id()),
+                                   em).getAccesor(Kernel.class);
     }
 
     protected final Product       definingProduct;
     protected final EntityManager em;
 
     public DatabaseBackedWorkspace(Product definingProduct, EntityManager em) {
+        assert definingProduct != null;
         this.definingProduct = definingProduct;
         this.em = em;
     }

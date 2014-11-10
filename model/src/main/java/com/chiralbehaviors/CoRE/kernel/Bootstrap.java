@@ -297,189 +297,189 @@ public class Bootstrap {
         em.persist(netAuth);
         workspace.link(isA, kernelWorkspace, core, core, em);
 
-        populate("attribute", find(WellKnownAttribute.ATTRIBUTE), core,
+        populate("Attribute", find(WellKnownAttribute.ATTRIBUTE), core,
                  kernelWorkspace);
-        populate("anyAttribute", find(WellKnownAttribute.ANY), core,
+        populate("AnyAttribute", find(WellKnownAttribute.ANY), core,
                  kernelWorkspace);
-        populate("copyAttribute", find(WellKnownAttribute.COPY), core,
+        populate("CopyAttribute", find(WellKnownAttribute.COPY), core,
                  kernelWorkspace);
-        populate("notApplicableAttribute",
+        populate("NotApplicableAttribute",
                  find(WellKnownAttribute.NOT_APPLICABLE), core, kernelWorkspace);
-        populate("sameAttribute", find(WellKnownAttribute.SAME), core,
+        populate("SameAttribute", find(WellKnownAttribute.SAME), core,
                  kernelWorkspace);
-        populate("loginAttribute", find(WellKnownAttribute.LOGIN), core,
+        populate("LoginAttribute", find(WellKnownAttribute.LOGIN), core,
                  kernelWorkspace);
-        populate("passwordHashAttribute",
+        populate("PasswordHashAttribute",
                  find(WellKnownAttribute.PASSWORD_HASH), core, kernelWorkspace);
 
-        populate("product", find(WellKnownProduct.ENTITY), core,
+        populate("Product", find(WellKnownProduct.ENTITY), core,
                  kernelWorkspace);
-        populate("anyProduct", find(WellKnownProduct.ANY), core,
+        populate("AnyProduct", find(WellKnownProduct.ANY), core,
                  kernelWorkspace);
-        populate("copyProduct", find(WellKnownProduct.COPY), core,
+        populate("CopyProduct", find(WellKnownProduct.COPY), core,
                  kernelWorkspace);
-        populate("sameProduct", find(WellKnownProduct.SAME), core,
+        populate("SameProduct", find(WellKnownProduct.SAME), core,
                  kernelWorkspace);
-        populate("notApplicableProduct", find(WellKnownProduct.NOT_APPLICABLE),
+        populate("NotApplicableProduct", find(WellKnownProduct.NOT_APPLICABLE),
                  core, kernelWorkspace);
-        populate("workspace", find(WellKnownProduct.WORKSPACE), core,
+        populate("Workspace", find(WellKnownProduct.WORKSPACE), core,
                  kernelWorkspace);
-        populate("kernelWorkspace", find(WellKnownProduct.KERNEL_WORKSPACE),
+        populate("KernelWorkspace", find(WellKnownProduct.KERNEL_WORKSPACE),
                  core, kernelWorkspace);
 
-        populate("location", find(WellKnownLocation.LOCATION), core,
+        populate("Location", find(WellKnownLocation.LOCATION), core,
                  kernelWorkspace);
-        populate("anyLocation", find(WellKnownLocation.ANY), core,
+        populate("AnyLocation", find(WellKnownLocation.ANY), core,
                  kernelWorkspace);
-        populate("copyLocation", find(WellKnownLocation.COPY), core,
+        populate("CopyLocation", find(WellKnownLocation.COPY), core,
                  kernelWorkspace);
-        populate("notApplicableLocation",
+        populate("NotApplicableLocation",
                  find(WellKnownLocation.NOT_APPLICABLE), core, kernelWorkspace);
-        populate("sameLocation", find(WellKnownLocation.SAME), core,
+        populate("SameLocation", find(WellKnownLocation.SAME), core,
                  kernelWorkspace);
 
-        populate("coreUser", find(WellKnownAgency.CORE_USER), core,
+        populate("CoreUser", find(WellKnownAgency.CORE_USER), core,
                  kernelWorkspace);
-        populate("agency", find(WellKnownAgency.AGENCY), core, kernelWorkspace);
-        populate("anyAgency", find(WellKnownAgency.ANY), core, kernelWorkspace);
-        populate("copyAgency", find(WellKnownAgency.COPY), core,
+        populate("Agency", find(WellKnownAgency.AGENCY), core, kernelWorkspace);
+        populate("AnyAgency", find(WellKnownAgency.ANY), core, kernelWorkspace);
+        populate("CopyAgency", find(WellKnownAgency.COPY), core,
                  kernelWorkspace);
-        populate("core", find(WellKnownAgency.CORE), core, kernelWorkspace);
-        populate("coreAnimationSoftware",
+        populate("Core", find(WellKnownAgency.CORE), core, kernelWorkspace);
+        populate("CoreAnimationSoftware",
                  find(WellKnownAgency.CORE_ANIMATION_SOFTWARE), core,
                  kernelWorkspace);
-        populate("propagationSoftware",
+        populate("PropagationSoftware",
                  find(WellKnownAgency.PROPAGATION_SOFTWARE), core,
                  kernelWorkspace);
-        populate("specialSystemAgency",
+        populate("SpecialSystemAgency",
                  find(WellKnownAgency.SPECIAL_SYSTEM_AGENCY), core,
                  kernelWorkspace);
-        populate("coreModel", find(WellKnownAgency.CORE_MODEL), core,
+        populate("CoreModel", find(WellKnownAgency.CORE_MODEL), core,
                  kernelWorkspace);
-        populate("superUser", find(WellKnownAgency.SUPER_USER), core,
+        populate("SuperUser", find(WellKnownAgency.SUPER_USER), core,
                  kernelWorkspace);
-        populate("inverseSoftware", find(WellKnownAgency.INVERSE_SOFTWARE),
+        populate("InverseSoftware", find(WellKnownAgency.INVERSE_SOFTWARE),
                  core, kernelWorkspace);
-        populate("sameAgency", find(WellKnownAgency.SAME), core,
+        populate("SameAgency", find(WellKnownAgency.SAME), core,
                  kernelWorkspace);
-        populate("notApplicableAgency", find(WellKnownAgency.NOT_APPLICABLE),
+        populate("NotApplicableAgency", find(WellKnownAgency.NOT_APPLICABLE),
                  core, kernelWorkspace);
 
-        populate("anyRelationship", find(WellKnownRelationship.ANY), core,
+        populate("AnyRelationship", find(WellKnownRelationship.ANY), core,
                  kernelWorkspace);
-        populate("copyRelationship", find(WellKnownRelationship.COPY), core,
+        populate("CopyRelationship", find(WellKnownRelationship.COPY), core,
                  kernelWorkspace);
-        populate("sameRelationship", find(WellKnownRelationship.SAME), core,
+        populate("SameRelationship", find(WellKnownRelationship.SAME), core,
                  kernelWorkspace);
-        populate("isContainedIn", find(WellKnownRelationship.IS_CONTAINED_IN),
+        populate("IsContainedIn", find(WellKnownRelationship.IS_CONTAINED_IN),
                  core, kernelWorkspace);
-        populate("contains", find(WellKnownRelationship.CONTAINS), core,
+        populate("Contains", find(WellKnownRelationship.CONTAINS), core,
                  kernelWorkspace);
-        populate("isA", find(WellKnownRelationship.IS_A), core, kernelWorkspace);
-        populate("includes", find(WellKnownRelationship.INCLUDES), core,
+        populate("IsA", find(WellKnownRelationship.IS_A), core, kernelWorkspace);
+        populate("Includes", find(WellKnownRelationship.INCLUDES), core,
                  kernelWorkspace);
-        populate("hasException", find(WellKnownRelationship.HAS_EXCEPTION),
+        populate("HasException", find(WellKnownRelationship.HAS_EXCEPTION),
                  core, kernelWorkspace);
-        populate("isExceptionTo", find(WellKnownRelationship.IS_EXCEPTION_TO),
+        populate("IsExceptionTo", find(WellKnownRelationship.IS_EXCEPTION_TO),
                  core, kernelWorkspace);
-        populate("isLocationOf", find(WellKnownRelationship.IS_LOCATION_OF),
+        populate("IsLocationOf", find(WellKnownRelationship.IS_LOCATION_OF),
                  core, kernelWorkspace);
-        populate("mapsToLocation",
+        populate("MapsToLocation",
                  find(WellKnownRelationship.MAPS_TO_LOCATION), core,
                  kernelWorkspace);
-        populate("prototype", find(WellKnownRelationship.PROTOTYPE), core,
+        populate("Prototype", find(WellKnownRelationship.PROTOTYPE), core,
                  kernelWorkspace);
-        populate("prototypeOf", find(WellKnownRelationship.PROTOTYPE_OF), core,
+        populate("PrototypeOf", find(WellKnownRelationship.PROTOTYPE_OF), core,
                  kernelWorkspace);
-        populate("greaterThan", find(WellKnownRelationship.GREATER_THAN), core,
+        populate("GreaterThan", find(WellKnownRelationship.GREATER_THAN), core,
                  kernelWorkspace);
-        populate("lessThan", find(WellKnownRelationship.LESS_THAN), core,
+        populate("LessThan", find(WellKnownRelationship.LESS_THAN), core,
                  kernelWorkspace);
-        populate("equals", find(WellKnownRelationship.EQUALS), core,
+        populate("Equals", find(WellKnownRelationship.EQUALS), core,
                  kernelWorkspace);
-        populate("lessThanOrEqual",
+        populate("LessThanOrEqual",
                  find(WellKnownRelationship.LESS_THAN_OR_EQUAL), core,
                  kernelWorkspace);
-        populate("greaterThanOrEqual",
+        populate("GreaterThanOrEqual",
                  find(WellKnownRelationship.GREATER_THAN_OR_EQUAL), core,
                  kernelWorkspace);
-        populate("developed", find(WellKnownRelationship.DEVELOPED), core,
+        populate("Developed", find(WellKnownRelationship.DEVELOPED), core,
                  kernelWorkspace);
-        populate("developedBy", find(WellKnownRelationship.DEVELOPED_BY), core,
+        populate("DevelopedBy", find(WellKnownRelationship.DEVELOPED_BY), core,
                  kernelWorkspace);
-        populate("versionOf", find(WellKnownRelationship.VERSION_OF), core,
+        populate("VersionOf", find(WellKnownRelationship.VERSION_OF), core,
                  kernelWorkspace);
-        populate("hasVersion", find(WellKnownRelationship.HAS_VERSION), core,
+        populate("HasVersion", find(WellKnownRelationship.HAS_VERSION), core,
                  kernelWorkspace);
-        populate("hasMember", find(WellKnownRelationship.HAS_MEMBER), core,
+        populate("HasMember", find(WellKnownRelationship.HAS_MEMBER), core,
                  kernelWorkspace);
-        populate("memberOf", find(WellKnownRelationship.MEMBER_OF), core,
+        populate("MemberOf", find(WellKnownRelationship.MEMBER_OF), core,
                  kernelWorkspace);
-        populate("headOf", find(WellKnownRelationship.HEAD_OF), core,
+        populate("HeadOf", find(WellKnownRelationship.HEAD_OF), core,
                  kernelWorkspace);
-        populate("hasHead", find(WellKnownRelationship.HAS_HEAD), core,
+        populate("HasHead", find(WellKnownRelationship.HAS_HEAD), core,
                  kernelWorkspace);
-        populate("hadMember", find(WellKnownRelationship.HAD_MEMBER), core,
+        populate("HadMember", find(WellKnownRelationship.HAD_MEMBER), core,
                  kernelWorkspace);
-        populate("formerMemberOf",
+        populate("FormerMemberOf",
                  find(WellKnownRelationship.FORMER_MEMBER_OF), core,
                  kernelWorkspace);
-        populate("notApplicableRelationship",
+        populate("NotApplicableRelationship",
                  find(WellKnownRelationship.NOT_APPLICABLE), core,
                  kernelWorkspace);
-        populate("ownedBy", find(WellKnownRelationship.OWNED_BY), core,
+        populate("OwnedBy", find(WellKnownRelationship.OWNED_BY), core,
                  kernelWorkspace);
-        populate("owns", find(WellKnownRelationship.OWNS), core,
+        populate("Owns", find(WellKnownRelationship.OWNS), core,
                  kernelWorkspace);
-        populate("inWorkspace", find(WellKnownRelationship.IN_WORKSPACE), core,
+        populate("InWorkspace", find(WellKnownRelationship.IN_WORKSPACE), core,
                  kernelWorkspace);
-        populate("workspaceOf", find(WellKnownRelationship.WORKSPACE_OF), core,
+        populate("WorkspaceOf", find(WellKnownRelationship.WORKSPACE_OF), core,
                  kernelWorkspace);
 
-        populate("unset", find(WellKnownStatusCode.UNSET), core,
+        populate("Unset", find(WellKnownStatusCode.UNSET), core,
                  kernelWorkspace);
-        populate("anyStatusCode", find(WellKnownStatusCode.ANY), core,
+        populate("AnyStatusCode", find(WellKnownStatusCode.ANY), core,
                  kernelWorkspace);
-        populate("copyStatusCode", find(WellKnownStatusCode.COPY), core,
+        populate("CopyStatusCode", find(WellKnownStatusCode.COPY), core,
                  kernelWorkspace);
-        populate("sameStatusCode", find(WellKnownStatusCode.SAME), core,
+        populate("SameStatusCode", find(WellKnownStatusCode.SAME), core,
                  kernelWorkspace);
-        populate("notApplicableStatusCode",
+        populate("NotApplicableStatusCode",
                  find(WellKnownStatusCode.NOT_APPLICABLE), core,
                  kernelWorkspace);
 
-        populate("unsetUnit", find(WellKnownUnit.UNSET), core, kernelWorkspace);
-        populate("anyUnit", find(WellKnownUnit.ANY), core, kernelWorkspace);
-        populate("copyUnit", find(WellKnownUnit.COPY), core, kernelWorkspace);
-        populate("sameUnit", find(WellKnownUnit.SAME), core, kernelWorkspace);
-        populate("notApplicableUnit", find(WellKnownUnit.NOT_APPLICABLE), core,
+        populate("UnsetUnit", find(WellKnownUnit.UNSET), core, kernelWorkspace);
+        populate("AnyUnit", find(WellKnownUnit.ANY), core, kernelWorkspace);
+        populate("CopyUnit", find(WellKnownUnit.COPY), core, kernelWorkspace);
+        populate("SameUnit", find(WellKnownUnit.SAME), core, kernelWorkspace);
+        populate("NotApplicableUnit", find(WellKnownUnit.NOT_APPLICABLE), core,
                  kernelWorkspace);
 
-        populate("anyInterval", find(WellKnownInterval.ANY), core,
+        populate("AnyInterval", find(WellKnownInterval.ANY), core,
                  kernelWorkspace);
-        populate("copyInterval", find(WellKnownInterval.COPY), core,
+        populate("CopyInterval", find(WellKnownInterval.COPY), core,
                  kernelWorkspace);
-        populate("sameInterval", find(WellKnownInterval.SAME), core,
+        populate("SameInterval", find(WellKnownInterval.SAME), core,
                  kernelWorkspace);
-        populate("notApplicableInterval",
+        populate("NotApplicableInterval",
                  find(WellKnownInterval.NOT_APPLICABLE), core, kernelWorkspace);
 
-        populate("rootAgencyNetwork", em.find(AgencyNetwork.class, ZERO), core,
+        populate("RootAgencyNetwork", em.find(AgencyNetwork.class, ZERO), core,
                  kernelWorkspace);
-        populate("rootAttributeNetwork", em.find(AttributeNetwork.class, ZERO),
+        populate("RootAttributeNetwork", em.find(AttributeNetwork.class, ZERO),
                  core, kernelWorkspace);
-        populate("rootIntervalNetwork", em.find(IntervalNetwork.class, ZERO),
+        populate("RootIntervalNetwork", em.find(IntervalNetwork.class, ZERO),
                  core, kernelWorkspace);
-        populate("rootLocationNetwork", em.find(LocationNetwork.class, ZERO),
+        populate("RootLocationNetwork", em.find(LocationNetwork.class, ZERO),
                  core, kernelWorkspace);
-        populate("rootProductNetwork", em.find(ProductNetwork.class, ZERO),
+        populate("RootProductNetwork", em.find(ProductNetwork.class, ZERO),
                  core, kernelWorkspace);
-        populate("rootRelationshipNetwork",
+        populate("RootRelationshipNetwork",
                  em.find(RelationshipNetwork.class, ZERO), core,
                  kernelWorkspace);
-        populate("rootStatusCodeNetwork",
+        populate("RootStatusCodeNetwork",
                  em.find(StatusCodeNetwork.class, ZERO), core, kernelWorkspace);
-        populate("rootUnitNetwork", em.find(UnitNetwork.class, ZERO), core,
+        populate("RootUnitNetwork", em.find(UnitNetwork.class, ZERO), core,
                  kernelWorkspace);
     }
 

@@ -23,21 +23,19 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -83,9 +81,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     private static final long   serialVersionUID      = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid_seq")
-    @SequenceGenerator(name = "uuid_seq", sequenceName = "com.chiralbehaviors.CoRE.UuidGenerator()")
-    private String              id;
+    private String              id                    = UuidGenerator.nextId();
 
     @Basic(fetch = FetchType.LAZY)
     private String              notes;
@@ -166,6 +162,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return true;
     }
 
+    @JsonGetter
     public final String getId() {
         return getPrimaryKey();
     }
@@ -173,6 +170,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the notes
      */
+    @JsonGetter
     public String getNotes() {
         return notes;
     }
@@ -185,6 +183,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the updateDate
      */
+    @JsonGetter
     public Timestamp getUpdateDate() {
         return updateDate;
     }
@@ -192,6 +191,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the updatedBy
      */
+    @JsonGetter
     public Agency getUpdatedBy() {
         return updatedBy;
     }

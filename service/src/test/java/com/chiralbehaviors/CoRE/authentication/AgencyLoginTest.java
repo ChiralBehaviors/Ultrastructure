@@ -33,8 +33,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
+import com.chiralbehaviors.CoRE.kernel.KernelLoader;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
-import com.chiralbehaviors.CoRE.meta.BootstrapLoader;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -59,9 +59,7 @@ public class AgencyLoginTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         em = emf.createEntityManager();
-        BootstrapLoader loader = new BootstrapLoader(em);
-        loader.clear();
-        loader.bootstrap();
+        KernelLoader.clearAndLoadKernel(em);
         model = new ModelImpl(em);
         em.getTransaction().begin();
         em.flush();

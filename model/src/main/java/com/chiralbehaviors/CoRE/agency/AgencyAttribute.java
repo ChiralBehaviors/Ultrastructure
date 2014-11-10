@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -134,6 +135,7 @@ public class AgencyAttribute extends AttributeValue<Agency> {
         super(id);
     }
 
+    @JsonGetter
     public Agency getAgency() {
         return agency;
     }

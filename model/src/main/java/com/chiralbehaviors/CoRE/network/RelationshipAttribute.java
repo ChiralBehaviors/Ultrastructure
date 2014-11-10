@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -50,7 +51,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     // bi-directional many-to-one association to Relationship
 
-    @ManyToOne(cascade ={ CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 
@@ -107,6 +108,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         super(id);
     }
 
+    @JsonGetter
     public Relationship getRelationship() {
         return relationship;
     }

@@ -394,8 +394,8 @@ public class Job extends AbstractProtocol {
     @Override
     public String toString() {
         return String.format("Job [status=%s, %s, sequenceNumber=%s, currentLogSequence=%s]",
-                             status != null ? status.getName() : "null",
-                             getToString(), sequenceNumber, currentLogSequence);
+                             getStatus().getName(), getToString(),
+                             sequenceNumber, currentLogSequence);
     }
 
     /* (non-Javadoc)

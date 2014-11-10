@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -129,6 +130,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     /**
      * @return the description
      */
+    @JsonGetter
     public String getDescription() {
         return description;
     }
@@ -136,6 +138,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     /**
      * @return the name
      */
+    @JsonGetter
     public String getName() {
         return name;
     }
@@ -164,6 +167,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     /**
      * @return the pinned
      */
+    @JsonGetter
     public Boolean getPinned() {
         return toBoolean(pinned);
     }
@@ -225,6 +229,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     @Override
     public String toString() {
-        return String.format("%s [%s]", getClass().getSimpleName(), name);
+        return String.format("%s [%s]", getClass().getSimpleName(), getName());
     }
 }

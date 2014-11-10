@@ -30,6 +30,7 @@ import javax.persistence.MappedSuperclass;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
  *
@@ -105,6 +106,7 @@ abstract public class AttributeAuthorization extends Ruleform {
         super(id, updatedBy);
     }
 
+    @JsonGetter
     public Attribute getAuthorizedAttribute() {
         return authorizedAttribute;
     }
@@ -123,6 +125,7 @@ abstract public class AttributeAuthorization extends Ruleform {
         return booleanValue;
     }
 
+    @JsonGetter
     public Agency getGroupingAgency() {
         return groupingAgency;
     }

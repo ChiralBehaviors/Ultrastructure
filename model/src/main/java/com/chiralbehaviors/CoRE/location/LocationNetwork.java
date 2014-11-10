@@ -45,6 +45,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -149,11 +150,13 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     }
 
     @Override
+    @JsonGetter
     public Location getChild() {
         return child;
     }
 
     @Override
+    @JsonGetter
     public Location getParent() {
         return parent;
     }
@@ -162,6 +165,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @return the premise1
      */
     @Override
+    @JsonGetter
     public LocationNetwork getPremise1() {
         return premise1;
     }
@@ -170,6 +174,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public LocationNetwork getPremise2() {
         return premise2;
     }

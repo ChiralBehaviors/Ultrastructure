@@ -30,6 +30,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -141,6 +142,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
         super(id);
     }
 
+    @JsonGetter
     public Agency getAgency() {
         return agency;
     }
@@ -166,6 +168,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
         return UnitNetwork.class;
     }
 
+    @JsonGetter
     public UnitNetwork getUnitNetwork() {
         return UnitNetwork;
     }

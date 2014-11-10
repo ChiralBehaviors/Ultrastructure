@@ -202,8 +202,9 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     @Override
     public String toString() {
         return String.format("ProductChildSequencingAuthorization [parent=%s, statusCode=%s, nextChild=%s, nextChildStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
-                             parent.getName(), statusCode.getName(),
-                             nextChild.getName(), nextChildStatus.getName(),
-                             replaceProduct, sequenceNumber);
+                             getParent().getName(), getStatusCode().getName(),
+                             getNextChild().getName(),
+                             getNextChildStatus().getName(),
+                             isReplaceProduct(), getSequenceNumber());
     }
 }

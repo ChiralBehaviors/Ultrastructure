@@ -28,6 +28,7 @@ import javax.persistence.MappedSuperclass;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
  * Attribute authorization that can be classified in a network. The network
@@ -93,6 +94,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
         return classification;
     }
 
+    @JsonGetter
     abstract public RuleForm getClassifier();
 
     public void setClassification(Relationship classification) {

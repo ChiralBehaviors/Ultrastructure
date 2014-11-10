@@ -30,6 +30,7 @@ import javax.persistence.MappedSuperclass;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -104,14 +105,18 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     /**
      * @return the inference
      */
+    @JsonGetter
     public NetworkInference getInference() {
         return inference;
     }
 
+    @JsonGetter
     abstract public E getParent();
 
+    @JsonGetter
     abstract public NetworkRuleform<E> getPremise1();
 
+    @JsonGetter
     abstract public NetworkRuleform<E> getPremise2();
 
     /**

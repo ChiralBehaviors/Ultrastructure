@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -52,6 +51,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -157,10 +157,8 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipNetwork>   networkByParent;
 
-    @Basic(fetch = FetchType.LAZY)
     private String                     operator;
 
-    @Basic(fetch = FetchType.LAZY)
     private Integer                    preferred                                = FALSE;
 
     public Relationship() {
@@ -299,6 +297,7 @@ public class Relationship extends
         return WellKnownRelationship.COPY.id();
     }
 
+    @JsonGetter
     public Relationship getInverse() {
         return inverse;
     }

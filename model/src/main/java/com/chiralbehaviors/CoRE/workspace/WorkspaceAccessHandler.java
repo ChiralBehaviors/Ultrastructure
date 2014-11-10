@@ -52,7 +52,7 @@ public class WorkspaceAccessHandler implements InvocationHandler {
 
     protected Object getAsBeanAccessor(Method method) {
         String name = method.getName();
-        if (name.startsWith("get")) {
+        if (!name.startsWith("get")) {
             throw new UnsupportedOperationException(
                                                     String.format("Cannot create key for method: %s",
                                                                   method));

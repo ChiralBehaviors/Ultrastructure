@@ -45,6 +45,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -154,11 +155,13 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     }
 
     @Override
+    @JsonGetter
     public Agency getChild() {
         return child;
     }
 
     @Override
+    @JsonGetter
     public Agency getParent() {
         return parent;
     }
@@ -167,6 +170,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @return the premise1
      */
     @Override
+    @JsonGetter
     public AgencyNetwork getPremise1() {
         return premise1;
     }
@@ -175,6 +179,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public AgencyNetwork getPremise2() {
         return premise2;
     }

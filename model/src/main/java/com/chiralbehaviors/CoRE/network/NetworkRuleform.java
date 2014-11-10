@@ -30,6 +30,7 @@ import javax.persistence.MappedSuperclass;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * An existential ruleform that can form directed graphs.
@@ -133,6 +134,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         return result;
     }
 
+    @JsonIgnore
     public boolean isInferred() {
         if (inference == null) {
             return false;

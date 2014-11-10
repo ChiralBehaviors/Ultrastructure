@@ -34,11 +34,11 @@ import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 
 /**
  * @author hhildebrand
@@ -90,7 +90,7 @@ public class UnitModelImpl
      * @param em
      */
     public UnitModelImpl(EntityManager em) {
-        super(em, new KernelImpl(em));
+        super(em, DatabaseBackedWorkspace.getKernel(em));
     }
 
     /**

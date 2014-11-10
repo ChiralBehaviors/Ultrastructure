@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -40,6 +39,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 
 /**
  * @author hhildebrand
@@ -91,7 +91,7 @@ public class ProductModelImpl
      * @param em
      */
     public ProductModelImpl(EntityManager em) {
-        this(em, new KernelImpl(em));
+        this(em, DatabaseBackedWorkspace.getKernel(em));
     }
 
     /**

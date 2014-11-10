@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
@@ -39,6 +38,7 @@ import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 
 /**
  * @author hhildebrand
@@ -90,7 +90,7 @@ public class LocationModelImpl
      * @param em
      */
     public LocationModelImpl(EntityManager em) {
-        super(em, new KernelImpl(em));
+        super(em, DatabaseBackedWorkspace.getKernel(em));
     }
 
     /**

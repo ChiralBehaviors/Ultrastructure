@@ -13,25 +13,30 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
+package com.chiralbehaviors.CoRE.json;
 
-package com.chiralbehaviors.CoRE.access.api;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
+ * A jackson module for registering serializers and deserializers.
+ * 
  * @author hparry
  * 
  */
-public class ExistentialRuleformApi {
+public class CoREModule extends SimpleModule {
 
-    // create
+    private static final long serialVersionUID = 1L;
 
-    // take individual args, create ruleform, persist or not as necessary
-    // public static ExistentialRuleform create(Map<String, Object> params) {
-    //
-    // }
-    // read
+    public CoREModule() {
+        super("CoREModule");
+    }
 
-    // update
+    @Override
+    public void setupModule(SetupContext context) {
 
-    // delete
-
+        context.setMixInAnnotations(Ruleform.class,
+                                    PolymorphicRuleformMixin.class);
+        super.setupModule(context);
+    }
 }

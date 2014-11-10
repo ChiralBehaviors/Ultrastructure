@@ -11,7 +11,7 @@
     <description>An implementation of Ultra Structure</description>
 
     <licenses>
-        <license> 
+        <license>
             <name>Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
@@ -64,7 +64,6 @@
         <module>test-framework</module>
         <module>model</module>
         <module>animations</module>
-        <module>workspace-api</module>
         <module>configuration</module>
         <module>data-access</module>
         <module>service</module>

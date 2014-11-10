@@ -16,11 +16,9 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.AbstractList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -35,103 +33,33 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
  *
  *         A workspace backed by a database
  */
-public class ModelBackedWorkspace implements Workspace {
-
-    private class EntityList<T extends Ruleform> extends AbstractList<T> {
-        private final List<WorkspaceAuthorization> backingList;
-
-        public EntityList(List<WorkspaceAuthorization> backingList) {
-            this.backingList = backingList;
-        }
-
-        /* (non-Javadoc)
-         * @see java.util.AbstractList#get(int)
-         */
-        @SuppressWarnings("unchecked")
-        @Override
-        public T get(int index) {
-            return (T) backingList.get(index).getEntity();
-        }
-
-        /* (non-Javadoc)
-         * @see java.util.AbstractCollection#size()
-         */
-        @Override
-        public int size() {
-            return backingList.size();
-        }
-
-    }
+public class ModelBackedWorkspace extends DatabaseBackedWorkspace {
 
     public static String getAttributeColumnName(Ruleform ruleform) {
         return ruleform.getClass().getSimpleName().toLowerCase();
     }
 
-    private final Product definingProduct;
-    private final Model   model;
+    private final Model model;
 
     public ModelBackedWorkspace(Product definingProduct, Model model) {
+        super(definingProduct, model.getEntityManager());
         this.model = model;
-        this.definingProduct = definingProduct;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#add(com.chiralbehaviors.CoRE.Ruleform)
-     */
-    @Override
-    public <T extends Ruleform> void add(T ruleform) {
-        WorkspaceAuthorization authorization = new WorkspaceAuthorization();
-        authorization.setEntity(ruleform);
-        authorization.setDefiningProduct(definingProduct);
-        model.getEntityManager().persist(authorization);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#get(java.lang.String)
-     */
-    @Override
-    public <T extends Ruleform> T get(String key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key cannot be null");
-        }
-        CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
-        Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
-        query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.key),
-                                                 key),
-                                        cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                                 definingProduct)));
-        try {
-            WorkspaceAuthorization authorization = model.getEntityManager().createQuery(query).getSingleResult();
-            return authorization.getEntity();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#getAttributeAuthorizations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Attribute> getAttributeAuthorizations(RuleForm parent,
                                                                                                                                                            Relationship relationship) {
         return Collections.emptyList();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#getAttributes()
-     */
-    @Override
     public <Value extends AttributeValue<RuleForm>, RuleForm extends ExistentialRuleform<RuleForm, ?>> List<Value> getAttributes(RuleForm ruleform) {
         CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
         @SuppressWarnings("unchecked")
@@ -149,10 +77,6 @@ public class ModelBackedWorkspace implements Workspace {
         return q.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#getChildren(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getChildren(RuleForm parent,
                                                                                                                                            Relationship relationship) {
         CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
@@ -177,26 +101,6 @@ public class ModelBackedWorkspace implements Workspace {
         return q.getResultList();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#getCollection(java.lang.Class)
-     */
-    @Override
-    public <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass) {
-        CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
-        Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
-        query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.type),
-                                                 ruleformClass.getSimpleName()),
-                                        cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                                 definingProduct)));
-        return new EntityList<T>(
-                                 model.getEntityManager().createQuery(query).getResultList());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#getParents(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getParents(RuleForm child,
                                                                                                                                           Relationship relationship) {
         CriteriaBuilder cb = model.getEntityManager().getCriteriaBuilder();
@@ -219,22 +123,5 @@ public class ModelBackedWorkspace implements Workspace {
                                                        "AAAAAAAAAAAAAAAAAAAAAA")));
         TypedQuery<RuleForm> q = model.getEntityManager().createQuery(query);
         return q.getResultList();
-    }
-
-    @Override
-    public WorkspaceSnapshot getSnapshot() {
-        return new WorkspaceSnapshot(definingProduct, model.getEntityManager());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.Ruleform)
-     */
-    @Override
-    public <T extends Ruleform> void put(String key, T ruleform) {
-        WorkspaceAuthorization authorization = new WorkspaceAuthorization();
-        authorization.setDefiningProduct(definingProduct);
-        authorization.setEntity(ruleform);
-        authorization.setKey(key);
-        model.getEntityManager().persist(authorization);
     }
 }

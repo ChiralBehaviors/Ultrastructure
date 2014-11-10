@@ -33,11 +33,11 @@ import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 
 /**
  * @author hhildebrand
@@ -94,7 +94,7 @@ public class AttributeModelImpl
      * @param em
      */
     public AttributeModelImpl(EntityManager em) {
-        this(em, new KernelImpl(em));
+        this(em, DatabaseBackedWorkspace.getKernel(em));
     }
 
     /**

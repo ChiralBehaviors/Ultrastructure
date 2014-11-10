@@ -16,24 +16,17 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
-import java.util.List;
-
-import com.chiralbehaviors.CoRE.Ruleform;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author hhildebrand
  *
  */
-public interface Workspace {
-    <T extends Ruleform> void add(T ruleform);
-
-    <T extends Ruleform> T get(String key);
-
-    <T> T getAccesor(Class<T> accessorInterface);
-
-    <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass);
-
-    WorkspaceSnapshot getSnapshot();
-
-    <T extends Ruleform> void put(String key, T ruleform);
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Key {
+    String value();
 }

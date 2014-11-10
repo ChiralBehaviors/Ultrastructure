@@ -30,8 +30,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelLoader;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
-import com.chiralbehaviors.CoRE.meta.BootstrapLoader;
 
 /**
  * @author hhildebrand
@@ -47,12 +47,8 @@ public class KernelTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         EntityManager em = emf.createEntityManager();
-        BootstrapLoader loader = new BootstrapLoader(em);
         em.getTransaction().begin();
-        loader.clear();
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        loader.bootstrap();
+        KernelLoader.clearAndLoadKernel(em);
         em.getTransaction().commit();
 
         Kernel kernel = new ModelImpl(em).getKernel();

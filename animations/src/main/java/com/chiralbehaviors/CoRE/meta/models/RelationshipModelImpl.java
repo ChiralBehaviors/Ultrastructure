@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -38,6 +37,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 
 /**
  * @author hhildebrand
@@ -90,7 +90,7 @@ public class RelationshipModelImpl
      * @param em
      */
     public RelationshipModelImpl(EntityManager em) {
-        super(em, new KernelImpl(em));
+        super(em, DatabaseBackedWorkspace.getKernel(em));
     }
 
     /**

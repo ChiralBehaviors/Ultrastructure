@@ -141,6 +141,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return attribute;
     }
 
+    @JsonIgnore
     public byte[] getBinaryValue() {
         if (attribute.getValueType() != ValueType.BINARY) {
             throw new UnsupportedOperationException(
@@ -151,6 +152,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return binaryValue;
     }
 
+    @JsonIgnore
     public Boolean getBooleanValue() {
         if (attribute.getValueType() != ValueType.BOOLEAN) {
             throw new UnsupportedOperationException(
@@ -161,6 +163,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return toBoolean(booleanValue);
     }
 
+    @JsonIgnore
     public Integer getIntegerValue() {
         if (attribute.getValueType() != ValueType.INTEGER) {
             throw new UnsupportedOperationException(
@@ -178,6 +181,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return key;
     }
 
+    @JsonIgnore
     public BigDecimal getNumericValue() {
         if (attribute.getValueType() != ValueType.NUMERIC) {
             throw new UnsupportedOperationException(
@@ -202,6 +206,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return sequenceNumber;
     }
 
+    @JsonIgnore
     public String getTextValue() {
         if (attribute.getValueType() != ValueType.TEXT) {
             throw new UnsupportedOperationException(
@@ -212,10 +217,12 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return textValue;
     }
 
+    @JsonIgnore
     public Timestamp getTimestampValue() {
         return timestampValue;
     }
 
+    @JsonIgnore
     public Unit getUnit() {
         return unit;
     }

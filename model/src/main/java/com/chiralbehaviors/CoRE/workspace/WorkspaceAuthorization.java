@@ -163,9 +163,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  UNIT_NETWORK                             = "UnitNetwork";
     public static final String  UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
     public static final String  UNIT_VALUE                               = "UnitValue";
-    /**
-     * 
-     */
     private static final String INTERVAL_ATTRIBUTE_AUTHORIZATION         = "IntervalAttributeAuthorization";
 
     private static final long   serialVersionUID                         = 1L;
@@ -425,74 +422,90 @@ public class WorkspaceAuthorization extends Ruleform {
         super();
     }
 
-    public WorkspaceAuthorization(Ruleform ruleform) {
+    public WorkspaceAuthorization(Ruleform ruleform, Product definingProduct) {
         super();
         setEntity(ruleform);
+        setDefiningProduct(definingProduct);
     }
 
-    public WorkspaceAuthorization(Ruleform ruleform, Agency updatedBy) {
-        this(updatedBy);
+    public WorkspaceAuthorization(Ruleform ruleform, Product definingProduct,
+                                  Agency updatedBy) {
+        this(ruleform, definingProduct);
         setUpdatedBy(updatedBy);
     }
 
     public WorkspaceAuthorization(String key, Ruleform ruleform,
-                                  Agency updatedBy) {
-        this(updatedBy, updatedBy);
+                                  Product definingProduct, Agency updatedBy) {
+        this(ruleform, definingProduct, updatedBy);
         setKey(key);
     }
 
+    @JsonIgnore
     public Agency getAgency() {
         return agency;
     }
 
+    @JsonIgnore
     public AgencyAttribute getAgencyAttribute() {
         return agencyAttribute;
     }
 
+    @JsonIgnore
     public AgencyAttributeAuthorization getAgencyAttributeAuthorization() {
         return agencyAttributeAuthorization;
     }
 
+    @JsonIgnore
     public AgencyLocation getAgencyLocation() {
         return agencyLocation;
     }
 
+    @JsonIgnore
     public AgencyLocationAttribute getAgencyLocationAttribute() {
         return agencyLocationAttribute;
     }
 
+    @JsonIgnore
     public AgencyNetwork getAgencyNetwork() {
         return agencyNetwork;
     }
 
+    @JsonIgnore
     public AgencyNetworkAttribute getAgencyNetworkAttribute() {
         return agencyNetworkAttribute;
     }
 
+    @JsonIgnore
     public AgencyNetworkAuthorization getAgencyNetworkAuthorization() {
         return agencyNetworkAuthorization;
     }
 
+    @JsonIgnore
     public AgencyProduct getAgencyProduct() {
         return agencyProduct;
     }
 
+    @JsonIgnore
     public Attribute getAttribute() {
         return attribute;
     }
 
+    @JsonIgnore
     public AttributeMetaAttribute getAttributeMetaAttribute() {
         return attributeMetaAttribute;
     }
 
+    @JsonIgnore
     public AttributeMetaAttributeAuthorization getAttributeMetaAttributeAuthorization() {
         return attributeMetaAttributeAuthorization;
     }
 
+    @JsonIgnore
     public AttributeNetwork getAttributeNetwork() {
         return attributeNetwork;
     }
 
+    @JsonIgnore
     public AttributeNetworkAttribute getAttributeNetworkAttribute() {
         return attributeNetworkAttribute;
     }
@@ -611,6 +624,8 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getProductSiblingSequencingAuthorization();
             case PROTOCOL:
                 return (T) getProtocol();
+            case RELATIONSHIP:
+                return (T) getRelationship();
             case RELATIONSHIP_ATTRIBUTE:
                 return (T) getRelationshipAttribute();
             case RELATIONSHIP_ATTRIBUTE_AUTHORIZATION:
@@ -625,30 +640,37 @@ public class WorkspaceAuthorization extends Ruleform {
         }
     }
 
+    @JsonIgnore
     public Interval getInterval() {
         return interval;
     }
 
+    @JsonIgnore
     public IntervalAttribute getIntervalAttribute() {
         return intervalAttribute;
     }
 
+    @JsonIgnore
     public IntervalAttributeAuthorization getIntervalAttributeAuthorization() {
         return intervalAttributeAuthorization;
     }
 
+    @JsonIgnore
     public IntervalNetwork getIntervalNetwork() {
         return intervalNetwork;
     }
 
+    @JsonIgnore
     public IntervalNetworkAttribute getIntervalNetworkAttribute() {
         return intervalNetworkAttribute;
     }
 
+    @JsonIgnore
     public Job getJob() {
         return job;
     }
 
+    @JsonIgnore
     public JobChronology getJobChronology() {
         return jobChronology;
     }
@@ -657,122 +679,156 @@ public class WorkspaceAuthorization extends Ruleform {
         return key;
     }
 
+    @JsonIgnore
     public Location getLocation() {
         return location;
     }
 
+    @JsonIgnore
     public LocationAttribute getLocationAttribute() {
         return locationAttribute;
     }
 
+    @JsonIgnore
     public LocationAttributeAuthorization getLocationAttributeAuthorization() {
         return locationAttributeAuthorization;
     }
 
+    @JsonIgnore
     public LocationNetwork getLocationNetwork() {
         return locationNetwork;
     }
 
+    @JsonIgnore
     public LocationNetworkAttribute getLocationNetworkAttribute() {
         return locationNetworkAttribute;
     }
 
+    @JsonIgnore
     public LocationNetworkAuthorization getLocationNetworkAuthorization() {
         return locationNetworkAuthorization;
     }
 
+    @JsonIgnore
     public MetaProtocol getMetaProtocol() {
         return metaProtocol;
     }
 
+    @JsonIgnore
     public NetworkInference getNetworkInference() {
         return networkInference;
     }
 
+    @JsonIgnore
     public Product getProduct() {
         return product;
     }
 
+    @JsonIgnore
     public ProductAttribute getProductAttribute() {
         return productAttribute;
     }
 
+    @JsonIgnore
     public ProductAttributeAuthorization getProductAttributeAuthorization() {
         return productAttributeAuthorization;
     }
 
+    @JsonIgnore
     public ProductChildSequencingAuthorization getProductChildSequencingAuthorization() {
         return productChildSequencingAuthorization;
     }
 
+    @JsonIgnore
     public ProductLocation getProductLocation() {
         return productLocation;
     }
 
+    @JsonIgnore
     public ProductLocationAttribute getProductLocationAttribute() {
         return productLocationAttribute;
     }
 
+    @JsonIgnore
     public ProductNetwork getProductNetwork() {
         return productNetwork;
     }
 
+    @JsonIgnore
     public ProductNetworkAttribute getProductNetworkAttribute() {
         return productNetworkAttribute;
     }
 
+    @JsonIgnore
     public ProductParentSequencingAuthorization getProductParentSequencingAuthorization() {
         return productParentSequencingAuthorization;
     }
 
+    @JsonIgnore
     public ProductSelfSequencingAuthorization getProductSelfSequencingAuthorization() {
         return productSelfSequencingAuthorization;
     }
 
+    @JsonIgnore
     public ProductSiblingSequencingAuthorization getProductSiblingSequencingAuthorization() {
         return productSiblingSequencingAuthorization;
     }
 
+    @JsonIgnore
     public Protocol getProtocol() {
         return protocol;
     }
 
+    @JsonIgnore
     public Relationship getRelationship() {
         return relationship;
     }
 
+    @JsonIgnore
     public RelationshipAttribute getRelationshipAttribute() {
         return relationshipAttribute;
     }
 
+    @JsonIgnore
     public RelationshipAttributeAuthorization getRelationshipAttributeAuthorization() {
         return relationshipAttributeAuthorization;
     }
 
+    @JsonIgnore
     public RelationshipNetwork getRelationshipNetwork() {
         return relationshipNetwork;
     }
 
+    public Ruleform getRuleform() {
+        return getEntity();
+    }
+
+    @JsonIgnore
     public StatusCode getStatusCode() {
         return statusCode;
     }
 
+    @JsonIgnore
     public StatusCodeAttribute getStatusCodeAttribute() {
         return statusCodeAttribute;
     }
 
+    @JsonIgnore
     public StatusCodeAttributeAuthorization getStatusCodeAttributeAuthorization() {
         return statusCodeAttributeAuthorization;
     }
 
+    @JsonIgnore
     public StatusCodeNetwork getStatusCodeNetwork() {
         return statusCodeNetwork;
     }
 
+    @JsonIgnore
     public StatusCodeNetworkAttribute getStatusCodeNetworkAttribute() {
         return statusCodeNetworkAttribute;
     }
 
+    @JsonIgnore
     public StatusCodeSequencing getStatusCodeSequencing() {
         return statusCodeSequencing;
     }
@@ -781,26 +837,32 @@ public class WorkspaceAuthorization extends Ruleform {
         return type;
     }
 
+    @JsonIgnore
     public Unit getUnit() {
         return unit;
     }
 
+    @JsonIgnore
     public UnitAttribute getUnitAttribute() {
         return unitAttribute;
     }
 
+    @JsonIgnore
     public UnitAttributeAuthorization getUnitAttributeAuthorization() {
         return unitAttributeAuthorization;
     }
 
+    @JsonIgnore
     public UnitNetwork getUnitNetwork() {
         return unitNetwork;
     }
 
+    @JsonIgnore
     public UnitNetworkAttribute getUnitNetworkAttribute() {
         return unitNetworkAttribute;
     }
 
+    @JsonIgnore
     public UnitValue getUnitValue() {
         return unitValue;
     }
@@ -809,8 +871,10 @@ public class WorkspaceAuthorization extends Ruleform {
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
     @Override
+    @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return null;
+        throw new UnsupportedOperationException(
+                                                "Workspace auth does not recursively refer to workspace auth");
     }
 
     public void setAgency(Agency agency) {
@@ -1224,6 +1288,10 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setRelationshipNetwork(RelationshipNetwork relationshipNetwork) {
         type = RELATIONSHIP_NETWORK;
         this.relationshipNetwork = relationshipNetwork;
+    }
+
+    public void setRuleform(Ruleform ruleform) {
+        setEntity(ruleform);
     }
 
     public void setStatusCode(StatusCode statusCode) {

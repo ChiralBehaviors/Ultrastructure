@@ -35,6 +35,7 @@ import javax.persistence.Persistence;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
@@ -82,8 +83,8 @@ public class Bootstrap {
                                                                           properties);
         EntityManager em = emf.createEntityManager();
         Bootstrap bootstrap = new Bootstrap(em);
-        em.getTransaction().begin();
         bootstrap.clear();
+        em.getTransaction().begin();
         bootstrap.bootstrap();
         em.getTransaction().commit();
         em.clear();
@@ -295,8 +296,6 @@ public class Bootstrap {
                                                                     kernelWorkspace,
                                                                     core);
         em.persist(netAuth);
-        workspace.link(isA, kernelWorkspace, core, core, em);
-
         populate("Attribute", find(WellKnownAttribute.ATTRIBUTE), core,
                  kernelWorkspace);
         populate("AnyAttribute", find(WellKnownAttribute.ANY), core,
@@ -481,6 +480,29 @@ public class Bootstrap {
                  em.find(StatusCodeNetwork.class, ZERO), core, kernelWorkspace);
         populate("RootUnitNetwork", em.find(UnitNetwork.class, ZERO), core,
                  kernelWorkspace);
+        AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
+                                                                                  isA,
+                                                                                  find(WellKnownAgency.CORE_USER),
+                                                                                  find(WellKnownAttribute.LOGIN),
+                                                                                  core);
+        populate("LoginAuth", loginAuth, core, kernelWorkspace);
+        AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
+                                                                                         isA,
+                                                                                         find(WellKnownAgency.CORE_USER),
+                                                                                         find(WellKnownAttribute.PASSWORD_HASH),
+                                                                                         core);
+        populate("PasswordHashAuth", passwordHashAuth, core, kernelWorkspace);
+        AgencyNetwork edge = new AgencyNetwork(
+                                               find(WellKnownAgency.SUPER_USER),
+                                               isA,
+                                               find(WellKnownAgency.CORE_USER),
+                                               core);
+
+        WorkspaceAuthorization edgeAuth = new WorkspaceAuthorization(
+                                                                     edge,
+                                                                     kernelWorkspace,
+                                                                     core);
+        em.persist(edgeAuth);
     }
 
     /**

@@ -26,8 +26,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -59,13 +57,6 @@ public class DatabaseBackedWorkspace implements Workspace {
         public int size() {
             return backingList.size();
         }
-    }
-
-    public static Kernel getKernel(EntityManager em) {
-        return new CachedWorkspace(
-                                   em.find(Product.class,
-                                           WellKnownProduct.KERNEL_WORKSPACE.id()),
-                                   em).getAccesor(Kernel.class);
     }
 
     protected final Product       definingProduct;

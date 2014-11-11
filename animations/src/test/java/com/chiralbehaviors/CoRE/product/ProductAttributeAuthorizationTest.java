@@ -43,6 +43,9 @@ public class ProductAttributeAuthorizationTest {
 
     @After
     public void closeEntityManager() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+        }
         em.close();
         emf.close();
     }

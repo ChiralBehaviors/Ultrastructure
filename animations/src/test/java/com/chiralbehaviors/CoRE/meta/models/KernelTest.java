@@ -26,11 +26,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelLoader;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
 /**
@@ -39,18 +40,31 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
  */
 public class KernelTest {
 
+    private EntityManager        em;
+    private EntityManagerFactory emf;
+
+    @After
+    public void cleanup() {
+        if (em != null) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            em.close();
+        }
+        if (emf != null) {
+            emf.close();
+        }
+    }
+
     @Test
     public void testKernel() throws Exception {
         InputStream is = getClass().getResourceAsStream("/jpa.properties");
         Properties properties = new Properties();
         properties.load(is);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        KernelLoader.clearAndLoadKernel(em);
-        em.getTransaction().commit();
-
+        emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                     properties);
+        em = emf.createEntityManager();
+        KernelImpl.clearAndLoadKernel(em);
         Kernel kernel = new ModelImpl(em).getKernel();
         assertNotNull(kernel.getAnyAttribute());
         assertNotNull(kernel.getAnyProduct());

@@ -34,7 +34,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelLoader;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.chiralbehaviors.CoRE.meta.Model;
 
@@ -60,9 +60,7 @@ public class AbstractModelTest {
             em.close();
         }
         em = getEntityManager();
-        em.getTransaction().begin();
-        KernelLoader.clearAndLoadKernel(em);
-        em.getTransaction().commit();
+        KernelImpl.clearAndLoadKernel(em);
         model = new ModelImpl(em);
         kernel = model.getKernel();
     }

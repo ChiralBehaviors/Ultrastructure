@@ -16,6 +16,8 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import static com.chiralbehaviors.CoRE.kernel.KernelImpl.ZERO;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -88,8 +90,6 @@ public class Bootstrap {
         bootstrap.serialize(argv[1]);
     }
 
-    private static final String ZERO = UuidGenerator.toBase64(new UUID(0, 0));
-
     private final Connection    connection;
     private final EntityManager em;
 
@@ -100,7 +100,7 @@ public class Bootstrap {
     }
 
     public void bootstrap() throws SQLException {
-        KernelLoader.alterTriggers(connection, false);
+        KernelImpl.alterTriggers(connection, false);
         for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
@@ -127,12 +127,12 @@ public class Bootstrap {
         }
         createNullInference();
         createRootNetworks();
-        KernelLoader.alterTriggers(connection, true);
+        KernelImpl.alterTriggers(connection, true);
         constructKernelWorkspace();
     }
 
     public void clear() throws SQLException {
-        KernelLoader.clear(em);
+        KernelImpl.clear(em);
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {

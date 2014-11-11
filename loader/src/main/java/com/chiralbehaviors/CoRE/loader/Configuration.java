@@ -61,7 +61,7 @@ public class Configuration {
      * 
      * @parameter
      */
-    public String  corePort;
+    public int     corePort;
 
     /**
      * the server host of the core database
@@ -94,7 +94,7 @@ public class Configuration {
      * 
      * @parameter
      */
-    public String  dbaPort;
+    public int     dbaPort;
     /**
      * the host name of the dba database
      * 

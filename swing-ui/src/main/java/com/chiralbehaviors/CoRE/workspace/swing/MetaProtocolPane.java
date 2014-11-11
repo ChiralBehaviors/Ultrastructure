@@ -29,8 +29,15 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -38,9 +45,11 @@ import com.chiralbehaviors.CoRE.swing.MetaProtocolView;
  */
 public class MetaProtocolPane extends JPanel {
 
-    private static final long serialVersionUID = 1L;
-    private JComboBox<String> keys;
-    private JList<Protocol>   matchingProtocols;
+    private static final long       serialVersionUID = 1L;
+    private JComboBox<MetaProtocol> keys;
+    private JList<Protocol>         matchingProtocols;
+    private MetaProtocolView        metaProtocol;
+    private Workspace               workspace;
 
     /**
      * Create the panel.
@@ -78,19 +87,18 @@ public class MetaProtocolPane extends JPanel {
         gbc_btnNew.gridy = 0;
         add(btnNew, gbc_btnNew);
 
-        MetaProtocolView metaProtocolView = new MetaProtocolView();
-        metaProtocolView.setBorder(new TitledBorder(null, "MetaProtocol",
-                                                    TitledBorder.LEADING,
-                                                    TitledBorder.TOP, null,
-                                                    null));
-        GridBagConstraints gbc_metaProtocolView = new GridBagConstraints();
-        gbc_metaProtocolView.gridheight = 2;
-        gbc_metaProtocolView.gridwidth = 3;
-        gbc_metaProtocolView.insets = new Insets(0, 0, 0, 5);
-        gbc_metaProtocolView.fill = GridBagConstraints.BOTH;
-        gbc_metaProtocolView.gridx = 0;
-        gbc_metaProtocolView.gridy = 1;
-        add(metaProtocolView, gbc_metaProtocolView);
+        metaProtocol = new MetaProtocolView();
+        metaProtocol.setBorder(new TitledBorder(null, "MetaProtocol",
+                                                TitledBorder.LEADING,
+                                                TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_metaProtocol = new GridBagConstraints();
+        gbc_metaProtocol.gridheight = 2;
+        gbc_metaProtocol.gridwidth = 3;
+        gbc_metaProtocol.insets = new Insets(0, 0, 0, 5);
+        gbc_metaProtocol.fill = GridBagConstraints.BOTH;
+        gbc_metaProtocol.gridx = 0;
+        gbc_metaProtocol.gridy = 1;
+        add(metaProtocol, gbc_metaProtocol);
 
         matchingProtocols = new JList<>();
         matchingProtocols.setBorder(new TitledBorder(
@@ -108,7 +116,33 @@ public class MetaProtocolPane extends JPanel {
         gbc_matchingProtocols.gridx = 3;
         gbc_matchingProtocols.gridy = 1;
         add(matchingProtocols, gbc_matchingProtocols);
+        initDataBindings();
 
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<JComboBox<MetaProtocol>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        BeanProperty<MetaProtocolView, MetaProtocol> metaProtocolViewBeanProperty = BeanProperty.create("metaProtocol");
+        AutoBinding<JComboBox<MetaProtocol>, Object, MetaProtocolView, MetaProtocol> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                              keys,
+                                                                                                                              jComboBoxBeanProperty,
+                                                                                                                              metaProtocol,
+                                                                                                                              metaProtocolViewBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<MetaProtocolView, Workspace> metaProtocolViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, MetaProtocolView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  workspace,
+                                                                                                                  metaProtocol,
+                                                                                                                  metaProtocolViewBeanProperty_1);
+        autoBinding_1.bind();
+    }
 }

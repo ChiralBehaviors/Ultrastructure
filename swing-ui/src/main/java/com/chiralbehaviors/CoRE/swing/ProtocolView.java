@@ -21,27 +21,35 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.AbstractProtocol;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
+
 /**
  * @author hhildebrand
  *
  */
-public class ProtocolView extends JPanel {
+public class ProtocolView extends WorkspaceBackedView {
     private static final long    serialVersionUID = 1L;
     private JTabbedPane          tabbedPane;
     private AbstractProtocolView match;
     private AbstractProtocolView child;
     private JLabel               lblName;
-    private JTextField           textField;
+    private JTextField           name;
     private JLabel               lblSequenceNumber;
-    private JSpinner             spinner;
+    private JSpinner             sequenceNumber;
     private JLabel               lblNotes;
-    private JTextPane            textPane;
+    private JTextPane            notes;
+    private AbstractProtocol     abstractProtocol;
 
     /**
      * Create the panel.
@@ -64,14 +72,14 @@ public class ProtocolView extends JPanel {
         gbc_lblName.gridy = 0;
         add(lblName, gbc_lblName);
 
-        textField = new JTextField();
-        GridBagConstraints gbc_textField = new GridBagConstraints();
-        gbc_textField.insets = new Insets(0, 0, 5, 5);
-        gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textField.gridx = 1;
-        gbc_textField.gridy = 0;
-        add(textField, gbc_textField);
-        textField.setColumns(10);
+        name = new JTextField();
+        GridBagConstraints gbc_name = new GridBagConstraints();
+        gbc_name.insets = new Insets(0, 0, 5, 5);
+        gbc_name.fill = GridBagConstraints.HORIZONTAL;
+        gbc_name.gridx = 1;
+        gbc_name.gridy = 0;
+        add(name, gbc_name);
+        name.setColumns(10);
 
         lblSequenceNumber = new JLabel("Sequence Number");
         GridBagConstraints gbc_lblSequenceNumber = new GridBagConstraints();
@@ -80,13 +88,13 @@ public class ProtocolView extends JPanel {
         gbc_lblSequenceNumber.gridy = 0;
         add(lblSequenceNumber, gbc_lblSequenceNumber);
 
-        spinner = new JSpinner();
-        GridBagConstraints gbc_spinner = new GridBagConstraints();
-        gbc_spinner.anchor = GridBagConstraints.WEST;
-        gbc_spinner.insets = new Insets(0, 0, 5, 0);
-        gbc_spinner.gridx = 3;
-        gbc_spinner.gridy = 0;
-        add(spinner, gbc_spinner);
+        sequenceNumber = new JSpinner();
+        GridBagConstraints gbc_sequenceNumber = new GridBagConstraints();
+        gbc_sequenceNumber.anchor = GridBagConstraints.WEST;
+        gbc_sequenceNumber.insets = new Insets(0, 0, 5, 0);
+        gbc_sequenceNumber.gridx = 3;
+        gbc_sequenceNumber.gridy = 0;
+        add(sequenceNumber, gbc_sequenceNumber);
 
         tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
@@ -110,15 +118,52 @@ public class ProtocolView extends JPanel {
         gbc_lblNotes.gridy = 2;
         add(lblNotes, gbc_lblNotes);
 
-        textPane = new JTextPane();
-        GridBagConstraints gbc_textPane = new GridBagConstraints();
-        gbc_textPane.gridwidth = 3;
-        gbc_textPane.insets = new Insets(0, 0, 0, 5);
-        gbc_textPane.fill = GridBagConstraints.BOTH;
-        gbc_textPane.gridx = 1;
-        gbc_textPane.gridy = 2;
-        add(textPane, gbc_textPane);
+        notes = new JTextPane();
+        GridBagConstraints gbc_notes = new GridBagConstraints();
+        gbc_notes.gridwidth = 3;
+        gbc_notes.insets = new Insets(0, 0, 0, 5);
+        gbc_notes.fill = GridBagConstraints.BOTH;
+        gbc_notes.gridx = 1;
+        gbc_notes.gridy = 2;
+        add(notes, gbc_notes);
+        initDataBindings();
 
     }
 
+    public AbstractProtocol getAbstractProtocol() {
+        return abstractProtocol;
+    }
+
+    public void setAbstractProtocol(AbstractProtocol abstractProtocol) {
+        this.abstractProtocol = abstractProtocol;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<AbstractProtocol, String> protocolBeanProperty = BeanProperty.create("name");
+        BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
+        AutoBinding<AbstractProtocol, String, JTextField, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                           abstractProtocol,
+                                                                                                           protocolBeanProperty,
+                                                                                                           name,
+                                                                                                           jTextFieldBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<AbstractProtocol, Integer> protocolBeanProperty_1 = BeanProperty.create("sequenceNumber");
+        BeanProperty<JSpinner, Object> jSpinnerBeanProperty = BeanProperty.create("value");
+        AutoBinding<AbstractProtocol, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                            abstractProtocol,
+                                                                                                            protocolBeanProperty_1,
+                                                                                                            sequenceNumber,
+                                                                                                            jSpinnerBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<AbstractProtocol, String> protocolBeanProperty_2 = BeanProperty.create("notes");
+        BeanProperty<JTextPane, String> jTextPaneBeanProperty = BeanProperty.create("text");
+        AutoBinding<AbstractProtocol, String, JTextPane, String> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                            abstractProtocol,
+                                                                                                            protocolBeanProperty_2,
+                                                                                                            notes,
+                                                                                                            jTextPaneBeanProperty);
+        autoBinding_2.bind();
+    }
 }

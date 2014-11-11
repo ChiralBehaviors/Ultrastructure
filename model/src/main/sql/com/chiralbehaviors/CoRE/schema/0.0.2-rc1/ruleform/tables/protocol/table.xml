@@ -162,4 +162,25 @@
             baseColumnNames="quantity_unit" baseTableName="protocol" constraintName="protocol_quantity_unit_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
+
+    <changeSet author="hhildebrand" id="0.0.2-rc4">
+        <createIndex schemaName="ruleform" indexName="protocol_assign_to_fkey_idx" tableName="protocol" unique="false">
+            <column name="assign_to" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_deliver_to_fkey_idx" tableName="protocol" unique="false">
+            <column name="deliver_to" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_deliver_from_fkey_idx" tableName="protocol" unique="false">
+            <column name="deliver_from" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_product_fkey_idx" tableName="protocol" unique="false">
+            <column name="product" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_requester_fkey_idx" tableName="protocol" unique="false">
+            <column name="requester" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_service_fkey_idx" tableName="protocol" unique="false">
+            <column name="service" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

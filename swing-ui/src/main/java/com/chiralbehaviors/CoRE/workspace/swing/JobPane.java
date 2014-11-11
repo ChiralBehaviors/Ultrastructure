@@ -26,8 +26,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.swing.JobExplorer;
 import com.chiralbehaviors.CoRE.swing.JobView;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -36,9 +43,10 @@ import com.chiralbehaviors.CoRE.swing.JobView;
 public class JobPane extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private JComboBox<String> keys;
+    private JComboBox<Job>    keys;
     private JobView           job;
     private JobExplorer       match;
+    private Workspace         workspace;
 
     /**
      * Create the panel.
@@ -95,7 +103,48 @@ public class JobPane extends JPanel {
         gbc_match.gridx = 3;
         gbc_match.gridy = 1;
         add(match, gbc_match);
+        initDataBindings();
 
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<JobView, Workspace> jobViewBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, JobView, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                       workspace,
+                                                                                                       job,
+                                                                                                       jobViewBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<JobView, Job> jobViewBeanProperty_1 = BeanProperty.create("job");
+        BeanProperty<JComboBox<Job>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<JobView, Job, JComboBox<Job>, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                     job,
+                                                                                                     jobViewBeanProperty_1,
+                                                                                                     keys,
+                                                                                                     jComboBoxBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<JobExplorer, Job> jobExplorerBeanProperty = BeanProperty.create("job");
+        AutoBinding<JComboBox<Job>, Object, JobExplorer, Job> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                         keys,
+                                                                                                         jComboBoxBeanProperty,
+                                                                                                         match,
+                                                                                                         jobExplorerBeanProperty);
+        autoBinding_2.bind();
+        //
+        BeanProperty<JobExplorer, Workspace> jobExplorerBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, JobExplorer, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                             workspace,
+                                                                                                             match,
+                                                                                                             jobExplorerBeanProperty_1);
+        autoBinding_3.bind();
+    }
 }

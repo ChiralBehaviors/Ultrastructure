@@ -22,18 +22,25 @@ import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class SelfAuthSeqView extends JPanel {
+public class SelfAuthSeqView extends WorkspaceBackedView {
 
-    private static final long     serialVersionUID = 1L;
-    private JComboBox<StatusCode> statusToSet;
+    private static final long                  serialVersionUID = 1L;
+    private JComboBox<StatusCode>              statusToSet;
+    private ProductSelfSequencingAuthorization auth;
 
     /**
      * Create the panel.
@@ -60,7 +67,27 @@ public class SelfAuthSeqView extends JPanel {
         gbc_statusToSet.gridx = 1;
         gbc_statusToSet.gridy = 0;
         add(statusToSet, gbc_statusToSet);
+        initDataBindings();
 
     }
 
+    public ProductSelfSequencingAuthorization getAuth() {
+        return auth;
+    }
+
+    public void setAuth(ProductSelfSequencingAuthorization auth) {
+        this.auth = auth;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected void initDataBindings() {
+        BeanProperty<ProductSelfSequencingAuthorization, StatusCode> productSelfSequencingAuthorizationBeanProperty = BeanProperty.create("statusToSet");
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<ProductSelfSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                                                auth,
+                                                                                                                                productSelfSequencingAuthorizationBeanProperty,
+                                                                                                                                statusToSet,
+                                                                                                                                jComboBoxBeanProperty);
+        autoBinding.bind();
+    }
 }

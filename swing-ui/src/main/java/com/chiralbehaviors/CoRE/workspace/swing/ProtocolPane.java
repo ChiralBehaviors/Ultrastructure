@@ -27,8 +27,16 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
+import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.swing.ProtocolView;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -37,9 +45,10 @@ import com.chiralbehaviors.CoRE.swing.ProtocolView;
 public class ProtocolPane extends JPanel {
 
     private static final long   serialVersionUID = 1L;
-    private JComboBox<String>   keys;
+    private JComboBox<Protocol> keys;
     private ProtocolView        protocol;
     private JList<MetaProtocol> matchingMetaProtocols;
+    private Workspace           workspace;
 
     /**
      * Create the panel.
@@ -100,7 +109,33 @@ public class ProtocolPane extends JPanel {
         gbc_matchingMetaProtocols.gridx = 3;
         gbc_matchingMetaProtocols.gridy = 1;
         add(matchingMetaProtocols, gbc_matchingMetaProtocols);
+        initDataBindings();
 
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<JComboBox<Protocol>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        BeanProperty<ProtocolView, AbstractProtocol> protocolViewBeanProperty = BeanProperty.create("abstractProtocol");
+        AutoBinding<JComboBox<Protocol>, Object, ProtocolView, AbstractProtocol> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                          keys,
+                                                                                                                          jComboBoxBeanProperty,
+                                                                                                                          protocol,
+                                                                                                                          protocolViewBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<ProtocolView, Workspace> protocolViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, ProtocolView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                              workspace,
+                                                                                                              protocol,
+                                                                                                              protocolViewBeanProperty_1);
+        autoBinding_1.bind();
+    }
 }

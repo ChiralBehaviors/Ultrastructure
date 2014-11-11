@@ -23,20 +23,28 @@ import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class SiblingSeqAuthView extends JPanel {
+public class SiblingSeqAuthView extends WorkspaceBackedView {
 
-    private static final long  serialVersionUID = 1L;
-    private JComboBox<Product> nextSibling;
-    private JCheckBox          replaceProduct;
+    private static final long                     serialVersionUID = 1L;
+    private JComboBox<Product>                    nextSibling;
+    private JCheckBox                             replaceProduct;
+    private ProductSiblingSequencingAuthorization auth;
+    private JComboBox<StatusCode>                 statusToSet;
 
     /**
      * Create the panel.
@@ -74,13 +82,13 @@ public class SiblingSeqAuthView extends JPanel {
         gbc_lblStatusToSet.gridy = 1;
         add(lblStatusToSet, gbc_lblStatusToSet);
 
-        JComboBox<StatusCode> statusToSet = new JComboBox<>();
-        GridBagConstraints gbc_comboBox = new GridBagConstraints();
-        gbc_comboBox.insets = new Insets(0, 0, 5, 0);
-        gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-        gbc_comboBox.gridx = 1;
-        gbc_comboBox.gridy = 1;
-        add(statusToSet, gbc_comboBox);
+        statusToSet = new JComboBox<>();
+        GridBagConstraints gbc_statusToSet = new GridBagConstraints();
+        gbc_statusToSet.insets = new Insets(0, 0, 5, 0);
+        gbc_statusToSet.fill = GridBagConstraints.HORIZONTAL;
+        gbc_statusToSet.gridx = 1;
+        gbc_statusToSet.gridy = 1;
+        add(statusToSet, gbc_statusToSet);
 
         replaceProduct = new JCheckBox("Replace Product");
         GridBagConstraints gbc_replaceProduct = new GridBagConstraints();
@@ -88,7 +96,44 @@ public class SiblingSeqAuthView extends JPanel {
         gbc_replaceProduct.gridx = 1;
         gbc_replaceProduct.gridy = 2;
         add(replaceProduct, gbc_replaceProduct);
+        initDataBindings();
 
     }
 
+    public ProductSiblingSequencingAuthorization getAuth() {
+        return auth;
+    }
+
+    public void setAuth(ProductSiblingSequencingAuthorization auth) {
+        this.auth = auth;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected void initDataBindings() {
+        BeanProperty<ProductSiblingSequencingAuthorization, Product> productSiblingSequencingAuthorizationBeanProperty = BeanProperty.create("nextSibling");
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<ProductSiblingSequencingAuthorization, Product, JComboBox, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                                                auth,
+                                                                                                                                productSiblingSequencingAuthorizationBeanProperty,
+                                                                                                                                nextSibling,
+                                                                                                                                jComboBoxBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<ProductSiblingSequencingAuthorization, StatusCode> productSiblingSequencingAuthorizationBeanProperty_1 = BeanProperty.create("nextSiblingStatus");
+        AutoBinding<ProductSiblingSequencingAuthorization, StatusCode, JComboBox, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                                                     auth,
+                                                                                                                                     productSiblingSequencingAuthorizationBeanProperty_1,
+                                                                                                                                     statusToSet,
+                                                                                                                                     jComboBoxBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<ProductSiblingSequencingAuthorization, Boolean> productSiblingSequencingAuthorizationBeanProperty_2 = BeanProperty.create("replaceProduct");
+        BeanProperty<JCheckBox, Boolean> jCheckBoxBeanProperty = BeanProperty.create("selected");
+        AutoBinding<ProductSiblingSequencingAuthorization, Boolean, JCheckBox, Boolean> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                                                   auth,
+                                                                                                                                   productSiblingSequencingAuthorizationBeanProperty_2,
+                                                                                                                                   replaceProduct,
+                                                                                                                                   jCheckBoxBeanProperty);
+        autoBinding_2.bind();
+    }
 }

@@ -30,9 +30,15 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.swing.RelationshipView;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -42,11 +48,12 @@ public class RelationshipPane extends JPanel {
 
     private static final long                serialVersionUID = 1L;
     private JComboBox<Relationship>          parentRelationship;
-    private JComboBox<String>                keys;
+    private JComboBox<Relationship>          keys;
     private JList<ExistentialRuleform<?, ?>> parents;
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
     private RelationshipView                 relationshipView;
+    private Workspace                        workspace;
 
     /**
      * Create the panel.
@@ -183,7 +190,33 @@ public class RelationshipPane extends JPanel {
         gbc_children.gridx = 0;
         gbc_children.gridy = 1;
         childrenPanel.add(children, gbc_children);
+        initDataBindings();
 
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<JComboBox<Relationship>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        BeanProperty<RelationshipView, Relationship> relationshipViewBeanProperty = BeanProperty.create("relationship");
+        AutoBinding<JComboBox<Relationship>, Object, RelationshipView, Relationship> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                              keys,
+                                                                                                                              jComboBoxBeanProperty,
+                                                                                                                              relationshipView,
+                                                                                                                              relationshipViewBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<RelationshipView, Workspace> relationshipViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, RelationshipView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+                                                                                                                  workspace,
+                                                                                                                  relationshipView,
+                                                                                                                  relationshipViewBeanProperty_1);
+        autoBinding_1.bind();
+    }
 }

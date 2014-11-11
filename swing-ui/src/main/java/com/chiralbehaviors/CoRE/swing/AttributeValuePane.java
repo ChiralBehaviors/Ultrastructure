@@ -22,23 +22,31 @@ import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class AttributeValuePane extends JPanel {
+public class AttributeValuePane extends WorkspaceBackedView {
 
     private static final long serialVersionUID = 1L;
-    private JSpinner          sequenceNumber;
+    @SuppressWarnings("rawtypes")
+    private AttributeValue    attributeValue;
     private JTextField        key;
-    private JTextField        value;
+    private JSpinner          sequenceNumber;
     private JComboBox<Unit>   unit;
+    private JTextField        value;
 
     /**
      * Create the panel.
@@ -117,7 +125,45 @@ public class AttributeValuePane extends JPanel {
         gbc_value.gridy = 2;
         add(value, gbc_value);
         value.setColumns(10);
+        initDataBindings();
 
     }
 
+    public AttributeValue<?> getAttributeValue() {
+        return attributeValue;
+    }
+
+    public void setAttributeValue(AttributeValue<?> attributeValue) {
+        this.attributeValue = attributeValue;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected void initDataBindings() {
+        BeanProperty<AttributeValue, String> attributeValueBeanProperty = BeanProperty.create("key");
+        BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
+        AutoBinding<AttributeValue, String, JTextField, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                         attributeValue,
+                                                                                                         attributeValueBeanProperty,
+                                                                                                         key,
+                                                                                                         jTextFieldBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<AttributeValue, Integer> attributeValueBeanProperty_1 = BeanProperty.create("sequenceNumber");
+        BeanProperty<JSpinner, Object> jSpinnerBeanProperty = BeanProperty.create("value");
+        AutoBinding<AttributeValue, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                          attributeValue,
+                                                                                                          attributeValueBeanProperty_1,
+                                                                                                          sequenceNumber,
+                                                                                                          jSpinnerBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<AttributeValue, Unit> attributeValueBeanProperty_2 = BeanProperty.create("unit");
+        BeanProperty<JComboBox, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<AttributeValue, Unit, JComboBox, Object> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                        attributeValue,
+                                                                                                        attributeValueBeanProperty_2,
+                                                                                                        unit,
+                                                                                                        jComboBoxBeanProperty);
+        autoBinding_2.bind();
+    }
 }

@@ -33,6 +33,7 @@ import javax.swing.border.TitledBorder;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.swing.ExistentialRuleformView;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -47,6 +48,7 @@ public class ExistentialRuleformPane extends JPanel {
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
     private ExistentialRuleformView          ruleformView;
+    private Workspace                        workspace;
 
     /**
      * Create the panel.
@@ -186,6 +188,14 @@ public class ExistentialRuleformPane extends JPanel {
         gbc_children.gridy = 1;
         childrenPanel.add(children, gbc_children);
 
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
 }

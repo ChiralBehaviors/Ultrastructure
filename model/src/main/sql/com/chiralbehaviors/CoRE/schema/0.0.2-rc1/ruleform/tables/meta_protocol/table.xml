@@ -80,8 +80,7 @@
     <changeSet author="hhildebrand" id="1390879803226-201">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_deliver_from_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-202">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -91,8 +90,7 @@
     <changeSet author="hhildebrand" id="1390879803226-202">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_deliver_to_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-203">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -102,20 +100,17 @@
     <changeSet author="hhildebrand" id="1390879803226-203">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_ordered_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_product_ordered_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-204">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requesting_agency" baseTableName="meta_protocol" constraintName="meta_protocol_requesting_agency_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803226-204">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requesting_agency_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_requesting_agency_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-204-1">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -125,8 +120,7 @@
     <changeSet author="hhildebrand" id="1390879803226-204-2">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="assign_to_attribute" baseTableName="meta_protocol" constraintName="meta_protocol_assign_to_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-205">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -155,6 +149,11 @@
     <changeSet author="hhildebrand" id="1390879803225-479">
         <createIndex schemaName="ruleform" indexName="meta_protocol_updated_by_fkey_idx" tableName="meta_protocol" unique="false">
             <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="hhildebrand" id="0.0.2-rc4">
+        <createIndex schemaName="ruleform" indexName="meta_protocol_service_fkey_idx" tableName="meta_protocol" unique="false">
+            <column name="service" />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

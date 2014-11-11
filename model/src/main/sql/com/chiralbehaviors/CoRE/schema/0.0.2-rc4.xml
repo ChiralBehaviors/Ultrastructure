@@ -33,9 +33,7 @@
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
-            <column name="key" type="VARCHAR(1024)">
-                <constraints nullable="false" />
-            </column>
+            <column name="key" type="VARCHAR(1024)" />
             <column name="agency" type="CHAR(22)" />
             <column name="agency_attribute" type="CHAR(22)" />
             <column name="agency_attribute_authorization" type="CHAR(22)" />
@@ -91,7 +89,6 @@
             <column name="product_self_sequencing_authorization" type="CHAR(22)" />
             <column name="protocol" type="CHAR(22)" />
         </createTable>
-        <addUniqueConstraint columnNames="defining_product, key" tableName="workspace_authorization" schemaName="ruleform" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
@@ -302,9 +299,30 @@
             baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_defining_product_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
 
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_fkey_idx" tableName="agency" unique="false">
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_fkey_idx" tableName="workspace_authorization"
+            unique="false"
+        >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_defining_product_fkey_idx" tableName="workspace_authorization"
+            unique="false"
+        >
+            <column name="defining_product" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_key_idx" tableName="workspace_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_type_idx" tableName="workspace_authorization"
+            unique="false"
+        >
+            <column name="type" />
+        </createIndex>
+        <sql> CREATE TRIGGER workspace_update_date BEFORE INSERT OR UPDATE ON ruleform.workspace_authorization FOR
+            EACH ROW EXECUTE PROCEDURE
+            set_update_date();
+        </sql>
         <sql><![CDATA[
             ALTER TABLE ruleform.workspace_authorization ADD CONSTRAINT
             wsa_single_reference CHECK((

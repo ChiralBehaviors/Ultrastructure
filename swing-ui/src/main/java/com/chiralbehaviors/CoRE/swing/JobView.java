@@ -23,25 +23,32 @@ import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
 import javax.swing.JTextPane;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+
+import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class JobView extends JPanel {
+public class JobView extends WorkspaceBackedView {
 
     private static final long    serialVersionUID = 1L;
     private JSpinner             sequenceNumber;
     private JComboBox<Job>       parent;
     private AbstractProtocolView abstractProtocol;
     private JLabel               lblNotes;
-    private JTextPane            textPane;
+    private JTextPane            notes;
+    private Job                  job;
 
     /**
      * Create the panel.
@@ -102,18 +109,63 @@ public class JobView extends JPanel {
         gbc_lblNotes.gridy = 2;
         add(lblNotes, gbc_lblNotes);
 
-        textPane = new JTextPane();
-        GridBagConstraints gbc_textPane = new GridBagConstraints();
-        gbc_textPane.gridwidth = 3;
-        gbc_textPane.insets = new Insets(0, 0, 0, 5);
-        gbc_textPane.fill = GridBagConstraints.BOTH;
-        gbc_textPane.gridx = 1;
-        gbc_textPane.gridy = 2;
-        add(textPane, gbc_textPane);
+        notes = new JTextPane();
+        GridBagConstraints gbc_notes = new GridBagConstraints();
+        gbc_notes.gridwidth = 3;
+        gbc_notes.insets = new Insets(0, 0, 0, 5);
+        gbc_notes.fill = GridBagConstraints.BOTH;
+        gbc_notes.gridx = 1;
+        gbc_notes.gridy = 2;
+        add(notes, gbc_notes);
+        initDataBindings();
 
     }
 
     @SuppressWarnings("unused")
     private static void addPopup(Component component, final JPopupMenu popup) {
+    }
+
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    protected void initDataBindings() {
+        BeanProperty<Job, Job> jobBeanProperty = BeanProperty.create("parent");
+        BeanProperty<JComboBox<Job>, Object> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+        AutoBinding<Job, Job, JComboBox<Job>, Object> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                               job,
+                                                                                               jobBeanProperty,
+                                                                                               parent,
+                                                                                               jComboBoxBeanProperty);
+        autoBinding.bind();
+        //
+        BeanProperty<Job, Integer> jobBeanProperty_1 = BeanProperty.create("sequenceNumber");
+        BeanProperty<JSpinner, Object> jSpinnerBeanProperty = BeanProperty.create("value");
+        AutoBinding<Job, Integer, JSpinner, Object> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                               job,
+                                                                                               jobBeanProperty_1,
+                                                                                               sequenceNumber,
+                                                                                               jSpinnerBeanProperty);
+        autoBinding_1.bind();
+        //
+        BeanProperty<AbstractProtocolView, AbstractProtocol> abstractProtocolViewBeanProperty = BeanProperty.create("protocol");
+        AutoBinding<Job, Job, AbstractProtocolView, AbstractProtocol> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                                                 job,
+                                                                                                                 abstractProtocol,
+                                                                                                                 abstractProtocolViewBeanProperty);
+        autoBinding_2.bind();
+        //
+        BeanProperty<Job, String> jobBeanProperty_2 = BeanProperty.create("notes");
+        BeanProperty<JTextPane, String> jTextPaneBeanProperty = BeanProperty.create("text");
+        AutoBinding<Job, String, JTextPane, String> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+                                                                                               job,
+                                                                                               jobBeanProperty_2,
+                                                                                               notes,
+                                                                                               jTextPaneBeanProperty);
+        autoBinding_3.bind();
     }
 }

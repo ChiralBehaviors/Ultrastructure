@@ -22,28 +22,30 @@ import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.swing.WorkspaceBackedView;
 
 /**
  * @author hhildebrand
  *
  */
-public class AuthorizedAttributeView extends JPanel {
+public class AuthorizedAttributeView extends WorkspaceBackedView {
 
     private static final long                    serialVersionUID = 1L;
-    private JSpinner                             sequenceNumber;
-    private JTextField                           defaultValue;
     private JComboBox<Attribute>                 attribute;
-    private JComboBox<ExistentialRuleform<?, ?>> classifier;
     private JComboBox<Relationship>              classification;
+    private JComboBox<ExistentialRuleform<?, ?>> classifier;
+    private JTextField                           defaultValue;
     private JTextPane                            notes;
+    private JSpinner                             sequenceNumber;
+    private ClassifiedAttributeAuthorization<?>  attributeAuth;
 
     /**
      * Create the panel.
@@ -158,6 +160,14 @@ public class AuthorizedAttributeView extends JPanel {
         gbc_notes.gridy = 4;
         add(notes, gbc_notes);
 
+    }
+
+    public ClassifiedAttributeAuthorization<?> getAttributeAuth() {
+        return attributeAuth;
+    }
+
+    public void setAttributeAuth(ClassifiedAttributeAuthorization<?> attributeAuth) {
+        this.attributeAuth = attributeAuth;
     }
 
 }

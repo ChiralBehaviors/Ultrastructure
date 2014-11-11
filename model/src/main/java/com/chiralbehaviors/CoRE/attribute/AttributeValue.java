@@ -220,6 +220,28 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return unit;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getValue() {
+        switch (attribute.getValueType()) {
+            case BINARY:
+                return (T) getBinaryValue();
+            case BOOLEAN:
+                return (T) getBooleanValue();
+            case INTEGER:
+                return (T) getIntegerValue();
+            case NUMERIC:
+                return (T) getNumericValue();
+            case TEXT:
+                return (T) getTextValue();
+            case TIMESTAMP:
+                return (T) getTimestampValue();
+            default:
+                throw new IllegalStateException(
+                                                String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+    }
+
     public void setAttribute(Attribute attribute) {
         this.attribute = attribute;
     }
@@ -314,7 +336,5 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
             attribute = (Attribute) attribute.manageEntity(em, knownObjects);
         }
         super.traverseForeignKeys(em, knownObjects);
-
     }
-
 }

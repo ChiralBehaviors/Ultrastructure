@@ -145,6 +145,11 @@ public interface Model {
      */
     WorkspaceModel getWorkspaceModel();
 
+    /**
+     * 
+     * @param logbackConfig the xml representation of the desired logging config. For
+     * instance, the contents of logback-test.xml
+     */
     void setLogConfiguration(String logbackConfig);
 
 }

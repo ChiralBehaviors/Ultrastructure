@@ -35,7 +35,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
@@ -424,7 +423,6 @@ public class JobModelImpl implements JobModel {
     @Override
     public Job changeStatus(Job job, StatusCode newStatus, Agency updatedBy,
                             String notes) {
-        em.lock(job, LockModeType.PESSIMISTIC_WRITE);
         StatusCode oldStatus = job.getStatus();
         if (oldStatus != null && oldStatus.equals(newStatus)) {
             if (log.isTraceEnabled()) {

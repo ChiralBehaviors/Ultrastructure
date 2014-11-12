@@ -15,13 +15,11 @@
  */
 package com.chiralbehaviors.CoRE.network;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -32,6 +30,8 @@ import javax.persistence.MappedSuperclass;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * An existential ruleform that can form directed graphs.
@@ -46,11 +46,12 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "inference", insertable = false)
     private NetworkInference  inference;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship      relationship;
 
@@ -104,14 +105,18 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     /**
      * @return the inference
      */
+    @JsonGetter
     public NetworkInference getInference() {
         return inference;
     }
 
+    @JsonGetter
     abstract public E getParent();
 
+    @JsonGetter
     abstract public NetworkRuleform<E> getPremise1();
 
+    @JsonGetter
     abstract public NetworkRuleform<E> getPremise2();
 
     /**
@@ -134,6 +139,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         return result;
     }
 
+    @JsonIgnore
     public boolean isInferred() {
         if (inference == null) {
             return false;
@@ -172,23 +178,5 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
                              getParent().getName(),
                              getRelationship().getName(), getChild().getName(),
                              isInferred());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (relationship != null) {
-            relationship = (Relationship) relationship.manageEntity(em,
-                                                                    knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

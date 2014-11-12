@@ -16,22 +16,23 @@
 package com.chiralbehaviors.CoRE.attribute;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * An attribute value on an attribute
@@ -43,17 +44,20 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "attribute_value")
     private Attribute         attributeValue;
 
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "meta_attribute")
     private Attribute         metaAttribute;
 
@@ -61,6 +65,15 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     private Integer           sequenceNumber;
 
     public AttributeMetaAttribute() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeMetaAttribute;
     }
 
     /**
@@ -114,14 +127,17 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     }
 
     @Override
+    @JsonGetter
     public Attribute getAttribute() {
         return attribute;
     }
 
+    @JsonGetter
     public Attribute getAttributeValue() {
         return attributeValue;
     }
 
+    @JsonGetter
     public Attribute getMetaAttribute() {
         return metaAttribute;
     }
@@ -168,29 +184,5 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     @Override
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.
-     * EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (attribute != null) {
-            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-        }
-        if (attributeValue != null) {
-            attributeValue = (Attribute) attributeValue.manageEntity(em,
-                                                                     knownObjects);
-        }
-        if (metaAttribute != null) {
-            metaAttribute = (Attribute) metaAttribute.manageEntity(em,
-                                                                   knownObjects);
-        }
-
     }
 }

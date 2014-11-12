@@ -177,7 +177,7 @@ public class ModelImpl implements Model {
     private final WorkspaceModel          workspaceModel;
 
     public ModelImpl(EntityManager entityManager) {
-        this(entityManager, new KernelImpl(entityManager));
+        this(entityManager, KernelImpl.getKernel(entityManager));
     }
 
     public ModelImpl(EntityManager entityManager, Kernel k) {

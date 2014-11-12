@@ -16,20 +16,22 @@
 
 package com.chiralbehaviors.CoRE.attribute;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorization for attributes on attributes
@@ -44,9 +46,19 @@ public class AttributeMetaAttributeAuthorization extends
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Attribute         classifier;
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeMetaAttributeAuthorization;
+    }
 
     /**
      *
@@ -110,6 +122,7 @@ public class AttributeMetaAttributeAuthorization extends
      * getClassifier()
      */
     @Override
+    @JsonGetter
     public Attribute getClassifier() {
         return classifier;
     }
@@ -123,21 +136,5 @@ public class AttributeMetaAttributeAuthorization extends
     @Override
     public void setClassifier(Attribute classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (classifier != null) {
-            classifier = (Attribute) classifier.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
     }
 }

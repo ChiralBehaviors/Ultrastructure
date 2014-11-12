@@ -15,6 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.loader;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -33,7 +41,8 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.kernel.Bootstrap;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -222,13 +231,28 @@ public class Loader {
         statement.execute();
     }
 
-    protected void bootstrapCoRE() throws SQLException {
+    protected void bootstrapCoRE() throws SQLException, IOException {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
-        Connection connection = configuration.getCoreConnection();
-        connection.setAutoCommit(false);
-        new Bootstrap(connection).bootstrap();
-        connection.commit();
+        String txfmd;
+        try (InputStream is = getClass().getResourceAsStream("/jpa.properties")) {
+            if (is == null) {
+                throw new IllegalStateException("jpa properties missing");
+            }
+            Map<String, String> props = new HashMap<>();
+            props.put("db.port", Integer.toString(configuration.corePort));
+            props.put("db.password", configuration.corePassword);
+            props.put("db.user", configuration.coreUsername);
+            props.put("db.server", configuration.coreServer);
+            props.put("db.database", configuration.coreDb);
+            txfmd = Utils.getDocument(is, props);
+        }
+        Properties properties = new Properties();
+        properties.load(new ByteArrayInputStream(txfmd.getBytes()));
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                                          properties);
+        EntityManager em = emf.createEntityManager();
+        KernelImpl.loadKernel(em);
     }
 
     protected void createDatabase() throws Exception, SQLException {

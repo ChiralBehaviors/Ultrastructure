@@ -33,6 +33,10 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -47,7 +51,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     // bi-directional many-to-one association to Relationship
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
 
@@ -61,6 +65,15 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     public RelationshipAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, RelationshipAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipAttribute;
     }
 
     public RelationshipAttribute(Attribute attribute, Agency updatedBy) {
@@ -95,6 +108,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         super(id);
     }
 
+    @JsonGetter
     public Relationship getRelationship() {
         return relationship;
     }

@@ -17,27 +17,25 @@ package com.chiralbehaviors.CoRE;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -83,9 +81,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     private static final long   serialVersionUID      = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid_seq")
-    @SequenceGenerator(name = "uuid_seq", sequenceName = "com.chiralbehaviors.CoRE.UuidGenerator()")
-    private String              id;
+    private String              id                    = UuidGenerator.nextId();
 
     @Basic(fetch = FetchType.LAZY)
     private String              notes;
@@ -95,7 +91,8 @@ abstract public class Ruleform implements Serializable, Cloneable {
     private Timestamp           updateDate            = new Timestamp(
                                                                       System.currentTimeMillis());
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "updated_by")
     protected Agency            updatedBy;
 
@@ -165,6 +162,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return true;
     }
 
+    @JsonGetter
     public final String getId() {
         return getPrimaryKey();
     }
@@ -172,6 +170,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the notes
      */
+    @JsonGetter
     public String getNotes() {
         return notes;
     }
@@ -184,6 +183,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the updateDate
      */
+    @JsonGetter
     public Timestamp getUpdateDate() {
         return updateDate;
     }
@@ -191,6 +191,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the updatedBy
      */
+    @JsonGetter
     public Agency getUpdatedBy() {
         return updatedBy;
     }
@@ -200,6 +201,9 @@ abstract public class Ruleform implements Serializable, Cloneable {
         String primaryKey = getPrimaryKey();
         return primaryKey == null ? null : UuidGenerator.fromBase64(primaryKey);
     }
+
+    @JsonIgnore
+    abstract public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute();
 
     /*
      * (non-Javadoc)
@@ -212,29 +216,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
             return 31;
         }
         return getPrimaryKey().hashCode();
-    }
-
-    public Ruleform manageEntity(EntityManager em,
-                                 Map<Ruleform, Ruleform> knownObjects) {
-        if (knownObjects.containsKey(this)) {
-            return knownObjects.get(this);
-        }
-
-        // need to traverse leaf nodes first, before persisting this entity.
-        knownObjects.put(this, this);
-        traverseForeignKeys(em, knownObjects);
-
-        if (getId() != null
-            && em.getReference(this.getClass(), getId()) != null) {
-            em.detach(this);
-            knownObjects.put(this, em.merge(this));
-        } else {
-            em.persist(this);
-            em.refresh(this);
-            knownObjects.put(this, this);
-        }
-
-        return knownObjects.get(this);
     }
 
     @JsonProperty
@@ -274,23 +255,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Override
     public String toString() {
         return String.format("%s[%s]", getClass(), getId());
-    }
-
-    // am I traversing the merged entity or the non-merged uploaded state?
-    // might as well make it merged
-    /**
-     * Calls manageEntity on each foreign key and replaces non-managed foreign
-     * key objects with managed objects
-     *
-     * @param em
-     * @param knownObjects
-     */
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (updatedBy != null) {
-            updatedBy = (Agency) updatedBy.manageEntity(em, knownObjects);
-        }
-
     }
 
     protected final void setPrimaryKey(String id) {

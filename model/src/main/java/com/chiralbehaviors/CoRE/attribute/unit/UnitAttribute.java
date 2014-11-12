@@ -33,6 +33,10 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -46,12 +50,22 @@ public class UnitAttribute extends AttributeValue<Unit> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "unit_rf")
     private Unit               unitRf;
 
     public UnitAttribute() {
         super();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, UnitAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitAttribute;
     }
 
     public UnitAttribute(Agency updatedBy) {
@@ -111,6 +125,7 @@ public class UnitAttribute extends AttributeValue<Unit> {
         return Unit.class;
     }
 
+    @JsonGetter
     public Unit getUnitRf() {
         return unitRf;
     }

@@ -54,7 +54,7 @@ public class SequencingPane extends JPanel {
     private ParentSeqAuthView     parentSeqAuth;
     private SiblingSeqAuthView    siblingSeqAuth;
     private ChildAuthSeqView      childAuthSeq;
-    private Workspace             workspace;
+    private Workspace        workspace;
 
     /**
      * Create the panel.
@@ -214,30 +214,30 @@ public class SequencingPane extends JPanel {
     protected void initDataBindings() {
         BeanProperty<SelfAuthSeqView, Workspace> selfAuthSeqViewBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, SelfAuthSeqView, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                               workspace,
-                                                                                                               selfAuthSeq,
-                                                                                                               selfAuthSeqViewBeanProperty);
+                                                                                                                              workspace,
+                                                                                                                              selfAuthSeq,
+                                                                                                                              selfAuthSeqViewBeanProperty);
         autoBinding.bind();
         //
         BeanProperty<ParentSeqAuthView, Workspace> parentSeqAuthViewBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, ParentSeqAuthView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                   workspace,
-                                                                                                                   parentSeqAuth,
-                                                                                                                   parentSeqAuthViewBeanProperty);
+                                                                                                                                  workspace,
+                                                                                                                                  parentSeqAuth,
+                                                                                                                                  parentSeqAuthViewBeanProperty);
         autoBinding_1.bind();
         //
         BeanProperty<SiblingSeqAuthView, Workspace> siblingSeqAuthViewBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, SiblingSeqAuthView, Workspace> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                    workspace,
-                                                                                                                    siblingSeqAuth,
-                                                                                                                    siblingSeqAuthViewBeanProperty);
+                                                                                                                                   workspace,
+                                                                                                                                   siblingSeqAuth,
+                                                                                                                                   siblingSeqAuthViewBeanProperty);
         autoBinding_2.bind();
         //
         BeanProperty<ChildAuthSeqView, Workspace> childAuthSeqViewBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, ChildAuthSeqView, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  workspace,
-                                                                                                                  childAuthSeq,
-                                                                                                                  childAuthSeqViewBeanProperty);
+                                                                                                                                 workspace,
+                                                                                                                                 childAuthSeq,
+                                                                                                                                 childAuthSeqViewBeanProperty);
         autoBinding_3.bind();
     }
 }

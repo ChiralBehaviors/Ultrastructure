@@ -16,22 +16,23 @@
 package com.chiralbehaviors.CoRE.agency;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product location attributes
@@ -45,12 +46,14 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency            agency;
 
     // bi-directional many-to-one association to AgencyLocation
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "agency_location")
     private AgencyLocation    agencyLocation;
 
@@ -134,16 +137,14 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
         super(id);
     }
 
+    @JsonGetter
     public Agency getAgency() {
         return agency;
     }
 
+    @JsonGetter
     public AgencyLocation getEntityLocation() {
         return agencyLocation;
-    }
-
-    public Agency getEntityValue() {
-        return agency;
     }
 
     /*
@@ -167,32 +168,20 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
         return AgencyLocation.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AgencyLocationAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyLocationAttribute;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
     }
 
     public void setEntityLocation(AgencyLocation AgencyLocation) {
         agencyLocation = AgencyLocation;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (agencyLocation != null) {
-            agencyLocation = (AgencyLocation) agencyLocation.manageEntity(em,
-                                                                          knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

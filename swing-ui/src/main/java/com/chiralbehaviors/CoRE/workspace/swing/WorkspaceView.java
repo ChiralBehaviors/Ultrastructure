@@ -41,24 +41,24 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  */
 public class WorkspaceView {
 
-    private JFrame                     frame;
-    private JTabbedPane                constellations;
-    private JLabel                     lblWorkspace;
-    private JComboBox<WorkspaceEditor> workspaces;
-    private JTabbedPane                events;
-    private JobPane                    jobs;
-    private MetaProtocolPane           metaProtocols;
-    private ProtocolPane               protocols;
-    private SequencingPane             sequencing;
-    private ExistentialRuleformPane    agencies;
-    private ExistentialRuleformPane    attributes;
-    private ExistentialRuleformPane    intervals;
-    private ExistentialRuleformPane    locations;
-    private ExistentialRuleformPane    products;
-    private ExistentialRuleformPane    statusCodes;
-    private ExistentialRuleformPane    units;
-    private RelationshipPane           relationships;
-    private Workspace                  workspace;
+    private JFrame                    frame;
+    private JTabbedPane               constellations;
+    private JLabel                    lblWorkspace;
+    private JComboBox<Workspace> workspaces;
+    private JTabbedPane               events;
+    private JobPane                   jobs;
+    private MetaProtocolPane          metaProtocols;
+    private ProtocolPane              protocols;
+    private SequencingPane            sequencing;
+    private ExistentialRuleformPane   agencies;
+    private ExistentialRuleformPane   attributes;
+    private ExistentialRuleformPane   intervals;
+    private ExistentialRuleformPane   locations;
+    private ExistentialRuleformPane   products;
+    private ExistentialRuleformPane   statusCodes;
+    private ExistentialRuleformPane   units;
+    private RelationshipPane          relationships;
+    private Workspace            workspace;
 
     /**
      * Launch the application.
@@ -175,80 +175,80 @@ public class WorkspaceView {
     protected void initDataBindings() {
         BeanProperty<ExistentialRuleformPane, Workspace> existentialRuleformPaneBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                       workspace,
-                                                                                                                       agencies,
-                                                                                                                       existentialRuleformPaneBeanProperty);
+                                                                                                                                      workspace,
+                                                                                                                                      agencies,
+                                                                                                                                      existentialRuleformPaneBeanProperty);
         autoBinding.bind();
         //
         AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         attributes,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+                                                                                                                                        workspace,
+                                                                                                                                        attributes,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_1.bind();
         //
         AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         intervals,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+                                                                                                                                        workspace,
+                                                                                                                                        intervals,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_2.bind();
         //
         AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         locations,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+                                                                                                                                        workspace,
+                                                                                                                                        locations,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_3.bind();
         //
         AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         products,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+                                                                                                                                        workspace,
+                                                                                                                                        products,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_4.bind();
         //
         BeanProperty<RelationshipPane, Workspace> relationshipPaneBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, RelationshipPane, Workspace> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  workspace,
-                                                                                                                  relationships,
-                                                                                                                  relationshipPaneBeanProperty);
+                                                                                                                                 workspace,
+                                                                                                                                 relationships,
+                                                                                                                                 relationshipPaneBeanProperty);
         autoBinding_5.bind();
         //
         AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         statusCodes,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+                                                                                                                                        workspace,
+                                                                                                                                        statusCodes,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_6.bind();
         //
         AutoBinding<Workspace, Workspace, ExistentialRuleformPane, Workspace> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                         workspace,
-                                                                                                                         units,
-                                                                                                                         existentialRuleformPaneBeanProperty);
+                                                                                                                                        workspace,
+                                                                                                                                        units,
+                                                                                                                                        existentialRuleformPaneBeanProperty);
         autoBinding_7.bind();
         //
         BeanProperty<SequencingPane, Workspace> sequencingPaneBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, SequencingPane, Workspace> autoBinding_8 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                workspace,
-                                                                                                                sequencing,
-                                                                                                                sequencingPaneBeanProperty);
+                                                                                                                               workspace,
+                                                                                                                               sequencing,
+                                                                                                                               sequencingPaneBeanProperty);
         autoBinding_8.bind();
         //
         BeanProperty<ProtocolPane, Workspace> protocolPaneBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, ProtocolPane, Workspace> autoBinding_9 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                              workspace,
-                                                                                                              protocols,
-                                                                                                              protocolPaneBeanProperty);
+                                                                                                                             workspace,
+                                                                                                                             protocols,
+                                                                                                                             protocolPaneBeanProperty);
         autoBinding_9.bind();
         //
         BeanProperty<MetaProtocolPane, Workspace> metaProtocolPaneBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, MetaProtocolPane, Workspace> autoBinding_10 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                   workspace,
-                                                                                                                   metaProtocols,
-                                                                                                                   metaProtocolPaneBeanProperty);
+                                                                                                                                  workspace,
+                                                                                                                                  metaProtocols,
+                                                                                                                                  metaProtocolPaneBeanProperty);
         autoBinding_10.bind();
         //
         BeanProperty<JobPane, Workspace> jobPaneBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, JobPane, Workspace> autoBinding_11 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                          workspace,
-                                                                                                          jobs,
-                                                                                                          jobPaneBeanProperty);
+                                                                                                                         workspace,
+                                                                                                                         jobs,
+                                                                                                                         jobPaneBeanProperty);
         autoBinding_11.bind();
     }
 }

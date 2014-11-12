@@ -33,6 +33,10 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -46,7 +50,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Interval
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval")
     private Interval           interval;
 
@@ -64,6 +68,15 @@ public class IntervalAttribute extends AttributeValue<Interval> {
 
     public IntervalAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, IntervalAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalAttribute;
     }
 
     public IntervalAttribute(Attribute attribute, BigDecimal value,
@@ -92,6 +105,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         super(id);
     }
 
+    @JsonGetter
     public Interval getInterval() {
         return interval;
     }

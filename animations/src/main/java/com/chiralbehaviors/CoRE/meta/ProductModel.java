@@ -16,19 +16,10 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
-import java.util.List;
-
-import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.product.access.ProductAgencyAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductAttributeAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductLocationAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductRelationshipAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductStatusCodeAccessAuthorization;
-import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
 
 /**
  * @author hhildebrand
@@ -37,23 +28,5 @@ import com.chiralbehaviors.CoRE.product.access.ProductUnitAccessAuthorization;
 public interface ProductModel
         extends
         NetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
-
-    List<ProductAgencyAccessAuthorization> getAgencyAccessAuths(Product parent,
-                                                                Relationship relationship);
-
-    List<ProductAttributeAccessAuthorization> getAttributeAccessAuths(Product parent,
-                                                                      Relationship relationship);
-
-    List<ProductLocationAccessAuthorization> getLocationAccessAuths(Product parent,
-                                                                    Relationship relationship);
-
-    List<ProductRelationshipAccessAuthorization> getRelationshipAccessAuths(Product parent,
-                                                                            Relationship relationship);
-
-    List<ProductStatusCodeAccessAuthorization> getStatusCodeAccessAuths(Product parent,
-                                                                        Relationship relationship);
-
-    List<ProductUnitAccessAuthorization> getUnitAccessAuths(Product parent,
-                                                            Relationship relationship);
 
 }

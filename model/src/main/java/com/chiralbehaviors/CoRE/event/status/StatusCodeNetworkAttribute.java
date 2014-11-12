@@ -16,22 +16,23 @@
 package com.chiralbehaviors.CoRE.event.status;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for unit networks
@@ -46,14 +47,14 @@ public class StatusCodeNetworkAttribute extends
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency            agency;
 
     // bi-directional many-to-one association to StatusCodeNetwork
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private StatusCodeNetwork StatusCodeNetwork;
+    private StatusCodeNetwork statusCodeNetwork;
 
     public StatusCodeNetworkAttribute() {
     }
@@ -63,6 +64,15 @@ public class StatusCodeNetworkAttribute extends
      */
     public StatusCodeNetworkAttribute(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeNetworkAttribute;
     }
 
     /**
@@ -135,6 +145,7 @@ public class StatusCodeNetworkAttribute extends
         super(id);
     }
 
+    @JsonGetter
     public Agency getAgency() {
         return agency;
     }
@@ -147,7 +158,7 @@ public class StatusCodeNetworkAttribute extends
      */
     @Override
     public SingularAttribute<StatusCodeNetworkAttribute, StatusCodeNetwork> getRuleformAttribute() {
-        return StatusCodeNetworkAttribute_.StatusCodeNetwork;
+        return StatusCodeNetworkAttribute_.statusCodeNetwork;
     }
 
     /*
@@ -160,8 +171,9 @@ public class StatusCodeNetworkAttribute extends
         return StatusCodeNetwork.class;
     }
 
+    @JsonGetter
     public StatusCodeNetwork getStatusCodeNetwork() {
-        return StatusCodeNetwork;
+        return statusCodeNetwork;
     }
 
     public void setAgency(Agency agency2) {
@@ -169,27 +181,6 @@ public class StatusCodeNetworkAttribute extends
     }
 
     public void setStatusCodeNetwork(StatusCodeNetwork StatusCodeNetwork) {
-        this.StatusCodeNetwork = StatusCodeNetwork;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (StatusCodeNetwork != null) {
-            StatusCodeNetwork = (StatusCodeNetwork) StatusCodeNetwork.manageEntity(em,
-                                                                                   knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
+        this.statusCodeNetwork = StatusCodeNetwork;
     }
 }

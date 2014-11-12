@@ -17,13 +17,11 @@ package com.chiralbehaviors.CoRE.product;
 
 import static com.chiralbehaviors.CoRE.product.ProductLocation.PRODUCTS_AT_LOCATION;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,12 +29,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -58,7 +59,7 @@ public class ProductLocation extends Ruleform implements
     private static final long             serialVersionUID     = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency                        agency;
 
@@ -68,21 +69,30 @@ public class ProductLocation extends Ruleform implements
     private Set<ProductLocationAttribute> attributes;
 
     // bi-directional many-to-one association to Location
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
     private Location                      location;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Product                       product;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship                  relationship;
 
     public ProductLocation() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductLocation> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productLocation;
     }
 
     /**
@@ -150,32 +160,5 @@ public class ProductLocation extends Ruleform implements
 
     public void setRelationship(Relationship relationship) {
         this.relationship = relationship;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        if (location != null) {
-            location = (Location) location.manageEntity(em, knownObjects);
-        }
-        if (relationship != null) {
-            relationship = (Relationship) relationship.manageEntity(em,
-                                                                    knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

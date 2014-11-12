@@ -16,18 +16,20 @@
 package com.chiralbehaviors.CoRE.attribute.unit;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The value of a unit.
@@ -52,7 +54,7 @@ public class UnitValue extends Ruleform {
     private BigDecimal        numericValue;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_value")
     private Product           productValue;
 
@@ -63,11 +65,20 @@ public class UnitValue extends Ruleform {
     private String            textValue;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit")
     private Unit              unit;
 
     public UnitValue() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, UnitValue> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitValue;
     }
 
     public Boolean getBooleanValue() {
@@ -135,22 +146,4 @@ public class UnitValue extends Ruleform {
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (productValue != null) {
-            productValue = (Product) productValue.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
-    }
-
 }

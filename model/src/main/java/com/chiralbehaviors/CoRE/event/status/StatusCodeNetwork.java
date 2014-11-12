@@ -36,10 +36,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -78,20 +83,22 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     // many-to-one
     // association to Agency
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private StatusCode         child;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private StatusCode         parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private StatusCodeNetwork  premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private StatusCodeNetwork  premise2;
 
@@ -107,6 +114,15 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      */
     public StatusCodeNetwork(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeNetwork;
     }
 
     /**
@@ -141,6 +157,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
+    @JsonGetter
     public StatusCode getChild() {
         return child;
     }
@@ -149,6 +166,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
+    @JsonGetter
     public StatusCode getParent() {
         return parent;
     }
@@ -157,6 +175,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      * @return the premise1
      */
     @Override
+    @JsonGetter
     public StatusCodeNetwork getPremise1() {
         return premise1;
     }
@@ -165,6 +184,7 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public StatusCodeNetwork getPremise2() {
         return premise2;
     }

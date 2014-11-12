@@ -36,10 +36,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -76,20 +81,22 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     private static final long  serialVersionUID              = 1L;
 
     // bi-directional many-to-one association to Interval
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Interval           child;
 
     //bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Interval           parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private IntervalNetwork    premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private IntervalNetwork    premise2;
 
@@ -126,6 +133,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
+    @JsonGetter
     public Interval getChild() {
         return child;
     }
@@ -134,6 +142,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
+    @JsonGetter
     public Interval getParent() {
         return parent;
     }
@@ -142,6 +151,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      * @return the premise1
      */
     @Override
+    @JsonGetter
     public IntervalNetwork getPremise1() {
         return premise1;
     }
@@ -150,8 +160,18 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public IntervalNetwork getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, IntervalNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalNetwork;
     }
 
     /*

@@ -48,6 +48,8 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -234,6 +236,12 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<LocationAttribute> getAttributeValueClass() {
+        return LocationAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
@@ -297,6 +305,14 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, LocationNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -310,6 +326,15 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     @Override
     public String getSameId() {
         return WellKnownLocation.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Location> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.location;
     }
 
     /* (non-Javadoc)

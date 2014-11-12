@@ -57,9 +57,9 @@ public class CollectionResourceTest extends DatabaseTest {
         user = em.merge(user);
         Product channel = new Product("MyChannel", null, core);
         channel = em.merge(channel);
-        Relationship owns = new Relationship("owns", null, core);
+        Relationship owns = new Relationship("my owns", null, core);
         owns = em.merge(owns);
-        Relationship ownedBy = new Relationship("ownedBy", null, core);
+        Relationship ownedBy = new Relationship("my ownedBy", null, core);
         ownedBy = em.merge(ownedBy);
         owns.setInverse(ownedBy);
         ownedBy.setInverse(owns);
@@ -104,8 +104,8 @@ public class CollectionResourceTest extends DatabaseTest {
         Agency core = new Agency("hparry", "test resource");
         core.setUpdatedBy(core);
 
-        Relationship owns = new Relationship("owns", null, core);
-        Relationship ownedBy = new Relationship("ownedBy", null, core);
+        Relationship owns = new Relationship("owns2", null, core);
+        Relationship ownedBy = new Relationship("ownedBy2", null, core);
         owns.setInverse(ownedBy);
         ownedBy.setInverse(owns);
 

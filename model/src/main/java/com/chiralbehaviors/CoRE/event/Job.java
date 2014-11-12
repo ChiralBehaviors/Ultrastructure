@@ -37,13 +37,11 @@ import static com.chiralbehaviors.CoRE.event.Job.INITIAL_STATE;
 import static com.chiralbehaviors.CoRE.event.Job.STATUS_CODE;
 import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -53,13 +51,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import org.apache.openjpa.persistence.LoadFetchGroup;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -394,27 +394,16 @@ public class Job extends AbstractProtocol {
     @Override
     public String toString() {
         return String.format("Job [status=%s, %s, sequenceNumber=%s, currentLogSequence=%s]",
-                             status != null ? status.getName() : "null",
-                             getToString(), sequenceNumber, currentLogSequence);
+                             getStatus().getName(), getToString(),
+                             sequenceNumber, currentLogSequence);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
     @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (parent != null) {
-            parent = (Job) parent.manageEntity(em, knownObjects);
-        }
-        if (status != null) {
-            status = (StatusCode) status.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Job> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.job;
     }
 }

@@ -18,23 +18,25 @@ package com.chiralbehaviors.CoRE.event;
 import static com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization.GET_PARENT_ACTIONS;
 import static com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization.GET_SEQUENCES;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -56,11 +58,11 @@ public class ProductParentSequencingAuthorization extends Ruleform {
 
     private static final long  serialVersionUID    = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Product            parent;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent_status_to_set")
     private StatusCode         parentStatusToSet;
 
@@ -70,19 +72,28 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
     private Product            service;
 
     @Column(name = "set_if_active_siblings")
     private Integer            setIfActiveSiblings = TRUE;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
     public ProductParentSequencingAuthorization() {
         super();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductParentSequencingAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productParentSequencingAuthorization;
     }
 
     /**
@@ -200,36 +211,10 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     @Override
     public String toString() {
         return String.format("ProductParentSequencingAuthorization [service=%s, statusCode=%s, parent=%s, parentStatusToSet=%s, setIfActiveSiblings=%s, replaceProduct=%s, sequenceNumber=%s]",
-                             service.getName(), statusCode.getName(),
-                             parent.getName(), parentStatusToSet.getName(),
-                             setIfActiveSiblings, replaceProduct,
-                             sequenceNumber);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (parent != null) {
-            parent = (Product) parent.manageEntity(em, knownObjects);
-        }
-        if (service != null) {
-            service = (Product) service.manageEntity(em, knownObjects);
-        }
-        if (parentStatusToSet != null) {
-            parentStatusToSet = (StatusCode) parentStatusToSet.manageEntity(em,
-                                                                            knownObjects);
-        }
-        if (statusCode != null) {
-            statusCode = (StatusCode) statusCode.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
+                             getService().getName(), getStatusCode().getName(),
+                             getParent().getName(),
+                             getParentStatusToSet().getName(),
+                             getSetIfActiveSiblings(), isReplaceProduct(),
+                             getSequenceNumber());
     }
 }

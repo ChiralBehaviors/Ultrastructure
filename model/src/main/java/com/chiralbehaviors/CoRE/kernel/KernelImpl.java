@@ -16,6 +16,11 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -29,6 +34,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownInterval;
@@ -45,17 +51,92 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Repository of immutable kernal rules
+ * 
+ * This used to be the standard. Now we use workspaces. However, kernel is a
+ * fundamental workspace, and it's needed a lot. Consequently, because of the
+ * way we do Java stored procedures, reentrancy requires a new image of the
+ * kernel workspace in the context of the entity manager. Sucks to be us.
+ * 
+ * Anyways, this is a much faster load than the CachedWorkspace. Saves a lot of
+ * overhead in txns that involve reentrant java calls - which, is like every
+ * one.
  *
  * @author hhildebrand
  *
  */
 public class KernelImpl implements Kernel {
 
-    private static final String       ZERO = UuidGenerator.toBase64(new UUID(0,
-                                                                             0));
+    public static final String SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    public static final String ZERO                      = UuidGenerator.toBase64(new UUID(
+                                                                                           0,
+                                                                                           0));
+    static final String        KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
+
+    public static void clear(EntityManager em) throws SQLException {
+        Connection connection = em.unwrap(Connection.class);
+        connection.setAutoCommit(false);
+        alterTriggers(connection, false);
+        ResultSet r = connection.createStatement().executeQuery(KernelImpl.SELECT_TABLE);
+        while (r.next()) {
+            String table = r.getString("name");
+            String query = String.format("DELETE FROM %s", table);
+            connection.createStatement().execute(query);
+        }
+        r.close();
+        alterTriggers(connection, true);
+        connection.commit();
+    }
+
+    public static void clearAndLoadKernel(EntityManager em)
+                                                           throws SQLException,
+                                                           IOException {
+        KernelImpl.clear(em);
+        em.getTransaction().begin();
+        KernelImpl.loadKernel(em);
+        em.getTransaction().commit();
+    }
+
+    public static Kernel getKernel(EntityManager em) {
+        return new KernelImpl(em);
+    }
+
+    public static void loadKernel(EntityManager em) throws IOException {
+        KernelImpl.loadKernel(em,
+                              KernelImpl.class.getResourceAsStream(KernelImpl.KERNEL_WORKSPACE_RESOURCE));
+    }
+
+    public static void loadKernel(EntityManager em, InputStream is)
+                                                                   throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new CoREModule());
+        WorkspaceSnapshot workspace = mapper.readValue(is,
+                                                       WorkspaceSnapshot.class);
+        workspace.retarget(em);
+    }
+
+    static void alterTriggers(Connection connection, boolean enable)
+                                                                    throws SQLException {
+        for (String table : new String[] { "ruleform.agency",
+                "ruleform.product", "ruleform.location" }) {
+            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
+                                         table, enable ? "ENABLE" : "DISABLE");
+            connection.createStatement().execute(query);
+        }
+        ResultSet r = connection.createStatement().executeQuery(KernelImpl.SELECT_TABLE);
+        while (r.next()) {
+            String table = r.getString("name");
+            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
+                                         table, enable ? "ENABLE" : "DISABLE");
+            connection.createStatement().execute(query);
+        }
+        r.close();
+    }
+
     private final Agency              agency;
     private final Agency              anyAgency;
     private final Attribute           anyAttribute;
@@ -136,11 +217,17 @@ public class KernelImpl implements Kernel {
     private final StatusCode          sameStatusCode;
     private final Unit                sameUnit;
     private final Agency              specialSystemAgency;
+
     private final Agency              superUser;
+
     private final StatusCode          unset;
+
     private final Unit                unsetUnit;
+
     private final Relationship        versionOf;
+
     private final Product             workspace;
+
     private final Relationship        workspaceOf;
 
     public KernelImpl(EntityManager em) {

@@ -236,12 +236,32 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     RuleForm getChild(RuleForm parent, Relationship relationship);
 
     /**
+     * Answer the non inferred child that is connected to the parent via the
+     * relationship
+     *
+     * @param parent
+     * @param relationship
+     * @return the non inferred child that is connected to the parent via the
+     *         relationship
+     */
+    RuleForm getImmediateChild(RuleForm parent, Relationship relationship);
+
+    /**
      *
      * @param parent
      * @param relationship
      * @return
      */
     List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
+
+    /**
+     *
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    List<RuleForm> getImmediateChildren(RuleForm parent,
+                                        Relationship relationship);
 
     /**
      * Answer the Facet of the ruleform instance containing the authorized
@@ -301,15 +321,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      *
      * @param parent
-     * @param parentRelationship
-     * @param authorizingRelationship
+     * @param relationship
      * @param child
      * @return
      */
-    boolean isAccessible(RuleForm parent, Relationship parentRelationship,
-                         Relationship authorizingRelationship,
-                         ExistentialRuleform<?, ?> child,
-                         Relationship childRelationship);
+    boolean isAccessible(RuleForm parent, Relationship relationship,
+                         RuleForm child);
 
     /**
      *

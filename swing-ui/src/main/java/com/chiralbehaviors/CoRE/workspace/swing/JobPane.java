@@ -46,7 +46,7 @@ public class JobPane extends JPanel {
     private JComboBox<Job>    keys;
     private JobView           job;
     private JobExplorer       match;
-    private Workspace         workspace;
+    private Workspace    workspace;
 
     /**
      * Create the panel.
@@ -118,9 +118,9 @@ public class JobPane extends JPanel {
     protected void initDataBindings() {
         BeanProperty<JobView, Workspace> jobViewBeanProperty = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, JobView, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                       workspace,
-                                                                                                       job,
-                                                                                                       jobViewBeanProperty);
+                                                                                                                      workspace,
+                                                                                                                      job,
+                                                                                                                      jobViewBeanProperty);
         autoBinding.bind();
         //
         BeanProperty<JobView, Job> jobViewBeanProperty_1 = BeanProperty.create("job");
@@ -142,9 +142,9 @@ public class JobPane extends JPanel {
         //
         BeanProperty<JobExplorer, Workspace> jobExplorerBeanProperty_1 = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, JobExplorer, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                             workspace,
-                                                                                                             match,
-                                                                                                             jobExplorerBeanProperty_1);
+                                                                                                                            workspace,
+                                                                                                                            match,
+                                                                                                                            jobExplorerBeanProperty_1);
         autoBinding_3.bind();
     }
 }

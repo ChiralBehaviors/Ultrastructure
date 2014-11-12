@@ -36,8 +36,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -72,20 +77,22 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
                                                                 + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long   serialVersionUID              = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Relationship        child;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Relationship        parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private RelationshipNetwork premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private RelationshipNetwork premise2;
 
@@ -101,6 +108,15 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      */
     public RelationshipNetwork(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipNetwork;
     }
 
     /**
@@ -135,6 +151,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getChild()
      */
     @Override
+    @JsonGetter
     public Relationship getChild() {
         return child;
     }
@@ -144,6 +161,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
     @Override
+    @JsonGetter
     public Relationship getParent() {
         return parent;
     }
@@ -152,6 +170,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      * @return the premise1
      */
     @Override
+    @JsonGetter
     public RelationshipNetwork getPremise1() {
         return premise1;
     }
@@ -160,6 +179,7 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public RelationshipNetwork getPremise2() {
         return premise2;
     }

@@ -90,7 +90,7 @@ public class UnitModelImpl
      * @param em
      */
     public UnitModelImpl(EntityManager em) {
-        super(em, new KernelImpl(em));
+        super(em, KernelImpl.getKernel(em));
     }
 
     /**

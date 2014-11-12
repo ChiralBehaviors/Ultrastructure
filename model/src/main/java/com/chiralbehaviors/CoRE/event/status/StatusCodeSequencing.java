@@ -25,13 +25,11 @@ import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_PAR
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE;
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -39,11 +37,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -96,17 +97,18 @@ public class StatusCodeSequencing extends Ruleform {
     private static final long   serialVersionUID                          = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_code")
     private StatusCode          childCode;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent_code")
     private StatusCode          parentCode;
 
     // bi-directional many-to-one association to Event
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(optional = false, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "service")
     private Product             service;
 
@@ -121,6 +123,15 @@ public class StatusCodeSequencing extends Ruleform {
     private Set<ProductNetwork> statusCodeByParent;
 
     public StatusCodeSequencing() {
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeSequencing> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeSequencing;
     }
 
     /**
@@ -227,28 +238,5 @@ public class StatusCodeSequencing extends Ruleform {
      */
     public void setStatusCodeByParent(Set<ProductNetwork> statusCodeByParent) {
         this.statusCodeByParent = statusCodeByParent;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (childCode != null) {
-            childCode = (StatusCode) childCode.manageEntity(em, knownObjects);
-        }
-        if (parentCode != null) {
-            parentCode = (StatusCode) parentCode.manageEntity(em, knownObjects);
-        }
-        if (service != null) {
-            service = (Product) service.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

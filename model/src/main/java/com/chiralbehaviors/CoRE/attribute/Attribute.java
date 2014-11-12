@@ -46,6 +46,8 @@ import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -262,6 +264,12 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<AttributeMetaAttribute> getAttributeValueClass() {
+        return AttributeMetaAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
@@ -315,6 +323,14 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, AttributeNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -332,6 +348,15 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
 
     public ValueType getValueType() {
         return valueType;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Attribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attribute;
     }
 
     /* (non-Javadoc)

@@ -53,7 +53,7 @@ public class RelationshipPane extends JPanel {
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
     private RelationshipView                 relationshipView;
-    private Workspace                        workspace;
+    private Workspace                   workspace;
 
     /**
      * Create the panel.
@@ -214,9 +214,9 @@ public class RelationshipPane extends JPanel {
         //
         BeanProperty<RelationshipView, Workspace> relationshipViewBeanProperty_1 = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, RelationshipView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  workspace,
-                                                                                                                  relationshipView,
-                                                                                                                  relationshipViewBeanProperty_1);
+                                                                                                                                 workspace,
+                                                                                                                                 relationshipView,
+                                                                                                                                 relationshipViewBeanProperty_1);
         autoBinding_1.bind();
     }
 }

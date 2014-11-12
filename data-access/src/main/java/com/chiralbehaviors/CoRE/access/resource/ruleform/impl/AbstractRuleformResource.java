@@ -16,15 +16,12 @@
 package com.chiralbehaviors.CoRE.access.resource.ruleform.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.access.resource.ruleform.ExistentialRuleformResource;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
@@ -76,8 +73,7 @@ public abstract class AbstractRuleformResource<RuleForm extends ExistentialRulef
     @Override
     public final UUID insert(RuleForm rf) {
         em.getTransaction().begin();
-        Map<Ruleform, Ruleform> map = new HashMap<Ruleform, Ruleform>();
-        rf.manageEntity(em, map);
+        em.persist(rf);
         em.getTransaction().commit();
         em.refresh(rf);
         return rf.getUUID();

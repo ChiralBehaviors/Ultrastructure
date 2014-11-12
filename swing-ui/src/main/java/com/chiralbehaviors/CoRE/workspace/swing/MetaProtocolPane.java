@@ -49,7 +49,7 @@ public class MetaProtocolPane extends JPanel {
     private JComboBox<MetaProtocol> keys;
     private JList<Protocol>         matchingProtocols;
     private MetaProtocolView        metaProtocol;
-    private Workspace               workspace;
+    private Workspace          workspace;
 
     /**
      * Create the panel.
@@ -140,9 +140,9 @@ public class MetaProtocolPane extends JPanel {
         //
         BeanProperty<MetaProtocolView, Workspace> metaProtocolViewBeanProperty_1 = BeanProperty.create("workspace");
         AutoBinding<Workspace, Workspace, MetaProtocolView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
-                                                                                                                  workspace,
-                                                                                                                  metaProtocol,
-                                                                                                                  metaProtocolViewBeanProperty_1);
+                                                                                                                                 workspace,
+                                                                                                                                 metaProtocol,
+                                                                                                                                 metaProtocolViewBeanProperty_1);
         autoBinding_1.bind();
     }
 }

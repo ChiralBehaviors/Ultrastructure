@@ -27,15 +27,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.chiralbehaviors.CoRE.access.DataAccessBundle;
-import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.authentication.AgencyAuthenticator;
 import com.chiralbehaviors.CoRE.configuration.CoREServiceConfiguration;
 import com.chiralbehaviors.CoRE.configuration.JpaConfiguration;
-import com.chiralbehaviors.CoRE.json.AttributeValueSerializer;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * @author hhildebrand
@@ -58,13 +55,7 @@ public class CoREApplication extends Application<CoREServiceConfiguration> {
         //CacheBuilderSpec spec = AssetsBundle.DEFAULT_CACHE_SPEC;
 
         bootstrap.addBundle(new AssetsBundle("/ui/", "/ui/"));
-        SimpleModule testModule = new SimpleModule("MyModule",
-                                                   new Version(1, 0, 0, null,
-                                                               null, null));
-        testModule.addSerializer(new AttributeValueSerializer<AgencyAttribute>(
-                                                                               AgencyAttribute.class,
-                                                                               true)); // assuming serializer declares correct class to bind to
-        bootstrap.getObjectMapper().registerModule(testModule);
+        bootstrap.getObjectMapper().registerModule(new CoREModule());
     }
 
     /* (non-Javadoc)

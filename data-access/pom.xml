@@ -71,16 +71,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>json</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>model</artifactId>
-                    <groupId>com.chiralbehaviors.CoRE</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-servlets</artifactId>
             <version>0.7.0</version>

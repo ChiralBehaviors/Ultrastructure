@@ -16,22 +16,23 @@
 package com.chiralbehaviors.CoRE.location;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product attributes
@@ -45,12 +46,12 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency            agency;
 
     // bi-directional many-to-one association to LocationNetwork
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
     private LocationNetwork   LocationNetwork;
 
@@ -69,6 +70,15 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
      */
     public LocationNetworkAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetworkAttribute;
     }
 
     /**
@@ -134,10 +144,12 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
         super(id);
     }
 
+    @JsonGetter
     public Agency getAgency() {
         return agency;
     }
 
+    @JsonGetter
     public LocationNetwork getLocationNetwork() {
         return LocationNetwork;
     }
@@ -169,26 +181,5 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
 
     public void setLocationNetwork(LocationNetwork LocationNetwork) {
         this.LocationNetwork = LocationNetwork;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (LocationNetwork != null) {
-            LocationNetwork = (LocationNetwork) LocationNetwork.manageEntity(em,
-                                                                             knownObjects);
-        }
-        if (agency != null) {
-            agency = (Agency) agency.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

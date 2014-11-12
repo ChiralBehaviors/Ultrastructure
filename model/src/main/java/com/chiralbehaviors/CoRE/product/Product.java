@@ -55,6 +55,8 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -291,6 +293,12 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<ProductAttribute> getAttributeValueClass() {
+        return ProductAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
@@ -354,6 +362,14 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, ProductNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -367,6 +383,15 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     @Override
     public String getSameId() {
         return WellKnownProduct.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Product> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.product;
     }
 
     /* (non-Javadoc)

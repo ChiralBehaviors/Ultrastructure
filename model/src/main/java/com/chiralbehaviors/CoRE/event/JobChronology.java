@@ -22,22 +22,23 @@ import static com.chiralbehaviors.CoRE.event.JobChronology.GET_LOG_FOR_SEQUENCE;
 import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.JobChronology.LAST_JOB_LOG;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -91,6 +92,15 @@ public class JobChronology extends AbstractProtocol {
         initializeFrom(job);
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, JobChronology> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.jobChronology;
+    }
+
     /**
      * @param id
      */
@@ -136,22 +146,6 @@ public class JobChronology extends AbstractProtocol {
         this.status = status;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (job != null) {
-            job = (Job) job.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-    }
-
     protected void initializeFrom(Job job) {
         setJob(job);
         setStatus(job.getStatus());
@@ -162,7 +156,7 @@ public class JobChronology extends AbstractProtocol {
     @Override
     public String toString() {
         return String.format("JobChronology [status=%s, %s, sequenceNumber=%s, notes=%s]",
-                             status != null ? status.getName() : "null",
-                             getToString(), sequenceNumber, getNotes());
+                             getStatus().getName(), getToString(),
+                             sequenceNumber, getNotes());
     }
 }

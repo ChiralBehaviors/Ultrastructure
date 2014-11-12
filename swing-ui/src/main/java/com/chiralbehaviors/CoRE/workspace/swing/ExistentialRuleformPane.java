@@ -48,7 +48,7 @@ public class ExistentialRuleformPane extends JPanel {
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
     private ExistentialRuleformView          ruleformView;
-    private Workspace                        workspace;
+    private Workspace                   workspace;
 
     /**
      * Create the panel.

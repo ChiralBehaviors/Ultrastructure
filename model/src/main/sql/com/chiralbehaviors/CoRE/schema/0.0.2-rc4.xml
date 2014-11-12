@@ -83,11 +83,16 @@
             <column name="job" type="CHAR(22)" />
             <column name="job_chronology" type="CHAR(22)" />
             <column name="meta_protocol" type="CHAR(22)" />
+            <column name="network_inference" type="CHAR(22)" />
             <column name="product_child_sequencing_authorization" type="CHAR(22)" />
             <column name="product_parent_sequencing_authorization" type="CHAR(22)" />
-            <column name="product_sibling_sequencing_authorization" type="CHAR(22)" />
             <column name="product_self_sequencing_authorization" type="CHAR(22)" />
+            <column name="product_sibling_sequencing_authorization" type="CHAR(22)" />
             <column name="protocol" type="CHAR(22)" />
+            <column name="relationship" type="CHAR(22)" />
+            <column name="relationship_attribute" type="CHAR(22)" />
+            <column name="relationship_attribute_authorization" type="CHAR(22)" />
+            <column name="relationship_network" type="CHAR(22)" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
@@ -276,6 +281,10 @@
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="meta_protocol" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="network_inference" baseTableName="workspace_authorization" constraintName="workspace_authorization_network_inference_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="network_inference" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_child_sequencing_authorization" baseTableName="workspace_authorization"
             constraintName="workspace_authorization_product_child_sequencing_authorization_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_child_sequencing_authorization" />
@@ -284,6 +293,10 @@
             constraintName="workspace_authorization_product_parent_sequencing_authorization_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_parent_sequencing_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_self_sequencing_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_product_self_sequencing_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_self_sequencing_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_sibling_sequencing_authorization" baseTableName="workspace_authorization"
             constraintName="workspace_authorization_product_sibling_sequencing_authorization_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_sibling_sequencing_authorization" />
@@ -291,6 +304,22 @@
             baseColumnNames="protocol" baseTableName="workspace_authorization" constraintName="workspace_authorization_protocol_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="protocol" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="workspace_authorization" constraintName="workspace_authorization_relationship_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_relationship_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship_attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship_attribute_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_relationship_attribute_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship_attribute_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_relationship_network_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship_network" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="workspace_authorization" constraintName="workspace_authorization_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
@@ -375,10 +404,16 @@
                 ruleform.null_zero(job) +
                 ruleform.null_zero(job_chronology) +
                 ruleform.null_zero(meta_protocol) +
+                ruleform.null_zero(network_inference) +
                 ruleform.null_zero(product_child_sequencing_authorization) +
                 ruleform.null_zero(product_parent_sequencing_authorization) +
+                ruleform.null_zero(product_self_sequencing_authorization) +
                 ruleform.null_zero(product_sibling_sequencing_authorization) +
-                ruleform.null_zero(protocol)
+                ruleform.null_zero(protocol) +
+                ruleform.null_zero(relationship) +
+                ruleform.null_zero(relationship_attribute) +
+                ruleform.null_zero(relationship_attribute_authorization) +
+                ruleform.null_zero(relationship_network)
                 ) = 1)
         ]]>
         </sql>

@@ -28,7 +28,6 @@ import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_USED_RELATIONSHI
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -40,10 +39,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The network relationships of agencies
@@ -86,23 +89,34 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
                                                                   + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AgencyNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyNetwork;
+    }
+
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Agency             child;
+    private Agency        child;
 
     //bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Agency             parent;
+    private Agency        parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
-    private AgencyNetwork      premise1;
+    private AgencyNetwork premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
-    private AgencyNetwork      premise2;
+    private AgencyNetwork premise2;
 
     public AgencyNetwork() {
     }
@@ -141,11 +155,13 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     }
 
     @Override
+    @JsonGetter
     public Agency getChild() {
         return child;
     }
 
     @Override
+    @JsonGetter
     public Agency getParent() {
         return parent;
     }
@@ -154,6 +170,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @return the premise1
      */
     @Override
+    @JsonGetter
     public AgencyNetwork getPremise1() {
         return premise1;
     }
@@ -162,6 +179,7 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public AgencyNetwork getPremise2() {
         return premise2;
     }
@@ -196,21 +214,5 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @Override
     public void setPremise2(NetworkRuleform<Agency> premise2) {
         this.premise2 = (AgencyNetwork) premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null) {
-            child = (Agency) child.manageEntity(em, knownObjects);
-        }
-        if (parent != null) {
-            parent = (Agency) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

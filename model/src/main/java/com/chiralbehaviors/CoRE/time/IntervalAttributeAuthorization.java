@@ -15,21 +15,23 @@
  */
 package com.chiralbehaviors.CoRE.time;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorizations for attributes on entities.
@@ -43,7 +45,7 @@ public class IntervalAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Interval> {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Interval          classifier;
 
@@ -65,6 +67,15 @@ public class IntervalAttributeAuthorization extends
     public IntervalAttributeAuthorization(Relationship classification,
                                           Agency updatedBy) {
         super(classification, updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, IntervalAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalAttributeAuthorization;
     }
 
     /**
@@ -99,6 +110,7 @@ public class IntervalAttributeAuthorization extends
      * getClassifier()
      */
     @Override
+    @JsonGetter
     public Interval getClassifier() {
         return classifier;
     }
@@ -112,22 +124,5 @@ public class IntervalAttributeAuthorization extends
     @Override
     public void setClassifier(Interval classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (classifier != null) {
-            classifier = (Interval) classifier.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

@@ -17,12 +17,10 @@ package com.chiralbehaviors.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -34,6 +32,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -48,7 +47,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         Ruleform {
     private static final long serialVersionUID = 1L;
     // bi-directional many-to-one association to Attribute
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "attribute")
     private Attribute         attribute;
 
@@ -77,7 +77,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private Timestamp         timestampValue;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "unit")
     private Unit              unit;
 
@@ -137,10 +138,12 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         super(id);
     }
 
+    @JsonGetter
     public Attribute getAttribute() {
         return attribute;
     }
 
+    @JsonIgnore
     public byte[] getBinaryValue() {
         if (attribute.getValueType() != ValueType.BINARY) {
             throw new UnsupportedOperationException(
@@ -151,6 +154,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return binaryValue;
     }
 
+    @JsonIgnore
     public Boolean getBooleanValue() {
         if (attribute.getValueType() != ValueType.BOOLEAN) {
             throw new UnsupportedOperationException(
@@ -161,6 +165,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return toBoolean(booleanValue);
     }
 
+    @JsonIgnore
     public Integer getIntegerValue() {
         if (attribute.getValueType() != ValueType.INTEGER) {
             throw new UnsupportedOperationException(
@@ -178,6 +183,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return key;
     }
 
+    @JsonIgnore
     public BigDecimal getNumericValue() {
         if (attribute.getValueType() != ValueType.NUMERIC) {
             throw new UnsupportedOperationException(
@@ -202,6 +208,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return sequenceNumber;
     }
 
+    @JsonIgnore
     public String getTextValue() {
         if (attribute.getValueType() != ValueType.TEXT) {
             throw new UnsupportedOperationException(
@@ -212,10 +219,12 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         return textValue;
     }
 
+    @JsonIgnore
     public Timestamp getTimestampValue() {
         return timestampValue;
     }
 
+    @JsonIgnore
     public Unit getUnit() {
         return unit;
     }
@@ -320,21 +329,5 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
 
     public void setUnit(Unit unit) {
         this.unit = unit;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (attribute != null) {
-            attribute = (Attribute) attribute.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
     }
 }

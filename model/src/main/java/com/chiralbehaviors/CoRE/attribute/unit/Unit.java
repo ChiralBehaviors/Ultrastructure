@@ -46,6 +46,8 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -225,6 +227,12 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<UnitAttribute> getAttributeValueClass() {
+        return UnitAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
@@ -300,6 +308,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, UnitNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -313,6 +329,15 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     @Override
     public String getSameId() {
         return WellKnownUnit.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Unit> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unit;
     }
 
     /* (non-Javadoc)

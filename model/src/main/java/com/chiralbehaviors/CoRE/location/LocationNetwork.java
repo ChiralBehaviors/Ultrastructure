@@ -27,7 +27,6 @@ import static com.chiralbehaviors.CoRE.location.LocationNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.location.LocationNetwork.GET_USED_RELATIONSHIPS;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -39,11 +38,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the location_network database table.
@@ -83,19 +86,21 @@ public class LocationNetwork extends NetworkRuleform<Location> {
 
     private static final long  serialVersionUID              = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
     private Location           child;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Location           parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private LocationNetwork    premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private LocationNetwork    premise2;
 
@@ -107,6 +112,15 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      */
     public LocationNetwork(Agency updatedBy) {
         super(updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetwork;
     }
 
     /**
@@ -136,11 +150,13 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     }
 
     @Override
+    @JsonGetter
     public Location getChild() {
         return child;
     }
 
     @Override
+    @JsonGetter
     public Location getParent() {
         return parent;
     }
@@ -149,6 +165,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @return the premise1
      */
     @Override
+    @JsonGetter
     public LocationNetwork getPremise1() {
         return premise1;
     }
@@ -157,6 +174,7 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      * @return the premise2
      */
     @Override
+    @JsonGetter
     public LocationNetwork getPremise2() {
         return premise2;
     }
@@ -187,21 +205,5 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @Override
     public void setPremise2(NetworkRuleform<Location> premise2) {
         this.premise2 = (LocationNetwork) premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence.EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (child != null) {
-            child = (Location) child.manageEntity(em, knownObjects);
-        }
-        if (parent != null) {
-            parent = (Location) parent.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

@@ -15,20 +15,22 @@
  */
 package com.chiralbehaviors.CoRE.network;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorizations for attributes on entities.
@@ -42,7 +44,7 @@ public class RelationshipAttributeAuthorization extends
         ClassifiedAttributeAuthorization<Relationship> {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Relationship      classifier;
 
@@ -64,6 +66,15 @@ public class RelationshipAttributeAuthorization extends
     public RelationshipAttributeAuthorization(Relationship classification,
                                               Agency updatedBy) {
         super(classification, updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, RelationshipAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipAttributeAuthorization;
     }
 
     /**
@@ -100,6 +111,7 @@ public class RelationshipAttributeAuthorization extends
      * getClassifier()
      */
     @Override
+    @JsonGetter
     public Relationship getClassifier() {
         return classifier;
     }
@@ -113,23 +125,5 @@ public class RelationshipAttributeAuthorization extends
     @Override
     public void setClassifier(Relationship classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (classifier != null) {
-            classifier = (Relationship) classifier.manageEntity(em,
-                                                                knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

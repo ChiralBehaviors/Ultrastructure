@@ -49,6 +49,8 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -267,6 +269,12 @@ public class StatusCode extends
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<StatusCodeAttribute> getAttributeValueClass() {
+        return StatusCodeAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
@@ -330,6 +338,14 @@ public class StatusCode extends
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -347,6 +363,15 @@ public class StatusCode extends
     @Override
     public String getSameId() {
         return WellKnownStatusCode.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCode> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCode;
     }
 
     /* (non-Javadoc)

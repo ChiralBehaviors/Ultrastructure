@@ -15,19 +15,21 @@
  */
 package com.chiralbehaviors.CoRE.location;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -40,12 +42,12 @@ public class LocationNetworkAuthorization extends
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Event
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
     private Location          authorizedParent;
 
     // bi-directional many-to-one association to Event
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Location          classifier;
 
@@ -70,6 +72,15 @@ public class LocationNetworkAuthorization extends
         super(id);
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetworkAuthorization;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -78,6 +89,7 @@ public class LocationNetworkAuthorization extends
      * ()
      */
     @Override
+    @JsonGetter
     public Location getAuthorizedParent() {
         return authorizedParent;
     }
@@ -89,6 +101,7 @@ public class LocationNetworkAuthorization extends
      * com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
      */
     @Override
+    @JsonGetter
     public Location getClassifier() {
         return classifier;
     }
@@ -115,26 +128,5 @@ public class LocationNetworkAuthorization extends
     @Override
     public void setClassifier(Location classifier) {
         this.classifier = classifier;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (authorizedParent != null) {
-            authorizedParent = (Location) authorizedParent.manageEntity(em,
-                                                                        knownObjects);
-        }
-        if (classifier != null) {
-            classifier = (Location) classifier.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

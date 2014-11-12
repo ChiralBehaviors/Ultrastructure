@@ -34,6 +34,10 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -47,12 +51,22 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
     public StatusCodeAttribute() {
         super();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeAttribute;
     }
 
     public StatusCodeAttribute(Agency updatedBy) {
@@ -115,6 +129,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         return StatusCode.class;
     }
 
+    @JsonGetter
     public StatusCode getStatusCode() {
         return statusCode;
     }

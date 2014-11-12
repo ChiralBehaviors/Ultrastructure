@@ -16,22 +16,23 @@
 package com.chiralbehaviors.CoRE.location;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the location_attribute database table.
@@ -43,7 +44,7 @@ public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Location
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
     private Location          location;
 
@@ -62,6 +63,15 @@ public class LocationAttribute extends AttributeValue<Location> {
      */
     public LocationAttribute(Attribute attribute) {
         super(attribute);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationAttribute;
     }
 
     /**
@@ -125,6 +135,7 @@ public class LocationAttribute extends AttributeValue<Location> {
         super(id);
     }
 
+    @JsonGetter
     public Location getLocation() {
         return location;
     }
@@ -152,22 +163,5 @@ public class LocationAttribute extends AttributeValue<Location> {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (location != null) {
-            location = (Location) location.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

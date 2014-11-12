@@ -17,12 +17,9 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -119,12 +116,9 @@ public class OrderProcessingWorkspace {
 
     public void merge(EntityManager em) throws IllegalArgumentException,
                                        IllegalAccessException {
-
-        Map<Ruleform, Ruleform> translated = new HashMap<>();
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {
             System.out.println(String.format("Merging: %s", field.getName()));
-            field.set(this,
-                      ((Ruleform) field.get(this)).manageEntity(em, translated));
+            em.persist(field.get(this));
         }
     }
 }

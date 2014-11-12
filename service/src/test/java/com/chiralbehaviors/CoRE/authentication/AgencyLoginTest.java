@@ -20,23 +20,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import io.dropwizard.auth.basic.BasicCredentials;
 
-import java.io.InputStream;
-import java.util.Properties;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
-import com.chiralbehaviors.CoRE.meta.BootstrapLoader;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
@@ -47,35 +35,10 @@ import com.google.common.base.Optional;
  * @author hhildebrand
  * 
  */
-public class AgencyLoginTest {
-    private Model         model;
-    private EntityManager em;
-
-    @Before
-    public void setUp() throws Exception {
-        InputStream is = getClass().getResourceAsStream("/jpa.properties");
-        Properties properties = new Properties();
-        properties.load(is);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
-        em = emf.createEntityManager();
-        BootstrapLoader loader = new BootstrapLoader(em);
-        loader.clear();
-        loader.bootstrap();
-        model = new ModelImpl(em);
-        em.getTransaction().begin();
-        em.flush();
-        em.clear();
-    }
-
-    @After
-    public void rollback() {
-        em.getTransaction().rollback();
-        em.clear();
-    }
-
+public class AgencyLoginTest extends AbstractModelTest {
     @Test
     public void testGoodUser() throws Exception {
+        em.getTransaction().begin();
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
         Aspect<Agency> loginAspect = new Aspect<Agency>(

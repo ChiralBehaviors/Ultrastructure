@@ -27,11 +27,9 @@ import static com.chiralbehaviors.CoRE.network.Relationship.ORDERED_ATTRIBUTES;
 import static com.chiralbehaviors.CoRE.network.Relationship.UNLINKED;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -48,10 +46,12 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.NameSearchResult;
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownRelationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -143,7 +143,8 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+            CascadeType.DETACH })
     @JoinColumn(name = "inverse")
     @JsonIgnore
     private Relationship               inverse;
@@ -156,10 +157,8 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipNetwork>   networkByParent;
 
-    @Basic(fetch = FetchType.LAZY)
     private String                     operator;
 
-    @Basic(fetch = FetchType.LAZY)
     private Integer                    preferred                                = FALSE;
 
     public Relationship() {
@@ -284,6 +283,12 @@ public class Relationship extends
         return attributes;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<RelationshipAttribute> getAttributeValueClass() {
+        return RelationshipAttribute.class;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
@@ -292,6 +297,7 @@ public class Relationship extends
         return WellKnownRelationship.COPY.id();
     }
 
+    @JsonGetter
     public Relationship getInverse() {
         return inverse;
     }
@@ -347,6 +353,14 @@ public class Relationship extends
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getNetworkWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipNetwork;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -368,6 +382,15 @@ public class Relationship extends
     @Override
     public String getSameId() {
         return WellKnownRelationship.SAME.id();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Relationship> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationship;
     }
 
     /* (non-Javadoc)
@@ -476,21 +499,5 @@ public class Relationship extends
 
     public void setPreferred(Boolean preferred) {
         this.preferred = toInteger(preferred);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (inverse != null) {
-            inverse = (Relationship) inverse.manageEntity(em, knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
     }
 }

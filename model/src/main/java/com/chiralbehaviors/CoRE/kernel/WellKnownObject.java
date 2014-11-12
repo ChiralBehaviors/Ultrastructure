@@ -22,7 +22,7 @@ import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 
 /**
- * The repository of the ids of well known objects, as well as string contants
+ * The repository of the ids of well known objects, as well as string constants
  * for naming them.
  *
  * @author hhildebrand
@@ -729,6 +729,20 @@ public interface WellKnownObject {
                 return WellKnownObject.COPY;
             }
 
+        },
+        KERNEL_WORKSPACE() {
+            @Override
+            public String description() {
+                return "The defining product of the Kernel workspace";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.KERNEL_WORKSPACE;
+            }
         };
 
         /* (non-Javadoc)
@@ -1923,6 +1937,7 @@ public interface WellKnownObject {
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";
     String IS_LOCATION_OF            = "is-location-of";
+    String KERNEL_WORKSPACE          = "kernelWorkspace";
     String LESS_THAN                 = "<";
     String LESS_THAN_OR_EQUALS       = "<=";
     String LOCATION                  = "Location";

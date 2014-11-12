@@ -17,12 +17,10 @@
 package com.chiralbehaviors.CoRE.event;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -58,7 +56,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The agency assigned to this job
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "assign_to")
     private Agency            assignTo;
 
@@ -66,7 +64,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute for the agency assigned to this job
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "assign_to_attribute")
     private Attribute         assignToAttribute;
 
@@ -74,7 +72,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The location where the product will be delivered from
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from")
     private Location          deliverFrom;
     /**
@@ -82,14 +80,14 @@ public abstract class AbstractProtocol extends Ruleform {
      * from
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from_attribute")
     private Attribute         deliverFromAttribute;
     /**
      * The location to deliver the product of this job
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_to")
     private Location          deliverTo;
 
@@ -97,7 +95,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the location to deliver the product of this job
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_to_attribute")
     private Attribute         deliverToAttribute;
 
@@ -105,7 +103,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The product of this job
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Product           product;
 
@@ -113,7 +111,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the product of this job
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_attribute")
     private Attribute         productAttribute;
 
@@ -121,7 +119,7 @@ public abstract class AbstractProtocol extends Ruleform {
     private BigDecimal        quantity;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "quantity_unit")
     private Unit              quantityUnit;
 
@@ -129,7 +127,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "requester")
     private Agency            requester;
 
@@ -137,7 +135,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "requester_attribute")
     private Attribute         requesterAttribute;
 
@@ -145,7 +143,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The service this job is performing
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
     private Product           service;
 
@@ -153,7 +151,7 @@ public abstract class AbstractProtocol extends Ruleform {
      * The attribute on the service this job is performing
      */
     @NotNull
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service_attribute")
     private Attribute         serviceAttribute;
 
@@ -537,61 +535,5 @@ public abstract class AbstractProtocol extends Ruleform {
                              deliverToAttribute.getName(),
                              deliverFromAttribute.getName(), quantity,
                              quantityUnit.getName());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.Ruleform#traverseForeignKeys(javax.persistence
-     * .EntityManager, java.util.Map)
-     */
-    @Override
-    public void traverseForeignKeys(EntityManager em,
-                                    Map<Ruleform, Ruleform> knownObjects) {
-        if (assignTo != null) {
-            assignTo = (Agency) assignTo.manageEntity(em, knownObjects);
-        }
-        if (assignToAttribute != null) {
-            assignToAttribute = (Attribute) assignToAttribute.manageEntity(em,
-                                                                           knownObjects);
-        }
-        if (deliverFrom != null) {
-            deliverFrom = (Location) deliverFrom.manageEntity(em, knownObjects);
-        }
-        if (deliverFromAttribute != null) {
-            deliverFromAttribute = (Attribute) deliverFromAttribute.manageEntity(em,
-                                                                                 knownObjects);
-        }
-        if (deliverTo != null) {
-            deliverTo = (Location) deliverTo.manageEntity(em, knownObjects);
-        }
-        if (deliverToAttribute != null) {
-            deliverToAttribute = (Attribute) deliverToAttribute.manageEntity(em,
-                                                                             knownObjects);
-        }
-        if (product != null) {
-            product = (Product) product.manageEntity(em, knownObjects);
-        }
-        if (productAttribute != null) {
-            productAttribute = (Attribute) productAttribute.manageEntity(em,
-                                                                         knownObjects);
-        }
-        if (requester != null) {
-            requester = (Agency) requester.manageEntity(em, knownObjects);
-        }
-        if (requesterAttribute != null) {
-            requesterAttribute = (Attribute) requesterAttribute.manageEntity(em,
-                                                                             knownObjects);
-        }
-        if (service != null) {
-            service = (Product) service.manageEntity(em, knownObjects);
-        }
-        if (serviceAttribute != null) {
-            serviceAttribute = (Attribute) serviceAttribute.manageEntity(em,
-                                                                         knownObjects);
-        }
-        super.traverseForeignKeys(em, knownObjects);
-
     }
 }

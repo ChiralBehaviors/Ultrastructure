@@ -240,11 +240,11 @@ public class Loader {
                 throw new IllegalStateException("jpa properties missing");
             }
             Map<String, String> props = new HashMap<>();
-            props.put("db.port", Integer.toString(configuration.corePort));
-            props.put("db.password", configuration.corePassword);
-            props.put("db.user", configuration.coreUsername);
-            props.put("db.server", configuration.coreServer);
-            props.put("db.database", configuration.coreDb);
+            props.put("init.db.login", configuration.coreUsername);
+            props.put("init.db.password", configuration.corePassword);
+            props.put("init.db.server", configuration.coreServer);
+            props.put("init.db.port", Integer.toString(configuration.corePort));
+            props.put("init.db.database", configuration.coreDb);
             txfmd = Utils.getDocument(is, props);
         }
         Properties properties = new Properties();

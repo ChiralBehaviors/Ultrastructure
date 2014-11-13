@@ -252,7 +252,9 @@ public class Loader {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
         KernelImpl.loadKernel(em);
+        em.getTransaction().commit();
     }
 
     protected void createDatabase() throws Exception, SQLException {

@@ -38,7 +38,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
 /**
@@ -107,8 +107,7 @@ public abstract class JSP {
             public void onPrepare(Session arg0) throws SQLException {
             }
         });
-        EntityManager em = EMF.createEntityManager();
-        kernel = new KernelImpl(em);
+        kernel = KernelUtil.getKernel();
     }
 
     public static <T> T call(StoredProcedure<T> call) throws SQLException {

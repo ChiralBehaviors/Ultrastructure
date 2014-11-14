@@ -33,7 +33,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -94,7 +94,7 @@ public class AttributeModelImpl
      * @param em
      */
     public AttributeModelImpl(EntityManager em) {
-        this(em, KernelImpl.getKernel(em));
+        this(em, KernelUtil.getKernel());
     }
 
     /**

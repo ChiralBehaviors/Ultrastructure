@@ -25,7 +25,6 @@ import com.chiralbehaviors.CoRE.Ruleform;
  *
  */
 public interface Workspace {
-    <T extends Ruleform> void add(T ruleform);
 
     <T extends Ruleform> T get(String key);
 
@@ -34,6 +33,4 @@ public interface Workspace {
     <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass);
 
     WorkspaceSnapshot getSnapshot();
-
-    <T extends Ruleform> void put(String key, T ruleform);
 }

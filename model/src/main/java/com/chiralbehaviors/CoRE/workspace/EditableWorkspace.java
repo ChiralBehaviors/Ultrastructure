@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.meta;
+package com.chiralbehaviors.CoRE.workspace;
 
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.Ruleform;
 
 /**
  * @author hhildebrand
@@ -24,4 +24,7 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  */
 public interface EditableWorkspace extends Workspace {
 
+    <T extends Ruleform> void add(T ruleform);
+
+    <T extends Ruleform> void put(String key, T ruleform);
 }

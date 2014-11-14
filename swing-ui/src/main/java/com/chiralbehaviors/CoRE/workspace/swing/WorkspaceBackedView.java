@@ -18,7 +18,7 @@ package com.chiralbehaviors.CoRE.workspace.swing;
 
 import javax.swing.JPanel;
 
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.EditableWorkspace;
 
 /**
  * @author hhildebrand
@@ -26,13 +26,13 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  */
 public class WorkspaceBackedView extends JPanel {
     private static final long serialVersionUID = 1L;
-    protected Workspace  workspace;
+    protected EditableWorkspace  workspace;
 
-    public Workspace getWorkspace() {
+    public EditableWorkspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(Workspace workspace) {
+    public void setWorkspace(EditableWorkspace workspace) {
         this.workspace = workspace;
     }
 

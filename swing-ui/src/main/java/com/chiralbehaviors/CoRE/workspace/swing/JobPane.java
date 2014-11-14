@@ -34,7 +34,7 @@ import org.jdesktop.beansbinding.Bindings;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.swing.JobExplorer;
 import com.chiralbehaviors.CoRE.swing.JobView;
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.EditableWorkspace;
 
 /**
  * @author hhildebrand
@@ -46,7 +46,7 @@ public class JobPane extends JPanel {
     private JComboBox<Job>    keys;
     private JobView           job;
     private JobExplorer       match;
-    private Workspace    workspace;
+    private EditableWorkspace    workspace;
 
     /**
      * Create the panel.
@@ -107,17 +107,17 @@ public class JobPane extends JPanel {
 
     }
 
-    public Workspace getWorkspace() {
+    public EditableWorkspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(Workspace workspace) {
+    public void setWorkspace(EditableWorkspace workspace) {
         this.workspace = workspace;
     }
 
     protected void initDataBindings() {
-        BeanProperty<JobView, Workspace> jobViewBeanProperty = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, JobView, Workspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<JobView, EditableWorkspace> jobViewBeanProperty = BeanProperty.create("workspace");
+        AutoBinding<EditableWorkspace, EditableWorkspace, JobView, EditableWorkspace> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                       workspace,
                                                                                                                       job,
                                                                                                                       jobViewBeanProperty);
@@ -140,8 +140,8 @@ public class JobPane extends JPanel {
                                                                                                          jobExplorerBeanProperty);
         autoBinding_2.bind();
         //
-        BeanProperty<JobExplorer, Workspace> jobExplorerBeanProperty_1 = BeanProperty.create("workspace");
-        AutoBinding<Workspace, Workspace, JobExplorer, Workspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<JobExplorer, EditableWorkspace> jobExplorerBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<EditableWorkspace, EditableWorkspace, JobExplorer, EditableWorkspace> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                             workspace,
                                                                                                                             match,
                                                                                                                             jobExplorerBeanProperty_1);

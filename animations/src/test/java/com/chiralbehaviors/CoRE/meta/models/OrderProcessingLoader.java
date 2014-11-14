@@ -41,13 +41,12 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     private final EntityManager em;
-    private final Kernel        kernel;
     private final Model         model;
 
-    public OrderProcessingLoader(EntityManager em) throws Exception {
+    public OrderProcessingLoader(EntityManager em, Kernel kernel)
+                                                                 throws Exception {
         this.em = em;
-        model = new ModelImpl(em);
-        kernel = model.getKernel();
+        model = new ModelImpl(em, kernel);
         core = kernel.getCore();
         sameProduct = kernel.getSameProduct();
         anyProduct = kernel.getAnyProduct();

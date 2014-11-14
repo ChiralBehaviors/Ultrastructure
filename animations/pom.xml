@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.chiralbehaviors.CoRE</groupId>
         <artifactId>CoRE.app</artifactId>
-        <version>0.0.2-rc4</version>
+        <version>0.0.2-rc5-SNAPSHOT</version>
     </parent>
     <artifactId>animations</artifactId>
     <name>CoRE Animations</name>

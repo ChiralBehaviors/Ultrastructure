@@ -37,8 +37,6 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
 /**
@@ -54,8 +52,10 @@ public abstract class JSP {
     private static int                       jobProcessingCount       = 0;
     private static final Logger              log                      = LoggerFactory.getLogger(JSP.class);
     private static final int                 MAX_JOB_PROCESSING       = 100;
+    /**
+     *
+     */
     private static final int                 MAX_REENTRANT_CALL_DEPTH = 10;
-    private static final Kernel              kernel;
     private static final Properties          PROPERTIES               = new Properties();
     private static SQLException              rootCause;
 
@@ -107,8 +107,6 @@ public abstract class JSP {
             public void onPrepare(Session arg0) throws SQLException {
             }
         });
-        EntityManager em = EMF.createEntityManager();
-        kernel = new KernelImpl(em);
     }
 
     public static <T> T call(StoredProcedure<T> call) throws SQLException {
@@ -212,9 +210,5 @@ public abstract class JSP {
                                                  jobProcessingCount,
                                                  MAX_JOB_PROCESSING));
         }
-    }
-
-    public static Kernel getKernel() {
-        return kernel;
     }
 }

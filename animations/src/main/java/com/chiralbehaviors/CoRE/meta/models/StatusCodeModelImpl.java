@@ -62,7 +62,7 @@ public class StatusCodeModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new StatusCodeModelImpl(em));
+            return procedure.call(new StatusCodeModelImpl(em, JSP.getKernel()));
         }
 
         @Override

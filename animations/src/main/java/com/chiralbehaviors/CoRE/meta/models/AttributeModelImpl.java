@@ -57,7 +57,7 @@ public class AttributeModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new AttributeModelImpl(em));
+            return procedure.call(new AttributeModelImpl(em, JSP.getKernel()));
         }
 
         @Override

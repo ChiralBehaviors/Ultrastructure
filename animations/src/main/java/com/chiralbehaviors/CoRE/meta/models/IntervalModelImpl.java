@@ -57,7 +57,7 @@ public class IntervalModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new IntervalModelImpl(em));
+            return procedure.call(new IntervalModelImpl(em, JSP.getKernel()));
         }
 
         @Override

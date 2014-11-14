@@ -58,7 +58,7 @@ public class LocationModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new LocationModelImpl(em));
+            return procedure.call(new LocationModelImpl(em, JSP.getKernel()));
         }
 
         @Override

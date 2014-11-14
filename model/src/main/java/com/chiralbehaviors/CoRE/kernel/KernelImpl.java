@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.kernel;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -137,6 +138,59 @@ public class KernelImpl implements Kernel {
         r.close();
     }
 
+    /**
+     *
+     * @param wko
+     * @return the {@link Agency} corresponding to the well known object
+     */
+    static Agency find(EntityManager em, WellKnownAgency wko) {
+        return em.find(Agency.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Attribute} corresponding to the well known object
+     */
+    static Attribute find(EntityManager em, WellKnownAttribute wko) {
+        return em.find(Attribute.class, wko.id());
+    }
+
+    static Interval find(EntityManager em, WellKnownInterval wko) {
+        return em.find(Interval.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Location} corresponding to the well known object
+     */
+    static Location find(EntityManager em, WellKnownLocation wko) {
+        return em.find(Location.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Product} corresponding to the well known object
+     */
+    static Product find(EntityManager em, WellKnownProduct wko) {
+        return em.find(Product.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link StatusCode} corresponding to the well known object
+     */
+    static StatusCode find(EntityManager em, WellKnownStatusCode wko) {
+        return em.find(StatusCode.class, wko.id());
+    }
+
+    static Unit find(EntityManager em, WellKnownUnit wko) {
+        return em.find(Unit.class, wko.id());
+    }
+
     private final Agency              agency;
     private final Agency              anyAgency;
     private final Attribute           anyAttribute;
@@ -210,12 +264,19 @@ public class KernelImpl implements Kernel {
     private final UnitNetwork         rootUnitNetwork;
     private final Agency              sameAgency;
     private final Attribute           sameAttribute;
+
     private final Interval            sameInterval;
+
     private final Location            sameLocation;
+
     private final Product             sameProduct;
+
     private final Relationship        sameRelationship;
+
     private final StatusCode          sameStatusCode;
+
     private final Unit                sameUnit;
+
     private final Agency              specialSystemAgency;
 
     private final Agency              superUser;
@@ -329,6 +390,7 @@ public class KernelImpl implements Kernel {
         rootRelationshipNetwork = em.find(RelationshipNetwork.class, ZERO);
         rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ZERO);
         rootUnitNetwork = em.find(UnitNetwork.class, ZERO);
+        detatch(em);
     }
 
     /*
@@ -1041,44 +1103,16 @@ public class KernelImpl implements Kernel {
         return workspaceOf;
     }
 
-    /**
-     *
-     * @param wko
-     * @return the {@link Agency} corresponding to the well known object
-     */
-    Agency find(EntityManager em, WellKnownAgency wko) {
-        return em.find(Agency.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link Attribute} corresponding to the well known object
-     */
-    Attribute find(EntityManager em, WellKnownAttribute wko) {
-        return em.find(Attribute.class, wko.id());
-    }
-
-    Interval find(EntityManager em, WellKnownInterval wko) {
-        return em.find(Interval.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link Location} corresponding to the well known object
-     */
-    Location find(EntityManager em, WellKnownLocation wko) {
-        return em.find(Location.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link Product} corresponding to the well known object
-     */
-    Product find(EntityManager em, WellKnownProduct wko) {
-        return em.find(Product.class, wko.id());
+    public void detatch(EntityManager em) {
+        for (Field field : getClass().getDeclaredFields()) {
+            try {
+                em.detach(field.get(this));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new IllegalStateException(
+                                                String.format("Can't detach field %s",
+                                                              field), e);
+            }
+        }
     }
 
     /**
@@ -1088,18 +1122,5 @@ public class KernelImpl implements Kernel {
      */
     Relationship find(EntityManager em, WellKnownRelationship wko) {
         return em.find(Relationship.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link StatusCode} corresponding to the well known object
-     */
-    StatusCode find(EntityManager em, WellKnownStatusCode wko) {
-        return em.find(StatusCode.class, wko.id());
-    }
-
-    Unit find(EntityManager em, WellKnownUnit wko) {
-        return em.find(Unit.class, wko.id());
     }
 }

@@ -102,7 +102,10 @@ public class JobModelImpl implements JobModel {
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new JobModelImpl(new ModelImpl(em)));
+            return procedure.call(new JobModelImpl(
+                                                   new ModelImpl(
+                                                                 em,
+                                                                 JSP.getKernel())));
         }
 
         @Override
@@ -1445,7 +1448,7 @@ public class JobModelImpl implements JobModel {
         processChildSequencing(job);
         processSiblingSequencing(job);
         processSelfSequencing(job);
-        processParentSequencing(job); 
+        processParentSequencing(job);
     }
 
     @Override
@@ -1482,8 +1485,8 @@ public class JobModelImpl implements JobModel {
                         }
                     } catch (Throwable e) {
                         //if (log.isTraceEnabled()) {
-                            log.trace(String.format("invalid parent status sequencing %s",
-                                                    job.getParent()), e);
+                        log.trace(String.format("invalid parent status sequencing %s",
+                                                job.getParent()), e);
                         //}
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s \n %s",
@@ -1507,8 +1510,8 @@ public class JobModelImpl implements JobModel {
                         }
                     } catch (Throwable e) {
                         //if (log.isTraceEnabled()) {
-                            log.trace(String.format("invalid parent status sequencing %s",
-                                                    job.getParent()), e);
+                        log.trace(String.format("invalid parent status sequencing %s",
+                                                job.getParent()), e);
                         //}
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s\n%s",

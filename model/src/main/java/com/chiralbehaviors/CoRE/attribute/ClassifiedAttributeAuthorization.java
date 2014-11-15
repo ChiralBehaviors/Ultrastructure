@@ -18,7 +18,6 @@ package com.chiralbehaviors.CoRE.attribute;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -45,8 +44,7 @@ abstract public class ClassifiedAttributeAuthorization<RuleForm extends Existent
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
     private Relationship      classification;
 

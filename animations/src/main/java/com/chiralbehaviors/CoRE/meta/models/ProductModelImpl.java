@@ -30,7 +30,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -91,7 +91,7 @@ public class ProductModelImpl
      * @param em
      */
     public ProductModelImpl(EntityManager em) {
-        this(em, KernelUtil.getKernel());
+        this(em, KernelImpl.getKernel(em));
     }
 
     /**

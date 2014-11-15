@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
 /**
@@ -64,7 +64,7 @@ public class KernelTest {
         emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                      properties);
         em = emf.createEntityManager();
-        KernelUtil.clearAndLoadKernel(em);
+        KernelImpl.clearAndLoadKernel(em);
         Kernel kernel = new ModelImpl(em).getKernel();
         assertNotNull(kernel.getAnyAttribute());
         assertNotNull(kernel.getAnyProduct());

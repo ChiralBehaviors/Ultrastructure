@@ -41,7 +41,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.hellblazer.utils.Utils;
 
@@ -253,7 +253,7 @@ public class Loader {
                                                                           properties);
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        KernelUtil.loadKernel(em);
+        KernelImpl.loadKernel(em);
         em.getTransaction().commit();
     }
 

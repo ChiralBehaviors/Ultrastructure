@@ -48,7 +48,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
@@ -177,7 +177,7 @@ public class ModelImpl implements Model {
     private final WorkspaceModel          workspaceModel;
 
     public ModelImpl(EntityManager entityManager) {
-        this(entityManager, KernelUtil.getKernel());
+        this(entityManager, KernelImpl.getKernel(entityManager));
     }
 
     public ModelImpl(EntityManager entityManager, Kernel k) {

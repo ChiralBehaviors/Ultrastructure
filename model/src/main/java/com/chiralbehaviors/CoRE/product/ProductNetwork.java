@@ -109,13 +109,11 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JoinColumn(name = "parent")
     private Product                      parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private ProductNetwork               premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private ProductNetwork               premise2;
 

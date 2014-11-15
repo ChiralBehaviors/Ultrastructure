@@ -143,8 +143,7 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "inverse")
     @JsonIgnore
     private Relationship               inverse;

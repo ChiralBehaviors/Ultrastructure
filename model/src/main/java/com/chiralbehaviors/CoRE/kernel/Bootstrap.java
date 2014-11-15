@@ -16,6 +16,8 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import static com.chiralbehaviors.CoRE.kernel.KernelImpl.ZERO;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -67,8 +69,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class Bootstrap {
-    public static final String ZERO = UuidGenerator.toBase64(new UUID(0, 0));
-
     public static void main(String[] argv) throws Exception {
         if (argv.length != 2) {
             System.err.println("Usage: Bootstrap <jpa.properties> <output file>");
@@ -101,7 +101,7 @@ public class Bootstrap {
     }
 
     public void bootstrap() throws SQLException {
-        KernelUtil.alterTriggers(connection, false);
+        KernelImpl.alterTriggers(connection, false);
         for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
@@ -128,12 +128,12 @@ public class Bootstrap {
         }
         createNullInference();
         createRootNetworks();
-        KernelUtil.alterTriggers(connection, true);
+        KernelImpl.alterTriggers(connection, true);
         constructKernelWorkspace();
     }
 
     public void clear() throws SQLException {
-        KernelUtil.clear(em);
+        KernelImpl.clear(em);
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {

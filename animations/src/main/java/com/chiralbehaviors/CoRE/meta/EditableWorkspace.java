@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.workspace.swing;
-
-import javax.swing.JPanel;
+package com.chiralbehaviors.CoRE.meta;
 
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 
@@ -24,16 +22,6 @@ import com.chiralbehaviors.CoRE.workspace.Workspace;
  * @author hhildebrand
  *
  */
-public class WorkspaceBackedView extends JPanel {
-    private static final long serialVersionUID = 1L;
-    protected Workspace  workspace;
-
-    public Workspace getWorkspace() {
-        return workspace;
-    }
-
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
-    }
+public interface EditableWorkspace extends Workspace {
 
 }

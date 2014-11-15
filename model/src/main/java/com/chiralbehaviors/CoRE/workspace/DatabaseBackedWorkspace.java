@@ -32,7 +32,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-public class DatabaseBackedWorkspace implements EditableWorkspace {
+public class DatabaseBackedWorkspace implements Workspace {
 
     public class EntityList<T extends Ruleform> extends AbstractList<T> {
         private final List<WorkspaceAuthorization> backingList;

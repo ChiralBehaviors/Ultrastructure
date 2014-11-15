@@ -30,7 +30,6 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -91,13 +90,11 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @JoinColumn(name = "parent")
     private Unit               parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private UnitNetwork        premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private UnitNetwork        premise2;
 

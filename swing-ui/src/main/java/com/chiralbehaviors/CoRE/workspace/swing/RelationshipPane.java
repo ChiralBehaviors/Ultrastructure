@@ -38,7 +38,7 @@ import org.jdesktop.beansbinding.Bindings;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.swing.RelationshipView;
-import com.chiralbehaviors.CoRE.workspace.EditableWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -53,7 +53,7 @@ public class RelationshipPane extends JPanel {
     private JComboBox<Relationship>          childrenRelationship;
     private JList<ExistentialRuleform<?, ?>> children;
     private RelationshipView                 relationshipView;
-    private EditableWorkspace                   workspace;
+    private Workspace                   workspace;
 
     /**
      * Create the panel.
@@ -194,11 +194,11 @@ public class RelationshipPane extends JPanel {
 
     }
 
-    public EditableWorkspace getWorkspace() {
+    public Workspace getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(EditableWorkspace workspace) {
+    public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
 
@@ -212,8 +212,8 @@ public class RelationshipPane extends JPanel {
                                                                                                                               relationshipViewBeanProperty);
         autoBinding.bind();
         //
-        BeanProperty<RelationshipView, EditableWorkspace> relationshipViewBeanProperty_1 = BeanProperty.create("workspace");
-        AutoBinding<EditableWorkspace, EditableWorkspace, RelationshipView, EditableWorkspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
+        BeanProperty<RelationshipView, Workspace> relationshipViewBeanProperty_1 = BeanProperty.create("workspace");
+        AutoBinding<Workspace, Workspace, RelationshipView, Workspace> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ,
                                                                                                                                  workspace,
                                                                                                                                  relationshipView,
                                                                                                                                  relationshipViewBeanProperty_1);

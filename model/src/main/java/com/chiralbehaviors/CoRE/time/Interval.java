@@ -157,8 +157,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     private BigDecimal             start;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit")
     private Unit                   unit;
 

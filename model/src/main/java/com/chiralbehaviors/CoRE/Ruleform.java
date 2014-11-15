@@ -19,10 +19,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -83,16 +81,13 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Id
     private String              id                    = UuidGenerator.nextId();
 
-    @Basic(fetch = FetchType.LAZY)
     private String              notes;
 
-    @Basic(fetch = FetchType.LAZY)
     @Column(name = "update_date")
     private Timestamp           updateDate            = new Timestamp(
                                                                       System.currentTimeMillis());
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "updated_by")
     protected Agency            updatedBy;
 

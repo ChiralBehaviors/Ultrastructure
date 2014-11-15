@@ -40,6 +40,7 @@ import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -215,7 +216,7 @@ public class Job extends AbstractProtocol {
     /**
      * The chronology of this job
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "job")
+    @OneToMany(mappedBy = "job")
     @JsonIgnore
     private Set<JobChronology> chronology;
 
@@ -228,12 +229,12 @@ public class Job extends AbstractProtocol {
     /**
      * The parent of this job
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @LoadFetchGroup("job.animation")
     @JoinColumn(name = "parent", updatable = false)
     private Job                parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "protocol", updatable = false)
     private Protocol           protocol;
 
@@ -244,7 +245,7 @@ public class Job extends AbstractProtocol {
      * This job's status
      */
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status")
     private StatusCode         status;
 

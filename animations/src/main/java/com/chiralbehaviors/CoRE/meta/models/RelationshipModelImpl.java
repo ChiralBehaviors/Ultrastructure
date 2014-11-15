@@ -30,7 +30,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -90,7 +90,7 @@ public class RelationshipModelImpl
      * @param em
      */
     public RelationshipModelImpl(EntityManager em) {
-        super(em, KernelUtil.getKernel());
+        super(em, KernelImpl.getKernel(em));
     }
 
     /**

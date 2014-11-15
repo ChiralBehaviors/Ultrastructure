@@ -104,7 +104,9 @@ public class KernelImpl implements Kernel {
     }
 
     public static Kernel getKernel() {
-        return CACHED_KERNEL.get();
+        Kernel kernel = CACHED_KERNEL.get();
+        assert kernel != null;
+        return kernel;
     }
 
     public static Kernel loadKernel(EntityManager em) throws IOException {
@@ -126,7 +128,9 @@ public class KernelImpl implements Kernel {
 
     public static KernelImpl cacheKernel(EntityManager em) {
         KernelImpl kernel = new KernelImpl(em);
-        CACHED_KERNEL.compareAndSet(kernel, null);
+        if (!CACHED_KERNEL.compareAndSet(null, kernel)) {
+            throw new IllegalStateException("Kernel has already been cached");
+        }
         return kernel;
     }
 
@@ -243,103 +247,197 @@ public class KernelImpl implements Kernel {
 
     public KernelImpl(EntityManager em) {
 
-        attribute = find(em, WellKnownAttribute.ATTRIBUTE);
-        anyAttribute = find(em, WellKnownAttribute.ANY);
-        copyAttribute = find(em, WellKnownAttribute.COPY);
-        notApplicableAttribute = find(em, WellKnownAttribute.NOT_APPLICABLE);
-        sameAttribute = find(em, WellKnownAttribute.SAME);
-        loginAttribute = find(em, WellKnownAttribute.LOGIN);
-        passwordHashAttribute = find(em, WellKnownAttribute.PASSWORD_HASH);
+        Object test = attribute = find(em, WellKnownAttribute.ATTRIBUTE);
+        assert test != null;
+        test = anyAttribute = find(em, WellKnownAttribute.ANY);
+        assert test != null;
+        test = copyAttribute = find(em, WellKnownAttribute.COPY);
+        assert test != null;
+        test = notApplicableAttribute = find(em,
+                                             WellKnownAttribute.NOT_APPLICABLE);
+        assert test != null;
+        test = sameAttribute = find(em, WellKnownAttribute.SAME);
+        assert test != null;
+        test = loginAttribute = find(em, WellKnownAttribute.LOGIN);
+        assert test != null;
+        test = passwordHashAttribute = find(em,
+                                            WellKnownAttribute.PASSWORD_HASH);
+        assert test != null;
 
-        product = find(em, WellKnownProduct.ENTITY);
-        anyProduct = find(em, WellKnownProduct.ANY);
-        copyProduct = find(em, WellKnownProduct.COPY);
-        sameProduct = find(em, WellKnownProduct.SAME);
-        notApplicableProduct = find(em, WellKnownProduct.NOT_APPLICABLE);
-        workspace = find(em, WellKnownProduct.WORKSPACE);
+        test = product = find(em, WellKnownProduct.ENTITY);
+        assert test != null;
+        test = anyProduct = find(em, WellKnownProduct.ANY);
+        assert test != null;
+        test = copyProduct = find(em, WellKnownProduct.COPY);
+        assert test != null;
+        test = sameProduct = find(em, WellKnownProduct.SAME);
+        assert test != null;
+        test = notApplicableProduct = find(em, WellKnownProduct.NOT_APPLICABLE);
+        assert test != null;
+        test = workspace = find(em, WellKnownProduct.WORKSPACE);
+        assert test != null;
 
-        location = find(em, WellKnownLocation.LOCATION);
-        anyLocation = find(em, WellKnownLocation.ANY);
-        copyLocation = find(em, WellKnownLocation.COPY);
-        notApplicableLocation = find(em, WellKnownLocation.NOT_APPLICABLE);
-        sameLocation = find(em, WellKnownLocation.SAME);
+        test = location = find(em, WellKnownLocation.LOCATION);
+        assert test != null;
+        test = anyLocation = find(em, WellKnownLocation.ANY);
+        assert test != null;
+        test = copyLocation = find(em, WellKnownLocation.COPY);
+        assert test != null;
+        test = notApplicableLocation = find(em,
+                                            WellKnownLocation.NOT_APPLICABLE);
+        assert test != null;
+        test = sameLocation = find(em, WellKnownLocation.SAME);
+        assert test != null;
 
-        coreUser = find(em, WellKnownAgency.CORE_USER);
-        agency = find(em, WellKnownAgency.AGENCY);
-        anyAgency = find(em, WellKnownAgency.ANY);
-        copyAgency = find(em, WellKnownAgency.COPY);
-        core = find(em, WellKnownAgency.CORE);
-        coreAnimationSoftware = find(em,
-                                     WellKnownAgency.CORE_ANIMATION_SOFTWARE);
-        propagationSoftware = find(em, WellKnownAgency.PROPAGATION_SOFTWARE);
-        specialSystemAgency = find(em, WellKnownAgency.SPECIAL_SYSTEM_AGENCY);
-        coreModel = find(em, WellKnownAgency.CORE_MODEL);
-        superUser = find(em, WellKnownAgency.SUPER_USER);
-        inverseSoftware = find(em, WellKnownAgency.INVERSE_SOFTWARE);
-        sameAgency = find(em, WellKnownAgency.SAME);
-        notApplicableAgency = find(em, WellKnownAgency.NOT_APPLICABLE);
+        test = coreUser = find(em, WellKnownAgency.CORE_USER);
+        assert test != null;
+        test = agency = find(em, WellKnownAgency.AGENCY);
+        assert test != null;
+        test = anyAgency = find(em, WellKnownAgency.ANY);
+        assert test != null;
+        test = copyAgency = find(em, WellKnownAgency.COPY);
+        assert test != null;
+        test = core = find(em, WellKnownAgency.CORE);
+        assert test != null;
+        test = coreAnimationSoftware = find(em,
+                                            WellKnownAgency.CORE_ANIMATION_SOFTWARE);
+        assert test != null;
+        test = propagationSoftware = find(em,
+                                          WellKnownAgency.PROPAGATION_SOFTWARE);
+        assert test != null;
+        test = specialSystemAgency = find(em,
+                                          WellKnownAgency.SPECIAL_SYSTEM_AGENCY);
+        assert test != null;
+        test = coreModel = find(em, WellKnownAgency.CORE_MODEL);
+        assert test != null;
+        test = superUser = find(em, WellKnownAgency.SUPER_USER);
+        assert test != null;
+        test = inverseSoftware = find(em, WellKnownAgency.INVERSE_SOFTWARE);
+        assert test != null;
+        test = sameAgency = find(em, WellKnownAgency.SAME);
+        assert test != null;
+        test = notApplicableAgency = find(em, WellKnownAgency.NOT_APPLICABLE);
+        assert test != null;
 
-        anyRelationship = find(em, WellKnownRelationship.ANY);
-        copyRelationship = find(em, WellKnownRelationship.COPY);
-        sameRelationship = find(em, WellKnownRelationship.SAME);
-        isContainedIn = find(em, WellKnownRelationship.IS_CONTAINED_IN);
-        contains = find(em, WellKnownRelationship.CONTAINS);
-        isA = find(em, WellKnownRelationship.IS_A);
-        includes = find(em, WellKnownRelationship.INCLUDES);
-        hasException = find(em, WellKnownRelationship.HAS_EXCEPTION);
-        isExceptionTo = find(em, WellKnownRelationship.IS_EXCEPTION_TO);
-        isLocationOf = find(em, WellKnownRelationship.IS_LOCATION_OF);
-        mapsToLocation = find(em, WellKnownRelationship.MAPS_TO_LOCATION);
-        prototype = find(em, WellKnownRelationship.PROTOTYPE);
-        prototypeOf = find(em, WellKnownRelationship.PROTOTYPE_OF);
-        greaterThan = find(em, WellKnownRelationship.GREATER_THAN);
-        lessThan = find(em, WellKnownRelationship.LESS_THAN);
-        equals = find(em, WellKnownRelationship.EQUALS);
-        lessThanOrEqual = find(em, WellKnownRelationship.LESS_THAN_OR_EQUAL);
-        greaterThanOrEqual = find(em,
-                                  WellKnownRelationship.GREATER_THAN_OR_EQUAL);
-        developed = find(em, WellKnownRelationship.DEVELOPED);
-        developedBy = find(em, WellKnownRelationship.DEVELOPED_BY);
-        versionOf = find(em, WellKnownRelationship.VERSION_OF);
-        hasVersion = find(em, WellKnownRelationship.HAS_VERSION);
-        hasMember = find(em, WellKnownRelationship.HAS_MEMBER);
-        memberOf = find(em, WellKnownRelationship.MEMBER_OF);
-        headOf = find(em, WellKnownRelationship.HEAD_OF);
-        hasHead = find(em, WellKnownRelationship.HAS_HEAD);
-        hadMember = find(em, WellKnownRelationship.HAD_MEMBER);
-        formerMemberOf = find(em, WellKnownRelationship.FORMER_MEMBER_OF);
-        notApplicableRelationship = find(em,
-                                         WellKnownRelationship.NOT_APPLICABLE);
-        ownedBy = find(em, WellKnownRelationship.OWNED_BY);
-        owns = find(em, WellKnownRelationship.OWNS);
-        inWorkspace = find(em, WellKnownRelationship.IN_WORKSPACE);
-        workspaceOf = find(em, WellKnownRelationship.WORKSPACE_OF);
+        test = anyRelationship = find(em, WellKnownRelationship.ANY);
+        assert test != null;
+        test = copyRelationship = find(em, WellKnownRelationship.COPY);
+        assert test != null;
+        test = sameRelationship = find(em, WellKnownRelationship.SAME);
+        assert test != null;
+        test = isContainedIn = find(em, WellKnownRelationship.IS_CONTAINED_IN);
+        assert test != null;
+        test = contains = find(em, WellKnownRelationship.CONTAINS);
+        assert test != null;
+        test = isA = find(em, WellKnownRelationship.IS_A);
+        assert test != null;
+        test = includes = find(em, WellKnownRelationship.INCLUDES);
+        assert test != null;
+        test = hasException = find(em, WellKnownRelationship.HAS_EXCEPTION);
+        assert test != null;
+        test = isExceptionTo = find(em, WellKnownRelationship.IS_EXCEPTION_TO);
+        assert test != null;
+        test = isLocationOf = find(em, WellKnownRelationship.IS_LOCATION_OF);
+        assert test != null;
+        test = mapsToLocation = find(em, WellKnownRelationship.MAPS_TO_LOCATION);
+        assert test != null;
+        test = prototype = find(em, WellKnownRelationship.PROTOTYPE);
+        assert test != null;
+        test = prototypeOf = find(em, WellKnownRelationship.PROTOTYPE_OF);
+        assert test != null;
+        test = greaterThan = find(em, WellKnownRelationship.GREATER_THAN);
+        assert test != null;
+        test = lessThan = find(em, WellKnownRelationship.LESS_THAN);
+        assert test != null;
+        test = equals = find(em, WellKnownRelationship.EQUALS);
+        assert test != null;
+        test = lessThanOrEqual = find(em,
+                                      WellKnownRelationship.LESS_THAN_OR_EQUAL);
+        assert test != null;
+        test = greaterThanOrEqual = find(em,
+                                         WellKnownRelationship.GREATER_THAN_OR_EQUAL);
+        assert test != null;
+        test = developed = find(em, WellKnownRelationship.DEVELOPED);
+        assert test != null;
+        test = developedBy = find(em, WellKnownRelationship.DEVELOPED_BY);
+        assert test != null;
+        test = versionOf = find(em, WellKnownRelationship.VERSION_OF);
+        assert test != null;
+        test = hasVersion = find(em, WellKnownRelationship.HAS_VERSION);
+        assert test != null;
+        test = hasMember = find(em, WellKnownRelationship.HAS_MEMBER);
+        assert test != null;
+        test = memberOf = find(em, WellKnownRelationship.MEMBER_OF);
+        assert test != null;
+        test = headOf = find(em, WellKnownRelationship.HEAD_OF);
+        assert test != null;
+        test = hasHead = find(em, WellKnownRelationship.HAS_HEAD);
+        assert test != null;
+        test = hadMember = find(em, WellKnownRelationship.HAD_MEMBER);
+        assert test != null;
+        test = formerMemberOf = find(em, WellKnownRelationship.FORMER_MEMBER_OF);
+        assert test != null;
+        test = notApplicableRelationship = find(em,
+                                                WellKnownRelationship.NOT_APPLICABLE);
+        assert test != null;
+        test = ownedBy = find(em, WellKnownRelationship.OWNED_BY);
+        assert test != null;
+        test = owns = find(em, WellKnownRelationship.OWNS);
+        assert test != null;
+        test = inWorkspace = find(em, WellKnownRelationship.IN_WORKSPACE);
+        assert test != null;
+        test = workspaceOf = find(em, WellKnownRelationship.WORKSPACE_OF);
+        assert test != null;
 
-        unset = find(em, WellKnownStatusCode.UNSET);
-        anyStatusCode = find(em, WellKnownStatusCode.ANY);
-        copyStatusCode = find(em, WellKnownStatusCode.COPY);
-        sameStatusCode = find(em, WellKnownStatusCode.SAME);
-        notApplicableStatusCode = find(em, WellKnownStatusCode.NOT_APPLICABLE);
+        test = unset = find(em, WellKnownStatusCode.UNSET);
+        assert test != null;
+        test = anyStatusCode = find(em, WellKnownStatusCode.ANY);
+        assert test != null;
+        test = copyStatusCode = find(em, WellKnownStatusCode.COPY);
+        assert test != null;
+        test = sameStatusCode = find(em, WellKnownStatusCode.SAME);
+        assert test != null;
+        test = notApplicableStatusCode = find(em,
+                                              WellKnownStatusCode.NOT_APPLICABLE);
+        assert test != null;
 
-        unsetUnit = find(em, WellKnownUnit.UNSET);
-        anyUnit = find(em, WellKnownUnit.ANY);
-        copyUnit = find(em, WellKnownUnit.COPY);
-        sameUnit = find(em, WellKnownUnit.SAME);
-        notApplicableUnit = find(em, WellKnownUnit.NOT_APPLICABLE);
+        test = unsetUnit = find(em, WellKnownUnit.UNSET);
+        assert test != null;
+        test = anyUnit = find(em, WellKnownUnit.ANY);
+        assert test != null;
+        test = copyUnit = find(em, WellKnownUnit.COPY);
+        assert test != null;
+        test = sameUnit = find(em, WellKnownUnit.SAME);
+        assert test != null;
+        test = notApplicableUnit = find(em, WellKnownUnit.NOT_APPLICABLE);
+        assert test != null;
 
-        anyInterval = find(em, WellKnownInterval.ANY);
-        copyInterval = find(em, WellKnownInterval.COPY);
-        sameInterval = find(em, WellKnownInterval.SAME);
-        notApplicableInterval = find(em, WellKnownInterval.NOT_APPLICABLE);
+        test = anyInterval = find(em, WellKnownInterval.ANY);
+        assert test != null;
+        test = copyInterval = find(em, WellKnownInterval.COPY);
+        assert test != null;
+        test = sameInterval = find(em, WellKnownInterval.SAME);
+        assert test != null;
+        test = notApplicableInterval = find(em,
+                                            WellKnownInterval.NOT_APPLICABLE);
 
-        rootAgencyNetwork = em.find(AgencyNetwork.class, ZERO);
-        rootAttributeNetwork = em.find(AttributeNetwork.class, ZERO);
-        rootIntervalNetwork = em.find(IntervalNetwork.class, ZERO);
-        rootLocationNetwork = em.find(LocationNetwork.class, ZERO);
-        rootProductNetwork = em.find(ProductNetwork.class, ZERO);
-        rootRelationshipNetwork = em.find(RelationshipNetwork.class, ZERO);
-        rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ZERO);
-        rootUnitNetwork = em.find(UnitNetwork.class, ZERO);
+        test = rootAgencyNetwork = em.find(AgencyNetwork.class, ZERO);
+        assert test != null;
+        test = rootAttributeNetwork = em.find(AttributeNetwork.class, ZERO);
+        assert test != null;
+        test = rootIntervalNetwork = em.find(IntervalNetwork.class, ZERO);
+        assert test != null;
+        test = rootLocationNetwork = em.find(LocationNetwork.class, ZERO);
+        assert test != null;
+        test = rootProductNetwork = em.find(ProductNetwork.class, ZERO);
+        assert test != null;
+        test = rootRelationshipNetwork = em.find(RelationshipNetwork.class,
+                                                 ZERO);
+        assert test != null;
+        test = rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ZERO);
+        assert test != null;
+        test = rootUnitNetwork = em.find(UnitNetwork.class, ZERO);
+        assert test != null;
         detach(em);
     }
 

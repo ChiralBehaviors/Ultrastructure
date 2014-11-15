@@ -94,7 +94,7 @@ public class StatusCodeModelImpl
      * @param em
      */
     public StatusCodeModelImpl(EntityManager em) {
-        super(em, KernelImpl.getKernel(em));
+        super(em, KernelImpl.getKernel());
     }
 
     /**

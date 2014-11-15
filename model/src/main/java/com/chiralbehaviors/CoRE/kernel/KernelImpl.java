@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.persistence.EntityManager;
 
@@ -72,11 +73,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class KernelImpl implements Kernel {
 
-    public static final String SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-    public static final String ZERO                      = UuidGenerator.toBase64(new UUID(
-                                                                                           0,
-                                                                                           0));
-    static final String        KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
+    public static final String                   SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    public static final String                   ZERO                      = UuidGenerator.toBase64(new UUID(
+                                                                                                             0,
+                                                                                                             0));
+    private static final AtomicReference<Kernel> CACHED_KERNEL             = new AtomicReference<>();
+    static final String                          KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 
     public static void clear(EntityManager em) throws SQLException {
         Connection connection = em.unwrap(Connection.class);
@@ -90,34 +92,42 @@ public class KernelImpl implements Kernel {
         }
         r.close();
         alterTriggers(connection, true);
+        CACHED_KERNEL.set(null);
         connection.commit();
     }
 
-    public static void clearAndLoadKernel(EntityManager em)
-                                                           throws SQLException,
-                                                           IOException {
-        KernelImpl.clear(em);
+    public static Kernel clearAndLoadKernel(EntityManager em)
+                                                             throws SQLException,
+                                                             IOException {
+        clear(em);
+        return loadKernel(em);
+    }
+
+    public static Kernel getKernel() {
+        return CACHED_KERNEL.get();
+    }
+
+    public static Kernel loadKernel(EntityManager em) throws IOException {
+        return loadKernel(em,
+                          KernelImpl.class.getResourceAsStream(KernelImpl.KERNEL_WORKSPACE_RESOURCE));
+    }
+
+    public static Kernel loadKernel(EntityManager em, InputStream is)
+                                                                     throws IOException {
         em.getTransaction().begin();
-        KernelImpl.loadKernel(em);
-        em.getTransaction().commit();
-    }
-
-    public static Kernel getKernel(EntityManager em) {
-        return new KernelImpl(em);
-    }
-
-    public static void loadKernel(EntityManager em) throws IOException {
-        KernelImpl.loadKernel(em,
-                              KernelImpl.class.getResourceAsStream(KernelImpl.KERNEL_WORKSPACE_RESOURCE));
-    }
-
-    public static void loadKernel(EntityManager em, InputStream is)
-                                                                   throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         WorkspaceSnapshot workspace = mapper.readValue(is,
                                                        WorkspaceSnapshot.class);
         workspace.retarget(em);
+        em.getTransaction().commit();
+        return cacheKernel(em);
+    }
+
+    public static KernelImpl cacheKernel(EntityManager em) {
+        KernelImpl kernel = new KernelImpl(em);
+        CACHED_KERNEL.compareAndSet(kernel, null);
+        return kernel;
     }
 
     static void alterTriggers(Connection connection, boolean enable)
@@ -331,19 +341,6 @@ public class KernelImpl implements Kernel {
         rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ZERO);
         rootUnitNetwork = em.find(UnitNetwork.class, ZERO);
         detach(em);
-    }
-
-    private void detach(EntityManager em) {
-        for (Field field : KernelImpl.class.getDeclaredFields()) {
-            try {
-                em.detach(field.get(this));
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new IllegalStateException(
-                                                String.format("Cannot detach %s",
-                                                              field.getName()),
-                                                e);
-            }
-        }
     }
 
     /*
@@ -1054,6 +1051,19 @@ public class KernelImpl implements Kernel {
     @Override
     public Relationship getWorkspaceOf() {
         return workspaceOf;
+    }
+
+    private void detach(EntityManager em) {
+        for (Field field : KernelImpl.class.getDeclaredFields()) {
+            try {
+                em.detach(field.get(this));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new IllegalStateException(
+                                                String.format("Cannot detach %s",
+                                                              field.getName()),
+                                                e);
+            }
+        }
     }
 
     /**

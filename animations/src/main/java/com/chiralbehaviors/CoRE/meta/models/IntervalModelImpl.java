@@ -94,7 +94,7 @@ public class IntervalModelImpl
      * @param em
      */
     public IntervalModelImpl(EntityManager em) {
-        super(em, KernelImpl.getKernel(em));
+        super(em, KernelImpl.getKernel());
     }
 
     /**

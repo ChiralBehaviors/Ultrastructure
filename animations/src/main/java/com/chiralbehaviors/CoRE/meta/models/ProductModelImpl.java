@@ -91,7 +91,7 @@ public class ProductModelImpl
      * @param em
      */
     public ProductModelImpl(EntityManager em) {
-        this(em, KernelImpl.getKernel(em));
+        this(em, KernelImpl.getKernel());
     }
 
     /**

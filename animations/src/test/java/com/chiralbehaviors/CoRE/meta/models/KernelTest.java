@@ -64,8 +64,7 @@ public class KernelTest {
         emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                      properties);
         em = emf.createEntityManager();
-        KernelImpl.clearAndLoadKernel(em);
-        Kernel kernel = new ModelImpl(em).getKernel();
+        Kernel kernel = KernelImpl.clearAndLoadKernel(em);
         assertNotNull(kernel.getAnyAttribute());
         assertNotNull(kernel.getAnyProduct());
         assertNotNull(kernel.getAnyLocation());

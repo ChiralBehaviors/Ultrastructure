@@ -90,7 +90,7 @@ public class LocationModelImpl
      * @param em
      */
     public LocationModelImpl(EntityManager em) {
-        super(em, KernelImpl.getKernel(em));
+        super(em, KernelImpl.getKernel());
     }
 
     /**

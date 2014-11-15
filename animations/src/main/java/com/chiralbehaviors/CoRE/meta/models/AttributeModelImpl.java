@@ -94,7 +94,7 @@ public class AttributeModelImpl
      * @param em
      */
     public AttributeModelImpl(EntityManager em) {
-        this(em, KernelImpl.getKernel(em));
+        this(em, KernelImpl.getKernel());
     }
 
     /**

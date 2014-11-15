@@ -96,7 +96,7 @@ public class AgencyModelImpl
      * @param em
      */
     public AgencyModelImpl(EntityManager em) {
-        super(em, KernelImpl.getKernel(em));
+        super(em, KernelImpl.getKernel());
     }
 
     /**

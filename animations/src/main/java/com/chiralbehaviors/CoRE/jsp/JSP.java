@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
+import com.chiralbehaviors.CoRE.kernel.KernelImpl;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
 /**
@@ -44,7 +45,7 @@ import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
  * @author hhildebrand
  *
  */
-public abstract class JSP {
+public final class JSP {
 
     public static final EntityManagerFactory EMF;
 
@@ -107,6 +108,16 @@ public abstract class JSP {
             public void onPrepare(Session arg0) throws SQLException {
             }
         });
+        EntityManager em = EMF.createEntityManager();
+        log.info("loading the kernel");
+        try {
+            KernelImpl.cacheKernel(em);
+        } finally {
+            em.close();
+        }
+    }
+
+    private JSP() {
     }
 
     public static <T> T call(StoredProcedure<T> call) throws SQLException {

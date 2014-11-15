@@ -90,7 +90,7 @@ public class RelationshipModelImpl
      * @param em
      */
     public RelationshipModelImpl(EntityManager em) {
-        super(em, KernelImpl.getKernel(em));
+        super(em, KernelImpl.getKernel());
     }
 
     /**

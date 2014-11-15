@@ -60,9 +60,8 @@ public class AbstractModelTest {
             em.close();
         }
         em = getEntityManager();
-        KernelImpl.clearAndLoadKernel(em);
+        kernel = KernelImpl.clearAndLoadKernel(em);
         model = new ModelImpl(em);
-        kernel = model.getKernel();
     }
 
     private static EntityManager getEntityManager() throws IOException {

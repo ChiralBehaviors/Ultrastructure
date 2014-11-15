@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.kernel;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 
@@ -32,11 +33,10 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
 public class KernelTest extends DatabaseTest {
 
     @Test
-    public void testDetachedCaching() throws IOException {
-        KernelImpl.loadKernel(em);
-        commitTransaction();
+    public void testDetachedCaching() throws IOException, SQLException {
+        em.getTransaction().rollback();
+        Kernel kernel = KernelImpl.clearAndLoadKernel(em);
         beginTransaction();
-        Kernel kernel = KernelImpl.getKernel(em);
         Agency core = kernel.getCore();
         Agency test = new Agency("My test agency", core);
         em.persist(test);

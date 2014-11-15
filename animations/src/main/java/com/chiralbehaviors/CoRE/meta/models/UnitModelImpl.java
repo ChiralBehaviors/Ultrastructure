@@ -58,7 +58,7 @@ public class UnitModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new UnitModelImpl(em, JSP.getKernel()));
+            return procedure.call(new UnitModelImpl(em));
         }
 
         @Override

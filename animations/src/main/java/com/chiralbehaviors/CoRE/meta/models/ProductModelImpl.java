@@ -59,7 +59,7 @@ public class ProductModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new ProductModelImpl(em, JSP.getKernel()));
+            return procedure.call(new ProductModelImpl(em));
         }
 
         @Override

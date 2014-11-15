@@ -57,7 +57,7 @@ public class RelationshipModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new RelationshipModelImpl(em, JSP.getKernel()));
+            return procedure.call(new RelationshipModelImpl(em));
         }
 
         @Override

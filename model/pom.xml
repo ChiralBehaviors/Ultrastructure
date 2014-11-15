@@ -4,7 +4,7 @@
     <parent>
         <artifactId>CoRE.app</artifactId>
         <groupId>com.chiralbehaviors.CoRE</groupId>
-        <version>0.0.2-rc4-SNAPSHOT</version>
+        <version>0.0.2-rc5-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -99,19 +99,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>workspace-generator</artifactId>
-                <executions>
-                    <execution>
-                        <id>network-inference-generator</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>network-inference-generator</artifactId>
@@ -412,7 +399,7 @@
                                     <pluginExecutionFilter>
                                         <groupId>com.chiralbehaviors.CoRE</groupId>
                                         <artifactId>workspace-generator</artifactId>
-                                        <versionRange>[0.0.2-rc4-SNAPSHOT,)</versionRange>
+                                        <versionRange>[0.0.2-rc4,)</versionRange>
                                         <goals>
                                             <goal>generate</goal>
                                         </goals>

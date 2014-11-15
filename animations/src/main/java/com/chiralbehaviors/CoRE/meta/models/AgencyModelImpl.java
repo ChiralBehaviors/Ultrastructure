@@ -59,7 +59,7 @@ public class AgencyModelImpl
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new AgencyModelImpl(em, JSP.getKernel()));
+            return procedure.call(new AgencyModelImpl(em));
         }
 
         @Override

@@ -63,7 +63,7 @@ public class JobModelTest extends AbstractModelTest {
     @BeforeClass
     public static void before() throws Exception {
         EntityTransaction txn = em.getTransaction();
-        scenario = new OrderProcessingLoader(em, kernel);
+        scenario = new OrderProcessingLoader(em);
         txn.begin();
         scenario.load();
         txn.commit();

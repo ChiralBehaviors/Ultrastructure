@@ -77,7 +77,7 @@ public class ModelImpl implements Model {
 
         @Override
         public T call(EntityManager em) throws Exception {
-            return procedure.call(new ModelImpl(em, JSP.getKernel()));
+            return procedure.call(new ModelImpl(em));
         }
 
         @Override

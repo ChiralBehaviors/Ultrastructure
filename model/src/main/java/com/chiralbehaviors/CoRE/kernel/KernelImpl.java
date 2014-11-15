@@ -18,6 +18,7 @@ package com.chiralbehaviors.CoRE.kernel;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -329,6 +330,20 @@ public class KernelImpl implements Kernel {
         rootRelationshipNetwork = em.find(RelationshipNetwork.class, ZERO);
         rootStatusCodeNetwork = em.find(StatusCodeNetwork.class, ZERO);
         rootUnitNetwork = em.find(UnitNetwork.class, ZERO);
+        detach(em);
+    }
+
+    private void detach(EntityManager em) {
+        for (Field field : KernelImpl.class.getDeclaredFields()) {
+            try {
+                em.detach(field.get(this));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new IllegalStateException(
+                                                String.format("Cannot detach %s",
+                                                              field.getName()),
+                                                e);
+            }
+        }
     }
 
     /*

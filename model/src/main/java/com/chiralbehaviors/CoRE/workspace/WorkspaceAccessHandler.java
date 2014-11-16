@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import com.chiralbehaviors.CoRE.Ruleform;
+
 /**
  * @author hparry
  *
@@ -46,11 +48,18 @@ public class WorkspaceAccessHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args)
                                                                     throws Throwable {
         Key key = method.getAnnotation(Key.class);
-        return (key != null) ? workspace.get(key.value())
-                            : getAsBeanAccessor(method);
+        if (key != null) {
+            Ruleform ruleform = workspace.get(key.value());
+            if (ruleform == null) {
+                throw new NullPointerException(
+                                               String.format("The value for %s is null",
+                                                             key.value()));
+            }
+        }
+        return getAsBeanAccessor(method);
     }
 
-    protected Object getAsBeanAccessor(Method method) {
+    protected Ruleform getAsBeanAccessor(Method method) {
         String name = method.getName();
         if (!name.startsWith("get")) {
             throw new UnsupportedOperationException(
@@ -58,6 +67,12 @@ public class WorkspaceAccessHandler implements InvocationHandler {
                                                                   method));
         }
         name = name.substring("get".length());
-        return workspace.get(name);
+        Ruleform ruleform = workspace.get(name);
+        if (ruleform == null) {
+            throw new NullPointerException(
+                                           String.format("The value for %s is null",
+                                                         name));
+        }
+        return ruleform;
     }
 }

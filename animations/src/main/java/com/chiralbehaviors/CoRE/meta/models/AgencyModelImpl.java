@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -96,7 +96,7 @@ public class AgencyModelImpl
      * @param em
      */
     public AgencyModelImpl(EntityManager em) {
-        super(em, KernelImpl.getKernel());
+        super(em, KernelUtil.getKernel());
     }
 
     /**

@@ -29,7 +29,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  *
  */
 public class WorkspaceSnapshot {
-    private final List<WorkspaceAuthorization> auths;
+    protected final List<WorkspaceAuthorization> auths;
 
     public WorkspaceSnapshot() {
         auths = null;

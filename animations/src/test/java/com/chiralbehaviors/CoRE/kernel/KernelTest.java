@@ -16,6 +16,9 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -35,9 +38,11 @@ public class KernelTest extends DatabaseTest {
     @Test
     public void testDetachedCaching() throws IOException, SQLException {
         em.getTransaction().rollback();
-        Kernel kernel = KernelImpl.clearAndLoadKernel(em);
+        Kernel kernel = KernelUtil.clearAndLoadKernel(em);
         beginTransaction();
         Agency core = kernel.getCore();
+        assertNotNull(core);
+        assertEquals("CoRE", core.getName());
         Agency test = new Agency("My test agency", core);
         em.persist(test);
         commitTransaction();

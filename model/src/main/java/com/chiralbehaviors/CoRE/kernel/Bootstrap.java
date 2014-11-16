@@ -16,7 +16,7 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
-import static com.chiralbehaviors.CoRE.kernel.KernelImpl.ZERO;
+import static com.chiralbehaviors.CoRE.kernel.KernelUtil.ZERO;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -101,7 +101,7 @@ public class Bootstrap {
     }
 
     public void bootstrap() throws SQLException {
-        KernelImpl.alterTriggers(connection, false);
+        KernelUtil.alterTriggers(connection, false);
         for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
@@ -128,12 +128,12 @@ public class Bootstrap {
         }
         createNullInference();
         createRootNetworks();
-        KernelImpl.alterTriggers(connection, true);
+        KernelUtil.alterTriggers(connection, true);
         constructKernelWorkspace();
     }
 
     public void clear() throws SQLException {
-        KernelImpl.clear(em);
+        KernelUtil.clear(em);
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {

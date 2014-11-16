@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
 /**
@@ -111,7 +111,9 @@ public final class JSP {
         EntityManager em = EMF.createEntityManager();
         log.info("loading the kernel");
         try {
-            KernelImpl.cacheKernel(em);
+            KernelUtil.cacheKernel(em);
+        } catch (Throwable e) {
+            log.error("Unable to load kernel", e);
         } finally {
             em.close();
         }

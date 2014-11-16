@@ -33,7 +33,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -71,7 +70,6 @@ public class JobChronology extends AbstractProtocol {
     private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job
-    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "job")
     private Job                job;
@@ -79,7 +77,6 @@ public class JobChronology extends AbstractProtocol {
     @Column(name = "sequence_number")
     private int                sequenceNumber           = 0;
 
-    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status")
     private StatusCode         status;

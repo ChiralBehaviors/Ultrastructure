@@ -53,7 +53,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.validation.constraints.NotNull;
 
 import org.apache.openjpa.persistence.LoadFetchGroup;
 
@@ -244,7 +243,6 @@ public class Job extends AbstractProtocol {
     /**
      * This job's status
      */
-    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status")
     private StatusCode         status;

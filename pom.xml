@@ -435,7 +435,7 @@
                 <plugin>
                     <groupId>com.chiralbehaviors.CoRE</groupId>
                     <artifactId>network-inference-generator</artifactId>
-                    <version>${project.version}</version>
+                    <version>0.0.2-rc5-SNAPSHOT</version>
                 </plugin>
                 <plugin>
                     <groupId>com.chiralbehaviors.CoRE</groupId>

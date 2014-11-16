@@ -390,20 +390,7 @@
                                     <action>
                                         <ignore></ignore>
                                     </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.chiralbehaviors.CoRE</groupId>
-                                        <artifactId>workspace-generator</artifactId>
-                                        <versionRange>[0.0.2-rc4,)</versionRange>
-                                        <goals>
-                                            <goal>generate</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
+                                </pluginExecution> 
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.apache.maven.plugins</groupId>

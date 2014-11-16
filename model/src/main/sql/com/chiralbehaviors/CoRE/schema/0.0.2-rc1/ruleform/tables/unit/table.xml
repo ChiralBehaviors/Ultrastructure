@@ -22,9 +22,6 @@
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="pinned" type="SMALLINT">
-                <constraints nullable="false" />
-            </column>
             <column name="datatype" remarks="The underlying datatype of a measurement of this kind of Unit" type="VARCHAR(10485760)" />
             <column name="min" remarks="If the unit is integer or numeric and has a minimum value, it is stored here." type="numeric" />
             <column name="max" remarks="If the unit is integer or numeric and has a maximum value, it is stored here." type="numeric" />

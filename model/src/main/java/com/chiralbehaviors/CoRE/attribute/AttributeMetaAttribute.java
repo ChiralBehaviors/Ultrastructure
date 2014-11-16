@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -49,16 +48,8 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute_value")
-    private Attribute         attributeValue;
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "meta_attribute")
     private Attribute         metaAttribute;
-
-    @Column(name = "sequence_number")
-    private Integer           sequenceNumber;
 
     public AttributeMetaAttribute() {
     }
@@ -129,11 +120,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     }
 
     @JsonGetter
-    public Attribute getAttributeValue() {
-        return attributeValue;
-    }
-
-    @JsonGetter
     public Attribute getMetaAttribute() {
         return metaAttribute;
     }
@@ -160,25 +146,11 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     }
 
     @Override
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    @Override
     public void setAttribute(Attribute attribute1) {
         attribute = attribute1;
     }
 
-    public void setAttributeValue(Attribute attribute2) {
-        attributeValue = attribute2;
-    }
-
     public void setMetaAttribute(Attribute attribute3) {
         metaAttribute = attribute3;
-    }
-
-    @Override
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 }

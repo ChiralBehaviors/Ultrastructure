@@ -24,9 +24,6 @@
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="pinned" type="SMALLINT">
-                <constraints nullable="false" />
-            </column>
             <column defaultValueNumeric="0" name="inheritable" type="SMALLINT">
                 <constraints nullable="false" />
             </column>

@@ -65,7 +65,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     private String             description;
     private String             name;
-    private Integer            pinned                                                        = FALSE;
 
     public ExistentialRuleform() {
     }
@@ -159,14 +158,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     @JsonIgnore
     abstract public String getNotApplicableId();
 
-    /**
-     * @return the pinned
-     */
-    @JsonGetter
-    public Boolean getPinned() {
-        return toBoolean(pinned);
-    }
-
     @SuppressWarnings("unchecked")
     @JsonIgnore
     public Class<RuleForm> getRuleformClass() {
@@ -213,14 +204,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     abstract public void setNetworkByChild(Set<Network> theNetworkByChild);
 
     abstract public void setNetworkByParent(Set<Network> theNetworkByParent);
-
-    /**
-     * @param pinned
-     *            the pinned to set
-     */
-    public void setPinned(Boolean pinned) {
-        this.pinned = toInteger(pinned);
-    }
 
     @Override
     public String toString() {

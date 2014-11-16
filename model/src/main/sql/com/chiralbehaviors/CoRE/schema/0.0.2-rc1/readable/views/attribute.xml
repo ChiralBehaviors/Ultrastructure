@@ -12,7 +12,6 @@
 			     a.name, 
 			     a.description, 
 			     a.notes, 
-			     a.pinned, 
 			     a.inheritable, 
 			     a.value_type, 
 			     up.name AS updated_by, 

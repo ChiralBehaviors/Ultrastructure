@@ -29,10 +29,10 @@ import javax.persistence.Persistence;
 import org.junit.After;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 
 /**
  * @author hhildebrand

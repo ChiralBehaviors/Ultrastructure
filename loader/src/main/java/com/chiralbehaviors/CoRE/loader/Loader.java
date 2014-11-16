@@ -41,8 +41,8 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.hellblazer.utils.Utils;
 
 /**

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.kernel;
+package com.chiralbehaviors.CoRE;
 
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 
 /**
@@ -786,6 +785,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -812,6 +812,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -838,6 +839,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -864,6 +866,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -890,6 +893,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -916,6 +920,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -942,6 +947,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -968,6 +974,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -994,6 +1001,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1020,6 +1028,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1046,6 +1055,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1072,6 +1082,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1098,6 +1109,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1124,6 +1136,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1150,6 +1163,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1176,6 +1190,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1202,6 +1217,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1228,6 +1244,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1254,6 +1271,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1280,6 +1298,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1306,6 +1325,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1332,6 +1352,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1358,6 +1379,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1384,6 +1406,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1410,6 +1433,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1435,6 +1459,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1459,6 +1484,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1484,6 +1510,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1510,6 +1537,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1536,6 +1564,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1562,6 +1591,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1588,6 +1618,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return false;
             }
@@ -1614,6 +1645,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1640,6 +1672,7 @@ public interface WellKnownObject {
             }
 
             @Override
+            public
             boolean preferred() {
                 return true;
             }
@@ -1666,7 +1699,7 @@ public interface WellKnownObject {
             return "ruleform.relationship";
         }
 
-        abstract boolean preferred();
+        public abstract boolean preferred();
     }
 
     public static enum WellKnownStatusCode implements WellKnownObject {

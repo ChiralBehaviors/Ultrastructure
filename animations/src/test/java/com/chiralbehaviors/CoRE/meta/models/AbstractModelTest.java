@@ -33,9 +33,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**

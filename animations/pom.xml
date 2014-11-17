@@ -112,6 +112,11 @@
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>phat</shadedClassifierName>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>org.apache.openjpa:openjpa-all</exclude>
+                        </excludes>
+                    </artifactSet>
                 </configuration>
             </plugin>
             <plugin>

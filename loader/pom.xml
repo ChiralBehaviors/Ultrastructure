@@ -81,6 +81,7 @@
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes/animations</outputDirectory>
+                                    <destFileName>animations-${project.version}-phat.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <overWriteReleases>false</overWriteReleases>

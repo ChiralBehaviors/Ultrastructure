@@ -46,7 +46,8 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.postgresql</groupId>
-                    <artifactId>postgresql</artifactId></exclusion>
+                    <artifactId>postgresql</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
@@ -105,4 +106,43 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>test-loader</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>${project.groupId}</groupId>
+                        <version>${project.version}</version>
+                        <artifactId>loader-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>load</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <loader>
+                                        <dbaServer>${testing.db.server}</dbaServer>
+                                        <dbaPort>${testing.db.port}</dbaPort>
+                                        <dbaDb>${testing.db.database}</dbaDb>
+                                        <dbaUsername>${testing.db.login}</dbaUsername>
+                                        <dbaPassword>${testing.db.password}</dbaPassword>
+
+                                        <coreServer>${db.server}</coreServer>
+                                        <corePort>${db.port}</corePort>
+                                        <coreDb>${db.database}</coreDb>
+                                        <coreUsername>${db.login}</coreUsername>
+                                        <corePassword>${db.password}</corePassword>
+                                        <dropDatabase>true</dropDatabase>
+                                    </loader>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

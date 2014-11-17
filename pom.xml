@@ -48,7 +48,7 @@
         <testing.db.login>postgres</testing.db.login>
         <testing.db.server>localhost</testing.db.server>
         <testing.db.port>5432</testing.db.port>
-        <testing.db.database>core</testing.db.database>
+        <testing.db.database>postgres</testing.db.database>
         <logging.core>INFO</logging.core>
         <logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</logging.consoleLayoutPattern>
         <testing.logging.core>INFO</testing.logging.core>

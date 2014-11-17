@@ -115,14 +115,14 @@ public class Configuration {
     public boolean dropDatabase = false;
 
     public Connection getCoreConnection() throws SQLException {
-        return DriverManager.getConnection(String.format(JDBC_URL, coreServer,
-                                                         corePort, coreDb),
-                                           coreUsername, corePassword);
+        String url = String.format(JDBC_URL, coreServer, corePort, coreDb);
+        System.out.println(String.format("core connection: %s", url));
+        return DriverManager.getConnection(url, coreUsername, corePassword);
     }
 
     public Connection getDbaConnection() throws SQLException {
-        return DriverManager.getConnection(String.format(JDBC_URL, dbaServer,
-                                                         dbaPort, dbaDb),
-                                           dbaUsername, dbaPassword);
+        String url = String.format(JDBC_URL, dbaServer, dbaPort, dbaDb);
+        System.out.println(String.format("DBA connection: %s", url));
+        return DriverManager.getConnection(url, dbaUsername, dbaPassword);
     }
 }

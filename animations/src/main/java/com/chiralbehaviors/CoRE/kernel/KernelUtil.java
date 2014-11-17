@@ -71,6 +71,7 @@ public class KernelUtil {
         }
         if (!CACHED_KERNEL.compareAndSet(null, kernel)) {
             log.debug("Kernel has already been cached");
+            kernel = CACHED_KERNEL.get();
         }
         return kernel;
     }

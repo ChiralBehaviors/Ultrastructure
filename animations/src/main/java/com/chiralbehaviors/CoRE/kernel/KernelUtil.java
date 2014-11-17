@@ -26,6 +26,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.persistence.EntityManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.workspace.RehydratedWorkspace;
@@ -48,6 +51,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class KernelUtil {
 
+    private static final Logger                  log                       = LoggerFactory.getLogger(KernelUtil.class);
+
     public static final String                   SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
     public static final String                   ZERO                      = UuidGenerator.toBase64(new UUID(
                                                                                                              0,
@@ -65,7 +70,7 @@ public class KernelUtil {
             throw new IllegalStateException("Unable to rehydrate kernel", e);
         }
         if (!CACHED_KERNEL.compareAndSet(null, kernel)) {
-            throw new IllegalStateException("Kernel has already been cached");
+            log.debug("Kernel has already been cached");
         }
         return kernel;
     }
@@ -93,7 +98,7 @@ public class KernelUtil {
         return loadKernel(em);
     }
 
-    public static Kernel getKernel() {
+    public synchronized static Kernel getKernel() {
         Kernel kernel = CACHED_KERNEL.get();
         assert kernel != null;
         return kernel;

@@ -10,19 +10,19 @@
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="unit_pkey" />
             </column>
-            <column name="name" type="VARCHAR(10485760)">
+            <column name="name" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="description" type="VARCHAR(10485760)" />
+            <column name="description" type="TEXT" />
             <column name="abbreviation" type="VARCHAR(10)" />
-            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="notes" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
-            <column name="datatype" remarks="The underlying datatype of a measurement of this kind of Unit" type="VARCHAR(10485760)" />
+            <column name="datatype" remarks="The underlying datatype of a measurement of this kind of Unit" type="TEXT" />
             <column name="min" remarks="If the unit is integer or numeric and has a minimum value, it is stored here." type="numeric" />
             <column name="max" remarks="If the unit is integer or numeric and has a maximum value, it is stored here." type="numeric" />
             <column defaultValueNumeric="0" name="enumerated"

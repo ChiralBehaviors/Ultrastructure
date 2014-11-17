@@ -11,11 +11,11 @@
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="agency_pkey" />
             </column>
-            <column name="name" type="VARCHAR(10485760)">
+            <column name="name" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="description" type="VARCHAR(10485760)" />
-            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="description" type="TEXT" />
+            <column name="notes" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>

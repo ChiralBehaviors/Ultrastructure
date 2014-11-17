@@ -58,7 +58,7 @@
                 <constraints nullable="false" />
             </column>
             <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
-            <column name="notes" remarks="Additional notes regarding usage of the metaprotocol" type="VARCHAR(10485760)" />
+            <column name="notes" remarks="Additional notes regarding usage of the metaprotocol" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>

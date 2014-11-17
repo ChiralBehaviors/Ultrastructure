@@ -10,11 +10,11 @@
             <column name="id" type="CHAR(22)">
                 <constraints primaryKey="true" primaryKeyName="status_code_pkey" />
             </column>
-            <column name="name" remarks="The unique name of a status code" type="VARCHAR(10485760)">
+            <column name="name" remarks="The unique name of a status code" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="description" remarks="A free-form textual description of a status code" type="VARCHAR(10485760)" />
-            <column name="notes" remarks="Additional notes regarding usage of the status code" type="VARCHAR(10485760)" />
+            <column name="description" remarks="A free-form textual description of a status code" type="TEXT" />
+            <column name="notes" remarks="Additional notes regarding usage of the status code" type="TEXT" />
             <column defaultValueNumeric="1" name="fail_parent"
                 remarks="Setting a job to this status code will trigger a cascading failure up to its parent" type="SMALLINT"
             >

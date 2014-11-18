@@ -61,7 +61,7 @@ public class KernelUtil {
     static final String                          KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 
     public static Kernel cacheKernel(EntityManager em) {
-        if (CACHED_KERNEL.get() == null) {
+        if (CACHED_KERNEL.get() != null) {
             return CACHED_KERNEL.get();
         }
         Kernel kernel;

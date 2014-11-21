@@ -18,7 +18,6 @@
         <model.jar.file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</model.jar.file>
         <main.sql>${project.basedir}/src/main/sql</main.sql>
         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-
         <jdbc.url>jdbc:postgresql://${db.server}:${db.port}/core</jdbc.url>
         <jdbc.driver>org.postgresql.Driver</jdbc.driver>
     </properties>

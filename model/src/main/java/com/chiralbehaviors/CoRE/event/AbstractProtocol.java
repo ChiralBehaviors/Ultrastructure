@@ -199,108 +199,6 @@ public abstract class AbstractProtocol extends Ruleform {
         setQuantity(protocol.getQuantity());
     }
 
-    public boolean equalsProtocol(AbstractProtocol other) {
-        if (assignTo == null) {
-            if (other.assignTo != null) {
-                return false;
-            }
-        } else if (!assignTo.equals(other.assignTo)) {
-            return false;
-        }
-        if (assignToAttribute == null) {
-            if (other.assignToAttribute != null) {
-                return false;
-            }
-        } else if (!assignToAttribute.equals(other.assignToAttribute)) {
-            return false;
-        }
-        if (deliverFrom == null) {
-            if (other.deliverFrom != null) {
-                return false;
-            }
-        } else if (!deliverFrom.equals(other.deliverFrom)) {
-            return false;
-        }
-        if (deliverFromAttribute == null) {
-            if (other.deliverFromAttribute != null) {
-                return false;
-            }
-        } else if (!deliverFromAttribute.equals(other.deliverFromAttribute)) {
-            return false;
-        }
-        if (deliverTo == null) {
-            if (other.deliverTo != null) {
-                return false;
-            }
-        } else if (!deliverTo.equals(other.deliverTo)) {
-            return false;
-        }
-        if (deliverToAttribute == null) {
-            if (other.deliverToAttribute != null) {
-                return false;
-            }
-        } else if (!deliverToAttribute.equals(other.deliverToAttribute)) {
-            return false;
-        }
-        if (product == null) {
-            if (other.product != null) {
-                return false;
-            }
-        } else if (!product.equals(other.product)) {
-            return false;
-        }
-        if (productAttribute == null) {
-            if (other.productAttribute != null) {
-                return false;
-            }
-        } else if (!productAttribute.equals(other.productAttribute)) {
-            return false;
-        }
-        if (quantity == null) {
-            if (other.quantity != null) {
-                return false;
-            }
-        } else if (!quantity.equals(other.quantity)) {
-            return false;
-        }
-        if (quantityUnit == null) {
-            if (other.quantityUnit != null) {
-                return false;
-            }
-        } else if (!quantityUnit.equals(other.quantityUnit)) {
-            return false;
-        }
-        if (requester == null) {
-            if (other.requester != null) {
-                return false;
-            }
-        } else if (!requester.equals(other.requester)) {
-            return false;
-        }
-        if (requesterAttribute == null) {
-            if (other.requesterAttribute != null) {
-                return false;
-            }
-        } else if (!requesterAttribute.equals(other.requesterAttribute)) {
-            return false;
-        }
-        if (service == null) {
-            if (other.service != null) {
-                return false;
-            }
-        } else if (!service.equals(other.service)) {
-            return false;
-        }
-        if (serviceAttribute == null) {
-            if (other.serviceAttribute != null) {
-                return false;
-            }
-        } else if (!serviceAttribute.equals(other.serviceAttribute)) {
-            return false;
-        }
-        return true;
-    }
-
     public Agency getAssignTo() {
         return assignTo;
     }
@@ -393,16 +291,17 @@ public abstract class AbstractProtocol extends Ruleform {
     @JsonIgnore
     public String getToString() {
         return String.format("requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, quantity=%s, quantityUnit=%s",
-                             requester.getName(), assignTo.getName(),
-                             service.getName(), product.getName(),
-                             deliverTo.getName(), deliverFrom.getName(),
-                             requesterAttribute.getName(),
-                             assignToAttribute.getName(),
-                             serviceAttribute.getName(),
-                             productAttribute.getName(),
-                             deliverToAttribute.getName(),
-                             deliverFromAttribute.getName(), quantity,
-                             quantityUnit.getName());
+                             getRequester().getName(), getAssignTo().getName(),
+                             getService().getName(), getProduct().getName(),
+                             getDeliverTo().getName(),
+                             getDeliverFrom().getName(),
+                             getRequesterAttribute().getName(),
+                             getAssignToAttribute().getName(),
+                             getServiceAttribute().getName(),
+                             getProductAttribute().getName(),
+                             getDeliverToAttribute().getName(),
+                             getDeliverFromAttribute().getName(), quantity,
+                             getQuantityUnit().getName());
     }
 
     public void setAssignTo(Agency agency2) {
@@ -511,15 +410,16 @@ public abstract class AbstractProtocol extends Ruleform {
     @Override
     public String toString() {
         return String.format("AbstractProtocol [requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, quantity=%s, quantityUnit=%s]",
-                             requester.getName(), assignTo.getName(),
-                             service.getName(), product.getName(),
-                             deliverTo.getName(), deliverFrom.getName(),
-                             requesterAttribute.getName(),
-                             assignToAttribute.getName(),
-                             serviceAttribute.getName(),
-                             productAttribute.getName(),
-                             deliverToAttribute.getName(),
-                             deliverFromAttribute.getName(), quantity,
-                             quantityUnit.getName());
+                             getRequester().getName(), getAssignTo().getName(),
+                             getService().getName(), getProduct().getName(),
+                             getDeliverTo().getName(),
+                             getDeliverFrom().getName(),
+                             getRequesterAttribute().getName(),
+                             getAssignToAttribute().getName(),
+                             getServiceAttribute().getName(),
+                             getProductAttribute().getName(),
+                             getDeliverToAttribute().getName(),
+                             getDeliverFromAttribute().getName(), quantity,
+                             getQuantityUnit().getName());
     }
 }

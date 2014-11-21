@@ -53,6 +53,7 @@ import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
+import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -68,10 +69,10 @@ public class JobModelTest extends AbstractModelTest {
         scenario.load();
         txn.commit();
         jobModel = model.getJobModel();
+        model.setLogConfiguration(Utils.getDocument(JobModelTest.class.getResourceAsStream("/test-log-config.xml")));
     }
 
     private static JobModel              jobModel;
-
     private static OrderProcessingLoader scenario;
 
     @Override

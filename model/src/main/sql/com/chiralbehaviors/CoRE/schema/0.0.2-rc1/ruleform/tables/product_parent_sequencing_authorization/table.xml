@@ -80,7 +80,7 @@
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-403">
-        <addUniqueConstraint schemaName="ruleform" columnNames="service, status_code, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, status_code, parent, sequence_number"
             constraintName="product_parent_sequencing_authorization_parent_status_code_sequ" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="product_parent_sequencing_authorization" />
     </changeSet>

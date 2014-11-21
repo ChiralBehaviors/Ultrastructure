@@ -46,7 +46,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
                                                               + " WHERE seq.service = :service"
                                                               + "   AND seq.statusCode = :status"
-                                                              + " ORDER BY seq.sequenceNumber"),
+                                                              + " ORDER BY seq.parent, seq.sequenceNumber"),
                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
                                                          + " WHERE seq.service = :service"
                                                          + " ORDER BY seq.sequenceNumber") })

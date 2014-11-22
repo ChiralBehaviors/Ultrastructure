@@ -99,7 +99,6 @@ public class StatusCodeTest extends AbstractModelTest {
         em.persist(loop);
         try {
             em.getTransaction().commit();
-            emf.getCache().evictAll();
             fail("Expected failure due to circularity");
         } catch (Exception e) {
             // expected

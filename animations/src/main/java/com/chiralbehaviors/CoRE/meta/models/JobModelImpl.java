@@ -1908,7 +1908,6 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTerminalState(String service, String statusCode) {
-        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
         return isTerminalState(em.find(StatusCode.class, statusCode),
                                em.find(Product.class, service));
     }
@@ -1923,7 +1922,6 @@ public class JobModelImpl implements JobModel {
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {
-        JSP.EMF.getCache().evict(Job.class, jobId);
         Job job = em.find(Job.class, jobId);
         if (job.getCurrentLogSequence() == 0) {
             log(job, "Initial insertion of job");
@@ -2018,7 +2016,6 @@ public class JobModelImpl implements JobModel {
     }
 
     private void processJobChange(String jobId) {
-        JSP.EMF.getCache().evict(Job.class);
         Job job = em.find(Job.class, jobId);
         generateImplicitJobsForExplicitJobs(job,
                                             kernel.getCoreAnimationSoftware());
@@ -2144,8 +2141,6 @@ public class JobModelImpl implements JobModel {
      */
     private void validate_State_Graph(Collection<String> modifiedServices)
                                                                           throws SQLException {
-        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
-        JSP.EMF.getCache().evict(StatusCode.class);
         List<Product> modified = new ArrayList<Product>(modifiedServices.size());
         for (String id : modifiedServices) {
             modified.add(em.find(Product.class, id));
@@ -2154,7 +2149,6 @@ public class JobModelImpl implements JobModel {
     }
 
     private void validateStateGraph() throws SQLException {
-        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
         try {
             validate_State_Graph(MODIFIED_SERVICES);
         } finally {

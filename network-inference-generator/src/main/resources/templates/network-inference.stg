@@ -34,6 +34,19 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                  JOIN ruleform.network_inference AS deduction
                     ON p1.relationship = deduction.premise1
                     AND p2.relationship = deduction.premise2
+                 LEFT OUTER JOIN %tableName% AS exist
+                    ON exist.parent = p1.parent
+                    AND exist.relationship = deduction.inference
+                    AND exist.child = p2.child
+                    AND exist.inference = deduction.id
+                    AND exist.premise1 = p1.id
+                    AND exist.premise2 = p2.id
+                 WHERE exist.parent IS NULL
+                    AND exist.relationship IS NULL
+                    AND exist.child IS NULL
+                    AND exist.premise1 IS NULL
+                    AND exist.premise2 IS NULL
+                    AND exist.inference IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.inferenceStepFromLastPass">

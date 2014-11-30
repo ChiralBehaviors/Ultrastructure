@@ -29,6 +29,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -37,7 +38,8 @@ import com.chiralbehaviors.CoRE.network.Relationship;
 public class AbstractNetworkModelTest extends AbstractModelTest {
 
     @Test
-    public void testGetImmediateRelationships() {
+    public void testGetImmediateRelationships() throws Exception {
+        model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
         Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
 

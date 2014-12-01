@@ -4,7 +4,7 @@
     <parent>
         <artifactId>CoRE.app</artifactId>
         <groupId>com.chiralbehaviors.CoRE</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -246,7 +246,7 @@
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
+                    <version>1.0.0-</version>
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.chiralbehaviors.CoRE</groupId>
         <artifactId>CoRE.app</artifactId>
-        <version>0.0.2-rc5-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>loader</artifactId>
     <name>Loader</name>
@@ -18,6 +18,10 @@
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>animations</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -77,6 +81,7 @@
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes/animations</outputDirectory>
+                                    <destFileName>animations-${project.version}-phat.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <overWriteReleases>false</overWriteReleases>

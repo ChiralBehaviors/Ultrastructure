@@ -30,7 +30,6 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -91,13 +90,11 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @JoinColumn(name = "parent")
     private Unit               parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private UnitNetwork        premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private UnitNetwork        premise2;
 
@@ -205,23 +202,5 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @Override
     public void setParent(Unit parent) {
         this.parent = parent;
-    }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Unit> premise1) {
-        this.premise1 = (UnitNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Unit> premise2) {
-        this.premise2 = (UnitNetwork) premise2;
     }
 }

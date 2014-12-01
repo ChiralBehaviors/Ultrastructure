@@ -1,10 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.chiralbehaviors.CoRE</groupId>
         <artifactId>CoRE.app</artifactId>
-        <version>0.0.2-rc5-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>animations</artifactId>
     <name>CoRE Animations</name>
@@ -86,11 +87,36 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/kernel</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>phat</shadedClassifierName>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>org.apache.openjpa:openjpa-all</exclude>
+                        </excludes>
+                    </artifactSet>
                 </configuration>
             </plugin>
             <plugin>
@@ -129,7 +155,7 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -202,6 +228,35 @@
     </build>
     <profiles>
         <profile>
+            <id>generate-kernel</id>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.3.2</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>install</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <classpathScope>test</classpathScope>
+                            <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
+                            <arguments>
+                                <argument>${project.build.directory}/test-classes/jpa.properties</argument>
+                                <argument>src/main/kernel/kernel-workspace.json</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>database.active</id>
             <build>
                 <plugins>
@@ -245,6 +300,11 @@
                                     <groupId>com.hellblazer</groupId>
                                     <artifactId>pljava-api</artifactId>
                                     <version>0.0.1-SNAPSHOT</version>
+                                </resource>
+                                <resource>
+                                    <groupId>org.apache.openjpa</groupId>
+                                    <artifactId>openjpa-all</artifactId>
+                                    <version>2.3.0</version>
                                 </resource>
                             </excluded>
                             <classpathProperty>pljavaClassPath</classpathProperty>

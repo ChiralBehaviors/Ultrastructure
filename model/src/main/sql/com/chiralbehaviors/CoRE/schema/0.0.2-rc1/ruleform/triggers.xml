@@ -5,7 +5,6 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute/trigger-attribute_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network/trigger-attribute_network_update_date.xml" />
     <include relativeToChangelogFile="true"
@@ -19,19 +18,16 @@
     <include relativeToChangelogFile="true" file="tables/product_location/trigger-product_location_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/product_network_attribute/trigger-product_network_attribute_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/product_network/trigger-product_network_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/product/trigger-product_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/product/trigger-product_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/job_chronology/trigger-job_chronology_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/job/trigger-job_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/location_attribute/trigger-location_attribute_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/location_network/trigger-location_network_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/location_relationship/trigger-location_relationship_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/location/trigger-location_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/location/trigger-location_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/meta_protocol/trigger-meta_protocol_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/protocol/trigger-protocol_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/network_inference/trigger-network_inference_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship/trigger-relationship_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship_network/triggers.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_attribute_authorization/trigger-agency_attribute_authorization_update_date.xml" />
@@ -39,7 +35,6 @@
     <include relativeToChangelogFile="true" file="tables/agency_attribute/trigger-agency_attribute_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_network/trigger-agency_network_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product/trigger-agency_product_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/agency/trigger-agency_restrict_pinnned.xml" />
     <include relativeToChangelogFile="true" file="tables/agency/trigger-agency_update_date.xml" />
     <include relativeToChangelogFile="true"
         file="tables/product_child_sequencing_authorization/trigger-product_child_sequencing_authorization_update_date.xml" />
@@ -48,10 +43,8 @@
     <include relativeToChangelogFile="true"
         file="tables/product_sibling_sequencing_authorization/trigger-product_sibling_sequencing_authorization_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing/trigger-status_code_sequencing_updated_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_restrict_pinned_.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code/trigger-status_code_updated_date.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_values/trigger-unit_values_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_restrict_pinned.xml" />
     <include relativeToChangelogFile="true" file="tables/unit/trigger-unit_update_date.xml" />
     <include relativeToChangelogFile="true"
         file="tables/location_attribute_authorization/trigger-location_attribute_authorization_update_date.xml" />
@@ -59,7 +52,6 @@
     <include relativeToChangelogFile="true" file="tables/sourcing_authorization/trigger-sourcing_authorization_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/interval_attribute/trigger-interval_attribute_update_date.xml" />
     <include relativeToChangelogFile="true" file="tables/interval_network/trigger-interval_network_update_date.xml" />
-    <include relativeToChangelogFile="true" file="tables/interval/trigger-interval_restrict_pinnned.xml" />
     <include relativeToChangelogFile="true" file="tables/interval/trigger-interval_update_date.xml" />
     <include relativeToChangelogFile="true"
         file="tables/interval_attribute_authorization/trigger-interval_attribute_authorization_update_date.xml" />

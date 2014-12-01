@@ -8,7 +8,7 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.relationship AS 
-			 SELECT rel.id, rel.name, rel.description, rel.preferred, inv.name AS inverse, rel.notes, rel.pinned, up.name AS updated_by
+			 SELECT rel.id, rel.name, rel.description, rel.preferred, inv.name AS inverse, rel.notes, up.name AS updated_by
 			   FROM relationship rel
 			   JOIN relationship inv ON rel.inverse = inv.id
 			   JOIN agency up ON rel.updated_by = up.id;

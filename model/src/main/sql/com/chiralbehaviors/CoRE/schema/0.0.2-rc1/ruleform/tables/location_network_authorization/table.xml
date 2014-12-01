@@ -36,7 +36,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="grouping_agency" remarks="A network parent an Location is expected to have" type="CHAR(22)" />
-            <column name="notes" remarks="Additional notes regarding this rule" type="VARCHAR(10485760)" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>

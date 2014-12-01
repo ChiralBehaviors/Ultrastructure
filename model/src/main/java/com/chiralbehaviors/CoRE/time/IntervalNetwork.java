@@ -26,11 +26,12 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SU
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_NETWORKS;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -85,20 +86,24 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(name = "child")
     private Interval           child;
 
+    @Column(insertable = false, name = "end_time")
+    private BigDecimal         endTime;
+
     //bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Interval           parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private IntervalNetwork    premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private IntervalNetwork    premise2;
+
+    @Column(insertable = false, name = "start_time")
+    private BigDecimal         startTime;
 
     public IntervalNetwork() {
         super();
@@ -138,6 +143,10 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return child;
     }
 
+    public BigDecimal getEndTime() {
+        return endTime;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -163,6 +172,10 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JsonGetter
     public IntervalNetwork getPremise2() {
         return premise2;
+    }
+
+    public BigDecimal getStartTime() {
+        return startTime;
     }
 
     /* (non-Javadoc)
@@ -192,23 +205,5 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public void setParent(Interval parent) {
         this.parent = parent;
-    }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Interval> premise1) {
-        this.premise1 = (IntervalNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Interval> premise2) {
-        this.premise2 = (IntervalNetwork) premise2;
     }
 }

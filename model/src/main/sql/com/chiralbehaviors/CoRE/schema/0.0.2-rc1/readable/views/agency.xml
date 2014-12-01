@@ -11,7 +11,7 @@
 			 SELECT r.id, 
 			     r.name, 
 			     r.description,
-			     r.notes, r.pinned,
+			     r.notes,
 			     up.name AS updated_by, 
 			     r.update_date
 			   FROM agency r

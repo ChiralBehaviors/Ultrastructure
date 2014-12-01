@@ -17,7 +17,6 @@
 			     b.max,
 			     b.enumerated,
 			     b.notes, 
-			     b.pinned, 
 			     up.name AS updated_by,
 			     b.update_date
 			   FROM unit b

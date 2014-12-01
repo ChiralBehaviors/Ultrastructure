@@ -72,7 +72,6 @@ public class ProductTest extends DatabaseTest {
         b.setName(name);
         b.setDescription("An Product created solely for testing purposes");
         b.setUpdatedBy(r);
-        b.setPinned(false);
 
         em.persist(b);
         em.flush();

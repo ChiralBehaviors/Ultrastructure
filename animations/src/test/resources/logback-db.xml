@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <appender name="C" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${testing.logging.consoleLayoutPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <root>
+        <level value="TRACE" />
+        <appender-ref ref="C" />
+    </root>
+
+</configuration>

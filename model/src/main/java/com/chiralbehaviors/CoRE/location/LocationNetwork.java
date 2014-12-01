@@ -32,7 +32,6 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -94,13 +93,11 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @JoinColumn(name = "parent")
     private Location           parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private LocationNetwork    premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private LocationNetwork    premise2;
 
@@ -187,23 +184,5 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @Override
     public void setParent(Location parent) {
         this.parent = parent;
-    }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Location> premise1) {
-        this.premise1 = (LocationNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Location> premise2) {
-        this.premise2 = (LocationNetwork) premise2;
     }
 }

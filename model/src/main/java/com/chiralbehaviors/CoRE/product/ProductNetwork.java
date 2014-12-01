@@ -109,13 +109,11 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JoinColumn(name = "parent")
     private Product                      parent;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
     private ProductNetwork               premise1;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private ProductNetwork               premise2;
 
@@ -226,23 +224,5 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @Override
     public void setParent(Product parent) {
         this.parent = parent;
-    }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Product> premise1) {
-        this.premise1 = (ProductNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Product> premise2) {
-        this.premise2 = (ProductNetwork) premise2;
     }
 }

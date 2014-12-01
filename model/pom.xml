@@ -4,7 +4,7 @@
     <parent>
         <artifactId>CoRE.app</artifactId>
         <groupId>com.chiralbehaviors.CoRE</groupId>
-        <version>0.0.2-rc5-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -18,7 +18,6 @@
         <model.jar.file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</model.jar.file>
         <main.sql>${project.basedir}/src/main/sql</main.sql>
         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-
         <jdbc.url>jdbc:postgresql://${db.server}:${db.port}/core</jdbc.url>
         <jdbc.driver>org.postgresql.Driver</jdbc.driver>
     </properties>
@@ -83,17 +82,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.openjpa</groupId>
-            <artifactId>openjpa-all</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa-all</artifactId>
         </dependency>
     </dependencies>
 
@@ -141,9 +139,6 @@
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}/generated-resources/queries</directory>
-                                </resource>
-                                <resource>
-                                    <directory>src/main/kernel</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -394,20 +389,7 @@
                                     <action>
                                         <ignore></ignore>
                                     </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.chiralbehaviors.CoRE</groupId>
-                                        <artifactId>workspace-generator</artifactId>
-                                        <versionRange>[0.0.2-rc4,)</versionRange>
-                                        <goals>
-                                            <goal>generate</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
+                                </pluginExecution> 
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.apache.maven.plugins</groupId>
@@ -430,35 +412,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>generate-kernel</id>
-            <build>
-                <plugins>
-
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.3.2</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <phase>install</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <classpathScope>test</classpathScope>
-                            <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
-                            <arguments>
-                                <argument>target/test-classes/jpa.properties</argument>
-                                <argument>src/main/kernel/kernel-workspace.json</argument>
-                            </arguments>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>database.active</id>
             <build>

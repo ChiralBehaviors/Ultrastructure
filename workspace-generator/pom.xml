@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.chiralbehaviors.CoRE</groupId>
         <artifactId>CoRE.app</artifactId>
-        <version>0.0.2-rc5-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>workspace-generator</artifactId>
     <packaging>maven-plugin</packaging>

@@ -20,8 +20,7 @@
             <column name="numeric_value" remarks="A permitted numeric value for this unit" type="numeric" />
             <column name="text_value" remarks="A permitted text value for this unit" type="CHAR(22)" />
             <column name="boolean_value" remarks="A permitted boolean value for this unit" type="SMALLINT" />
-            <column name="product_value" remarks="A permitted Product value for this unit" type="CHAR(22)" />
-            <column name="notes" remarks="Usage notes for this rule" type="VARCHAR(10485760)" />
+            <column name="notes" remarks="Usage notes for this rule" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -34,11 +33,6 @@
         <rollback>
             <dropTable tableName="unit_values" />
         </rollback>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-366">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product_value" baseTableName="unit_values" constraintName="unit_values_product_value_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-367">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

@@ -26,7 +26,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -53,11 +52,6 @@ public class UnitValue extends Ruleform {
     @Column(name = "numeric_value")
     private BigDecimal        numericValue;
 
-    // bi-directional many-to-one association to Product
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "product_value")
-    private Product           productValue;
-
     @Column(name = "sequence_number")
     private Integer           sequenceNumber;
 
@@ -83,10 +77,6 @@ public class UnitValue extends Ruleform {
 
     public Boolean getBooleanValue() {
         return toBoolean(booleanValue);
-    }
-
-    public Product getEntityValue() {
-        return productValue;
     }
 
     public Integer getIntegerValue() {
@@ -116,10 +106,6 @@ public class UnitValue extends Ruleform {
 
     public void setBooleanValue(Boolean booleanValue) {
         this.booleanValue = toInteger(booleanValue);
-    }
-
-    public void setEntityValue(Product product) {
-        productValue = product;
     }
 
     public void setIntegerValue(Integer integerValue) {

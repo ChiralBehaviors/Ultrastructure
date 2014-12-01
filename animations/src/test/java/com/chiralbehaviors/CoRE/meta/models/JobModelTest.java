@@ -68,10 +68,10 @@ public class JobModelTest extends AbstractModelTest {
         scenario.load();
         txn.commit();
         jobModel = model.getJobModel();
+        // model.setLogConfiguration(Utils.getDocument(JobModelTest.class.getResourceAsStream("/test-log-db.xml")));
     }
 
     private static JobModel              jobModel;
-
     private static OrderProcessingLoader scenario;
 
     @Override

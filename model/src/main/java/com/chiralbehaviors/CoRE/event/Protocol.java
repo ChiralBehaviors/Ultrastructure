@@ -22,6 +22,7 @@ import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -32,6 +33,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -105,56 +107,68 @@ public class Protocol extends AbstractProtocol {
 
     private static final long  serialVersionUID = 1L;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_assign_to")
     private Agency             childAssignTo;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_assign_to_attribute")
     private Attribute          childAssignToAttribute;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_deliver_from")
     private Location           childDeliverFrom;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_deliver_from_attribute")
     private Attribute          childDeliverFromAttribute;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_deliver_to")
     private Location           childDeliverTo;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_deliver_to_attribute")
     private Attribute          childDeliverToAttribute;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_product")
     private Product            childProduct;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_product_attribute")
     private Attribute          childProductAttribute;
 
     @Column(name = "child_quantity")
     private BigDecimal         childQuantity;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_quantity_unit")
     private Unit               childQuantityUnit;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "children_relationship")
     private Relationship       childrenRelationship;
     /**
      * The service of the child job
      */
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_service")
     private Product            childService;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_service_attribute")
     private Attribute          childServiceAttribute;
 

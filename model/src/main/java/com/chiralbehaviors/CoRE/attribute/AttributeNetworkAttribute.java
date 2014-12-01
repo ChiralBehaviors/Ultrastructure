@@ -20,7 +20,6 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -45,14 +44,12 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency            agency;
 
     // bi-directional many-to-one association to AttributeNetwork
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
     private AttributeNetwork  AttributeNetwork;
 

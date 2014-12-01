@@ -19,10 +19,12 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static java.lang.String.format;
 
 import java.sql.SQLException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform_;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
@@ -73,7 +76,6 @@ import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.RuleformIdIterator;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -1392,47 +1394,17 @@ public class JobModelImpl implements JobModel {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing children of Job %s", job));
         }
-        List<ProductChildSequencingAuthorization> childActions = getChildActions(job);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("%s children actions for Job %s",
-                                    childActions.size(), job));
-        }
-        for (ProductChildSequencingAuthorization seq : childActions) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Processing %s", seq));
+        Deque<ProductChildSequencingAuthorization> actions = new ArrayDeque<>(
+                                                                              getChildActions(job));
+        while (!actions.isEmpty()) {
+            ProductChildSequencingAuthorization auth = actions.pop();
+            List<ProductChildSequencingAuthorization> grouped = new ArrayList<>();
+            grouped.add(auth);
+            while (!actions.isEmpty()
+                   && actions.peekFirst().getNextChild().equals(auth.getNextChild())) {
+                grouped.add(actions.pop());
             }
-            List<Job> activeSubJobs = getActiveSubJobsOf(job);
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Active subjobs %s", activeSubJobs));
-            }
-            for (Job child : activeSubJobs) {
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("Processing child %s", child));
-                }
-                if (seq.getNextChild().equals(child.getService())) {
-                    try {
-                        ensureNextStateIsValid(child, child.getService(),
-                                               child.getStatus(),
-                                               seq.getNextChildStatus());
-                        changeStatus(child, seq.getNextChildStatus(),
-                                     kernel.getCoreAnimationSoftware(),
-                                     "Automatically switching status via direct communication from parent job");
-                        if (seq.isReplaceProduct()) {
-                            child.setProduct(job.getProduct());
-                        }
-                    } catch (Throwable e) {
-                        if (log.isTraceEnabled()) {
-                            log.trace(String.format("invalid child status sequencing %s",
-                                                    child), e);
-                        }
-                        log(child,
-                            String.format("error changing status of child of %s to: %s in child sequencing %s\n%s",
-                                          job.getId(),
-                                          seq.getNextChildStatus(),
-                                          seq.getId(), e));
-                    }
-                }
-            }
+            processChildren(job, grouped);
         }
     }
 
@@ -1445,7 +1417,7 @@ public class JobModelImpl implements JobModel {
         processChildSequencing(job);
         processSiblingSequencing(job);
         processSelfSequencing(job);
-        processParentSequencing(job); 
+        processParentSequencing(job);
     }
 
     @Override
@@ -1461,69 +1433,17 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("Processing parent of Job %s", job));
         }
 
-        for (ProductParentSequencingAuthorization seq : getParentActions(job)) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Processing %s", seq));
+        Deque<ProductParentSequencingAuthorization> actions = new ArrayDeque<>(
+                                                                               getParentActions(job));
+        while (!actions.isEmpty()) {
+            ProductParentSequencingAuthorization auth = actions.pop();
+            List<ProductParentSequencingAuthorization> grouped = new ArrayList<>();
+            grouped.add(auth);
+            while (!actions.isEmpty()
+                   && actions.peekFirst().getParent().equals(auth.getParent())) {
+                grouped.add(actions.pop());
             }
-            if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
-                if (seq.getParent() == null
-                    && seq.getService().equals(job.getParent().getService())) {
-                    try {
-                        ensureNextStateIsValid(job.getParent(),
-                                               job.getParent().getService(),
-                                               job.getParent().getStatus(),
-                                               seq.getParentStatusToSet());
-                        changeStatus(job.getParent(),
-                                     seq.getParentStatusToSet(),
-                                     kernel.getCoreAnimationSoftware(),
-                                     "Automatically switching status via direct communication from child job");
-                        if (seq.isReplaceProduct()) {
-                            job.getParent().setProduct(job.getProduct());
-                        }
-                    } catch (Throwable e) {
-                        //if (log.isTraceEnabled()) {
-                            log.trace(String.format("invalid parent status sequencing %s",
-                                                    job.getParent()), e);
-                        //}
-                        log(job.getParent(),
-                            String.format("error changing status of parent of %s to: %s in parent sequencing %s \n %s",
-                                          job.getId(),
-                                          seq.getParentStatusToSet(),
-                                          seq.getId(), e));
-                    }
-                    break;
-                } else if (seq.getParent().equals(job.getParent().getService())) {
-                    try {
-                        ensureNextStateIsValid(job.getParent(),
-                                               job.getParent().getService(),
-                                               job.getParent().getStatus(),
-                                               seq.getParentStatusToSet());
-                        changeStatus(job.getParent(),
-                                     seq.getParentStatusToSet(),
-                                     kernel.getCoreAnimationSoftware(),
-                                     "Automatically switching status via direct communication from child job");
-                        if (seq.isReplaceProduct()) {
-                            job.getParent().setProduct(job.getProduct());
-                        }
-                    } catch (Throwable e) {
-                        //if (log.isTraceEnabled()) {
-                            log.trace(String.format("invalid parent status sequencing %s",
-                                                    job.getParent()), e);
-                        //}
-                        log(job.getParent(),
-                            String.format("error changing status of parent of %s to: %s in parent sequencing %s\n%s",
-                                          job.getId(),
-                                          seq.getParentStatusToSet(),
-                                          seq.getId(), e));
-                    }
-                    break;
-                } else {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("Sequencing does not apply %s",
-                                                seq));
-                    }
-                }
-            }
+            processParents(job, grouped);
         }
     }
 
@@ -1568,43 +1488,67 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("Processing siblings of Job %s", job));
         }
 
-        for (ProductSiblingSequencingAuthorization seq : getSiblingActions(job)) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Processing %s", seq));
+        Deque<ProductSiblingSequencingAuthorization> actions = new ArrayDeque<>(
+                                                                                getSiblingActions(job));
+        while (!actions.isEmpty()) {
+            ProductSiblingSequencingAuthorization auth = actions.pop();
+            List<ProductSiblingSequencingAuthorization> grouped = new ArrayList<>();
+            grouped.add(auth);
+            while (!actions.isEmpty()
+                   && actions.peekFirst().getNextSibling().equals(auth.getNextSibling())) {
+                grouped.add(actions.pop());
             }
-            List<Job> siblings = getActiveSubJobsForService(job.getParent(),
-                                                            seq.getNextSibling());
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("selected %s siblings of %s",
-                                        siblings.size(), job));
+            processSiblings(job, grouped);
+        }
+    }
+
+    /**
+     * Process the sibling squencing auths for the job. The authorizations are
+     * grouped by the same next sibling, ordered by sequence number. This method
+     * finds the first successful transition from the grouped list and returns
+     * after processing that auth
+     * 
+     * @param job
+     * @param grouped
+     */
+    private void processSiblings(Job job,
+                                 List<ProductSiblingSequencingAuthorization> grouped) {
+        if (grouped.isEmpty()) {
+            return;
+        }
+        for (Job sibling : getActiveSubJobsForService(job.getParent(),
+                                                      grouped.get(0).getNextSibling())) {
+            if (job.equals(sibling)) {
+                break; // we don't operate on the job triggering the processing
             }
-            for (Job sibling : siblings) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Processing sibling change for %s",
+                                        sibling));
+            }
+            for (ProductSiblingSequencingAuthorization seq : grouped) {
                 if (log.isTraceEnabled()) {
-                    log.trace(String.format("Processing sibling change for %s",
-                                            sibling));
+                    log.trace(String.format("Processing %s", seq));
                 }
-                if (seq.getNextSibling().equals(sibling.getService())) {
-                    try {
-                        ensureNextStateIsValid(sibling, sibling.getService(),
-                                               sibling.getStatus(),
-                                               seq.getNextSiblingStatus());
-                        changeStatus(sibling, seq.getNextSiblingStatus(),
-                                     kernel.getCoreAnimationSoftware(),
-                                     "Automatically switching staus via direct communication from sibling jobs");
-                        if (seq.isReplaceProduct()) {
-                            sibling.setProduct(job.getProduct());
-                        }
-                    } catch (Throwable e) {
-                        if (log.isTraceEnabled()) {
-                            log.trace(String.format("invalid sibling status sequencing %s",
-                                                    job), e);
-                        }
-                        log(sibling,
-                            String.format("error changing status of sibling of %s to: %s in sibling sequencing %s\n%s",
-                                          job.getId(),
-                                          seq.getNextSiblingStatus(),
-                                          seq.getId(), e));
+                try {
+                    ensureNextStateIsValid(sibling, sibling.getService(),
+                                           sibling.getStatus(),
+                                           seq.getNextSiblingStatus());
+                    changeStatus(sibling, seq.getNextSiblingStatus(),
+                                 kernel.getCoreAnimationSoftware(),
+                                 "Automatically switching staus via direct communication from sibling jobs");
+                    if (seq.isReplaceProduct()) {
+                        sibling.setProduct(job.getProduct());
                     }
+                    break;
+                } catch (Throwable e) {
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("invalid sibling status sequencing %s",
+                                                job), e);
+                    }
+                    log(sibling,
+                        String.format("error changing status of sibling of %s to: %s in sibling sequencing %s\n%s",
+                                      job.getId(), seq.getNextSiblingStatus(),
+                                      seq.getId(), e));
                 }
             }
         }
@@ -1964,7 +1908,6 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTerminalState(String service, String statusCode) {
-        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
         return isTerminalState(em.find(StatusCode.class, statusCode),
                                em.find(Product.class, service));
     }
@@ -1979,7 +1922,6 @@ public class JobModelImpl implements JobModel {
     }
 
     private void logInsertsInJobChronology(String jobId, String statusId) {
-        JSP.EMF.getCache().evict(Job.class, jobId);
         Job job = em.find(Job.class, jobId);
         if (job.getCurrentLogSequence() == 0) {
             log(job, "Initial insertion of job");
@@ -2025,13 +1967,138 @@ public class JobModelImpl implements JobModel {
         return true;
     }
 
+    /**
+     * Process the child squencing auths for the job. The authorizations are
+     * grouped by the same next child, ordered by sequence number. This method
+     * finds the first successful transition from the grouped list and returns
+     * after processing that auth
+     * 
+     * @param job
+     * @param grouped
+     */
+    private void processChildren(Job job,
+                                 List<ProductChildSequencingAuthorization> grouped) {
+        if (grouped.isEmpty()) {
+            return;
+        }
+        for (Job child : getActiveSubJobsForService(job,
+                                                    grouped.get(0).getNextChild())) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Processing child %s", child));
+            }
+            for (ProductChildSequencingAuthorization seq : grouped) {
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Processing %s", seq));
+                }
+                try {
+                    ensureNextStateIsValid(child, child.getService(),
+                                           child.getStatus(),
+                                           seq.getNextChildStatus());
+                    changeStatus(child, seq.getNextChildStatus(),
+                                 kernel.getCoreAnimationSoftware(),
+                                 "Automatically switching status via direct communication from parent job");
+                    if (seq.isReplaceProduct()) {
+                        child.setProduct(job.getProduct());
+                    }
+                    break;
+                } catch (Throwable e) {
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("invalid child status sequencing %s",
+                                                child), e);
+                    }
+                    log(child,
+                        String.format("error changing status of child of %s to: %s in child sequencing %s\n%s",
+                                      job.getId(), seq.getNextChildStatus(),
+                                      seq.getId(), e));
+                }
+            }
+        }
+    }
+
     private void processJobChange(String jobId) {
-        JSP.EMF.getCache().evict(Job.class);
         Job job = em.find(Job.class, jobId);
         generateImplicitJobsForExplicitJobs(job,
                                             kernel.getCoreAnimationSoftware());
         processJobSequencing(job);
         em.flush();
+    }
+
+    /**
+     * Process the parent squencing auths for the job. The authorizations are
+     * grouped by the same parent, ordered by sequence number. This method finds
+     * the first successful transition from the grouped list and returns after
+     * processing that auth
+     * 
+     * @param job
+     * @param grouped
+     */
+    private void processParents(Job job,
+                                List<ProductParentSequencingAuthorization> grouped) {
+        for (ProductParentSequencingAuthorization seq : grouped) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Processing %s", seq));
+            }
+            if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
+                if (seq.getParent() == null
+                    && seq.getService().equals(job.getParent().getService())) {
+                    try {
+                        ensureNextStateIsValid(job.getParent(),
+                                               job.getParent().getService(),
+                                               job.getParent().getStatus(),
+                                               seq.getParentStatusToSet());
+                        changeStatus(job.getParent(),
+                                     seq.getParentStatusToSet(),
+                                     kernel.getCoreAnimationSoftware(),
+                                     "Automatically switching status via direct communication from child job");
+                        if (seq.isReplaceProduct()) {
+                            job.getParent().setProduct(job.getProduct());
+                        }
+                        return;
+                    } catch (Throwable e) {
+                        //if (log.isTraceEnabled()) {
+                        log.trace(String.format("invalid parent status sequencing %s",
+                                                job.getParent()), e);
+                        //}
+                        log(job.getParent(),
+                            String.format("error changing status of parent of %s to: %s in parent sequencing %s \n %s",
+                                          job.getId(),
+                                          seq.getParentStatusToSet(),
+                                          seq.getId(), e));
+                    }
+                    break;
+                } else if (seq.getParent().equals(job.getParent().getService())) {
+                    try {
+                        ensureNextStateIsValid(job.getParent(),
+                                               job.getParent().getService(),
+                                               job.getParent().getStatus(),
+                                               seq.getParentStatusToSet());
+                        changeStatus(job.getParent(),
+                                     seq.getParentStatusToSet(),
+                                     kernel.getCoreAnimationSoftware(),
+                                     "Automatically switching status via direct communication from child job");
+                        if (seq.isReplaceProduct()) {
+                            job.getParent().setProduct(job.getProduct());
+                        }
+                    } catch (Throwable e) {
+                        //if (log.isTraceEnabled()) {
+                        log.trace(String.format("invalid parent status sequencing %s",
+                                                job.getParent()), e);
+                        //}
+                        log(job.getParent(),
+                            String.format("error changing status of parent of %s to: %s in parent sequencing %s\n%s",
+                                          job.getId(),
+                                          seq.getParentStatusToSet(),
+                                          seq.getId(), e));
+                    }
+                    break;
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("Sequencing does not apply %s",
+                                                seq));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -2074,8 +2141,6 @@ public class JobModelImpl implements JobModel {
      */
     private void validate_State_Graph(Collection<String> modifiedServices)
                                                                           throws SQLException {
-        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
-        JSP.EMF.getCache().evict(StatusCode.class);
         List<Product> modified = new ArrayList<Product>(modifiedServices.size());
         for (String id : modifiedServices) {
             modified.add(em.find(Product.class, id));
@@ -2084,7 +2149,6 @@ public class JobModelImpl implements JobModel {
     }
 
     private void validateStateGraph() throws SQLException {
-        JSP.EMF.getCache().evict(StatusCodeSequencing.class);
         try {
             validate_State_Graph(MODIFIED_SERVICES);
         } finally {

@@ -27,11 +27,10 @@
             <column name="next_child" remarks="A child job with an product equal to this can have its status changed" type="CHAR(22)" />
             <column name="next_child_status" remarks="The status to set for the child job referred to by &quot;next_child&quot;"
                 type="CHAR(22)" />
-            <column name="parent_status_to_set" type="CHAR(22)" />
             <column name="replace_product" type="SMALLINT">
                 <constraints nullable="false" />
             </column>
-            <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="VARCHAR(10485760)" />
+            <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
@@ -76,7 +75,7 @@
             referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-396">
-        <addUniqueConstraint schemaName="ruleform" columnNames="parent, status_code, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, status_code, next_child, sequence_number"
             constraintName="product_child_sequencing_authorization_parent_status_code_sequ_" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="product_child_sequencing_authorization" />
     </changeSet>

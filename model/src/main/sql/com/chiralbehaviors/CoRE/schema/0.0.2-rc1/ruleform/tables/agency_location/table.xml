@@ -28,7 +28,7 @@
             <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
-            <column name="notes" type="VARCHAR(10485760)" />
+            <column name="notes" type="TEXT" />
         </createTable>
         <rollback>
             <dropTable tableName="agency_location" />

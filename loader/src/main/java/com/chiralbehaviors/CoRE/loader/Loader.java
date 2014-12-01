@@ -41,8 +41,8 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.kernel.KernelImpl;
-import com.chiralbehaviors.CoRE.kernel.WellKnownObject;
+import com.chiralbehaviors.CoRE.WellKnownObject;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -252,9 +252,7 @@ public class Loader {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        KernelImpl.loadKernel(em);
-        em.getTransaction().commit();
+        KernelUtil.loadKernel(em);
     }
 
     protected void createDatabase() throws Exception, SQLException {

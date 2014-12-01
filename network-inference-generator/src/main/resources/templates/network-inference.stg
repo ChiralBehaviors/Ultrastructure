@@ -27,13 +27,15 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                  FROM  (SELECT n.id, n.parent, n.relationship, n.child
                             FROM ruleform.%tableName% AS n) as p1
                  JOIN  (SELECT n.id, n.parent, n.relationship, n.child
-                            FROM ruleform.%tableName% AS n
-                            WHERE n.inference = 'AAAAAAAAAAAAAAAAAAAAAA') as p2
+                            FROM ruleform.%tableName% AS n) as p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                  JOIN ruleform.network_inference AS deduction
                     ON p1.relationship = deduction.premise1
                     AND p2.relationship = deduction.premise2
+                 LEFT OUTER JOIN %tableName% AS exist
+                    ON  exist.inference = deduction.id
+                 WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.inferenceStepFromLastPass">
@@ -54,8 +56,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 FROM (SELECT n.id, n.parent, n.relationship, n.child
                         FROM last_pass_rules AS n) as p1
                 JOIN (SELECT n.id, n.parent, n.relationship, n.child
-                        FROM ruleform.%tableName% AS n
-                        WHERE n.inference = 'AAAAAAAAAAAAAAAAAAAAAA') as p2
+                        FROM ruleform.%tableName% AS n) as p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                 JOIN ruleform.network_inference AS deduction
@@ -82,29 +83,10 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 FROM (SELECT parent, relationship, child, premise1, premise2, inference
                       FROM working_memory 
                       GROUP BY parent, relationship, child, premise1, premise2, inference) AS wm
-                LEFT OUTER JOIN ruleform.%tableName% AS exist
-                     ON wm.parent = exist.parent
-                     AND wm.relationship = exist.relationship
-                     AND wm.child = exist.child
-                     AND wm.premise1 = exist.premise1
-                     AND wm.premise2 = exist.premise2
-                     AND wm.inference = exist.inference
-                WHERE exist.parent IS NULL
-                 AND exist.relationship IS NULL
-                 AND exist.child IS NULL
-                 AND exist.premise1 IS NULL
-                 AND exist.premise2 IS NULL
-                 AND exist.inference IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.insertNewNetworkRules">
             <query><![CDATA[
-           WITH existing_rules AS
-                   (SELECT n.parent, n.relationship, n.child 
-                    FROM ruleform.%tableName% n,current_pass_rules cpr
-                    WHERE n.parent = cpr.parent
-                      AND n.relationship = cpr.relationship
-                      AND n.child = cpr.child)
            INSERT INTO ruleform.%tableName%(id, 
                                                parent, 
                                                relationship, 
@@ -118,17 +100,18 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                       cpr.relationship as relationship,
                       cpr.child as child,
                       cpr.inference as inference,
-                      premise1 as premise1, 
-                      premise2 as premise2, 
+                      cpr.premise1 as premise1, 
+                      cpr.premise2 as premise2, 
                       ?1
                FROM current_pass_rules cpr
-               LEFT OUTER JOIN existing_rules AS exist
+               LEFT OUTER JOIN ruleform.%tableName% AS exist
                    ON cpr.parent = exist.parent
                    AND cpr.relationship = exist.relationship
                    AND cpr.child = exist.child
-               WHERE exist.parent IS NULL
-                   AND exist.relationship IS NULL
-                   AND exist.child IS NULL
+                   AND cpr.premise1 = exist.premise1
+                   AND cpr.premise2 = exist.premise2
+                   AND cpr.inference = exist.inference
+               WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.generateInverses">
@@ -157,11 +140,8 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 AND net.parent = exist.child
                 AND net.premise1 = exist.premise1
                 AND net.premise2 = exist.premise2
-            WHERE exist.parent IS NULL
-              AND exist.relationship IS NULL
-              AND exist.child IS NULL
-              AND exist.premise1 is NULL
-              AND exist.premise2 is NULL
+                AND net.inference = exist.inference
+            WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
     </entity>

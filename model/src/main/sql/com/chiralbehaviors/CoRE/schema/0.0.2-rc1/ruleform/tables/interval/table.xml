@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet author="hhildebrand" id="1390879803225-17">
         <createTable schemaName="ruleform"
             remarks="A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and products in time"
-            tableName="interval"
-        >
+            tableName="interval">
             <column name="id" type="CHAR(22)">
-                <constraints primaryKey="true" primaryKeyName="interval_pkey" />
+                <constraints primaryKey="true"
+                    primaryKeyName="interval_pkey" />
             </column>
             <column name="name" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="unit" type="CHAR(22)">
+            <column name="start_unit" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
             <column name="description" type="TEXT" />
             <column name="notes" type="TEXT" />
             <column name="start" type="numeric" />
             <column name="duration" type="numeric" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="duration_unit" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ"
+                type="CHAR(22)">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+                name="update_date" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -35,18 +40,34 @@
         </rollback>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-158">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="interval" constraintName="interval_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="interval"
+            constraintName="interval_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="agency" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-94">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"  baseColumnNames="unit" baseTableName="interval" constraintName="interval_unit_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="start_unit" baseTableName="interval"
+            constraintName="interval_start_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="unit" />
+    </changeSet>
+    <changeSet author="hparry" id="1390879803225-945">
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="duration_unit" baseTableName="interval"
+            constraintName="interval_duration_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE"
+            referencedColumnNames="id" referencedTableName="unit" />
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-462">
-        <createIndex schemaName="ruleform" indexName="interval_updated_by_fkey_idx" tableName="interval" unique="false">
-            <column name="updated_by"  />
+        <createIndex schemaName="ruleform"
+            indexName="interval_updated_by_fkey_idx" tableName="interval"
+            unique="false">
+            <column name="updated_by" />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

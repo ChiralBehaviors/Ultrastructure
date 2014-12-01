@@ -153,14 +153,15 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownInterval wki) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, unit, description, updated_by) VALUES (?, ?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, start_unit, duration_unit, description, updated_by) VALUES (?, ?, ?, ?, ?, ?)",
                                                                         wki.tableName()));
         try {
             s.setString(1, wki.id());
             s.setString(2, wki.wkoName());
-            s.setString(3, wki.unit().id());
-            s.setString(4, wki.description());
-            s.setString(5, WellKnownAgency.CORE.id());
+            s.setString(3, wki.startUnit().id());
+            s.setString(4, wki.durationUnit().id());
+            s.setString(5, wki.description());
+            s.setString(6, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wki), e);

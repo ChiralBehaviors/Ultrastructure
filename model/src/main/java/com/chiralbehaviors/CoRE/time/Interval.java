@@ -143,6 +143,11 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     private Set<IntervalAttribute> attributes;
 
     private BigDecimal             duration;
+    
+    // bi-directional many-to-one association to Unit
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "duration_unit")
+    private Unit                   durationUnit;
 
     // bi-directional many-to-one association to IntervalNetwork
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
@@ -158,8 +163,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
 
     // bi-directional many-to-one association to Unit
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "unit")
-    private Unit                   unit;
+    @JoinColumn(name = "start_unit")
+    private Unit                   startUnit;
 
     public Interval() {
         super();
@@ -169,9 +174,9 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
         super(updatedBy);
     }
 
-    public Interval(BigDecimal start, BigDecimal duration, Unit unit,
-                    String name, Agency updatedBy) {
-        this(name, start, unit, duration, null, updatedBy);
+    public Interval(BigDecimal start, BigDecimal duration, Unit startUnit,
+                    Unit durationUnit, String name, Agency updatedBy) {
+        this(name, start, startUnit, duration, durationUnit, null, updatedBy);
     }
 
     public Interval(String name) {
@@ -182,10 +187,11 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
         super(name, updatedBy);
     }
 
-    public Interval(String name, BigDecimal start, Unit unit,
-                    BigDecimal duration, String description, Agency updatedBy) {
+    public Interval(String name, BigDecimal start, Unit startUnit,
+                    BigDecimal duration, Unit durationUnit, String description, Agency updatedBy) {
         this(name, description, updatedBy);
-        setUnit(unit);
+        setStartUnit(startUnit);
+        setDurationUnit(durationUnit);
     }
 
     public Interval(String name, String description) {
@@ -278,6 +284,13 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
         return duration;
     }
 
+    /**
+     * @return the unit
+     */
+    public Unit getDurationUnit() {
+        return durationUnit;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -362,8 +375,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     /**
      * @return the unit
      */
-    public Unit getUnit() {
-        return unit;
+    public Unit getStartUnit() {
+        return startUnit;
     }
 
     /* (non-Javadoc)
@@ -451,6 +464,14 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
         this.duration = duration;
     }
 
+    /**
+     * @param unit
+     *            the unit to set
+     */
+    public void setDurationUnit(Unit unit) {
+        this.durationUnit = unit;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -487,7 +508,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      * @param unit
      *            the unit to set
      */
-    public void setUnit(Unit unit) {
-        this.unit = unit;
+    public void setStartUnit(Unit unit) {
+        this.startUnit = unit;
     }
 }

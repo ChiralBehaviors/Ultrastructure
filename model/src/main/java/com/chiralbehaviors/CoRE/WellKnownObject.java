@@ -512,7 +512,11 @@ public interface WellKnownObject {
         /**
          * @return
          */
-        public WellKnownUnit unit() {
+        public WellKnownUnit startUnit() {
+            return WellKnownUnit.UNIT;
+        }
+        
+        public WellKnownUnit durationUnit() {
             return WellKnownUnit.UNIT;
         }
     }

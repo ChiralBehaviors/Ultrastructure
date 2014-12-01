@@ -158,7 +158,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testInferenceChainRecursion() throws Exception {
+    public void testIterativeInference() throws Exception {
         // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
         Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
@@ -210,7 +210,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.getTransaction().commit();
         em.clear();
         a = em.find(Agency.class, a.getId());
-        assertEquals(2, model.getAgencyModel().getChildren(a, equals).size());
+        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
         em.getTransaction().begin();
         model.getAgencyModel().propagate();
     }

@@ -62,9 +62,6 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 JOIN ruleform.network_inference AS deduction
                     ON p1.relationship = deduction.premise1
                     AND p2.relationship = deduction.premise2
-                 LEFT OUTER JOIN %tableName% AS exist
-                    ON  exist.inference = deduction.id
-                 WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.deduceNewNetworkRules">
@@ -86,9 +83,6 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 FROM (SELECT parent, relationship, child, premise1, premise2, inference
                       FROM working_memory 
                       GROUP BY parent, relationship, child, premise1, premise2, inference) AS wm
-                LEFT OUTER JOIN ruleform.%tableName% AS exist
-                    ON wm.inference = exist.inference
-                WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.insertNewNetworkRules">

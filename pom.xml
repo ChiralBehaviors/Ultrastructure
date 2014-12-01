@@ -75,6 +75,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.9.5</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>guava</artifactId>
+                        <groupId>com.google.guava</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.openjpa</groupId>
                 <artifactId>openjpa-all</artifactId>
                 <version>2.3.0</version>
@@ -119,12 +130,7 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.8</version>
                 <type>maven-plugin</type>
-            </dependency>
-            <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>data-access</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+            </dependency> 
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>animations</artifactId>
@@ -134,11 +140,6 @@
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>animations</artifactId>
                 <classifier>sql</classifier>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>configuration</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -182,11 +183,6 @@
                 <artifactId>guava</artifactId>
                 <version>16.0.1</version>
                 <classifier>site</classifier>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-core</artifactId>
-                <version>0.7.0</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -262,37 +258,6 @@
                 <version>2.0.0</version>
             </dependency>
             <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-auth</artifactId>
-                <version>0.7.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>0.9.5</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>guava</artifactId>
-                        <groupId>com.google.guava</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-json</artifactId>
-                <version>1.14</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>stax-api</artifactId>
-                        <groupId>stax</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>stax-api</artifactId>
-                        <groupId>javax.xml.stream</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>1.9.5</version>
@@ -311,16 +276,6 @@
                 <groupId>com.hellblazer</groupId>
                 <artifactId>utils</artifactId>
                 <version>0.0.4-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-metrics</artifactId>
-                <version>0.7.0</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-assets</artifactId>
-                <version>0.7.0</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>

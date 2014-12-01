@@ -5,7 +5,7 @@
     <parent>
         <artifactId>CoRE.app</artifactId>
         <groupId>com.chiralbehaviors.CoRE</groupId>
-        <version>0.0.2</version>
+        <version>1.0.0</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>create-database</artifactId>

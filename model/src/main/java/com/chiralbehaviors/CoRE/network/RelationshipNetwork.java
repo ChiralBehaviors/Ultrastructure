@@ -200,22 +200,4 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     public void setParent(Relationship parent) {
         this.parent = parent;
     }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Relationship> premise1) {
-        this.premise1 = (RelationshipNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Relationship> premise2) {
-        this.premise2 = (RelationshipNetwork) premise2;
-    }
 }

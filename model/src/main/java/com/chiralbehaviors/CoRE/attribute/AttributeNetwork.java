@@ -187,22 +187,4 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public void setParent(Attribute parent) {
         this.parent = parent;
     }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Attribute> premise1) {
-        this.premise1 = (AttributeNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Attribute> premise2) {
-        this.premise2 = (AttributeNetwork) premise2;
-    }
 }

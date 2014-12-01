@@ -225,22 +225,4 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     public void setParent(Product parent) {
         this.parent = parent;
     }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Product> premise1) {
-        this.premise1 = (ProductNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Product> premise2) {
-        this.premise2 = (ProductNetwork) premise2;
-    }
 }

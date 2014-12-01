@@ -147,19 +147,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     abstract public void setChild(E child);
 
-    /**
-     * @param inference
-     *            the inference to set
-     */
-    public void setInference(NetworkInference inference) {
-        this.inference = inference;
-    }
-
     abstract public void setParent(E parent);
-
-    abstract public void setPremise1(NetworkRuleform<E> premise1);
-
-    abstract public void setPremise2(NetworkRuleform<E> premise2);
 
     /**
      * @param relationship

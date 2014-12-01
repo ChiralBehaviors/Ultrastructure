@@ -40,7 +40,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -87,7 +86,7 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(name = "child")
     private Interval           child;
 
-    @Column(name = "end_time")
+    @Column(insertable = false, name = "end_time")
     private BigDecimal         endTime;
 
     //bi-directional many-to-one association to Agency
@@ -103,12 +102,8 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(insertable = false, name = "premise2")
     private IntervalNetwork    premise2;
 
-    @Column(name = "start_time")
+    @Column(insertable = false, name = "start_time")
     private BigDecimal         startTime;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "time_unit")
-    private Unit               timeUnit;
 
     public IntervalNetwork() {
         super();
@@ -183,10 +178,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return startTime;
     }
 
-    public Unit getTimeUnit() {
-        return timeUnit;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
@@ -208,41 +199,11 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         this.child = child;
     }
 
-    public void setEndTime(BigDecimal endTime) {
-        this.endTime = endTime;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#setParent(com.chiralbehaviors.CoRE.network.Networked)
      */
     @Override
     public void setParent(Interval parent) {
         this.parent = parent;
-    }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Interval> premise1) {
-        this.premise1 = (IntervalNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Interval> premise2) {
-        this.premise2 = (IntervalNetwork) premise2;
-    }
-
-    public void setStartTime(BigDecimal startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setTimeUnit(Unit timeUnit) {
-        this.timeUnit = timeUnit;
     }
 }

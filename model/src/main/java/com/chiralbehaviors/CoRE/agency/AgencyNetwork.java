@@ -194,22 +194,4 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     public void setParent(Agency agency2) {
         parent = agency2;
     }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Agency> premise1) {
-        this.premise1 = (AgencyNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Agency> premise2) {
-        this.premise2 = (AgencyNetwork) premise2;
-    }
 }

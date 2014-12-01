@@ -30,7 +30,6 @@
             </column>
             <column name="start_time" type="numeric" />
             <column name="end_time" type="numeric" />
-            <column name="time_unit" type="CHAR(22)"/>
             <column name="notes" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -106,9 +105,6 @@
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
     </changeSet>
     <changeSet author="hhildebrand" id="1.0.0">
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="time_unit" baseTableName="interval_network" constraintName="interval_network_time_unit_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <createIndex schemaName="ruleform" indexName="interval_network_start_time_fkey_idx" tableName="interval_network" unique="false">
             <column name="start_time" />
         </createIndex>

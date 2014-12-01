@@ -84,6 +84,8 @@ public interface Kernel {
 
     Agency getCoreUser();
 
+    Unit getDays();
+
     Relationship getDeveloped();
 
     Relationship getDevelopedBy();
@@ -107,6 +109,8 @@ public interface Kernel {
     Relationship getHasVersion();
 
     Relationship getHeadOf();
+
+    Unit getHours();
 
     Relationship getIncludes();
 
@@ -133,6 +137,14 @@ public interface Kernel {
     Relationship getMapsToLocation();
 
     Relationship getMemberOf();
+
+    Unit getMicroseconds();
+
+    Unit getMilliseconds();
+
+    Unit getMinutes();
+
+    Unit getNanoseconds();
 
     Agency getNotApplicableAgency();
 
@@ -195,6 +207,8 @@ public interface Kernel {
     StatusCode getSameStatusCode();
 
     Unit getSameUnit();
+
+    Unit getSeconds();
 
     Agency getSpecialSystemAgency();
 

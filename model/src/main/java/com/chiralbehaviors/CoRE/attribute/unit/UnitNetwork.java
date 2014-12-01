@@ -203,22 +203,4 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     public void setParent(Unit parent) {
         this.parent = parent;
     }
-
-    /**
-     * @param premise1
-     *            the premise1 to set
-     */
-    @Override
-    public void setPremise1(NetworkRuleform<Unit> premise1) {
-        this.premise1 = (UnitNetwork) premise1;
-    }
-
-    /**
-     * @param premise2
-     *            the premise2 to set
-     */
-    @Override
-    public void setPremise2(NetworkRuleform<Unit> premise2) {
-        this.premise2 = (UnitNetwork) premise2;
-    }
 }

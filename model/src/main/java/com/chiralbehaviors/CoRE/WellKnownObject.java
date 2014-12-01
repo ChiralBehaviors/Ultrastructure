@@ -515,7 +515,7 @@ public interface WellKnownObject {
         public WellKnownUnit startUnit() {
             return WellKnownUnit.UNIT;
         }
-        
+
         public WellKnownUnit durationUnit() {
             return WellKnownUnit.UNIT;
         }
@@ -789,8 +789,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -816,8 +815,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -843,8 +841,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -870,8 +867,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -897,8 +893,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -924,8 +919,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -951,8 +945,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -978,8 +971,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1005,8 +997,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1032,8 +1023,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1059,8 +1049,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1086,8 +1075,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1113,8 +1101,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1140,8 +1127,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1167,8 +1153,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1194,8 +1179,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1221,8 +1205,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1248,8 +1231,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1275,8 +1257,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1302,8 +1283,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1329,8 +1309,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1356,8 +1335,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1383,8 +1361,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1410,8 +1387,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1437,8 +1413,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1463,8 +1438,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
         },
@@ -1488,8 +1462,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
         },
@@ -1514,8 +1487,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1541,8 +1513,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1568,8 +1539,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1595,8 +1565,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1622,8 +1591,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return false;
             }
 
@@ -1649,8 +1617,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1676,8 +1643,7 @@ public interface WellKnownObject {
             }
 
             @Override
-            public
-            boolean preferred() {
+            public boolean preferred() {
                 return true;
             }
 
@@ -1921,6 +1887,118 @@ public interface WellKnownObject {
                 return WellKnownObject.COPY;
             }
 
+        },
+        MICROSECONDS() {
+
+            @Override
+            public String description() {
+                return "The time unit Microseconds";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.MICROSECONDS;
+            }
+
+        },
+        MILLISECONDS() {
+
+            @Override
+            public String description() {
+                return "The time unit Milliseconds";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.MILLISECONDS;
+            }
+
+        },
+        NANOSECONDS() {
+
+            @Override
+            public String description() {
+                return "The time unit Nanoseconds";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NANOSECONDS;
+            }
+
+        },
+        SECONDS() {
+
+            @Override
+            public String description() {
+                return "The time unit Seconds";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.SECONDS;
+            }
+
+        },
+        MINUTES() {
+
+            @Override
+            public String description() {
+                return "The time unit Minutes";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.MINUTES;
+            }
+
+        },
+        HOURS() {
+
+            @Override
+            public String description() {
+                return "The time unit Hours";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.HOURS;
+            }
+
+        },
+        DAYS() {
+
+            @Override
+            public String description() {
+                return "The time unit Minutes";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.DAYS;
+            }
+
         };
 
         @Override
@@ -1984,6 +2062,13 @@ public interface WellKnownObject {
     String MAPS_TO_LOCATION          = "maps-to-location";
     String MEMBER                    = "member";
     String MEMBER_OF                 = "member-of";
+    String MILLISECONDS              = "Milliseonds";
+    String MICROSECONDS              = "Microseconds";
+    String NANOSECONDS               = "Nanoseconds";
+    String SECONDS                   = "Seconds";
+    String MINUTES                   = "Minutes";
+    String HOURS                     = "Hours";
+    String DAYS                      = "days";
     String NOT_APPLICABLE            = "(N/A)";
     String OWNED_BY                  = "ownedBy";
     String OWNS                      = "owns";

@@ -449,6 +449,15 @@ public class Bootstrap {
         populate("SameUnit", find(WellKnownUnit.SAME), core, kernelWorkspace);
         populate("NotApplicableUnit", find(WellKnownUnit.NOT_APPLICABLE), core,
                  kernelWorkspace);
+        populate("Nanoseconds", find(WellKnownUnit.NANOSECONDS), core,
+                 kernelWorkspace);
+        populate("Microseconds", find(WellKnownUnit.MICROSECONDS), core,
+                 kernelWorkspace);
+        populate("Milliseconds", find(WellKnownUnit.MILLISECONDS), core,
+                 kernelWorkspace);
+        populate("Seconds", find(WellKnownUnit.SECONDS), core, kernelWorkspace);
+        populate("Hours", find(WellKnownUnit.HOURS), core, kernelWorkspace);
+        populate("Days", find(WellKnownUnit.DAYS), core, kernelWorkspace);
 
         populate("AnyInterval", find(WellKnownInterval.ANY), core,
                  kernelWorkspace);

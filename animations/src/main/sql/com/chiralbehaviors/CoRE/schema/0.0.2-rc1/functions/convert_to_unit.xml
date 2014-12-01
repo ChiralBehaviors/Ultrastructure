@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="1" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION ruleform.convert_to_unit(value numeric, source_unit char(22), target_unit char(22))
+                RETURNS numeric
+                AS 'com.chiralbehaviors.CoRE.meta.models.UnitModelImpl.convert(java.lang.BigDecimal, java.lang.String, java.lang.String)'
+                LANGUAGE javaU VOLATILE
+              COST 100; 
+            ALTER FUNCTION ruleform.convert_to_unit(numeric, char(22), char(22))
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION ruleform.convert_to_unit(numeric, char(22), char(22)); </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -28,6 +28,9 @@
             <column name="premise2" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
                 <constraints nullable="false" />
             </column>
+            <column name="start_time" type="numeric" />
+            <column name="end_time" type="numeric" />
+            <column name="time_unit" type="CHAR(22)"/>
             <column name="notes" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
@@ -84,7 +87,7 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-461">
         <createIndex schemaName="ruleform" indexName="interval_network_updated_by_fkey_idx" tableName="interval_network" unique="false">
-            <column name="updated_by"  />
+            <column name="updated_by" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="90879803225-432">
@@ -101,5 +104,16 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="inference" baseTableName="interval_network" constraintName="interval_network_inference_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="1.0.0">
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="time_unit" baseTableName="interval_network" constraintName="interval_network_time_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+        <createIndex schemaName="ruleform" indexName="interval_network_start_time_fkey_idx" tableName="interval_network" unique="false">
+            <column name="start_time" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="interval_network_end_time_fkey_idx" tableName="interval_network" unique="false">
+            <column name="end_time" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

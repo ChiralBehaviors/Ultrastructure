@@ -7,14 +7,10 @@
     <include relativeToChangelogFile="true" file="functions/next_id.xml" />
     <include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
     <include relativeToChangelogFile="true" file="functions/is_terminal_state.xml" />
-    <include relativeToChangelogFile="true" file="functions/attribute_usage.xml" />
-    <include relativeToChangelogFile="true" file="functions/create_product_usage_view.xml" />
-    <include relativeToChangelogFile="true" file="functions/create_individual_product_usage_view.xml" />
+    <include relativeToChangelogFile="true" file="functions/attribute_usage.xml" />  
     <include relativeToChangelogFile="true" file="functions/product_by_attribute_value.xml" />
     <include relativeToChangelogFile="true" file="functions/get_attribute.xml" />
     <include relativeToChangelogFile="true" file="functions/get_attribute_type.xml" />
-    <include relativeToChangelogFile="true" file="functions/agency_get_allowed_text_values.xml" />
-    <include relativeToChangelogFile="true" file="functions/allowed_to_insert_job.xml" />
     <include relativeToChangelogFile="true" file="functions/automatically_generate_implicit_jobs_for_explicit_jobs.xml" />
     <include relativeToChangelogFile="true" file="functions/ensure_next_state_is_valid.xml" />
     <include relativeToChangelogFile="true" file="functions/ensure_valid_child_service_and_status.xml" />
@@ -35,4 +31,5 @@
     <include relativeToChangelogFile="true" file="functions/propagate_unit_network_deductions.xml" />
     <include relativeToChangelogFile="true" file="functions/if_table_exists.xml" />
     <include relativeToChangelogFile="true" file="functions/log_inserts_in_job_chronology.xml" />
+    <include relativeToChangelogFile="true" file="functions/convert_to_unit.xml" />
 </databaseChangeLog>

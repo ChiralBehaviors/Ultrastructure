@@ -26,9 +26,11 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SU
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_NETWORKS;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,6 +40,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -84,6 +87,9 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JoinColumn(name = "child")
     private Interval           child;
 
+    @Column(name = "end_time")
+    private BigDecimal         endTime;
+
     //bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
@@ -96,6 +102,13 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
     private IntervalNetwork    premise2;
+
+    @Column(name = "start_time")
+    private BigDecimal         startTime;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "time_unit")
+    private Unit               timeUnit;
 
     public IntervalNetwork() {
         super();
@@ -135,6 +148,10 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return child;
     }
 
+    public BigDecimal getEndTime() {
+        return endTime;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -162,6 +179,14 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return premise2;
     }
 
+    public BigDecimal getStartTime() {
+        return startTime;
+    }
+
+    public Unit getTimeUnit() {
+        return timeUnit;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
@@ -181,6 +206,10 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public void setChild(Interval child) {
         this.child = child;
+    }
+
+    public void setEndTime(BigDecimal endTime) {
+        this.endTime = endTime;
     }
 
     /* (non-Javadoc)
@@ -207,5 +236,13 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @Override
     public void setPremise2(NetworkRuleform<Interval> premise2) {
         this.premise2 = (IntervalNetwork) premise2;
+    }
+
+    public void setStartTime(BigDecimal startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setTimeUnit(Unit timeUnit) {
+        this.timeUnit = timeUnit;
     }
 }

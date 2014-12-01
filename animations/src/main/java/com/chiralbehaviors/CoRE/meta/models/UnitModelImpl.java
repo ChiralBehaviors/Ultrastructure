@@ -16,6 +16,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.postgresql.pljava.TriggerData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
@@ -48,6 +51,7 @@ public class UnitModelImpl
         extends
         AbstractNetworkedModel<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute>
         implements UnitModel {
+    private static final Logger log = LoggerFactory.getLogger(UnitModelImpl.class);
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -68,16 +72,39 @@ public class UnitModelImpl
     }
 
     private static interface Procedure<T> {
-        T call(UnitModelImpl productModel) throws Exception;
+        T call(UnitModelImpl unitModel) throws Exception;
     }
 
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
         execute(new Procedure<Void>() {
             @Override
-            public Void call(UnitModelImpl agencyModel) throws Exception {
-                agencyModel.propagate();
+            public Void call(UnitModelImpl unitModel) throws Exception {
+                unitModel.propagate();
                 return null;
+            }
+        });
+    }
+
+    public static BigDecimal convert(final BigDecimal value,
+                                     final String sourceUnit,
+                                     final String targetUnit) throws Exception {
+        return execute(new Procedure<BigDecimal>() {
+            @Override
+            public BigDecimal call(UnitModelImpl unitModel) throws Exception {
+                if (sourceUnit == null || targetUnit == null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(String.format("Source and target units cannot be converted: %s -> %s",
+                                                sourceUnit, targetUnit));
+                    }
+                    return null;
+                }
+                if (sourceUnit.equals(targetUnit)) {
+                    return value;
+                }
+                throw new SQLException(
+                                       String.format("Unit conversion currently not supported for %s -> %s",
+                                                     sourceUnit, targetUnit));
             }
         });
     }

@@ -15,6 +15,11 @@
  */
 package com.chiralbehaviors.CoRE.meta;
 
+import java.math.BigDecimal;
+
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
@@ -27,5 +32,21 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 public interface IntervalModel
         extends
         NetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
+    
+    Facet<Interval, IntervalAttribute> create(String name,
+                           String description,
+                           BigDecimal start,
+                           Unit startUnit,
+                           BigDecimal duration,
+                           Unit durationUnit,
+                           Aspect<Interval> aspect,
+                           @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
+    
+    Facet<Interval, IntervalAttribute> create(String name,
+                    String description,
+                    BigDecimal start,
+                    Unit startUnit,
+                    Aspect<Interval> aspect,
+                    @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
 
 }

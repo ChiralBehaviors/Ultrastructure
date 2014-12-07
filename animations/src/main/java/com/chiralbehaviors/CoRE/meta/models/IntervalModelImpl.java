@@ -16,6 +16,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +27,7 @@ import javax.persistence.EntityManager;
 import org.postgresql.pljava.TriggerData;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.jsp.JSP;
 import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -68,6 +70,22 @@ public class IntervalModelImpl
 
     private static interface Procedure<T> {
         T call(IntervalModelImpl productModel) throws Exception;
+    }
+
+    /**
+     * 
+     */
+    public static void onAbort() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * 
+     */
+    public static void onCommit() {
+        // TODO Auto-generated method stub
+
     }
 
     public static void propagate_deductions(final TriggerData data)
@@ -154,17 +172,12 @@ public class IntervalModelImpl
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Facet<Interval, IntervalAttribute> create(String name,
                                                      String description,
                                                      Aspect<Interval> aspect) {
-        Interval interval = new Interval(name, description,
-                                         kernel.getCoreModel());
-        em.persist(interval);
-        return new Facet<Interval, IntervalAttribute>(aspect, interval,
-                                                      initialize(interval,
-                                                                 aspect)) {
-        };
+        return create(name, description, null, kernel.getNotApplicableUnit(), aspect);
     }
 
     /*
@@ -188,6 +201,33 @@ public class IntervalModelImpl
             }
         }
         return agency;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.IntervalModel#create(java.lang.String, java.lang.String, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit, com.chiralbehaviors.CoRE.network.Aspect, com.chiralbehaviors.CoRE.network.Aspect[])
+     */
+    @Override
+    public Facet<Interval, IntervalAttribute> create(String name, String description, BigDecimal start,
+                           Unit startUnit, Aspect<Interval> aspect,
+                           @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
+        return create(name, description, start, startUnit, null, kernel.getNotApplicableUnit(), aspect, aspects);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.IntervalModel#create(java.lang.String, java.lang.String, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit, com.chiralbehaviors.CoRE.network.Aspect, com.chiralbehaviors.CoRE.network.Aspect[])
+     */
+    @Override
+    public Facet<Interval, IntervalAttribute> create(String name, String description, BigDecimal start,
+                           Unit startUnit, BigDecimal duration,
+                           Unit durationUnit, Aspect<Interval> aspect,
+                           @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
+        Interval interval = new Interval(name,  start, startUnit, duration, durationUnit, description,
+                                         kernel.getCoreModel());
+        em.persist(interval);
+        return new Facet<Interval, IntervalAttribute>(aspect, interval,
+                                                      initialize(interval,
+                                                                 aspect)){
+        };
     }
 
     /* (non-Javadoc)
@@ -219,21 +259,5 @@ public class IntervalModelImpl
             em.persist(attribute);
         }
         return attributes;
-    }
-
-    /**
-     * 
-     */
-    public static void onCommit() {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * 
-     */
-    public static void onAbort() {
-        // TODO Auto-generated method stub
-
     }
 }

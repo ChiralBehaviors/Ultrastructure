@@ -220,4 +220,20 @@ public class IntervalModelImpl
         }
         return attributes;
     }
+
+    /**
+     * 
+     */
+    public static void onCommit() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * 
+     */
+    public static void onAbort() {
+        // TODO Auto-generated method stub
+
+    }
 }

@@ -39,6 +39,13 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.models.AgencyModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.AttributeModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.IntervalModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.LocationModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.ProductModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.RelationshipModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.UnitModelImpl;
 
 /**
  *
@@ -53,9 +60,6 @@ public final class JSP {
     private static int                       jobProcessingCount       = 0;
     private static final Logger              log                      = LoggerFactory.getLogger(JSP.class);
     private static final int                 MAX_JOB_PROCESSING       = 100;
-    /**
-     *
-     */
     private static final int                 MAX_REENTRANT_CALL_DEPTH = 10;
     private static final Properties          PROPERTIES               = new Properties();
     private static SQLException              rootCause;
@@ -95,13 +99,12 @@ public final class JSP {
 
             @Override
             public void onAbort(Session arg0) throws SQLException {
-                EMF.getCache().evictAll();
-                jobProcessingCount = 0;
+                JSP.onAbort();
             }
 
             @Override
             public void onCommit(Session arg0) throws SQLException {
-                jobProcessingCount = 0;
+                JSP.onCommit();
             }
 
             @Override
@@ -117,9 +120,6 @@ public final class JSP {
         } finally {
             em.close();
         }
-    }
-
-    private JSP() {
     }
 
     public static <T> T call(StoredProcedure<T> call) throws SQLException {
@@ -223,5 +223,31 @@ public final class JSP {
                                                  jobProcessingCount,
                                                  MAX_JOB_PROCESSING));
         }
+    }
+
+    private static void onAbort() {
+        EMF.getCache().evictAll();
+        jobProcessingCount = 0;
+        AgencyModelImpl.onCommit();
+        AttributeModelImpl.onCommit();
+        IntervalModelImpl.onCommit();
+        LocationModelImpl.onCommit();
+        ProductModelImpl.onCommit();
+        RelationshipModelImpl.onCommit();
+        UnitModelImpl.onCommit();
+    }
+
+    private static void onCommit() {
+        jobProcessingCount = 0;
+        AgencyModelImpl.onAbort();
+        AttributeModelImpl.onAbort();
+        IntervalModelImpl.onAbort();
+        LocationModelImpl.onAbort();
+        ProductModelImpl.onAbort();
+        RelationshipModelImpl.onAbort();
+        UnitModelImpl.onAbort();
+    }
+
+    private JSP() {
     }
 }

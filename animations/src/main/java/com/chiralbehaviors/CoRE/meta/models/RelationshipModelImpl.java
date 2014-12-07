@@ -70,8 +70,14 @@ public class RelationshipModelImpl
         T call(RelationshipModelImpl productModel) throws Exception;
     }
 
+    private static boolean deducing;
+
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
+        if (deducing) {
+            return;
+        }
+        deducing = true;
         execute(new Procedure<Void>() {
             @Override
             public Void call(RelationshipModelImpl agencyModel)
@@ -246,5 +252,13 @@ public class RelationshipModelImpl
             em.persist(attribute);
         }
         return attributes;
+    }
+
+    public static void onCommit() {
+        deducing = false;
+    }
+
+    public static void onAbort() {
+        deducing = false;
     }
 }

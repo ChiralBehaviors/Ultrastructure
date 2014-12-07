@@ -75,8 +75,14 @@ public class UnitModelImpl
         T call(UnitModelImpl unitModel) throws Exception;
     }
 
+    private static boolean deducing;
+
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
+        if (deducing) {
+            return;
+        }
+        deducing = true;
         execute(new Procedure<Void>() {
             @Override
             public Void call(UnitModelImpl unitModel) throws Exception {
@@ -247,5 +253,13 @@ public class UnitModelImpl
             em.persist(attribute);
         }
         return attributes;
+    }
+
+    public static void onCommit() {
+        deducing = false;
+    }
+
+    public static void onAbort() {
+        deducing = false;
     }
 }

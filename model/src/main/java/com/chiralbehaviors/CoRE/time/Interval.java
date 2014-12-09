@@ -95,7 +95,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "        auth.classification = :classification AND "
                                                                             + "        auth.classifier = :classifier "),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
-                                                                                    + "WHERE ra.classifier = :classification "
+                                                                                    + "WHERE ra.classification = :classification "
                                                                                     + "AND ra.classifier = :classifier"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
                                                                                  + "WHERE ra.groupingAgency = :groupingAgency"),

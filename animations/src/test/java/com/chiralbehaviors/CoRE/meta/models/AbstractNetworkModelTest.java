@@ -161,9 +161,12 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
     public void testIterativeInference() throws Exception {
         // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
         Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
 
         em.getTransaction().begin();
+        Relationship equals = new Relationship("= c", "an alias for equals",
+                                               core);
+        equals.setInverse(equals);
+        em.persist(equals);
 
         Relationship equals2 = new Relationship("equals too",
                                                 "an alias for equals", core);
@@ -211,8 +214,6 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
-        em.getTransaction().begin();
-        model.getAgencyModel().propagate();
     }
 
     @Test
@@ -285,7 +286,204 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         A = em.find(Agency.class, A.getId());
         List<Agency> children = model.getAgencyModel().getChildren(A, a);
         assertEquals(String.format("%s", children), 7, children.size());
+    }
+
+    @Test
+    public void testCascadedDeleteInference() throws Exception {
+        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
+        Agency core = model.getKernel().getCore();
+
         em.getTransaction().begin();
-        model.getAgencyModel().propagate();
+
+        Relationship equals = new Relationship("= a", "an alias for equals",
+                                               core);
+        equals.setInverse(equals);
+        em.persist(equals);
+
+        Relationship equals2 = new Relationship("equals, also",
+                                                "an alias for equals", core);
+        equals2.setInverse(equals2);
+        em.persist(equals2);
+        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+                                                         equals, core);
+        em.persist(aEqualsA);
+        Agency a = new Agency("A", "A", core);
+        em.persist(a);
+        Agency b = new Agency("B", "B", core);
+        em.persist(b);
+        Agency c = new Agency("C", "C", core);
+        em.persist(c);
+        Agency d = new Agency("D", "D", core);
+        em.persist(d);
+        Agency e = new Agency("E", "E", core);
+        em.persist(e);
+        Agency f = new Agency("F", "F", core);
+        em.persist(f);
+        Agency g = new Agency("G", "G", core);
+        em.persist(g);
+        Agency h = new Agency("H", "H", core);
+        em.persist(h);
+        Agency i = new Agency("I", "I", core);
+        em.persist(i);
+        AgencyNetwork edgeA = new AgencyNetwork(a, equals, b, core);
+        em.persist(edgeA);
+        AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
+        em.persist(edgeB);
+        AgencyNetwork edgeC = new AgencyNetwork(c, equals2, d, core);
+        em.persist(edgeC);
+        AgencyNetwork edgeD = new AgencyNetwork(d, equals2, e, core);
+        em.persist(edgeD);
+        AgencyNetwork edgeE = new AgencyNetwork(e, equals2, f, core);
+        em.persist(edgeE);
+        AgencyNetwork edgeF = new AgencyNetwork(f, equals2, g, core);
+        em.persist(edgeF);
+        AgencyNetwork edgeG = new AgencyNetwork(g, equals2, h, core);
+        em.persist(edgeG);
+        AgencyNetwork edgeH = new AgencyNetwork(h, equals2, i, core);
+        em.persist(edgeH);
+
+        em.getTransaction().commit();
+        em.clear();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
+        em.getTransaction().begin();
+        aEqualsA = em.find(NetworkInference.class, aEqualsA.getId());
+        em.remove(aEqualsA);
+        em.getTransaction().commit();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(1, model.getAgencyModel().getChildren(a, equals).size());
+    }
+
+    @Test
+    public void testCascadedDeletePremise() throws Exception {
+        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
+        Agency core = model.getKernel().getCore();
+
+        em.getTransaction().begin();
+
+        Relationship equals = new Relationship("= b", "an alias for equals",
+                                               core);
+        equals.setInverse(equals);
+        em.persist(equals);
+
+        Relationship equals2 = new Relationship("also, too, equals",
+                                                "an alias for equals", core);
+        equals2.setInverse(equals2);
+        em.persist(equals2);
+        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+                                                         equals, core);
+        em.persist(aEqualsA);
+        Agency a = new Agency("A", "A", core);
+        em.persist(a);
+        Agency b = new Agency("B", "B", core);
+        em.persist(b);
+        Agency c = new Agency("C", "C", core);
+        em.persist(c);
+        Agency d = new Agency("D", "D", core);
+        em.persist(d);
+        Agency e = new Agency("E", "E", core);
+        em.persist(e);
+        Agency f = new Agency("F", "F", core);
+        em.persist(f);
+        Agency g = new Agency("G", "G", core);
+        em.persist(g);
+        Agency h = new Agency("H", "H", core);
+        em.persist(h);
+        Agency i = new Agency("I", "I", core);
+        em.persist(i);
+        AgencyNetwork edgeA = new AgencyNetwork(a, equals, b, core);
+        em.persist(edgeA);
+        AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
+        em.persist(edgeB);
+        AgencyNetwork edgeC = new AgencyNetwork(c, equals2, d, core);
+        em.persist(edgeC);
+        AgencyNetwork edgeD = new AgencyNetwork(d, equals2, e, core);
+        em.persist(edgeD);
+        AgencyNetwork edgeE = new AgencyNetwork(e, equals2, f, core);
+        em.persist(edgeE);
+        AgencyNetwork edgeF = new AgencyNetwork(f, equals2, g, core);
+        em.persist(edgeF);
+        AgencyNetwork edgeG = new AgencyNetwork(g, equals2, h, core);
+        em.persist(edgeG);
+        AgencyNetwork edgeH = new AgencyNetwork(h, equals2, i, core);
+        em.persist(edgeH);
+
+        em.getTransaction().commit();
+        em.clear();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
+        em.getTransaction().begin();
+        edgeA = em.find(AgencyNetwork.class, edgeA.getId());
+        em.remove(edgeA);
+        em.getTransaction().commit();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(0, model.getAgencyModel().getChildren(a, equals).size());
+        b = em.find(Agency.class, b.getId());
+        assertEquals(1, model.getAgencyModel().getChildren(b, equals2).size());
+    }
+
+    @Test
+    public void testCascadedDeletePremise2() throws Exception {
+        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
+        Agency core = model.getKernel().getCore();
+
+        em.getTransaction().begin();
+        Relationship equals = new Relationship("= d", "an alias for equals",
+                                               core);
+        equals.setInverse(equals);
+        em.persist(equals);
+
+        Relationship equals2 = new Relationship("also equals",
+                                                "an alias for equals", core);
+        equals2.setInverse(equals2);
+        em.persist(equals2);
+        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+                                                         equals, core);
+        em.persist(aEqualsA);
+        Agency a = new Agency("A", "A", core);
+        em.persist(a);
+        Agency b = new Agency("B", "B", core);
+        em.persist(b);
+        Agency c = new Agency("C", "C", core);
+        em.persist(c);
+        Agency d = new Agency("D", "D", core);
+        em.persist(d);
+        Agency e = new Agency("E", "E", core);
+        em.persist(e);
+        Agency f = new Agency("F", "F", core);
+        em.persist(f);
+        Agency g = new Agency("G", "G", core);
+        em.persist(g);
+        Agency h = new Agency("H", "H", core);
+        em.persist(h);
+        Agency i = new Agency("I", "I", core);
+        em.persist(i);
+        AgencyNetwork edgeA = new AgencyNetwork(a, equals, b, core);
+        em.persist(edgeA);
+        AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
+        em.persist(edgeB);
+        AgencyNetwork edgeC = new AgencyNetwork(c, equals2, d, core);
+        em.persist(edgeC);
+        AgencyNetwork edgeD = new AgencyNetwork(d, equals2, e, core);
+        em.persist(edgeD);
+        AgencyNetwork edgeE = new AgencyNetwork(e, equals2, f, core);
+        em.persist(edgeE);
+        AgencyNetwork edgeF = new AgencyNetwork(f, equals2, g, core);
+        em.persist(edgeF);
+        AgencyNetwork edgeG = new AgencyNetwork(g, equals2, h, core);
+        em.persist(edgeG);
+        AgencyNetwork edgeH = new AgencyNetwork(h, equals2, i, core);
+        em.persist(edgeH);
+
+        em.getTransaction().commit();
+        em.clear();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
+        em.getTransaction().begin();
+        edgeB = em.find(AgencyNetwork.class, edgeB.getId());
+        em.remove(edgeB);
+        em.getTransaction().commit();
+        a = em.find(Agency.class, a.getId());
+        assertEquals(1, model.getAgencyModel().getChildren(a, equals).size());
     }
 }

@@ -76,7 +76,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
 
-    private static Logger log = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+    private static Logger log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+    private static int    MAX_DEDUCTIONS = 1000;
 
     /**
      * @param attr
@@ -587,6 +588,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             int inserted = insert.executeUpdate();
             if (log.isTraceEnabled()) {
                 log.trace(String.format("inserted %s new rules", inserted));
+            }
+            if (inserted > MAX_DEDUCTIONS) {
+                throw new IllegalStateException(
+                                                String.format("Inserted more than %s deductions: %s, possible runaway inference",
+                                                              MAX_DEDUCTIONS,
+                                                              inserted));
             }
             derived |= inserted > 0;
             if (inserted == 0) {

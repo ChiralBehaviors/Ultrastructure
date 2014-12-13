@@ -43,26 +43,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> {
     private static final long serialVersionUID = 1L;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency            agency;
-
     // bi-directional many-to-one association to AttributeNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
     private AttributeNetwork  AttributeNetwork;
 
     public AttributeNetworkAttribute() {
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AttributeNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeNetworkAttribute;
     }
 
     /**
@@ -147,6 +142,11 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public AttributeNetwork getAttributeNetwork() {
         return AttributeNetwork;
@@ -173,8 +173,22 @@ public class AttributeNetworkAttribute extends AttributeValue<AttributeNetwork> 
         return AttributeNetwork.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeNetworkAttribute;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setAttributeNetwork(AttributeNetwork AttributeNetwork) {

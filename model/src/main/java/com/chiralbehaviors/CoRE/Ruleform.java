@@ -69,7 +69,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     public static final String  FIND_BY_NAME_SUFFIX   = ".findByName";
     public static final String  FIND_FLAGGED_SUFFIX   = ".findFlagged";
     public static final String  GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
-    public static final String  NAME_SEARCH_SUFFIX    = ".namesearch";
     public static final Integer TRUE                  = Integer.valueOf((byte) 1);
 
     public static final String  ZERO                  = UuidGenerator.toBase64(new UUID(

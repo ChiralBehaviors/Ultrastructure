@@ -51,6 +51,11 @@ public class StatusCodeNetworkAttribute extends
     @JoinColumn(name = "agency")
     private Agency            agency;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     // bi-directional many-to-one association to StatusCodeNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
@@ -64,15 +69,6 @@ public class StatusCodeNetworkAttribute extends
      */
     public StatusCodeNetworkAttribute(Agency updatedBy) {
         super(updatedBy);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeNetworkAttribute;
     }
 
     /**
@@ -150,6 +146,11 @@ public class StatusCodeNetworkAttribute extends
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -176,8 +177,22 @@ public class StatusCodeNetworkAttribute extends
         return statusCodeNetwork;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeNetworkAttribute;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setStatusCodeNetwork(StatusCodeNetwork StatusCodeNetwork) {

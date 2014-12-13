@@ -50,6 +50,11 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     @JoinColumn(name = "agency")
     private Agency            agency;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     // bi-directional many-to-one association to ProductLocation
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_location")
@@ -63,15 +68,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
      */
     public ProductLocationAttribute(Agency updatedBy) {
         super(updatedBy);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductLocationAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productLocationAttribute;
     }
 
     /**
@@ -149,6 +145,11 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public ProductLocation getEntityLocation() {
         return productLocation;
@@ -175,8 +176,22 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
         return ProductLocation.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductLocationAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productLocationAttribute;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setEntityLocation(ProductLocation productLocation) {

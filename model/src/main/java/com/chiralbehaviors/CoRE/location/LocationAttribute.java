@@ -43,6 +43,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class LocationAttribute extends AttributeValue<Location> {
     private static final long serialVersionUID = 1L;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     // bi-directional many-to-one association to Location
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
@@ -63,15 +68,6 @@ public class LocationAttribute extends AttributeValue<Location> {
      */
     public LocationAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationAttribute;
     }
 
     /**
@@ -135,6 +131,11 @@ public class LocationAttribute extends AttributeValue<Location> {
         super(id);
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public Location getLocation() {
         return location;
@@ -159,6 +160,20 @@ public class LocationAttribute extends AttributeValue<Location> {
     @Override
     public Class<Location> getRuleformClass() {
         return Location.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationAttribute;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setLocation(Location location) {

@@ -28,10 +28,12 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -48,9 +50,15 @@ public class AbstractModelTest {
     @AfterClass
     public static void afterClass() {
         if (em != null && em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-            em.clear();
-            em.close();
+            try {
+                em.getTransaction().rollback();
+                em.clear();
+                em.close();
+            } catch (Throwable e) {
+                LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Had a bit of trouble cleaning up after %s",
+                                                                                    e.getMessage()),
+                                                                      e);
+            }
         }
     }
 
@@ -91,8 +99,13 @@ public class AbstractModelTest {
     @After
     public void after() {
         if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-            em.clear();
+            try {
+                em.getTransaction().rollback();
+                em.clear();
+            } catch (PersistenceException e) {
+                LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Bit of a problem cleaning up"),
+                                                                      e);
+            }
         }
     }
 

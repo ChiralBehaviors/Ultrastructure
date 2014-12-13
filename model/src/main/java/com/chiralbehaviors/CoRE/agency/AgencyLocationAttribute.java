@@ -54,6 +54,11 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
     @JoinColumn(name = "agency_location")
     private AgencyLocation    agencyLocation;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     public AgencyLocationAttribute() {
     }
 
@@ -139,6 +144,11 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public AgencyLocation getEntityLocation() {
         return agencyLocation;
@@ -176,6 +186,11 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
 
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setEntityLocation(AgencyLocation AgencyLocation) {

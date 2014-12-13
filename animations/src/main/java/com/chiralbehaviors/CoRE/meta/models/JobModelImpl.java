@@ -49,7 +49,6 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 import javax.persistence.metamodel.SingularAttribute;
 
-import org.apache.openjpa.persistence.QueryImpl;
 import org.postgresql.pljava.TriggerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1770,11 +1769,6 @@ public class JobModelImpl implements JobModel {
         query.where(masks.toArray(new Predicate[masks.size()]));
         query.select(protocol).distinct(true);
         TypedQuery<Protocol> tq = em.createQuery(query);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("mask query for %s and %s is\n%s", job,
-                                    metaprotocol,
-                                    tq.unwrap(QueryImpl.class).getQueryString()));
-        }
         return tq;
     }
 

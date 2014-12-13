@@ -15,7 +15,6 @@
  */
 package com.chiralbehaviors.CoRE.event.status;
 
-import static com.chiralbehaviors.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
@@ -44,7 +43,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -74,7 +72,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                 + "     )"
                                                                 + ") AS linked ON unlinked.id = linked.id "
                                                                 + "WHERE unlinked.id != statusCode_id('Agency');", resultClass = Agency.class),
-                     @NamedNativeQuery(name = "statusCode" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('status_code', ?1, ?2)", resultClass = NameSearchResult.class),
                      @NamedNativeQuery(name = IS_TERMINAL_STATE, query = "SELECT EXISTS( "
                                                                          + "SELECT sc.id "
                                                                          + "FROM ruleform.status_code_sequencing AS seq "

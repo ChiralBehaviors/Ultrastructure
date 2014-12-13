@@ -50,6 +50,11 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
     @JoinColumn(name = "agency")
     private Agency            agency;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     // bi-directional many-to-one association to ProductNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
@@ -70,15 +75,6 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
      */
     public ProductNetworkAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productNetworkAttribute;
     }
 
     /**
@@ -149,6 +145,11 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public ProductNetwork getProductNetwork() {
         return productNetwork;
@@ -175,8 +176,22 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         return ProductNetwork.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productNetworkAttribute;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setProductNetwork(ProductNetwork productNetwork) {

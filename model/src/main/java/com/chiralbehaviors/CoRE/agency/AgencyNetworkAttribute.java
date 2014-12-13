@@ -54,6 +54,11 @@ public class AgencyNetworkAttribute extends AttributeValue<AgencyNetwork> {
     @JoinColumn(name = "network_rule")
     private AgencyNetwork     agencyNetwork;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     public AgencyNetworkAttribute() {
     }
 
@@ -144,6 +149,11 @@ public class AgencyNetworkAttribute extends AttributeValue<AgencyNetwork> {
         return agencyNetwork;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -180,5 +190,10 @@ public class AgencyNetworkAttribute extends AttributeValue<AgencyNetwork> {
 
     public void setAgencyNetwork(AgencyNetwork agencyNetwork) {
         this.agencyNetwork = agencyNetwork;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 }

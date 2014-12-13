@@ -15,7 +15,6 @@
  */
 package com.chiralbehaviors.CoRE.time;
 
-import static com.chiralbehaviors.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.chiralbehaviors.CoRE.time.Interval.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.time.Interval.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.time.Interval.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
@@ -46,7 +45,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -62,22 +60,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedNativeQueries({
-                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                + "FROM interval AS unlinked "
-                                                                + "JOIN ("
-                                                                + "     SELECT id "
-                                                                + "     FROM interval "
-                                                                + "     EXCEPT ("
-                                                                + "             SELECT distinct(net.child) "
-                                                                + "             FROM interval_network as net "
-                                                                + "             WHERE net.parent = interval_id('Agency') "
-                                                                + "             AND relationship = relationship_id('includes') "
-                                                                + "     )"
-                                                                + ") AS linked ON unlinked.id = linked.id "
-                                                                + "WHERE unlinked.id != interval_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = "interval" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('interval', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
+@NamedNativeQueries({ @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                 + "FROM interval AS unlinked "
+                                                                 + "JOIN ("
+                                                                 + "     SELECT id "
+                                                                 + "     FROM interval "
+                                                                 + "     EXCEPT ("
+                                                                 + "             SELECT distinct(net.child) "
+                                                                 + "             FROM interval_network as net "
+                                                                 + "             WHERE net.parent = interval_id('Agency') "
+                                                                 + "             AND relationship = relationship_id('includes') "
+                                                                 + "     )"
+                                                                 + ") AS linked ON unlinked.id = linked.id "
+                                                                 + "WHERE unlinked.id != interval_id('Agency');", resultClass = Agency.class) })
 @NamedQueries({
                @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from IntervalAttribute as ca where ca.interval = :interval"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
@@ -143,7 +138,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     private Set<IntervalAttribute> attributes;
 
     private BigDecimal             duration;
-    
+
     // bi-directional many-to-one association to Unit
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "duration_unit")
@@ -188,7 +183,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     }
 
     public Interval(String name, BigDecimal start, Unit startUnit,
-                    BigDecimal duration, Unit durationUnit, String description, Agency updatedBy) {
+                    BigDecimal duration, Unit durationUnit, String description,
+                    Agency updatedBy) {
         this(name, description, updatedBy);
         setStart(start);
         setStartUnit(startUnit);

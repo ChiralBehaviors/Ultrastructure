@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.location;
 
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
-import static com.chiralbehaviors.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.chiralbehaviors.CoRE.location.Location.FIND_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
@@ -33,8 +32,6 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -42,7 +39,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -95,9 +91,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "WHERE n.parent = :location "
                                                                            + "AND n.relationship IN :relationships "
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
-@NamedNativeQueries({
-// ?1 = :queryString, ?2 = :numberOfMatches
-@NamedNativeQuery(name = "location" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('location', ?1, ?2)", resultClass = NameSearchResult.class) })
 public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     public static final String     FIND_ATTRIBUTE_AUTHORIZATIONS            = "location.findAttributeAuthorizations";
     public static final String     FIND_BY_ID                               = "location.findById";
@@ -113,8 +106,6 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
     public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "location"
                                                                               + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String     LOCATION_NAME                            = "location.getName";
-    public static final String     NAME_SEARCH                              = "location"
-                                                                              + NAME_SEARCH_SUFFIX;
     private static final long      serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to LocationAttribute

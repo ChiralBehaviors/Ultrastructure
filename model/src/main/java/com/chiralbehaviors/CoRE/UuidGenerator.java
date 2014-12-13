@@ -17,11 +17,6 @@
 package com.chiralbehaviors.CoRE;
 
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.openjpa.kernel.Seq;
-import org.apache.openjpa.kernel.StoreContext;
-import org.apache.openjpa.meta.ClassMetaData;
 
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.NoArgGenerator;
@@ -30,7 +25,7 @@ import com.fasterxml.uuid.NoArgGenerator;
  * @author hhildebrand
  *
  */
-public class UuidGenerator implements Seq {
+public class UuidGenerator {
     public static UUID fromBase64(String id) {
         return toUUID(base64ToByteArray(id));
     }
@@ -135,45 +130,4 @@ public class UuidGenerator implements Seq {
             'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
             'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
             '4', '5', '6', '7', '8', '9', '+', '/'   };
-
-    private AtomicReference<String>     last          = new AtomicReference<>();
-
-    /* (non-Javadoc)
-     * @see org.apache.openjpa.kernel.Seq#allocate(int, org.apache.openjpa.kernel.StoreContext, org.apache.openjpa.meta.ClassMetaData)
-     */
-    @Override
-    public void allocate(int additional, StoreContext ctx, ClassMetaData cls) {
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.openjpa.kernel.Seq#close()
-     */
-    @Override
-    public void close() {
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.openjpa.kernel.Seq#current(org.apache.openjpa.kernel.StoreContext, org.apache.openjpa.meta.ClassMetaData)
-     */
-    @Override
-    public Object current(StoreContext ctx, ClassMetaData cls) {
-        return last.get();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.openjpa.kernel.Seq#next(org.apache.openjpa.kernel.StoreContext, org.apache.openjpa.meta.ClassMetaData)
-     */
-    @Override
-    public Object next(StoreContext ctx, ClassMetaData cls) {
-        last.set(toBase64(GENERATOR.generate()));
-        return last.get();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.openjpa.kernel.Seq#setType(int)
-     */
-    @Override
-    public void setType(int type) {
-    }
-
 }

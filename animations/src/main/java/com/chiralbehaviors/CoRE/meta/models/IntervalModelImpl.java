@@ -191,7 +191,11 @@ public class IntervalModelImpl
     public final Interval create(String name, String description,
                                  Aspect<Interval> aspect,
                                  Aspect<Interval>... aspects) {
-        Interval agency = new Interval(name, description, kernel.getCoreModel());
+        Interval agency = new Interval(name, BigDecimal.valueOf(0),
+                                       kernel.getNotApplicableUnit(),
+                                       BigDecimal.valueOf(0),
+                                       kernel.getNotApplicableUnit(),
+                                       description, kernel.getCoreModel());
         em.persist(agency);
         initialize(agency, aspect);
         if (aspects != null) {

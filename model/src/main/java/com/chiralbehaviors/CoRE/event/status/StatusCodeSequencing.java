@@ -25,24 +25,20 @@ import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_PAR
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE;
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -84,43 +80,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "status_code_sequencing", schema = "ruleform")
 public class StatusCodeSequencing extends Ruleform {
-    public static final String  ENSURE_VALID_SERVICE_STATUS               = "statusCodeSequencing.ensureValidServiceAndStatus";
-    public static final String  GET_ALL_STATUS_CODE_SEQUENCING            = "statusCodeSequencing.getAllStatusCodeSequencing";
-    public static final String  GET_CHILD_STATUS_CODE_SEQUENCING          = "statusCodeSequencing.getChildStatusCodeSequencing";
-    public static final String  GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE  = "statusCodeSequencing.getChildStatusCodeSequencingService";
-    public static final String  GET_CHILD_STATUS_CODES_SERVICE            = "statusCodeSequencing.getChildStatusCodes";
-    public static final String  GET_PARENT_STATUS_CODE_SEQUENCING         = "statusCodeSequencing.getParentStatusCodeSequencing";
-    public static final String  GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE = "statusCodeSequencing.getParentStatusCodeSequencingService";
-    public static final String  GET_PARENT_STATUS_CODES_SERVICE           = "statusCodeSequencing.getParentStatusCodes";
-    public static final String  IS_VALID_NEXT_STATUS                      = "statusCodeSequencing.isValidNextStatus";
+    public static final String ENSURE_VALID_SERVICE_STATUS               = "statusCodeSequencing.ensureValidServiceAndStatus";
+    public static final String GET_ALL_STATUS_CODE_SEQUENCING            = "statusCodeSequencing.getAllStatusCodeSequencing";
+    public static final String GET_CHILD_STATUS_CODE_SEQUENCING          = "statusCodeSequencing.getChildStatusCodeSequencing";
+    public static final String GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE  = "statusCodeSequencing.getChildStatusCodeSequencingService";
+    public static final String GET_CHILD_STATUS_CODES_SERVICE            = "statusCodeSequencing.getChildStatusCodes";
+    public static final String GET_PARENT_STATUS_CODE_SEQUENCING         = "statusCodeSequencing.getParentStatusCodeSequencing";
+    public static final String GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE = "statusCodeSequencing.getParentStatusCodeSequencingService";
+    public static final String GET_PARENT_STATUS_CODES_SERVICE           = "statusCodeSequencing.getParentStatusCodes";
+    public static final String IS_VALID_NEXT_STATUS                      = "statusCodeSequencing.isValidNextStatus";
 
-    private static final long   serialVersionUID                          = 1L;
+    private static final long  serialVersionUID                          = 1L;
 
     // bi-directional many-to-one association to StatusCode
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_code")
-    private StatusCode          childCode;
+    private StatusCode         childCode;
 
     // bi-directional many-to-one association to StatusCode
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent_code")
-    private StatusCode          parentCode;
+    private StatusCode         parentCode;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(optional = false, cascade = { CascadeType.PERSIST,
             CascadeType.DETACH })
     @JoinColumn(name = "service")
-    private Product             service;
-
-    // bi-directional many-to-one association to StatusCode
-    @OneToMany(mappedBy = "child", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<ProductNetwork> statusCodeByChild;
-
-    // bi-directional many-to-one association to StatusCode
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<ProductNetwork> statusCodeByParent;
+    private Product            service;
 
     public StatusCodeSequencing() {
     }
@@ -194,20 +180,6 @@ public class StatusCodeSequencing extends Ruleform {
         return service;
     }
 
-    /**
-     * @return the statusCodeByChild
-     */
-    public Set<ProductNetwork> getStatusCodeByChild() {
-        return statusCodeByChild;
-    }
-
-    /**
-     * @return the statusCodeByParent
-     */
-    public Set<ProductNetwork> getStatusCodeByParent() {
-        return statusCodeByParent;
-    }
-
     public void setChildCode(StatusCode statusCode1) {
         childCode = statusCode1;
     }
@@ -222,21 +194,5 @@ public class StatusCodeSequencing extends Ruleform {
      */
     public void setService(Product service) {
         this.service = service;
-    }
-
-    /**
-     * @param statusCodeByChild
-     *            the statusCodeByChild to set
-     */
-    public void setStatusCodeByChild(Set<ProductNetwork> statusCodeByChild) {
-        this.statusCodeByChild = statusCodeByChild;
-    }
-
-    /**
-     * @param statusCodeByParent
-     *            the statusCodeByParent to set
-     */
-    public void setStatusCodeByParent(Set<ProductNetwork> statusCodeByParent) {
-        this.statusCodeByParent = statusCodeByParent;
     }
 }

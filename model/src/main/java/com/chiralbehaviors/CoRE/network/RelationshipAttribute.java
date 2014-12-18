@@ -51,6 +51,11 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     // bi-directional many-to-one association to Relationship
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute          attribute;
+
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
@@ -65,15 +70,6 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     public RelationshipAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, RelationshipAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationshipAttribute;
     }
 
     public RelationshipAttribute(Attribute attribute, Agency updatedBy) {
@@ -108,6 +104,11 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         super(id);
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public Relationship getRelationship() {
         return relationship;
@@ -132,6 +133,20 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     @Override
     public Class<Relationship> getRuleformClass() {
         return Relationship.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, RelationshipAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipAttribute;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setRelationship(Relationship interval) {

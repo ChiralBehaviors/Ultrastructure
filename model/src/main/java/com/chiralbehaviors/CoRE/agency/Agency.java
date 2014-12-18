@@ -15,7 +15,6 @@
  */
 package com.chiralbehaviors.CoRE.agency;
 
-import static com.chiralbehaviors.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_ALL;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
@@ -44,7 +43,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -96,22 +94,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "WHERE n.parent = :agency "
                                                                            + "AND n.relationship IN :relationships "
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
-@NamedNativeQueries({
-                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                + "FROM agency AS unlinked "
-                                                                + "JOIN ("
-                                                                + "     SELECT id "
-                                                                + "     FROM agency "
-                                                                + "     EXCEPT ("
-                                                                + "             SELECT distinct(net.child) "
-                                                                + "             FROM agency_network as net "
-                                                                + "             WHERE net.parent = agency_id('Agency') "
-                                                                + "             AND relationship = relationship_id('includes') "
-                                                                + "     )"
-                                                                + ") AS linked ON unlinked.id = linked.id "
-                                                                + "WHERE unlinked.id != agency_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = "agency" + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('agency', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
+@NamedNativeQueries({ @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                 + "FROM agency AS unlinked "
+                                                                 + "JOIN ("
+                                                                 + "     SELECT id "
+                                                                 + "     FROM agency "
+                                                                 + "     EXCEPT ("
+                                                                 + "             SELECT distinct(net.child) "
+                                                                 + "             FROM agency_network as net "
+                                                                 + "             WHERE net.parent = agency_id('Agency') "
+                                                                 + "             AND relationship = relationship_id('includes') "
+                                                                 + "     )"
+                                                                 + ") AS linked ON unlinked.id = linked.id "
+                                                                 + "WHERE unlinked.id != agency_id('Agency');", resultClass = Agency.class) })
 @Entity
 @Table(name = "agency", schema = "ruleform")
 public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {

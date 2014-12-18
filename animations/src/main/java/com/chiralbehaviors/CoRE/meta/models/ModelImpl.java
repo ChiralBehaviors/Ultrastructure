@@ -221,7 +221,7 @@ public class ModelImpl implements Model {
         @SuppressWarnings("unchecked")
         Root<AttributeValue<?>> attributeValue_ = (Root<AttributeValue<?>>) query.from(attributeValue.getClass());
 
-        Predicate whereAttribute = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.attribute),
+        Predicate whereAttribute = criteriaBuilder.equal(attributeValue_.get("attribute"),
                                                          attributeValue.getAttribute());
 
         @SuppressWarnings("unchecked")

@@ -47,8 +47,6 @@ public class UnitValue extends Ruleform {
     @Column(name = "integer_value")
     private Integer           integerValue;
 
-    private String            notes;
-
     @Column(name = "numeric_value")
     private BigDecimal        numericValue;
 
@@ -83,11 +81,6 @@ public class UnitValue extends Ruleform {
         return integerValue;
     }
 
-    @Override
-    public String getNotes() {
-        return notes;
-    }
-
     public BigDecimal getNumericValue() {
         return numericValue;
     }
@@ -110,11 +103,6 @@ public class UnitValue extends Ruleform {
 
     public void setIntegerValue(Integer integerValue) {
         this.integerValue = integerValue;
-    }
-
-    @Override
-    public void setNotes(String notes) {
-        this.notes = notes;
     }
 
     public void setNumericValue(BigDecimal numericValue) {

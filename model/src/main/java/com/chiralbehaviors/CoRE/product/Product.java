@@ -28,7 +28,6 @@ import static com.chiralbehaviors.CoRE.product.Product.FIND_GROUPED_ATTRIBUTE_VA
 import static com.chiralbehaviors.CoRE.product.Product.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.product.Product.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.product.Product.GET_CHILD_RULES_BY_RELATIONSHIP;
-import static com.chiralbehaviors.CoRE.product.Product.NAME_SEARCH;
 import static com.chiralbehaviors.CoRE.product.Product.SUBSUMING_ENTITIES;
 import static com.chiralbehaviors.CoRE.product.Product.UPDATED_BY;
 import static com.chiralbehaviors.CoRE.product.Product.UPDATED_BY_NAME;
@@ -40,8 +39,6 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -49,7 +46,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -118,9 +114,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "WHERE n.parent = :product "
                                                                            + "AND n.relationship IN :relationships "
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
-@NamedNativeQueries({
-// ?1 = #queryString, ?2 = #numberOfMatches
-@NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('product', ?1, ?2)", resultClass = NameSearchResult.class) })
 @Entity
 @Table(name = "product", schema = "ruleform")
 public class Product extends ExistentialRuleform<Product, ProductNetwork> {
@@ -151,8 +144,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
                                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String    GET_CHILDREN                                           = "product"
                                                                                            + GET_CHILDREN_SUFFIX;
-    public static final String    NAME_SEARCH                                            = "product"
-                                                                                           + NAME_SEARCH_SUFFIX;
     public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";
     public static final String    UNIQUE_ENTITY_BY_ATTRIBUTE_VALUE                       = "product.uniqueEntityByAttributeValue";
     public static final String    UPDATED_BY                                             = "product"

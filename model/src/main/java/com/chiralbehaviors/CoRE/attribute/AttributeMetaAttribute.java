@@ -54,15 +54,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     public AttributeMetaAttribute() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeMetaAttribute;
-    }
-
     /**
      * @param updatedBy
      */
@@ -79,7 +70,7 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
      */
     public AttributeMetaAttribute(Attribute attribute, Agency updatedBy) {
         super(updatedBy);
-        this.attribute = attribute;
+        setAttribute(attribute);
     }
 
     public AttributeMetaAttribute(Attribute attribute, BigDecimal value,
@@ -114,7 +105,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     }
 
     @Override
-    @JsonGetter
     public Attribute getAttribute() {
         return attribute;
     }
@@ -124,15 +114,12 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
         return metaAttribute;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
-    public SingularAttribute<AttributeMetaAttribute, Attribute> getRuleformAttribute() {
-        return AttributeMetaAttribute_.attribute;
+    public SingularAttribute<? extends AttributeValue<Attribute>, Attribute> getRuleformAttribute() {
+        return AttributeMetaAttribute_.metaAttribute;
     }
 
     /*
@@ -145,9 +132,18 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
         return Attribute.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
     @Override
-    public void setAttribute(Attribute attribute1) {
-        attribute = attribute1;
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeMetaAttribute;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setMetaAttribute(Attribute attribute3) {

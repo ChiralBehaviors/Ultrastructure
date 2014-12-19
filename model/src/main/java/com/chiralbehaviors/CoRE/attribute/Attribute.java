@@ -20,7 +20,6 @@ import static com.chiralbehaviors.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRI
 import static com.chiralbehaviors.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.GET_CHILD;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RELATIONSHIP;
-import static com.chiralbehaviors.CoRE.attribute.Attribute.NAME_SEARCH;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.UNLINKED;
 
 import java.util.Collections;
@@ -42,7 +41,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -83,22 +81,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "WHERE n.parent = :attribute "
                                                                            + "AND n.relationship IN :relationships "
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
-@NamedNativeQueries({
-                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                + "FROM attribute AS unlinked "
-                                                                + "JOIN ("
-                                                                + "SELECT id "
-                                                                + "FROM attribute "
-                                                                + "EXCEPT ("
-                                                                + "SELECT distinct(net.child) "
-                                                                + "FROM attribute_network as net "
-                                                                + "WHERE net.parent = attribute_id('Attribute') "
-                                                                + "AND relationship = relationship_id('includes') "
-                                                                + ")"
-                                                                + ") AS linked ON unlinked.id = linked.id "
-                                                                + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = NAME_SEARCH, query = "SELECT id, name, description FROM ruleform.existential_name_search('attribute', ?1, ?2)", resultClass = NameSearchResult.class) })
+@NamedNativeQueries({ @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                 + "FROM attribute AS unlinked "
+                                                                 + "JOIN ("
+                                                                 + "SELECT id "
+                                                                 + "FROM attribute "
+                                                                 + "EXCEPT ("
+                                                                 + "SELECT distinct(net.child) "
+                                                                 + "FROM attribute_network as net "
+                                                                 + "WHERE net.parent = attribute_id('Attribute') "
+                                                                 + "AND relationship = relationship_id('includes') "
+                                                                 + ")"
+                                                                 + ") AS linked ON unlinked.id = linked.id "
+                                                                 + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class) })
 @Entity
 @Table(name = "attribute", schema = "ruleform")
 public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> {
@@ -111,8 +106,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
                                                                                    + GET_CHILDREN_SUFFIX;
     public static final String          GET_CHILD_RULES_BY_RELATIONSHIP          = "attribute"
                                                                                    + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String          NAME_SEARCH                              = "attribute"
-                                                                                   + NAME_SEARCH_SUFFIX;
     public static final String          UNLINKED                                 = "attribute"
                                                                                    + UNLINKED_SUFFIX;
     private static final long           serialVersionUID                         = 1L;

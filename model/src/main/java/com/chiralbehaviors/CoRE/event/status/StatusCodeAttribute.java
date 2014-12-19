@@ -49,6 +49,11 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     public static final String GET_ATTRIBUTE    = "statusCodeAttribute.intervalAttribute";
     private static final long  serialVersionUID = 1L;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute          attribute;
+
     // bi-directional many-to-one association to StatusCode
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
@@ -56,15 +61,6 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
 
     public StatusCodeAttribute() {
         super();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeAttribute;
     }
 
     public StatusCodeAttribute(Agency updatedBy) {
@@ -106,6 +102,11 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         super(id);
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -130,6 +131,20 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     @JsonGetter
     public StatusCode getStatusCode() {
         return statusCode;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeAttribute;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setStatusCode(StatusCode interval) {

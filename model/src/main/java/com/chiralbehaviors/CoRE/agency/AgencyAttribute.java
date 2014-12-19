@@ -55,6 +55,11 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     @JoinColumn(name = "agency")
     private Agency             agency;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute          attribute;
+
     public AgencyAttribute() {
         super();
     }
@@ -138,6 +143,11 @@ public class AgencyAttribute extends AttributeValue<Agency> {
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -170,5 +180,10 @@ public class AgencyAttribute extends AttributeValue<Agency> {
 
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 }

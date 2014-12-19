@@ -50,6 +50,11 @@ public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
     @JoinColumn(name = "agency")
     private Agency            agency;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     // bi-directional many-to-one association to IntervalNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
@@ -63,15 +68,6 @@ public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
      */
     public IntervalNetworkAttribute(Agency updatedBy) {
         super(updatedBy);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, IntervalNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.intervalNetworkAttribute;
     }
 
     /**
@@ -149,6 +145,11 @@ public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public IntervalNetwork getIntervalNetwork() {
         return IntervalNetwork;
@@ -175,8 +176,22 @@ public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
         return IntervalNetwork.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, IntervalNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalNetworkAttribute;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setIntervalNetwork(IntervalNetwork IntervalNetwork) {

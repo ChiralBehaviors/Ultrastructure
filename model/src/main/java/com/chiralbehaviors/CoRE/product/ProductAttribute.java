@@ -53,21 +53,17 @@ public class ProductAttribute extends AttributeValue<Product> {
     public final static String FIND_ATTRIBUTE_VALUE_FROM_AGENCY = "productAttribute.findAttributeValueFromAgency";
     private static final long  serialVersionUID                 = 1L;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute          attribute;
+
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Product            product;
 
     public ProductAttribute() {
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productAttribute;
     }
 
     /**
@@ -144,6 +140,11 @@ public class ProductAttribute extends AttributeValue<Product> {
         super(id);
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public Product getProduct() {
         return product;
@@ -168,6 +169,20 @@ public class ProductAttribute extends AttributeValue<Product> {
     @Override
     public Class<Product> getRuleformClass() {
         return Product.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productAttribute;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setProduct(Product product2) {

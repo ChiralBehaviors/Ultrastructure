@@ -34,7 +34,6 @@ import static com.chiralbehaviors.CoRE.event.Job.GET_TERMINAL_STATES;
 import static com.chiralbehaviors.CoRE.event.Job.GET_UNSET_SIBLINGS;
 import static com.chiralbehaviors.CoRE.event.Job.HAS_SCS;
 import static com.chiralbehaviors.CoRE.event.Job.INITIAL_STATE;
-import static com.chiralbehaviors.CoRE.event.Job.STATUS_CODE;
 import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 
 import java.util.Set;
@@ -54,8 +53,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
-
-import org.apache.openjpa.persistence.LoadFetchGroup;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -156,13 +153,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + ") AS valid ON j.service = valid.service "
                                                                             + "JOIN ruleform.status_code AS sc ON j.status = sc.id AND sc.id = ? "
                                                                             + "WHERE j.parent = ?"),
-                     @NamedNativeQuery(name = STATUS_CODE, query = "SELECT DISTINCT(parent_code)"
-                                                                   + " FROM ruleform.status_code_sequencing "
-                                                                   + " WHERE service = ? "
-                                                                   + " UNION "
-                                                                   + " SELECT DISTINCT(child_code)"
-                                                                   + " FROM ruleform.status_code_sequencing "
-                                                                   + " WHERE service = ? ", resultClass = Long.class),
                      @NamedNativeQuery(name = INITIAL_STATE, query = "SELECT distinct(sc.*) "
                                                                      + "FROM ruleform.status_code_sequencing AS seq "
                                                                      + "JOIN ruleform.status_code AS sc ON seq.parent_code = sc.id "
@@ -201,7 +191,6 @@ public class Job extends AbstractProtocol {
     public static final String GET_UNSET_SIBLINGS                     = "job.getUnsetSiblings";
     public static final String HAS_SCS                                = "job.hasScs";
     public static final String INITIAL_STATE                          = "job.initialState";
-    public static final String STATUS_CODE                            = "job.statusCode";
     public static final String TOP_LEVEL_JOBS                         = "job.topLevelJobs";
 
     private static final long  serialVersionUID                       = 1L;
@@ -230,7 +219,6 @@ public class Job extends AbstractProtocol {
      * The parent of this job
      */
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @LoadFetchGroup("job.animation")
     @JoinColumn(name = "parent", updatable = false)
     private Job                parent;
 

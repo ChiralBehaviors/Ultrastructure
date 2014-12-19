@@ -50,6 +50,11 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
     @JoinColumn(name = "agency")
     private Agency            agency;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute         attribute;
+
     // bi-directional many-to-one association to LocationNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
@@ -70,15 +75,6 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
      */
     public LocationNetworkAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationNetworkAttribute;
     }
 
     /**
@@ -149,6 +145,11 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
         return agency;
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public LocationNetwork getLocationNetwork() {
         return LocationNetwork;
@@ -175,8 +176,22 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
         return LocationNetwork.class;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetworkAttribute;
+    }
+
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setLocationNetwork(LocationNetwork LocationNetwork) {

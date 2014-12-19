@@ -49,6 +49,11 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     public static final String GET_ATTRIBUTE    = "intervalAttribute.intervalAttribute";
     private static final long  serialVersionUID = 1L;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute          attribute;
+
     // bi-directional many-to-one association to Interval
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval")
@@ -68,15 +73,6 @@ public class IntervalAttribute extends AttributeValue<Interval> {
 
     public IntervalAttribute(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, IntervalAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.intervalAttribute;
     }
 
     public IntervalAttribute(Attribute attribute, BigDecimal value,
@@ -105,6 +101,11 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         super(id);
     }
 
+    @Override
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @JsonGetter
     public Interval getInterval() {
         return interval;
@@ -129,6 +130,20 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     @Override
     public Class<Interval> getRuleformClass() {
         return Interval.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, IntervalAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalAttribute;
+    }
+
+    @Override
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setInterval(Interval interval) {

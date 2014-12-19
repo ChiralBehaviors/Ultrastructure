@@ -15,7 +15,6 @@
  */
 package com.chiralbehaviors.CoRE.network;
 
-import static com.chiralbehaviors.CoRE.Ruleform.NAME_SEARCH_SUFFIX;
 import static com.chiralbehaviors.CoRE.network.Relationship.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.network.Relationship.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.network.Relationship.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
@@ -45,7 +44,6 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.NameSearchResult;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -63,23 +61,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "relationship", schema = "ruleform")
-@NamedNativeQueries({
-                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                + "FROM relationship AS unlinked "
-                                                                + "JOIN ("
-                                                                + "     SELECT id "
-                                                                + "     FROM relationship "
-                                                                + "     EXCEPT ("
-                                                                + "             SELECT distinct(net.child) "
-                                                                + "             FROM relationship_network as net "
-                                                                + "             WHERE net.parent = relationship_id('Agency') "
-                                                                + "             AND relationship = relationship_id('includes') "
-                                                                + "     )"
-                                                                + ") AS linked ON unlinked.id = linked.id "
-                                                                + "WHERE unlinked.id != relationship_id('Agency');", resultClass = Agency.class),
-                     // ?1 = :queryString, ?2 = :numberOfMatches
-                     @NamedNativeQuery(name = "relationship"
-                                              + NAME_SEARCH_SUFFIX, query = "SELECT id, name, description FROM ruleform.existential_name_search('relationship', :queryString, :numberOfMatches)", resultClass = NameSearchResult.class) })
+@NamedNativeQueries({ @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
+                                                                 + "FROM relationship AS unlinked "
+                                                                 + "JOIN ("
+                                                                 + "     SELECT id "
+                                                                 + "     FROM relationship "
+                                                                 + "     EXCEPT ("
+                                                                 + "             SELECT distinct(net.child) "
+                                                                 + "             FROM relationship_network as net "
+                                                                 + "             WHERE net.parent = relationship_id('Agency') "
+                                                                 + "             AND relationship = relationship_id('includes') "
+                                                                 + "     )"
+                                                                 + ") AS linked ON unlinked.id = linked.id "
+                                                                 + "WHERE unlinked.id != relationship_id('Agency');", resultClass = Agency.class) })
 @NamedQueries({
                @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from RelationshipAttribute as ca where ca.relationship = :relationship"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),

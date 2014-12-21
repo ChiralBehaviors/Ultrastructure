@@ -30,8 +30,8 @@ import com.chiralbehaviors.CoRE.product.Product;
  *
  */
 public interface StatusCodeModel
-        extends
-        NetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
+extends
+NetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
 
     /**
      * Answer the unique status codes associated with a service

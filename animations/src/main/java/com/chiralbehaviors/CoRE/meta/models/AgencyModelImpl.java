@@ -46,9 +46,9 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 public class AgencyModelImpl
-        extends
-        AbstractNetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
-        implements AgencyModel {
+extends
+AbstractNetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
+implements AgencyModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -72,8 +72,6 @@ public class AgencyModelImpl
         T call(AgencyModel productModel) throws Exception;
     }
 
-    private static boolean deducing;
-
     public static void onAbort() {
         deducing = false;
     }
@@ -83,7 +81,7 @@ public class AgencyModelImpl
     }
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
+            throws Exception {
         if (deducing) {
             return;
         }
@@ -105,6 +103,8 @@ public class AgencyModelImpl
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
+
+    private static boolean deducing;
 
     /**
      * @param em
@@ -177,7 +177,7 @@ public class AgencyModelImpl
         Agency agency = new Agency(name, description, kernel.getCoreModel());
         em.persist(agency);
         return new Facet<Agency, AgencyAttribute>(aspect, agency,
-                                                  initialize(agency, aspect)) {
+                initialize(agency, aspect)) {
         };
     }
 
@@ -208,8 +208,8 @@ public class AgencyModelImpl
                                                    Collection<Relationship> relationships,
                                                    Collection<Agency> children) {
         if (parents == null || parents.size() == 0 || relationships == null
-            || relationships.size() == 0 || children == null
-            || children.size() == 0) {
+                || relationships.size() == 0 || children == null
+                || children.size() == 0) {
             return null;
         }
         TypedQuery<AgencyNetwork> query = em.createNamedQuery(AgencyNetwork.GET_NETWORKS,

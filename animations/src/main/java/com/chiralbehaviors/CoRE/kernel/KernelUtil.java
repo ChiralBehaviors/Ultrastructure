@@ -38,27 +38,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Repository of immutable kernal rules
- * 
+ *
  * This used to be the standard. Now we use workspaces. However, kernel is a
  * fundamental workspace, and it's needed a lot. Consequently, because of the
  * way we do Java stored procedures, reentrancy requires a new image of the
  * kernel workspace in the context of the entity manager. Sucks to be us.
- * 
+ *
  * Utilities for the Kerenl
  *
  * @author hhildebrand
  *
  */
 public class KernelUtil {
-
-    private static final Logger                  log                       = LoggerFactory.getLogger(KernelUtil.class);
-
-    public static final String                   SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-    public static final String                   ZERO                      = UuidGenerator.toBase64(new UUID(
-                                                                                                             0,
-                                                                                                             0));
-    private static final AtomicReference<Kernel> CACHED_KERNEL             = new AtomicReference<>();
-    static final String                          KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 
     public static Kernel cacheKernel(EntityManager em) {
         if (CACHED_KERNEL.get() != null) {
@@ -96,8 +87,8 @@ public class KernelUtil {
     }
 
     public static Kernel clearAndLoadKernel(EntityManager em)
-                                                             throws SQLException,
-                                                             IOException {
+            throws SQLException,
+            IOException {
         clear(em);
         return loadKernel(em);
     }
@@ -114,7 +105,7 @@ public class KernelUtil {
     }
 
     public static Kernel loadKernel(EntityManager em, InputStream is)
-                                                                     throws IOException {
+            throws IOException {
         em.getTransaction().begin();
         RehydratedWorkspace workspace = rehydrateKernel(is);
         workspace.retarget(em);
@@ -126,9 +117,9 @@ public class KernelUtil {
     }
 
     private static RehydratedWorkspace readKernel(InputStream is)
-                                                                 throws IOException,
-                                                                 JsonParseException,
-                                                                 JsonMappingException {
+            throws IOException,
+            JsonParseException,
+            JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         RehydratedWorkspace workspace = mapper.readValue(is,
@@ -137,18 +128,18 @@ public class KernelUtil {
     }
 
     private static RehydratedWorkspace rehydrateKernel(InputStream is)
-                                                                      throws IOException,
-                                                                      JsonParseException,
-                                                                      JsonMappingException {
+            throws IOException,
+            JsonParseException,
+            JsonMappingException {
         RehydratedWorkspace workspace = readKernel(is);
         workspace.cache();
         return workspace;
     }
 
     static void alterTriggers(Connection connection, boolean enable)
-                                                                    throws SQLException {
+            throws SQLException {
         for (String table : new String[] { "ruleform.agency",
-                "ruleform.product", "ruleform.location" }) {
+                                           "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
                                          table, enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);
@@ -162,4 +153,16 @@ public class KernelUtil {
         }
         r.close();
     }
+
+    private static final Logger                  log                       = LoggerFactory.getLogger(KernelUtil.class);
+
+    public static final String                   SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+
+    public static final String                   ZERO                      = UuidGenerator.toBase64(new UUID(
+                                                                                                             0,
+                                                                                                             0));
+
+    private static final AtomicReference<Kernel> CACHED_KERNEL             = new AtomicReference<>();
+
+    static final String                          KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 }

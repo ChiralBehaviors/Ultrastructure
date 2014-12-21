@@ -46,9 +46,9 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *
  */
 public class IntervalModelImpl
-        extends
-        AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
-        implements IntervalModel {
+extends
+AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
+implements IntervalModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -72,8 +72,6 @@ public class IntervalModelImpl
         T call(IntervalModelImpl productModel) throws Exception;
     }
 
-    private static boolean deducing;
-
     public static void onAbort() {
         deducing = false;
     }
@@ -83,7 +81,7 @@ public class IntervalModelImpl
     }
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
+            throws Exception {
         if (deducing) {
             return;
         }
@@ -105,6 +103,8 @@ public class IntervalModelImpl
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
+
+    private static boolean deducing;
 
     /**
      * @param em
@@ -237,8 +237,8 @@ public class IntervalModelImpl
                                          kernel.getCoreModel());
         em.persist(interval);
         return new Facet<Interval, IntervalAttribute>(aspect, interval,
-                                                      initialize(interval,
-                                                                 aspect)) {
+                initialize(interval,
+                           aspect)) {
         };
     }
 
@@ -250,6 +250,20 @@ public class IntervalModelImpl
                                                      Collection<Relationship> relationships,
                                                      Collection<Interval> children) {
         throw new UnsupportedOperationException();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.IntervalModel#create(java.lang.String, java.lang.String, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit)
+     */
+    @Override
+    public Interval newDefaultInterval(String name, String description) {
+        Interval interval = new Interval(name, BigDecimal.valueOf(0),
+                                         kernel.getNotApplicableUnit(),
+                                         BigDecimal.valueOf(0),
+                                         kernel.getNotApplicableUnit(),
+                                         description, kernel.getCoreModel());
+        em.persist(interval);
+        return interval;
     }
 
     /**

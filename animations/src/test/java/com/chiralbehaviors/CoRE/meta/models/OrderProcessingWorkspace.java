@@ -115,7 +115,7 @@ public class OrderProcessingWorkspace {
     }
 
     public void merge(EntityManager em) throws IllegalArgumentException,
-                                       IllegalAccessException {
+    IllegalAccessException {
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {
             System.out.println(String.format("Merging: %s", field.getName()));
             em.persist(field.get(this));

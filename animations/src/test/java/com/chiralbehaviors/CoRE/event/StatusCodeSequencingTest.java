@@ -119,15 +119,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     public void testHasNoTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -139,75 +139,6 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         graph.put(codes[8], asList(codes[6]));
 
         assertTrue(JobModelImpl.hasScc(graph));
-    }
-
-    @Test
-    public void testMultipleInitialStates() throws SQLException {
-        em.getTransaction().begin();
-        Agency core = new Agency("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
-
-        Model model = new ModelImpl(em);
-        JobModel jobModel = model.getJobModel();
-
-        StatusCode startState = new StatusCode("top-level", core);
-        em.persist(startState);
-
-        StatusCode startState2 = new StatusCode("top-level 2", core);
-        em.persist(startState2);
-
-        StatusCode state1 = new StatusCode("state-1", core);
-        em.persist(state1);
-
-        StatusCode state2 = new StatusCode("state-2", core);
-        em.persist(state2);
-
-        StatusCode terminalState = new StatusCode("terminal state", core);
-        em.persist(terminalState);
-
-        Product service = new Product("My Service", core);
-        em.persist(service);
-        em.flush();
-
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
-                                                                  startState,
-                                                                  state1, core);
-        em.persist(sequence1);
-
-        StatusCodeSequencing sequence1a = new StatusCodeSequencing(service,
-                                                                   startState2,
-                                                                   state1, core);
-        em.persist(sequence1a);
-
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
-                                                                  state1,
-                                                                  state2, core);
-        em.persist(sequence2);
-
-        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
-                                                                  service,
-                                                                  state2,
-                                                                  terminalState,
-                                                                  core);
-        em.persist(sequence3);
-
-        em.flush();
-        em.clear();
-
-        List<StatusCode> initialStates = jobModel.getInitialStates(service);
-        assertEquals(2, initialStates.size());
-        assertTrue(initialStates.contains(startState));
-        assertTrue(initialStates.contains(startState2));
-        service = em.merge(service);
-        try {
-            jobModel.validateStateGraph(Arrays.asList(service));
-            fail("Did not catch event with non terminal loop");
-        } catch (SQLException e) {
-            // expected
-            assertTrue(e.getMessage(),
-                       e.getMessage().contains("has multiple initial state defined in its status code graph"));
-        }
     }
 
     @Test
@@ -279,15 +210,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     public void testHasTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -300,15 +231,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     public void testLoop() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()),
+                                               new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[3]));
@@ -316,5 +247,74 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         graph.put(codes[4], asList(codes[2]));
 
         assertTrue(JobModelImpl.hasScc(graph));
+    }
+
+    @Test
+    public void testMultipleInitialStates() throws SQLException {
+        em.getTransaction().begin();
+        Agency core = new Agency("CoRE");
+        core.setUpdatedBy(core);
+        em.persist(core);
+
+        Model model = new ModelImpl(em);
+        JobModel jobModel = model.getJobModel();
+
+        StatusCode startState = new StatusCode("top-level", core);
+        em.persist(startState);
+
+        StatusCode startState2 = new StatusCode("top-level 2", core);
+        em.persist(startState2);
+
+        StatusCode state1 = new StatusCode("state-1", core);
+        em.persist(state1);
+
+        StatusCode state2 = new StatusCode("state-2", core);
+        em.persist(state2);
+
+        StatusCode terminalState = new StatusCode("terminal state", core);
+        em.persist(terminalState);
+
+        Product service = new Product("My Service", core);
+        em.persist(service);
+        em.flush();
+
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
+                                                                  startState,
+                                                                  state1, core);
+        em.persist(sequence1);
+
+        StatusCodeSequencing sequence1a = new StatusCodeSequencing(service,
+                                                                   startState2,
+                                                                   state1, core);
+        em.persist(sequence1a);
+
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
+                                                                  state1,
+                                                                  state2, core);
+        em.persist(sequence2);
+
+        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
+                                                                  service,
+                                                                  state2,
+                                                                  terminalState,
+                                                                  core);
+        em.persist(sequence3);
+
+        em.flush();
+        em.clear();
+
+        List<StatusCode> initialStates = jobModel.getInitialStates(service);
+        assertEquals(2, initialStates.size());
+        assertTrue(initialStates.contains(startState));
+        assertTrue(initialStates.contains(startState2));
+        service = em.merge(service);
+        try {
+            jobModel.validateStateGraph(Arrays.asList(service));
+            fail("Did not catch event with non terminal loop");
+        } catch (SQLException e) {
+            // expected
+            assertTrue(e.getMessage(),
+                       e.getMessage().contains("has multiple initial state defined in its status code graph"));
+        }
     }
 }

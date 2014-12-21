@@ -236,6 +236,29 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     RuleForm getChild(RuleForm parent, Relationship relationship);
 
     /**
+     *
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
+
+    /**
+     * Answer the Facet of the ruleform instance containing the authorized
+     * attributes as classified
+     *
+     * @param ruleform
+     *            - the instance
+     * @param classifier
+     *            - the parent ruleform
+     * @param classification
+     *            - the classifying relationship
+     * @return
+     */
+    Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,
+                                            Aspect<RuleForm> aspect);
+
+    /**
      * Answer the non inferred child that is connected to the parent via the
      * relationship
      *
@@ -252,31 +275,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param relationship
      * @return
      */
-    List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
-
-    /**
-     *
-     * @param parent
-     * @param relationship
-     * @return
-     */
     List<RuleForm> getImmediateChildren(RuleForm parent,
                                         Relationship relationship);
-
-    /**
-     * Answer the Facet of the ruleform instance containing the authorized
-     * attributes as classified
-     *
-     * @param ruleform
-     *            - the instance
-     * @param classifier
-     *            - the parent ruleform
-     * @param classification
-     *            - the classifying relationship
-     * @return
-     */
-    Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,
-                                            Aspect<RuleForm> aspect);
 
     /**
      *

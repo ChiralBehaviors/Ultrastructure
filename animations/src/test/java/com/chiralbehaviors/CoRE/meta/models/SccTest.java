@@ -42,10 +42,10 @@ public class SccTest {
     public void testScc() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] { new StatusCode(new UUID(0, 1)),
-                new StatusCode(new UUID(0, 2)), new StatusCode(new UUID(0, 3)),
-                new StatusCode(new UUID(0, 4)), new StatusCode(new UUID(0, 5)),
-                new StatusCode(new UUID(0, 6)), new StatusCode(new UUID(0, 7)),
-                new StatusCode(new UUID(0, 8)), new StatusCode(new UUID(0, 9)) };
+                                                new StatusCode(new UUID(0, 2)), new StatusCode(new UUID(0, 3)),
+                                                new StatusCode(new UUID(0, 4)), new StatusCode(new UUID(0, 5)),
+                                                new StatusCode(new UUID(0, 6)), new StatusCode(new UUID(0, 7)),
+                                                new StatusCode(new UUID(0, 8)), new StatusCode(new UUID(0, 9)) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));

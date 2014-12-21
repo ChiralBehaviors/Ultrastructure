@@ -104,7 +104,7 @@ public interface JobModel {
      */
     void ensureNextStateIsValid(Job job, Product service,
                                 StatusCode currentStatus, StatusCode nextStatus)
-                                                                                throws SQLException;
+                                        throws SQLException;
 
     /**
      * @param parent
@@ -120,7 +120,7 @@ public interface JobModel {
      */
     void ensureValidServiceAndStatus(Product nextSibling,
                                      StatusCode nextSiblingStatus)
-                                                                  throws SQLException;
+                                             throws SQLException;
 
     Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
 

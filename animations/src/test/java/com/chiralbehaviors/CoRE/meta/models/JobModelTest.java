@@ -84,53 +84,6 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testSelfSequencingAuthorization() {
-        em.getTransaction().begin();
-        Product service = new Product("Kick ass", null, kernel.getCore());
-        em.persist(service);
-
-        StatusCode kickingAss = new StatusCode("Kicking Ass", null,
-                                               kernel.getCore());
-        em.persist(kickingAss);
-
-        StatusCode takingNames = new StatusCode("Taking Names", null,
-                                                kernel.getCore());
-        em.persist(takingNames);
-
-        StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                 service,
-                                                                 kickingAss,
-                                                                 takingNames,
-                                                                 kernel.getCore());
-        em.persist(sequence);
-
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
-                                                                                         service,
-                                                                                         kickingAss,
-                                                                                         takingNames,
-                                                                                         kernel.getCore());
-        em.persist(auth);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Job job = model.getJobModel().newInitializedJob(service,
-                                                        kernel.getCore());
-        em.persist(job);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
-                                         null);
-
-        em.getTransaction().commit();
-
-        em.refresh(job);
-
-        assertEquals(takingNames, job.getStatus());
-    }
-
-    @Test
     public void testDeliverWithoutMetaProtocol() {
         em.getTransaction().begin();
 
@@ -189,14 +142,14 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.anyLocation);
         job.setRequester(scenario.core);
         jobModel.changeStatus(job, scenario.unset, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         em.persist(job);
 
         em.getTransaction().commit();
 
         em.getTransaction().begin();
         jobModel.changeStatus(job, startState, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         em.getTransaction().commit();
 
         TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
@@ -222,11 +175,11 @@ public class JobModelTest extends AbstractModelTest {
         txn.commit();
         txn.begin();
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
@@ -248,7 +201,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
         jobModel.changeStatus(job, scenario.available, kernel.getCore(),
-                              "Test transition");
+                "Test transition");
 
         List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
         TestDebuggingUtil.printJobs(jobs);
@@ -303,6 +256,38 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testGetActiveJobs() throws Exception {
+        clearJobs();
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                          scenario.core);
+        order.setAssignTo(scenario.orderFullfillment);
+        order.setProduct(scenario.abc486);
+        order.setDeliverTo(scenario.rsb225);
+        order.setDeliverFrom(scenario.factory1);
+        order.setRequester(scenario.georgeTownUniversity);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        em.refresh(order);
+        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
+                "transition during test");
+        txn.commit();
+
+        List<StatusCode> states = Arrays.asList(scenario.active,
+                                                scenario.available,
+                                                scenario.abandoned);
+        List<Job> active = jobModel.getActiveJobsFor(scenario.orderFullfillment,
+                                                     states);
+        assertEquals(1, active.size());
+    }
+
+    @Test
     public void testIteration() throws Exception {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
@@ -323,7 +308,7 @@ public class JobModelTest extends AbstractModelTest {
         Relationship childRelationship = model.getRelationshipModel().create("child of",
                                                                              "test relationship",
                                                                              "parentOf",
-                                                                             "test relationship inverse");
+                "test relationship inverse");
         parent.link(childRelationship, child1, kernel.getCore(),
                     kernel.getCore(), em);
         parent.link(childRelationship, child2, kernel.getCore(),
@@ -333,7 +318,7 @@ public class JobModelTest extends AbstractModelTest {
 
         List<Tuple<StatusCode, StatusCode>> sequencings = new ArrayList<>();
         sequencings.add(new Tuple<StatusCode, StatusCode>(scenario.available,
-                                                          scenario.completed));
+                scenario.completed));
         model.getJobModel().createStatusCodeSequencings(service, sequencings,
                                                         kernel.getCore());
         model.getJobModel().createStatusCodeSequencings(childService,
@@ -372,38 +357,6 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testGetActiveJobs() throws Exception {
-        clearJobs();
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
-                                                          scenario.core);
-        order.setAssignTo(scenario.orderFullfillment);
-        order.setProduct(scenario.abc486);
-        order.setDeliverTo(scenario.rsb225);
-        order.setDeliverFrom(scenario.factory1);
-        order.setRequester(scenario.georgeTownUniversity);
-        em.persist(order);
-        txn.commit();
-        txn.begin();
-        em.refresh(order);
-        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-
-        List<StatusCode> states = Arrays.asList(scenario.active,
-                                                scenario.available,
-                                                scenario.abandoned);
-        List<Job> active = jobModel.getActiveJobsFor(scenario.orderFullfillment,
-                                                     states);
-        assertEquals(1, active.size());
-    }
-
-    @Test
     public void testJobChronologyOnStatusUpdate() throws Exception {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
@@ -418,7 +371,7 @@ public class JobModelTest extends AbstractModelTest {
             order.setDeliverFrom(scenario.factory1);
             order.setRequester(scenario.georgeTownUniversity);
             jobModel.changeStatus(order, scenario.available, kernel.getCore(),
-                                  "Test transition");
+                    "Test transition");
             em.persist(order);
             em.flush();
             JobChronology chronology = new JobChronology(order, "Testy");
@@ -483,9 +436,9 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(auth);
         model.getJobModel().createStatusCodeChain(pushit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe,
-                                                          scenario.completed },
-                                                  scenario.core);
+                                                                     shovingMe,
+                                                                     scenario.completed },
+                                                                     scenario.core);
         em.getTransaction().commit();
         em.getTransaction().begin();
 
@@ -508,92 +461,6 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testTerminateChildrenParent() throws IOException {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
-        em.getTransaction().begin();
-        Product pushit = new Product("Pushit Service", null, scenario.core);
-        em.persist(pushit);
-
-        Product shoveit = new Product("shoveit Service", null, scenario.core);
-        em.persist(shoveit);
-
-        Product pullit = new Product("Pullit Service", null, scenario.core);
-        em.persist(pullit);
-
-        StatusCode pushingMe = new StatusCode("Pushing Me", null, scenario.core);
-        pushingMe.setPropagateChildren(true);
-        em.persist(pushingMe);
-
-        StatusCode shovingMe = new StatusCode("Shoving Me", null, scenario.core);
-        em.persist(shovingMe);
-
-        Protocol p = model.getJobModel().newInitializedProtocol(pushit,
-                                                                scenario.core);
-        p.setChildService(shoveit);
-        em.persist(p);
-
-        Protocol p2 = model.getJobModel().newInitializedProtocol(shoveit,
-                                                                 scenario.core);
-        p2.setChildService(pullit);
-        em.persist(p2);
-
-        model.getJobModel().createStatusCodeChain(pushit,
-                                                  new StatusCode[] { pushingMe,
-                                                          shovingMe },
-                                                  scenario.core);
-        model.getJobModel().createStatusCodeChain(shoveit,
-                                                  new StatusCode[] { pushingMe,
-                                                          shovingMe },
-                                                  scenario.core);
-        model.getJobModel().createStatusCodeChain(pullit,
-                                                  new StatusCode[] { pushingMe,
-                                                          shovingMe },
-                                                  scenario.core);
-
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
-                                                                                           shoveit,
-                                                                                           shovingMe,
-                                                                                           pullit,
-                                                                                           shovingMe,
-                                                                                           scenario.core);
-        em.persist(auth);
-        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(
-                                                                                              shoveit,
-                                                                                              shovingMe,
-                                                                                              pushit,
-                                                                                              shovingMe,
-                                                                                              scenario.core);
-        em.persist(auth2);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
-
-        em.getTransaction().commit();
-
-        List<Job> children = model.getJobModel().getAllChildren(push);
-        assertEquals(2, children.size());
-
-        em.getTransaction().begin();
-        for (Job j : children) {
-            model.getJobModel().changeStatus(j, pushingMe, kernel.getCore(),
-                                             null);
-        }
-        model.getJobModel().changeStatus(push, pushingMe, scenario.core, null);
-        em.getTransaction().commit();
-
-        Job shovingJob = model.getJobModel().getActiveSubJobsForService(push,
-                                                                        shoveit).get(0);
-        em.getTransaction().begin();
-        em.refresh(shovingJob);
-
-        model.getJobModel().changeStatus(shovingJob, shovingMe, null, null);
-        em.getTransaction().commit();
-        em.refresh(push);
-        assertEquals(shovingMe, push.getStatus());
-    }
-
-    @Test
     public void testMetaProtocols() throws Exception {
         clearJobs();
         em.getTransaction().begin();
@@ -605,7 +472,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.georgeTownUniversity);
         jobModel.changeStatus(job, scenario.available, kernel.getCore(),
-                              "Test transition");
+                "Test transition");
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> txfm = jobModel.getProtocols(job);
@@ -640,7 +507,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverFrom(scenario.factory1);
         job.setRequester(scenario.cafleurBon);
         jobModel.changeStatus(job, scenario.unset, kernel.getCore(),
-                              "Transition from test");
+                "Transition from test");
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         txfm = jobModel.getProtocols(job);
@@ -676,11 +543,11 @@ public class JobModelTest extends AbstractModelTest {
         txn.commit();
         txn.begin();
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
@@ -707,11 +574,11 @@ public class JobModelTest extends AbstractModelTest {
         txn.begin();
         em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
@@ -727,7 +594,7 @@ public class JobModelTest extends AbstractModelTest {
         Job creditCheck = query.getSingleResult();
         assertEquals(scenario.available, creditCheck.getStatus());
         jobModel.changeStatus(creditCheck, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(creditCheck, scenario.completed,
@@ -739,11 +606,11 @@ public class JobModelTest extends AbstractModelTest {
         Job pick = query.getSingleResult();
         assertEquals(scenario.available, pick.getStatus());
         jobModel.changeStatus(pick, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(pick, scenario.completed, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         em.clear();
@@ -758,11 +625,11 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.fee);
         Job fee = query.getSingleResult();
         jobModel.changeStatus(fee, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(fee, scenario.completed, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         em.clear();
@@ -770,11 +637,11 @@ public class JobModelTest extends AbstractModelTest {
         Job printPO = query.getSingleResult();
         assertEquals(scenario.available, printPO.getStatus());
         jobModel.changeStatus(printPO, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(printPO, scenario.completed, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         em.clear();
@@ -782,11 +649,11 @@ public class JobModelTest extends AbstractModelTest {
         ship = query.getSingleResult();
         assertEquals(scenario.available, ship.getStatus());
         jobModel.changeStatus(ship, scenario.active, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(ship, scenario.completed, kernel.getAgency(),
-                              "transition during test");
+                "transition during test");
         txn.commit();
         txn.begin();
         em.clear();
@@ -838,6 +705,139 @@ public class JobModelTest extends AbstractModelTest {
 
     }
 
+    @Test
+    public void testSelfSequencingAuthorization() {
+        em.getTransaction().begin();
+        Product service = new Product("Kick ass", null, kernel.getCore());
+        em.persist(service);
+
+        StatusCode kickingAss = new StatusCode("Kicking Ass", null,
+                                               kernel.getCore());
+        em.persist(kickingAss);
+
+        StatusCode takingNames = new StatusCode("Taking Names", null,
+                                                kernel.getCore());
+        em.persist(takingNames);
+
+        StatusCodeSequencing sequence = new StatusCodeSequencing(
+                                                                 service,
+                                                                 kickingAss,
+                                                                 takingNames,
+                                                                 kernel.getCore());
+        em.persist(sequence);
+
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
+                                                                                         service,
+                                                                                         kickingAss,
+                                                                                         takingNames,
+                                                                                         kernel.getCore());
+        em.persist(auth);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Job job = model.getJobModel().newInitializedJob(service,
+                                                        kernel.getCore());
+        em.persist(job);
+
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
+                                         null);
+
+        em.getTransaction().commit();
+
+        em.refresh(job);
+
+        assertEquals(takingNames, job.getStatus());
+    }
+
+    @Test
+    public void testTerminateChildrenParent() throws IOException {
+        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
+        em.getTransaction().begin();
+        Product pushit = new Product("Pushit Service", null, scenario.core);
+        em.persist(pushit);
+
+        Product shoveit = new Product("shoveit Service", null, scenario.core);
+        em.persist(shoveit);
+
+        Product pullit = new Product("Pullit Service", null, scenario.core);
+        em.persist(pullit);
+
+        StatusCode pushingMe = new StatusCode("Pushing Me", null, scenario.core);
+        pushingMe.setPropagateChildren(true);
+        em.persist(pushingMe);
+
+        StatusCode shovingMe = new StatusCode("Shoving Me", null, scenario.core);
+        em.persist(shovingMe);
+
+        Protocol p = model.getJobModel().newInitializedProtocol(pushit,
+                                                                scenario.core);
+        p.setChildService(shoveit);
+        em.persist(p);
+
+        Protocol p2 = model.getJobModel().newInitializedProtocol(shoveit,
+                                                                 scenario.core);
+        p2.setChildService(pullit);
+        em.persist(p2);
+
+        model.getJobModel().createStatusCodeChain(pushit,
+                                                  new StatusCode[] { pushingMe,
+                                                                     shovingMe },
+                                                                     scenario.core);
+        model.getJobModel().createStatusCodeChain(shoveit,
+                                                  new StatusCode[] { pushingMe,
+                                                                     shovingMe },
+                                                                     scenario.core);
+        model.getJobModel().createStatusCodeChain(pullit,
+                                                  new StatusCode[] { pushingMe,
+                                                                     shovingMe },
+                                                                     scenario.core);
+
+        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
+                                                                                           shoveit,
+                                                                                           shovingMe,
+                                                                                           pullit,
+                                                                                           shovingMe,
+                                                                                           scenario.core);
+        em.persist(auth);
+        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(
+                                                                                              shoveit,
+                                                                                              shovingMe,
+                                                                                              pushit,
+                                                                                              shovingMe,
+                                                                                              scenario.core);
+        em.persist(auth2);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
+
+        em.getTransaction().commit();
+
+        List<Job> children = model.getJobModel().getAllChildren(push);
+        assertEquals(2, children.size());
+
+        em.getTransaction().begin();
+        for (Job j : children) {
+            model.getJobModel().changeStatus(j, pushingMe, kernel.getCore(),
+                                             null);
+        }
+        model.getJobModel().changeStatus(push, pushingMe, scenario.core, null);
+        em.getTransaction().commit();
+
+        Job shovingJob = model.getJobModel().getActiveSubJobsForService(push,
+                                                                        shoveit).get(0);
+        em.getTransaction().begin();
+        em.refresh(shovingJob);
+
+        model.getJobModel().changeStatus(shovingJob, shovingMe, null, null);
+        em.getTransaction().commit();
+        em.refresh(push);
+        assertEquals(shovingMe, push.getStatus());
+    }
+
     private void clearJobs() throws SQLException {
         Connection connection = em.unwrap(Connection.class);
         boolean prev = connection.getAutoCommit();
@@ -865,9 +865,9 @@ public class JobModelTest extends AbstractModelTest {
      */
     private List<String> verifyChronologyFields(Job job,
                                                 JobChronology jobChronology)
-                                                                            throws Exception {
+                                                        throws Exception {
         String[] fieldsToMatch = new String[] { "status", "requester",
-                "assignTo", "deliverFrom", "deliverTo" };
+                                                "assignTo", "deliverFrom", "deliverTo" };
         List<String> unmatchedFields = new LinkedList<>();
         if (!jobChronology.getJob().equals(job)) {
             unmatchedFields.add("job");
@@ -889,9 +889,9 @@ public class JobModelTest extends AbstractModelTest {
                 System.out.println(String.format("%s: job: %s, chronology: %s",
                                                  field,
                                                  jobRf == null ? "null"
-                                                              : jobRf.getName(),
-                                                 chronoRf == null ? "null"
-                                                                 : chronoRf.getName()));
+                                                                 : jobRf.getName(),
+                                                                 chronoRf == null ? "null"
+                                                                                    : chronoRf.getName()));
                 unmatchedFields.add(field);
             }
         }

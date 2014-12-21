@@ -57,7 +57,7 @@ public class AbstractModelTest {
             } catch (Throwable e) {
                 LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Had a bit of trouble cleaning up after %s",
                                                                                     e.getMessage()),
-                                                                      e);
+                                                                                    e);
             }
         }
     }
@@ -112,7 +112,7 @@ public class AbstractModelTest {
     protected void alterTriggers(boolean enable) throws SQLException {
         Connection connection = em.unwrap(Connection.class);
         for (String table : new String[] { "ruleform.agency",
-                "ruleform.product", "ruleform.location" }) {
+                                           "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
                                          table, enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);

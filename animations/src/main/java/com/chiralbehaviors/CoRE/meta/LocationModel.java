@@ -26,7 +26,7 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork;
  *
  */
 public interface LocationModel
-        extends
-        NetworkedModel<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute> {
+extends
+NetworkedModel<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute> {
 
 }

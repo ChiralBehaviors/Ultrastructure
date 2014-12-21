@@ -27,9 +27,9 @@ package com.chiralbehaviors.CoRE.meta;
  */
 public class InferenceMap {
     public final boolean assignTo, assignToAttribute, deliverFrom,
-            deliverFromAttribute, deliverTo, deliverToAttribute, product,
-            productAttribute, requester, requesterAttribute, serviceAttribute,
-            quantityUnit;
+    deliverFromAttribute, deliverTo, deliverToAttribute, product,
+    productAttribute, requester, requesterAttribute, serviceAttribute,
+    quantityUnit;
 
     public InferenceMap(boolean assignTo, boolean assignToAttribute,
                         boolean deliverFrom, boolean deliverFromAttribute,

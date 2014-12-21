@@ -44,9 +44,9 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 public class AttributeModelImpl
-        extends
-        AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
-        implements AttributeModel {
+extends
+AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
+implements AttributeModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -70,8 +70,6 @@ public class AttributeModelImpl
         T call(AttributeModel attributeModel) throws Exception;
     }
 
-    private static boolean deducing;
-
     public static void onAbort() {
         deducing = false;
     }
@@ -81,7 +79,7 @@ public class AttributeModelImpl
     }
 
     public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
+            throws Exception {
         if (deducing) {
             return;
         }
@@ -103,6 +101,8 @@ public class AttributeModelImpl
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
+
+    private static boolean deducing;
 
     /**
      * @param em
@@ -177,10 +177,10 @@ public class AttributeModelImpl
                                             kernel.getCoreModel());
         em.persist(attribute);
         return new Facet<Attribute, AttributeMetaAttribute>(
-                                                            aspect,
-                                                            attribute,
-                                                            initialize(attribute,
-                                                                       aspect)) {
+                aspect,
+                attribute,
+                initialize(attribute,
+                           aspect)) {
         };
     }
 
@@ -206,8 +206,8 @@ public class AttributeModelImpl
                                                       Collection<Relationship> relationships,
                                                       Collection<Attribute> children) {
         if (parents == null || parents.size() == 0 || relationships == null
-            || relationships.size() == 0 || children == null
-            || children.size() == 0) {
+                || relationships.size() == 0 || children == null
+                || children.size() == 0) {
             return null;
         }
         TypedQuery<AttributeNetwork> query = em.createNamedQuery(AttributeNetwork.GET_NETWORKS,

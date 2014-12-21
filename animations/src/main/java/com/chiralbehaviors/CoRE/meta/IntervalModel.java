@@ -30,23 +30,25 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *
  */
 public interface IntervalModel
-        extends
-        NetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
-    
+extends
+NetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
+
     Facet<Interval, IntervalAttribute> create(String name,
-                           String description,
-                           BigDecimal start,
-                           Unit startUnit,
-                           BigDecimal duration,
-                           Unit durationUnit,
-                           Aspect<Interval> aspect,
-                           @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
-    
+                                              String description,
+                                              BigDecimal start,
+                                              Unit startUnit,
+                                              Aspect<Interval> aspect,
+                                              @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
+
     Facet<Interval, IntervalAttribute> create(String name,
-                    String description,
-                    BigDecimal start,
-                    Unit startUnit,
-                    Aspect<Interval> aspect,
-                    @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
+                                              String description,
+                                              BigDecimal start,
+                                              Unit startUnit,
+                                              BigDecimal duration,
+                                              Unit durationUnit,
+                                              Aspect<Interval> aspect,
+                                              @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
+
+    Interval newDefaultInterval(String name, String description);
 
 }

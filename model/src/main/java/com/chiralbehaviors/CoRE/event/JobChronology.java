@@ -65,9 +65,9 @@ public class JobChronology extends AbstractProtocol {
                                                           + FIND_ALL_SUFFIX;
     public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
     public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
+    public static final String GET_LOG_FOR_SEQUENCE     = "jobChronology.getLogForSequenc";
     public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";
     public static final String LAST_JOB_LOG             = "jobChronology.lastJobLog";
-    public static final String GET_LOG_FOR_SEQUENCE     = "jobChronology.getLogForSequenc";
     private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job
@@ -90,16 +90,76 @@ public class JobChronology extends AbstractProtocol {
     public JobChronology(Job job, String notes) {
         super(notes, job.getUpdatedBy());
         initializeFrom(job);
-        validate();
     }
 
     public JobChronology(Job job, String notes, int sequenceNumber) {
         super(notes, job.getUpdatedBy());
         initializeFrom(job);
         setSequenceNumber(sequenceNumber);
-        validate();
     }
 
+    /**
+     * @param id
+     */
+    public JobChronology(UUID id) {
+        super(id);
+    }
+
+    public Job getJob() {
+        return job;
+    }
+
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    /**
+     * @return the status
+     */
+    public StatusCode getStatus() {
+        return status;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, JobChronology> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.jobChronology;
+    }
+
+    /**
+     * @param job
+     */
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    /**
+     * @param sequenceNumber
+     *            the sequence to set
+     */
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(StatusCode status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("JobChronology [status=%s, %s, sequenceNumber=%s, notes=%s]",
+                             getStatus().getName(), getToString(),
+                             sequenceNumber, getNotes());
+    }
+
+    @SuppressWarnings("unused")
     private void validate() {
         if (getJob() == null) {
             throw new IllegalStateException();
@@ -151,71 +211,10 @@ public class JobChronology extends AbstractProtocol {
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, JobChronology> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.jobChronology;
-    }
-
-    /**
-     * @param id
-     */
-    public JobChronology(UUID id) {
-        super(id);
-    }
-
-    public Job getJob() {
-        return job;
-    }
-
-    public int getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    /**
-     * @return the status
-     */
-    public StatusCode getStatus() {
-        return status;
-    }
-
-    /**
-     * @param job
-     */
-    public void setJob(Job job) {
-        this.job = job;
-    }
-
-    /**
-     * @param sequenceNumber
-     *            the sequence to set
-     */
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    /**
-     * @param status
-     *            the status to set
-     */
-    public void setStatus(StatusCode status) {
-        this.status = status;
-    }
-
     protected void initializeFrom(Job job) {
         setJob(job);
         setStatus(job.getStatus());
         setUpdateDate(job.getUpdateDate());
         copyFrom(job);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("JobChronology [status=%s, %s, sequenceNumber=%s, notes=%s]",
-                             getStatus().getName(), getToString(),
-                             sequenceNumber, getNotes());
     }
 }

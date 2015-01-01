@@ -90,6 +90,65 @@ public class JobChronology extends AbstractProtocol {
     public JobChronology(Job job, String notes) {
         super(notes, job.getUpdatedBy());
         initializeFrom(job);
+        validate();
+    }
+
+    public JobChronology(Job job, String notes, int sequenceNumber) {
+        super(notes, job.getUpdatedBy());
+        initializeFrom(job);
+        setSequenceNumber(sequenceNumber);
+        validate();
+    }
+
+    private void validate() {
+        if (getJob() == null) {
+            throw new IllegalStateException();
+        }
+        if (getStatus() == null) {
+            throw new IllegalStateException();
+        }
+        if (getAssignTo() == null) {
+            throw new IllegalStateException();
+        }
+        if (getAssignToAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverFrom() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverFromAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverTo() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverToAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getProduct() == null) {
+            throw new IllegalStateException();
+        }
+        if (getProductAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getQuantity() == null) {
+            throw new IllegalStateException();
+        }
+        if (getQuantityUnit() == null) {
+            throw new IllegalStateException();
+        }
+        if (getRequester() == null) {
+            throw new IllegalStateException();
+        }
+        if (getRequesterAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getService() == null) {
+            throw new IllegalStateException();
+        }
+        if (getServiceAttribute() == null) {
+            throw new IllegalStateException();
+        }
     }
 
     /* (non-Javadoc)

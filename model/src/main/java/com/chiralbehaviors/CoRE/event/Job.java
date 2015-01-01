@@ -37,7 +37,6 @@ import static com.chiralbehaviors.CoRE.event.Job.INITIAL_STATE;
 import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -245,36 +244,6 @@ public class Job extends AbstractProtocol {
      */
     public Job(Agency updatedBy) {
         super(updatedBy);
-    }
-
-    /**
-     * @param notes
-     */
-    public Job(String notes) {
-        super(notes);
-    }
-
-    /**
-     * @param notes
-     * @param updatedBy
-     */
-    public Job(String notes, Agency updatedBy) {
-        super(notes, updatedBy);
-    }
-
-    /**
-     * @param id
-     */
-    public Job(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
-     * @param updatedBy
-     */
-    public Job(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
     }
 
     /**

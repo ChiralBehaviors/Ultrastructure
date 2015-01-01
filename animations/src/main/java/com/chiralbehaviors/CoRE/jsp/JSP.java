@@ -132,38 +132,26 @@ public final class JSP {
                                          String.format("Max reentrant call depth reached, call: %s",
                                                        call));
             depth--;
-            return null;
+            throw new SQLException(
+                                   String.format("Max reentrant call depth reached, call: %s",
+                                                 call));
         }
         if (log.isTraceEnabled()) {
             log.trace(String.format("nesting depth: %s", depth));
         }
+        EntityManager em = EMF.createEntityManager();
+        em.getTransaction().begin();
         try {
             Thread.currentThread().setContextClassLoader(JSP.class.getClassLoader());
-            EntityManager em = EMF.createEntityManager();
-            em.getTransaction().begin();
             T value;
             try {
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("calling %s", call));
-                }
-                try {
-                    value = call.call(em);
-                } finally {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("exiting %s", call));
-                    }
-                }
+                value = call(call, em);
             } catch (SQLException e) {
-                if (rootCause == null) {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("Setting root cause to: %s", e));
-                    }
-                    rootCause = e;
-                }
+                setRootCause(e);
                 if (log.isTraceEnabled()) {
                     log.warn(String.format("Error during %s", call), e);
                 }
-                return null;
+                throw e;
             } catch (Throwable e) {
                 if (log.isInfoEnabled()) {
                     log.info(String.format("Error during %s", call), e);
@@ -177,12 +165,8 @@ public final class JSP {
                                                                            call,
                                                                            string.toString()),
                                                              e);
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("Setting root cause to: %s",
-                                            sqlException));
-                    rootCause = sqlException;
-                }
-                return null;
+                setRootCause(sqlException);
+                throw sqlException;
             }
             try {
                 em.getTransaction().commit();
@@ -193,18 +177,26 @@ public final class JSP {
                         break;
                     }
                     if (cause instanceof SQLException) {
-                        throw (SQLException) cause;
+                        SQLException sqlException = (SQLException) cause;
+                        setRootCause(sqlException);
+                        throw sqlException;
                     }
                     cause = cause.getCause();
                 }
-                throw new SQLException("Txn rollback", e);
+                SQLException sqlException = new SQLException("Txn rollback", e);
+                setRootCause(sqlException);
+                throw sqlException;
             }
             return value;
         } finally {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            em.close();
             depth--;
             if (depth == 0) {
                 if (log.isTraceEnabled()) {
-                    log.trace("clearing root cause");
+                    log.trace("exiting top level");
                 }
                 SQLException cause = rootCause;
                 rootCause = null;
@@ -213,6 +205,34 @@ public final class JSP {
                 }
             }
         }
+    }
+
+    private static boolean setRootCause(SQLException sqlException) {
+        if (rootCause != null) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Setting root cause to: %s",
+                                        sqlException));
+                rootCause = sqlException;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static <T> T call(StoredProcedure<T> call, EntityManager em)
+                                                                        throws Exception {
+        T value;
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("calling %s", call));
+        }
+        try {
+            value = call.call(em);
+        } finally {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("exiting %s", call));
+            }
+        }
+        return value;
     }
 
     public static void incJobProcessingCount() throws SQLException {
@@ -238,6 +258,7 @@ public final class JSP {
     }
 
     private static void onCommit() {
+        EMF.getCache().evictAll();
         jobProcessingCount = 0;
         AgencyModelImpl.onAbort();
         AttributeModelImpl.onAbort();

@@ -20,7 +20,6 @@ import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -148,7 +147,7 @@ public class Protocol extends AbstractProtocol {
     private Attribute          childProductAttribute;
 
     @Column(name = "child_quantity")
-    private BigDecimal         childQuantity;
+    private BigDecimal         childQuantity    = BigDecimal.ZERO;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -179,43 +178,6 @@ public class Protocol extends AbstractProtocol {
     private int                sequenceNumber   = 1;
 
     public Protocol() {
-    }
-
-    /**
-     * @param updatedBy
-     */
-    public Protocol(Agency updatedBy) {
-        super(updatedBy);
-    }
-
-    /**
-     * @param notes
-     */
-    public Protocol(String notes) {
-        super(notes);
-    }
-
-    /**
-     * @param notes
-     * @param updatedBy
-     */
-    public Protocol(String notes, Agency updatedBy) {
-        super(notes, updatedBy);
-    }
-
-    /**
-     * @param id
-     */
-    public Protocol(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
-     * @param updatedBy
-     */
-    public Protocol(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
     }
 
     public Agency getChildAssignTo() {

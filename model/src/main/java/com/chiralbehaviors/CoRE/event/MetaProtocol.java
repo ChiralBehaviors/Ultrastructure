@@ -153,20 +153,6 @@ public class MetaProtocol extends Ruleform {
     public MetaProtocol() {
     }
 
-    /**
-     * @param updatedBy
-     */
-    public MetaProtocol(Agency updatedBy) {
-        super(updatedBy);
-    }
-
-    /**
-     * @param notes
-     */
-    public MetaProtocol(String notes) {
-        super(notes);
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */

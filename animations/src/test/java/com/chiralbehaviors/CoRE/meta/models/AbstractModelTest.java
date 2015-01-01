@@ -101,12 +101,12 @@ public class AbstractModelTest {
         if (em.getTransaction().isActive()) {
             try {
                 em.getTransaction().rollback();
-                em.clear();
             } catch (PersistenceException e) {
                 LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Bit of a problem cleaning up"),
                                                                       e);
             }
         }
+        em.clear();
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {

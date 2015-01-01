@@ -1289,10 +1289,9 @@ public class JobModelImpl implements JobModel {
         if (job.getStatus() == null) {
             job._setStatus(kernel.getUnset()); // Prophylactic against recursive error disease
         }
-        JobChronology entry = new JobChronology(job, notes);
-        int nextLogSequence = job.nextLogSequence();
+        JobChronology entry = new JobChronology(job, notes,
+                                                job.nextLogSequence());
         em.merge(job);
-        entry.setSequenceNumber(nextLogSequence);
         em.persist(entry);
     }
 
@@ -1336,7 +1335,8 @@ public class JobModelImpl implements JobModel {
     public MetaProtocol newInitializedMetaProtocol(Product service,
                                                    Agency updatedBy) {
         Relationship any = kernel.getAnyRelationship();
-        MetaProtocol mp = new MetaProtocol(updatedBy);
+        MetaProtocol mp = new MetaProtocol();
+        mp.setUpdatedBy(updatedBy);
         mp.setService(service);
         mp.setAssignTo(any);
         mp.setAssignToAttribute(any);
@@ -1611,10 +1611,11 @@ public class JobModelImpl implements JobModel {
      */
     private void automaticallyGenerateImplicitJobsForExplicitJobs(String jobId) {
         Job job = em.find(Job.class, jobId);
-        em.refresh(job);
+        if (job == null) {
+            return;
+        }
         generateImplicitJobsForExplicitJobs(job,
                                             kernel.getCoreAnimationSoftware());
-        em.flush();
     }
 
     private void copyIntoChild(Job parent, Protocol protocol,
@@ -2011,6 +2012,9 @@ public class JobModelImpl implements JobModel {
 
     private void processJobChange(String jobId) {
         Job job = em.find(Job.class, jobId);
+        if (job == null) {
+            return;
+        }
         generateImplicitJobsForExplicitJobs(job,
                                             kernel.getCoreAnimationSoftware());
         processJobSequencing(job);

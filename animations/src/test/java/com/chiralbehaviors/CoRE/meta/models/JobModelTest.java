@@ -79,8 +79,8 @@ public class JobModelTest extends AbstractModelTest {
     public void after() {
         if (em.getTransaction().isActive()) {
             em.getTransaction().rollback();
-            em.clear();
         }
+        em.clear();
     }
 
     @Test
@@ -119,9 +119,9 @@ public class JobModelTest extends AbstractModelTest {
 
         em.getTransaction().commit();
         em.getTransaction().begin();
-
+        em.refresh(job);
         model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
-                                         null);
+                                         "taking names");
 
         em.getTransaction().commit();
 
@@ -195,6 +195,7 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().commit();
 
         em.getTransaction().begin();
+        em.refresh(job);
         jobModel.changeStatus(job, startState, kernel.getAgency(),
                               "transition during test");
         em.getTransaction().commit();
@@ -221,6 +222,7 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
+        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
                               "transition during test");
         txn.commit();
@@ -362,6 +364,7 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().commit();
 
         em.getTransaction().begin();
+        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getCore(), null);
         em.getTransaction().commit();
 
@@ -492,6 +495,7 @@ public class JobModelTest extends AbstractModelTest {
         Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
 
         em.getTransaction().commit();
+        em.refresh(push);
 
         List<Job> children = model.getJobModel().getAllChildren(push);
         assertEquals(0, children.size());
@@ -570,7 +574,7 @@ public class JobModelTest extends AbstractModelTest {
         Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
 
         em.getTransaction().commit();
-
+        em.refresh(push);
         List<Job> children = model.getJobModel().getAllChildren(push);
         assertEquals(2, children.size());
 
@@ -675,10 +679,12 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
+        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
                               "transition during test");
         txn.commit();
         txn.begin();
+        em.refresh(order);
         jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
                               "transition during test");
         txn.commit();

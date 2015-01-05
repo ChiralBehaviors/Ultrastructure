@@ -54,74 +54,6 @@ import com.chiralbehaviors.CoRE.meta.models.UnitModelImpl;
  */
 public final class JSP {
 
-    public static final EntityManagerFactory EMF;
-
-    private static int                       depth                    = 0;
-    private static int                       jobProcessingCount       = 0;
-    private static final Logger              log                      = LoggerFactory.getLogger(JSP.class);
-    private static final int                 MAX_JOB_PROCESSING       = 100;
-    private static final int                 MAX_REENTRANT_CALL_DEPTH = 10;
-    private static final Properties          PROPERTIES               = new Properties();
-    private static SQLException              rootCause;
-
-    static {
-        ClassLoader classLoader = JSP.class.getClassLoader();
-        Thread.currentThread().setContextClassLoader(classLoader);
-        // assume SLF4J is bound to logback in the current environment
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        // print logback's internal status
-        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-
-        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
-        if (is == null) {
-            log.error("Unable to read jpa.properties, resource is null");
-            throw new IllegalStateException(
-                                            "Unable to read jpa.properties, resource is null");
-        }
-        try {
-            PROPERTIES.load(is);
-        } catch (IOException e) {
-            log.error("Unable to read jpa properties", e);
-            throw new IllegalStateException("Unable to read jpa.properties", e);
-        }
-        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                     PROPERTIES);
-
-        Session session;
-        try {
-            session = SessionManager.current();
-        } catch (SQLException e) {
-            log.error("Unable to obtain current session", e);
-            throw new IllegalStateException("Unable to obtain current session",
-                                            e);
-        }
-        session.addTransactionListener(new TransactionListener() {
-
-            @Override
-            public void onAbort(Session arg0) throws SQLException {
-                JSP.onAbort();
-            }
-
-            @Override
-            public void onCommit(Session arg0) throws SQLException {
-                JSP.onCommit();
-            }
-
-            @Override
-            public void onPrepare(Session arg0) throws SQLException {
-            }
-        });
-        EntityManager em = EMF.createEntityManager();
-        log.info("loading the kernel");
-        try {
-            KernelUtil.cacheKernel(em);
-        } catch (Throwable e) {
-            log.error("Unable to load kernel", e);
-        } finally {
-            em.close();
-        }
-    }
-
     public static <T> T call(StoredProcedure<T> call) throws SQLException {
         if (rootCause != null) {
             return null;
@@ -207,16 +139,14 @@ public final class JSP {
         }
     }
 
-    private static boolean setRootCause(SQLException sqlException) {
-        if (rootCause != null) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Setting root cause to: %s",
-                                        sqlException));
-                rootCause = sqlException;
-            }
-            return true;
+    public static void incJobProcessingCount() throws SQLException {
+        jobProcessingCount++;
+        if (jobProcessingCount >= MAX_JOB_PROCESSING) {
+            throw new SQLException(
+                                   String.format("The number of jobs processed [%s} exceeds the maximum allowed [%s]",
+                                                 jobProcessingCount,
+                                                 MAX_JOB_PROCESSING));
         }
-        return false;
     }
 
     private static <T> T call(StoredProcedure<T> call, EntityManager em)
@@ -233,16 +163,6 @@ public final class JSP {
             }
         }
         return value;
-    }
-
-    public static void incJobProcessingCount() throws SQLException {
-        jobProcessingCount++;
-        if (jobProcessingCount >= MAX_JOB_PROCESSING) {
-            throw new SQLException(
-                                   String.format("The number of jobs processed [%s} exceeds the maximum allowed [%s]",
-                                                 jobProcessingCount,
-                                                 MAX_JOB_PROCESSING));
-        }
     }
 
     private static void onAbort() {
@@ -267,6 +187,91 @@ public final class JSP {
         ProductModelImpl.onAbort();
         RelationshipModelImpl.onAbort();
         UnitModelImpl.onAbort();
+    }
+
+    private static boolean setRootCause(SQLException sqlException) {
+        if (rootCause != null) {
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Setting root cause to: %s",
+                                        sqlException));
+                rootCause = sqlException;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static final EntityManagerFactory EMF;
+    private static int                       depth                    = 0;
+
+    private static int                       jobProcessingCount       = 0;
+
+    private static final Logger              log                      = LoggerFactory.getLogger(JSP.class);
+
+    private static final int                 MAX_JOB_PROCESSING       = 100;
+
+    private static final int                 MAX_REENTRANT_CALL_DEPTH = 10;
+
+    private static final Properties          PROPERTIES               = new Properties();
+
+    private static SQLException              rootCause;
+
+    static {
+        ClassLoader classLoader = JSP.class.getClassLoader();
+        Thread.currentThread().setContextClassLoader(classLoader);
+        // assume SLF4J is bound to logback in the current environment
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // print logback's internal status
+        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+        InputStream is = JSP.class.getResourceAsStream("jpa.properties");
+        if (is == null) {
+            log.error("Unable to read jpa.properties, resource is null");
+            throw new IllegalStateException(
+                                            "Unable to read jpa.properties, resource is null");
+        }
+        try {
+            PROPERTIES.load(is);
+        } catch (IOException e) {
+            log.error("Unable to read jpa properties", e);
+            throw new IllegalStateException("Unable to read jpa.properties", e);
+        }
+        EMF = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                     PROPERTIES);
+
+        Session session;
+        try {
+            session = SessionManager.current();
+        } catch (SQLException e) {
+            log.error("Unable to obtain current session", e);
+            throw new IllegalStateException("Unable to obtain current session",
+                                            e);
+        }
+        session.addTransactionListener(new TransactionListener() {
+
+            @Override
+            public void onAbort(Session arg0) throws SQLException {
+                JSP.onAbort();
+            }
+
+            @Override
+            public void onCommit(Session arg0) throws SQLException {
+                JSP.onCommit();
+            }
+
+            @Override
+            public void onPrepare(Session arg0) throws SQLException {
+            }
+        });
+        EntityManager em = EMF.createEntityManager();
+        log.info("loading the kernel");
+        try {
+            KernelUtil.cacheKernel(em);
+        } catch (Throwable e) {
+            log.error("Unable to load kernel", e);
+        } finally {
+            em.close();
+        }
     }
 
     private JSP() {

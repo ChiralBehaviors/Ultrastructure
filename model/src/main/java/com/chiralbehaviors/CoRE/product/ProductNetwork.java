@@ -120,15 +120,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     public ProductNetwork() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productNetwork;
-    }
-
     /**
      * @param updatedBy
      */
@@ -208,6 +199,15 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JsonGetter
     public ProductNetwork getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productNetwork;
     }
 
     @SuppressWarnings("unchecked")

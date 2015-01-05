@@ -69,15 +69,6 @@ public class IntervalAttributeAuthorization extends
         super(classification, updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, IntervalAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.intervalAttributeAuthorization;
-    }
-
     /**
      * @param id
      * @param classification
@@ -113,6 +104,15 @@ public class IntervalAttributeAuthorization extends
     @JsonGetter
     public Interval getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, IntervalAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.intervalAttributeAuthorization;
     }
 
     /*

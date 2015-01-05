@@ -86,15 +86,6 @@ public class ProductLocation extends Ruleform implements
     public ProductLocation() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductLocation> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productLocation;
-    }
-
     /**
      * @param updatedBy
      */
@@ -138,6 +129,15 @@ public class ProductLocation extends Ruleform implements
 
     public Relationship getRelationship() {
         return relationship;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductLocation> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productLocation;
     }
 
     public void setAgency(Agency agency2) {

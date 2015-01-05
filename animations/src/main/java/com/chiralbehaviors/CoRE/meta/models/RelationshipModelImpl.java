@@ -70,7 +70,13 @@ public class RelationshipModelImpl
         T call(RelationshipModelImpl productModel) throws Exception;
     }
 
-    private static boolean deducing;
+    public static void onAbort() {
+        deducing = false;
+    }
+
+    public static void onCommit() {
+        deducing = false;
+    }
 
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
@@ -91,6 +97,8 @@ public class RelationshipModelImpl
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
+
+    private static boolean deducing;
 
     /**
      * @param em
@@ -252,13 +260,5 @@ public class RelationshipModelImpl
             em.persist(attribute);
         }
         return attributes;
-    }
-
-    public static void onCommit() {
-        deducing = false;
-    }
-
-    public static void onAbort() {
-        deducing = false;
     }
 }

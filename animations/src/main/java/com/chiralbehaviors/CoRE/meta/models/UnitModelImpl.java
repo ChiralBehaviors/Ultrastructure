@@ -51,8 +51,6 @@ public class UnitModelImpl
         extends
         AbstractNetworkedModel<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute>
         implements UnitModel {
-    private static final Logger log = LoggerFactory.getLogger(UnitModelImpl.class);
-
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
 
@@ -73,23 +71,6 @@ public class UnitModelImpl
 
     private static interface Procedure<T> {
         T call(UnitModelImpl unitModel) throws Exception;
-    }
-
-    private static boolean deducing;
-
-    public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
-        if (deducing) {
-            return;
-        }
-        deducing = true;
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(UnitModelImpl unitModel) throws Exception {
-                unitModel.propagate();
-                return null;
-            }
-        });
     }
 
     public static BigDecimal convert(final BigDecimal value,
@@ -115,9 +96,36 @@ public class UnitModelImpl
         });
     }
 
+    public static void onAbort() {
+        deducing = false;
+    }
+
+    public static void onCommit() {
+        deducing = false;
+    }
+
+    public static void propagate_deductions(final TriggerData data)
+                                                                   throws Exception {
+        if (deducing) {
+            return;
+        }
+        deducing = true;
+        execute(new Procedure<Void>() {
+            @Override
+            public Void call(UnitModelImpl unitModel) throws Exception {
+                unitModel.propagate();
+                return null;
+            }
+        });
+    }
+
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
+
+    private static final Logger log = LoggerFactory.getLogger(UnitModelImpl.class);
+
+    private static boolean      deducing;
 
     /**
      * @param em
@@ -253,13 +261,5 @@ public class UnitModelImpl
             em.persist(attribute);
         }
         return attributes;
-    }
-
-    public static void onCommit() {
-        deducing = false;
-    }
-
-    public static void onAbort() {
-        deducing = false;
     }
 }

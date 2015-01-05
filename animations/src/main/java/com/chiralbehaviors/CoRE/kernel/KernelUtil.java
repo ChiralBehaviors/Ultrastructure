@@ -38,27 +38,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Repository of immutable kernal rules
- * 
+ *
  * This used to be the standard. Now we use workspaces. However, kernel is a
  * fundamental workspace, and it's needed a lot. Consequently, because of the
  * way we do Java stored procedures, reentrancy requires a new image of the
  * kernel workspace in the context of the entity manager. Sucks to be us.
- * 
+ *
  * Utilities for the Kerenl
  *
  * @author hhildebrand
  *
  */
 public class KernelUtil {
-
-    private static final Logger                  log                       = LoggerFactory.getLogger(KernelUtil.class);
-
-    public static final String                   SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-    public static final String                   ZERO                      = UuidGenerator.toBase64(new UUID(
-                                                                                                             0,
-                                                                                                             0));
-    private static final AtomicReference<Kernel> CACHED_KERNEL             = new AtomicReference<>();
-    static final String                          KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 
     public static Kernel cacheKernel(EntityManager em) {
         if (CACHED_KERNEL.get() != null) {
@@ -162,4 +153,16 @@ public class KernelUtil {
         }
         r.close();
     }
+
+    private static final Logger                  log                       = LoggerFactory.getLogger(KernelUtil.class);
+
+    public static final String                   SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+
+    public static final String                   ZERO                      = UuidGenerator.toBase64(new UUID(
+                                                                                                             0,
+                                                                                                             0));
+
+    private static final AtomicReference<Kernel> CACHED_KERNEL             = new AtomicReference<>();
+
+    static final String                          KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 }

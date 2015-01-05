@@ -294,6 +294,15 @@ public class Job extends AbstractProtocol {
         return status;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Job> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.job;
+    }
+
     /**
      * @return
      */
@@ -354,14 +363,5 @@ public class Job extends AbstractProtocol {
         return String.format("Job [status=%s, %s, sequenceNumber=%s, currentLogSequence=%s]",
                              getStatus().getName(), getToString(),
                              sequenceNumber, currentLogSequence);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Job> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.job;
     }
 }

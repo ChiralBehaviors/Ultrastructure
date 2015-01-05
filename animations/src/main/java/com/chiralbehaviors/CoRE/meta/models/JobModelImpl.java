@@ -116,10 +116,6 @@ public class JobModelImpl implements JobModel {
         T call(JobModelImpl jobModel) throws Exception;
     }
 
-    private static final Logger      log               = LoggerFactory.getLogger(JobModelImpl.class);
-
-    private static final Set<String> MODIFIED_SERVICES = new HashSet<>();
-
     public static void automatically_generate_implicit_jobs_for_explicit_jobs(final TriggerData triggerData)
                                                                                                             throws Exception {
         execute(new Procedure<Void>() {
@@ -411,9 +407,13 @@ public class JobModelImpl implements JobModel {
         return JSP.call(new Call<T>(procedure));
     }
 
-    protected final EntityManager em;
-    protected final Kernel        kernel;
-    protected final Model         model;
+    private static final Logger      log               = LoggerFactory.getLogger(JobModelImpl.class);
+
+    private static final Set<String> MODIFIED_SERVICES = new HashSet<>();
+
+    protected final EntityManager    em;
+    protected final Kernel           kernel;
+    protected final Model            model;
 
     public JobModelImpl(Model model) {
         this.model = model;
@@ -1502,58 +1502,6 @@ public class JobModelImpl implements JobModel {
     }
 
     /**
-     * Process the sibling squencing auths for the job. The authorizations are
-     * grouped by the same next sibling, ordered by sequence number. This method
-     * finds the first successful transition from the grouped list and returns
-     * after processing that auth
-     * 
-     * @param job
-     * @param grouped
-     */
-    private void processSiblings(Job job,
-                                 List<ProductSiblingSequencingAuthorization> grouped) {
-        if (grouped.isEmpty()) {
-            return;
-        }
-        for (Job sibling : getActiveSubJobsForService(job.getParent(),
-                                                      grouped.get(0).getNextSibling())) {
-            if (job.equals(sibling)) {
-                break; // we don't operate on the job triggering the processing
-            }
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Processing sibling change for %s",
-                                        sibling));
-            }
-            for (ProductSiblingSequencingAuthorization seq : grouped) {
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("Processing %s", seq));
-                }
-                try {
-                    ensureNextStateIsValid(sibling, sibling.getService(),
-                                           sibling.getStatus(),
-                                           seq.getNextSiblingStatus());
-                    changeStatus(sibling, seq.getNextSiblingStatus(),
-                                 kernel.getCoreAnimationSoftware(),
-                                 "Automatically switching staus via direct communication from sibling jobs");
-                    if (seq.isReplaceProduct()) {
-                        sibling.setProduct(job.getProduct());
-                    }
-                    break;
-                } catch (Throwable e) {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("invalid sibling status sequencing %s",
-                                                job), e);
-                    }
-                    log(sibling,
-                        String.format("error changing status of sibling of %s to: %s in sibling sequencing %s\n%s",
-                                      job.getId(), seq.getNextSiblingStatus(),
-                                      seq.getId(), e));
-                }
-            }
-        }
-    }
-
-    /**
      * @param modifiedServices
      * @throws SQLException
      */
@@ -1967,7 +1915,7 @@ public class JobModelImpl implements JobModel {
      * grouped by the same next child, ordered by sequence number. This method
      * finds the first successful transition from the grouped list and returns
      * after processing that auth
-     * 
+     *
      * @param job
      * @param grouped
      */
@@ -2026,7 +1974,7 @@ public class JobModelImpl implements JobModel {
      * grouped by the same parent, ordered by sequence number. This method finds
      * the first successful transition from the grouped list and returns after
      * processing that auth
-     * 
+     *
      * @param job
      * @param grouped
      */
@@ -2094,6 +2042,58 @@ public class JobModelImpl implements JobModel {
                         log.trace(String.format("Sequencing does not apply %s",
                                                 seq));
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Process the sibling squencing auths for the job. The authorizations are
+     * grouped by the same next sibling, ordered by sequence number. This method
+     * finds the first successful transition from the grouped list and returns
+     * after processing that auth
+     *
+     * @param job
+     * @param grouped
+     */
+    private void processSiblings(Job job,
+                                 List<ProductSiblingSequencingAuthorization> grouped) {
+        if (grouped.isEmpty()) {
+            return;
+        }
+        for (Job sibling : getActiveSubJobsForService(job.getParent(),
+                                                      grouped.get(0).getNextSibling())) {
+            if (job.equals(sibling)) {
+                break; // we don't operate on the job triggering the processing
+            }
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Processing sibling change for %s",
+                                        sibling));
+            }
+            for (ProductSiblingSequencingAuthorization seq : grouped) {
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Processing %s", seq));
+                }
+                try {
+                    ensureNextStateIsValid(sibling, sibling.getService(),
+                                           sibling.getStatus(),
+                                           seq.getNextSiblingStatus());
+                    changeStatus(sibling, seq.getNextSiblingStatus(),
+                                 kernel.getCoreAnimationSoftware(),
+                                 "Automatically switching staus via direct communication from sibling jobs");
+                    if (seq.isReplaceProduct()) {
+                        sibling.setProduct(job.getProduct());
+                    }
+                    break;
+                } catch (Throwable e) {
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("invalid sibling status sequencing %s",
+                                                job), e);
+                    }
+                    log(sibling,
+                        String.format("error changing status of sibling of %s to: %s in sibling sequencing %s\n%s",
+                                      job.getId(), seq.getNextSiblingStatus(),
+                                      seq.getId(), e));
                 }
             }
         }

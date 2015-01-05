@@ -208,15 +208,6 @@ public class Protocol extends AbstractProtocol {
         return childProduct;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Protocol> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.protocol;
-    }
-
     public Attribute getChildProductAttribute() {
         return childProductAttribute;
     }
@@ -250,6 +241,15 @@ public class Protocol extends AbstractProtocol {
      */
     public Integer getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Protocol> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.protocol;
     }
 
     public void setChildAssignTo(Agency childAssignTo) {

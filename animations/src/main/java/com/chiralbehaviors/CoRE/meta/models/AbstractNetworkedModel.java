@@ -76,9 +76,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
 
-    private static Logger log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
-    private static int    MAX_DEDUCTIONS = 1000;
-
     /**
      * @param attr
      */
@@ -110,6 +107,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
         }
     }
+
+    private static Logger                          log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+
+    private static int                             MAX_DEDUCTIONS = 1000;
 
     private final Class<AttributeType>             attribute;
 

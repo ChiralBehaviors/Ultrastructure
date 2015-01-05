@@ -72,7 +72,13 @@ public class ProductModelImpl
         T call(ProductModel productModel) throws Exception;
     }
 
-    private static boolean deducing;
+    public static void onAbort() {
+        deducing = false;
+    }
+
+    public static void onCommit() {
+        deducing = false;
+    }
 
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
@@ -92,6 +98,8 @@ public class ProductModelImpl
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
+
+    private static boolean deducing;
 
     /**
      * @param em
@@ -231,13 +239,5 @@ public class ProductModelImpl
             em.persist(attribute);
         }
         return attributes;
-    }
-
-    public static void onCommit() {
-        deducing = false;
-    }
-
-    public static void onAbort() {
-        deducing = false;
     }
 }

@@ -106,15 +106,6 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     public AttributeNetwork() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AttributeNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeNetwork;
-    }
-
     /**
      * @param updatedBy
      */
@@ -176,6 +167,15 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     @JsonGetter
     public AttributeNetwork getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeNetwork;
     }
 
     @Override

@@ -113,15 +113,6 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         super(updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeNetwork;
-    }
-
     /**
      * @param relationship
      * @param updatedBy
@@ -184,6 +175,15 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @JsonGetter
     public StatusCodeNetwork getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeNetwork;
     }
 
     /*

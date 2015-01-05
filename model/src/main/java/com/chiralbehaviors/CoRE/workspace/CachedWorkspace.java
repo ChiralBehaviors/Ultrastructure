@@ -44,6 +44,12 @@ public class CachedWorkspace extends DatabaseBackedWorkspace {
         cache();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Ruleform> T get(String key) {
+        return (T) cache.get(key);
+    }
+
     private void cache() {
         cache.clear();
 
@@ -57,12 +63,6 @@ public class CachedWorkspace extends DatabaseBackedWorkspace {
         for (WorkspaceAuthorization auth : em.createQuery(query).getResultList()) {
             cache.put(auth.getKey(), auth.getRuleform());
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Ruleform> T get(String key) {
-        return (T) cache.get(key);
     }
 
 }

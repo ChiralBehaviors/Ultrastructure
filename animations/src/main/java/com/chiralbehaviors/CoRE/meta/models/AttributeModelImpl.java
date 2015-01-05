@@ -70,8 +70,6 @@ public class AttributeModelImpl
         T call(AttributeModel attributeModel) throws Exception;
     }
 
-    private static boolean deducing;
-
     public static void onAbort() {
         deducing = false;
     }
@@ -103,6 +101,8 @@ public class AttributeModelImpl
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
+
+    private static boolean deducing;
 
     /**
      * @param em

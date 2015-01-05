@@ -107,15 +107,6 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         super(updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationshipNetwork;
-    }
-
     /**
      * @param relationship
      * @param updatedBy
@@ -179,6 +170,15 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @JsonGetter
     public RelationshipNetwork getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipNetwork;
     }
 
     /*

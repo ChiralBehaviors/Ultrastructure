@@ -84,53 +84,6 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
-    public void testSelfSequencingAuthorization() {
-        em.getTransaction().begin();
-        Product service = new Product("Kick ass", null, kernel.getCore());
-        em.persist(service);
-
-        StatusCode kickingAss = new StatusCode("Kicking Ass", null,
-                                               kernel.getCore());
-        em.persist(kickingAss);
-
-        StatusCode takingNames = new StatusCode("Taking Names", null,
-                                                kernel.getCore());
-        em.persist(takingNames);
-
-        StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                 service,
-                                                                 kickingAss,
-                                                                 takingNames,
-                                                                 kernel.getCore());
-        em.persist(sequence);
-
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
-                                                                                         service,
-                                                                                         kickingAss,
-                                                                                         takingNames,
-                                                                                         kernel.getCore());
-        em.persist(auth);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Job job = model.getJobModel().newInitializedJob(service,
-                                                        kernel.getCore());
-        em.persist(job);
-
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        em.refresh(job);
-        model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
-                                         "taking names");
-
-        em.getTransaction().commit();
-
-        em.refresh(job);
-
-        assertEquals(takingNames, job.getStatus());
-    }
-
-    @Test
     public void testDeliverWithoutMetaProtocol() {
         em.getTransaction().begin();
 
@@ -305,6 +258,38 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testGetActiveJobs() throws Exception {
+        clearJobs();
+        EntityTransaction txn = em.getTransaction();
+        txn.begin();
+        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
+                                                          scenario.core);
+        order.setAssignTo(scenario.orderFullfillment);
+        order.setProduct(scenario.abc486);
+        order.setDeliverTo(scenario.rsb225);
+        order.setDeliverFrom(scenario.factory1);
+        order.setRequester(scenario.georgeTownUniversity);
+        em.persist(order);
+        txn.commit();
+        txn.begin();
+        em.refresh(order);
+        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
+                              "transition during test");
+        txn.commit();
+        txn.begin();
+        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
+                              "transition during test");
+        txn.commit();
+
+        List<StatusCode> states = Arrays.asList(scenario.active,
+                                                scenario.available,
+                                                scenario.abandoned);
+        List<Job> active = jobModel.getActiveJobsFor(scenario.orderFullfillment,
+                                                     states);
+        assertEquals(1, active.size());
+    }
+
+    @Test
     public void testIteration() throws Exception {
         clearJobs();
         EntityTransaction txn = em.getTransaction();
@@ -372,38 +357,6 @@ public class JobModelTest extends AbstractModelTest {
             em.refresh(j);
             assertEquals(scenario.available, j.getStatus());
         }
-    }
-
-    @Test
-    public void testGetActiveJobs() throws Exception {
-        clearJobs();
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        Job order = model.getJobModel().newInitializedJob(scenario.deliver,
-                                                          scenario.core);
-        order.setAssignTo(scenario.orderFullfillment);
-        order.setProduct(scenario.abc486);
-        order.setDeliverTo(scenario.rsb225);
-        order.setDeliverFrom(scenario.factory1);
-        order.setRequester(scenario.georgeTownUniversity);
-        em.persist(order);
-        txn.commit();
-        txn.begin();
-        em.refresh(order);
-        jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-        txn.begin();
-        jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
-                              "transition during test");
-        txn.commit();
-
-        List<StatusCode> states = Arrays.asList(scenario.active,
-                                                scenario.available,
-                                                scenario.abandoned);
-        List<Job> active = jobModel.getActiveJobsFor(scenario.orderFullfillment,
-                                                     states);
-        assertEquals(1, active.size());
     }
 
     @Test
@@ -507,92 +460,6 @@ public class JobModelTest extends AbstractModelTest {
 
         children = model.getJobModel().getAllChildren(push);
         assertEquals(1, children.size());
-        em.refresh(push);
-        assertEquals(shovingMe, push.getStatus());
-    }
-
-    @Test
-    public void testTerminateChildrenParent() throws IOException {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
-        em.getTransaction().begin();
-        Product pushit = new Product("Pushit Service", null, scenario.core);
-        em.persist(pushit);
-
-        Product shoveit = new Product("shoveit Service", null, scenario.core);
-        em.persist(shoveit);
-
-        Product pullit = new Product("Pullit Service", null, scenario.core);
-        em.persist(pullit);
-
-        StatusCode pushingMe = new StatusCode("Pushing Me", null, scenario.core);
-        pushingMe.setPropagateChildren(true);
-        em.persist(pushingMe);
-
-        StatusCode shovingMe = new StatusCode("Shoving Me", null, scenario.core);
-        em.persist(shovingMe);
-
-        Protocol p = model.getJobModel().newInitializedProtocol(pushit,
-                                                                scenario.core);
-        p.setChildService(shoveit);
-        em.persist(p);
-
-        Protocol p2 = model.getJobModel().newInitializedProtocol(shoveit,
-                                                                 scenario.core);
-        p2.setChildService(pullit);
-        em.persist(p2);
-
-        model.getJobModel().createStatusCodeChain(pushit,
-                                                  new StatusCode[] { pushingMe,
-                                                          shovingMe },
-                                                  scenario.core);
-        model.getJobModel().createStatusCodeChain(shoveit,
-                                                  new StatusCode[] { pushingMe,
-                                                          shovingMe },
-                                                  scenario.core);
-        model.getJobModel().createStatusCodeChain(pullit,
-                                                  new StatusCode[] { pushingMe,
-                                                          shovingMe },
-                                                  scenario.core);
-
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
-                                                                                           shoveit,
-                                                                                           shovingMe,
-                                                                                           pullit,
-                                                                                           shovingMe,
-                                                                                           scenario.core);
-        em.persist(auth);
-        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(
-                                                                                              shoveit,
-                                                                                              shovingMe,
-                                                                                              pushit,
-                                                                                              shovingMe,
-                                                                                              scenario.core);
-        em.persist(auth2);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-
-        Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
-
-        em.getTransaction().commit();
-        em.refresh(push);
-        List<Job> children = model.getJobModel().getAllChildren(push);
-        assertEquals(2, children.size());
-
-        em.getTransaction().begin();
-        for (Job j : children) {
-            model.getJobModel().changeStatus(j, pushingMe, kernel.getCore(),
-                                             null);
-        }
-        model.getJobModel().changeStatus(push, pushingMe, scenario.core, null);
-        em.getTransaction().commit();
-
-        Job shovingJob = model.getJobModel().getActiveSubJobsForService(push,
-                                                                        shoveit).get(0);
-        em.getTransaction().begin();
-        em.refresh(shovingJob);
-
-        model.getJobModel().changeStatus(shovingJob, shovingMe, null, null);
-        em.getTransaction().commit();
         em.refresh(push);
         assertEquals(shovingMe, push.getStatus());
     }
@@ -842,6 +709,139 @@ public class JobModelTest extends AbstractModelTest {
 
         assertEquals(c, job.getStatus());
 
+    }
+
+    @Test
+    public void testSelfSequencingAuthorization() {
+        em.getTransaction().begin();
+        Product service = new Product("Kick ass", null, kernel.getCore());
+        em.persist(service);
+
+        StatusCode kickingAss = new StatusCode("Kicking Ass", null,
+                                               kernel.getCore());
+        em.persist(kickingAss);
+
+        StatusCode takingNames = new StatusCode("Taking Names", null,
+                                                kernel.getCore());
+        em.persist(takingNames);
+
+        StatusCodeSequencing sequence = new StatusCodeSequencing(
+                                                                 service,
+                                                                 kickingAss,
+                                                                 takingNames,
+                                                                 kernel.getCore());
+        em.persist(sequence);
+
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
+                                                                                         service,
+                                                                                         kickingAss,
+                                                                                         takingNames,
+                                                                                         kernel.getCore());
+        em.persist(auth);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Job job = model.getJobModel().newInitializedJob(service,
+                                                        kernel.getCore());
+        em.persist(job);
+
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        em.refresh(job);
+        model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
+                                         "taking names");
+
+        em.getTransaction().commit();
+
+        em.refresh(job);
+
+        assertEquals(takingNames, job.getStatus());
+    }
+
+    @Test
+    public void testTerminateChildrenParent() throws IOException {
+        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
+        em.getTransaction().begin();
+        Product pushit = new Product("Pushit Service", null, scenario.core);
+        em.persist(pushit);
+
+        Product shoveit = new Product("shoveit Service", null, scenario.core);
+        em.persist(shoveit);
+
+        Product pullit = new Product("Pullit Service", null, scenario.core);
+        em.persist(pullit);
+
+        StatusCode pushingMe = new StatusCode("Pushing Me", null, scenario.core);
+        pushingMe.setPropagateChildren(true);
+        em.persist(pushingMe);
+
+        StatusCode shovingMe = new StatusCode("Shoving Me", null, scenario.core);
+        em.persist(shovingMe);
+
+        Protocol p = model.getJobModel().newInitializedProtocol(pushit,
+                                                                scenario.core);
+        p.setChildService(shoveit);
+        em.persist(p);
+
+        Protocol p2 = model.getJobModel().newInitializedProtocol(shoveit,
+                                                                 scenario.core);
+        p2.setChildService(pullit);
+        em.persist(p2);
+
+        model.getJobModel().createStatusCodeChain(pushit,
+                                                  new StatusCode[] { pushingMe,
+                                                          shovingMe },
+                                                  scenario.core);
+        model.getJobModel().createStatusCodeChain(shoveit,
+                                                  new StatusCode[] { pushingMe,
+                                                          shovingMe },
+                                                  scenario.core);
+        model.getJobModel().createStatusCodeChain(pullit,
+                                                  new StatusCode[] { pushingMe,
+                                                          shovingMe },
+                                                  scenario.core);
+
+        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
+                                                                                           shoveit,
+                                                                                           shovingMe,
+                                                                                           pullit,
+                                                                                           shovingMe,
+                                                                                           scenario.core);
+        em.persist(auth);
+        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(
+                                                                                              shoveit,
+                                                                                              shovingMe,
+                                                                                              pushit,
+                                                                                              shovingMe,
+                                                                                              scenario.core);
+        em.persist(auth2);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+
+        Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
+
+        em.getTransaction().commit();
+        em.refresh(push);
+        List<Job> children = model.getJobModel().getAllChildren(push);
+        assertEquals(2, children.size());
+
+        em.getTransaction().begin();
+        for (Job j : children) {
+            model.getJobModel().changeStatus(j, pushingMe, kernel.getCore(),
+                                             null);
+        }
+        model.getJobModel().changeStatus(push, pushingMe, scenario.core, null);
+        em.getTransaction().commit();
+
+        Job shovingJob = model.getJobModel().getActiveSubJobsForService(push,
+                                                                        shoveit).get(0);
+        em.getTransaction().begin();
+        em.refresh(shovingJob);
+
+        model.getJobModel().changeStatus(shovingJob, shovingMe, null, null);
+        em.getTransaction().commit();
+        em.refresh(push);
+        assertEquals(shovingMe, push.getStatus());
     }
 
     private void clearJobs() throws SQLException {

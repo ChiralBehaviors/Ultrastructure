@@ -68,15 +68,6 @@ public class RelationshipAttributeAuthorization extends
         super(classification, updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, RelationshipAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationshipAttributeAuthorization;
-    }
-
     /**
      * @param id
      * @param classification
@@ -114,6 +105,15 @@ public class RelationshipAttributeAuthorization extends
     @JsonGetter
     public Relationship getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, RelationshipAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.relationshipAttributeAuthorization;
     }
 
     /*

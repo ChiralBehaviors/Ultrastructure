@@ -87,15 +87,6 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         super();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductParentSequencingAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productParentSequencingAuthorization;
-    }
-
     /**
      * @param updatedBy
      */
@@ -167,6 +158,15 @@ public class ProductParentSequencingAuthorization extends Ruleform {
 
     public StatusCode getStatusCode() {
         return statusCode;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductParentSequencingAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productParentSequencingAuthorization;
     }
 
     /**

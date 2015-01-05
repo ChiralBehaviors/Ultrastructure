@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2014 Chiral Behaviors, LLC, all rights reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
+import static org.junit.Assert.fail;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,6 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
-import static org.junit.Assert.*;
 
 /**
  * @author hparry
@@ -45,10 +46,10 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
         em.persist(b);
         StatusCode x = new StatusCode("X", null, core);
         em.persist(x);
-        
+
         List<Tuple<StatusCode, StatusCode>> codes = new ArrayList<>();
-           codes.add(new Tuple<StatusCode, StatusCode>(a, x));
-           codes.add(new Tuple<StatusCode, StatusCode>(b, x));
+        codes.add(new Tuple<StatusCode, StatusCode>(a, x));
+        codes.add(new Tuple<StatusCode, StatusCode>(b, x));
         model.getJobModel().createStatusCodeSequencings(service, codes, core);
         try {
             em.getTransaction().commit();

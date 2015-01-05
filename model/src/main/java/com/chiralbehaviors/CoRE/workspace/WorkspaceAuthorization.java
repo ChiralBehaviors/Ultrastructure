@@ -105,69 +105,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
 public class WorkspaceAuthorization extends Ruleform {
-    public static final String  AGENCY                                   = "Agency";
-    public static final String  AGENCY_ATTRIBUTE                         = "AgencyAttribute";
-    public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
-    public static final String  AGENCY_LOCATION                          = "AgencyLocation";
-    public static final String  AGENCY_LOCATION_ATTRIBUTE                = "AgencyLocationAttribute";
-    public static final String  AGENCY_NETWORK                           = "AgencyNetwork";
-    public static final String  AGENCY_NETWORK_ATTRIBUTE                 = "AgencyNetworkAttribute";
-    public static final String  AGENCY_NETWORK_AUTHORIZATION             = "AgencyNetworkAuthorization";
-    public static final String  AGENCY_PRODUCT                           = "AgencyProduct";
-    public static final String  ATTRIBUTE                                = "Attribute";
-    public static final String  ATTRIBUTE_META_ATTRIBUTE                 = "AttributeMetaAttribute";
-    public static final String  ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
-    public static final String  ATTRIBUTE_NETWORK                        = "AttributeNetwork";
-    public static final String  ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
-    public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
-    public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
-    public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
-    public static final String  INTERVAL                                 = "Interval";
-    public static final String  INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
-    public static final String  INTERVAL_NETWORK                         = "IntervalNetwork";
-    public static final String  INTERVAL_NETWORK_ATTRIBUTE               = "IntervalNetworkAttribute";
-    public static final String  JOB                                      = "Job";
-    public static final String  JOB_CHRONOLOGY                           = "JobChronology";
-    public static final String  LOCATION                                 = "Location";
-    public static final String  LOCATION_ATTRIBUTE                       = "LocationAttribute";
-    public static final String  LOCATION_ATTRIBUTE_AUTHORIZATION         = "LocationAttributeAuthorization";
-    public static final String  LOCATION_NETWORK                         = "LocationNetwork";
-    public static final String  LOCATION_NETWORK_ATTRIBUTE               = "LocationNetworkAttribute";
-    public static final String  LOCATION_NETWORK_AUTHORIZATION           = "LocationNetworkAuthorization";
-    public static final String  META_PROTOCOL                            = "MetaProtocol";
-    public static final String  NETWORK_INFERENCE                        = "NetworkInference";
-    public static final String  PRODUCT                                  = "Product";
-    public static final String  PRODUCT_ATTRIBUTE                        = "ProductAttribute";
-    public static final String  PRODUCT_ATTRIBUTE_AUTHORIZATION          = "ProductAttributeAuthorization";
-    public static final String  PRODUCT_CHILD_SEQUENCING_AUTHORIZATION   = "ProductChildSequencingAuthorization";
-    public static final String  PRODUCT_LOCATION                         = "ProductLocation";
-    public static final String  PRODUCT_LOCATION_ATTRIBUTE               = "ProductLocationAttribute";
-    public static final String  PRODUCT_NETWORK                          = "ProductNetwork";
-    public static final String  PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
-    public static final String  PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
-    public static final String  PRODUCT_SELF_SEQUENCING_AUTHORIZATION    = "ProductSelfSequencingAuthorization";
-    public static final String  PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
-    public static final String  PROTOCOL                                 = "Protocol";
-    public static final String  RELATIONSHIP                             = "Relationship";
-    public static final String  RELATIONSHIP_ATTRIBUTE                   = "RelationshipAttribute";
-    public static final String  RELATIONSHIP_ATTRIBUTE_AUTHORIZATION     = "RelationshipAttributeAuthorization";
-    public static final String  RELATIONSHIP_NETWORK                     = "RelationshipNetwork";
-    public static final String  STATUS_CODE                              = "StatusCode";
-    public static final String  STATUS_CODE_ATTRIBUTE                    = "StatusCodeAttribute";
-    public static final String  STATUS_CODE_ATTRIBUTE_AUTHORIZATION      = "StatusCodeAttributeAuthorization";
-    public static final String  STATUS_CODE_NETWORK                      = "StatusCodeNetwork";
-    public static final String  STATUS_CODE_NETWORK_ATTRIBUTE            = "StatusCodeNetworkAttribute";
-    public static final String  STATUS_CODE_SEQUENCING                   = "StatusCodeSequencing";
-    public static final String  UNIT                                     = "Unit";
-    public static final String  UNIT_ATTRIBUTE                           = "UnitAttribute";
-    public static final String  UNIT_ATTRIBUTE_AUTHORIZATION             = "UnitAttributeAuthorization";
-    public static final String  UNIT_NETWORK                             = "UnitNetwork";
-    public static final String  UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
-    public static final String  UNIT_VALUE                               = "UnitValue";
-    private static final String INTERVAL_ATTRIBUTE_AUTHORIZATION         = "IntervalAttributeAuthorization";
-
-    private static final long   serialVersionUID                         = 1L;
-
     public static String getWorkspaceAuthorizationColumnName(Class<?> ruleform) {
         StringBuilder builder = new StringBuilder();
         String simpleName = ruleform.getClass().getSimpleName();
@@ -181,6 +118,70 @@ public class WorkspaceAuthorization extends Ruleform {
         }
         return builder.toString();
     }
+
+    public static final String                    AGENCY                                   = "Agency";
+    public static final String                    AGENCY_ATTRIBUTE                         = "AgencyAttribute";
+    public static final String                    AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
+    public static final String                    AGENCY_LOCATION                          = "AgencyLocation";
+    public static final String                    AGENCY_LOCATION_ATTRIBUTE                = "AgencyLocationAttribute";
+    public static final String                    AGENCY_NETWORK                           = "AgencyNetwork";
+    public static final String                    AGENCY_NETWORK_ATTRIBUTE                 = "AgencyNetworkAttribute";
+    public static final String                    AGENCY_NETWORK_AUTHORIZATION             = "AgencyNetworkAuthorization";
+    public static final String                    AGENCY_PRODUCT                           = "AgencyProduct";
+    public static final String                    ATTRIBUTE                                = "Attribute";
+    public static final String                    ATTRIBUTE_META_ATTRIBUTE                 = "AttributeMetaAttribute";
+    public static final String                    ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
+    public static final String                    ATTRIBUTE_NETWORK                        = "AttributeNetwork";
+    public static final String                    ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
+    public static final String                    GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
+    public static final String                    GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
+    public static final String                    GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
+    public static final String                    INTERVAL                                 = "Interval";
+    public static final String                    INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
+    public static final String                    INTERVAL_NETWORK                         = "IntervalNetwork";
+    public static final String                    INTERVAL_NETWORK_ATTRIBUTE               = "IntervalNetworkAttribute";
+    public static final String                    JOB                                      = "Job";
+    public static final String                    JOB_CHRONOLOGY                           = "JobChronology";
+    public static final String                    LOCATION                                 = "Location";
+    public static final String                    LOCATION_ATTRIBUTE                       = "LocationAttribute";
+    public static final String                    LOCATION_ATTRIBUTE_AUTHORIZATION         = "LocationAttributeAuthorization";
+    public static final String                    LOCATION_NETWORK                         = "LocationNetwork";
+    public static final String                    LOCATION_NETWORK_ATTRIBUTE               = "LocationNetworkAttribute";
+    public static final String                    LOCATION_NETWORK_AUTHORIZATION           = "LocationNetworkAuthorization";
+    public static final String                    META_PROTOCOL                            = "MetaProtocol";
+    public static final String                    NETWORK_INFERENCE                        = "NetworkInference";
+    public static final String                    PRODUCT                                  = "Product";
+    public static final String                    PRODUCT_ATTRIBUTE                        = "ProductAttribute";
+    public static final String                    PRODUCT_ATTRIBUTE_AUTHORIZATION          = "ProductAttributeAuthorization";
+    public static final String                    PRODUCT_CHILD_SEQUENCING_AUTHORIZATION   = "ProductChildSequencingAuthorization";
+    public static final String                    PRODUCT_LOCATION                         = "ProductLocation";
+    public static final String                    PRODUCT_LOCATION_ATTRIBUTE               = "ProductLocationAttribute";
+    public static final String                    PRODUCT_NETWORK                          = "ProductNetwork";
+    public static final String                    PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
+    public static final String                    PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
+    public static final String                    PRODUCT_SELF_SEQUENCING_AUTHORIZATION    = "ProductSelfSequencingAuthorization";
+    public static final String                    PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
+    public static final String                    PROTOCOL                                 = "Protocol";
+    public static final String                    RELATIONSHIP                             = "Relationship";
+    public static final String                    RELATIONSHIP_ATTRIBUTE                   = "RelationshipAttribute";
+    public static final String                    RELATIONSHIP_ATTRIBUTE_AUTHORIZATION     = "RelationshipAttributeAuthorization";
+    public static final String                    RELATIONSHIP_NETWORK                     = "RelationshipNetwork";
+    public static final String                    STATUS_CODE                              = "StatusCode";
+    public static final String                    STATUS_CODE_ATTRIBUTE                    = "StatusCodeAttribute";
+    public static final String                    STATUS_CODE_ATTRIBUTE_AUTHORIZATION      = "StatusCodeAttributeAuthorization";
+    public static final String                    STATUS_CODE_NETWORK                      = "StatusCodeNetwork";
+    public static final String                    STATUS_CODE_NETWORK_ATTRIBUTE            = "StatusCodeNetworkAttribute";
+    public static final String                    STATUS_CODE_SEQUENCING                   = "StatusCodeSequencing";
+    public static final String                    UNIT                                     = "Unit";
+    public static final String                    UNIT_ATTRIBUTE                           = "UnitAttribute";
+    public static final String                    UNIT_ATTRIBUTE_AUTHORIZATION             = "UnitAttributeAuthorization";
+    public static final String                    UNIT_NETWORK                             = "UnitNetwork";
+    public static final String                    UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
+    public static final String                    UNIT_VALUE                               = "UnitValue";
+
+    private static final String                   INTERVAL_ATTRIBUTE_AUTHORIZATION         = "IntervalAttributeAuthorization";
+
+    private static final long                     serialVersionUID                         = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
             CascadeType.DETACH })

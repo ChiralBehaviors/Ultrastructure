@@ -459,7 +459,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      *            the unit to set
      */
     public void setDurationUnit(Unit unit) {
-        this.durationUnit = unit;
+        durationUnit = unit;
     }
 
     /*
@@ -499,6 +499,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      *            the unit to set
      */
     public void setStartUnit(Unit unit) {
-        this.startUnit = unit;
+        startUnit = unit;
     }
 }

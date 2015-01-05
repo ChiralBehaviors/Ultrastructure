@@ -66,15 +66,6 @@ public class LocationAttributeAuthorization extends
         super(updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationAttributeAuthorization;
-    }
-
     /**
      * @param classification
      * @param updatedBy
@@ -118,6 +109,15 @@ public class LocationAttributeAuthorization extends
     @JsonGetter
     public Location getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationAttributeAuthorization;
     }
 
     /*

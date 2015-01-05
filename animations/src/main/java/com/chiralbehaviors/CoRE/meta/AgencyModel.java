@@ -26,7 +26,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
  *
  */
 public interface AgencyModel
-extends
-NetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute> {
+        extends
+        NetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute> {
 
 }

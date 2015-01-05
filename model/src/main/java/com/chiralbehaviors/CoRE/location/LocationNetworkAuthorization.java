@@ -72,15 +72,6 @@ public class LocationNetworkAuthorization extends
         super(id);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationNetworkAuthorization;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -104,6 +95,15 @@ public class LocationNetworkAuthorization extends
     @JsonGetter
     public Location getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetworkAuthorization;
     }
 
     /*

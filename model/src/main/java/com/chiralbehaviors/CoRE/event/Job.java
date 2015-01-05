@@ -37,7 +37,6 @@ import static com.chiralbehaviors.CoRE.event.Job.INITIAL_STATE;
 import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
 
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -248,36 +247,6 @@ public class Job extends AbstractProtocol {
     }
 
     /**
-     * @param notes
-     */
-    public Job(String notes) {
-        super(notes);
-    }
-
-    /**
-     * @param notes
-     * @param updatedBy
-     */
-    public Job(String notes, Agency updatedBy) {
-        super(notes, updatedBy);
-    }
-
-    /**
-     * @param id
-     */
-    public Job(UUID id) {
-        super(id);
-    }
-
-    /**
-     * @param id
-     * @param updatedBy
-     */
-    public Job(UUID id, Agency updatedBy) {
-        super(id, updatedBy);
-    }
-
-    /**
      * Should ONLY be called from JobModel. You call this yourself, you ain't be
      * logging. We have to make it Public because it ain't in the same package.
      * <p>
@@ -323,6 +292,15 @@ public class Job extends AbstractProtocol {
 
     public StatusCode getStatus() {
         return status;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, Job> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.job;
     }
 
     /**
@@ -385,14 +363,5 @@ public class Job extends AbstractProtocol {
         return String.format("Job [status=%s, %s, sequenceNumber=%s, currentLogSequence=%s]",
                              getStatus().getName(), getToString(),
                              sequenceNumber, currentLogSequence);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Job> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.job;
     }
 }

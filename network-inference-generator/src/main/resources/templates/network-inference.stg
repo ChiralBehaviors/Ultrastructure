@@ -34,7 +34,9 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                     ON p1.relationship = deduction.premise1
                     AND p2.relationship = deduction.premise2
                  LEFT OUTER JOIN %tableName% AS exist
-                    ON  exist.inference = deduction.id
+                    ON  exist.parent = p1.parent
+                    AND exist.relationship = deduction.inference
+                    AND exist.child = p2.child
                  WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
@@ -108,9 +110,6 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                    ON cpr.parent = exist.parent
                    AND cpr.relationship = exist.relationship
                    AND cpr.child = exist.child
-                   AND cpr.premise1 = exist.premise1
-                   AND cpr.premise2 = exist.premise2
-                   AND cpr.inference = exist.inference
                WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
@@ -138,9 +137,6 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 ON net.child = exist.parent
                 AND rel.inverse = exist.relationship
                 AND net.parent = exist.child
-                AND net.premise1 = exist.premise1
-                AND net.premise2 = exist.premise2
-                AND net.inference = exist.inference
             WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>

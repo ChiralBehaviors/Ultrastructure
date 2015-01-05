@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2014 Halloran Parry, all rights reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -77,15 +77,6 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
         super();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductSelfSequencingAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productSelfSequencingAuthorization;
-    }
-
     /**
      * @param updatedBy
      */
@@ -133,10 +124,6 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
         super(id, updatedBy);
     }
 
-    public StatusCode getStatusToSet() {
-        return statusToSet;
-    }
-
     public Integer getSequenceNumber() {
         return sequenceNumber;
     }
@@ -149,8 +136,17 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
         return statusCode;
     }
 
-    public void setStatusToSet(StatusCode statusToSet) {
-        this.statusToSet = statusToSet;
+    public StatusCode getStatusToSet() {
+        return statusToSet;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductSelfSequencingAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productSelfSequencingAuthorization;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -163,6 +159,10 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
 
     public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
+    }
+
+    public void setStatusToSet(StatusCode statusToSet) {
+        this.statusToSet = statusToSet;
     }
 
     @Override

@@ -111,15 +111,6 @@ public class LocationNetwork extends NetworkRuleform<Location> {
         super(updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationNetwork;
-    }
-
     /**
      * @param relationship
      * @param updatedBy
@@ -174,6 +165,15 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @JsonGetter
     public LocationNetwork getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, LocationNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.locationNetwork;
     }
 
     @Override

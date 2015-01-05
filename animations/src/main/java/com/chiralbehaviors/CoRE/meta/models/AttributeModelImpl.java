@@ -44,9 +44,9 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  *
  */
 public class AttributeModelImpl
-extends
-AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
-implements AttributeModel {
+        extends
+        AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
+        implements AttributeModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -79,7 +79,7 @@ implements AttributeModel {
     }
 
     public static void propagate_deductions(final TriggerData data)
-            throws Exception {
+                                                                   throws Exception {
         if (deducing) {
             return;
         }
@@ -177,10 +177,10 @@ implements AttributeModel {
                                             kernel.getCoreModel());
         em.persist(attribute);
         return new Facet<Attribute, AttributeMetaAttribute>(
-                aspect,
-                attribute,
-                initialize(attribute,
-                           aspect)) {
+                                                            aspect,
+                                                            attribute,
+                                                            initialize(attribute,
+                                                                       aspect)) {
         };
     }
 
@@ -206,8 +206,8 @@ implements AttributeModel {
                                                       Collection<Relationship> relationships,
                                                       Collection<Attribute> children) {
         if (parents == null || parents.size() == 0 || relationships == null
-                || relationships.size() == 0 || children == null
-                || children.size() == 0) {
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
             return null;
         }
         TypedQuery<AttributeNetwork> query = em.createNamedQuery(AttributeNetwork.GET_NETWORKS,

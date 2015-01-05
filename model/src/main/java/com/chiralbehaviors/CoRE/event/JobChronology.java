@@ -65,9 +65,9 @@ public class JobChronology extends AbstractProtocol {
                                                           + FIND_ALL_SUFFIX;
     public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
     public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
+    public static final String GET_LOG_FOR_SEQUENCE     = "jobChronology.getLogForSequenc";
     public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";
     public static final String LAST_JOB_LOG             = "jobChronology.lastJobLog";
-    public static final String GET_LOG_FOR_SEQUENCE     = "jobChronology.getLogForSequenc";
     private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job
@@ -92,13 +92,10 @@ public class JobChronology extends AbstractProtocol {
         initializeFrom(job);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, JobChronology> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.jobChronology;
+    public JobChronology(Job job, String notes, int sequenceNumber) {
+        super(notes, job.getUpdatedBy());
+        initializeFrom(job);
+        setSequenceNumber(sequenceNumber);
     }
 
     /**
@@ -121,6 +118,15 @@ public class JobChronology extends AbstractProtocol {
      */
     public StatusCode getStatus() {
         return status;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, JobChronology> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.jobChronology;
     }
 
     /**
@@ -146,17 +152,69 @@ public class JobChronology extends AbstractProtocol {
         this.status = status;
     }
 
-    protected void initializeFrom(Job job) {
-        setJob(job);
-        setStatus(job.getStatus());
-        setUpdateDate(job.getUpdateDate());
-        copyFrom(job);
-    }
-
     @Override
     public String toString() {
         return String.format("JobChronology [status=%s, %s, sequenceNumber=%s, notes=%s]",
                              getStatus().getName(), getToString(),
                              sequenceNumber, getNotes());
+    }
+
+    @SuppressWarnings("unused")
+    private void validate() {
+        if (getJob() == null) {
+            throw new IllegalStateException();
+        }
+        if (getStatus() == null) {
+            throw new IllegalStateException();
+        }
+        if (getAssignTo() == null) {
+            throw new IllegalStateException();
+        }
+        if (getAssignToAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverFrom() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverFromAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverTo() == null) {
+            throw new IllegalStateException();
+        }
+        if (getDeliverToAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getProduct() == null) {
+            throw new IllegalStateException();
+        }
+        if (getProductAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getQuantity() == null) {
+            throw new IllegalStateException();
+        }
+        if (getQuantityUnit() == null) {
+            throw new IllegalStateException();
+        }
+        if (getRequester() == null) {
+            throw new IllegalStateException();
+        }
+        if (getRequesterAttribute() == null) {
+            throw new IllegalStateException();
+        }
+        if (getService() == null) {
+            throw new IllegalStateException();
+        }
+        if (getServiceAttribute() == null) {
+            throw new IllegalStateException();
+        }
+    }
+
+    protected void initializeFrom(Job job) {
+        setJob(job);
+        setStatus(job.getStatus());
+        setUpdateDate(job.getUpdateDate());
+        copyFrom(job);
     }
 }

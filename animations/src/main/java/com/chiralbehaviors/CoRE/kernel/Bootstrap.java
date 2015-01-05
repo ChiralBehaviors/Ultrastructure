@@ -221,7 +221,7 @@ public class Bootstrap {
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setInt(4, wko == WellKnownStatusCode.UNSET ? Ruleform.TRUE
-                                                         : Ruleform.FALSE);
+                                                        : Ruleform.FALSE);
             s.setString(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
@@ -262,10 +262,10 @@ public class Bootstrap {
 
     private void createRootNetworks() throws SQLException {
         for (WellKnownObject wko : new WellKnownObject[] {
-                                                          WellKnownAgency.AGENCY, WellKnownAttribute.ATTRIBUTE,
-                                                          WellKnownInterval.INTERVAL, WellKnownLocation.LOCATION,
-                                                          WellKnownProduct.PRODUCT, WellKnownRelationship.RELATIONSHIP,
-                                                          WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
+                WellKnownAgency.AGENCY, WellKnownAttribute.ATTRIBUTE,
+                WellKnownInterval.INTERVAL, WellKnownLocation.LOCATION,
+                WellKnownProduct.PRODUCT, WellKnownRelationship.RELATIONSHIP,
+                WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
             insertNetwork(wko);
         }
     }

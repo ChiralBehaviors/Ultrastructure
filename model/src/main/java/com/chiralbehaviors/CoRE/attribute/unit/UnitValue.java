@@ -64,15 +64,6 @@ public class UnitValue extends Ruleform {
     public UnitValue() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, UnitValue> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unitValue;
-    }
-
     public Boolean getBooleanValue() {
         return toBoolean(booleanValue);
     }
@@ -95,6 +86,15 @@ public class UnitValue extends Ruleform {
 
     public Unit getUnit() {
         return unit;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, UnitValue> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitValue;
     }
 
     public void setBooleanValue(Boolean booleanValue) {

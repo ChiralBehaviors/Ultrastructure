@@ -154,29 +154,6 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param updatedBy
-     */
-    public MetaProtocol(Agency updatedBy) {
-        super(updatedBy);
-    }
-
-    /**
-     * @param notes
-     */
-    public MetaProtocol(String notes) {
-        super(notes);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, MetaProtocol> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.metaProtocol;
-    }
-
-    /**
      * @param notes
      * @param updatedBy
      */
@@ -303,6 +280,15 @@ public class MetaProtocol extends Ruleform {
      */
     public Boolean getStopOnMatch() {
         return toBoolean(stopOnMatch);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, MetaProtocol> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.metaProtocol;
     }
 
     /**

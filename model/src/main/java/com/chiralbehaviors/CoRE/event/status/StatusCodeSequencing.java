@@ -111,15 +111,6 @@ public class StatusCodeSequencing extends Ruleform {
     public StatusCodeSequencing() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeSequencing> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeSequencing;
-    }
-
     /**
      * @param updatedBy
      */
@@ -178,6 +169,15 @@ public class StatusCodeSequencing extends Ruleform {
      */
     public Product getService() {
         return service;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeSequencing> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeSequencing;
     }
 
     public void setChildCode(StatusCode statusCode1) {

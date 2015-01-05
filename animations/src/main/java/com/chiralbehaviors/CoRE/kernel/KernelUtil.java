@@ -87,8 +87,8 @@ public class KernelUtil {
     }
 
     public static Kernel clearAndLoadKernel(EntityManager em)
-            throws SQLException,
-            IOException {
+                                                             throws SQLException,
+                                                             IOException {
         clear(em);
         return loadKernel(em);
     }
@@ -105,7 +105,7 @@ public class KernelUtil {
     }
 
     public static Kernel loadKernel(EntityManager em, InputStream is)
-            throws IOException {
+                                                                     throws IOException {
         em.getTransaction().begin();
         RehydratedWorkspace workspace = rehydrateKernel(is);
         workspace.retarget(em);
@@ -117,9 +117,9 @@ public class KernelUtil {
     }
 
     private static RehydratedWorkspace readKernel(InputStream is)
-            throws IOException,
-            JsonParseException,
-            JsonMappingException {
+                                                                 throws IOException,
+                                                                 JsonParseException,
+                                                                 JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         RehydratedWorkspace workspace = mapper.readValue(is,
@@ -128,18 +128,18 @@ public class KernelUtil {
     }
 
     private static RehydratedWorkspace rehydrateKernel(InputStream is)
-            throws IOException,
-            JsonParseException,
-            JsonMappingException {
+                                                                      throws IOException,
+                                                                      JsonParseException,
+                                                                      JsonMappingException {
         RehydratedWorkspace workspace = readKernel(is);
         workspace.cache();
         return workspace;
     }
 
     static void alterTriggers(Connection connection, boolean enable)
-            throws SQLException {
+                                                                    throws SQLException {
         for (String table : new String[] { "ruleform.agency",
-                                           "ruleform.product", "ruleform.location" }) {
+                "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
                                          table, enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);

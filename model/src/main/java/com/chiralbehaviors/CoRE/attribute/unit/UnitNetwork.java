@@ -105,15 +105,6 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
         super();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, UnitNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unitNetwork;
-    }
-
     /**
      * @param updatedBy
      */
@@ -182,6 +173,15 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @JsonGetter
     public UnitNetwork getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, UnitNetwork> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitNetwork;
     }
 
     /*

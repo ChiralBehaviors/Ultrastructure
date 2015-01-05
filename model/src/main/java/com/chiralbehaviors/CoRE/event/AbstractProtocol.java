@@ -116,7 +116,7 @@ public abstract class AbstractProtocol extends Ruleform {
     private Attribute         productAttribute;
 
     @Column(name = "quantity")
-    private BigDecimal        quantity;
+    private BigDecimal        quantity         = BigDecimal.ZERO;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -379,10 +379,16 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     public void setQuantity(BigDecimal quantity) {
+        if (quantity == null) {
+            throw new IllegalArgumentException();
+        }
         this.quantity = quantity;
     }
 
     public void setQuantityUnit(Unit quantityUnit) {
+        if (quantityUnit == null) {
+            throw new IllegalArgumentException();
+        }
         this.quantityUnit = quantityUnit;
     }
 

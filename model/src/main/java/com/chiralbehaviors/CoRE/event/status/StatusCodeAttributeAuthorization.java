@@ -52,15 +52,6 @@ public class StatusCodeAttributeAuthorization extends
     public StatusCodeAttributeAuthorization() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeAttributeAuthorization;
-    }
-
     /**
      * @param updatedBy
      */
@@ -115,6 +106,15 @@ public class StatusCodeAttributeAuthorization extends
     @JsonGetter
     public StatusCode getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.statusCodeAttributeAuthorization;
     }
 
     /*

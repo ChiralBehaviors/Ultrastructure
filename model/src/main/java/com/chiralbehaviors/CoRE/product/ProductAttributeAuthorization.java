@@ -60,15 +60,6 @@ public class ProductAttributeAuthorization extends
         super(updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productAttributeAuthorization;
-    }
-
     /**
      * @param classification
      * @param updatedBy
@@ -112,6 +103,15 @@ public class ProductAttributeAuthorization extends
     @JsonGetter
     public Product getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productAttributeAuthorization;
     }
 
     /*

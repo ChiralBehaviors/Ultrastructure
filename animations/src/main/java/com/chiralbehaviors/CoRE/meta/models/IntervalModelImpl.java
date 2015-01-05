@@ -46,9 +46,9 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *
  */
 public class IntervalModelImpl
-extends
-AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
-implements IntervalModel {
+        extends
+        AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
+        implements IntervalModel {
 
     private static class Call<T> implements StoredProcedure<T> {
         private final Procedure<T> procedure;
@@ -81,7 +81,7 @@ implements IntervalModel {
     }
 
     public static void propagate_deductions(final TriggerData data)
-            throws Exception {
+                                                                   throws Exception {
         if (deducing) {
             return;
         }
@@ -237,8 +237,8 @@ implements IntervalModel {
                                          kernel.getCoreModel());
         em.persist(interval);
         return new Facet<Interval, IntervalAttribute>(aspect, interval,
-                initialize(interval,
-                           aspect)) {
+                                                      initialize(interval,
+                                                                 aspect)) {
         };
     }
 

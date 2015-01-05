@@ -52,15 +52,6 @@ public class UnitAttributeAuthorization extends
     public UnitAttributeAuthorization() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, UnitAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unitAttributeAuthorization;
-    }
-
     /**
      * @param updatedBy
      */
@@ -113,6 +104,15 @@ public class UnitAttributeAuthorization extends
     @JsonGetter
     public Unit getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, UnitAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.unitAttributeAuthorization;
     }
 
     /*

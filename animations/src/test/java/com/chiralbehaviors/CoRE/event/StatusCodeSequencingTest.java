@@ -119,15 +119,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     public void testHasNoTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()) };
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -210,15 +210,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     public void testHasTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()) };
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -231,15 +231,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     public void testLoop() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] {
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()),
-                                               new StatusCode(UUID.randomUUID()) };
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()),
+                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[3]));

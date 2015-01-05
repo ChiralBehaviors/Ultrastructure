@@ -65,15 +65,6 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
         super(updatedBy);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductNetworkAuthorization> getWorkspaceAuthAttribute() {
-        return null;
-    }
-
     /**
      * @param id
      */
@@ -104,6 +95,15 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     @JsonGetter
     public Product getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductNetworkAuthorization> getWorkspaceAuthAttribute() {
+        return null;
     }
 
     /*

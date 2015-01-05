@@ -49,15 +49,6 @@ public class AttributeMetaAttributeAuthorization extends
     @JoinColumn(name = "classifier")
     private Attribute         classifier;
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeMetaAttributeAuthorization;
-    }
-
     /**
      *
      */
@@ -123,6 +114,15 @@ public class AttributeMetaAttributeAuthorization extends
     @JsonGetter
     public Attribute getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttributeAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.attributeMetaAttributeAuthorization;
     }
 
     /*

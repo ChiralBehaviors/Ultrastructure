@@ -30,8 +30,8 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *
  */
 public interface IntervalModel
-extends
-NetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
+        extends
+        NetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
 
     Facet<Interval, IntervalAttribute> create(String name,
                                               String description,

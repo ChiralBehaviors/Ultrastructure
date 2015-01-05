@@ -59,15 +59,6 @@ public class NetworkInference extends Ruleform {
     public NetworkInference() {
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, NetworkInference> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.networkInference;
-    }
-
     /**
      * @param updatedBy
      */
@@ -131,6 +122,15 @@ public class NetworkInference extends Ruleform {
 
     public Relationship getPremise2() {
         return premise2;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, NetworkInference> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.networkInference;
     }
 
     public void setInference(Relationship inference) {

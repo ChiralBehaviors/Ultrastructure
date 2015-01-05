@@ -79,15 +79,6 @@ public class ProductChildSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductChildSequencingAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productChildSequencingAuthorization;
-    }
-
     /**
      *
      */
@@ -162,6 +153,15 @@ public class ProductChildSequencingAuthorization extends Ruleform {
 
     public StatusCode getStatusCode() {
         return statusCode;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    @JsonIgnore
+    public SingularAttribute<WorkspaceAuthorization, ProductChildSequencingAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productChildSequencingAuthorization;
     }
 
     /**

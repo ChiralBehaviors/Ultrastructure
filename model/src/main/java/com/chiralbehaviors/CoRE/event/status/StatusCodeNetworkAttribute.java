@@ -196,6 +196,6 @@ public class StatusCodeNetworkAttribute extends
     }
 
     public void setStatusCodeNetwork(StatusCodeNetwork StatusCodeNetwork) {
-        this.statusCodeNetwork = StatusCodeNetwork;
+        statusCodeNetwork = StatusCodeNetwork;
     }
 }

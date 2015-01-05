@@ -224,6 +224,15 @@ public final class JSP {
         // print logback's internal status
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 
+        // force class loading
+        AgencyModelImpl.class.getCanonicalName();
+        AttributeModelImpl.class.getCanonicalName();
+        IntervalModelImpl.class.getCanonicalName();
+        LocationModelImpl.class.getCanonicalName();
+        ProductModelImpl.class.getCanonicalName();
+        RelationshipModelImpl.class.getCanonicalName();
+        UnitModelImpl.class.getCanonicalName();
+
         InputStream is = JSP.class.getResourceAsStream("jpa.properties");
         if (is == null) {
             log.error("Unable to read jpa.properties, resource is null");

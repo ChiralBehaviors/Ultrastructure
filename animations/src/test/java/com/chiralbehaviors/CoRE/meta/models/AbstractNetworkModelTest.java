@@ -243,19 +243,19 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.getTransaction().begin();
 
         Relationship a = model.getRelationshipModel().create("a", "a", "a'",
-                "a'");
+                                                             "a'");
         Relationship b = model.getRelationshipModel().create("b", "b", "b'",
-                "b'");
+                                                             "b'");
         Relationship c = model.getRelationshipModel().create("c", "c", "c'",
-                "c'");
+                                                             "c'");
         Relationship d = model.getRelationshipModel().create("d", "d", "d'",
-                "d'");
+                                                             "d'");
         Relationship e = model.getRelationshipModel().create("e", "e", "e'",
-                "e'");
+                                                             "e'");
         Relationship f = model.getRelationshipModel().create("f", "f", "f'",
-                "f'");
+                                                             "f'");
         Relationship g = model.getRelationshipModel().create("g", "g", "g'",
-                "g'");
+                                                             "g'");
 
         NetworkInference aIsB = new NetworkInference(a, b, a, core);
         em.persist(aIsB);

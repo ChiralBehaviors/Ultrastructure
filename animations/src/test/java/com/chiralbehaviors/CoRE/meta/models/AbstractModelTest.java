@@ -106,7 +106,13 @@ public class AbstractModelTest {
                                                                       e);
             }
         }
-        em.clear();
+        try {
+            em.clear();
+        } catch (Throwable e) {
+            LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Had a bit of trouble cleaning up after %s",
+                                                                                e.getMessage()),
+                                                                  e);
+        }
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {

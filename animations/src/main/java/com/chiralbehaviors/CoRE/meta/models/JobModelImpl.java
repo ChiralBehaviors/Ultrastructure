@@ -1289,10 +1289,14 @@ public class JobModelImpl implements JobModel {
         if (job.getStatus() == null) {
             job._setStatus(kernel.getUnset()); // Prophylactic against recursive error disease
         }
-        JobChronology entry = new JobChronology(job, notes,
-                                                job.nextLogSequence());
-        em.merge(job);
+        TypedQuery<Integer> query = em.createNamedQuery(JobChronology.HIGHEST_SEQUENCE_FOR_JOB,
+                                                        Integer.class);
+        query.setParameter("job", job);
+        Integer result = query.getSingleResult();
+        int highest = result == null ? 0 : result;
+        JobChronology entry = new JobChronology(job, notes, highest + 1);
         em.persist(entry);
+        em.flush();
     }
 
     /*
@@ -1866,7 +1870,10 @@ public class JobModelImpl implements JobModel {
 
     private void logInsertsInJobChronology(String jobId, String statusId) {
         Job job = em.find(Job.class, jobId);
-        if (job.getCurrentLogSequence() == 0) {
+        TypedQuery<Integer> query = em.createNamedQuery(JobChronology.HIGHEST_SEQUENCE_FOR_JOB,
+                                                        Integer.class);
+        query.setParameter("job", job);
+        if (query.getSingleResult() == null) {
             log(job, "Initial insertion of job");
         }
         em.flush();

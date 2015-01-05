@@ -148,7 +148,6 @@ public class JobModelTest extends AbstractModelTest {
         em.getTransaction().commit();
 
         em.getTransaction().begin();
-        em.refresh(job);
         jobModel.changeStatus(job, startState, kernel.getAgency(),
                               "transition during test");
         em.getTransaction().commit();
@@ -175,7 +174,6 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
                               "transition during test");
         txn.commit();
@@ -272,7 +270,6 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
                               "transition during test");
         txn.commit();
@@ -448,7 +445,6 @@ public class JobModelTest extends AbstractModelTest {
         Job push = model.getJobModel().newInitializedJob(pushit, scenario.core);
 
         em.getTransaction().commit();
-        em.refresh(push);
 
         List<Job> children = model.getJobModel().getAllChildren(push);
         assertEquals(0, children.size());
@@ -457,10 +453,9 @@ public class JobModelTest extends AbstractModelTest {
         model.getJobModel().changeStatus(push, pushingMe, scenario.core, null);
         push.setProduct(pushit);
         em.getTransaction().commit();
-
+        em.refresh(push);
         children = model.getJobModel().getAllChildren(push);
         assertEquals(1, children.size());
-        em.refresh(push);
         assertEquals(shovingMe, push.getStatus());
     }
 
@@ -546,12 +541,10 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
                               "transition during test");
         txn.commit();
         txn.begin();
-        em.refresh(order);
         jobModel.changeStatus(order, scenario.active, kernel.getAgency(),
                               "transition during test");
         txn.commit();
@@ -578,7 +571,6 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        em.refresh(order);
         jobModel.changeStatus(order, scenario.available, kernel.getAgency(),
                               "transition during test");
         txn.commit();
@@ -747,7 +739,6 @@ public class JobModelTest extends AbstractModelTest {
 
         em.getTransaction().commit();
         em.getTransaction().begin();
-        em.refresh(job);
         model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
                                          "taking names");
 
@@ -836,7 +827,6 @@ public class JobModelTest extends AbstractModelTest {
         Job shovingJob = model.getJobModel().getActiveSubJobsForService(push,
                                                                         shoveit).get(0);
         em.getTransaction().begin();
-        em.refresh(shovingJob);
 
         model.getJobModel().changeStatus(shovingJob, shovingMe, null, null);
         em.getTransaction().commit();

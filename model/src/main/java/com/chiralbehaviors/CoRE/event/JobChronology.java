@@ -20,7 +20,6 @@ import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
 import static com.chiralbehaviors.CoRE.event.JobChronology.GET_LOG_FOR_SEQUENCE;
 import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
-import static com.chiralbehaviors.CoRE.event.JobChronology.LAST_JOB_LOG;
 
 import java.util.UUID;
 
@@ -54,10 +53,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                     + "WHERE j.job = :job"),
                @NamedQuery(name = GET_LOG_FOR_SEQUENCE, query = "SELECT j from JobChronology j "
                                                                 + "WHERE j.job = :job "
-                                                                + "    AND j.sequenceNumber = :sequence"),
-               @NamedQuery(name = LAST_JOB_LOG, query = "SELECT j from JobChronology j "
-                                                        + "WHERE j.job = :job "
-                                                        + "    AND j.sequenceNumber = j.job.currentLogSequence") })
+                                                                + "    AND j.sequenceNumber = :sequence") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends AbstractProtocol {
@@ -67,7 +63,6 @@ public class JobChronology extends AbstractProtocol {
     public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
     public static final String GET_LOG_FOR_SEQUENCE     = "jobChronology.getLogForSequenc";
     public static final String HIGHEST_SEQUENCE_FOR_JOB = "jobChronology.highestSequenceForJob";
-    public static final String LAST_JOB_LOG             = "jobChronology.lastJobLog";
     private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Job

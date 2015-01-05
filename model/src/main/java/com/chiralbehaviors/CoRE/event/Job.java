@@ -208,9 +208,6 @@ public class Job extends AbstractProtocol {
     @JsonIgnore
     private Set<JobChronology> chronology;
 
-    @Column(name = "current_log_sequence")
-    private int                currentLogSequence                     = 0;
-
     @Column(name = "depth")
     private int                depth                                  = 0;
 
@@ -267,10 +264,6 @@ public class Job extends AbstractProtocol {
         return chronology;
     }
 
-    public int getCurrentLogSequence() {
-        return currentLogSequence;
-    }
-
     public int getDepth() {
         return depth;
     }
@@ -303,24 +296,12 @@ public class Job extends AbstractProtocol {
         return WorkspaceAuthorization_.job;
     }
 
-    /**
-     * @return
-     */
-    public int nextLogSequence() {
-        currentLogSequence++;
-        return currentLogSequence;
-    }
-
     public void setChildJobs(Set<Job> jobs) {
         childJobs = jobs;
     }
 
     public void setChronology(Set<JobChronology> jobChronologies) {
         chronology = jobChronologies;
-    }
-
-    public void setCurrentLogSequence(int currentLogSequence) {
-        this.currentLogSequence = currentLogSequence;
     }
 
     public void setDepth(int depth) {
@@ -360,8 +341,8 @@ public class Job extends AbstractProtocol {
      */
     @Override
     public String toString() {
-        return String.format("Job [status=%s, %s, sequenceNumber=%s, currentLogSequence=%s]",
+        return String.format("Job [status=%s, %s, sequenceNumber=%s]",
                              getStatus().getName(), getToString(),
-                             sequenceNumber, currentLogSequence);
+                             sequenceNumber);
     }
 }

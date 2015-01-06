@@ -96,20 +96,8 @@ public class UnitModelImpl
         });
     }
 
-    public static void onAbort() {
-        deducing = false;
-    }
-
-    public static void onCommit() {
-        deducing = false;
-    }
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (deducing) {
-            return;
-        }
-        deducing = true;
         execute(new Procedure<Void>() {
             @Override
             public Void call(UnitModelImpl unitModel) throws Exception {
@@ -124,8 +112,6 @@ public class UnitModelImpl
     }
 
     private static final Logger log = LoggerFactory.getLogger(UnitModelImpl.class);
-
-    private static boolean      deducing;
 
     /**
      * @param em

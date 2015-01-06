@@ -70,20 +70,8 @@ public class RelationshipModelImpl
         T call(RelationshipModelImpl productModel) throws Exception;
     }
 
-    public static void onAbort() {
-        deducing = false;
-    }
-
-    public static void onCommit() {
-        deducing = false;
-    }
-
     public static void propagate_deductions(final TriggerData data)
                                                                    throws Exception {
-        if (deducing) {
-            return;
-        }
-        deducing = true;
         execute(new Procedure<Void>() {
             @Override
             public Void call(RelationshipModelImpl agencyModel)
@@ -97,8 +85,6 @@ public class RelationshipModelImpl
     private static <T> T execute(Procedure<T> procedure) throws SQLException {
         return JSP.call(new Call<T>(procedure));
     }
-
-    private static boolean deducing;
 
     /**
      * @param em

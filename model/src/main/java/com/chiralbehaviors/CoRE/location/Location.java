@@ -39,6 +39,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -211,6 +212,11 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
         clone.networkByParent = null;
         clone.entities = null;
         return clone;
+    }
+
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
     }
 
     /* (non-Javadoc)

@@ -39,6 +39,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -63,12 +64,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "location_network", schema = "ruleform")
 public class LocationNetwork extends NetworkRuleform<Location> {
-    public static List<Relationship> getUsedRelationships(EntityManager em) {
-        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
-    }
-
     public static final String DEDUCE_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+
     public static final String GENERATE_NETWORK_INVERSES     = "locationNetwork"
                                                                + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                  = "locationNetwork"
@@ -82,24 +80,27 @@ public class LocationNetwork extends NetworkRuleform<Location> {
                                                                + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
     public static final String INSERT_NEW_NETWORK_RULES      = "locationNetwork"
                                                                + INSERT_NEW_NETWORK_RULES_SUFFIX;
-
     private static final long  serialVersionUID              = 1L;
+
+    public static List<Relationship> getUsedRelationships(EntityManager em) {
+        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
+    }
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Location           child;
+    private Location        child;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Location           parent;
+    private Location        parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise1")
-    private LocationNetwork    premise1;
+    private LocationNetwork premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(insertable = false, name = "premise2")
-    private LocationNetwork    premise2;
+    private LocationNetwork premise2;
 
     public LocationNetwork() {
     }
@@ -135,6 +136,11 @@ public class LocationNetwork extends NetworkRuleform<Location> {
      */
     public LocationNetwork(UUID id) {
         super(id);
+    }
+
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
     }
 
     @Override
@@ -174,6 +180,11 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, LocationNetwork> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.locationNetwork;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     @Override

@@ -47,6 +47,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -268,6 +269,11 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
         clone.attributes = null;
         clone.locations = null;
         return clone;
+    }
+
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
     }
 
     /* (non-Javadoc)

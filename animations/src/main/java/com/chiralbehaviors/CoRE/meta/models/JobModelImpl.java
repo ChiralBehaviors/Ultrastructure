@@ -1510,8 +1510,8 @@ public class JobModelImpl implements JobModel {
      * @throws SQLException
      */
     @Override
-    public void validateStateGraph(List<Product> modifiedServices)
-                                                                  throws SQLException {
+    public void validateStateGraph(Collection<Product> modifiedServices)
+                                                                        throws SQLException {
         if (log.isTraceEnabled()) {
             log.trace(String.format("modified services %s", modifiedServices));
         }

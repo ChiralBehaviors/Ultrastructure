@@ -601,6 +601,7 @@ public interface JobModel {
      * @param modifiedProducts
      * @throws SQLException
      */
-    void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
+    void validateStateGraph(Collection<Product> modifiedProducts)
+                                                                 throws SQLException;
 
 }

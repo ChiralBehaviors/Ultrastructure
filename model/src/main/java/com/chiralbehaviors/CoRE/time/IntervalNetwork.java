@@ -39,6 +39,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -132,6 +133,11 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         super(id);
     }
 
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -185,6 +191,11 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, IntervalNetwork> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.intervalNetwork;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     /*

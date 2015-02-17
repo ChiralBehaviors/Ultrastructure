@@ -37,6 +37,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
@@ -133,6 +134,11 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         super(id);
     }
 
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -179,6 +185,11 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.relationshipNetwork;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     /*

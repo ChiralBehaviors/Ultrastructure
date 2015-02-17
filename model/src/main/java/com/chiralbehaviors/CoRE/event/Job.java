@@ -53,6 +53,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -344,5 +345,15 @@ public class Job extends AbstractProtocol {
         return String.format("Job [status=%s, %s, sequenceNumber=%s]",
                              getStatus().getName(), getToString(),
                              sequenceNumber);
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
+    }
+
+    @Override
+    public void update(Triggers triggers) {
+        triggers.update(this);
     }
 }

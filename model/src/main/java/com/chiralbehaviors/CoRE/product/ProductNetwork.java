@@ -43,6 +43,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -71,28 +72,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "product_network", schema = "ruleform")
 public class ProductNetwork extends NetworkRuleform<Product> implements
         Attributable<ProductNetworkAttribute> {
+    public static final String DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
+
+    public static final String GENERATE_NETWORK_INVERSES     = "productNetwork"
+                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
+    public static final String GET_CHILDREN                  = "productNetwork"
+                                                               + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS                  = "productNetwork"
+                                                               + GET_NETWORKS_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS        = "productNetwork"
+                                                               + USED_RELATIONSHIPS_SUFFIX;
+    public static final String INFERENCE_STEP                = "productNetwork"
+                                                               + INFERENCE_STEP_SUFFIX;
+    public static final String INFERENCE_STEP_FROM_LAST_PASS = "productNetwork"
+                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
+    public static final String INSERT_NEW_NETWORK_RULES      = "productNetwork"
+                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    private static final long  serialVersionUID              = 1L;
+
     public static List<Relationship> getUsedRelationships(EntityManager em) {
         return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
     }
-
-    public static final String           DEDUCE_NEW_NETWORK_RULES      = "productNetwork"
-                                                                         + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String           GENERATE_NETWORK_INVERSES     = "productNetwork"
-                                                                         + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String           GET_CHILDREN                  = "productNetwork"
-                                                                         + GET_CHILDREN_SUFFIX;
-    public static final String           GET_NETWORKS                  = "productNetwork"
-                                                                         + GET_NETWORKS_SUFFIX;
-    public static final String           GET_USED_RELATIONSHIPS        = "productNetwork"
-                                                                         + USED_RELATIONSHIPS_SUFFIX;
-    public static final String           INFERENCE_STEP                = "productNetwork"
-                                                                         + INFERENCE_STEP_SUFFIX;
-    public static final String           INFERENCE_STEP_FROM_LAST_PASS = "productNetwork"
-                                                                         + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String           INSERT_NEW_NETWORK_RULES      = "productNetwork"
-                                                                         + INSERT_NEW_NETWORK_RULES_SUFFIX;
-
-    private static final long            serialVersionUID              = 1L;
 
     // bi-directional many-to-one association to ProductNetworkAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productNetwork")
@@ -167,6 +168,11 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
+    }
+
+    @Override
     public Set<ProductNetworkAttribute> getAttributes() {
         return attributes;
     }
@@ -208,6 +214,11 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, ProductNetwork> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.productNetwork;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     @SuppressWarnings("unchecked")

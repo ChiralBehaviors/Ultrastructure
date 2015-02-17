@@ -37,6 +37,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -139,6 +140,11 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         super(id);
     }
 
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -184,6 +190,11 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.statusCodeNetwork;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     /*

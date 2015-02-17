@@ -31,6 +31,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -169,6 +170,11 @@ public class ProductChildSequencingAuthorization extends Ruleform {
      */
     public boolean isReplaceProduct() {
         return replaceProduct.equals(TRUE);
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     public void setNextChild(Product nextChild) {

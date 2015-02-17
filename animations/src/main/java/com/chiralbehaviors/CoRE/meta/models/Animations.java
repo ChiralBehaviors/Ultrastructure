@@ -20,6 +20,8 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.TypedQuery;
+
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
@@ -28,6 +30,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
@@ -37,6 +40,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
@@ -60,8 +64,9 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *         the appropriate model for implementation. What this means in practice
  *         is that this is the class that creates the high level logic around
  *         state change of an Ultrastructure instance. This is the high level,
- *         disambiguation logic of Ultrastructure animation - the Rules Engine
- *         (tm).
+ *         disambiguation logic of Ultrastructure animation.
+ * 
+ *         This is the Rule Engine (tm).
  */
 public class Animations implements Triggers {
 
@@ -268,8 +273,16 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(Job j) {
-        // TODO Auto-generated method stub
-
+        TypedQuery<Integer> query = model.getEntityManager().createNamedQuery(JobChronology.HIGHEST_SEQUENCE_FOR_JOB,
+                                                                              Integer.class);
+        query.setParameter("job", j);
+        if (query.getSingleResult() == null) {
+            model.getJobModel().log(j, "Initial insertion of job");
+        }
+        JobModel jobModel = model.getJobModel();
+        jobModel.generateImplicitJobsForExplicitJobs(j,
+                                                     model.getKernel().getCoreAnimationSoftware());
+        jobModel.processJobSequencing(j);
     }
 
     /* (non-Javadoc)
@@ -285,6 +298,12 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductChildSequencingAuthorization pcsa) {
+        try {
+            model.getJobModel().ensureValidServiceAndStatus(pcsa.getNextChild(),
+                                                            pcsa.getNextChildStatus());
+        } catch (SQLException e) {
+            throw new TriggerException("Invalid sequence", e);
+        }
     }
 
     /* (non-Javadoc)
@@ -300,8 +319,12 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductParentSequencingAuthorization ppsa) {
-        // TODO Auto-generated method stub
-
+        try {
+            model.getJobModel().ensureValidServiceAndStatus(ppsa.getParent(),
+                                                            ppsa.getParentStatusToSet());
+        } catch (SQLException e) {
+            throw new TriggerException("Invalid sequence", e);
+        }
     }
 
     /* (non-Javadoc)
@@ -309,8 +332,12 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductSelfSequencingAuthorization pssa) {
-        // TODO Auto-generated method stub
-
+        try {
+            model.getJobModel().ensureValidServiceAndStatus(pssa.getService(),
+                                                            pssa.getStatusToSet());
+        } catch (SQLException e) {
+            throw new TriggerException("Invalid sequence", e);
+        }
     }
 
     /* (non-Javadoc)
@@ -318,8 +345,12 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductSiblingSequencingAuthorization pssa) {
-        // TODO Auto-generated method stub
-
+        try {
+            model.getJobModel().ensureValidServiceAndStatus(pssa.getNextSibling(),
+                                                            pssa.getNextSiblingStatus());
+        } catch (SQLException e) {
+            throw new TriggerException("Invalid sequence", e);
+        }
     }
 
     /* (non-Javadoc)
@@ -359,8 +390,10 @@ public class Animations implements Triggers {
      */
     @Override
     public void update(Job j) {
-        // TODO Auto-generated method stub
-
+        JobModel jobModel = model.getJobModel();
+        jobModel.generateImplicitJobsForExplicitJobs(j,
+                                                     model.getKernel().getCoreAnimationSoftware());
+        jobModel.processJobSequencing(j);
     }
 
     private void clearPropagation() {

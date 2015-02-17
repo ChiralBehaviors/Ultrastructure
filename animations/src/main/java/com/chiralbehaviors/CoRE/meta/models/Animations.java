@@ -55,16 +55,17 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  * @author hhildebrand
  *
  *         This class implements the animations logic for the Ultrastructure
- *         model. Abstractly, this logic is driven by state events. Concretely,
- *         this is implemented by database triggers. This class models a simple
- *         state model of persist, update, delete style events. As the
- *         animations model is conceptually simple and unchanging, we don't need
- *         a general mechanism of dynamically registering triggers n' such. We
- *         just inline the animation logic in the state methods, delegating to
- *         the appropriate model for implementation. What this means in practice
- *         is that this is the class that creates the high level logic around
- *         state change of an Ultrastructure instance. This is the high level,
- *         disambiguation logic of Ultrastructure animation.
+ *         model. Abstractly, this logic is driven by state events of an
+ *         Ultrastructure instance. Conceptually, this is equivalent to database
+ *         triggers. This class models a simple state model of persist, update,
+ *         delete style events. The animations model is conceptually simple and
+ *         unchanging, thus we don't need a general mechanism of dynamically
+ *         registering triggers n' such. We just inline the animation logic in
+ *         the state methods, delegating to the appropriate model for
+ *         implementation. What this means in practice is that this is the class
+ *         that creates the high level logic around state change of an
+ *         Ultrastructure instance. This is the high level, disambiguation logic
+ *         of Ultrastructure animation.
  * 
  *         This is the Rule Engine (tm).
  */

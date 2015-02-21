@@ -20,43 +20,50 @@ import org.apache.openjpa.event.DeleteListener;
 import org.apache.openjpa.event.LifecycleEvent;
 import org.apache.openjpa.event.PersistListener;
 import org.apache.openjpa.event.UpdateListener;
+import org.apache.openjpa.persistence.OpenJPAEntityManagerSPI;
 
-import com.chiralbehaviors.CoRE.Triggers;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.meta.models.Animations;
 
 /**
  * @author hhildebrand
  *
  */
-public class LifecycleListener implements PersistListener,
-        UpdateListener, DeleteListener {
+public class LifecycleListener implements PersistListener, UpdateListener,
+        DeleteListener {
 
-    protected final Triggers triggers;
+    protected final Animations animations;
 
-    public LifecycleListener(Triggers triggers) {
-        this.triggers = triggers;
+    public LifecycleListener(Animations animations) {
+        this.animations = animations;
+        OpenJPAEntityManagerSPI openJpaEm = animations.getEm().unwrap(OpenJPAEntityManagerSPI.class);
+        openJpaEm.addLifecycleListener(openJpaEm, Ruleform.class);
     }
 
     @Override
     public void afterDelete(LifecycleEvent event) {
+        ((Ruleform) event.getSource()).delete(animations);
     }
 
     @Override
-    public void afterPersist(LifecycleEvent paramLifecycleEvent) {
+    public void afterPersist(LifecycleEvent event) {
+        ((Ruleform) event.getSource()).persist(animations);
     }
 
     @Override
-    public void afterUpdatePerformed(LifecycleEvent paramLifecycleEvent) {
+    public void afterUpdatePerformed(LifecycleEvent event) {
+        ((Ruleform) event.getSource()).update(animations);
     }
 
     @Override
-    public void beforeDelete(LifecycleEvent paramLifecycleEvent) {
+    public void beforeDelete(LifecycleEvent event) {
     }
 
     @Override
-    public void beforePersist(LifecycleEvent paramLifecycleEvent) {
+    public void beforePersist(LifecycleEvent event) {
     }
 
     @Override
-    public void beforeUpdate(LifecycleEvent paramLifecycleEvent) {
+    public void beforeUpdate(LifecycleEvent event) {
     }
 }

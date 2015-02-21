@@ -16,8 +16,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models.openjpa;
 
-import javax.persistence.EntityManager;
-
 import org.apache.openjpa.event.EndTransactionListener;
 import org.apache.openjpa.event.TransactionEvent;
 import org.apache.openjpa.persistence.OpenJPAEntityManagerSPI;
@@ -31,9 +29,9 @@ import com.chiralbehaviors.CoRE.meta.models.Animations;
 public class TransactionListener implements EndTransactionListener {
     private final Animations triggers;
 
-    public TransactionListener(Animations triggers, EntityManager em) {
-        this.triggers = triggers;
-        OpenJPAEntityManagerSPI openJpaEm = em.unwrap(OpenJPAEntityManagerSPI.class);
+    public TransactionListener(Animations animations) {
+        this.triggers = animations;
+        OpenJPAEntityManagerSPI openJpaEm = animations.getEm().unwrap(OpenJPAEntityManagerSPI.class);
         openJpaEm.addTransactionListener(this);
     }
 
@@ -42,6 +40,7 @@ public class TransactionListener implements EndTransactionListener {
      */
     @Override
     public void beforeCommit(TransactionEvent event) {
+        triggers.beforeCommit();
     }
 
     /* (non-Javadoc)
@@ -49,6 +48,7 @@ public class TransactionListener implements EndTransactionListener {
      */
     @Override
     public void afterCommit(TransactionEvent event) {
+        triggers.afterCommit();
     }
 
     /* (non-Javadoc)

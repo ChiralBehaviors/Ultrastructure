@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.Triggers;
@@ -43,6 +44,8 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
+import com.chiralbehaviors.CoRE.meta.models.openjpa.LifecycleListener;
+import com.chiralbehaviors.CoRE.meta.models.openjpa.TransactionListener;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
@@ -66,10 +69,14 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *         that creates the high level logic around state change of an
  *         Ultrastructure instance. This is the high level, disambiguation logic
  *         of Ultrastructure animation.
- * 
+ *
  *         This is the Rule Engine (tm).
  */
 public class Animations implements Triggers {
+
+    public static Animations setup(EntityManager em) {
+        return new Animations(new ModelImpl(em));
+    }
 
     private boolean            inferAgencyNetwork;
     private boolean            inferAttributeNetwork;
@@ -84,6 +91,8 @@ public class Animations implements Triggers {
 
     public Animations(Model model) {
         this.model = model;
+        new LifecycleListener(this);
+        new TransactionListener(this);
     }
 
     public void afterCommit() {
@@ -239,6 +248,10 @@ public class Animations implements Triggers {
     @Override
     public void delete(UnitNetwork u) {
         inferUnitNetwork = true;
+    }
+
+    public EntityManager getEm() {
+        return model.getEntityManager();
     }
 
     public void log(StatusCodeSequencing scs) {
@@ -451,5 +464,12 @@ public class Animations implements Triggers {
     private void reset() {
         clearPropagation();
         modifiedServices.clear();
+    }
+
+    /**
+     * @return
+     */
+    public Model getModel() {
+        return model;
     }
 }

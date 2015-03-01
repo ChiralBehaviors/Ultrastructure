@@ -37,7 +37,7 @@ public class LifecycleListener implements PersistListener, UpdateListener,
     public LifecycleListener(Animations animations) {
         this.animations = animations;
         OpenJPAEntityManagerSPI openJpaEm = animations.getEm().unwrap(OpenJPAEntityManagerSPI.class);
-        openJpaEm.addLifecycleListener(openJpaEm, Ruleform.class);
+        openJpaEm.addLifecycleListener(this, (Class[]) null);
     }
 
     @Override

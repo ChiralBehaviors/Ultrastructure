@@ -7,23 +7,5 @@
     <include relativeToChangelogFile="true" file="functions/next_id.xml" />
     <include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
     <include relativeToChangelogFile="true" file="functions/is_terminal_state.xml" />
-    <include relativeToChangelogFile="true" file="functions/automatically_generate_implicit_jobs_for_explicit_jobs.xml" />
-    <include relativeToChangelogFile="true" file="functions/ensure_next_state_is_valid.xml" />
-    <include relativeToChangelogFile="true" file="functions/ensure_valid_child_service_and_status.xml" />
-    <include relativeToChangelogFile="true" file="functions/ensure_valid_parent_service_and_status.xml" />
-    <include relativeToChangelogFile="true" file="functions/ensure_valid_sibling_service_and_status.xml" />
-    <include relativeToChangelogFile="true" file="functions/ensure_valid_initial_state.xml" />
-    <include relativeToChangelogFile="true" file="functions/log_modified_product_status_code_sequencing.xml" />
-    <include relativeToChangelogFile="true" file="functions/process_job_change.xml" />
-    <include relativeToChangelogFile="true" file="functions/validate_state_graph.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_attribute_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_interval_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_location_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_product_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_agency_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_relationship_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_status_code_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/propagate_unit_network_deductions.xml" />
-    <include relativeToChangelogFile="true" file="functions/log_inserts_in_job_chronology.xml" />
     <include relativeToChangelogFile="true" file="functions/convert_to_unit.xml" />
 </databaseChangeLog>

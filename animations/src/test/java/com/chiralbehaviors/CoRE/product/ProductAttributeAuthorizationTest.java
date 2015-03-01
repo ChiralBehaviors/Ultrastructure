@@ -56,8 +56,7 @@ public class ProductAttributeAuthorizationTest {
         Properties properties = new Properties();
         properties.load(getClass().getResourceAsStream("/jpa.properties"));
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
-        em = emf.createEntityManager();
-        Animations.setup(em);
+        em = Animations.setup(emf.createEntityManager());
     }
 
     @Test

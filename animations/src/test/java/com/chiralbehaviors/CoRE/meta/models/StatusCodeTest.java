@@ -179,7 +179,7 @@ public class StatusCodeTest extends AbstractModelTest {
         em.getTransaction().begin();
         em.refresh(parent);
         assertTrue("Child is not considered active", jobModel.isActive(child));
-        assertEquals(1, jobModel.getActiveSubJobsOf(parent).size());
+        assertEquals(0, jobModel.getActiveSubJobsOf(parent).size());
         jobModel.changeStatus(parent, startState, kernel.getCore(),
                               "transition from test");
         em.getTransaction().commit();

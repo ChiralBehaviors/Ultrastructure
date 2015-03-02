@@ -90,7 +90,7 @@ public class Animations implements Triggers {
     private boolean            inferRelationshipNetwork;
     private boolean            inferStatusCodeNetwork;
     private boolean            inferUnitNetwork;
-    private final List<Job>    insertedJobs     = new ArrayList<>();
+    private final List<Job>    jobs             = new ArrayList<>();
     private final Model        model;
     private final Set<Product> modifiedServices = new HashSet<>();
 
@@ -103,32 +103,8 @@ public class Animations implements Triggers {
         reset();
     }
 
-    public void rollback() {
-        reset();
-    }
-
     public void commit() throws TriggerException {
-        try {
-            model.getJobModel().validateStateGraph(modifiedServices);
-        } catch (SQLException e) {
-            throw new TriggerException(
-                                       "StatusCodeSequencing validation failed",
-                                       e);
-        }
-        propagate();
-        int cycles = 0;
-        while (!insertedJobs.isEmpty()) {
-            if (cycles > MAX_JOB_PROCESSING) {
-                throw new IllegalStateException(
-                                                "Processing more inserted job cycles than the maximum number of itterations allowed");
-            }
-            cycles++;
-            List<Job> inserted = new ArrayList<>(insertedJobs);
-            insertedJobs.clear();
-            for (Job j : inserted) {
-                process(j);
-            }
-        }
+        flush();
     }
 
     /* (non-Javadoc)
@@ -267,6 +243,32 @@ public class Animations implements Triggers {
         inferUnitNetwork = true;
     }
 
+    public void flush() {
+        model.getEntityManager().flush();
+        try {
+            model.getJobModel().validateStateGraph(modifiedServices);
+        } catch (SQLException e) {
+            throw new TriggerException(
+                                       "StatusCodeSequencing validation failed",
+                                       e);
+        }
+        propagate();
+        int cycles = 0;
+        while (!jobs.isEmpty()) {
+            if (cycles > MAX_JOB_PROCESSING) {
+                throw new IllegalStateException(
+                                                "Processing more inserted job cycles than the maximum number of itterations allowed");
+            }
+            cycles++;
+            List<Job> inserted = new ArrayList<>(jobs);
+            jobs.clear();
+            for (Job j : inserted) {
+                process(j);
+            }
+        }
+        model.getEntityManager().flush();
+    }
+
     public EntityManager getEm() {
         return model.getEntityManager();
     }
@@ -317,14 +319,7 @@ public class Animations implements Triggers {
         if (query.getSingleResult() == null) {
             model.getJobModel().log(j, "Initial insertion of job");
         }
-        insertedJobs.add(j);
-    }
-
-    private void process(Job j) {
-        JobModel jobModel = model.getJobModel();
-        jobModel.generateImplicitJobsForExplicitJobs(j,
-                                                     model.getKernel().getCoreAnimationSoftware());
-        jobModel.processJobSequencing(j);
+        jobs.add(j);
     }
 
     /* (non-Javadoc)
@@ -427,12 +422,16 @@ public class Animations implements Triggers {
         inferUnitNetwork = true;
     }
 
+    public void rollback() {
+        reset();
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
      */
     @Override
     public void update(Job j) {
-        process(j);
+        jobs.add(j);
     }
 
     private void clearPropagation() {
@@ -445,6 +444,13 @@ public class Animations implements Triggers {
         inferAttributeNetwork = false;
         inferAgencyNetwork = false;
         inferRelationshipNetwork = false;
+    }
+
+    private void process(Job j) {
+        JobModel jobModel = model.getJobModel();
+        jobModel.generateImplicitJobsForExplicitJobs(j,
+                                                     model.getKernel().getCoreAnimationSoftware());
+        jobModel.processJobSequencing(j);
     }
 
     private void propagate() {
@@ -489,6 +495,6 @@ public class Animations implements Triggers {
     private void reset() {
         clearPropagation();
         modifiedServices.clear();
-        insertedJobs.clear();
+        jobs.clear();
     }
 }

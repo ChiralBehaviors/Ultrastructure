@@ -35,7 +35,7 @@ import javax.persistence.metamodel.Metamodel;
  */
 public class EmWrapper implements EntityManager {
     public EmWrapper(Animations animpations, EntityManager em) {
-        this.animpations = animpations;
+        this.animations = animpations;
         this.em = em;
     }
 
@@ -53,7 +53,7 @@ public class EmWrapper implements EntityManager {
 
         @Override
         public void commit() {
-            animpations.commit();
+            animations.commit();
             txn.commit();
         }
 
@@ -69,7 +69,7 @@ public class EmWrapper implements EntityManager {
 
         @Override
         public void rollback() {
-            animpations.rollback();
+            animations.rollback();
             txn.rollback();
         }
 
@@ -79,7 +79,7 @@ public class EmWrapper implements EntityManager {
         }
     }
 
-    private final Animations    animpations;
+    private final Animations    animations;
     private final EntityManager em;
     private final EtWrapper     etxn = new EtWrapper();
 
@@ -172,6 +172,7 @@ public class EmWrapper implements EntityManager {
     @Override
     public void flush() {
         em.flush();
+        animations.flush();
     }
 
     @Override

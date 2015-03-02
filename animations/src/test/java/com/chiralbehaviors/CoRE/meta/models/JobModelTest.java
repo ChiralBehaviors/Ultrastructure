@@ -379,7 +379,8 @@ public class JobModelTest extends AbstractModelTest {
             txn.commit();
             em.refresh(order);
             List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(2, chronologies.size());
+            assertEquals(String.format("Invalid number of chronologies: %s",
+                                       chronologies), 2, chronologies.size());
             List<String> fieldErrors = verifyChronologyFields(order,
                                                               chronologies.get(0));
 

@@ -662,17 +662,29 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> getActiveExplicitJobs() {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_EXPLICIT_JOBS,
+        TypedQuery<Job> query = em.createNamedQuery(Job.TOP_LEVEL_JOBS,
                                                     Job.class);
-        return query.getResultList();
+        List<Job> active = new ArrayList<>();
+        for (Job j : query.getResultList()) {
+            if (isActive(j)) {
+                active.add(j);
+            }
+        }
+        return active;
     }
 
     @Override
     public List<Job> getActiveJobsFor(Agency agency) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_JOBS_FOR_AGENCY,
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ASSIGNED_TO,
                                                     Job.class);
-        query.setParameter(1, agency.getPrimaryKey());
-        return query.getResultList();
+        query.setParameter("agency", agency.getPrimaryKey());
+        List<Job> active = new ArrayList<>();
+        for (Job j : query.getResultList()) {
+            if (isActive(j)) {
+                active.add(j);
+            }
+        }
+        return active;
     }
 
     @Override
@@ -696,19 +708,23 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> getActiveSubJobsForService(Job job, Product service) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE,
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS_FOR_SERVICE,
                                                     Job.class);
-        query.setParameter(1, job.getPrimaryKey());
-        query.setParameter(2, service.getPrimaryKey());
-        return query.getResultList();
+        query.setParameter("parent", job);
+        query.setParameter("service", service);
+        List<Job> active = new ArrayList<>();
+        for (Job j : query.getResultList()) {
+            if (isActive(j)) {
+                active.add(j);
+            }
+        }
+        return active;
     }
 
     @Override
     public List<Job> getActiveSubJobsOf(Job job) {
-        TypedQuery<Job> query = em.createQuery("SELECT j "
-                                                       + "FROM Job AS j "
-                                                       + "WHERE j.parent = :parent ",
-                                               Job.class);
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS,
+                                                    Job.class);
         query.setParameter("parent", job);
         List<Job> jobs = new ArrayList<>(query.getResultList().size());
         for (Job j : query.getResultList()) {
@@ -868,7 +884,7 @@ public class JobModelImpl implements JobModel {
     public StatusCode getInitialState(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
                                                            StatusCode.class);
-        query.setParameter(1, service.getPrimaryKey());
+        query.setParameter("service", service);
         try {
             return query.getSingleResult();
         } catch (NonUniqueResultException e) {
@@ -886,38 +902,8 @@ public class JobModelImpl implements JobModel {
     public List<StatusCode> getInitialStates(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
                                                            StatusCode.class);
-        query.setParameter(1, service.getPrimaryKey());
+        query.setParameter("service", service);
         return query.getResultList();
-    }
-
-    /**
-     * Returns a list of initially available sub-jobs (i.e., ones that do not
-     * depend on any others having been completed yet) of a given job
-     *
-     * @param job
-     * @return
-     */
-    @Override
-    public List<Job> getInitialSubJobs(Job job) {
-        TypedQuery<Long> query = em.createNamedQuery(Job.GET_INITIAL_SUB_JOBS,
-                                                     Long.class);
-        query.setParameter(1, job.getPrimaryKey());
-        query.setParameter(2, job.getPrimaryKey());
-        query.setParameter(3, kernel.getUnset().getPrimaryKey());
-        query.setParameter(4, job.getPrimaryKey());
-
-        List<Job> jobs = new ArrayList<Job>();
-        for (Long id : query.getResultList()) {
-            Job j = em.find(Job.class, id);
-            if (j != null) {
-                jobs.add(j);
-            } else {
-                throw new IllegalStateException(
-                                                String.format("Cannot find existing job %s",
-                                                              id));
-            }
-        }
-        return jobs;
     }
 
     @Override
@@ -1138,7 +1124,7 @@ public class JobModelImpl implements JobModel {
     public List<StatusCode> getTerminalStates(Job job) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.GET_TERMINAL_STATES,
                                                            StatusCode.class);
-        query.setParameter(1, job.getService().getPrimaryKey());
+        query.setParameter("service", job.getService());
         return query.getResultList();
     }
 
@@ -1188,17 +1174,22 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public boolean hasActiveSiblings(Job job) {
-        Query query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS);
-        query.setParameter(1, job.getParent().getPrimaryKey());
-        query.setMaxResults(1);
-        return !query.getResultList().isEmpty();
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS,
+                                                    Job.class);
+        query.setParameter("parent", job.getParent());
+        for (Job j : query.getResultList()) {
+            if (isActive(j)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean hasInitialState(Product service) {
         TypedQuery<StatusCode> query = em.createNamedQuery(Job.INITIAL_STATE,
                                                            StatusCode.class);
-        query.setParameter(1, service.getPrimaryKey());
+        query.setParameter("service", service);
         query.setMaxResults(1);
         return !query.getResultList().isEmpty();
     }

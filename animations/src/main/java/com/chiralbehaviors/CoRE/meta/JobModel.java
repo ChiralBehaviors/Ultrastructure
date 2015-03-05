@@ -314,15 +314,6 @@ public interface JobModel {
     List<StatusCode> getInitialStates(Product service);
 
     /**
-     * Returns a list of initially available sub-jobs (i.e., ones that do not
-     * depend on any others having been completed yet) of a given job
-     *
-     * @param job
-     * @return
-     */
-    List<Job> getInitialSubJobs(Job job);
-
-    /**
      * Answer the list of MetaProtocols that can be applied to the job
      *
      * @param job

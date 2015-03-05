@@ -5,5 +5,4 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
     <include relativeToChangelogFile="true" file="functions/next_id.xml" />
-    <include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
 </databaseChangeLog>

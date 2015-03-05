@@ -15,18 +15,14 @@
  */
 package com.chiralbehaviors.CoRE.event;
 
-import static com.chiralbehaviors.CoRE.event.Job.ACTIVE_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.EXISTING_JOB_WITH_PARENT_AND_PROTOCOL;
 import static com.chiralbehaviors.CoRE.event.Job.FIND_ALL;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_EXPLICIT_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES;
 import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_SUB_JOBS_FOR_SERVICE;
+import static com.chiralbehaviors.CoRE.event.Job.GET_ASSIGNED_TO;
+import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
-import static com.chiralbehaviors.CoRE.event.Job.GET_INITIAL_SUB_JOBS;
 import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
 import static com.chiralbehaviors.CoRE.event.Job.GET_STATUS_CODE_SEQUENCES;
 import static com.chiralbehaviors.CoRE.event.Job.GET_SUB_JOBS_ASSIGNED_TO;
@@ -44,8 +40,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -86,6 +80,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                       + "FROM Job AS j "
                                                                       + "WHERE j.parent = :parent "
                                                                       + "  AND j.service = :service"),
+               @NamedQuery(name = GET_CHILD_JOBS, query = "SELECT j "
+                                                          + "FROM Job AS j "
+                                                          + "WHERE j.parent = :parent"),
                @NamedQuery(name = HAS_SCS, query = "SELECT scs from StatusCodeSequencing scs where scs.service = :service "),
                @NamedQuery(name = GET_NEXT_STATUS_CODES, query = "SELECT code "
                                                                  + "FROM StatusCodeSequencing AS sequencing, StatusCode AS code "
@@ -101,88 +98,48 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                               + "WHERE j.service = :service "
                                                               + "  AND j.status = :unset "
                                                               + "  AND j.parent = :parent"),
+               @NamedQuery(name = GET_ASSIGNED_TO, query = "SELECT j "
+                                                           + "FROM Job AS j "
+                                                           + "  WHERE j.assignTo = :agency"),
                @NamedQuery(name = GET_SUB_JOBS_ASSIGNED_TO, query = "SELECT j "
                                                                     + "FROM Job AS j "
                                                                     + "WHERE j.parent = :parent "
-                                                                    + "  AND j.assignTo = :agency") })
-@NamedNativeQueries({
-                     @NamedNativeQuery(name = GET_TERMINAL_STATES, query = "SELECT DISTINCT(sc.*) "
-                                                                           + "FROM ruleform.status_code_sequencing AS seq "
-                                                                           + "    JOIN ruleform.status_code AS sc ON seq.child_code = sc.id "
-                                                                           + "WHERE "
-                                                                           + "  NOT EXISTS ( "
-                                                                           + "    SELECT parent_code FROM ruleform.status_code_sequencing "
-                                                                           + "    WHERE service = seq.service "
-                                                                           + "      AND parent_code = seq.child_code "
-                                                                           + "  ) "
-                                                                           + "  AND service = ? "
-                                                                           + "ORDER BY sc.name ASC"),
-                     @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS, query = "SELECT job.* FROM ruleform.job as job "
-                                                                           + "WHERE parent = ? "
-                                                                           + "  AND ruleform.is_job_active( job.id )"),
-                     @NamedNativeQuery(name = GET_ACTIVE_SUB_JOBS_FOR_SERVICE, query = "SELECT job.* FROM ruleform.job as job "
-                                                                                       + "WHERE parent = ? "
-                                                                                       + "  AND ruleform.is_job_active( job.id ) "
-                                                                                       + "  AND job.service = ?"),
-                     @NamedNativeQuery(name = ACTIVE_JOBS, query = "SELECT j.* "
-                                                                   + "FROM ruleform.job_chronology AS jc "
-                                                                   + "JOIN ruleform.job AS j ON jc.job = j.id "
-                                                                   + " WHERE j.assign_to = $1 "
-                                                                   + "  AND NOT ruleform.is_terminal_state(j.event, jc.status) "
-                                                                   + "  AND jc.time_stamp = "
-                                                                   + "   (SELECT max(time_stamp) FROM ruleform.job_chronology WHERE job = jc.job)"),
-                     @NamedNativeQuery(name = GET_ACTIVE_EXPLICIT_JOBS, query = "SELECT j.* "
-                                                                                + "FROM ruleform.job AS j "
-                                                                                + "WHERE j.parent IS NULL "
-                                                                                + "  AND ruleform.is_job_active( j.id )"),
-                     @NamedNativeQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY, query = "SELECT DISTINCT j.* "
-                                                                                  + "FROM ruleform.job AS j "
-                                                                                  + "WHERE j.assign_to = ? "
-                                                                                  + "  AND NOT ruleform.is_terminal_state(j.service, j.status) "),
-                     // Probably a candidate for 8.4 WITH query...
-                     @NamedNativeQuery(name = GET_INITIAL_SUB_JOBS, query = "SELECT j.id  FROM ruleform.job AS j "
-                                                                            + "JOIN ruleform.product_sibling_sequencing_authorization AS seq "
-                                                                            + "    ON j.service = seq.parent "
-                                                                            + "JOIN "
-                                                                            + "( SELECT service FROM ruleform.job WHERE parent = ? "
-                                                                            + "  EXCEPT "
-                                                                            + "  SELECT next_sibling_status "
-                                                                            + "    FROM ruleform.product_sibling_sequencing_authorization "
-                                                                            + "    WHERE parent IN "
-                                                                            + "    ( SELECT service FROM ruleform.job WHERE parent = ? ) "
-                                                                            + ") AS valid ON j.service = valid.service "
-                                                                            + "JOIN ruleform.status_code AS sc ON j.status = sc.id AND sc.id = ? "
-                                                                            + "WHERE j.parent = ?"),
-                     @NamedNativeQuery(name = INITIAL_STATE, query = "SELECT distinct(sc.*) "
-                                                                     + "FROM ruleform.status_code_sequencing AS seq "
-                                                                     + "JOIN ruleform.status_code AS sc ON seq.parent_code = sc.id "
-                                                                     + "WHERE "
-                                                                     + "NOT EXISTS( "
-                                                                     + "  SELECT child_code FROM ruleform.status_code_sequencing "
-                                                                     + "  WHERE service = seq.service "
-                                                                     + "    AND child_code = seq.parent_code "
-                                                                     + ") "
-                                                                     + " AND seq.service = ?") })
+                                                                    + "  AND j.assignTo = :agency"),
+               @NamedQuery(name = INITIAL_STATE, query = "SELECT distinct(sc) "
+                                                         + "FROM StatusCodeSequencing AS seq, StatusCode AS sc "
+                                                         + "WHERE seq.parentCode = sc "
+                                                         + "AND NOT EXISTS( "
+                                                         + "  SELECT seq2.childCode FROM StatusCodeSequencing seq2 "
+                                                         + "  WHERE seq2.service = seq.service "
+                                                         + "    AND seq2.childCode = seq.parentCode "
+                                                         + ") "
+                                                         + " AND seq.service = :service"),
+               @NamedQuery(name = GET_TERMINAL_STATES, query = "SELECT DISTINCT(sc) "
+                                                               + "FROM StatusCodeSequencing AS seq, StatusCode AS sc "
+                                                               + "WHERE seq.childCode = sc "
+                                                               + "  AND NOT EXISTS ( "
+                                                               + "    SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                               + "    WHERE seq2.service = seq.service "
+                                                               + "      AND seq2.parentCode = seq.childCode "
+                                                               + "  ) "
+                                                               + "  AND seq.service = :service "
+                                                               + "ORDER BY sc.name ASC") })
 @Entity
 @Table(name = "job", schema = "ruleform")
 public class Job extends AbstractProtocol {
-    public static final String ACTIVE_JOBS                            = "job.getActiveJobs";
     public static final String CHANGE_STATUS                          = "job.changeStatus";
     public static final String CHRONOLOGY                             = "job.chronology";
     public static final String CLASSIFIED                             = "event.classified";
     public static final String EXISTING_JOB_WITH_PARENT_AND_PROTOCOL  = "job.existingJobWithParentAndProtocol";
     public static final String FIND_ALL                               = "job.findAll";
-    public static final String GET_ACTIVE_EXPLICIT_JOBS               = "job.getActiveExplicitJobs";
-    public static final String GET_ACTIVE_JOBS_FOR_AGENCY             = "job.getActiveJobsForAgency";
     public static final String GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS   = "job.getActiveJobsForAgencyInStatus";
     public static final String GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES = "job.getActiveJobsForAgencyInStatuses";
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS      = "job.getActiveOrTerminatedSubJobs";
-    public static final String GET_ACTIVE_SUB_JOBS                    = "job.getActiveSubJobs";
-    public static final String GET_ACTIVE_SUB_JOBS_FOR_SERVICE        = "job.getActiveSubJobsForService";
+    public static final String GET_ASSIGNED_TO                        = "job.getAssignedTo";
     public static final String GET_ATTRIBUTE_VALUE                    = "job.getAttributeValue";
     public static final String GET_ATTRIBUTES_FOR_JOB                 = "job.getAttributesForJob";
+    public static final String GET_CHILD_JOBS                         = "job.getChildJobs";
     public static final String GET_CHILD_JOBS_FOR_SERVICE             = "job.getChildJobsForService";
-    public static final String GET_INITIAL_SUB_JOBS                   = "job.getInitialSubJobs";
     public static final String GET_NEXT_STATUS_CODES                  = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS                    = "job.getStatusCodeIds";
     public static final String GET_STATUS_CODE_SEQUENCES              = "job.getStatusCodeSequences";

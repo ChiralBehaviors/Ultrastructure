@@ -6,6 +6,4 @@
 >
     <include relativeToChangelogFile="true" file="functions/next_id.xml" />
     <include relativeToChangelogFile="true" file="functions/is_job_active.xml" />
-    <include relativeToChangelogFile="true" file="functions/is_terminal_state.xml" />
-    <include relativeToChangelogFile="true" file="functions/convert_to_unit.xml" />
 </databaseChangeLog>

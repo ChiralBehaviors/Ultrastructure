@@ -60,7 +60,7 @@ public class AttributeModelTest extends AbstractModelTest {
         AttributeNetwork edgeB = new AttributeNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
-        em.getTransaction().commit();
+        em.flush();
 
         em.clear();
 

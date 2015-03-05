@@ -59,8 +59,7 @@ public class LocationModelTest extends AbstractModelTest {
         LocationNetwork edgeB = new LocationNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
-        em.getTransaction().commit();
-        em.clear();
+        em.flush();
 
         List<LocationNetwork> edges = em.createQuery("SELECT edge FROM LocationNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                      LocationNetwork.class).getResultList();

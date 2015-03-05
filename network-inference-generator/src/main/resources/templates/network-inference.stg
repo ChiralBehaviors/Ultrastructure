@@ -83,8 +83,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                        wm.premise2 as premise2,
                        wm.inference as inference
                 FROM (SELECT parent, relationship, child, premise1, premise2, inference
-                      FROM working_memory 
-                      GROUP BY parent, relationship, child, premise1, premise2, inference) AS wm
+                      FROM working_memory) AS wm
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.insertNewNetworkRules">

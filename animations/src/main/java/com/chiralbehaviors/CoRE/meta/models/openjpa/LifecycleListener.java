@@ -43,7 +43,6 @@ public class LifecycleListener implements PersistListener, UpdateListener,
 
     @Override
     public void afterDelete(LifecycleEvent event) {
-        System.out.println(String.format("After delete: %s", event.getSource()));
         ((Ruleform) event.getSource()).delete(animations);
     }
 

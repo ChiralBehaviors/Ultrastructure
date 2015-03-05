@@ -90,14 +90,13 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeH = new AgencyNetwork(h, equals2, i, core);
         em.persist(edgeH);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
-        em.getTransaction().begin();
         aEqualsA = em.find(NetworkInference.class, aEqualsA.getId());
         em.remove(aEqualsA);
-        em.getTransaction().commit();
+        em.flush();
         a = em.find(Agency.class, a.getId());
         assertEquals(1, model.getAgencyModel().getChildren(a, equals).size());
     }
@@ -108,9 +107,10 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         Agency core = model.getKernel().getCore();
 
         em.getTransaction().begin();
+        em.clear();
 
-        Relationship equals = new Relationship("= b", "an alias for equals",
-                                               core);
+        Relationship equals = new Relationship("= again",
+                                               "an alias for equals", core);
         equals.setInverse(equals);
         em.persist(equals);
 
@@ -163,9 +163,10 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.getTransaction().begin();
         edgeA = em.find(AgencyNetwork.class, edgeA.getId());
         em.remove(edgeA);
-        em.getTransaction().commit();
+        em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(0, model.getAgencyModel().getChildren(a, equals).size());
+        List<Agency> children = model.getAgencyModel().getChildren(a, equals);
+        assertEquals(children.toString(), 0, children.size());
         assertEquals(0, model.getAgencyModel().getChildren(a, equals2).size());
         b = em.find(Agency.class, b.getId());
         assertEquals(1, model.getAgencyModel().getChildren(b, equals2).size());
@@ -224,14 +225,13 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeH = new AgencyNetwork(h, equals2, i, core);
         em.persist(edgeH);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
-        em.getTransaction().begin();
         edgeB = em.find(AgencyNetwork.class, edgeB.getId());
         em.remove(edgeB);
-        em.getTransaction().commit();
+        em.flush();
         a = em.find(Agency.class, a.getId());
         assertEquals(1, model.getAgencyModel().getChildren(a, equals).size());
     }
@@ -301,7 +301,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeG = new AgencyNetwork(G, g, H, core);
         em.persist(edgeG);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
         A = em.find(Agency.class, A.getId());
         List<Agency> children = model.getAgencyModel().getChildren(A, a);
@@ -337,7 +337,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(1,
@@ -361,9 +361,8 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         NetworkInference aEqualsA = new NetworkInference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
-        em.getTransaction().commit();
+        em.flush();
 
-        em.getTransaction().begin();
         Agency a = new Agency("A", "A", core);
         em.persist(a);
         Agency b = new Agency("B", "B", core);
@@ -374,7 +373,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeA);
         AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
         em.persist(edgeB);
-        em.getTransaction().commit();
+        em.flush();
         //        em.getTransaction().begin();
         //        model.getAgencyModel().propagate(edgeB);
         //        em.getTransaction().commit();
@@ -404,7 +403,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         Agency testAgency = model.getAgencyModel().create("test agency in group",
                                                           "test", myAspect).asRuleform();
         em.persist(testAgency);
-        em.getTransaction().commit();
+        em.flush();
         List<Agency> inGroup = model.getAgencyModel().getInGroup(classifier,
                                                                  inverse);
         assertNotNull(inGroup);
@@ -465,7 +464,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeH = new AgencyNetwork(h, equals2, i, core);
         em.persist(edgeH);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());

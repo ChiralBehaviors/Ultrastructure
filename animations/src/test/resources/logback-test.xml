@@ -6,14 +6,11 @@
             <pattern>${testing.logging.consoleLayoutPattern}</pattern>
         </encoder>
     </appender>
-    <logger name="org.dbunit">
-        <level value="${testing.logging.dbunit}" />
-    </logger>
     <logger name="com.chiralbehaviors.CoRE">
         <level value="INFO" />
     </logger>
     <logger name="org.apache.openjpa">
-        <level value="ERROR" />
+        <level value="INFO" />
     </logger>
 
     <root>

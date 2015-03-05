@@ -99,12 +99,9 @@ public class Animations implements Triggers {
         new LifecycleListener(this);
     }
 
-    public void afterCommit() {
-        reset();
-    }
-
     public void commit() throws TriggerException {
         flush();
+        reset();
     }
 
     /* (non-Javadoc)

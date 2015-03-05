@@ -436,7 +436,7 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("%s Setting status %s of %s", notes,
                                     newStatus, job));
         }
-        job._setStatus(newStatus);
+        job.setStatus(newStatus);
         log(job, notes);
         return job;
     }
@@ -456,7 +456,6 @@ public class JobModelImpl implements JobModel {
                                             Agency updatedBy) {
         for (Tuple<StatusCode, StatusCode> p : codes) {
             em.persist(new StatusCodeSequencing(service, p.a, p.b, updatedBy));
-            em.flush();
         }
     }
 
@@ -706,10 +705,18 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> getActiveSubJobsOf(Job job) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_SUB_JOBS,
-                                                    Job.class);
-        query.setParameter(1, job.getPrimaryKey());
-        return query.getResultList();
+        TypedQuery<Job> query = em.createQuery("SELECT j "
+                                                       + "FROM Job AS j "
+                                                       + "WHERE j.parent = :parent ",
+                                               Job.class);
+        query.setParameter("parent", job);
+        List<Job> jobs = new ArrayList<>(query.getResultList().size());
+        for (Job j : query.getResultList()) {
+            if (isActive(j)) {
+                jobs.add(j);
+            }
+        }
+        return jobs;
     }
 
     /**
@@ -1287,7 +1294,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public void log(Job job, String notes) {
         if (job.getStatus() == null) {
-            job._setStatus(kernel.getUnset()); // Prophylactic against recursive error disease
+            job.setStatus(kernel.getUnset()); // Prophylactic against recursive error disease
         }
         TypedQuery<Integer> query = em.createNamedQuery(JobChronology.HIGHEST_SEQUENCE_FOR_JOB,
                                                         Integer.class);
@@ -1296,7 +1303,6 @@ public class JobModelImpl implements JobModel {
         int highest = result == null ? 0 : result;
         JobChronology entry = new JobChronology(job, notes, highest + 1);
         em.persist(entry);
-        em.flush();
     }
 
     /*
@@ -1327,7 +1333,7 @@ public class JobModelImpl implements JobModel {
         job.setRequesterAttribute(kernel.getNotApplicableAttribute());
         job.setServiceAttribute(kernel.getNotApplicableAttribute());
         job.setQuantityUnit(kernel.getNotApplicableUnit());
-        job._setStatus(kernel.getUnset());
+        job.setStatus(kernel.getUnset());
         em.persist(job);
         return job;
     }
@@ -1876,7 +1882,6 @@ public class JobModelImpl implements JobModel {
         if (query.getSingleResult() == null) {
             log(job, "Initial insertion of job");
         }
-        em.flush();
     }
 
     /**
@@ -2178,7 +2183,7 @@ public class JobModelImpl implements JobModel {
     protected void insert(Job child, Job parent, Protocol protocol,
                           InferenceMap txfm, Product product) {
         child.setDepth(parent.getDepth() + 1);
-        child._setStatus(kernel.getUnset());
+        child.setStatus(kernel.getUnset());
         child.setParent(parent);
         child.setProtocol(protocol);
         child.setProduct(product);

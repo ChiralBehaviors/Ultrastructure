@@ -170,6 +170,7 @@ public class Job extends AbstractProtocol {
     public static final String CHANGE_STATUS                          = "job.changeStatus";
     public static final String CHRONOLOGY                             = "job.chronology";
     public static final String CLASSIFIED                             = "event.classified";
+    public static final String EXISTING_JOB_WITH_PARENT_AND_PROTOCOL  = "job.existingJobWithParentAndProtocol";
     public static final String FIND_ALL                               = "job.findAll";
     public static final String GET_ACTIVE_EXPLICIT_JOBS               = "job.getActiveExplicitJobs";
     public static final String GET_ACTIVE_JOBS_FOR_AGENCY             = "job.getActiveJobsForAgency";
@@ -182,7 +183,6 @@ public class Job extends AbstractProtocol {
     public static final String GET_ATTRIBUTES_FOR_JOB                 = "job.getAttributesForJob";
     public static final String GET_CHILD_JOBS_FOR_SERVICE             = "job.getChildJobsForService";
     public static final String GET_INITIAL_SUB_JOBS                   = "job.getInitialSubJobs";
-    public static final String EXISTING_JOB_WITH_PARENT_AND_PROTOCOL  = "job.existingJobWithParentAndProtocol";
     public static final String GET_NEXT_STATUS_CODES                  = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS                    = "job.getStatusCodeIds";
     public static final String GET_STATUS_CODE_SEQUENCES              = "job.getStatusCodeSequences";
@@ -244,19 +244,6 @@ public class Job extends AbstractProtocol {
         super(updatedBy);
     }
 
-    /**
-     * Should ONLY be called from JobModel. You call this yourself, you ain't be
-     * logging. We have to make it Public because it ain't in the same package.
-     * <p>
-     * <b>word</b>
-     * </p>
-     *
-     * @param newStatus
-     */
-    public void _setStatus(StatusCode newStatus) {
-        status = newStatus;
-    }
-
     public Set<Job> getChildJobs() {
         return childJobs;
     }
@@ -295,6 +282,11 @@ public class Job extends AbstractProtocol {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, Job> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.job;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     public void setChildJobs(Set<Job> jobs) {
@@ -337,6 +329,19 @@ public class Job extends AbstractProtocol {
         this.sequenceNumber = sequenceNumber;
     }
 
+    /**
+     * Should ONLY be called from JobModel. You call this yourself, you ain't be
+     * logging. We have to make it Public because it ain't in the same package.
+     * <p>
+     * <b>word</b>
+     * </p>
+     *
+     * @param newStatus
+     */
+    public void setStatus(StatusCode newStatus) {
+        status = newStatus;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -345,11 +350,6 @@ public class Job extends AbstractProtocol {
         return String.format("Job [status=%s, %s, sequenceNumber=%s]",
                              getStatus().getName(), getToString(),
                              sequenceNumber);
-    }
-
-    @Override
-    public void persist(Triggers triggers) {
-        triggers.persist(this);
     }
 
     @Override

@@ -46,7 +46,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedQueries({
                @NamedQuery(name = FIND_ALL, query = "SELECT j FROM JobChronology j"),
                @NamedQuery(name = FIND_FOR_JOB, query = "SELECT j FROM JobChronology j "
-                                                        + "WHERE j.job = :job "),
+                                                        + "WHERE j.job = :job ORDER BY j.sequenceNumber "),
                @NamedQuery(name = FIND_FOR_PRODUCT, query = "SELECT j FROM JobChronology j "
                                                             + "WHERE j.product = :product "),
                @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "SELECT MAX(j.sequenceNumber) FROM JobChronology j "

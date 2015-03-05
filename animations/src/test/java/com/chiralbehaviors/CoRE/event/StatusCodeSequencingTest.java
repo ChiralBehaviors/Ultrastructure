@@ -300,9 +300,6 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
                                                                   core);
         em.persist(sequence3);
 
-        em.flush();
-        em.clear();
-
         List<StatusCode> initialStates = jobModel.getInitialStates(service);
         assertEquals(2, initialStates.size());
         assertTrue(initialStates.contains(startState));

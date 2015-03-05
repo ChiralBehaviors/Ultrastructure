@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.meta.models.openjpa;
 
 import org.apache.openjpa.event.DeleteListener;
+import org.apache.openjpa.event.DirtyListener;
 import org.apache.openjpa.event.LifecycleEvent;
 import org.apache.openjpa.event.PersistListener;
 import org.apache.openjpa.event.UpdateListener;
@@ -30,7 +31,7 @@ import com.chiralbehaviors.CoRE.meta.models.Animations;
  *
  */
 public class LifecycleListener implements PersistListener, UpdateListener,
-        DeleteListener {
+        DeleteListener, DirtyListener {
 
     protected final Animations animations;
 
@@ -42,17 +43,16 @@ public class LifecycleListener implements PersistListener, UpdateListener,
 
     @Override
     public void afterDelete(LifecycleEvent event) {
+        System.out.println(String.format("After delete: %s", event.getSource()));
         ((Ruleform) event.getSource()).delete(animations);
     }
 
     @Override
     public void afterPersist(LifecycleEvent event) {
-        ((Ruleform) event.getSource()).persist(animations);
     }
 
     @Override
     public void afterUpdatePerformed(LifecycleEvent event) {
-        ((Ruleform) event.getSource()).update(animations);
     }
 
     @Override
@@ -61,9 +61,28 @@ public class LifecycleListener implements PersistListener, UpdateListener,
 
     @Override
     public void beforePersist(LifecycleEvent event) {
+        ((Ruleform) event.getSource()).persist(animations);
     }
 
     @Override
     public void beforeUpdate(LifecycleEvent event) {
+        ((Ruleform) event.getSource()).update(animations);
+    }
+
+    @Override
+    public void afterDirty(LifecycleEvent event) {
+        ((Ruleform) event.getSource()).update(animations);
+    }
+
+    @Override
+    public void afterDirtyFlushed(LifecycleEvent event) {
+    }
+
+    @Override
+    public void beforeDirty(LifecycleEvent event) {
+    }
+
+    @Override
+    public void beforeDirtyFlushed(LifecycleEvent event) {
     }
 }

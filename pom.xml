@@ -40,21 +40,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <core.java.login>core_java</core.java.login>
         <core.java.password>password</core.java.password>
-        <db.login>core</db.login>
-        <db.password>password</db.password>
-        <db.server>localhost</db.server>
-        <db.port>5432</db.port>
-        <db.database>core</db.database>
-        <testing.db.login>postgres</testing.db.login>
+
+        <testing.db.database>postgres</testing.db.database>
         <testing.db.server>localhost</testing.db.server>
         <testing.db.port>5432</testing.db.port>
-        <testing.db.database>postgres</testing.db.database>
+        <testing.db.login>postgres</testing.db.login>
+        <testing.db.password>postgres</testing.db.password>
+
+        <db.server>${testing.db.server}</db.server>
+        <db.port>${testing.db.port}</db.port>
+        <db.database>core</db.database>
+        <db.login>core</db.login>
+        <db.password>password</db.password>
+
         <logging.core>INFO</logging.core>
         <logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</logging.consoleLayoutPattern>
-        <testing.logging.core>INFO</testing.logging.core>
-        <testing.logging.jpa>WARN</testing.logging.jpa>
-        <testing.logging.org.apache>TRACE</testing.logging.org.apache>
-        <testing.logging.dbunit>WARN</testing.logging.dbunit>
         <testing.logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</testing.logging.consoleLayoutPattern>
     </properties>
 

@@ -210,11 +210,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void ensureValidParentStatus(Job parent) throws SQLException {
-        TypedQuery<Boolean> query = em.createNamedQuery(StatusCode.IS_TERMINAL_STATE,
-                                                        Boolean.class);
-        query.setParameter("service", parent.getService());
-        query.setParameter("sc.id", parent.getStatus().getPrimaryKey());
-        if (query.getSingleResult()) {
+        if (!isTerminalState(parent.getStatus(), parent.getService())) {
             throw new SQLException(
                                    String.format("'Cannot insert a job because parent %s is in a terminal state %s.'",
                                                  parent, parent.getStatus()));
@@ -987,12 +983,12 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public boolean isTerminalState(StatusCode sc, Product service) {
-        TypedQuery<Boolean> query = em.createNamedQuery(StatusCode.IS_TERMINAL_STATE,
-                                                        Boolean.class);
-        query.setParameter(1, service.getPrimaryKey());
-        query.setParameter(2, sc.getPrimaryKey());
+        TypedQuery<Long> query = em.createNamedQuery(StatusCode.IS_TERMINAL_STATE,
+                                                     Long.class);
+        query.setParameter("service", service);
+        query.setParameter("statusCode", sc);
 
-        return query.getSingleResult();
+        return query.getSingleResult() > 0;
     }
 
     @Override

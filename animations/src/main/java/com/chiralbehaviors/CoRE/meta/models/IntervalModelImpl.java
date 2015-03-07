@@ -17,19 +17,14 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.postgresql.pljava.TriggerData;
-
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.jsp.JSP;
-import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
@@ -49,48 +44,6 @@ public class IntervalModelImpl
         extends
         AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
         implements IntervalModel {
-
-    private static class Call<T> implements StoredProcedure<T> {
-        private final Procedure<T> procedure;
-
-        public Call(Procedure<T> procedure) {
-            this.procedure = procedure;
-        }
-
-        @Override
-        public T call(EntityManager em) throws Exception {
-            return procedure.call(new IntervalModelImpl(em));
-        }
-
-        @Override
-        public String toString() {
-            return "Call [" + procedure + "]";
-        }
-    }
-
-    private static interface Procedure<T> {
-        T call(IntervalModelImpl productModel) throws Exception;
-    }
-
-    public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(IntervalModelImpl agencyModel) throws Exception {
-                agencyModel.propagate();
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "IntervalModel.propagate";
-            }
-        });
-    }
-
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
-    }
 
     /**
      * @param em

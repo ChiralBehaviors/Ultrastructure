@@ -120,23 +120,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>create-deployment</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/sql.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
@@ -252,101 +235,6 @@
                                 <argument>src/main/kernel/kernel-workspace.json</argument>
                             </arguments>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>database.active</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.liquibase</groupId>
-                        <artifactId>liquibase-maven-plugin</artifactId>
-                        <configuration>
-                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                            <driver>org.postgresql.Driver</driver>
-                            <url>jdbc:postgresql://${db.server}:${db.port}/core</url>
-                            <username>${db.login}</username>
-                            <password>${db.password}</password>
-                            <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/animations.xml</changeLogFile>
-                            <verbose>false</verbose>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>update</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.hellblazer</groupId>
-                        <artifactId>pljava-loader</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.driver.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <jdbcUrl>jdbc:postgresql://${db.server}:${db.port}/core</jdbcUrl>
-                            <username>${db.login}</username>
-                            <password>${db.password}</password>
-                            <excluded>
-                                <resource>
-                                    <groupId>com.hellblazer</groupId>
-                                    <artifactId>pljava-api</artifactId>
-                                    <version>0.0.1-SNAPSHOT</version>
-                                </resource>
-                                <resource>
-                                    <groupId>org.apache.openjpa</groupId>
-                                    <artifactId>openjpa-all</artifactId>
-                                    <version>2.3.0</version>
-                                </resource>
-                            </excluded>
-                            <classpathProperty>pljavaClassPath</classpathProperty>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>generate-test-sources</phase>
-                                <goals>
-                                    <goal>load</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>sql-maven-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.driver.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>set-classpath</id>
-                                <phase>generate-test-sources</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://${db.server}:${db.port}/core</url>
-                                    <username>${db.login}</username>
-                                    <password>${db.password}</password>
-                                    <autocommit>true</autocommit>
-                                    <sqlCommand>SELECT
-                                        sqlj.set_classpath('ruleform',
-                                        '${pljavaClassPath}');</sqlCommand>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

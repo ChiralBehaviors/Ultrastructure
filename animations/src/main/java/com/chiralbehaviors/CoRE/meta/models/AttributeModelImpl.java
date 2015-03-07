@@ -16,7 +16,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,14 +23,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.postgresql.pljava.TriggerData;
-
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.jsp.JSP;
-import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
@@ -47,48 +42,6 @@ public class AttributeModelImpl
         extends
         AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
-
-    private static class Call<T> implements StoredProcedure<T> {
-        private final Procedure<T> procedure;
-
-        public Call(Procedure<T> procedure) {
-            this.procedure = procedure;
-        }
-
-        @Override
-        public T call(EntityManager em) throws Exception {
-            return procedure.call(new AttributeModelImpl(em));
-        }
-
-        @Override
-        public String toString() {
-            return "Call [" + procedure + "]";
-        }
-    }
-
-    private static interface Procedure<T> {
-        T call(AttributeModel attributeModel) throws Exception;
-    }
-
-    public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(AttributeModel attributeModel) throws Exception {
-                attributeModel.propagate();
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "AttributeModel.propagate";
-            }
-        });
-    }
-
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
-    }
 
     /**
      * @param em

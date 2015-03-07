@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -525,8 +524,6 @@ public interface JobModel {
      * @param notes
      */
     void log(Job job, String notes);
-
-    void logModifiedService(UUID scs);
 
     /**
      * @param service

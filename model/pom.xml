@@ -389,7 +389,7 @@
                                     <action>
                                         <ignore></ignore>
                                     </action>
-                                </pluginExecution> 
+                                </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.apache.maven.plugins</groupId>
@@ -447,60 +447,6 @@
                                 <goals>
                                     <goal>update</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.hellblazer</groupId>
-                        <artifactId>pljava-loader</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.driver.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <jdbcUrl>${jdbc.url}</jdbcUrl>
-                            <username>${db.login}</username>
-                            <password>${db.password}</password>
-                            <classpathProperty>pljavaClassPath</classpathProperty>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>generate-test-sources</phase>
-                                <goals>
-                                    <goal>load</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>sql-maven-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.driver.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>set-classpath</id>
-                                <phase>generate-test-sources</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <driver>org.postgresql.Driver</driver>
-                                    <url>${jdbc.url}</url>
-                                    <username>${db.login}</username>
-                                    <password>${db.password}</password>
-                                    <autocommit>true</autocommit>
-                                    <sqlCommand>SELECT sqlj.set_classpath('ruleform',
-                                        '${pljavaClassPath}');</sqlCommand>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

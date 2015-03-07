@@ -16,8 +16,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,17 +23,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.postgresql.pljava.TriggerData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.jsp.JSP;
-import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
@@ -51,67 +43,6 @@ public class UnitModelImpl
         extends
         AbstractNetworkedModel<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute>
         implements UnitModel {
-    private static class Call<T> implements StoredProcedure<T> {
-        private final Procedure<T> procedure;
-
-        public Call(Procedure<T> procedure) {
-            this.procedure = procedure;
-        }
-
-        @Override
-        public T call(EntityManager em) throws Exception {
-            return procedure.call(new UnitModelImpl(em));
-        }
-
-        @Override
-        public String toString() {
-            return "Call [" + procedure + "]";
-        }
-    }
-
-    private static interface Procedure<T> {
-        T call(UnitModelImpl unitModel) throws Exception;
-    }
-
-    public static BigDecimal convert(final BigDecimal value,
-                                     final String sourceUnit,
-                                     final String targetUnit) throws Exception {
-        return execute(new Procedure<BigDecimal>() {
-            @Override
-            public BigDecimal call(UnitModelImpl unitModel) throws Exception {
-                if (sourceUnit == null || targetUnit == null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug(String.format("Source and target units cannot be converted: %s -> %s",
-                                                sourceUnit, targetUnit));
-                    }
-                    return null;
-                }
-                if (sourceUnit.equals(targetUnit)) {
-                    return value;
-                }
-                throw new SQLException(
-                                       String.format("Unit conversion currently not supported for %s -> %s",
-                                                     sourceUnit, targetUnit));
-            }
-        });
-    }
-
-    public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(UnitModelImpl unitModel) throws Exception {
-                unitModel.propagate();
-                return null;
-            }
-        });
-    }
-
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
-    }
-
-    private static final Logger log = LoggerFactory.getLogger(UnitModelImpl.class);
 
     /**
      * @param em

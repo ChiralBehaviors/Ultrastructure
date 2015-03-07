@@ -19,13 +19,10 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
-import java.io.ByteArrayInputStream;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -33,20 +30,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
-
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
-import com.chiralbehaviors.CoRE.jsp.JSP;
-import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
@@ -60,39 +48,12 @@ import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
-import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * @author hhildebrand
  *
  */
 public class ModelImpl implements Model {
-
-    private static class Call<T> implements StoredProcedure<T> {
-        private final Procedure<T> procedure;
-
-        public Call(Procedure<T> procedure) {
-            this.procedure = procedure;
-        }
-
-        @Override
-        public T call(EntityManager em) throws Exception {
-            return procedure.call(new ModelImpl(em));
-        }
-
-        @Override
-        public String toString() {
-            return "Call [" + procedure + "]";
-        }
-    }
-
-    private static interface Procedure<T> {
-        T call(ModelImpl model) throws Exception;
-    }
-
-    public static AuthenticatedPrincipal getPrincipal() {
-        return principal;
-    }
 
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
@@ -102,79 +63,18 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    public static void set_log_configuration(final String logConfiguration)
-                                                                           throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(ModelImpl model) throws Exception {
-                model.reallySetLogConfiguration(logConfiguration);
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "Model.set_log_configuration";
-            }
-        });
-    }
-
-    /**
-     * Sets up the authenticated principal to use in the animation's in database
-     * context. Will throw all sorts of errors if used outside of the context of
-     * a Java stored proceedure.
-     *
-     * @param agency
-     *            - the id of the agency corresponding to the principal
-     * @param activeRoleRelationships
-     *            - the ids of the relationships of the active role aspects. If
-     *            null, then no active role aspects are set.
-     * @param activeRoleAgencys
-     *            - the ids of the agencys of the active role aspects. If null,
-     *            then no active role aspects are set.
-     *
-     * @throws IllegalArgumentException
-     *             if the activeRoleRelationships.length !=
-     *             activeRoleAgencys.length
-     */
-    public static void setPrincipal(String agency,
-                                    String[] activeRoleRelationships,
-                                    String[] activeRoleAgencys) {
-        /*
-         * EntityManager em = JSP.getEm(); if (activeRoleRelationships == null
-         * || activeRoleAgencys == null) { principal = new
-         * AuthenticatedPrincipal(em.find(Agency.class, agency)); } else { if
-         * (activeRoleRelationships.length != activeRoleAgencys.length) { throw
-         * new IllegalArgumentException(
-         * "active role relationships and agencys must be of the same length");
-         * } List<Aspect<Agency>> aspects = new ArrayList<Aspect<Agency>>(); for
-         * (int i = 0; i < activeRoleRelationships.length; i++) {
-         * aspects.add(new Aspect<Agency>( em.find(Relationship.class,
-         * activeRoleRelationships[i]), em.find(Agency.class,
-         * activeRoleAgencys[i]))); } principal = new
-         * AuthenticatedPrincipal(em.find(Agency.class, agency), aspects); }
-         */
-    }
-
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
-    }
-
-    private static AuthenticatedPrincipal principal;
-
-    private final AgencyModel             agencyModel;
-    private final AttributeModel          attributeModel;
-    private final EntityManager           em;
-    private final IntervalModel           intervalModel;
-    private final JobModel                jobModel;
-
-    private final Kernel                  kernel;
-
-    private final LocationModel           locationModel;
-    private final ProductModel            productModel;
-    private final RelationshipModel       relationshipModel;
-    private final StatusCodeModel         statusCodeModel;
-    private final UnitModel               unitModel;
-    private final WorkspaceModel          workspaceModel;
+    private final AgencyModel       agencyModel;
+    private final AttributeModel    attributeModel;
+    private final EntityManager     em;
+    private final IntervalModel     intervalModel;
+    private final JobModel          jobModel;
+    private final Kernel            kernel;
+    private final LocationModel     locationModel;
+    private final ProductModel      productModel;
+    private final RelationshipModel relationshipModel;
+    private final StatusCodeModel   statusCodeModel;
+    private final UnitModel         unitModel;
+    private final WorkspaceModel    workspaceModel;
 
     public ModelImpl(EntityManager entityManager) {
         this(entityManager, KernelUtil.getKernel());
@@ -424,30 +324,4 @@ public class ModelImpl implements Model {
     public WorkspaceModel getWorkspaceModel() {
         return workspaceModel;
     }
-
-    @Override
-    public void setLogConfiguration(String logbackConfig) {
-        Query query = em.createNativeQuery("select ruleform.set_log_configuration(?)");
-        query.setParameter(1, logbackConfig);
-        query.getResultList();
-    }
-
-    private void reallySetLogConfiguration(String logbackConfig) {
-        // assume SLF4J is bound to logback in the current environment
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-
-        try {
-            JoranConfigurator configurator = new JoranConfigurator();
-            configurator.setContext(context);
-            // Call context.reset() to clear any previous configuration, e.g. default
-            // configuration. For multi-step configuration, omit calling context.reset().
-            context.reset();
-            configurator.doConfigure(new ByteArrayInputStream(
-                                                              logbackConfig.getBytes()));
-        } catch (JoranException je) {
-            // StatusPrinter will handle this
-        }
-        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-    }
-
 }

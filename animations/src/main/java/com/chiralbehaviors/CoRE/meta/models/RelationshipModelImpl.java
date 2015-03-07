@@ -16,7 +16,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,11 +23,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.postgresql.pljava.TriggerData;
-
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.jsp.JSP;
-import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
@@ -47,44 +42,6 @@ public class RelationshipModelImpl
         extends
         AbstractNetworkedModel<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute>
         implements RelationshipModel {
-
-    private static class Call<T> implements StoredProcedure<T> {
-        private final Procedure<T> procedure;
-
-        public Call(Procedure<T> procedure) {
-            this.procedure = procedure;
-        }
-
-        @Override
-        public T call(EntityManager em) throws Exception {
-            return procedure.call(new RelationshipModelImpl(em));
-        }
-
-        @Override
-        public String toString() {
-            return "Call [" + procedure + "]";
-        }
-    }
-
-    private static interface Procedure<T> {
-        T call(RelationshipModelImpl productModel) throws Exception;
-    }
-
-    public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(RelationshipModelImpl agencyModel)
-                                                               throws Exception {
-                agencyModel.propagate();
-                return null;
-            }
-        });
-    }
-
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
-    }
 
     /**
      * @param em

@@ -60,7 +60,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public static final String INSERT_DEDUCTIONS_SUFFIX                                      = ".insertDeductions";
     public static final String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
     public static final String INSERT_INVERSES_SUFFIX                                        = ".insertInverses";
-    public static final String UNLINKED_SUFFIX                                               = ".unlinked";
     public static final String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";
 
     private static final long  serialVersionUID                                              = 1L;

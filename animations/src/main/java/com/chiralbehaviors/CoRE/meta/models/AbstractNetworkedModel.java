@@ -30,7 +30,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_DEDUCTIONS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.UNLINKED_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 
 import java.lang.reflect.ParameterizedType;
@@ -542,16 +541,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                        relationships);
         }
         return relationships;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getUnlinked()
-     */
-    @Override
-    public List<RuleForm> getUnlinked() {
-        return em.createNamedQuery(prefix + UNLINKED_SUFFIX, entity).getResultList();
     }
 
     @Override

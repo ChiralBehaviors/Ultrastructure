@@ -20,7 +20,6 @@ import static com.chiralbehaviors.CoRE.attribute.unit.Unit.FIND_CLASSIFIED_ATTRI
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.GET_CHILD;
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.GET_CHILD_RULES_BY_RELATIONSHIP;
-import static com.chiralbehaviors.CoRE.attribute.unit.Unit.UNLINKED;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -30,8 +29,6 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -42,7 +39,6 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -81,19 +77,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "WHERE n.parent = :attribute "
                                                                            + "AND n.relationship IN :relationships "
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
-@NamedNativeQueries({ @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                 + "FROM attribute AS unlinked "
-                                                                 + "JOIN ("
-                                                                 + "SELECT id "
-                                                                 + "FROM attribute "
-                                                                 + "EXCEPT ("
-                                                                 + "SELECT distinct(net.child) "
-                                                                 + "FROM unit_network as net "
-                                                                 + "WHERE net.parent = attribute_id('Attribute') "
-                                                                 + "AND relationship = relationship_id('includes') "
-                                                                 + ")"
-                                                                 + ") AS linked ON unlinked.id = linked.id "
-                                                                 + "WHERE unlinked.id != attribute_id('Attribute');", resultClass = Attribute.class) })
 @Entity
 @Table(name = "unit", schema = "ruleform")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
@@ -106,8 +89,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
                                                                           + GET_CHILDREN_SUFFIX;
     public static final String GET_CHILD_RULES_BY_RELATIONSHIP          = "unit"
                                                                           + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String UNLINKED                                 = "unit"
-                                                                          + UNLINKED_SUFFIX;
     private static final long  serialVersionUID                         = 1L;
 
     private String             abbreviation;

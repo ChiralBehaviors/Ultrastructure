@@ -23,7 +23,6 @@ import static com.chiralbehaviors.CoRE.network.Relationship.GET_ALL_PARENT_RELAT
 import static com.chiralbehaviors.CoRE.network.Relationship.GET_CHILD;
 import static com.chiralbehaviors.CoRE.network.Relationship.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.chiralbehaviors.CoRE.network.Relationship.ORDERED_ATTRIBUTES;
-import static com.chiralbehaviors.CoRE.network.Relationship.UNLINKED;
 
 import java.util.Collections;
 import java.util.Set;
@@ -35,8 +34,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -62,19 +59,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "relationship", schema = "ruleform")
-@NamedNativeQueries({ @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                 + "FROM relationship AS unlinked "
-                                                                 + "JOIN ("
-                                                                 + "     SELECT id "
-                                                                 + "     FROM relationship "
-                                                                 + "     EXCEPT ("
-                                                                 + "             SELECT distinct(net.child) "
-                                                                 + "             FROM relationship_network as net "
-                                                                 + "             WHERE net.parent = relationship_id('Agency') "
-                                                                 + "             AND relationship = relationship_id('includes') "
-                                                                 + "     )"
-                                                                 + ") AS linked ON unlinked.id = linked.id "
-                                                                 + "WHERE unlinked.id != relationship_id('Agency');", resultClass = Agency.class) })
 @NamedQueries({
                @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from RelationshipAttribute as ca where ca.relationship = :relationship"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
@@ -129,8 +113,6 @@ public class Relationship extends
                                                                                   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     public static final String         ORDERED_ATTRIBUTES                       = "relationship.orderedAttributes";
     public static final String         QUALIFIED_ENTITY_NETWORK_RULES           = "relationship.qualifiedEntityNetworkRules";
-    public static final String         UNLINKED                                 = "relationship"
-                                                                                  + UNLINKED_SUFFIX;
 
     private static final long          serialVersionUID                         = 1L;
 

@@ -15,13 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.attribute;
 
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
@@ -68,22 +63,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "attribute_network", schema = "ruleform")
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
-    public static final String DEDUCE_NEW_NETWORK_RULES         = "attributeNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES        = "attributeNetwork"
-                                                                  + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "attributeNetwork"
                                                                   + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                     = "attributeNetwork"
                                                                   + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS           = "attributeNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "attribute.immediateChildrenNetworkRules";
-    public static final String INFERENCE_STEP                   = "attributeNetwork"
-                                                                  + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS    = "attributeNetwork"
-                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES         = "attributeNetwork"
-                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Attribute

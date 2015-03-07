@@ -15,13 +15,8 @@ s * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  */
 package com.chiralbehaviors.CoRE.agency;
 
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_USED_RELATIONSHIPS;
@@ -71,22 +66,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
-    public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
-                                                                  + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "agencyNetwork"
                                                                   + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                     = "agencyNetwork"
                                                                   + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
-    public static final String INFERENCE_STEP                   = "agencyNetwork"
-                                                                  + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS    = "agencyNetwork"
-                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Agency

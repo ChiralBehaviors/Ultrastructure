@@ -33,8 +33,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -58,19 +56,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "status_code", schema = "ruleform")
-@NamedNativeQueries({ @NamedNativeQuery(name = IS_TERMINAL_STATE, query = "SELECT EXISTS( "
-                                                                          + "SELECT sc.id "
-                                                                          + "FROM ruleform.status_code_sequencing AS seq "
-                                                                          + "    JOIN ruleform.status_code AS sc ON seq.child_code = sc.id "
-                                                                          + " WHERE "
-                                                                          + "  NOT EXISTS ( "
-                                                                          + "    SELECT parent_code FROM ruleform.status_code_sequencing "
-                                                                          + "    WHERE service = seq.service "
-                                                                          + "      AND parent_code = seq.child_code "
-                                                                          + "  ) "
-                                                                          + "  AND service = ? "
-                                                                          + "  AND sc.id = ? "
-                                                                          + " )") })
 @NamedQueries({
                @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from StatusCodeAttribute as ca where ca.statusCode = :statusCode"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
@@ -102,7 +87,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM StatusCodeNetwork n "
                                                                            + "WHERE n.parent = :statusCode "
                                                                            + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+               @NamedQuery(name = IS_TERMINAL_STATE, query = "SELECT COUNT(seq) "
+                                                             + "FROM StatusCodeSequencing AS seq"
+                                                             + " WHERE seq.childCode = :statusCode"
+                                                             + "  AND NOT EXISTS ( "
+                                                             + "    SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                             + "    WHERE seq2.service = seq.service "
+                                                             + "      AND seq2.parentCode = seq.childCode "
+                                                             + "  ) "
+                                                             + "  AND seq.service = :service ") })
 public class StatusCode extends
         ExistentialRuleform<StatusCode, StatusCodeNetwork> {
 

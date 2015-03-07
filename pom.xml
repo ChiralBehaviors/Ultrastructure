@@ -69,7 +69,6 @@
         <module>loader</module>
         <module>loader-plugin</module>
         <module>network-inference-generator</module>
-        <module>default-jsp-logging</module>
     </modules>
 
     <dependencyManagement>

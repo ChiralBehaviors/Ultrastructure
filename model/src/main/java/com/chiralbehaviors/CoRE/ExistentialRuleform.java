@@ -50,15 +50,13 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public static final String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX     = ".findGroupedAttributeAuthorizationsForAttribute";
     public static final String FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX                   = ".findGroupedAttributeAuthorizations";
     public static final String FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX                          = ".findGroupedAttributes";
-    public static final String GET_NETWORK_INVERSES_SUFFIX                                   = ".getInverses";
+    public static final String GENERATE_NETWORK_INVERSES_SUFFIX                              = ".generateInverses";
     public static final String GET_ALL_PARENT_RELATIONSHIPS_SUFFIX                           = ".getAllParentRelationships";
     public static final String GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX                        = ".getChildRulesByRelationship";
     public static final String GET_CHILDREN_SUFFIX                                           = ".getChildren";
     public static final String GET_NETWORKS_SUFFIX                                           = ".getNetworks";
     public static final String INFERENCE_STEP_FROM_LAST_PASS_SUFFIX                          = ".inferenceStepFromLastPass";
     public static final String INFERENCE_STEP_SUFFIX                                         = ".inference";
-    public static final String INSERT_EDGES_SUFFIX                                           = ".insertEdges";
-    public static final String INSERT_DEDUCTIONS_SUFFIX                                      = ".insertDeductions";
     public static final String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
     public static final String UNLINKED_SUFFIX                                               = ".unlinked";
     public static final String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";

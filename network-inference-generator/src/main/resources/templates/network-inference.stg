@@ -68,15 +68,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
         </named-native-query>
         <named-native-query name="%queryPrefix%.deduceNewNetworkRules">
             <query><![CDATA[
-            INSERT INTO current_pass_rules(id, 
-                                           parent, 
-                                           relationship, 
-                                           child, 
-                                           premise1, 
-                                           premise2,
-                                           inference)
-                SELECT ruleform.next_id() as id, 
-                       wm.parent as parent, 
+                SELECT wm.parent as parent, 
                        wm.relationship as relationship, 
                        wm.child as child, 
                        wm.premise1 as premise1, 
@@ -84,6 +76,18 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                        wm.inference as inference
                 FROM (SELECT parent, relationship, child, premise1, premise2, inference
                       FROM working_memory) AS wm
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="%queryPrefix%.insertDeductions">
+            <query><![CDATA[
+            INSERT INTO current_pass_rules(id, 
+                                           parent, 
+                                           relationship, 
+                                           child,
+                                           inference, 
+                                           premise1, 
+                                           premise2)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.insertNewNetworkRules">
@@ -114,22 +118,12 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
         </named-native-query>
         <named-native-query name="%queryPrefix%.generateInverses">
             <query><![CDATA[
-            INSERT INTO ruleform.%tableName%(id,
-                                                parent, 
-                                                relationship, 
-                                                child,
-                                                inference,
-                                                premise1, 
-                                                premise2, 
-                                                updated_by)
-            SELECT ruleform.next_id() as id,
-                   net.child as parent,
+            SELECT net.child as parent,
                    rel.inverse as relationship,
                    net.parent as child,
                    net.inference as inference,
                    net.premise1 as premise1,
-                   net.premise2 as premise2,
-                   ?1 as updated_by
+                   net.premise2 as premise2
             FROM ruleform.%tableName% AS net
             JOIN ruleform.relationship AS rel ON net.relationship = rel.id
             LEFT OUTER JOIN ruleform.%tableName% AS exist
@@ -137,6 +131,19 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 AND rel.inverse = exist.relationship
                 AND net.parent = exist.child
             WHERE exist.id IS NULL
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="%queryPrefix%.insertInverses">
+            <query><![CDATA[
+           INSERT INTO ruleform.%tableName%(id, 
+                                               parent, 
+                                               relationship, 
+                                               child, 
+                                               inference,
+                                               premise1, 
+                                               premise2,
+                                               updated_by)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
             ]]></query>
         </named-native-query>
     </entity>

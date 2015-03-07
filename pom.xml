@@ -130,7 +130,7 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.8</version>
                 <type>maven-plugin</type>
-            </dependency> 
+            </dependency>
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>animations</artifactId>
@@ -172,11 +172,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>1.7.6</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hellblazer</groupId>
-                <artifactId>pljava-api</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -416,18 +411,6 @@
                             <groupId>postgresql</groupId>
                             <artifactId>postgresql</artifactId>
                             <version>${postgresql.driver.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>com.hellblazer</groupId>
-                    <artifactId>pljava-loader</artifactId>
-                    <version>0.0.1-SNAPSHOT</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.postgresql</groupId>
-                            <artifactId>postgresql</artifactId>
-                            <version>9.2-1003-jdbc4</version>
                         </dependency>
                     </dependencies>
                 </plugin>

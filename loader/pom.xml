@@ -121,15 +121,6 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes/</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.chiralbehaviors.CoRE</groupId>
-                                    <artifactId>animations</artifactId>
-                                    <classifier>sql</classifier>
-                                    <version>${project.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/classes/</outputDirectory>
-                                </artifactItem>
                             </artifactItems>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>

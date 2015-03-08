@@ -98,6 +98,26 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>2.2.4</version>
+                <executions>
+                    <execution>
+                        <id>process</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <options>
+                                <openjpa.metamodel>TRUE</openjpa.metamodel>
+                            </options>
+                            <outputDirectory>${project.build.directory}/generated-sources/jpa</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>network-inference-generator</artifactId>
                 <configuration>
@@ -172,26 +192,6 @@
                         <exclude>**/ResourceAttributeAuthorizationTest.java</exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <version>2.2.4</version>
-                <executions>
-                    <execution>
-                        <id>process</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <options>
-                                <openjpa.metamodel>TRUE</openjpa.metamodel>
-                            </options>
-                            <outputDirectory>${project.build.directory}/generated-sources/jpa</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

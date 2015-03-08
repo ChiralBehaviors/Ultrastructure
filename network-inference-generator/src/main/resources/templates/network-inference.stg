@@ -18,17 +18,14 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                                        premise1, 
                                        premise2,
                                        inference)
-                 SELECT
-                      p1.parent as parent,
-                      deduction.inference as relationship,
-                      p2.child as child,
-                      p1.id as premise1,
-                      p2.id as premise2,
-                      deduction.id as inference
-                 FROM  (SELECT n.id, n.parent, n.relationship, n.child
-                            FROM ruleform.%tableName% AS n) as p1
-                 JOIN  (SELECT n.id, n.parent, n.relationship, n.child
-                            FROM ruleform.%tableName% AS n) as p2
+                 SELECT p1.parent as parent,
+                    deduction.inference as relationship,
+                    p2.child as child,
+                    p1.id as premise1,
+                    p2.id as premise2,
+                    deduction.id as inference
+                 FROM ruleform.%tableName% AS p1
+                 JOIN ruleform.%tableName% AS p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                  JOIN ruleform.network_inference AS deduction
@@ -49,17 +46,14 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                                        premise1, 
                                        premise2,
                                        inference)
-                SELECT
-                    p1.parent as parent,
+                SELECT p1.parent as parent,
                     deduction.inference as relationship,
                     p2.child as child,
                     p1.id as premise1,
                     p2.id as premise2,
                     deduction.id as inference
-                FROM (SELECT n.id, n.parent, n.relationship, n.child
-                        FROM last_pass_rules AS n) as p1
-                JOIN (SELECT n.id, n.parent, n.relationship, n.child
-                        FROM ruleform.%tableName% AS n) as p2
+                FROM last_pass_rules as p1
+                JOIN ruleform.%tableName% AS p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                 JOIN ruleform.network_inference AS deduction
@@ -80,8 +74,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                        wm.premise1 as premise1, 
                        wm.premise2 as premise2,
                        wm.inference as inference
-                FROM (SELECT parent, relationship, child, premise1, premise2, inference
-                      FROM working_memory) AS wm
+                FROM working_memory AS wm
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.insertDeductions">

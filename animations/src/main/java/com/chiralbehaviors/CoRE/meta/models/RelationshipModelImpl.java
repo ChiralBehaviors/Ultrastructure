@@ -20,12 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -46,15 +44,8 @@ public class RelationshipModelImpl
     /**
      * @param em
      */
-    public RelationshipModelImpl(EntityManager em) {
-        super(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public RelationshipModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
+    public RelationshipModelImpl(Model model) {
+        super(model);
     }
 
     /*

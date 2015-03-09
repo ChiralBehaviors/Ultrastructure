@@ -69,8 +69,9 @@ public class AbstractModelTest {
         }
         em = getEntityManager();
         kernel = KernelUtil.clearAndLoadKernel(em);
-        em = Animations.setup(em);
-        model = new ModelImpl(em);
+        em.close();
+        model = new ModelImpl(emf);
+        em = model.getEntityManager();
     }
 
     private static EntityManager getEntityManager() throws IOException {

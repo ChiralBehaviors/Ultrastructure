@@ -20,17 +20,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -47,15 +45,8 @@ public class LocationModelImpl
     /**
      * @param em
      */
-    public LocationModelImpl(EntityManager em) {
-        super(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public LocationModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
+    public LocationModelImpl(Model model) {
+        super(model);
     }
 
     /*

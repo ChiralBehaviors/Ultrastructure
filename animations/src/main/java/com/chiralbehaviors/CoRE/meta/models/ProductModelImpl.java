@@ -20,12 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -48,19 +45,8 @@ public class ProductModelImpl
     /**
      * @param em
      */
-    public ProductModelImpl(EntityManager em) {
-        this(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public ProductModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
-    }
-
     public ProductModelImpl(Model model) {
-        super(model.getEntityManager(), model.getKernel());
+        super(model);
     }
 
     /*

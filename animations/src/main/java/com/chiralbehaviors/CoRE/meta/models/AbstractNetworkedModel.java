@@ -64,6 +64,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -139,9 +140,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     protected final Kernel                         kernel;
 
     @SuppressWarnings("unchecked")
-    public AbstractNetworkedModel(EntityManager em, Kernel kernel) {
-        this.em = em;
-        this.kernel = kernel;
+    public AbstractNetworkedModel(Model model) {
+        this.em = model.getEntityManager();
+        this.kernel = model.getKernel();
         entity = extractedEntity();
         authorization = extractedAuthorization();
         attribute = extractedAttribute();

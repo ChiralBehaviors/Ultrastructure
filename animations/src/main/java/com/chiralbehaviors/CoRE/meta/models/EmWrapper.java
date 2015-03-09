@@ -171,7 +171,6 @@ public class EmWrapper implements EntityManager {
 
     @Override
     public void flush() {
-        em.flush();
         animations.flush();
     }
 

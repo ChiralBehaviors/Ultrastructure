@@ -15,22 +15,12 @@
  */
 package com.chiralbehaviors.CoRE.product;
 
-import java.util.Properties;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.Animations;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
@@ -38,31 +28,10 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * @author hhildebrand
  *
  */
-public class ProductAttributeAuthorizationTest {
-    private EntityManager        em;
-    private EntityManagerFactory emf;
-
-    @After
-    public void closeEntityManager() {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
-        em.close();
-        emf.close();
-    }
-
-    @Before
-    public void initEntityManager() throws Exception {
-        Properties properties = new Properties();
-        properties.load(getClass().getResourceAsStream("/jpa.properties"));
-        emf = Persistence.createEntityManagerFactory("CoRE", properties);
-        em = Animations.setup(emf.createEntityManager());
-    }
+public class ProductAttributeAuthorizationTest extends AbstractModelTest {
 
     @Test
     public void testAllowedNumericValues() throws Exception {
-        Model model = new ModelImpl(em, null);
-
         em.getTransaction().begin();
 
         Agency agency = new Agency();

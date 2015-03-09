@@ -75,28 +75,25 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  */
 public class Animations implements Triggers {
 
-    private static final int MAX_JOB_PROCESSING = 10;
+    private static final int    MAX_JOB_PROCESSING = 10;
 
-    public static EntityManager setup(EntityManager em) {
-        Animations animations = new Animations(new ModelImpl(em));
-        return new EmWrapper(animations, em);
-    }
+    private boolean             inferAgencyNetwork;
+    private boolean             inferAttributeNetwork;
+    private boolean             inferIntervalNetwork;
+    private boolean             inferLocationNetwork;
+    private boolean             inferProductNetwork;
+    private boolean             inferRelationshipNetwork;
+    private boolean             inferStatusCodeNetwork;
+    private boolean             inferUnitNetwork;
+    private final List<Job>     jobs               = new ArrayList<>();
+    private final Model         model;
+    private final Set<Product>  modifiedServices   = new HashSet<>();
+    private final EntityManager em;
 
-    private boolean            inferAgencyNetwork;
-    private boolean            inferAttributeNetwork;
-    private boolean            inferIntervalNetwork;
-    private boolean            inferLocationNetwork;
-    private boolean            inferProductNetwork;
-    private boolean            inferRelationshipNetwork;
-    private boolean            inferStatusCodeNetwork;
-    private boolean            inferUnitNetwork;
-    private final List<Job>    jobs             = new ArrayList<>();
-    private final Model        model;
-    private final Set<Product> modifiedServices = new HashSet<>();
-
-    public Animations(Model model) {
+    public Animations(Model model, EntityManager em) {
         this.model = model;
-        new LifecycleListener(this);
+        this.em = em;
+        new LifecycleListener(this, em);
     }
 
     public void commit() throws TriggerException {
@@ -241,7 +238,7 @@ public class Animations implements Triggers {
     }
 
     public void flush() {
-        model.getEntityManager().flush();
+        em.flush();
         try {
             model.getJobModel().validateStateGraph(modifiedServices);
         } catch (SQLException e) {
@@ -263,7 +260,7 @@ public class Animations implements Triggers {
                 process(j);
             }
         }
-        model.getEntityManager().flush();
+        em.flush();
     }
 
     public EntityManager getEm() {
@@ -310,8 +307,8 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(Job j) {
-        TypedQuery<Integer> query = model.getEntityManager().createNamedQuery(JobChronology.HIGHEST_SEQUENCE_FOR_JOB,
-                                                                              Integer.class);
+        TypedQuery<Integer> query = em.createNamedQuery(JobChronology.HIGHEST_SEQUENCE_FOR_JOB,
+                                                        Integer.class);
         query.setParameter("job", j);
         if (query.getSingleResult() == null) {
             model.getJobModel().log(j, "Initial insertion of job");

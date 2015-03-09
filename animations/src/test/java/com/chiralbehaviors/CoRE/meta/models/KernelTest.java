@@ -33,6 +33,7 @@ import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
  * @author hhildebrand
@@ -63,8 +64,11 @@ public class KernelTest {
         properties.load(is);
         emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                      properties);
-        em = Animations.setup(emf.createEntityManager());
-        Kernel kernel = KernelUtil.clearAndLoadKernel(em);
+        EntityManager loadEm = emf.createEntityManager();
+        KernelUtil.clearAndLoadKernel(loadEm);
+        loadEm.close();
+        Model model = new ModelImpl(emf);
+        Kernel kernel = model.getKernel();
         assertNotNull(kernel.getAnyAttribute());
         assertNotNull(kernel.getAnyProduct());
         assertNotNull(kernel.getAnyLocation());

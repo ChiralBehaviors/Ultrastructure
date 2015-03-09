@@ -20,16 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -46,15 +44,8 @@ public class AttributeModelImpl
     /**
      * @param em
      */
-    public AttributeModelImpl(EntityManager em) {
-        this(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public AttributeModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
+    public AttributeModelImpl(Model model) {
+        super(model);
     }
 
     /*

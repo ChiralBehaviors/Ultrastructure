@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -31,8 +30,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -51,15 +49,8 @@ public class StatusCodeModelImpl
     /**
      * @param em
      */
-    public StatusCodeModelImpl(EntityManager em) {
-        super(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public StatusCodeModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
+    public StatusCodeModelImpl(Model model) {
+        super(model);
     }
 
     /*

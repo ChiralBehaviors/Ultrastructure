@@ -21,13 +21,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -48,15 +45,8 @@ public class IntervalModelImpl
     /**
      * @param em
      */
-    public IntervalModelImpl(EntityManager em) {
-        super(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public IntervalModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
+    public IntervalModelImpl(Model model) {
+        super(model);
     }
 
     /*

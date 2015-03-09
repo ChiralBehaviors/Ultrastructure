@@ -16,6 +16,8 @@
 
 package com.chiralbehaviors.CoRE.meta.models.openjpa;
 
+import javax.persistence.EntityManager;
+
 import org.apache.openjpa.event.DeleteListener;
 import org.apache.openjpa.event.DirtyListener;
 import org.apache.openjpa.event.LifecycleEvent;
@@ -33,11 +35,13 @@ import com.chiralbehaviors.CoRE.meta.models.Animations;
 public class LifecycleListener implements PersistListener, UpdateListener,
         DeleteListener, DirtyListener {
 
-    protected final Animations animations;
+    private final Animations    animations;
+    private final EntityManager em;
 
-    public LifecycleListener(Animations animations) {
+    public LifecycleListener(Animations animations, EntityManager em) {
         this.animations = animations;
-        OpenJPAEntityManagerSPI openJpaEm = animations.getEm().unwrap(OpenJPAEntityManagerSPI.class);
+        this.em = em;
+        OpenJPAEntityManagerSPI openJpaEm = this.em.unwrap(OpenJPAEntityManagerSPI.class);
         openJpaEm.addLifecycleListener(this, (Class[]) null);
     }
 

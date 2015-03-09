@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -28,8 +27,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -47,15 +45,8 @@ public class UnitModelImpl
     /**
      * @param em
      */
-    public UnitModelImpl(EntityManager em) {
-        super(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public UnitModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
+    public UnitModelImpl(Model model) {
+        super(model);
     }
 
     /*

@@ -22,6 +22,7 @@ import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -76,22 +77,19 @@ public class ModelImpl implements Model {
     private final UnitModel         unitModel;
     private final WorkspaceModel    workspaceModel;
 
-    public ModelImpl(EntityManager entityManager) {
-        this(entityManager, KernelUtil.getKernel());
-    }
-
-    public ModelImpl(EntityManager entityManager, Kernel k) {
-        em = entityManager;
-        kernel = k;
-        attributeModel = new AttributeModelImpl(em, kernel);
-        productModel = new ProductModelImpl(em, kernel);
-        intervalModel = new IntervalModelImpl(em, kernel);
-        locationModel = new LocationModelImpl(em, kernel);
-        agencyModel = new AgencyModelImpl(em, kernel);
+    public ModelImpl(EntityManagerFactory emf) {
+        EntityManager entityManager = emf.createEntityManager();
+        em = new EmWrapper(new Animations(this, entityManager), entityManager);
+        kernel = KernelUtil.cacheKernel(em);
+        attributeModel = new AttributeModelImpl(this);
+        productModel = new ProductModelImpl(this);
+        intervalModel = new IntervalModelImpl(this);
+        locationModel = new LocationModelImpl(this);
+        agencyModel = new AgencyModelImpl(this);
         jobModel = new JobModelImpl(this);
-        relationshipModel = new RelationshipModelImpl(em, kernel);
-        statusCodeModel = new StatusCodeModelImpl(em, kernel);
-        unitModel = new UnitModelImpl(em, kernel);
+        relationshipModel = new RelationshipModelImpl(this);
+        statusCodeModel = new StatusCodeModelImpl(this);
+        unitModel = new UnitModelImpl(this);
         workspaceModel = new WorkspaceModelImpl(this);
     }
 

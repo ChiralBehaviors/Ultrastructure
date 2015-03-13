@@ -7,7 +7,7 @@ To run this software you will need a working PostgreSQL database version 9.3+.  
 
 Note that the build assumes that the database is available on localhost:5432.  The build also assumes that the super user and database postgres is set up with the default password.  If you have changed any of these values, please override the "testing.db.*" properties in the top level pom.
 
-The project requires Java 1.8
+The project requires [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).  The build system is [Maven](http://maven.apache.org/).  In order to build, you will need both Maven and Java 1.8 installed.  Beyond Java, Maven and Postgres, nothing else should be required.
 
 You can build the project:
 

@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE.event;
 
 import static com.chiralbehaviors.CoRE.event.Protocol.GET;
-import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_JOB;
 import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
 
 import java.math.BigDecimal;
@@ -26,8 +25,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -67,41 +64,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                @NamedQuery(name = GET_FOR_SERVICE, query = "SELECT p FROM Protocol p "
                                                            + "WHERE p.service = :service "
                                                            + " ORDER BY p.sequenceNumber") })
-@NamedNativeQueries({ @NamedNativeQuery(name = GET_FOR_JOB, query = "WITH deliverFrom AS "
-                                                                    + "(SELECT ln.child from ruleform.location_network ln "
-                                                                    + "WHERE ln.parent = ? " // job.deliverFrom
-                                                                    + "AND ln.relationship = ? " // metaprotocol.deliverFrom
-                                                                    + "), "
-                                                                    + "deliverTo AS "
-                                                                    + "(SELECT ln.child from ruleform.location_network ln "
-                                                                    + "WHERE ln.parent = ? " // job.deliverTo
-                                                                    + "AND ln.relationship = ? " // metaprotocol.deliverTo
-                                                                    + "), "
-                                                                    + "productOrdered AS "
-                                                                    + "(SELECT pn.child from ruleform.product_network pn "
-                                                                    + "WHERE pn.parent = ? " // job.product
-                                                                    + "AND pn.relationship = ? " // metaprotocol.productOrdered
-                                                                    + "), "
-                                                                    + "requestingAgency AS "
-                                                                    + "(SELECT an.child from ruleform.agency_network an "
-                                                                    + "WHERE an.parent = ? " // job.requester
-                                                                    + "AND an.relationship = ? " // metaprotocol.requestingAgency
-                                                                    + ") "
-                                                                    + "SELECT * from ruleform.protocol p "
-                                                                    + "WHERE p.requested_service = ? " // job.service
-                                                                    + "AND (p.deliver_from IN (SELECT child FROM deliverFrom) "
-                                                                    + "OR p.deliver_from IN (?, ?)) " // same, any
-                                                                    + "AND (p.deliver_to IN (SELECT child FROM deliverTo) "
-                                                                    + "OR p.deliver_to IN (?, ?)) "// same, any
-                                                                    + "AND (p.product IN (SELECT child FROM productOrdered) "
-                                                                    + "OR p.product IN (?, ?)) " // kernel.any, kernel.same
-                                                                    + "AND (p.requester IN (SELECT child FROM requestingAgency) "
-                                                                    + "OR p.requester IN (?, ?))") })
 @Entity
 @Table(name = "protocol", schema = "ruleform")
 public class Protocol extends AbstractProtocol {
     public static final String GET              = "protocol.get";
-    public static final String GET_FOR_JOB      = "protocol.getForJob";
     public static final String GET_FOR_SERVICE  = "protocol.getForService";
 
     private static final long  serialVersionUID = 1L;

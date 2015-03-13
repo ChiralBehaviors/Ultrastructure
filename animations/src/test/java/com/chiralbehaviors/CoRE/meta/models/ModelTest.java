@@ -55,14 +55,11 @@ public class ModelTest extends AbstractModelTest {
         Aspect<Agency> aspect = new Aspect<Agency>(classification, classifier);
 
         model.getAgencyModel().authorize(aspect, attribute);
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
+        em.flush();
 
         Agency agency = model.getAgencyModel().create("aspect test", "testy",
                                                       aspect).asRuleform();
-
-        em.getTransaction().commit();
+        em.flush();
 
         assertNotNull(agency);
 
@@ -90,8 +87,7 @@ public class ModelTest extends AbstractModelTest {
         agencyAttribute.setAttribute(attribute);
         agencyAttribute.setTextValue("Hello World");
         em.persist(agencyAttribute);
-
-        em.getTransaction().commit();
+        em.flush();
 
         AgencyAttribute queryAttribute = new AgencyAttribute(attribute);
         queryAttribute.setTextValue("Hello World");

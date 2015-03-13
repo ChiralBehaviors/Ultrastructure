@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -314,15 +313,6 @@ public interface JobModel {
     List<StatusCode> getInitialStates(Product service);
 
     /**
-     * Returns a list of initially available sub-jobs (i.e., ones that do not
-     * depend on any others having been completed yet) of a given job
-     *
-     * @param job
-     * @return
-     */
-    List<Job> getInitialSubJobs(Job job);
-
-    /**
      * Answer the list of MetaProtocols that can be applied to the job
      *
      * @param job
@@ -535,8 +525,6 @@ public interface JobModel {
      */
     void log(Job job, String notes);
 
-    void logModifiedService(UUID scs);
-
     /**
      * @param service
      * @param updatedBy
@@ -601,6 +589,7 @@ public interface JobModel {
      * @param modifiedProducts
      * @throws SQLException
      */
-    void validateStateGraph(List<Product> modifiedProducts) throws SQLException;
+    void validateStateGraph(Collection<Product> modifiedProducts)
+                                                                 throws SQLException;
 
 }

@@ -71,6 +71,7 @@ public class KernelUtil {
     }
 
     public static void clear(EntityManager em) throws SQLException {
+        em.getTransaction().begin();
         Connection connection = em.unwrap(Connection.class);
         connection.setAutoCommit(false);
         alterTriggers(connection, false);
@@ -83,7 +84,7 @@ public class KernelUtil {
         r.close();
         alterTriggers(connection, true);
         CACHED_KERNEL.set(null);
-        connection.commit();
+        em.getTransaction().commit();
     }
 
     public static Kernel clearAndLoadKernel(EntityManager em)

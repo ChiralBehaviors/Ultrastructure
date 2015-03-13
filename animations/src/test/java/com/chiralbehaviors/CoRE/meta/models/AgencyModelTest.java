@@ -59,7 +59,7 @@ public class AgencyModelTest extends AbstractModelTest {
         AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
 
         List<AgencyNetwork> edges = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",

@@ -63,7 +63,7 @@ public class JobModelTest extends AbstractModelTest {
     @BeforeClass
     public static void before() throws Exception {
         EntityTransaction txn = em.getTransaction();
-        scenario = new OrderProcessingLoader(em);
+        scenario = new OrderProcessingLoader(model);
         txn.begin();
         scenario.load();
         txn.commit();
@@ -337,7 +337,7 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(p);
         Job order = jobModel.newInitializedJob(service, kernel.getCore());
         order.setProduct(parent);
-        order._setStatus(kernel.getUnset());
+        order.setStatus(kernel.getUnset());
         em.persist(order);
         List<Protocol> protocols = model.getJobModel().getProtocolsFor(order.getService());
         assertEquals(1, protocols.size());
@@ -373,17 +373,15 @@ public class JobModelTest extends AbstractModelTest {
             jobModel.changeStatus(order, scenario.available, kernel.getCore(),
                                   "Test transition");
             em.persist(order);
-            em.flush();
-            JobChronology chronology = new JobChronology(order, "Testy");
-            em.persist(chronology);
             txn.commit();
             em.refresh(order);
             List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(2, chronologies.size());
+            assertEquals(String.format("Invalid number of chronologies: %s",
+                                       chronologies), 2, chronologies.size());
             List<String> fieldErrors = verifyChronologyFields(order,
-                                                              chronologies.get(0));
+                                                              chronologies.get(1));
 
-            assertEquals(0, fieldErrors.size());
+            assertEquals(fieldErrors.toString(), 0, fieldErrors.size());
             txn.begin();
             model.getJobModel().changeStatus(order, scenario.active,
                                              kernel.getCore(), null);
@@ -427,6 +425,11 @@ public class JobModelTest extends AbstractModelTest {
         p.setProduct(pushit);
         p.setChildService(shoveit);
         em.persist(p);
+        model.getJobModel().createStatusCodeChain(pushit,
+                                                  new StatusCode[] { pushingMe,
+                                                          shovingMe,
+                                                          scenario.completed },
+                                                  scenario.core);
 
         ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
                                                                                          pushit,
@@ -434,11 +437,6 @@ public class JobModelTest extends AbstractModelTest {
                                                                                          shovingMe,
                                                                                          scenario.core);
         em.persist(auth);
-        model.getJobModel().createStatusCodeChain(pushit,
-                                                  new StatusCode[] { pushingMe,
-                                                          shovingMe,
-                                                          scenario.completed },
-                                                  scenario.core);
         em.getTransaction().commit();
         em.getTransaction().begin();
 

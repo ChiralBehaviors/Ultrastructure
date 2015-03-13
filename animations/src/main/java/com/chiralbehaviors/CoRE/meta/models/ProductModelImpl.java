@@ -16,21 +16,13 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.postgresql.pljava.TriggerData;
-
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.jsp.JSP;
-import com.chiralbehaviors.CoRE.jsp.StoredProcedure;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -50,59 +42,11 @@ public class ProductModelImpl
         AbstractNetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute>
         implements ProductModel {
 
-    private static class Call<T> implements StoredProcedure<T> {
-        private final Procedure<T> procedure;
-
-        public Call(Procedure<T> procedure) {
-            this.procedure = procedure;
-        }
-
-        @Override
-        public T call(EntityManager em) throws Exception {
-            return procedure.call(new ProductModelImpl(em));
-        }
-
-        @Override
-        public String toString() {
-            return "Call [" + procedure + "]";
-        }
-    }
-
-    private static interface Procedure<T> {
-        T call(ProductModel productModel) throws Exception;
-    }
-
-    public static void propagate_deductions(final TriggerData data)
-                                                                   throws Exception {
-        execute(new Procedure<Void>() {
-            @Override
-            public Void call(ProductModel productModel) throws Exception {
-                productModel.propagate();
-                return null;
-            }
-        });
-    }
-
-    private static <T> T execute(Procedure<T> procedure) throws SQLException {
-        return JSP.call(new Call<T>(procedure));
-    }
-
     /**
      * @param em
      */
-    public ProductModelImpl(EntityManager em) {
-        this(em, KernelUtil.getKernel());
-    }
-
-    /**
-     * @param em
-     */
-    public ProductModelImpl(EntityManager em, Kernel kernel) {
-        super(em, kernel);
-    }
-
     public ProductModelImpl(Model model) {
-        super(model.getEntityManager(), model.getKernel());
+        super(model);
     }
 
     /*

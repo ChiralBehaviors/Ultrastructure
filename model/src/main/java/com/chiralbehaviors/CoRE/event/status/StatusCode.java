@@ -24,7 +24,6 @@ import static com.chiralbehaviors.CoRE.event.status.StatusCode.GET_CHILD;
 import static com.chiralbehaviors.CoRE.event.status.StatusCode.GET_CHILD_RULES_BY_RELATIONSHIP;
 import static com.chiralbehaviors.CoRE.event.status.StatusCode.IS_TERMINAL_STATE;
 import static com.chiralbehaviors.CoRE.event.status.StatusCode.ORDERED_ATTRIBUTES;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.UNLINKED;
 
 import java.util.Collections;
 import java.util.Set;
@@ -34,8 +33,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -43,6 +40,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -58,33 +56,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "status_code", schema = "ruleform")
-@NamedNativeQueries({
-                     @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                + "FROM statusCode AS unlinked "
-                                                                + "JOIN ("
-                                                                + "     SELECT id "
-                                                                + "     FROM statusCode "
-                                                                + "     EXCEPT ("
-                                                                + "             SELECT distinct(net.child) "
-                                                                + "             FROM statusCode_network as net "
-                                                                + "             WHERE net.parent = statusCode_id('Agency') "
-                                                                + "             AND relationship = relationship_id('includes') "
-                                                                + "     )"
-                                                                + ") AS linked ON unlinked.id = linked.id "
-                                                                + "WHERE unlinked.id != statusCode_id('Agency');", resultClass = Agency.class),
-                     @NamedNativeQuery(name = IS_TERMINAL_STATE, query = "SELECT EXISTS( "
-                                                                         + "SELECT sc.id "
-                                                                         + "FROM ruleform.status_code_sequencing AS seq "
-                                                                         + "    JOIN ruleform.status_code AS sc ON seq.child_code = sc.id "
-                                                                         + " WHERE "
-                                                                         + "  NOT EXISTS ( "
-                                                                         + "    SELECT parent_code FROM ruleform.status_code_sequencing "
-                                                                         + "    WHERE service = seq.service "
-                                                                         + "      AND parent_code = seq.child_code "
-                                                                         + "  ) "
-                                                                         + "  AND service = ? "
-                                                                         + "  AND sc.id = ? "
-                                                                         + " )") })
 @NamedQueries({
                @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from StatusCodeAttribute as ca where ca.statusCode = :statusCode"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
@@ -116,7 +87,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM StatusCodeNetwork n "
                                                                            + "WHERE n.parent = :statusCode "
                                                                            + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
+               @NamedQuery(name = IS_TERMINAL_STATE, query = "SELECT COUNT(seq) "
+                                                             + "FROM StatusCodeSequencing AS seq"
+                                                             + " WHERE seq.childCode = :statusCode"
+                                                             + "  AND NOT EXISTS ( "
+                                                             + "    SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                             + "    WHERE seq2.service = seq.service "
+                                                             + "      AND seq2.parentCode = seq.childCode "
+                                                             + "  ) "
+                                                             + "  AND seq.service = :service ") })
 public class StatusCode extends
         ExistentialRuleform<StatusCode, StatusCodeNetwork> {
 
@@ -140,8 +120,6 @@ public class StatusCode extends
     public static final String       IS_TERMINAL_STATE                        = "statusCode.isTerminalState";
     public static final String       ORDERED_ATTRIBUTES                       = "statusCode.orderedAttributes";
     public static final String       QUALIFIED_ENTITY_NETWORK_RULES           = "statusCode.qualifiedEntityNetworkRules";
-    public static final String       UNLINKED                                 = "statusCode"
-                                                                                + UNLINKED_SUFFIX;
 
     private static final long        serialVersionUID                         = 1L;
 
@@ -250,6 +228,11 @@ public class StatusCode extends
         clone.networkByParent = null;
         clone.attributes = null;
         return clone;
+    }
+
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
     }
 
     /* (non-Javadoc)

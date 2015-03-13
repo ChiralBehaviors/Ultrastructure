@@ -58,8 +58,7 @@ public class StatusCodeModelTest extends AbstractModelTest {
         StatusCodeNetwork edgeB = new StatusCodeNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
-        em.getTransaction().commit();
-        em.clear();
+        em.flush();
 
         List<StatusCodeNetwork> edges = em.createQuery("SELECT edge FROM StatusCodeNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                        StatusCodeNetwork.class).getResultList();

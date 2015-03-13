@@ -16,12 +16,10 @@
 package com.chiralbehaviors.CoRE.loader;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,29 +49,12 @@ import com.hellblazer.utils.Utils;
  */
 public class Loader {
 
-    private static final String ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_ANIMATIONS_XML = "animations/com/chiralbehaviors/CoRE/schema/animations.xml";
-    private static final String ANIMATIONS_JAR;
-    private static final String ANIMATIONS_JAR_NAME;
-    private static final String CREATE_DATABASE_XML                                        = "create-database.xml";
-    private static final String DROP_DATABASE_SQL                                          = "/drop-database.sql";
-    private static final String DROP_LIQUIBASE_SQL                                         = "/drop-liquibase.sql";
-    private static final String DROP_ROLES_SQL                                             = "/drop-roles.sql";
-    private static final Logger log                                                        = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML            = "model/com/chiralbehaviors/CoRE/schema/core.xml";
-
-    static {
-        String version;
-        try {
-            version = Utils.getDocument(Loader.class.getResourceAsStream("/version"));
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        ANIMATIONS_JAR = String.format("/animations/animations-%s-phat.jar",
-                                       version);
-        ANIMATIONS_JAR_NAME = String.format("animations_%s",
-                                            version.replace('.', '_').replace("-",
-                                                                              "_"));
-    }
+    private static final String CREATE_DATABASE_XML                             = "create-database.xml";
+    private static final String DROP_DATABASE_SQL                               = "/drop-database.sql";
+    private static final String DROP_LIQUIBASE_SQL                              = "/drop-liquibase.sql";
+    private static final String DROP_ROLES_SQL                                  = "/drop-roles.sql";
+    private static final Logger log                                             = LoggerFactory.getLogger(Loader.class);
+    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML = "model/com/chiralbehaviors/CoRE/schema/core.xml";
 
     public static void main(String[] argv) throws Exception {
         Loader loader = new Loader(
@@ -94,28 +75,7 @@ public class Loader {
         }
         createDatabase();
         loadModel();
-        loadAnimationsJar();
-        loadAnimations();
-        setClassPath();
         bootstrapCoRE();
-    }
-
-    private void drop(PreparedStatement drop, String name,
-                      PreparedStatement validate) throws SQLException {
-        validate.setString(1, name);
-        ResultSet result = validate.executeQuery();
-        if (result.next()) {
-            log.info(String.format("dropping jar %s", name));
-            drop.setString(1, name);
-            drop.setBoolean(2, false);
-            drop.execute();
-            result = validate.executeQuery();
-            if (result.next()) {
-                throw new IllegalStateException(
-                                                String.format("Did not actually drop %s",
-                                                              name));
-            }
-        }
     }
 
     private void dropDatabase() throws Exception {
@@ -162,27 +122,6 @@ public class Loader {
         }
     }
 
-    private byte[] getBytes(InputStream is) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            byte[] buffer = new byte[16 * 1024];
-            for (int read = is.read(buffer); read != -1; read = is.read(buffer)) {
-                baos.write(buffer, 0, read);
-            }
-        } finally {
-            is.close();
-        }
-        return baos.toByteArray();
-    }
-
-    private void load(PreparedStatement load) throws IOException, SQLException {
-        byte[] bytes = getBytes(getClass().getResourceAsStream(ANIMATIONS_JAR));
-        load.setBytes(1, bytes);
-        load.setString(2, ANIMATIONS_JAR_NAME);
-        load.setBoolean(3, true);
-        load.execute();
-    }
-
     private void load(String changeLog, Connection connection) throws Exception {
         Liquibase liquibase = null;
         try {
@@ -206,29 +145,6 @@ public class Loader {
                 //nothing to do
             }
         }
-    }
-
-    private void loadAnimationsJar() throws Exception {
-        log.info(String.format("loading animations code in core db %s",
-                               configuration.coreDb));
-        Connection connection = configuration.getCoreConnection();
-        connection.setAutoCommit(true);
-        PreparedStatement drop = connection.prepareStatement("SELECT sqlj.remove_jar(?, ?)");
-        PreparedStatement load = connection.prepareStatement("SELECT sqlj.install_jar(?, ?, ?)");
-        PreparedStatement validate = connection.prepareStatement("SELECT jarid from sqlj.jar_repository where jarname=?");
-        drop(drop, ANIMATIONS_JAR_NAME, validate);
-        log.info(String.format("loading artifact %s", ANIMATIONS_JAR));
-        load(load);
-    }
-
-    private void setClassPath() throws SQLException {
-        log.info(String.format("setting the pl/java classpath in core db %s",
-                               configuration.coreDb));
-        Connection connection = configuration.getCoreConnection();
-        connection.setAutoCommit(true);
-        PreparedStatement statement = connection.prepareStatement(String.format("SELECT sqlj.set_classpath('ruleform', '%s')",
-                                                                                ANIMATIONS_JAR_NAME));
-        statement.execute();
     }
 
     protected void bootstrapCoRE() throws SQLException, IOException {
@@ -258,13 +174,6 @@ public class Loader {
     protected void createDatabase() throws Exception, SQLException {
         log.info(String.format("Creating core db %s", configuration.coreDb));
         load(CREATE_DATABASE_XML, configuration.getDbaConnection());
-    }
-
-    protected void loadAnimations() throws Exception, SQLException {
-        log.info(String.format("loading animations sql in core db %s",
-                               configuration.coreDb));
-        load(ANIMATIONS_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_ANIMATIONS_XML,
-             configuration.getCoreConnection());
     }
 
     protected void loadModel() throws Exception, SQLException {

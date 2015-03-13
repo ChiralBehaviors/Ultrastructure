@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.chiralbehaviors.CoRE</groupId>
     <artifactId>CoRE.app</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Ultra Structure</name>
     <description>An implementation of Ultra Structure</description>
@@ -40,21 +40,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <core.java.login>core_java</core.java.login>
         <core.java.password>password</core.java.password>
-        <db.login>core</db.login>
-        <db.password>password</db.password>
-        <db.server>localhost</db.server>
-        <db.port>5432</db.port>
-        <db.database>core</db.database>
-        <testing.db.login>postgres</testing.db.login>
+
+        <testing.db.database>postgres</testing.db.database>
         <testing.db.server>localhost</testing.db.server>
         <testing.db.port>5432</testing.db.port>
-        <testing.db.database>postgres</testing.db.database>
+        <testing.db.login>postgres</testing.db.login>
+        <testing.db.password>postgres</testing.db.password>
+
+        <db.server>${testing.db.server}</db.server>
+        <db.port>${testing.db.port}</db.port>
+        <db.database>core</db.database>
+        <db.login>core</db.login>
+        <db.password>password</db.password>
+
         <logging.core>INFO</logging.core>
         <logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</logging.consoleLayoutPattern>
-        <testing.logging.core>INFO</testing.logging.core>
-        <testing.logging.jpa>WARN</testing.logging.jpa>
-        <testing.logging.org.apache>TRACE</testing.logging.org.apache>
-        <testing.logging.dbunit>WARN</testing.logging.dbunit>
         <testing.logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</testing.logging.consoleLayoutPattern>
     </properties>
 
@@ -69,7 +69,6 @@
         <module>loader</module>
         <module>loader-plugin</module>
         <module>network-inference-generator</module>
-        <module>default-jsp-logging</module>
     </modules>
 
     <dependencyManagement>
@@ -130,7 +129,7 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.8</version>
                 <type>maven-plugin</type>
-            </dependency> 
+            </dependency>
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>animations</artifactId>
@@ -172,11 +171,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>1.7.6</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hellblazer</groupId>
-                <artifactId>pljava-api</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -347,8 +341,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -416,18 +410,6 @@
                             <groupId>postgresql</groupId>
                             <artifactId>postgresql</artifactId>
                             <version>${postgresql.driver.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>com.hellblazer</groupId>
-                    <artifactId>pljava-loader</artifactId>
-                    <version>0.0.1-SNAPSHOT</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.postgresql</groupId>
-                            <artifactId>postgresql</artifactId>
-                            <version>9.2-1003-jdbc4</version>
                         </dependency>
                     </dependencies>
                 </plugin>

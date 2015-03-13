@@ -36,10 +36,8 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.JobModelImpl;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -54,8 +52,6 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
-
-        Model model = new ModelImpl(em);
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = new StatusCode("top-level", core);
@@ -148,7 +144,6 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         core.setUpdatedBy(core);
         em.persist(core);
 
-        Model model = new ModelImpl(em);
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = new StatusCode("top-level", core);
@@ -256,7 +251,6 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         core.setUpdatedBy(core);
         em.persist(core);
 
-        Model model = new ModelImpl(em);
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = new StatusCode("top-level", core);
@@ -299,9 +293,6 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
                                                                   terminalState,
                                                                   core);
         em.persist(sequence3);
-
-        em.flush();
-        em.clear();
 
         List<StatusCode> initialStates = jobModel.getInitialStates(service);
         assertEquals(2, initialStates.size());

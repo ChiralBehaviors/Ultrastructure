@@ -15,13 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.event.status;
 
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork.GET_NETWORKS;
@@ -37,6 +32,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -61,24 +57,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "status_code_network", schema = "ruleform")
 public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
 
-    public static final String DEDUCE_NEW_NETWORK_RULES      = "statusCodeNetwork"
-                                                               + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES     = "statusCodeNetwork"
-                                                               + GENERATE_NETWORK_INVERSES_SUFFIX;
-    public static final String GET_CHILDREN                  = "statusCodeNetwork"
-                                                               + GET_CHILDREN_SUFFIX;
-    public static final String GET_NETWORKS                  = "statusCodeNetwork"
-                                                               + GET_NETWORKS_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS        = "statusCodeNetwork"
-                                                               + USED_RELATIONSHIPS_SUFFIX;
-    public static final String INFERENCE_STEP                = "statusCodeNetwork"
-                                                               + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS = "statusCodeNetwork"
-                                                               + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES      = "statusCodeNetwork"
-                                                               + INSERT_NEW_NETWORK_RULES_SUFFIX;
+    public static final String GET_CHILDREN           = "statusCodeNetwork"
+                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS           = "statusCodeNetwork"
+                                                        + GET_NETWORKS_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS = "statusCodeNetwork"
+                                                        + USED_RELATIONSHIPS_SUFFIX;
 
-    private static final long  serialVersionUID              = 1L;                                    // bi-directional
+    private static final long  serialVersionUID       = 1L;
     // many-to-one
     // association to Agency
 
@@ -139,6 +125,11 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         super(id);
     }
 
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -184,6 +175,11 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.statusCodeNetwork;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     /*

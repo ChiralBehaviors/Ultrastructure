@@ -75,7 +75,7 @@ public class IntervalModelTest extends AbstractModelTest {
         IntervalNetwork edgeB = new IntervalNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
 
         List<IntervalNetwork> edges = em.createQuery("SELECT edge FROM IntervalNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",

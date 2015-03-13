@@ -1,6 +1,7 @@
 group networkinference;
 
 networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
+<?xml version="1.0" encoding="UTF-8"?>
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/ormorm_2_0.xsd" version="2.0"
 >
@@ -17,17 +18,14 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                                        premise1, 
                                        premise2,
                                        inference)
-                 SELECT
-                      p1.parent as parent,
-                      deduction.inference as relationship,
-                      p2.child as child,
-                      p1.id as premise1,
-                      p2.id as premise2,
-                      deduction.id as inference
-                 FROM  (SELECT n.id, n.parent, n.relationship, n.child
-                            FROM ruleform.%tableName% AS n) as p1
-                 JOIN  (SELECT n.id, n.parent, n.relationship, n.child
-                            FROM ruleform.%tableName% AS n) as p2
+                 SELECT p1.parent as parent,
+                    deduction.inference as relationship,
+                    p2.child as child,
+                    p1.id as premise1,
+                    p2.id as premise2,
+                    deduction.id as inference
+                 FROM ruleform.%tableName% AS p1
+                 JOIN ruleform.%tableName% AS p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                  JOIN ruleform.network_inference AS deduction
@@ -48,43 +46,47 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                                        premise1, 
                                        premise2,
                                        inference)
-                SELECT
-                    p1.parent as parent,
+                SELECT p1.parent as parent,
                     deduction.inference as relationship,
                     p2.child as child,
                     p1.id as premise1,
                     p2.id as premise2,
                     deduction.id as inference
-                FROM (SELECT n.id, n.parent, n.relationship, n.child
-                        FROM last_pass_rules AS n) as p1
-                JOIN (SELECT n.id, n.parent, n.relationship, n.child
-                        FROM ruleform.%tableName% AS n) as p2
+                FROM last_pass_rules as p1
+                JOIN ruleform.%tableName% AS p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
                 JOIN ruleform.network_inference AS deduction
                     ON p1.relationship = deduction.premise1
                     AND p2.relationship = deduction.premise2
+                 LEFT OUTER JOIN %tableName% AS exist
+                    ON  exist.parent = p1.parent
+                    AND exist.relationship = deduction.inference
+                    AND exist.child = p2.child
+                 WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.deduceNewNetworkRules">
             <query><![CDATA[
-            INSERT INTO current_pass_rules(id, 
-                                           parent, 
-                                           relationship, 
-                                           child, 
-                                           premise1, 
-                                           premise2,
-                                           inference)
-                SELECT ruleform.next_id() as id, 
-                       wm.parent as parent, 
+                SELECT wm.parent as parent, 
                        wm.relationship as relationship, 
                        wm.child as child, 
                        wm.premise1 as premise1, 
                        wm.premise2 as premise2,
                        wm.inference as inference
-                FROM (SELECT parent, relationship, child, premise1, premise2, inference
-                      FROM working_memory 
-                      GROUP BY parent, relationship, child, premise1, premise2, inference) AS wm
+                FROM working_memory AS wm
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="%queryPrefix%.insertDeductions">
+            <query><![CDATA[
+            INSERT INTO current_pass_rules(id, 
+                                           parent, 
+                                           relationship, 
+                                           child,
+                                           inference, 
+                                           premise1, 
+                                           premise2)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
             ]]></query>
         </named-native-query>
         <named-native-query name="%queryPrefix%.insertNewNetworkRules">
@@ -115,22 +117,12 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
         </named-native-query>
         <named-native-query name="%queryPrefix%.generateInverses">
             <query><![CDATA[
-            INSERT INTO ruleform.%tableName%(id,
-                                                parent, 
-                                                relationship, 
-                                                child,
-                                                inference,
-                                                premise1, 
-                                                premise2, 
-                                                updated_by)
-            SELECT ruleform.next_id() as id,
-                   net.child as parent,
+            SELECT net.child as parent,
                    rel.inverse as relationship,
                    net.parent as child,
                    net.inference as inference,
                    net.premise1 as premise1,
-                   net.premise2 as premise2,
-                   ?1 as updated_by
+                   net.premise2 as premise2
             FROM ruleform.%tableName% AS net
             JOIN ruleform.relationship AS rel ON net.relationship = rel.id
             LEFT OUTER JOIN ruleform.%tableName% AS exist
@@ -138,6 +130,19 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 AND rel.inverse = exist.relationship
                 AND net.parent = exist.child
             WHERE exist.id IS NULL
+            ]]></query>
+        </named-native-query>
+        <named-native-query name="%queryPrefix%.insertInverses">
+            <query><![CDATA[
+           INSERT INTO ruleform.%tableName%(id, 
+                                               parent, 
+                                               relationship, 
+                                               child, 
+                                               inference,
+                                               premise1, 
+                                               premise2,
+                                               updated_by)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
             ]]></query>
         </named-native-query>
     </entity>

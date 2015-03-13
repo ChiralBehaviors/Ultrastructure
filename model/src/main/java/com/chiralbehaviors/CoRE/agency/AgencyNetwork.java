@@ -15,13 +15,8 @@ s * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  */
 package com.chiralbehaviors.CoRE.agency;
 
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_USED_RELATIONSHIPS;
@@ -40,6 +35,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -70,22 +66,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
-    public static final String DEDUCE_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-    public static final String GENERATE_NETWORK_INVERSES        = "agencyNetwork"
-                                                                  + GENERATE_NETWORK_INVERSES_SUFFIX;
     public static final String GET_CHILDREN                     = "agencyNetwork"
                                                                   + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS                     = "agencyNetwork"
                                                                   + GET_NETWORKS_SUFFIX;
     public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
     public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
-    public static final String INFERENCE_STEP                   = "agencyNetwork"
-                                                                  + INFERENCE_STEP_SUFFIX;
-    public static final String INFERENCE_STEP_FROM_LAST_PASS    = "agencyNetwork"
-                                                                  + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-    public static final String INSERT_NEW_NETWORK_RULES         = "agencyNetwork"
-                                                                  + INSERT_NEW_NETWORK_RULES_SUFFIX;
     private static final long  serialVersionUID                 = 1L;
 
     // bi-directional many-to-one association to Agency
@@ -143,6 +129,11 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     }
 
     @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
+    }
+
+    @Override
     @JsonGetter
     public Agency getChild() {
         return child;
@@ -183,6 +174,11 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, AgencyNetwork> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.agencyNetwork;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     @Override

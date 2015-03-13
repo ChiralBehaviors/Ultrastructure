@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
+ * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.meta.graph;
-
-import java.util.List;
+package com.chiralbehaviors.CoRE.meta;
 
 /**
- * @author hparry
+ * @author hhildebrand
  *
  */
-public interface Graph<NodeType, EdgeType> {
+public class TriggerException extends RuntimeException {
 
-    Graph<NodeType, EdgeType> addEdge(Edge<EdgeType> e);
+    private static final long serialVersionUID = 1L;
 
-    Graph<NodeType, EdgeType> addNode(Node<NodeType> n);
-
-    List<Edge<EdgeType>> getEdges();
-
-    List<Node<NodeType>> getNodes();
-
-    Graph<NodeType, EdgeType> intersection(Graph<NodeType, EdgeType> g);
-
-    Graph<NodeType, EdgeType> union(Graph<NodeType, EdgeType> g);
+    public TriggerException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

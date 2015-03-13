@@ -23,7 +23,6 @@ import static com.chiralbehaviors.CoRE.agency.Agency.FIND_GROUPED_ATTRIBUTE_AUTH
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_CHILD_RULES_BY_RELATIONSHIP;
-import static com.chiralbehaviors.CoRE.agency.Agency.UNLINKED;
 import static com.chiralbehaviors.CoRE.agency.AgencyAttribute.GET_ATTRIBUTE;
 
 import java.util.Collections;
@@ -34,8 +33,6 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -44,6 +41,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -94,19 +92,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "WHERE n.parent = :agency "
                                                                            + "AND n.relationship IN :relationships "
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
-@NamedNativeQueries({ @NamedNativeQuery(name = UNLINKED, query = "SELECT unlinked.* "
-                                                                 + "FROM agency AS unlinked "
-                                                                 + "JOIN ("
-                                                                 + "     SELECT id "
-                                                                 + "     FROM agency "
-                                                                 + "     EXCEPT ("
-                                                                 + "             SELECT distinct(net.child) "
-                                                                 + "             FROM agency_network as net "
-                                                                 + "             WHERE net.parent = agency_id('Agency') "
-                                                                 + "             AND relationship = relationship_id('includes') "
-                                                                 + "     )"
-                                                                 + ") AS linked ON unlinked.id = linked.id "
-                                                                 + "WHERE unlinked.id != agency_id('Agency');", resultClass = Agency.class) })
 @Entity
 @Table(name = "agency", schema = "ruleform")
 public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
@@ -130,8 +115,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
     public static final String   GET_CHILDREN                             = "agency"
                                                                             + GET_CHILDREN_SUFFIX;
     public static final String   QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
-    public static final String   UNLINKED                                 = "agency"
-                                                                            + UNLINKED_SUFFIX;
+
     private static final long    serialVersionUID                         = 1L;
 
     // bi-directional many-to-one association to AgencyAttribute
@@ -237,6 +221,11 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
         clone.networkByParent = null;
         clone.attributes = null;
         return clone;
+    }
+
+    @Override
+    public void delete(Triggers triggers) {
+        triggers.delete(this);
     }
 
     /* (non-Javadoc)

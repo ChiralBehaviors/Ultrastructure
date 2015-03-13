@@ -31,6 +31,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -70,15 +71,15 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
     @JoinColumn(name = "parent")
     private Product            parent;
 
+    @Column(name = "replace_product")
+    private Integer            replaceProduct      = FALSE;
+
     @Column(name = "sequence_number")
     private Integer            sequenceNumber      = 1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
-
-    @Column(name = "replace_product")
-    private Integer            replaceProduct      = FALSE;
 
     public ProductSiblingSequencingAuthorization() {
     }
@@ -166,6 +167,11 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      */
     public boolean isReplaceProduct() {
         return replaceProduct.equals(TRUE);
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     public void setNextSibling(Product nextSibling) {

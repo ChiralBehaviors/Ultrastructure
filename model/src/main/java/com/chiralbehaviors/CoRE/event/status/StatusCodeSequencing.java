@@ -37,6 +37,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -178,6 +179,11 @@ public class StatusCodeSequencing extends Ruleform {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, StatusCodeSequencing> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.statusCodeSequencing;
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     public void setChildCode(StatusCode statusCode1) {

@@ -76,13 +76,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
     /**
-     * Answer the list of unlinked
-     *
-     * @return
-     */
-    public List<RuleForm> getUnlinked();
-
-    /**
      * Answer the list of relationships used in this ruleform's networks.
      *
      * @return

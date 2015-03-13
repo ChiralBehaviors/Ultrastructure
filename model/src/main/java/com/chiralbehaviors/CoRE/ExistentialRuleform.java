@@ -57,8 +57,9 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public static final String GET_NETWORKS_SUFFIX                                           = ".getNetworks";
     public static final String INFERENCE_STEP_FROM_LAST_PASS_SUFFIX                          = ".inferenceStepFromLastPass";
     public static final String INFERENCE_STEP_SUFFIX                                         = ".inference";
+    public static final String INSERT_DEDUCTIONS_SUFFIX                                      = ".insertDeductions";
     public static final String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
-    public static final String UNLINKED_SUFFIX                                               = ".unlinked";
+    public static final String INSERT_INVERSES_SUFFIX                                        = ".insertInverses";
     public static final String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";
 
     private static final long  serialVersionUID                                              = 1L;

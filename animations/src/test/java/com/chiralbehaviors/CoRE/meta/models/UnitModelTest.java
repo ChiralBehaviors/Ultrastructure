@@ -58,7 +58,7 @@ public class UnitModelTest extends AbstractModelTest {
         UnitNetwork edgeB = new UnitNetwork(b, equals2, c, core);
         em.persist(edgeB);
 
-        em.getTransaction().commit();
+        em.flush();
         em.clear();
 
         List<UnitNetwork> edges = em.createQuery("SELECT edge FROM UnitNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",

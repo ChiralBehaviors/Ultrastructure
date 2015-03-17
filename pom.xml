@@ -69,6 +69,7 @@
         <module>loader</module>
         <module>loader-plugin</module>
         <module>network-inference-generator</module>
+        <module>dsl</module>
     </modules>
 
     <dependencyManagement>

@@ -1,0 +1,44 @@
+workspace: "Order Entry" | "Pricing example for CACM 1995 Ultrastructure article";
+imports {
+    "http://www.chiralbehaviors.com/ontologies/kernel.wsp" as "kernel"
+}
+products {
+    abc486 = "abc486":"Laptop computer";
+    frozen = "frozen":"Frozen Products";
+    nonExempt = "nonExempt": "Non tax exempt products";
+}
+locations {
+    rsb225 = "225RSB":"225 Reiss Science Bldg";
+    bht37 = "37BHT":"37 Bret Harte Terrace";
+    rc31 = "31rc":"1 Rue Cambon";
+    dc = "DC":"District of Columbia";
+    eastCoast = "EAST_COAST":"East Coast"
+    france = "France" : "The country of France";
+    paris = "Paris" : "The city Paris";
+    us = "United States" : "US locations";
+    europe = "Europe" : "EU locations";
+    factory1 = "Factory 1" : "Factory #1";
+    bin1 = "Bin 1";
+    bin15 = "Bin 15";
+}
+relationships {
+    area = "Area" : "A is a member of the economic community B" | areaOf = "Area Of" : "A is economic community of B";
+    city = "City" : "A is located in the City B" | cityOf = "City Of" : "A is the city of B";
+    customerType = "Customer Type" : "A has customer type of B" | customerTypeOf = "Customer Type Of" : "A is the customer type of B";
+    region = "Region" : "The general region of A is B" | regionOf = "Region Of" : "A is the general region of B";
+    state = "State" : "A is located in the state B" | stateOf = "State Of" : "A is the state of B";
+    salesTaxStatus = "Sales Tax Status" : "The sales tax status of A is B" | salesTaxStatusOf = "Sales Tax Status Of" : "A is the sales tax status of B";
+    street = "State" "A is located on the street B" | streetOf = "Street Of" : "A is the street of B";
+}
+edges {
+    bin1.area.factory1
+    bin15.area.factory1
+    rsb225.city.dc
+    bht378.city.dc
+    rc31.city.paris
+    dc.region.eastCoast
+    eastCoast.area.us
+    paris.region.france
+    france.area.europe 
+    street.kernel:isA.region
+}

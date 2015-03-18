@@ -1,4 +1,4 @@
-grammar WorkspaceDsl;
+grammar Workspace;
 
 field:
     name=Name NL

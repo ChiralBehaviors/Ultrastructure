@@ -32,7 +32,7 @@ public class TestParse {
     public void testExampleWorkspace() throws Exception {
         WorkspaceLexer l = new WorkspaceLexer(
                                               new ANTLRInputStream(
-                                                                   getClass().getResourceAsStream("/example.wsp")));
+                                                                   getClass().getResourceAsStream("/order-entry.wsp")));
         WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
         p.addErrorListener(new BaseErrorListener() {
             @Override
@@ -44,6 +44,6 @@ public class TestParse {
                                                 + line + " due to " + msg, e);
             }
         });
-        p.field();
+        p.workspace();
     }
 }

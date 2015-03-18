@@ -1,6 +1,6 @@
-workspace: "Order Entry" | "Pricing example for CACM 1995 Ultrastructure article";
+workspace: "Order Entry" : "Pricing example for CACM 1995 Ultrastructure article"
 imports {
-    "http://www.chiralbehaviors.com/ontologies/kernel.wsp" as "kernel"
+    "http://www.chiralbehaviors.com/ontologies/kernel.wsp" as kernel
 }
 products {
     abc486 = "abc486":"Laptop computer";

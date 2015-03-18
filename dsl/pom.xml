@@ -19,6 +19,7 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.build.directory}/target/generated-sources/antlr4</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -33,7 +34,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>src/main/antlr4</directory>
+                                    <directory>src/main/antl4</directory>
                                 </resource>
                             </resources>
                         </configuration>

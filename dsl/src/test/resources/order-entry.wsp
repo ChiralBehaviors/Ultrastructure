@@ -3,7 +3,7 @@ imports {
     "http://www.chiralbehaviors.com/ontologies/kernel.wsp" as kernel
 }
 locations {
-    rsb225 = "225RSB" : "225 Reiss Science Bldg";
+    rsb225 = "225RSB":"225 Reiss Science Bldg";
     bht37 = "37BHT" : "37 Bret Harte Terrace";
     rc31 = "31rc" : "1 Rue Cambon";
     dc = "DC" : "District of Columbia";

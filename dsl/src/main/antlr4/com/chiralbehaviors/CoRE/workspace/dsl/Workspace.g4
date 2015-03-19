@@ -2,10 +2,9 @@ grammar Workspace;
 
 
 workspace:
-    'workspace:' WS 
+    'workspace:' 
     name=QuotedText 
-    (WS ':' WS description=QuotedText)?
-    NL
+    (':' description=QuotedText)?
     (imports=imported)?
     (agencies='agencies' BlockBegin  (existentialRuleform)+ BlockEnd )?
     (attributes='attributes' BlockBegin  (existentialRuleform)+ BlockEnd )?
@@ -23,30 +22,28 @@ imported:
     
 
 importedWorkspace: 
-    uri = WS QuotedText WS  'as '
-    namespace = ObjectName (NL)*;
+    uri =  QuotedText 'as '
+    namespace = ObjectName;
     
 existentialRuleformDeclaration:
-    WS
-    workspaceName = ObjectName WS '=' WS
+    workspaceName = ObjectName  '=' 
     name = QuotedText 
-    (WS ':' WS description=QuotedText)?;
+    (':' description=QuotedText)?;
 
 existentialRuleform:
-    existentialRuleformDeclaration SC (NL)*;
+    existentialRuleformDeclaration SC;
 
 relationshipPairDeclaration:
-    existentialRuleformDeclaration WS '|' existentialRuleformDeclaration;
+    existentialRuleformDeclaration '|' existentialRuleformDeclaration;
     
 relationshipPair:
-    relationshipPairDeclaration SC (NL)*;
+    relationshipPairDeclaration SC;
 
 qualifiedName:
     (namespace=ObjectName '::')?
     member=ObjectName;
     
 edgeDeclaration:
-   WS 
    parent=qualifiedName
    '.' 
    relationship=qualifiedName 
@@ -54,18 +51,18 @@ edgeDeclaration:
    child=qualifiedName;
   
 edge:
-    edgeDeclaration (NL)+;
+    edgeDeclaration;
     
 
 ObjectName: 'a'..'z' ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"'(' ' | '!' |'#'.. '~')+ '"';
-BlockBegin: WS LB (NL)*;
-BlockEnd: RB (NL)*;
+BlockBegin: LB;
+BlockEnd: RB;
 Edge: ObjectName'.'ObjectName'.'ObjectName'.';
 Int: ('0'..'9')+;
  
-WS: (' ' | '\t')+;
-NL:  '\r'? '\n';
+WS: (' ' | '\t')+ -> skip;
+NL: ('\r'? '\n')+ -> skip;
 LB: '{';
 RB: '}';
 SC: ';';

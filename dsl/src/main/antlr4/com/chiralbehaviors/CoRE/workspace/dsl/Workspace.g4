@@ -2,9 +2,9 @@ grammar Workspace;
 
 
 workspace:
-    'workspace:' WS_OP 
+    'workspace:' WS 
     name=QuotedText 
-    (WS_OP ':' WS_OP description=QuotedText)?
+    (WS ':' WS description=QuotedText)?
     NL
     (imports=imported)?
     (agencies='agencies' BlockBegin  (existentialRuleform)+ BlockEnd )?
@@ -12,7 +12,7 @@ workspace:
     (intervals='intervals' BlockBegin  (existentialRuleform )+ BlockEnd )?
     (locations='locations' BlockBegin  (existentialRuleform)+ BlockEnd )?
     (products='products' BlockBegin  (existentialRuleform)+ BlockEnd )?
-    (relationships='products' BlockBegin  (relationshipPair)+ BlockEnd )?
+    (relationships='relationships' BlockBegin  (relationshipPair)+ BlockEnd )?
     (statusCodes='status codes' BlockBegin  (existentialRuleform)+ BlockEnd )?
     (units='units' BlockBegin  (existentialRuleform)+ BlockEnd )?
     (edges='edges' BlockBegin (edge)+ BlockEnd )?
@@ -23,19 +23,20 @@ imported:
     
 
 importedWorkspace: 
-    uri = WS_OP URL WS_OP  'as '
+    uri = WS QuotedText WS  'as '
     namespace = ObjectName (NL)*;
     
 existentialRuleformDeclaration:
-    workspaceName = ObjectName WS_OP '=' WS_OP
+    WS
+    workspaceName = ObjectName WS '=' WS
     name = QuotedText 
-    (WS_OP ':' description=QuotedText)?;
+    (WS ':' WS description=QuotedText)?;
 
 existentialRuleform:
     existentialRuleformDeclaration SC (NL)*;
 
 relationshipPairDeclaration:
-    existentialRuleform WS_OP '|' WS_OP existentialRuleform;
+    existentialRuleformDeclaration WS '|' existentialRuleformDeclaration;
     
 relationshipPair:
     relationshipPairDeclaration SC (NL)*;
@@ -45,21 +46,19 @@ qualifiedName:
     member=ObjectName;
     
 edgeDeclaration:
-   qualifiedName '.' qualifiedName '.' qualifiedName;
+   WS qualifiedName '.' qualifiedName '.' qualifiedName;
   
 edge:
     edgeDeclaration (NL)+;
     
 
 ObjectName: 'a'..'z' ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
-QuotedText: '"' ('A'..'Z' | 'a'..'z' | '0'..'9' | WS)+ '"' ;
-URL: '"'(' ' | '!' |'#'.. '~')+ '"';
-BlockBegin: WS_OP LB WS_OP (NL)*;
-BlockEnd: WS_OP RB WS_OP (NL)*;
+QuotedText: '"'(' ' | '!' |'#'.. '~')+ '"';
+BlockBegin: WS LB (NL)*;
+BlockEnd: RB (NL)*;
 Edge: ObjectName'.'ObjectName'.'ObjectName'.';
 Int: ('0'..'9')+;
-
-WS_OP: (WS)?;
+ 
 WS: (' ' | '\t')+;
 NL:  '\r'? '\n';
 LB: '{';

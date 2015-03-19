@@ -23,7 +23,7 @@ imported:
     
 
 importedWorkspace: 
-    WS_OP uri = QuotedText WS_OP  'as' WS
+    uri = WS_OP URL WS_OP  'as '
     namespace = ObjectName (NL)*;
     
 existentialRuleformDeclaration:
@@ -53,12 +53,13 @@ edge:
 
 ObjectName: 'a'..'z' ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"' ('A'..'Z' | 'a'..'z' | '0'..'9' | WS)+ '"' ;
+URL: '"'(' ' | '!' |'#'.. '~')+ '"';
 BlockBegin: WS_OP LB WS_OP (NL)*;
 BlockEnd: WS_OP RB WS_OP (NL)*;
 Edge: ObjectName'.'ObjectName'.'ObjectName'.';
 Int: ('0'..'9')+;
 
-WS_OP: '' | (' ' | '\t')+;
+WS_OP: (WS)?;
 WS: (' ' | '\t')+;
 NL:  '\r'? '\n';
 LB: '{';

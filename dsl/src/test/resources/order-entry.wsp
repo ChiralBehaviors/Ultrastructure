@@ -2,7 +2,7 @@ workspace: "Order Entry" : "Pricing example for CACM 1995 Ultrastructure article
 imports {
     "http://www.chiralbehaviors.com/ontologies/kernel.wsp" as kernel
 }
-products {
+products { 
     abc486 = "abc486":"Laptop computer";
     frozen = "frozen":"Frozen Products";
     nonExempt = "nonExempt": "Non tax exempt products";

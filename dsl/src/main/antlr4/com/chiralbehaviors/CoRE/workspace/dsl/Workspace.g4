@@ -46,7 +46,12 @@ qualifiedName:
     member=ObjectName;
     
 edgeDeclaration:
-   WS qualifiedName '.' qualifiedName '.' qualifiedName;
+   WS 
+   parent=qualifiedName
+   '.' 
+   relationship=qualifiedName 
+   '.' 
+   child=qualifiedName;
   
 edge:
     edgeDeclaration (NL)+;

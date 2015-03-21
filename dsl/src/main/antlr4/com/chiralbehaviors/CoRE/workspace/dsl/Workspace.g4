@@ -2,64 +2,67 @@ grammar Workspace;
 
 
 workspace:
+    definition=workspaceDefinition
+    (imports=imported)?
+    (agencies = definedAgencies)?
+    (attributes = definedAttributes)?
+    (intervals = definedIntervals)?
+    (locations = definedLocations)?
+    (products = definedProducts)?
+    (relationships = definedRelationships)?
+    (statusCodes = definedStatusCodes)?
+    (units = definedUnits)?
+    (edges = definedEdges)?
+    EOF;
+
+definedAgencies: 'agencies' LB  (existentialRuleform SC)+ RB;
+definedAttributes: 'attributes' LB  (existentialRuleform SC)+ RB;
+definedIntervals: 'intervals' LB  (existentialRuleform SC)+ RB;
+definedLocations: 'locations' LB  (existentialRuleform SC)+ RB;
+definedProducts: 'products' LB  (existentialRuleform SC)+ RB;
+definedRelationships: 'relationships' LB  (relationshipPair SC)+ RB;
+definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ RB;
+definedUnits: 'units' LB  (existentialRuleform SC)+ RB;
+definedEdges: 'edges' LB (edge)+ RB;
+    
+workspaceDefinition: 
     'workspace:' 
     name=QuotedText 
-    (':' description=QuotedText)?
-    (imports=imported)?
-    (agencies='agencies' BlockBegin  (existentialRuleform)+ BlockEnd )?
-    (attributes='attributes' BlockBegin  (existentialRuleform)+ BlockEnd )?
-    (intervals='intervals' BlockBegin  (existentialRuleform )+ BlockEnd )?
-    (locations='locations' BlockBegin  (existentialRuleform)+ BlockEnd )?
-    (products='products' BlockBegin  (existentialRuleform)+ BlockEnd )?
-    (relationships='relationships' BlockBegin  (relationshipPair)+ BlockEnd )?
-    (statusCodes='status codes' BlockBegin  (existentialRuleform)+ BlockEnd )?
-    (units='units' BlockBegin  (existentialRuleform)+ BlockEnd )?
-    (edges='edges' BlockBegin (edge)+ BlockEnd )?
-    EOF;
+    (':' description=QuotedText)?;
+
     
 imported:
-    'imports' BlockBegin (workspaces = importedWorkspace)+ BlockEnd;
+    'imports' LB (importedWorkspace)+ RB;
     
 
 importedWorkspace: 
-    uri =  QuotedText 'as '
+    uri =  QuotedText 
+    'as '
     namespace = ObjectName;
     
-existentialRuleformDeclaration:
-    workspaceName = ObjectName  '=' 
-    name = QuotedText 
-    (':' description=QuotedText)?;
-
 existentialRuleform:
-    existentialRuleformDeclaration SC;
+    workspaceName = ObjectName  
+    '=' 
+    name = QuotedText 
+    (':' description=QuotedText)?; 
 
-relationshipPairDeclaration:
-    existentialRuleformDeclaration '|' existentialRuleformDeclaration;
-    
 relationshipPair:
-    relationshipPairDeclaration SC;
+    primary=existentialRuleform '|' inverse=existentialRuleform; 
 
 qualifiedName:
     (namespace=ObjectName '::')?
     member=ObjectName;
     
-edgeDeclaration:
+edge:
    parent=qualifiedName
    '.' 
    relationship=qualifiedName 
    '.' 
-   child=qualifiedName;
-  
-edge:
-    edgeDeclaration;
+   child=qualifiedName; 
     
 
 ObjectName: 'a'..'z' ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"'(' ' | '!' |'#'.. '~')+ '"';
-BlockBegin: LB;
-BlockEnd: RB;
-Edge: ObjectName'.'ObjectName'.'ObjectName'.';
-Int: ('0'..'9')+;
  
 WS: (' ' | '\t')+ -> skip;
 NL: ('\r'? '\n')+ -> skip;

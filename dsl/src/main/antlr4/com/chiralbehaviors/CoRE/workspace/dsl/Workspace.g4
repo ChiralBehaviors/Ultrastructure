@@ -27,8 +27,8 @@ definedEdges: 'edges' LB (edge)+ RB;
     
 workspaceDefinition: 
     'workspace:' 
-    name=QuotedText 
-    (':' description=QuotedText)?;
+    name=QuotedText
+    (description=QuotedText)?;
 
     
 imported:
@@ -44,7 +44,7 @@ existentialRuleform:
     workspaceName = ObjectName  
     '=' 
     name = QuotedText 
-    (':' description=QuotedText)?; 
+    (description=QuotedText)?; 
 
 relationshipPair:
     primary=existentialRuleform '|' inverse=existentialRuleform; 

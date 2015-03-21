@@ -24,14 +24,13 @@
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>animations</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-            <classifier>tests</classifier>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>animations</artifactId>
-            <scope>compile</scope>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
     </dependencies>
 

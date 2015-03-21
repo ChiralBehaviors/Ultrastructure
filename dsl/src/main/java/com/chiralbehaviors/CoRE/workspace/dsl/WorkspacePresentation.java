@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 import com.hellblazer.utils.Tuple;
 
@@ -31,16 +32,41 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class WorkspacePresentation {
+    public static class RelationshipPair {
+        public final Tuple<String, String> inverse;
+
+        public final String                inverseWsName;
+        public final Tuple<String, String> primary;
+        public final String                primaryWsName;
+
+        public RelationshipPair(String primaryWsName,
+                                Tuple<String, String> primary,
+                                String inverseWsName,
+                                Tuple<String, String> inverse) {
+            this.primaryWsName = primaryWsName;
+            this.primary = primary;
+            this.inverseWsName = inverseWsName;
+            this.inverse = inverse;
+        }
+    }
+
     private final WorkspaceContext context;
 
     public WorkspacePresentation(WorkspaceContext context) {
         this.context = context;
     }
 
-    public Tuple<String, String> getWorkspaceDefinition() {
-        return new Tuple<String, String>(
-                                         context.definition.name.getText(),
-                                         context.definition.description.getText());
+    public Map<String, Tuple<String, String>> getAgencies() {
+        return getRuleforms(context.agencies.existentialRuleform());
+    }
+
+    public Map<String, Tuple<String, String>> getAttributes() {
+        return getRuleforms(context.attributes.existentialRuleform());
+    }
+
+    public List<Tuple<String, Tuple<String, String>>> getEdges() {
+        List<Tuple<String, Tuple<String, String>>> edges = new ArrayList<>();
+        return edges;
     }
 
     public List<Tuple<String, String>> getImports() {
@@ -50,14 +76,6 @@ public class WorkspacePresentation {
                                                   wsp.namespace.getText()));
         }
         return imports;
-    }
-
-    public Map<String, Tuple<String, String>> getAgencies() {
-        return getRuleforms(context.agencies.existentialRuleform());
-    }
-
-    public Map<String, Tuple<String, String>> getAttributes() {
-        return getRuleforms(context.attributes.existentialRuleform());
     }
 
     public Map<String, Tuple<String, String>> getIntervals() {
@@ -72,12 +90,34 @@ public class WorkspacePresentation {
         return getRuleforms(context.products.existentialRuleform());
     }
 
+    public List<RelationshipPair> getRelationships() {
+        List<RelationshipPair> pairs = new ArrayList<>();
+        for (RelationshipPairContext pair : context.relationships.relationshipPair()) {
+            pairs.add(new RelationshipPair(
+                                           pair.primary.getText(),
+                                           new Tuple<String, String>(
+                                                                     pair.primary.name.getText(),
+                                                                     pair.primary.description.getText()),
+                                           pair.inverse.getText(),
+                                           new Tuple<String, String>(
+                                                                     pair.inverse.name.getText(),
+                                                                     pair.inverse.description.getText())));
+        }
+        return pairs;
+    }
+
     public Map<String, Tuple<String, String>> getStatusCodes() {
         return getRuleforms(context.statusCodes.existentialRuleform());
     }
 
     public Map<String, Tuple<String, String>> getUnits() {
         return getRuleforms(context.units.existentialRuleform());
+    }
+
+    public Tuple<String, String> getWorkspaceDefinition() {
+        return new Tuple<String, String>(
+                                         context.definition.name.getText(),
+                                         context.definition.description.getText());
     }
 
     private Map<String, Tuple<String, String>> getRuleforms(List<ExistentialRuleformContext> rfContext) {

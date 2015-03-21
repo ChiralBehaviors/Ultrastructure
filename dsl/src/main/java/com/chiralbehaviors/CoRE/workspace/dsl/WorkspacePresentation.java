@@ -33,6 +33,12 @@ import com.hellblazer.utils.Tuple;
  */
 public class WorkspacePresentation {
     public static class RelationshipPair {
+        public final Tuple<String, String> inverse;
+
+        public final String                inverseWsName;
+        public final Tuple<String, String> primary;
+        public final String                primaryWsName;
+
         public RelationshipPair(String primaryWsName,
                                 Tuple<String, String> primary,
                                 String inverseWsName,
@@ -42,11 +48,6 @@ public class WorkspacePresentation {
             this.inverseWsName = inverseWsName;
             this.inverse = inverse;
         }
-
-        public final String                primaryWsName;
-        public final Tuple<String, String> primary;
-        public final String                inverseWsName;
-        public final Tuple<String, String> inverse;
     }
 
     private final WorkspaceContext context;
@@ -55,10 +56,17 @@ public class WorkspacePresentation {
         this.context = context;
     }
 
-    public Tuple<String, String> getWorkspaceDefinition() {
-        return new Tuple<String, String>(
-                                         context.definition.name.getText(),
-                                         context.definition.description.getText());
+    public Map<String, Tuple<String, String>> getAgencies() {
+        return getRuleforms(context.agencies.existentialRuleform());
+    }
+
+    public Map<String, Tuple<String, String>> getAttributes() {
+        return getRuleforms(context.attributes.existentialRuleform());
+    }
+
+    public List<Tuple<String, Tuple<String, String>>> getEdges() {
+        List<Tuple<String, Tuple<String, String>>> edges = new ArrayList<>();
+        return edges;
     }
 
     public List<Tuple<String, String>> getImports() {
@@ -68,14 +76,6 @@ public class WorkspacePresentation {
                                                   wsp.namespace.getText()));
         }
         return imports;
-    }
-
-    public Map<String, Tuple<String, String>> getAgencies() {
-        return getRuleforms(context.agencies.existentialRuleform());
-    }
-
-    public Map<String, Tuple<String, String>> getAttributes() {
-        return getRuleforms(context.attributes.existentialRuleform());
     }
 
     public Map<String, Tuple<String, String>> getIntervals() {
@@ -88,14 +88,6 @@ public class WorkspacePresentation {
 
     public Map<String, Tuple<String, String>> getProducts() {
         return getRuleforms(context.products.existentialRuleform());
-    }
-
-    public Map<String, Tuple<String, String>> getStatusCodes() {
-        return getRuleforms(context.statusCodes.existentialRuleform());
-    }
-
-    public Map<String, Tuple<String, String>> getUnits() {
-        return getRuleforms(context.units.existentialRuleform());
     }
 
     public List<RelationshipPair> getRelationships() {
@@ -112,6 +104,20 @@ public class WorkspacePresentation {
                                                                      pair.inverse.description.getText())));
         }
         return pairs;
+    }
+
+    public Map<String, Tuple<String, String>> getStatusCodes() {
+        return getRuleforms(context.statusCodes.existentialRuleform());
+    }
+
+    public Map<String, Tuple<String, String>> getUnits() {
+        return getRuleforms(context.units.existentialRuleform());
+    }
+
+    public Tuple<String, String> getWorkspaceDefinition() {
+        return new Tuple<String, String>(
+                                         context.definition.name.getText(),
+                                         context.definition.description.getText());
     }
 
     private Map<String, Tuple<String, String>> getRuleforms(List<ExistentialRuleformContext> rfContext) {

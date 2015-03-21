@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,10 +58,16 @@ public class WorkspacePresentation {
     }
 
     public Map<String, Tuple<String, String>> getAgencies() {
+        if (context.agencies == null) {
+            return Collections.emptyMap();
+        }
         return getRuleforms(context.agencies.existentialRuleform());
     }
 
     public Map<String, Tuple<String, String>> getAttributes() {
+        if (context.attributes == null) {
+            return Collections.emptyMap();
+        }
         return getRuleforms(context.attributes.existentialRuleform());
     }
 
@@ -70,6 +77,9 @@ public class WorkspacePresentation {
     }
 
     public List<Tuple<String, String>> getImports() {
+        if (context.imports == null) {
+            return Collections.emptyList();
+        }
         List<Tuple<String, String>> imports = new ArrayList<>();
         for (ImportedWorkspaceContext wsp : context.imports.importedWorkspace()) {
             imports.add(new Tuple<String, String>(wsp.uri.getText(),
@@ -79,18 +89,30 @@ public class WorkspacePresentation {
     }
 
     public Map<String, Tuple<String, String>> getIntervals() {
+        if (context.intervals == null) {
+            return Collections.emptyMap();
+        }
         return getRuleforms(context.intervals.existentialRuleform());
     }
 
     public Map<String, Tuple<String, String>> getLocations() {
+        if (context.locations == null) {
+            return Collections.emptyMap();
+        }
         return getRuleforms(context.locations.existentialRuleform());
     }
 
     public Map<String, Tuple<String, String>> getProducts() {
+        if (context.products == null) {
+            return Collections.emptyMap();
+        }
         return getRuleforms(context.products.existentialRuleform());
     }
 
     public List<RelationshipPair> getRelationships() {
+        if (context.relationships == null) {
+            return Collections.emptyList();
+        }
         List<RelationshipPair> pairs = new ArrayList<>();
         for (RelationshipPairContext pair : context.relationships.relationshipPair()) {
             pairs.add(new RelationshipPair(
@@ -107,10 +129,16 @@ public class WorkspacePresentation {
     }
 
     public Map<String, Tuple<String, String>> getStatusCodes() {
+        if (context.statusCodes == null) {
+            return Collections.emptyMap();
+        }
         return getRuleforms(context.statusCodes.existentialRuleform());
     }
 
     public Map<String, Tuple<String, String>> getUnits() {
+        if (context.units == null) {
+            return Collections.emptyMap();
+        }
         return getRuleforms(context.units.existentialRuleform());
     }
 
@@ -126,7 +154,8 @@ public class WorkspacePresentation {
             ruleforms.put(ruleform.workspaceName.getText(),
                           new Tuple<String, String>(
                                                     ruleform.name.getText(),
-                                                    ruleform.description.getText()));
+                                                    ruleform.description == null ? null
+                                                                                : ruleform.description.getText()));
         }
         return ruleforms;
     }

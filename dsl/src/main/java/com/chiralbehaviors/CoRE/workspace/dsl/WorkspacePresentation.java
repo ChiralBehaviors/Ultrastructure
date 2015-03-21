@@ -76,7 +76,7 @@ public class WorkspacePresentation {
         return getRuleforms(context.statusCodes.existentialRuleform());
     }
 
-    public Map<String, Tuple<String, String>> getUnitss() {
+    public Map<String, Tuple<String, String>> getUnits() {
         return getRuleforms(context.units.existentialRuleform());
     }
 

@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 import com.hellblazer.utils.Tuple;
 
@@ -31,6 +32,23 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class WorkspacePresentation {
+    public static class RelationshipPair {
+        public RelationshipPair(String primaryWsName,
+                                Tuple<String, String> primary,
+                                String inverseWsName,
+                                Tuple<String, String> inverse) {
+            this.primaryWsName = primaryWsName;
+            this.primary = primary;
+            this.inverseWsName = inverseWsName;
+            this.inverse = inverse;
+        }
+
+        public final String                primaryWsName;
+        public final Tuple<String, String> primary;
+        public final String                inverseWsName;
+        public final Tuple<String, String> inverse;
+    }
+
     private final WorkspaceContext context;
 
     public WorkspacePresentation(WorkspaceContext context) {
@@ -76,8 +94,24 @@ public class WorkspacePresentation {
         return getRuleforms(context.statusCodes.existentialRuleform());
     }
 
-    public Map<String, Tuple<String, String>> getUnitss() {
+    public Map<String, Tuple<String, String>> getUnits() {
         return getRuleforms(context.units.existentialRuleform());
+    }
+
+    public List<RelationshipPair> getRelationships() {
+        List<RelationshipPair> pairs = new ArrayList<>();
+        for (RelationshipPairContext pair : context.relationships.relationshipPair()) {
+            pairs.add(new RelationshipPair(
+                                           pair.primary.getText(),
+                                           new Tuple<String, String>(
+                                                                     pair.primary.name.getText(),
+                                                                     pair.primary.description.getText()),
+                                           pair.inverse.getText(),
+                                           new Tuple<String, String>(
+                                                                     pair.inverse.name.getText(),
+                                                                     pair.inverse.description.getText())));
+        }
+        return pairs;
     }
 
     private Map<String, Tuple<String, String>> getRuleforms(List<ExistentialRuleformContext> rfContext) {

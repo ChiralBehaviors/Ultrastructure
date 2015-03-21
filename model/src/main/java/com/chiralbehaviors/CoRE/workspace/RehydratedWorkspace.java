@@ -63,7 +63,7 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
      * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAccesor(java.lang.Class)
      */
     @Override
-    public <T> T getAccesor(Class<T> accessorInterface) {
+    public <T> T getAccessor(Class<T> accessorInterface) {
         return WorkspaceAccessHandler.getAccesor(accessorInterface, this);
     }
 

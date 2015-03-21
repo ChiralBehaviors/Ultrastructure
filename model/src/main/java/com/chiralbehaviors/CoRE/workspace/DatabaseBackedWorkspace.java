@@ -106,7 +106,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAccesor(java.lang.Class)
      */
     @Override
-    public <T> T getAccesor(Class<T> accessorInterface) {
+    public <T> T getAccessor(Class<T> accessorInterface) {
         return WorkspaceAccessHandler.getAccesor(accessorInterface, this);
     }
 
@@ -139,6 +139,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         authorization.setDefiningProduct(definingProduct);
         authorization.setEntity(ruleform);
         authorization.setKey(key);
+        authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);
     }
 }

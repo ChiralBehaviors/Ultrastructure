@@ -59,7 +59,7 @@ public class KernelUtil {
         try (InputStream is = KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)) {
             RehydratedWorkspace kernelSnapshot = readKernel(is);
             kernelSnapshot.replaceFrom(em);
-            kernel = kernelSnapshot.getAccesor(Kernel.class);
+            kernel = kernelSnapshot.getAccessor(Kernel.class);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to rehydrate kernel", e);
         }
@@ -110,7 +110,7 @@ public class KernelUtil {
         em.getTransaction().begin();
         RehydratedWorkspace workspace = rehydrateKernel(is);
         workspace.retarget(em);
-        Kernel kernel = workspace.getAccesor(Kernel.class);
+        Kernel kernel = workspace.getAccessor(Kernel.class);
         CACHED_KERNEL.set(kernel);
         em.getTransaction().commit();
         workspace.detach(em);

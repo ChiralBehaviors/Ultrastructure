@@ -26,6 +26,9 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -37,7 +40,7 @@ public class WorkspaceImporter {
     private final WorkspacePresentation wsp;
     private final Model                 model;
     private final EntityManager         em;
-    private Product                     workspace;
+    private DatabaseBackedWorkspace workspace;
 
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
@@ -45,8 +48,8 @@ public class WorkspaceImporter {
         this.em = model.getEntityManager();
     }
 
-    public Product loadWorkspace() {
-        workspace = createWorkspaceProduct();
+    public Workspace loadWorkspace() {
+        workspace = new DatabaseBackedWorkspace(createWorkspaceProduct(), em);
         loadAgencies();
         loadAttributes();
         loadIntervals();
@@ -64,11 +67,11 @@ public class WorkspaceImporter {
      * @return
      */
     private Product createWorkspaceProduct() {
-        Product workspace = new Product(wsp.getWorkspaceDefinition().a,
+        Product workspaceProduct = new Product(wsp.getWorkspaceDefinition().a,
                                         wsp.getWorkspaceDefinition().b,
                                         model.getKernel().getCore());
-        em.persist(workspace);
-        return workspace;
+        em.persist(workspaceProduct);
+        return workspaceProduct;
     }
 
     /**
@@ -79,6 +82,7 @@ public class WorkspaceImporter {
             Agency agency = new Agency(a.getValue().a, a.getValue().b,
                                        model.getKernel().getCore());
             em.persist(agency);
+            workspace.put(a.getKey(), agency);
         }
 
     }
@@ -91,6 +95,7 @@ public class WorkspaceImporter {
             Attribute ruleform = new Attribute(a.getValue().a, a.getValue().b,
                                                model.getKernel().getCore());
             em.persist(ruleform);
+            workspace.put(a.getKey(), ruleform);
         }
     }
 
@@ -108,9 +113,10 @@ public class WorkspaceImporter {
     private void loadIntervals() {
         //TODO make this work for actual values and stuff.
         for (Map.Entry<String, Tuple<String, String>> a : wsp.getIntervals().entrySet()) {
-            model.getIntervalModel().create(a.getValue().a, a.getValue().b,
-                                            null);
+            Interval ruleform = model.getIntervalModel().create(a.getValue().a, a.getValue().b,
+                                            null).asRuleform();
 
+            workspace.put(a.getKey(), ruleform);
         }
     }
 
@@ -122,6 +128,7 @@ public class WorkspaceImporter {
             Location ruleform = new Location(a.getValue().a, a.getValue().b,
                                              model.getKernel().getCore());
             em.persist(ruleform);
+            workspace.put(a.getKey(), ruleform);
         }
     }
 
@@ -133,6 +140,7 @@ public class WorkspaceImporter {
             Product ruleform = new Product(a.getValue().a, a.getValue().b,
                                            model.getKernel().getCore());
             em.persist(ruleform);
+            workspace.put(a.getKey(), ruleform);
         }
     }
 
@@ -153,6 +161,7 @@ public class WorkspaceImporter {
                                                  a.getValue().b,
                                                  model.getKernel().getCore());
             em.persist(ruleform);
+            workspace.put(a.getKey(), ruleform);
         }
     }
 
@@ -164,6 +173,7 @@ public class WorkspaceImporter {
             Unit ruleform = new Unit(a.getValue().a, a.getValue().b,
                                      model.getKernel().getCore());
             em.persist(ruleform);
+            workspace.put(a.getKey(), ruleform);
         }
     }
 

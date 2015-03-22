@@ -24,7 +24,7 @@ definedProducts: 'products' LB  (existentialRuleform SC)+ RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ RB;
 definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ RB;
-definedUnits: 'units' LB  (existentialRuleform SC)+ RB;
+definedUnits: 'units' LB  (unit SC)+ RB;
 definedEdges: 'edges' LB (edge)+ RB;
     
 workspaceDefinition: 
@@ -56,6 +56,13 @@ existentialRuleform:
     name = QuotedText 
     (description=QuotedText)?; 
 
+unit: 
+    existentialRuleform
+    datatype = ObjectName
+    ('enumerated:' enumerated = Boolean)?
+    ('min:' min = Number)?
+    ('max:' max = Number)?;
+    
 relationshipPair:
     primary=existentialRuleform '|' inverse=existentialRuleform; 
 
@@ -73,6 +80,8 @@ edge:
 
 ObjectName: 'a'..'z' ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"'(' ' | '!' |'#'.. '~')+ '"';
+Boolean: ('true'|'false');
+Number: ('0'..'9')+;
  
 WS: (' ' | '\t')+ -> skip;
 NL: ('\r'? '\n')+ -> skip;

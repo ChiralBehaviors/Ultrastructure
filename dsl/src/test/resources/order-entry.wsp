@@ -97,6 +97,11 @@ status code sequencings {
         active completed
         }
 }
+units {
+    dollar = "Dollar" "US Dollar" number;
+    cent = "Cent" "US Cent" number;
+    percentage = "Percentage" "Percentage" number min: 0 max: 100;
+}
 edges {
     bin1.area.factory1
     bin15.area.factory1

@@ -198,11 +198,14 @@ public class WorkspaceImporter {
      * 
      */
     private void loadUnits() {
-        for (Map.Entry<String, Tuple<String, String>> a : wsp.getUnits().entrySet()) {
-            Unit ruleform = new Unit(a.getValue().a, a.getValue().b,
-                                     model.getKernel().getCore());
+        for (WorkspacePresentation.Unit a : wsp.getUnits()) {
+            Unit ruleform = new Unit(a.name, a.description, model.getKernel().getCore());
+            ruleform.setEnumerated(a.enumerated);
+            ruleform.setDatatype(a.datatype);
+            ruleform.setMin(a.min);
+            ruleform.setMax(a.max);
             em.persist(ruleform);
-            workspace.put(a.getKey(), ruleform);
+            workspace.put(a.name, ruleform);
         }
     }
 

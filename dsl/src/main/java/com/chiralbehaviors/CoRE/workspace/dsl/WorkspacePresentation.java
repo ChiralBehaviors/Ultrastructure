@@ -16,6 +16,7 @@
 
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceC
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 import com.hellblazer.utils.Tuple;
 
@@ -51,6 +53,26 @@ public class WorkspacePresentation {
             this.inverseWsName = inverseWsName;
             this.inverse = inverse;
         }
+    }
+
+    public static class Unit {
+        public final String     name;
+        public final String     description;
+        public final String     datatype;
+        public final boolean    enumerated;
+        public final BigDecimal min;
+        public final BigDecimal max;
+
+        public Unit(String name, String description, String datatype,
+                    boolean enumerated, BigDecimal min, BigDecimal max) {
+            this.name = name;
+            this.description = description;
+            this.datatype = datatype;
+            this.enumerated = enumerated;
+            this.min = min;
+            this.max = max;
+        }
+
     }
 
     private final WorkspaceContext context;
@@ -141,24 +163,41 @@ public class WorkspacePresentation {
         if (context.statusCodeSequencings == null) {
             return Collections.emptyMap();
         }
-        
+
         Map<String, List<Tuple<String, String>>> sequencings = new HashMap<>();
         for (StatusCodeSequencingSetContext ctx : context.statusCodeSequencings.statusCodeSequencingSet()) {
             List<Tuple<String, String>> sequencePairs = new ArrayList<>();
             for (SequencePairContext pairCtx : ctx.sequencePair()) {
-                sequencePairs.add(new Tuple<String, String>(pairCtx.first.getText(), pairCtx.second.getText()));
+                sequencePairs.add(new Tuple<String, String>(
+                                                            pairCtx.first.getText(),
+                                                            pairCtx.second.getText()));
             }
             sequencings.put(ctx.service.getText(), sequencePairs);
         }
-        
+
         return sequencings;
     }
 
-    public Map<String, Tuple<String, String>> getUnits() {
+    public List<Unit> getUnits() {
         if (context.units == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
-        return getRuleforms(context.units.existentialRuleform());
+        List<Unit> units = new ArrayList<>();
+        for (UnitContext ctx : context.units.unit()) {
+            Unit unit = new Unit(
+                                 ctx.existentialRuleform().name.getText(),
+                                 ctx.existentialRuleform().description.getText(),
+                                 ctx.datatype.getText(),
+                                 ctx.enumerated == null ? false
+                                                       : ctx.enumerated.getText().equals("true"),
+                                 ctx.min == null ? null
+                                                : BigDecimal.valueOf(Double.parseDouble(ctx.min.getText())),
+                                 ctx.max == null ? null
+                                                : BigDecimal.valueOf(Double.parseDouble(ctx.max.getText())));
+            units.add(unit);
+        }
+
+        return units;
     }
 
     public Tuple<String, String> getWorkspaceDefinition() {

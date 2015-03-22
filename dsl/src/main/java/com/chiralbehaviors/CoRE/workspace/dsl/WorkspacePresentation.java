@@ -25,6 +25,8 @@ import java.util.Map;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 import com.hellblazer.utils.Tuple;
 
@@ -133,6 +135,23 @@ public class WorkspacePresentation {
             return Collections.emptyMap();
         }
         return getRuleforms(context.statusCodes.existentialRuleform());
+    }
+
+    public Map<String, List<Tuple<String, String>>> getStatusCodeSequencings() {
+        if (context.statusCodeSequencings == null) {
+            return Collections.emptyMap();
+        }
+        
+        Map<String, List<Tuple<String, String>>> sequencings = new HashMap<>();
+        for (StatusCodeSequencingSetContext ctx : context.statusCodeSequencings.statusCodeSequencingSet()) {
+            List<Tuple<String, String>> sequencePairs = new ArrayList<>();
+            for (SequencePairContext pairCtx : ctx.sequencePair()) {
+                sequencePairs.add(new Tuple<String, String>(pairCtx.first.getText(), pairCtx.second.getText()));
+            }
+            sequencings.put(ctx.service.getText(), sequencePairs);
+        }
+        
+        return sequencings;
     }
 
     public Map<String, Tuple<String, String>> getUnits() {

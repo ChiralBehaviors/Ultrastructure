@@ -15,6 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -23,6 +24,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -40,7 +42,8 @@ public class WorkspaceImporter {
     private final WorkspacePresentation wsp;
     private final Model                 model;
     private final EntityManager         em;
-    private DatabaseBackedWorkspace workspace;
+    private static final String         STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
+    private DatabaseBackedWorkspace     workspace;
 
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
@@ -57,6 +60,7 @@ public class WorkspaceImporter {
         loadProducts();
         loadRelationships();
         loadStatusCodes();
+        loadStatusCodeSequencings();
         loadUnits();
         loadEdges();
 
@@ -64,12 +68,36 @@ public class WorkspaceImporter {
     }
 
     /**
+     * 
+     */
+    private void loadStatusCodeSequencings() {
+        for (Map.Entry<String, List<Tuple<String, String>>> entry : wsp.getStatusCodeSequencings().entrySet()) {
+            Product service = workspace.get(entry.getKey());
+            for (Tuple<String, String> sequencePair : entry.getValue()) {
+                StatusCode first = workspace.get(sequencePair.a);
+                StatusCode second = workspace.get(sequencePair.b);
+                StatusCodeSequencing sequence = new StatusCodeSequencing(
+                                                                         service,
+                                                                         first,
+                                                                         second,
+                                                                         service.getUpdatedBy());
+                em.persist(sequence);
+                String key = String.format(STATUS_CODE_SEQUENCING_FORMAT,
+                                           service.getName(), first.getName(),
+                                           second.getName());
+                workspace.put(key, sequence);
+            }
+        }
+
+    }
+
+    /**
      * @return
      */
     private Product createWorkspaceProduct() {
         Product workspaceProduct = new Product(wsp.getWorkspaceDefinition().a,
-                                        wsp.getWorkspaceDefinition().b,
-                                        model.getKernel().getCore());
+                                               wsp.getWorkspaceDefinition().b,
+                                               model.getKernel().getCore());
         em.persist(workspaceProduct);
         return workspaceProduct;
     }
@@ -113,8 +141,9 @@ public class WorkspaceImporter {
     private void loadIntervals() {
         //TODO make this work for actual values and stuff.
         for (Map.Entry<String, Tuple<String, String>> a : wsp.getIntervals().entrySet()) {
-            Interval ruleform = model.getIntervalModel().create(a.getValue().a, a.getValue().b,
-                                            null).asRuleform();
+            Interval ruleform = model.getIntervalModel().create(a.getValue().a,
+                                                                a.getValue().b,
+                                                                null).asRuleform();
 
             workspace.put(a.getKey(), ruleform);
         }

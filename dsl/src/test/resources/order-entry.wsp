@@ -20,6 +20,16 @@ products {
     abc486 = "abc486" "Laptop computer";
     frozen = "frozen" "Frozen Products";
     nonExempt = "nonExempt" "Non tax exempt products";
+    deliver = "Deliver" "Deliver product";
+    pick = "Pick" "Pick inventory";
+    ship = "Ship" "Ship inventory";
+    checkCredit = "CheckCredit" "Check customer in-house credit";
+    checkLetterOfCredit = "CheckLetterOfCredit" "Check customer letter of credit";
+    discount = "Discount" "Compute fee discount";
+    fee = "Fee" "Compute fee";
+    printCustomsDeclaration = "PrintCustomsDeclaration" "Print the customs declaration";
+    printPurchaseOrder = "PrintPurchaseOrder" "Print the purchase order";
+    salesTax = "SalesTax" "Compute sales tax";
 }
 relationships {
     area = "Area" "A is a member of the economic community B" | areaOf = "Area Of" "A is economic community of B";
@@ -39,6 +49,7 @@ status codes {
     pickCompleted = "Pick Completed" "Pick product has been completed";
     waitingOnPurchaseOrder = "Waiting on the purchace order" "Waiting for the purchase order to be complete";
     waitingOnPricing = "Waiting on pricing" "Waiting for pricing to be completed";
+    waitingOnFee = "Waiting on fee calculation" "Waiting for fee calculation to be completed";
     abandoned = "Job abandoned"  "We were going to do it, something happened in earlier processing that will prevent us from proceeding";
 }
 status code sequencings {

@@ -41,6 +41,51 @@ status codes {
     waitingOnPricing = "Waiting on pricing" "Waiting for pricing to be completed";
     abandoned = "Job abandoned"  "We were going to do it, something happened in earlier processing that will prevent us from proceeding";
 }
+status code sequencings {
+    pick: {
+           available active 
+           active completed
+           }
+    ship: {
+        waitingOnPurchaseOrder available 
+        available active 
+        active completed
+        }
+    deliver: {
+        available active
+        active completed
+        }
+    checkCredit: {
+        available active
+        active completed
+        }
+    checkLetterOfCredit: {
+        available active
+        active completed
+        }
+    discount: {
+        available active
+        active completed
+        }
+    fee: {
+        available active
+        active completed
+        }
+    printCustomsDeclaration: {
+        waitingOnFee available
+        available active
+        active completed
+        }
+    printPurchaseOrder: {
+        waitingOnFee available
+        available active
+        active completed
+        }
+    salesTax: {
+        available active
+        active completed
+        }
+}
 edges {
     bin1.area.factory1
     bin15.area.factory1

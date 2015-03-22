@@ -11,6 +11,7 @@ workspace:
     (products = definedProducts)?
     (relationships = definedRelationships)?
     (statusCodes = definedStatusCodes)?
+    (statusCodeSequencings = definedStatusCodeSequencings)?
     (units = definedUnits)?
     (edges = definedEdges)?
     EOF;
@@ -22,11 +23,12 @@ definedLocations: 'locations' LB  (existentialRuleform SC)+ RB;
 definedProducts: 'products' LB  (existentialRuleform SC)+ RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ RB;
 definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ RB;
+definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ RB;
 definedUnits: 'units' LB  (existentialRuleform SC)+ RB;
 definedEdges: 'edges' LB (edge)+ RB;
     
 workspaceDefinition: 
-    'workspace:' 
+    'workspace:'
     name=QuotedText
     (description=QuotedText)?;
 
@@ -39,6 +41,14 @@ importedWorkspace:
     uri =  QuotedText 
     'as '
     namespace = ObjectName;
+    
+statusCodeSequencingSet:
+    service = ObjectName
+    ':' LB (sequencePair)+ RB;
+    
+sequencePair:
+    first = ObjectName   
+    second = ObjectName;
     
 existentialRuleform:
     workspaceName = ObjectName  

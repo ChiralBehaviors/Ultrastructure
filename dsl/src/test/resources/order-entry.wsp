@@ -102,6 +102,10 @@ units {
     cent = "Cent" "US Cent" number;
     percentage = "Percentage" "Percentage" number min: 0 max: 100;
 }
+intervals {
+    day = "Day" "A single day" duration: 24 dollar;
+    week = "Week" "A seven day week";
+}
 edges {
     bin1.area.factory1
     bin15.area.factory1

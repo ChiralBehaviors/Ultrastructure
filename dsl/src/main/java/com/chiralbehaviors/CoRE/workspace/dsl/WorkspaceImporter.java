@@ -15,6 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -55,13 +56,13 @@ public class WorkspaceImporter {
         workspace = new DatabaseBackedWorkspace(createWorkspaceProduct(), em);
         loadAgencies();
         loadAttributes();
-        loadIntervals();
         loadLocations();
         loadProducts();
         loadRelationships();
         loadStatusCodes();
         loadStatusCodeSequencings();
         loadUnits();
+        loadIntervals();
         loadEdges();
 
         return workspace;
@@ -139,13 +140,21 @@ public class WorkspaceImporter {
      * 
      */
     private void loadIntervals() {
-        //TODO make this work for actual values and stuff.
-        for (Map.Entry<String, Tuple<String, String>> a : wsp.getIntervals().entrySet()) {
-            Interval ruleform = model.getIntervalModel().create(a.getValue().a,
-                                                                a.getValue().b,
-                                                                null).asRuleform();
-
-            workspace.put(a.getKey(), ruleform);
+        for (WorkspacePresentation.Interval ivl : wsp.getIntervals()) {
+            Interval interval = new Interval(
+                                             ivl.name,
+                                             ivl.start == null ? BigDecimal.valueOf(0)
+                                                              : ivl.start,
+                                             ivl.startUnit == null ? model.getKernel().getNotApplicableUnit()
+                                                                  : workspace.get(ivl.startUnit),
+                                             ivl.duration == null ? BigDecimal.valueOf(0)
+                                                                 : ivl.duration,
+                                             ivl.durationUnit == null ? model.getKernel().getNotApplicableUnit()
+                                                                     : workspace.get(ivl.durationUnit),
+                                             ivl.description,
+                                             model.getKernel().getCore());
+            em.persist(interval);
+            workspace.put(ivl.name, interval);
         }
     }
 
@@ -199,13 +208,14 @@ public class WorkspaceImporter {
      */
     private void loadUnits() {
         for (WorkspacePresentation.Unit a : wsp.getUnits()) {
-            Unit ruleform = new Unit(a.name, a.description, model.getKernel().getCore());
+            Unit ruleform = new Unit(a.name, a.description,
+                                     model.getKernel().getCore());
             ruleform.setEnumerated(a.enumerated);
             ruleform.setDatatype(a.datatype);
             ruleform.setMin(a.min);
             ruleform.setMax(a.max);
             em.persist(ruleform);
-            workspace.put(a.name, ruleform);
+            workspace.put(a.wsName, ruleform);
         }
     }
 

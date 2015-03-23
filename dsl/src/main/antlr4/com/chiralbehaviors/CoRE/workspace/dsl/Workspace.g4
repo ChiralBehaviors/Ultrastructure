@@ -6,19 +6,20 @@ workspace:
     (imports=imported)?
     (agencies = definedAgencies)?
     (attributes = definedAttributes)?
-    (intervals = definedIntervals)?
     (locations = definedLocations)?
     (products = definedProducts)?
     (relationships = definedRelationships)?
     (statusCodes = definedStatusCodes)?
     (statusCodeSequencings = definedStatusCodeSequencings)?
     (units = definedUnits)?
+    //intervals refer to units and therefore must be parsed afterwards
+    (intervals = definedIntervals)?
     (edges = definedEdges)?
     EOF;
 
 definedAgencies: 'agencies' LB  (existentialRuleform SC)+ RB;
 definedAttributes: 'attributes' LB  (existentialRuleform SC)+ RB;
-definedIntervals: 'intervals' LB  (existentialRuleform SC)+ RB;
+definedIntervals: 'intervals' LB  (interval SC)+ RB;
 definedLocations: 'locations' LB  (existentialRuleform SC)+ RB;
 definedProducts: 'products' LB  (existentialRuleform SC)+ RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ RB;
@@ -42,13 +43,22 @@ importedWorkspace:
     'as '
     namespace = ObjectName;
     
+interval:
+    existentialRuleform
+    ('start: ' start = Number
+        startUnit = qualifiedName
+    )?
+    ('duration: ' duration = Number
+        durationUnit = qualifiedName
+    )?;
+    
 statusCodeSequencingSet:
-    service = ObjectName
+    service = qualifiedName
     ':' LB (sequencePair)+ RB;
     
 sequencePair:
-    first = ObjectName   
-    second = ObjectName;
+    first = qualifiedName   
+    second = qualifiedName;
     
 existentialRuleform:
     workspaceName = ObjectName  

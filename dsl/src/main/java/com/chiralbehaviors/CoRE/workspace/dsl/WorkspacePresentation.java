@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
@@ -56,6 +57,7 @@ public class WorkspacePresentation {
     }
 
     public static class Unit {
+        public final String     wsName;
         public final String     name;
         public final String     description;
         public final String     datatype;
@@ -63,14 +65,39 @@ public class WorkspacePresentation {
         public final BigDecimal min;
         public final BigDecimal max;
 
-        public Unit(String name, String description, String datatype,
-                    boolean enumerated, BigDecimal min, BigDecimal max) {
+        public Unit(String wsName, String name, String description,
+                    String datatype, boolean enumerated, BigDecimal min,
+                    BigDecimal max) {
+            this.wsName = wsName;
             this.name = name;
             this.description = description;
             this.datatype = datatype;
             this.enumerated = enumerated;
             this.min = min;
             this.max = max;
+        }
+
+    }
+
+    public static class Interval {
+        public final String     wsName;
+        public final String     name;
+        public final String     description;
+        public final BigDecimal start;
+        public final String     startUnit;
+        public final BigDecimal duration;
+        public final String     durationUnit;
+
+        public Interval(String wsName, String name, String description,
+                        BigDecimal start, String startUnit,
+                        BigDecimal duration, String durationUnit) {
+            this.wsName = wsName;
+            this.name = name;
+            this.description = description;
+            this.start = start;
+            this.startUnit = startUnit;
+            this.duration = duration;
+            this.durationUnit = durationUnit;
         }
 
     }
@@ -112,11 +139,29 @@ public class WorkspacePresentation {
         return imports;
     }
 
-    public Map<String, Tuple<String, String>> getIntervals() {
+    public List<Interval> getIntervals() {
         if (context.intervals == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
-        return getRuleforms(context.intervals.existentialRuleform());
+        List<Interval> intervals = new ArrayList<>();
+
+        for (IntervalContext ctx : context.intervals.interval()) {
+            Interval interval = new Interval(
+                                             ctx.existentialRuleform().workspaceName.getText(),
+                                             ctx.existentialRuleform().name.getText(),
+                                             ctx.existentialRuleform().description.getText(),
+                                             ctx.start == null ? null
+                                                              : BigDecimal.valueOf(Double.parseDouble(ctx.start.getText())),
+                                             ctx.startUnit == null ? null
+                                                                  : ctx.startUnit.getText(),
+                                             ctx.duration == null ? null
+                                                                 : BigDecimal.valueOf(Double.parseDouble(ctx.duration.getText())),
+                                             ctx.durationUnit == null ? null
+                                                                     : ctx.durationUnit.getText());
+            intervals.add(interval);
+        }
+
+        return intervals;
     }
 
     public Map<String, Tuple<String, String>> getLocations() {
@@ -185,6 +230,7 @@ public class WorkspacePresentation {
         List<Unit> units = new ArrayList<>();
         for (UnitContext ctx : context.units.unit()) {
             Unit unit = new Unit(
+                                 ctx.existentialRuleform().workspaceName.getText(),
                                  ctx.existentialRuleform().name.getText(),
                                  ctx.existentialRuleform().description.getText(),
                                  ctx.datatype.getText(),

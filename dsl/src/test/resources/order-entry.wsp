@@ -157,28 +157,28 @@ sequencing auths {
         activeSiblings: false
     }
     sibling {
-        service: printPurchaseOrder
+        parent: printPurchaseOrder
         status: completed
-        parent: deliver
+        sibling: deliver
         next: completed
         
-        service: fee
+        parent: fee
         status: completed
-        parent: discount
+        sibling: discount
         next: available
     }
     child {
-        service: pick
+        parent: pick
         status: waitingOnCreditCheck
         child: checkCredit
         next: available
         
-        service: printPurchaseOrder
+        parent: printPurchaseOrder
         status: waitingOnFee
         child: fee
         next: available
         
-        service: deliver
+        parent: deliver
         status: available
         child: pick
         next: waitingOnCreditCheck

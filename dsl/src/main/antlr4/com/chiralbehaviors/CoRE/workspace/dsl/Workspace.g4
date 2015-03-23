@@ -11,11 +11,11 @@ workspace:
     (relationships = definedRelationships)?
     (statusCodes = definedStatusCodes)?
     (statusCodeSequencings = definedStatusCodeSequencings)?
-    (sequencingAuthorizations = definedSequencingAuthorizations)?
     (units = definedUnits)?
     //intervals refer to units and therefore must be parsed afterwards
     (intervals = definedIntervals)?
     (edges = definedEdges)?
+    (sequencingAuthorizations = definedSequencingAuthorizations)?
     EOF;
 
 
@@ -98,9 +98,9 @@ parentSequencing:
     'status:' status=qualifiedName
     'parent:' parent=qualifiedName
     'next:' next=qualifiedName
-    'replace: ' replace=('true' | 'false')
-    'activeSiblings:' activeSiblings=('true' | 'false')
-    'sequence:' sequenceNumber=Number;
+    ('replace: ' replace=('true' | 'false'))?
+    ('activeSiblings:' activeSiblings=('true' | 'false'))?
+    ('sequence:' sequenceNumber=Number)?;
     
 siblingSequencings:
     'sibling' LB (siblingSequencing)* RB;
@@ -110,8 +110,8 @@ siblingSequencing:
     'status:' status=qualifiedName
     'sibling:' sibling=qualifiedName
     'next:' next=qualifiedName
-    'replace: ' replace=('true' | 'false')
-    'sequence:' sequenceNumber=Number;
+    ('replace: ' replace=('true' | 'false'))?
+    ('sequence:' sequenceNumber=Number)?;
     
 childSequencings:
     'child' LB (childSequencing)* RB;
@@ -121,8 +121,8 @@ childSequencing:
     'status:' status=qualifiedName
     'child:' sibling=qualifiedName
     'next:' next=qualifiedName
-    'replace: ' replace=('true' | 'false')
-    'sequence:' sequenceNumber=Number;
+    ('replace: ' replace=('true' | 'false'))?
+    ('sequence:' sequenceNumber=Number)?;
     
 selfSequencings:
     'self' LB (selfSequencing)* RB;
@@ -131,7 +131,7 @@ selfSequencing:
     'service:' parent=qualifiedName
     'status:' status=qualifiedName
     'next:' next=qualifiedName
-    'sequence:' sequenceNumber=Number;
+    ('sequence:' sequenceNumber=Number)?;
 
 ObjectName: 'a'..'z' ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"'(' ' | '!' |'#'.. '~')+ '"';

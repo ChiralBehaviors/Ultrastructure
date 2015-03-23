@@ -37,23 +37,6 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class WorkspacePresentation {
-    public static class RelationshipPair {
-        public final Tuple<String, String> inverse;
-
-        public final String                inverseWsName;
-        public final Tuple<String, String> primary;
-        public final String                primaryWsName;
-
-        public RelationshipPair(String primaryWsName,
-                                Tuple<String, String> primary,
-                                String inverseWsName,
-                                Tuple<String, String> inverse) {
-            this.primaryWsName = primaryWsName;
-            this.primary = primary;
-            this.inverseWsName = inverseWsName;
-            this.inverse = inverse;
-        }
-    }
 
     private final WorkspaceContext context;
 
@@ -114,23 +97,11 @@ public class WorkspacePresentation {
         return getRuleforms(context.products.existentialRuleform());
     }
 
-    public List<RelationshipPair> getRelationships() {
+    public List<RelationshipPairContext> getRelationships() {
         if (context.relationships == null) {
             return Collections.emptyList();
         }
-        List<RelationshipPair> pairs = new ArrayList<>();
-        for (RelationshipPairContext pair : context.relationships.relationshipPair()) {
-            pairs.add(new RelationshipPair(
-                                           pair.primary.getText(),
-                                           new Tuple<String, String>(
-                                                                     pair.primary.name.getText(),
-                                                                     pair.primary.description.getText()),
-                                           pair.inverse.getText(),
-                                           new Tuple<String, String>(
-                                                                     pair.inverse.name.getText(),
-                                                                     pair.inverse.description.getText())));
-        }
-        return pairs;
+        return context.relationships.relationshipPair();
     }
 
     public Map<String, Tuple<String, String>> getStatusCodes() {

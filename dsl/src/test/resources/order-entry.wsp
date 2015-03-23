@@ -114,3 +114,69 @@ edges {
     france.area.europe
     street.kernel::isA.region
 }
+sequencing auths {
+    parent {
+        service: pick
+        status: completed
+        parent: deliver
+        next: completed
+        activeSiblings: false
+        
+        service: checkCredit
+        status: completed
+        parent: pick
+        next: available
+        activeSiblings: false
+        
+        service: printCustomsDeclaration
+        status: completed
+        parent: ship
+        next: available
+        activeSiblings: false
+        
+        service: printPurchaseOrder
+        status: completed
+        parent: ship
+        next: available
+        activeSiblings: false
+        
+        service: discount
+        status: completed
+        parent: printPurchaseOrder
+        next: available
+        activeSiblings: false
+        
+        service: ship
+        status: completed
+        parent: deliver
+        next: completed
+        activeSiblings: false
+    }
+    sibling {
+        service: printPurchaseOrder
+        status: completed
+        parent: deliver
+        next: completed
+        
+        service: fee
+        status: completed
+        parent: discount
+        next: available
+    }
+    child {
+        service: pick
+        status: waitingOnCreditCheck
+        child: checkCredit
+        next: available
+        
+        service: printPurchaseOrder
+        status: waitingOnFee
+        child: fee
+        next: available
+        
+        service: deliver
+        status: available
+        child: pick
+        next: waitingOnCreditCheck
+    }
+}

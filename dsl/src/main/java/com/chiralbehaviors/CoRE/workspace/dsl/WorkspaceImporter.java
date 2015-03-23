@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 import com.hellblazer.utils.Tuple;
 
@@ -143,21 +144,22 @@ public class WorkspaceImporter {
      * 
      */
     private void loadIntervals() {
-        for (WorkspacePresentation.Interval ivl : wsp.getIntervals()) {
+        for (IntervalContext ivl : wsp.getIntervals()) {
             Interval interval = new Interval(
-                                             ivl.name,
+                                             ivl.existentialRuleform().name.getText(),
                                              ivl.start == null ? BigDecimal.valueOf(0)
-                                                              : ivl.start,
+                                                              : BigDecimal.valueOf(Long.valueOf(ivl.start.getText())),
                                              ivl.startUnit == null ? model.getKernel().getNotApplicableUnit()
-                                                                  : workspace.get(ivl.startUnit),
+                                                                  : workspace.get(ivl.startUnit.getText()),
                                              ivl.duration == null ? BigDecimal.valueOf(0)
-                                                                 : ivl.duration,
+                                                                 : BigDecimal.valueOf(Long.valueOf(ivl.duration.getText())),
                                              ivl.durationUnit == null ? model.getKernel().getNotApplicableUnit()
-                                                                     : workspace.get(ivl.durationUnit),
-                                             ivl.description,
+                                                                     : workspace.get(ivl.durationUnit.getText()),
+                                             ivl.existentialRuleform().description.getText(),
                                              model.getKernel().getCore());
             em.persist(interval);
-            workspace.put(ivl.name, interval);
+            workspace.put(ivl.existentialRuleform().workspaceName.getText(),
+                          interval);
         }
     }
 

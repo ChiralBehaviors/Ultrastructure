@@ -16,7 +16,6 @@
 
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,29 +55,6 @@ public class WorkspacePresentation {
         }
     }
 
-    public static class Interval {
-        public final String     wsName;
-        public final String     name;
-        public final String     description;
-        public final BigDecimal start;
-        public final String     startUnit;
-        public final BigDecimal duration;
-        public final String     durationUnit;
-
-        public Interval(String wsName, String name, String description,
-                        BigDecimal start, String startUnit,
-                        BigDecimal duration, String durationUnit) {
-            this.wsName = wsName;
-            this.name = name;
-            this.description = description;
-            this.start = start;
-            this.startUnit = startUnit;
-            this.duration = duration;
-            this.durationUnit = durationUnit;
-        }
-
-    }
-
     private final WorkspaceContext context;
 
     public WorkspacePresentation(WorkspaceContext context) {
@@ -116,29 +92,12 @@ public class WorkspacePresentation {
         return imports;
     }
 
-    public List<Interval> getIntervals() {
+    public List<IntervalContext> getIntervals() {
         if (context.intervals == null) {
             return Collections.emptyList();
         }
-        List<Interval> intervals = new ArrayList<>();
 
-        for (IntervalContext ctx : context.intervals.interval()) {
-            Interval interval = new Interval(
-                                             ctx.existentialRuleform().workspaceName.getText(),
-                                             ctx.existentialRuleform().name.getText(),
-                                             ctx.existentialRuleform().description.getText(),
-                                             ctx.start == null ? null
-                                                              : BigDecimal.valueOf(Double.parseDouble(ctx.start.getText())),
-                                             ctx.startUnit == null ? null
-                                                                  : ctx.startUnit.getText(),
-                                             ctx.duration == null ? null
-                                                                 : BigDecimal.valueOf(Double.parseDouble(ctx.duration.getText())),
-                                             ctx.durationUnit == null ? null
-                                                                     : ctx.durationUnit.getText());
-            intervals.add(interval);
-        }
-
-        return intervals;
+        return context.intervals.interval();
     }
 
     public Map<String, Tuple<String, String>> getLocations() {

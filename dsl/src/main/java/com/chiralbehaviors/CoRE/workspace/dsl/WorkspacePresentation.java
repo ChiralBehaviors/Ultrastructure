@@ -56,29 +56,6 @@ public class WorkspacePresentation {
         }
     }
 
-    public static class Unit {
-        public final String     wsName;
-        public final String     name;
-        public final String     description;
-        public final String     datatype;
-        public final boolean    enumerated;
-        public final BigDecimal min;
-        public final BigDecimal max;
-
-        public Unit(String wsName, String name, String description,
-                    String datatype, boolean enumerated, BigDecimal min,
-                    BigDecimal max) {
-            this.wsName = wsName;
-            this.name = name;
-            this.description = description;
-            this.datatype = datatype;
-            this.enumerated = enumerated;
-            this.min = min;
-            this.max = max;
-        }
-
-    }
-
     public static class Interval {
         public final String     wsName;
         public final String     name;
@@ -223,27 +200,12 @@ public class WorkspacePresentation {
         return sequencings;
     }
 
-    public List<Unit> getUnits() {
+    public List<UnitContext> getUnits() {
         if (context.units == null) {
             return Collections.emptyList();
         }
-        List<Unit> units = new ArrayList<>();
-        for (UnitContext ctx : context.units.unit()) {
-            Unit unit = new Unit(
-                                 ctx.existentialRuleform().workspaceName.getText(),
-                                 ctx.existentialRuleform().name.getText(),
-                                 ctx.existentialRuleform().description.getText(),
-                                 ctx.datatype.getText(),
-                                 ctx.enumerated == null ? false
-                                                       : ctx.enumerated.getText().equals("true"),
-                                 ctx.min == null ? null
-                                                : BigDecimal.valueOf(Double.parseDouble(ctx.min.getText())),
-                                 ctx.max == null ? null
-                                                : BigDecimal.valueOf(Double.parseDouble(ctx.max.getText())));
-            units.add(unit);
-        }
 
-        return units;
+        return context.units.unit();
     }
 
     public Tuple<String, String> getWorkspaceDefinition() {

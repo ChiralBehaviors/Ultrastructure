@@ -21,6 +21,8 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import org.antlr.v4.runtime.Token;
+
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
@@ -32,6 +34,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -207,16 +210,23 @@ public class WorkspaceImporter {
      * 
      */
     private void loadUnits() {
-        for (WorkspacePresentation.Unit a : wsp.getUnits()) {
-            Unit ruleform = new Unit(a.name, a.description,
+        for (UnitContext unit : wsp.getUnits()) {
+            Token description = unit.existentialRuleform().description;
+            Unit ruleform = new Unit(
+                                     unit.existentialRuleform().name.getText(),
+                                     description == null ? null
+                                                        : description.getText(),
                                      model.getKernel().getCore());
-            ruleform.setEnumerated(a.enumerated);
-            ruleform.setDatatype(a.datatype);
-            ruleform.setMin(a.min);
-            ruleform.setMax(a.max);
+            ruleform.setEnumerated(unit.enumerated == null ? null
+                                                          : Boolean.valueOf(unit.enumerated.getText()));
+            ruleform.setDatatype(unit.datatype.getText());
+            ruleform.setMin(unit.min == null ? null
+                                            : BigDecimal.valueOf(Long.valueOf(unit.min.getText())));
+            ruleform.setMax(unit.max == null ? null
+                                            : BigDecimal.valueOf(Long.valueOf(unit.max.getText())));
             em.persist(ruleform);
-            workspace.put(a.wsName, ruleform);
+            workspace.put(unit.existentialRuleform().workspaceName.getText(),
+                          ruleform);
         }
     }
-
 }

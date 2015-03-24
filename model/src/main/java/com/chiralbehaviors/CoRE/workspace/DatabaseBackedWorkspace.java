@@ -84,7 +84,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public <T extends Ruleform> T get(String key) {
-        System.out.println("Key: " + key);
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null");
         }

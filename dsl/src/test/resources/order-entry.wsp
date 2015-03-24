@@ -19,13 +19,12 @@ locations {
         bin1.area.factory1
         bin15.area.factory1
         rsb225.city.dc
-        bht378.city.dc
+        bht37.city.dc
         rc31.city.paris
         dc.region.eastCoast
         eastCoast.area.us
         paris.region.france
         france.area.europe
-        street.kernel::isA.region
     }
 }
 products {

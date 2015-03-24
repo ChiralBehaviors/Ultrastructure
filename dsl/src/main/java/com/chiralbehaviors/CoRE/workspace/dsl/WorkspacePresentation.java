@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
@@ -56,6 +57,26 @@ public class WorkspacePresentation {
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
+    public List<EdgeContext> getAgencyNetworks() {
+        if (context.agencies == null) {
+            return Collections.emptyList();
+        }
+        if (context.agencies.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.agencies.edges().edge();
+    }
+
+    public List<EdgeContext> getAttributeNetworks() {
+        if (context.attributes == null) {
+            return Collections.emptyList();
+        }
+        if (context.attributes.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.attributes.edges().edge();
+    }
+
     public List<ExistentialRuleformContext> getAttributes() {
         if (context.attributes == null) {
             return Collections.emptyList();
@@ -85,12 +106,32 @@ public class WorkspacePresentation {
         return imports;
     }
 
+    public List<EdgeContext> getIntervalNetworks() {
+        if (context.intervals == null) {
+            return Collections.emptyList();
+        }
+        if (context.intervals.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.intervals.edges().edge();
+    }
+
     public List<IntervalContext> getIntervals() {
         if (context.intervals == null) {
             return Collections.emptyList();
         }
 
         return context.intervals.interval();
+    }
+
+    public List<EdgeContext> getLocationNetworks() {
+        if (context.locations == null) {
+            return Collections.emptyList();
+        }
+        if (context.locations.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.locations.edges().edge();
     }
 
     public List<ExistentialRuleformContext> getLocations() {
@@ -108,12 +149,32 @@ public class WorkspacePresentation {
         return context.sequencingAuthorizations.parentSequencings().parentSequencing();
     }
 
+    public List<EdgeContext> getProductNetworks() {
+        if (context.products == null) {
+            return Collections.emptyList();
+        }
+        if (context.products.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.products.edges().edge();
+    }
+
     public List<ExistentialRuleformContext> getProducts() {
         if (context.products == null) {
             return Collections.emptyList();
         }
         List<ExistentialRuleformContext> ruleforms = context.products.existentialRuleform();
         return ruleforms == null ? Collections.emptyList() : ruleforms;
+    }
+
+    public List<EdgeContext> getRelationshipNetworks() {
+        if (context.relationships == null) {
+            return Collections.emptyList();
+        }
+        if (context.relationships.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.relationships.edges().edge();
     }
 
     public List<RelationshipPairContext> getRelationships() {
@@ -141,6 +202,16 @@ public class WorkspacePresentation {
                                : siblings.siblingSequencing();
     }
 
+    public List<EdgeContext> getStatusCodeNetworks() {
+        if (context.statusCodes == null) {
+            return Collections.emptyList();
+        }
+        if (context.statusCodes.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.statusCodes.edges().edge();
+    }
+
     public List<ExistentialRuleformContext> getStatusCodes() {
         if (context.statusCodes == null) {
             return Collections.emptyList();
@@ -154,6 +225,16 @@ public class WorkspacePresentation {
             return Collections.emptyList();
         }
         return context.statusCodeSequencings.statusCodeSequencingSet();
+    }
+
+    public List<EdgeContext> getUnitNetworks() {
+        if (context.units == null) {
+            return Collections.emptyList();
+        }
+        if (context.units.edges() == null) {
+            return Collections.emptyList();
+        }
+        return context.units.edges().edge();
     }
 
     public List<UnitContext> getUnits() {

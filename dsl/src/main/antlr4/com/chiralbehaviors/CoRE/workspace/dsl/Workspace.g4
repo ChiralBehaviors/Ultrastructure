@@ -26,7 +26,7 @@ definedProducts: 'products' LB  (existentialRuleform SC)+ (edges)? RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? RB;
 definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ (edges)? RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? RB;
-definedUnits: 'units' LB  (unit SC)+ RB;
+definedUnits: 'units' LB  (unit SC)+  (edges)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 
 edges: 'edges' LB (edge)+ RB;

@@ -24,22 +24,31 @@ import org.antlr.v4.runtime.Token;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
@@ -107,6 +116,30 @@ public class WorkspaceImporter {
 
     }
 
+    private void loadAgencyNetworks() {
+        for (EdgeContext edge : wsp.getAgencyNetworks()) {
+            AgencyNetwork network = new AgencyNetwork(
+                                                      resolve(edge.parent),
+                                                      resolve(edge.relationship),
+                                                      resolve(edge.child),
+                                                      model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
+        }
+    }
+
+    private void loadAttributeNetworks() {
+        for (EdgeContext edge : wsp.getAttributeNetworks()) {
+            AttributeNetwork network = new AttributeNetwork(
+                                                            resolve(edge.parent),
+                                                            resolve(edge.relationship),
+                                                            resolve(edge.child),
+                                                            model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
+        }
+    }
+
     private void loadAttributes() {
         for (ExistentialRuleformContext ruleform : wsp.getAttributes()) {
             Attribute attr = new Attribute(
@@ -133,8 +166,25 @@ public class WorkspaceImporter {
     }
 
     private void loadEdges() {
-        // TODO Auto-generated method stub
+        loadAgencyNetworks();
+        loadAttributeNetworks();
+        loadIntervalNetworks();
+        loadLocationNetworks();
+        loadProductNetworks();
+        loadStatusCodeNetworks();
+        loadUnitNetworks();
+    }
 
+    private void loadIntervalNetworks() {
+        for (EdgeContext edge : wsp.getIntervalNetworks()) {
+            IntervalNetwork network = new IntervalNetwork(
+                                                          resolve(edge.parent),
+                                                          resolve(edge.relationship),
+                                                          resolve(edge.child),
+                                                          model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
+        }
     }
 
     private void loadIntervals() {
@@ -154,6 +204,18 @@ public class WorkspaceImporter {
             em.persist(interval);
             workspace.put(ivl.existentialRuleform().workspaceName.getText(),
                           interval);
+        }
+    }
+
+    private void loadLocationNetworks() {
+        for (EdgeContext edge : wsp.getLocationNetworks()) {
+            LocationNetwork network = new LocationNetwork(
+                                                          resolve(edge.parent),
+                                                          resolve(edge.relationship),
+                                                          resolve(edge.child),
+                                                          model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
         }
     }
 
@@ -182,6 +244,18 @@ public class WorkspaceImporter {
         }
     }
 
+    private void loadProductNetworks() {
+        for (EdgeContext edge : wsp.getProductNetworks()) {
+            ProductNetwork network = new ProductNetwork(
+                                                        resolve(edge.parent),
+                                                        resolve(edge.relationship),
+                                                        resolve(edge.child),
+                                                        model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
+        }
+    }
+
     private void loadProducts() {
         for (ExistentialRuleformContext rf : wsp.getProducts()) {
             Product ruleform = new Product(
@@ -191,6 +265,18 @@ public class WorkspaceImporter {
                                            model.getKernel().getCore());
             em.persist(ruleform);
             workspace.put(rf.workspaceName.getText(), ruleform);
+        }
+    }
+
+    private void loadRelationshipNetworks() {
+        for (EdgeContext edge : wsp.getRelationshipNetworks()) {
+            RelationshipNetwork network = new RelationshipNetwork(
+                                                                  resolve(edge.parent),
+                                                                  resolve(edge.relationship),
+                                                                  resolve(edge.child),
+                                                                  model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
         }
     }
 
@@ -241,6 +327,18 @@ public class WorkspaceImporter {
         }
     }
 
+    private void loadStatusCodeNetworks() {
+        for (EdgeContext edge : wsp.getStatusCodeNetworks()) {
+            StatusCodeNetwork network = new StatusCodeNetwork(
+                                                              resolve(edge.parent),
+                                                              resolve(edge.relationship),
+                                                              resolve(edge.child),
+                                                              model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
+        }
+    }
+
     private void loadStatusCodes() {
         for (ExistentialRuleformContext rf : wsp.getStatusCodes()) {
             StatusCode ruleform = new StatusCode(
@@ -272,6 +370,17 @@ public class WorkspaceImporter {
             }
         }
 
+    }
+
+    private void loadUnitNetworks() {
+        for (EdgeContext edge : wsp.getUnitNetworks()) {
+            UnitNetwork network = new UnitNetwork(resolve(edge.parent),
+                                                  resolve(edge.relationship),
+                                                  resolve(edge.child),
+                                                  model.getKernel().getCore());
+            em.persist(network);
+            workspace.add(network);
+        }
     }
 
     private void loadUnits() {

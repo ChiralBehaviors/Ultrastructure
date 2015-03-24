@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -91,8 +92,20 @@ public class WorkspaceImporter {
         loadIntervals();
         loadEdges();
         loadSequencingAuths();
-
+        loadInferences();
         return workspace;
+    }
+
+    private void loadInferences() {
+        for (EdgeContext edge : wsp.getInferences()) {
+            NetworkInference inference = new NetworkInference(
+                                                              resolve(edge.parent),
+                                                              resolve(edge.relationship),
+                                                              resolve(edge.child),
+                                                              model.getKernel().getCore());
+            em.persist(inference);
+            workspace.add(inference);
+        }
     }
 
     private Product createWorkspaceProduct() {
@@ -171,6 +184,7 @@ public class WorkspaceImporter {
         loadIntervalNetworks();
         loadLocationNetworks();
         loadProductNetworks();
+        loadRelationshipNetworks();
         loadStatusCodeNetworks();
         loadUnitNetworks();
     }

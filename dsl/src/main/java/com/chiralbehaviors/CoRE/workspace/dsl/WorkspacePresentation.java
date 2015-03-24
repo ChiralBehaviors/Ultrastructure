@@ -106,6 +106,16 @@ public class WorkspacePresentation {
         return imports;
     }
 
+    public List<EdgeContext> getInferences() {
+        if (context.inferences == null) {
+            return Collections.emptyList();
+        }
+        if (context.inferences.edge() == null) {
+            return Collections.emptyList();
+        }
+        return context.inferences.edge();
+    }
+
     public List<EdgeContext> getIntervalNetworks() {
         if (context.intervals == null) {
             return Collections.emptyList();

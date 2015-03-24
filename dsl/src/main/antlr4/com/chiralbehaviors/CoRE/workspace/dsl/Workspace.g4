@@ -15,6 +15,7 @@ workspace:
     //intervals refer to units and therefore must be parsed afterwards
     (intervals = definedIntervals)?
     (sequencingAuthorizations = definedSequencingAuthorizations)?
+    (inferences = definedInferences)?
     EOF;
 
 
@@ -28,7 +29,7 @@ definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ (edges)? RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? RB;
 definedUnits: 'units' LB  (unit SC)+  (edges)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
-
+definedInferences: 'inferences' LB (edge)+ RB ;
 edges: 'edges' LB (edge)+ RB;
 
 workspaceDefinition: 

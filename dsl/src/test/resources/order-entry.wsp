@@ -189,3 +189,15 @@ sequencing auths {
         next: waitingOnCreditCheck
     }
 }
+inferences {
+    areaOf.regionOf.areaOf
+    areaOf.stateOf.areaOf
+    areaOf.cityOf.areaOf
+    areaOf.streetOf.areaOf
+    regionOf.stateOf.regionOf
+    regionOf.cityOf.regionOf
+    regionOf.streetOf.regionOf
+    stateOf.cityOf.stateOf
+    stateOf.streetOf.stateOf
+    cityOf.streetOf.cityOf
+}

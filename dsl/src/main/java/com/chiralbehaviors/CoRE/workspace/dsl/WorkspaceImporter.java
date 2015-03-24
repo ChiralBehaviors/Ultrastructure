@@ -30,11 +30,13 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 import com.hellblazer.utils.Tuple;
 
@@ -191,7 +193,17 @@ public class WorkspaceImporter {
      * 
      */
     private void loadRelationships() {
-        // TODO Auto-generated method stub
+        for (RelationshipPairContext ctx : wsp.getRelationships()) {
+            Relationship relA = model.getRelationshipModel().create(ctx.primary.name.getText(),
+                                                                    ctx.primary.description == null ? null
+                                                                                                   : ctx.primary.description.getText(),
+                                                                    ctx.inverse.name.getText(),
+                                                                    ctx.inverse.description == null ? null
+                                                                                                   : ctx.primary.description.getText());
+            workspace.put(ctx.primary.workspaceName.getText(), relA);
+            workspace.put(ctx.inverse.workspaceName.getText(),
+                          relA.getInverse());
+        }
 
     }
 

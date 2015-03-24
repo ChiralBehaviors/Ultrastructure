@@ -76,6 +76,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
         authorization.setEntity(ruleform);
         authorization.setDefiningProduct(definingProduct);
+        authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);
     }
 

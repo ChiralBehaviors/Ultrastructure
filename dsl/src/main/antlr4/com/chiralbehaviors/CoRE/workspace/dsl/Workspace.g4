@@ -119,7 +119,7 @@ childSequencings:
 childSequencing:
     'parent:' parent=qualifiedName
     'status:' status=qualifiedName
-    'child:' sibling=qualifiedName
+    'child:' child=qualifiedName
     'next:' next=qualifiedName
     ('replace: ' replace=('true' | 'false'))?
     ('sequence:' sequenceNumber=Number)?;
@@ -128,7 +128,7 @@ selfSequencings:
     'self' LB (selfSequencing)* RB;
 
 selfSequencing:
-    'service:' parent=qualifiedName
+    'service:' service=qualifiedName
     'status:' status=qualifiedName
     'next:' next=qualifiedName
     ('sequence:' sequenceNumber=Number)?;

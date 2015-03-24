@@ -18,15 +18,19 @@ package com.chiralbehaviors.CoRE.workspace.dsl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingsContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingsContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
@@ -44,18 +48,29 @@ public class WorkspacePresentation {
         this.context = context;
     }
 
-    public Map<String, Tuple<String, String>> getAgencies() {
+    public List<ExistentialRuleformContext> getAgencies() {
         if (context.agencies == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
-        return getRuleforms(context.agencies.existentialRuleform());
+        List<ExistentialRuleformContext> ruleforms = context.agencies.existentialRuleform();
+        return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
-    public Map<String, Tuple<String, String>> getAttributes() {
+    public List<ExistentialRuleformContext> getAttributes() {
         if (context.attributes == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
-        return getRuleforms(context.attributes.existentialRuleform());
+        List<ExistentialRuleformContext> ruleforms = context.attributes.existentialRuleform();
+        return ruleforms == null ? Collections.emptyList() : ruleforms;
+    }
+
+    public List<ChildSequencingContext> getChildSequencings() {
+        if (context.sequencingAuthorizations == null) {
+            return Collections.emptyList();
+        }
+        ChildSequencingsContext children = context.sequencingAuthorizations.childSequencings();
+        return children == null ? Collections.emptyList()
+                               : children.childSequencing();
     }
 
     public List<Tuple<String, Tuple<String, String>>> getEdges() {
@@ -83,18 +98,27 @@ public class WorkspacePresentation {
         return context.intervals.interval();
     }
 
-    public Map<String, Tuple<String, String>> getLocations() {
+    public List<ExistentialRuleformContext> getLocations() {
         if (context.locations == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
-        return getRuleforms(context.locations.existentialRuleform());
+        List<ExistentialRuleformContext> ruleforms = context.locations.existentialRuleform();
+        return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
-    public Map<String, Tuple<String, String>> getProducts() {
-        if (context.products == null) {
-            return Collections.emptyMap();
+    public List<ParentSequencingContext> getParentSequencings() {
+        if (context.sequencingAuthorizations == null) {
+            return Collections.emptyList();
         }
-        return getRuleforms(context.products.existentialRuleform());
+        return context.sequencingAuthorizations.parentSequencings().parentSequencing();
+    }
+
+    public List<ExistentialRuleformContext> getProducts() {
+        if (context.products == null) {
+            return Collections.emptyList();
+        }
+        List<ExistentialRuleformContext> ruleforms = context.products.existentialRuleform();
+        return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
     public List<RelationshipPairContext> getRelationships() {
@@ -104,30 +128,37 @@ public class WorkspacePresentation {
         return context.relationships.relationshipPair();
     }
 
-    public Map<String, Tuple<String, String>> getStatusCodes() {
-        if (context.statusCodes == null) {
-            return Collections.emptyMap();
+    public List<SelfSequencingContext> getSelfSequencings() {
+        if (context.sequencingAuthorizations == null) {
+            return Collections.emptyList();
         }
-        return getRuleforms(context.statusCodes.existentialRuleform());
+        SelfSequencingsContext selfSequencings = context.sequencingAuthorizations.selfSequencings();
+        return selfSequencings == null ? Collections.emptyList()
+                                      : selfSequencings.selfSequencing();
     }
 
-    public Map<String, List<Tuple<String, String>>> getStatusCodeSequencings() {
+    public List<SiblingSequencingContext> getSiblingSequencings() {
+        if (context.sequencingAuthorizations == null) {
+            return Collections.emptyList();
+        }
+        SiblingSequencingsContext siblings = context.sequencingAuthorizations.siblingSequencings();
+        return siblings == null ? Collections.emptyList()
+                               : siblings.siblingSequencing();
+    }
+
+    public List<ExistentialRuleformContext> getStatusCodes() {
+        if (context.statusCodes == null) {
+            return Collections.emptyList();
+        }
+        List<ExistentialRuleformContext> ruleforms = context.statusCodes.existentialRuleform();
+        return ruleforms == null ? Collections.emptyList() : ruleforms;
+    }
+
+    public List<StatusCodeSequencingSetContext> getStatusCodeSequencings() {
         if (context.statusCodeSequencings == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
-
-        Map<String, List<Tuple<String, String>>> sequencings = new HashMap<>();
-        for (StatusCodeSequencingSetContext ctx : context.statusCodeSequencings.statusCodeSequencingSet()) {
-            List<Tuple<String, String>> sequencePairs = new ArrayList<>();
-            for (SequencePairContext pairCtx : ctx.sequencePair()) {
-                sequencePairs.add(new Tuple<String, String>(
-                                                            pairCtx.first.getText(),
-                                                            pairCtx.second.getText()));
-            }
-            sequencings.put(ctx.service.getText(), sequencePairs);
-        }
-
-        return sequencings;
+        return context.statusCodeSequencings.statusCodeSequencingSet();
     }
 
     public List<UnitContext> getUnits() {
@@ -142,17 +173,5 @@ public class WorkspacePresentation {
         return new Tuple<String, String>(
                                          context.definition.name.getText(),
                                          context.definition.description.getText());
-    }
-
-    private Map<String, Tuple<String, String>> getRuleforms(List<ExistentialRuleformContext> rfContext) {
-        Map<String, Tuple<String, String>> ruleforms = new HashMap<>();
-        for (ExistentialRuleformContext ruleform : rfContext) {
-            ruleforms.put(ruleform.workspaceName.getText(),
-                          new Tuple<String, String>(
-                                                    ruleform.name.getText(),
-                                                    ruleform.description == null ? null
-                                                                                : ruleform.description.getText()));
-        }
-        return ruleforms;
     }
 }

@@ -333,7 +333,8 @@ public class Animations implements Triggers {
             model.getJobModel().ensureValidServiceAndStatus(pcsa.getNextChild(),
                                                             pcsa.getNextChildStatus());
         } catch (SQLException e) {
-            throw new TriggerException("Invalid sequence", e);
+            throw new TriggerException(String.format("Invalid sequence: %s",
+                                                     pcsa), e);
         }
     }
 

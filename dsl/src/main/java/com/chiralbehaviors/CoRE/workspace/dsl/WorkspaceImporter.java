@@ -16,16 +16,20 @@
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
+import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
 
 import org.antlr.v4.runtime.Token;
 
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
@@ -35,10 +39,17 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.QualifiedNameContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
-import com.hellblazer.utils.Tuple;
 
 /**
  * @author hparry
@@ -46,11 +57,11 @@ import com.hellblazer.utils.Tuple;
  */
 public class WorkspaceImporter {
 
-    private final WorkspacePresentation wsp;
-    private final Model                 model;
-    private final EntityManager         em;
     private static final String         STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
+    private final EntityManager         em;
+    private final Model                 model;
     private DatabaseBackedWorkspace     workspace;
+    private final WorkspacePresentation wsp;
 
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
@@ -70,37 +81,11 @@ public class WorkspaceImporter {
         loadUnits();
         loadIntervals();
         loadEdges();
+        loadSequencingAuths();
 
         return workspace;
     }
 
-    /**
-     * 
-     */
-    private void loadStatusCodeSequencings() {
-        for (Map.Entry<String, List<Tuple<String, String>>> entry : wsp.getStatusCodeSequencings().entrySet()) {
-            Product service = workspace.get(entry.getKey());
-            for (Tuple<String, String> sequencePair : entry.getValue()) {
-                StatusCode first = workspace.get(sequencePair.a);
-                StatusCode second = workspace.get(sequencePair.b);
-                StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                         service,
-                                                                         first,
-                                                                         second,
-                                                                         service.getUpdatedBy());
-                em.persist(sequence);
-                String key = String.format(STATUS_CODE_SEQUENCING_FORMAT,
-                                           service.getName(), first.getName(),
-                                           second.getName());
-                workspace.put(key, sequence);
-            }
-        }
-
-    }
-
-    /**
-     * @return
-     */
     private Product createWorkspaceProduct() {
         Product workspaceProduct = new Product(wsp.getWorkspaceDefinition().a,
                                                wsp.getWorkspaceDefinition().b,
@@ -109,42 +94,49 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
-    /**
-     * 
-     */
     private void loadAgencies() {
-        for (Map.Entry<String, Tuple<String, String>> a : wsp.getAgencies().entrySet()) {
-            Agency agency = new Agency(a.getValue().a, a.getValue().b,
+        for (ExistentialRuleformContext ruleform : wsp.getAgencies()) {
+            Agency agency = new Agency(
+                                       ruleform.name.getText(),
+                                       ruleform.description == null ? null
+                                                                   : ruleform.description.getText(),
                                        model.getKernel().getCore());
             em.persist(agency);
-            workspace.put(a.getKey(), agency);
+            workspace.put(ruleform.workspaceName.getText(), agency);
         }
 
     }
 
-    /**
-     * 
-     */
     private void loadAttributes() {
-        for (Map.Entry<String, Tuple<String, String>> a : wsp.getAttributes().entrySet()) {
-            Attribute ruleform = new Attribute(a.getValue().a, a.getValue().b,
-                                               model.getKernel().getCore());
-            em.persist(ruleform);
-            workspace.put(a.getKey(), ruleform);
+        for (ExistentialRuleformContext ruleform : wsp.getAttributes()) {
+            Attribute attr = new Attribute(
+                                           ruleform.name.getText(),
+                                           ruleform.description == null ? null
+                                                                       : ruleform.description.getText(),
+                                           model.getKernel().getCore());
+            em.persist(attr);
+            workspace.put(ruleform.workspaceName.getText(), attr);
         }
     }
 
-    /**
-     * 
-     */
+    private void loadChildSequencing() {
+        for (ChildSequencingContext seq : wsp.getChildSequencings()) {
+            ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
+                                                                                               resolve(seq.parent),
+                                                                                               resolve(seq.status),
+                                                                                               resolve(seq.child),
+                                                                                               resolve(seq.next),
+                                                                                               model.getKernel().getCore());
+            em.persist(auth);
+            workspace.add(auth);
+        }
+    }
+
     private void loadEdges() {
         // TODO Auto-generated method stub
 
     }
 
-    /**
-     * 
-     */
     private void loadIntervals() {
         for (IntervalContext ivl : wsp.getIntervals()) {
             Interval interval = new Interval(
@@ -165,33 +157,43 @@ public class WorkspaceImporter {
         }
     }
 
-    /**
-     * 
-     */
     private void loadLocations() {
-        for (Map.Entry<String, Tuple<String, String>> a : wsp.getLocations().entrySet()) {
-            Location ruleform = new Location(a.getValue().a, a.getValue().b,
+        for (ExistentialRuleformContext rf : wsp.getLocations()) {
+            Location ruleform = new Location(
+                                             rf.name.getText(),
+                                             rf.description == null ? null
+                                                                   : rf.description.getText(),
                                              model.getKernel().getCore());
             em.persist(ruleform);
-            workspace.put(a.getKey(), ruleform);
+            workspace.put(rf.workspaceName.getText(), ruleform);
         }
     }
 
-    /**
-     * 
-     */
+    private void loadParentSequencing() {
+        for (ParentSequencingContext seq : wsp.getParentSequencings()) {
+            ProductParentSequencingAuthorization auth = new ProductParentSequencingAuthorization(
+                                                                                                 resolve(seq.service),
+                                                                                                 resolve(seq.status),
+                                                                                                 resolve(seq.parent),
+                                                                                                 resolve(seq.next),
+                                                                                                 model.getKernel().getCore());
+            em.persist(auth);
+            workspace.add(auth);
+        }
+    }
+
     private void loadProducts() {
-        for (Map.Entry<String, Tuple<String, String>> a : wsp.getProducts().entrySet()) {
-            Product ruleform = new Product(a.getValue().a, a.getValue().b,
+        for (ExistentialRuleformContext rf : wsp.getProducts()) {
+            Product ruleform = new Product(
+                                           rf.name.getText(),
+                                           rf.description == null ? null
+                                                                 : rf.description.getText(),
                                            model.getKernel().getCore());
             em.persist(ruleform);
-            workspace.put(a.getKey(), ruleform);
+            workspace.put(rf.workspaceName.getText(), ruleform);
         }
     }
 
-    /**
-     * 
-     */
     private void loadRelationships() {
         for (RelationshipPairContext ctx : wsp.getRelationships()) {
             Relationship relA = model.getRelationshipModel().create(ctx.primary.name.getText(),
@@ -207,22 +209,71 @@ public class WorkspaceImporter {
 
     }
 
-    /**
-     * 
-     */
-    private void loadStatusCodes() {
-        for (Map.Entry<String, Tuple<String, String>> a : wsp.getStatusCodes().entrySet()) {
-            StatusCode ruleform = new StatusCode(a.getValue().a,
-                                                 a.getValue().b,
-                                                 model.getKernel().getCore());
-            em.persist(ruleform);
-            workspace.put(a.getKey(), ruleform);
+    private void loadSelfSequencing() {
+        for (SelfSequencingContext seq : wsp.getSelfSequencings()) {
+            ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
+                                                                                             resolve(seq.service),
+                                                                                             resolve(seq.status),
+                                                                                             resolve(seq.next),
+                                                                                             model.getKernel().getCore());
+            em.persist(auth);
+            workspace.add(auth);
         }
     }
 
-    /**
-     * 
-     */
+    private void loadSequencingAuths() {
+        loadParentSequencing();
+        loadSiblingSequencing();
+        loadChildSequencing();
+        loadSelfSequencing();
+    }
+
+    private void loadSiblingSequencing() {
+        for (SiblingSequencingContext seq : wsp.getSiblingSequencings()) {
+            ProductSiblingSequencingAuthorization auth = new ProductSiblingSequencingAuthorization(
+                                                                                                   resolve(seq.parent),
+                                                                                                   resolve(seq.status),
+                                                                                                   resolve(seq.sibling),
+                                                                                                   resolve(seq.next),
+                                                                                                   model.getKernel().getCore());
+            em.persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void loadStatusCodes() {
+        for (ExistentialRuleformContext rf : wsp.getStatusCodes()) {
+            StatusCode ruleform = new StatusCode(
+                                                 rf.name.getText(),
+                                                 rf.description == null ? null
+                                                                       : rf.description.getText(),
+                                                 model.getKernel().getCore());
+            em.persist(ruleform);
+            workspace.put(rf.workspaceName.getText(), ruleform);
+        }
+    }
+
+    private void loadStatusCodeSequencings() {
+        for (StatusCodeSequencingSetContext entry : wsp.getStatusCodeSequencings()) {
+            Product service = resolve(entry.service);
+            for (SequencePairContext pair : entry.sequencePair()) {
+                StatusCode first = resolve(pair.first);
+                StatusCode second = resolve(pair.second);
+                StatusCodeSequencing sequence = new StatusCodeSequencing(
+                                                                         service,
+                                                                         first,
+                                                                         second,
+                                                                         service.getUpdatedBy());
+                em.persist(sequence);
+                String key = String.format(STATUS_CODE_SEQUENCING_FORMAT,
+                                           service.getName(), first.getName(),
+                                           second.getName());
+                workspace.put(key, sequence);
+            }
+        }
+
+    }
+
     private void loadUnits() {
         for (UnitContext unit : wsp.getUnits()) {
             Token description = unit.existentialRuleform().description;
@@ -242,5 +293,16 @@ public class WorkspaceImporter {
             workspace.put(unit.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    <T> T resolve(QualifiedNameContext qualifiedName) {
+        Ruleform ruleform = workspace.get(qualifiedName.member.getText());
+        if (ruleform == null) {
+            throw new InvalidKeyException(
+                                          String.format("Cannot find workspace key: %s",
+                                                        qualifiedName.member.getText()));
+        }
+        return (T) ruleform;
     }
 }

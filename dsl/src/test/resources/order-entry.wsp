@@ -201,3 +201,45 @@ inferences {
     stateOf.streetOf.stateOf
     cityOf.streetOf.cityOf
 }
+protocols {
+        service: deliver product: kernel::anyProduct from: kernel::anyLocation to: kernel::anyLocation
+        ->
+        service: pick product: kernel::sameProduct assign: factory1Agency
+        
+        service: pick product: kernel::anyProduct from: us to: us requester: externalCust
+        ->
+        service: checkCredit product: kernel::sameProduct assign: cpu
+        
+        service: pick product: kernel::anyProduct from: us to: euro
+        ->
+        service: checkLetterOfCredit product: kernel::sameProduct assign: creditDept
+        
+        service: deliver product: kernel::anyProduct from: kernel::anyLocation to: kernel::anyLocation 
+        requester: kernel::anyAgency
+        ->
+        service: ship product: kernel::sameProduct assign: factory1Agency
+        
+        service: ship product: abc486 from: us to: euro
+        ->
+        service: printCustomsDeclaration product: kernel::sameProduct assign: cpu
+        
+        service: ship product: abc486 from: us to: kernel::anyLocation
+        ->
+        service: printPurchaseOrder product: kernel::sameProduct assign: cpu 
+        
+        service: printPurchaseOrder product: abc486 from: us to: kernel::anyLocation requester: anyAgency
+        -> 
+        service: fee product: kernel::sameProduct assign: billingComputer
+        
+        service: fee product: nonExempt from: kernel::anyLocation to: dc requester: nonExemptAgency 
+        ->
+        service: salesTax product: kernel::sameProduct assign: billingComputer
+        
+        service: fee product: abc486 from: us to: euro requester: externalCust
+        ->
+        service: discount product: kernel::sameProduct assign: billingComputer
+        
+        service: fee product: abc486 from: us to: dc requester: georgeTownUniversity
+        ->
+        service: salesTax product: kernel::sameProduct assign: billingComputer
+}

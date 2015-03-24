@@ -16,6 +16,7 @@ workspace:
     (intervals = definedIntervals)?
     (sequencingAuthorizations = definedSequencingAuthorizations)?
     (inferences = definedInferences)?
+    (protocols = definedProtocols)?
     EOF;
 
 
@@ -30,6 +31,8 @@ definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencing
 definedUnits: 'units' LB  (unit SC)+  (edges)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 definedInferences: 'inferences' LB (edge)+ RB ;
+definedProtocols: 'protocols' LB (protocol)+ RB;
+
 edges: 'edges' LB (edge)+ RB;
 
 workspaceDefinition: 
@@ -133,6 +136,46 @@ selfSequencing:
     'status:' status=qualifiedName
     'next:' next=qualifiedName
     ('sequence:' sequenceNumber=Number)?;
+    
+protocol:
+    matchJob
+    '->'
+    childJob;
+    
+matchJob: 
+    ('service:' service=qualifiedName)
+    ('attr:' serviceAttribute=qualifiedName)?
+    ('product:' product=qualifiedName)?
+    ('attr:' productAttribute=qualifiedName)?
+    ('from:' from=qualifiedName)?
+    ('attr:' (fromAttribute=qualifiedName))?
+    ('to:' to=qualifiedName)?
+    ('attr:' (toAttribute=qualifiedName))?
+    ('quantity:' quantity=Number)?
+    ('unit:' quantityUnit=qualifiedName)?
+    ('requester:' requester=qualifiedName)?
+    ('attr:' requesterAttribute=qualifiedName)?
+    ('assign:' assignTo=qualifiedName)?
+    ('attr:' assignToAttribute=qualifiedName)?
+    ('sequence:' Number)?
+    ;
+    
+childJob: 
+    ('service:' service=qualifiedName)?
+    ('attr:' (serviceAttribute=qualifiedName))?
+    (('children:' childrenRelationship=qualifiedName) | ('product:' product=qualifiedName))?
+    ('attr:' (productAttribute=qualifiedName))?
+    ('from:' from=qualifiedName)?
+    ('attr:' (fromAttribute=qualifiedName))?
+    ('to:' to=qualifiedName)?
+    ('attr:' (toAttribute=qualifiedName))?
+    ('quantity:' quantity=Number)?
+    ('unit:' (quantityUnit=qualifiedName))?
+    ('requester:' requester=qualifiedName)?
+    ('attr:' (requesterAttribute=qualifiedName))?
+    ('assign:' assignTo=qualifiedName)?
+    ('attr:' (assignToAttribute=qualifiedName))?
+    ;
 
 ObjectName: 'a'..'z' ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"'(' ' | '!' |'#'.. '~')+ '"';

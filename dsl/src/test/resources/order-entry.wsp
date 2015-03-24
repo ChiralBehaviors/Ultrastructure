@@ -15,6 +15,18 @@ locations {
     factory1 = "Factory 1" "Factory #1";
     bin1 = "Bin 1";
     bin15 = "Bin 15";
+    edges {
+        bin1.area.factory1
+        bin15.area.factory1
+        rsb225.city.dc
+        bht378.city.dc
+        rc31.city.paris
+        dc.region.eastCoast
+        eastCoast.area.us
+        paris.region.france
+        france.area.europe
+        street.kernel::isA.region
+    }
 }
 products {
     abc486 = "abc486" "Laptop computer";
@@ -106,18 +118,6 @@ units {
 intervals {
     day = "Day" "A single day" duration: 24 dollar;
     week = "Week" "A seven day week";
-}
-edges {
-    bin1.area.factory1
-    bin15.area.factory1
-    rsb225.city.dc
-    bht378.city.dc
-    rc31.city.paris
-    dc.region.eastCoast
-    eastCoast.area.us
-    paris.region.france
-    france.area.europe
-    street.kernel::isA.region
 }
 sequencing auths {
     parent {

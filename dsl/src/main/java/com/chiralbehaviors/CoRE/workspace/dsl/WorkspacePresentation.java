@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
@@ -72,14 +71,6 @@ public class WorkspacePresentation {
         ChildSequencingsContext children = context.sequencingAuthorizations.childSequencings();
         return children == null ? Collections.emptyList()
                                : children.childSequencing();
-    }
-
-    public List<EdgeContext> getEdges() {
-        if (context.edges == null) {
-            return Collections.emptyList();
-        }
-        List<EdgeContext> edges = context.edges.edge();
-        return edges == null ? Collections.emptyList() : edges;
     }
 
     public List<Tuple<String, String>> getImports() {

@@ -14,23 +14,23 @@ workspace:
     (units = definedUnits)?
     //intervals refer to units and therefore must be parsed afterwards
     (intervals = definedIntervals)?
-    (edges = definedEdges)?
     (sequencingAuthorizations = definedSequencingAuthorizations)?
     EOF;
 
 
-definedAgencies: 'agencies' LB  (existentialRuleform SC)+ RB;
-definedAttributes: 'attributes' LB  (existentialRuleform SC)+ RB;
-definedIntervals: 'intervals' LB  (interval SC)+ RB;
-definedLocations: 'locations' LB  (existentialRuleform SC)+ RB;
-definedProducts: 'products' LB  (existentialRuleform SC)+ RB;
-definedRelationships: 'relationships' LB  (relationshipPair SC)+ RB;
-definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ RB;
-definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ RB;
+definedAgencies: 'agencies' LB  (existentialRuleform SC)+ (edges)? RB;
+definedAttributes: 'attributes' LB  (existentialRuleform SC)+ (edges)? RB;
+definedIntervals: 'intervals' LB  (interval SC)+ (edges)? RB;
+definedLocations: 'locations' LB  (existentialRuleform SC)+ (edges)? RB;
+definedProducts: 'products' LB  (existentialRuleform SC)+ (edges)? RB;
+definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? RB;
+definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ (edges)? RB;
+definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? RB;
 definedUnits: 'units' LB  (unit SC)+ RB;
-definedEdges: 'edges' LB (edge)+ RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
-    
+
+edges: 'edges' LB (edge)+ RB;
+
 workspaceDefinition: 
     'workspace:'
     name=QuotedText

@@ -54,6 +54,7 @@ status codes {
 }
 status code sequencings {
     pick: {
+           waitingOnCreditCheck available
            available active 
            active completed
            }
@@ -168,6 +169,11 @@ sequencing auths {
         next: available
     }
     child {
+        parent: ship
+        status: waitingOnPurchaseOrder
+        child: printPurchaseOrder
+        next: waitingOnFee
+        
         parent: pick
         status: waitingOnCreditCheck
         child: checkCredit

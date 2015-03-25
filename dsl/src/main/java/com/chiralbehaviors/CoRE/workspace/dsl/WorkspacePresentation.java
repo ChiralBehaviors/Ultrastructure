@@ -27,6 +27,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRulefor
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingsContext;
@@ -175,6 +176,13 @@ public class WorkspacePresentation {
         }
         List<ExistentialRuleformContext> ruleforms = context.products.existentialRuleform();
         return ruleforms == null ? Collections.emptyList() : ruleforms;
+    }
+
+    public List<ProtocolContext> getProtocols() {
+        if (context.protocols == null) {
+            return Collections.emptyList();
+        }
+        return context.protocols.protocol();
     }
 
     public List<EdgeContext> getRelationshipNetworks() {

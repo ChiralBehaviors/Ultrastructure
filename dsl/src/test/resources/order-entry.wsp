@@ -243,3 +243,32 @@ protocols {
         ->
         service: salesTax product: kernel::sameProduct assign: billingComputer
 }
+meta protocols {
+        transform: deliver
+        product: kernel::anyRelationship
+        from: area
+        to: state
+        
+        transform: pick
+        product: kernel::anyRelationship
+        from: area
+        to: area 
+        requester: customerType
+        
+        transform: ship
+        product: kernel::anyRelationship
+        from: area
+        to: area 
+        requester: customerType
+        
+        transform: fee
+        product: kernel::anyRelationship
+        to: city
+        requester: salesTaxStatus 
+        
+        transform: printPurchaseOrder
+        product: kernel::anyRelationship
+        from: area
+        to: kernel::anyRelationship
+        requester: kernel::anyRelationship
+}

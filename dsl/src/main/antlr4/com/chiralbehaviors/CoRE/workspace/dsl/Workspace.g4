@@ -17,6 +17,7 @@ workspace:
     (sequencingAuthorizations = definedSequencingAuthorizations)?
     (inferences = definedInferences)?
     (protocols = definedProtocols)?
+    (metaProtocols=definedMetaProtocols)?
     EOF;
 
 
@@ -32,6 +33,7 @@ definedUnits: 'units' LB  (unit SC)+  (edges)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 definedInferences: 'inferences' LB (edge)+ RB ;
 definedProtocols: 'protocols' LB (protocol)+ RB;
+definedMetaProtocols: 'meta protocols' LB (metaProtocol)* RB;
 
 edges: 'edges' LB (edge)+ RB;
 
@@ -136,6 +138,26 @@ selfSequencing:
     'status:' status=qualifiedName
     'next:' next=qualifiedName
     ('sequence:' sequenceNumber=Number)?;
+    
+metaProtocol:
+    ('transform:' service=qualifiedName)
+    ('service:'serviceType=qualifiedName)?
+    ('attr:' serviceAttribute=qualifiedName)?
+    ('product:' product=qualifiedName)?
+    ('attr:' productAttribute=qualifiedName)?
+    ('from:' from=qualifiedName)?
+    ('attr:' (fromAttribute=qualifiedName))?
+    ('to:' to=qualifiedName)?
+    ('attr:' (toAttribute=qualifiedName))?
+    ('quantity:' quantity=Number)?
+    ('unit:' quantityUnit=qualifiedName)?
+    ('requester:' requester=qualifiedName)?
+    ('attr:' requesterAttribute=qualifiedName)?
+    ('assign:' assignTo=qualifiedName)?
+    ('attr:' assignToAttribute=qualifiedName)?
+    ('sequence:' Number)?
+    ('match stop:' ('true' | 'false'))?
+    ;
     
 protocol:
     matchJob

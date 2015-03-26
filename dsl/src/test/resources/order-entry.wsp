@@ -208,7 +208,7 @@ inferences {
     cityOf.streetOf.cityOf
 }
 protocols {
-        service: deliver product: kernel::anyProduct from: kernel::anyLocation to: kernel::anyLocation
+        service: deliver product: kernel::AnyProduct from: kernel::anyLocation to: kernel::anyLocation
         ->
         service: pick product: kernel::sameProduct assign: factory1Agency
         

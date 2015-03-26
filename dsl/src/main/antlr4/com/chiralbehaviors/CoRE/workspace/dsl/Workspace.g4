@@ -180,7 +180,7 @@ matchJob:
     ('attr:' requesterAttribute=qualifiedName)?
     ('assign:' assignTo=qualifiedName)?
     ('attr:' assignToAttribute=qualifiedName)?
-    ('sequence:' Number)?
+    ('sequence:' sequence=Number)?
     ;
     
 childJob: 
@@ -194,8 +194,6 @@ childJob:
     ('attr:' (toAttribute=qualifiedName))?
     ('quantity:' quantity=Number)?
     ('unit:' (quantityUnit=qualifiedName))?
-    ('requester:' requester=qualifiedName)?
-    ('attr:' (requesterAttribute=qualifiedName))?
     ('assign:' assignTo=qualifiedName)?
     ('attr:' (assignToAttribute=qualifiedName))?
     ;

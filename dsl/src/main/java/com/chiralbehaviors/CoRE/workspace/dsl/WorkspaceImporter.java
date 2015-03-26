@@ -33,6 +33,7 @@ import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
@@ -53,6 +54,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.QualifiedNameContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingContext;
@@ -83,11 +85,11 @@ public class WorkspaceImporter {
 
     public Workspace loadWorkspace() {
         workspace = new DatabaseBackedWorkspace(createWorkspaceProduct(), em);
+        loadRelationships();
         loadAgencies();
         loadAttributes();
         loadLocations();
         loadProducts();
-        loadRelationships();
         loadStatusCodes();
         loadStatusCodeSequencings();
         loadUnits();
@@ -95,7 +97,108 @@ public class WorkspaceImporter {
         loadEdges();
         loadSequencingAuths();
         loadInferences();
+        loadProtocols();
+        loadMetaprotocols();
         return workspace;
+    }
+
+    private void loadMetaprotocols() {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void loadProtocols() {
+        for (ProtocolContext pc : wsp.getProtocols()) {
+            //            matchJob: 
+            //                ('service:' service=qualifiedName)
+            //                ('attr:' serviceAttribute=qualifiedName)?
+            //                ('product:' product=qualifiedName)?
+            //                ('attr:' productAttribute=qualifiedName)?
+            //                ('from:' from=qualifiedName)?
+            //                ('attr:' (fromAttribute=qualifiedName))?
+            //                ('to:' to=qualifiedName)?
+            //                ('attr:' (toAttribute=qualifiedName))?
+            //                ('quantity:' quantity=Number)?
+            //                ('unit:' quantityUnit=qualifiedName)?
+            //                ('requester:' requester=qualifiedName)?
+            //                ('attr:' requesterAttribute=qualifiedName)?
+            //                ('assign:' assignTo=qualifiedName)?
+            //                ('attr:' assignToAttribute=qualifiedName)?
+            //                ('sequence:' Number)?
+            //                ;
+            //                
+            //            childJob: 
+            //                ('service:' service=qualifiedName)?
+            //                ('attr:' (serviceAttribute=qualifiedName))?
+            //                (('children:' childrenRelationship=qualifiedName) | ('product:' product=qualifiedName))?
+            //                ('attr:' (productAttribute=qualifiedName))?
+            //                ('from:' from=qualifiedName)?
+            //                ('attr:' (fromAttribute=qualifiedName))?
+            //                ('to:' to=qualifiedName)?
+            //                ('attr:' (toAttribute=qualifiedName))?
+            //                ('quantity:' quantity=Number)?
+            //                ('unit:' (quantityUnit=qualifiedName))?
+            //                ('assign:' assignTo=qualifiedName)?
+            //                ('attr:' (assignToAttribute=qualifiedName))?
+            Protocol protocol = model.getJobModel().newInitializedProtocol(resolve(pc.matchJob().service),
+                                                                           model.getKernel().getCore());
+            if (pc.matchJob().serviceAttribute != null) {
+                protocol.setServiceAttribute(resolve(pc.matchJob().serviceAttribute));
+            }
+            if (pc.matchJob().product != null)
+                protocol.setProduct(resolve(pc.matchJob().product));
+            if (pc.matchJob().productAttribute != null)
+                protocol.setProductAttribute(resolve(pc.matchJob().productAttribute));
+            if (pc.matchJob().from != null)
+                protocol.setDeliverFrom(resolve(pc.matchJob().from));
+            if (pc.matchJob().fromAttribute != null)
+                protocol.setDeliverFromAttribute(resolve(pc.matchJob().fromAttribute));
+            if (pc.matchJob().to != null)
+                protocol.setDeliverTo(resolve(pc.matchJob().to));
+            if (pc.matchJob().toAttribute != null)
+                protocol.setDeliverToAttribute(resolve(pc.matchJob().toAttribute));
+            if (pc.matchJob().quantity != null)
+                protocol.setQuantity(BigDecimal.valueOf(Long.parseLong(pc.matchJob().quantity.getText())));
+            if (pc.matchJob().quantityUnit != null)
+                protocol.setQuantityUnit(resolve(pc.matchJob().quantityUnit));
+            if (pc.matchJob().requester != null)
+                protocol.setRequester(resolve(pc.matchJob().requester));
+            if (pc.matchJob().requesterAttribute != null)
+                protocol.setRequesterAttribute(resolve(pc.matchJob().requesterAttribute));
+            if (pc.matchJob().assignTo != null)
+                protocol.setAssignTo(resolve(pc.matchJob().assignTo));
+            if (pc.matchJob().assignToAttribute != null)
+                protocol.setAssignToAttribute(resolve(pc.matchJob().assignToAttribute));
+            if (pc.matchJob().sequence != null)
+                protocol.setSequenceNumber(Integer.parseInt(pc.matchJob().sequence.getText()));
+
+            if (pc.childJob().service != null)
+                protocol.setChildService(resolve(pc.childJob().service));
+            if (pc.childJob().serviceAttribute != null)
+                protocol.setChildServiceAttribute(resolve(pc.childJob().serviceAttribute));
+            if (pc.childJob().product != null)
+                protocol.setChildProduct(resolve(pc.childJob().product));
+            if (pc.childJob().productAttribute != null)
+                protocol.setChildProductAttribute(resolve(pc.childJob().productAttribute));
+            if (pc.childJob().from != null)
+                protocol.setChildDeliverFrom(resolve(pc.childJob().from));
+            if (pc.childJob().fromAttribute != null)
+                protocol.setChildDeliverFromAttribute(resolve(pc.childJob().fromAttribute));
+            if (pc.childJob().to != null)
+                protocol.setChildDeliverTo(resolve(pc.childJob().to));
+            if (pc.childJob().toAttribute != null)
+                protocol.setChildDeliverToAttribute(resolve(pc.childJob().toAttribute));
+            if (pc.childJob().quantity != null)
+                protocol.setChildQuantity(BigDecimal.valueOf(Long.parseLong(pc.childJob().quantity.getText())));
+            if (pc.childJob().quantityUnit != null)
+                protocol.setChildQuantityUnit(resolve(pc.childJob().quantityUnit));
+            if (pc.childJob().assignTo != null)
+                protocol.setChildAssignTo(resolve(pc.childJob().assignTo));
+            if (pc.childJob().assignToAttribute != null)
+                protocol.setChildAssignToAttribute(resolve(pc.childJob().assignToAttribute));
+            workspace.add(protocol);
+        }
+
     }
 
     private void loadInferences() {

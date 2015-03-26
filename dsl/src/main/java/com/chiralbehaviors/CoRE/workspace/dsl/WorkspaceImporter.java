@@ -72,11 +72,13 @@ public class WorkspaceImporter {
     private final Model                 model;
     private DatabaseBackedWorkspace     workspace;
     private final WorkspacePresentation wsp;
+    private final WorkspaceScope        scope;
 
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
         this.model = model;
         this.em = model.getEntityManager();
+        this.scope = new WorkspaceScope(model);
     }
 
     public Workspace loadWorkspace() {
@@ -418,14 +420,17 @@ public class WorkspaceImporter {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    <T> T resolve(QualifiedNameContext qualifiedName) {
-        Ruleform ruleform = workspace.get(qualifiedName.member.getText());
+    <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
+        if (qualifiedName.namespace != null) {
+            return scope.resolve(qualifiedName.namespace.getText(),
+                                 qualifiedName.member.getText());
+        }
+        T ruleform = workspace.get(qualifiedName.member.getText());
         if (ruleform == null) {
             throw new InvalidKeyException(
                                           String.format("Cannot find workspace key: %s",
                                                         qualifiedName.member.getText()));
         }
-        return (T) ruleform;
+        return ruleform;
     }
 }

@@ -1,7 +1,4 @@
 workspace: "Order Entry" "Pricing example for CACM 1995 Ultrastructure article"
-imports {
-    "http://www.chiralbehaviors.com/ontologies/kernel.wsp" as kernel
-}
 locations {
     rsb225 = "225RSB" "225 Reiss Science Bldg";
     bht37 = "37BHT" "37 Bret Harte Terrace";

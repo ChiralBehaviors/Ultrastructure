@@ -10,6 +10,20 @@ relationships {
     storageType = "StorageType" "The type of storage required for A is B" | storageTypeOf = "StorageType Of" "A is the storage type of B";
     street = "Street" "A is located on the street B" | streetOf = "Street Of" "A is the street of B";
 }
+agencies {
+    billingComputer = "Billing CPU" "Billing computer";
+    cpu = "CPU" "General purpose computer";
+    creditDept = "Credit Department" "The credit department";
+    exempt = "Exempt" "Exempt from sales tax";
+    externalCust = "External Customer" "External (paying) customer";
+    factory1Agency = "Factory 1" "Factory #1";
+    georgeTownUniversity = "GU" "Georgetown University";
+    cafleurBon = "carfleurBon" "Carfleur Bon";
+    manufacturer = "MNFR" "Manufacturer";
+    nonExemptAgency = "Non Exempt" "Non tax exempt";
+    orgA = "OrgA" "Organization A";
+    orderFullfillment = "Order Fullfillment" "Order Fullfillment";
+}
 locations {
     rsb225 = "225RSB" "225 Reiss Science Bldg";
     bht37 = "37BHT" "37 Bret Harte Terrace";
@@ -19,7 +33,7 @@ locations {
     france = "France" "The country of France";
     paris = "Paris" "The city Paris";
     us = "United States" "US locations";
-    europe = "Europe" "EU locations";
+    euro = "Europe" "EU locations";
     factory1 = "Factory 1" "Factory #1";
     bin1 = "Bin 1";
     bin15 = "Bin 15";
@@ -32,7 +46,7 @@ locations {
         dc.region.eastCoast
         eastCoast.area.us
         paris.region.france
-        france.area.europe
+        france.area.euro
     }
 }
 products {
@@ -208,73 +222,73 @@ inferences {
     cityOf.streetOf.cityOf
 }
 protocols {
-        service: deliver product: kernel::AnyProduct from: kernel::anyLocation to: kernel::anyLocation
+        service: deliver product: kernel::AnyProduct from: kernel::AnyLocation to: kernel::AnyLocation
         ->
-        service: pick product: kernel::sameProduct assign: factory1Agency
+        service: pick product: kernel::SameProduct assign: factory1Agency
         
-        service: pick product: kernel::anyProduct from: us to: us requester: externalCust
+        service: pick product: kernel::AnyProduct from: us to: us requester: externalCust
         ->
-        service: checkCredit product: kernel::sameProduct assign: cpu
+        service: checkCredit product: kernel::SameProduct assign: cpu
         
-        service: pick product: kernel::anyProduct from: us to: euro
+        service: pick product: kernel::AnyProduct from: us to: euro
         ->
-        service: checkLetterOfCredit product: kernel::sameProduct assign: creditDept
+        service: checkLetterOfCredit product: kernel::SameProduct assign: creditDept
         
-        service: deliver product: kernel::anyProduct from: kernel::anyLocation to: kernel::anyLocation 
-        requester: kernel::anyAgency
+        service: deliver product: kernel::AnyProduct from: kernel::AnyLocation to: kernel::AnyLocation 
+        requester: kernel::AnyAgency
         ->
-        service: ship product: kernel::sameProduct assign: factory1Agency
+        service: ship product: kernel::SameProduct assign: factory1Agency
         
         service: ship product: abc486 from: us to: euro
         ->
-        service: printCustomsDeclaration product: kernel::sameProduct assign: cpu
+        service: printCustomsDeclaration product: kernel::SameProduct assign: cpu
         
-        service: ship product: abc486 from: us to: kernel::anyLocation
+        service: ship product: abc486 from: us to: kernel::AnyLocation
         ->
-        service: printPurchaseOrder product: kernel::sameProduct assign: cpu 
+        service: printPurchaseOrder product: kernel::SameProduct assign: cpu 
         
-        service: printPurchaseOrder product: abc486 from: us to: kernel::anyLocation requester: anyAgency
+        service: printPurchaseOrder product: abc486 from: us to: kernel::AnyLocation requester: kernel::AnyAgency
         -> 
-        service: fee product: kernel::sameProduct assign: billingComputer
+        service: fee product: kernel::SameProduct assign: billingComputer
         
-        service: fee product: nonExempt from: kernel::anyLocation to: dc requester: nonExemptAgency 
+        service: fee product: nonExempt from: kernel::AnyLocation to: dc requester: nonExemptAgency 
         ->
-        service: salesTax product: kernel::sameProduct assign: billingComputer
+        service: salesTax product: kernel::SameProduct assign: billingComputer
         
         service: fee product: abc486 from: us to: euro requester: externalCust
         ->
-        service: discount product: kernel::sameProduct assign: billingComputer
+        service: discount product: kernel::SameProduct assign: billingComputer
         
         service: fee product: abc486 from: us to: dc requester: georgeTownUniversity
         ->
-        service: salesTax product: kernel::sameProduct assign: billingComputer
+        service: salesTax product: kernel::SameProduct assign: billingComputer
 }
 meta protocols {
         transform: deliver
-        product: kernel::anyRelationship
+        product: kernel::AnyRelationship
         from: area
         to: state
         
         transform: pick
-        product: kernel::anyRelationship
+        product: kernel::AnyRelationship
         from: area
         to: area 
         requester: customerType
         
         transform: ship
-        product: kernel::anyRelationship
+        product: kernel::AnyRelationship
         from: area
         to: area 
         requester: customerType
         
         transform: fee
-        product: kernel::anyRelationship
+        product: kernel::AnyRelationship
         to: city
         requester: salesTaxStatus 
         
         transform: printPurchaseOrder
-        product: kernel::anyRelationship
+        product: kernel::AnyRelationship
         from: area
-        to: kernel::anyRelationship
-        requester: kernel::anyRelationship
+        to: kernel::AnyRelationship
+        requester: kernel::AnyRelationship
 }

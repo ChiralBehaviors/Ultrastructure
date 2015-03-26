@@ -4,11 +4,12 @@ grammar Workspace;
 workspace:
     definition=workspaceDefinition
     (imports=imported)?
+    //relationships first so that we can define networks
+    (relationships = definedRelationships)?
     (agencies = definedAgencies)?
     (attributes = definedAttributes)?
     (locations = definedLocations)?
     (products = definedProducts)?
-    (relationships = definedRelationships)?
     (statusCodes = definedStatusCodes)?
     (statusCodeSequencings = definedStatusCodeSequencings)?
     (units = definedUnits)?

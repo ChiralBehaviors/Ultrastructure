@@ -1,4 +1,15 @@
 workspace: "Order Entry" "Pricing example for CACM 1995 Ultrastructure article"
+
+relationships {
+    area = "Area" "A is a member of the economic community B" | areaOf = "Area Of" "A is economic community of B";
+    city = "City" "A is located in the City B" | cityOf = "City Of" "A is the city of B";
+    customerType = "Customer Type" "A has customer type of B" | customerTypeOf = "Customer Type Of" "A is the customer type of B";
+    region = "Region" "The general region of A is B" | regionOf = "Region Of" "A is the general region of B";
+    state = "State" "A is located in the state B" | stateOf = "State Of" "A is the state of B";
+    salesTaxStatus = "Sales Tax Status" "The sales tax status of A is B" | salesTaxStatusOf = "Sales Tax Status Of" "A is the sales tax status of B";
+    storageType = "StorageType" "The type of storage required for A is B" | storageTypeOf = "StorageType Of" "A is the storage type of B";
+    street = "Street" "A is located on the street B" | streetOf = "Street Of" "A is the street of B";
+}
 locations {
     rsb225 = "225RSB" "225 Reiss Science Bldg";
     bht37 = "37BHT" "37 Bret Harte Terrace";
@@ -27,6 +38,8 @@ locations {
 products {
     abc486 = "abc486" "Laptop computer";
     frozen = "frozen" "Frozen Products";
+    chemB = "ChemB" "Chemical B";
+    roomTemp = "RoomTemp" "Room temperature products";
     nonExempt = "nonExempt" "Non tax exempt products";
     deliver = "Deliver" "Deliver product";
     pick = "Pick" "Pick inventory";
@@ -38,15 +51,11 @@ products {
     printCustomsDeclaration = "PrintCustomsDeclaration" "Print the customs declaration";
     printPurchaseOrder = "PrintPurchaseOrder" "Print the purchase order";
     salesTax = "SalesTax" "Compute sales tax";
-}
-relationships {
-    area = "Area" "A is a member of the economic community B" | areaOf = "Area Of" "A is economic community of B";
-    city = "City" "A is located in the City B" | cityOf = "City Of" "A is the city of B";
-    customerType = "Customer Type" "A has customer type of B" | customerTypeOf = "Customer Type Of" "A is the customer type of B";
-    region = "Region" "The general region of A is B" | regionOf = "Region Of" "A is the general region of B";
-    state = "State" "A is located in the state B" | stateOf = "State Of" "A is the state of B";
-    salesTaxStatus = "Sales Tax Status" "The sales tax status of A is B" | salesTaxStatusOf = "Sales Tax Status Of" "A is the sales tax status of B";
-    street = "Street" "A is located on the street B" | streetOf = "Street Of" "A is the street of B";
+    edges {
+        abc486.storageType.roomTemp
+        abc486.salesTaxStatus.nonExempt
+        chemB.storageType.frozen
+    }
 }
 status codes {
     available = "Available"  "Job is available for processing";

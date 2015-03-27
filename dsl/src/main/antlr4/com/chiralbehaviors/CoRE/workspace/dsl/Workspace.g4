@@ -157,7 +157,7 @@ metaProtocol:
     ('assign:' assignTo=qualifiedName)?
     ('attr:' assignToAttribute=qualifiedName)?
     ('sequence:' Number)?
-    ('match stop:' ('true' | 'false'))?
+    ('match:' match = ('stop' | 'continue'))?
     ;
     
 protocol:

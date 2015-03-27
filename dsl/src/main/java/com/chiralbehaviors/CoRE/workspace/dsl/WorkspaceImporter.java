@@ -29,6 +29,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
@@ -53,6 +54,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingCon
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.QualifiedNameContext;
@@ -103,8 +105,38 @@ public class WorkspaceImporter {
     }
 
     private void loadMetaprotocols() {
-        // TODO Auto-generated method stub
-
+        for (MetaProtocolContext mpc : wsp.getMetaProtocols()) {
+            MetaProtocol metaProtocol = model.getJobModel().newInitializedMetaProtocol(resolve(mpc.service),
+                                                                                       model.getKernel().getCore());
+            if (mpc.serviceAttribute != null) {
+                metaProtocol.setServiceAttribute(resolve(mpc.serviceAttribute));
+            }
+            if (mpc.product != null)
+                metaProtocol.setProduct(resolve(mpc.product));
+            if (mpc.productAttribute != null)
+                metaProtocol.setProductAttribute(resolve(mpc.productAttribute));
+            if (mpc.from != null)
+                metaProtocol.setDeliverFrom(resolve(mpc.from));
+            if (mpc.fromAttribute != null)
+                metaProtocol.setDeliverFromAttribute(resolve(mpc.fromAttribute));
+            if (mpc.to != null)
+                metaProtocol.setDeliverTo(resolve(mpc.to));
+            if (mpc.toAttribute != null)
+                metaProtocol.setDeliverToAttribute(resolve(mpc.toAttribute));
+            if (mpc.quantityUnit != null)
+                metaProtocol.setQuantityUnit(resolve(mpc.quantityUnit));
+            if (mpc.requester != null)
+                metaProtocol.setRequester(resolve(mpc.requester));
+            if (mpc.requesterAttribute != null)
+                metaProtocol.setRequesterAttribute(resolve(mpc.requesterAttribute));
+            if (mpc.assignTo != null)
+                metaProtocol.setAssignTo(resolve(mpc.assignTo));
+            if (mpc.assignToAttribute != null)
+                metaProtocol.setAssignToAttribute(resolve(mpc.assignToAttribute));
+            if (mpc.match != null && mpc.match.getText().equals("stop")) {
+                metaProtocol.setStopOnMatch(true);
+            }
+        }
     }
 
     private void loadProtocols() {

@@ -90,8 +90,12 @@
             <artifactId>reflections</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.openjpa</groupId>
-            <artifactId>openjpa-all</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
         </dependency>
     </dependencies>
 
@@ -112,10 +116,22 @@
                             <options>
                                 <openjpa.metamodel>TRUE</openjpa.metamodel>
                             </options>
+                            <processors>
+                                <!-- list of processors to use -->
+                                <processor>org.apache.openjpa.persistence.meta.AnnotationProcessor6</processor>
+                            </processors>
                             <outputDirectory>${project.build.directory}/generated-sources/jpa</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.openjpa</groupId>
+                        <artifactId>openjpa-all</artifactId>
+                        <version>2.3.0</version>
+                    </dependency>
+
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
@@ -192,35 +208,6 @@
                         <exclude>**/ResourceAttributeAuthorizationTest.java</exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArgument>-proc:none</compilerArgument>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <configuration>
-                            <tasks>
-                                <taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask" classpathref="maven.compile.classpath" />
-                                <openjpac>
-                                    <classpath refid="maven.compile.classpath" />
-                                </openjpac>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

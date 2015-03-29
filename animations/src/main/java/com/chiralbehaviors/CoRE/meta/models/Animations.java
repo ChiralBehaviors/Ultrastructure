@@ -46,7 +46,6 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
-import com.chiralbehaviors.CoRE.meta.models.openjpa.LifecycleListener;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
@@ -93,7 +92,7 @@ public class Animations implements Triggers {
     public Animations(Model model, EntityManager em) {
         this.model = model;
         this.em = em;
-        new LifecycleListener(this, em);
+        //new LifecycleListener(this, em);
     }
 
     public void commit() throws TriggerException {

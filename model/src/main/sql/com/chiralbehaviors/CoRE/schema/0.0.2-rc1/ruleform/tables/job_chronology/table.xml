@@ -63,6 +63,7 @@
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
+            <column name="version" type="INT4" />
             <column name="update_date" defaultValueComputed="('now'::text)::timestamp(6) with time zone" remarks="The date this rule was last changed"
                 type="TIMESTAMPTZ"
             >

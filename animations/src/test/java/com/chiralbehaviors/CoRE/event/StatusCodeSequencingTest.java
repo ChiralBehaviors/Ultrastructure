@@ -140,9 +140,7 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testHasSccs() throws SQLException {
         em.getTransaction().begin();
-        Agency core = new Agency("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
+        Agency core = kernel.getCore();
 
         JobModel jobModel = model.getJobModel();
 

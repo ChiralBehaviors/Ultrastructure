@@ -24,11 +24,7 @@
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"
-                remarks="The time at which this rule was last updated" type="TIMESTAMPTZ"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
         </createTable>
         <rollback>
             <dropTable tableName="unit_values" />

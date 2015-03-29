@@ -19,9 +19,7 @@
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
             <column name="datatype" remarks="The underlying datatype of a measurement of this kind of Unit" type="TEXT" />
             <column name="min" remarks="If the unit is integer or numeric and has a minimum value, it is stored here." type="numeric" />
             <column name="max" remarks="If the unit is integer or numeric and has a maximum value, it is stored here." type="numeric" />

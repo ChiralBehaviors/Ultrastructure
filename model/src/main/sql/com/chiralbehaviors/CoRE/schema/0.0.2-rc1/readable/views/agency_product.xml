@@ -14,7 +14,7 @@
                     p.name AS product, 
                     bl.notes, 
                     up.name AS updated_by, 
-                    bl.update_date
+                    bl.version
 			   FROM agency_product bl
 			   JOIN agency res ON bl.agency = res.id 
 			   JOIN relationship rel ON bl.relationship = rel.id

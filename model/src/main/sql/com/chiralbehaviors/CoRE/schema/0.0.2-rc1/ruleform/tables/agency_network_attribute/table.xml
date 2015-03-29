@@ -34,11 +34,7 @@
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The time of the last update to this rule"
-                type="TIMESTAMP WITH TIME ZONE"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
             <column defaultValueNumeric="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>

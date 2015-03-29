@@ -19,7 +19,7 @@
                     u.name AS unit, 
                     ra.notes, 
                     up.name AS updated_by, 
-                    ra.update_date
+                    ra.version
 			   FROM unit_attribute ra
 			   JOIN unit r ON ra.unit_rf = r.id
 			   JOIN attribute a ON ra.attribute = a.id

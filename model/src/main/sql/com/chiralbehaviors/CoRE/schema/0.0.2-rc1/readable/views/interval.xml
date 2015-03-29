@@ -8,7 +8,7 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.interval AS 
-			 SELECT r.id, r.name, r.description, r.start, su.name AS start_unit, r.duration, du.name AS duration_unit, r.notes, up.name AS updated_by, r.update_date
+			 SELECT r.id, r.name, r.description, r.start, su.name AS start_unit, r.duration, du.name AS duration_unit, r.notes, up.name AS updated_by, r.version
 			   FROM interval r
 			   JOIN interval up ON r.updated_by = up.id
                JOIN unit su ON r.start_unit = su.id

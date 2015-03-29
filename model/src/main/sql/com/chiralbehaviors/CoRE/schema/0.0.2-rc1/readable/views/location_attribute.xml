@@ -15,7 +15,7 @@
                     la.text_value, 
                     la.integer_value, 
                     r.name AS updated_by, 
-                    la.update_date
+                    la.version
 			   FROM location_attribute la
 			   JOIN location l ON la.location = l.id
 			   JOIN attribute a ON la.attribute = a.id

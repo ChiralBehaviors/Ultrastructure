@@ -30,9 +30,7 @@
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
             <column name="key" type="VARCHAR(1024)" />
             <column name="agency" type="CHAR(22)" />
             <column name="agency_attribute" type="CHAR(22)" />
@@ -348,10 +346,6 @@
         >
             <column name="type" />
         </createIndex>
-        <sql> CREATE TRIGGER workspace_update_date BEFORE INSERT OR UPDATE ON ruleform.workspace_authorization FOR
-            EACH ROW EXECUTE PROCEDURE
-            set_update_date();
-        </sql>
         <sql><![CDATA[
             ALTER TABLE ruleform.workspace_authorization ADD CONSTRAINT
             wsa_single_reference CHECK((
@@ -444,7 +438,7 @@
                     base_table.sequence_number,
                     base_table.notes, 
                     base_table.current_log_sequence,
-                    up.name AS updated_by, base_table.update_date,
+                    up.name AS updated_by, base_table.version,
                     base_table.protocol
                FROM job base_table
                JOIN product s ON base_table.service = s.id
@@ -506,7 +500,7 @@
                 base_table.sequence_number,
                 base_table.notes,
                 up.name AS updated_by,
-                base_table.update_date
+                base_table.version
                FROM ruleform.protocol base_table
                JOIN ruleform.product s ON base_table.service = s.id
                JOIN ruleform.product p ON base_table.product = p.id

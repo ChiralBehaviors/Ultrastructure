@@ -11,7 +11,7 @@
 			 SELECT base_table.id, p.name AS parent, sc.name AS status_code, 
 			        base_table.sequence_number, nc.name AS next_child, 
 			        ncs.name AS next_child_status, base_table.notes, 
-			        up.name AS updated_by, base_table.update_date
+			        up.name AS updated_by, base_table.version
 			   FROM product_child_sequencing_authorization base_table
 			   JOIN product p ON base_table.parent = p.id
 			   JOIN status_code sc ON base_table.status_code = sc.id

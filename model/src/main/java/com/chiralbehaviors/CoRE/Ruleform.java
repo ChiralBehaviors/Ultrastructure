@@ -16,7 +16,6 @@
 package com.chiralbehaviors.CoRE;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -27,6 +26,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -78,16 +78,17 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     @Id
-    private String    id         = UuidGenerator.nextId();
+    private String   id = UuidGenerator.nextId();
 
-    private String    notes;
+    private String   notes;
 
-    @Column(name = "update_date")
-    private Timestamp updateDate = new Timestamp(System.currentTimeMillis());
+    @Version
+    @Column(name = "version")
+    private int      version;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "updated_by")
-    protected Agency  updatedBy;
+    protected Agency updatedBy;
 
     public Ruleform() {
     }
@@ -178,14 +179,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     /**
-     * @return the updateDate
-     */
-    @JsonGetter
-    public Timestamp getUpdateDate() {
-        return updateDate;
-    }
-
-    /**
      * @return the updatedBy
      */
     @JsonGetter
@@ -197,6 +190,14 @@ abstract public class Ruleform implements Serializable, Cloneable {
     public final UUID getUUID() {
         String primaryKey = getPrimaryKey();
         return primaryKey == null ? null : UuidGenerator.fromBase64(primaryKey);
+    }
+
+    /**
+     * @return the version
+     */
+    @JsonIgnore
+    public int getVersion() {
+        return version;
     }
 
     @JsonIgnore
@@ -238,19 +239,15 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     /**
-     * @param updateDate
-     *            the updateDate to set
-     */
-    public void setUpdateDate(Timestamp updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    /**
      * @param updatedBy
      *            the updatedBy to set
      */
     public void setUpdatedBy(Agency updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     @Override

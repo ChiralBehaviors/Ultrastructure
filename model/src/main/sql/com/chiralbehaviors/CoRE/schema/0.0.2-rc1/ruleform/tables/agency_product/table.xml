@@ -23,7 +23,7 @@
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('NOW'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+            <column defaultValueComputed="('NOW'::text)::timestamp(6) with time zone" name="version" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
         </createTable>

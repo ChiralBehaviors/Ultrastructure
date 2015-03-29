@@ -117,7 +117,7 @@
                 base_table.sequence_number,
                 base_table.notes,
                 up.name AS updated_by,
-                base_table.update_date
+                base_table.version
                FROM ruleform.protocol base_table
                JOIN ruleform.product s ON base_table.service = s.id
                JOIN ruleform.product p ON base_table.product = p.id
@@ -194,7 +194,7 @@
                         base_table.stop_on_match,
                         base_table.sequence_number, 
                         up.name AS updated_by, 
-                        base_table.update_date
+                        base_table.version
                    FROM meta_protocol base_table
                    JOIN product s ON base_table.service = s.id
                    LEFT JOIN relationship rr ON base_table.requester = rr.id

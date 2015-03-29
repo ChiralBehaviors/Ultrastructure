@@ -25,7 +25,7 @@
                         base_table.stop_on_match,
                         base_table.sequence_number, 
 	                    up.name AS updated_by, 
-                        base_table.update_date
+                        base_table.version
 				   FROM meta_protocol base_table
 				   JOIN product s ON base_table.service = s.id
                    LEFT JOIN relationship rr ON base_table.requesting_agency = rr.id

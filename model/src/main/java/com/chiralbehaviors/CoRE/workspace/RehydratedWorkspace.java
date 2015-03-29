@@ -93,5 +93,4 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
         detach(em);
         cache();
     }
-
 }

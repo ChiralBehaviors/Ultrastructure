@@ -22,12 +22,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.persistence.EntityManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.json.CoREModule;
@@ -51,10 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class KernelUtil {
 
-    public static Kernel cacheKernel(EntityManager em) {
-        if (CACHED_KERNEL.get() != null) {
-            return CACHED_KERNEL.get();
-        }
+    public static Kernel getKernel(EntityManager em) {
         Kernel kernel;
         try (InputStream is = KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)) {
             RehydratedWorkspace kernelSnapshot = readKernel(is);
@@ -62,10 +55,6 @@ public class KernelUtil {
             kernel = kernelSnapshot.getAccessor(Kernel.class);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to rehydrate kernel", e);
-        }
-        if (!CACHED_KERNEL.compareAndSet(null, kernel)) {
-            log.debug("Kernel has already been cached");
-            kernel = CACHED_KERNEL.get();
         }
         return kernel;
     }
@@ -83,7 +72,7 @@ public class KernelUtil {
         }
         r.close();
         alterTriggers(connection, true);
-        CACHED_KERNEL.set(null);
+        connection.commit();
         em.getTransaction().commit();
     }
 
@@ -91,13 +80,8 @@ public class KernelUtil {
                                                              throws SQLException,
                                                              IOException {
         clear(em);
+        em.getEntityManagerFactory().getCache().evictAll();
         return loadKernel(em);
-    }
-
-    public synchronized static Kernel getKernel() {
-        Kernel kernel = CACHED_KERNEL.get();
-        assert kernel != null;
-        return kernel;
     }
 
     public static Kernel loadKernel(EntityManager em) throws IOException {
@@ -111,9 +95,7 @@ public class KernelUtil {
         RehydratedWorkspace workspace = rehydrateKernel(is);
         workspace.retarget(em);
         Kernel kernel = workspace.getAccessor(Kernel.class);
-        CACHED_KERNEL.set(kernel);
         em.getTransaction().commit();
-        workspace.detach(em);
         return kernel;
     }
 
@@ -155,15 +137,11 @@ public class KernelUtil {
         r.close();
     }
 
-    private static final Logger                  log                       = LoggerFactory.getLogger(KernelUtil.class);
+    public static final String SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    public static final String                   SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    public static final String ZERO                      = UuidGenerator.toBase64(new UUID(
+                                                                                           0,
+                                                                                           0));
 
-    public static final String                   ZERO                      = UuidGenerator.toBase64(new UUID(
-                                                                                                             0,
-                                                                                                             0));
-
-    private static final AtomicReference<Kernel> CACHED_KERNEL             = new AtomicReference<>();
-
-    static final String                          KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
+    static final String        KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 }

@@ -80,7 +80,7 @@ public class ModelImpl implements Model {
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
         em = new EmWrapper(new Animations(this, entityManager), entityManager);
-        kernel = KernelUtil.cacheKernel(em);
+        kernel = KernelUtil.getKernel(em);
         attributeModel = new AttributeModelImpl(this);
         productModel = new ProductModelImpl(this);
         intervalModel = new IntervalModelImpl(this);

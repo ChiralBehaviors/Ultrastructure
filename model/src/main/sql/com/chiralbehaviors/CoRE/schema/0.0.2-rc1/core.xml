@@ -6,7 +6,6 @@
 >
     <include relativeToChangelogFile="true" file="schemas.xml" />
     <include relativeToChangelogFile="true" file="ruleform/ruleform.xml" />
-    <include relativeToChangelogFile="true" file="core_admin/core_admin.xml" />
     <include relativeToChangelogFile="true" file="readable/readable.xml" />
 
 </databaseChangeLog>

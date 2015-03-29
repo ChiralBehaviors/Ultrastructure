@@ -32,6 +32,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.hibernate.internal.SessionImpl;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -96,7 +98,7 @@ public class Bootstrap {
     private final EntityManager em;
 
     public Bootstrap(EntityManager em) throws SQLException {
-        connection = em.unwrap(Connection.class);
+        connection = em.unwrap(SessionImpl.class).connection();
         connection.setAutoCommit(false);
         this.em = em;
     }

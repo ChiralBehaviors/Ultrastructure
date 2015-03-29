@@ -9,8 +9,8 @@
     <logger name="com.chiralbehaviors.CoRE">
         <level value="INFO" />
     </logger>
-    <logger name="org.apache.openjpa">
-        <level value="INFO" />
+    <logger name="org.hibernate">
+        <level value="WARN" />
     </logger>
 
     <root>

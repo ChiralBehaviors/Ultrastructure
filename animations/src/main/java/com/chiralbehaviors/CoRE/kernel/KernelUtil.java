@@ -25,6 +25,8 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
+import org.hibernate.internal.SessionImpl;
+
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.workspace.RehydratedWorkspace;
@@ -61,7 +63,7 @@ public class KernelUtil {
 
     public static void clear(EntityManager em) throws SQLException {
         em.getTransaction().begin();
-        Connection connection = em.unwrap(Connection.class);
+        Connection connection = em.unwrap(SessionImpl.class).connection();
         connection.setAutoCommit(false);
         alterTriggers(connection, false);
         ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);

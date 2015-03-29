@@ -30,6 +30,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
+import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -118,7 +119,7 @@ public class AbstractModelTest {
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {
-        Connection connection = em.unwrap(Connection.class);
+        Connection connection = em.unwrap(SessionImpl.class).connection();
         for (String table : new String[] { "ruleform.agency",
                 "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",

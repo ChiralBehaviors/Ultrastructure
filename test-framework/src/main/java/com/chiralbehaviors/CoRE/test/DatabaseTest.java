@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -46,7 +47,7 @@ abstract public class DatabaseTest {
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
-        connection = em.unwrap(Connection.class);
+        connection = em.unwrap(SessionImpl.class).connection();
         alterAllTriggers(false);
         ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
         while (r.next()) {

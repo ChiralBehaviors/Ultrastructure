@@ -86,10 +86,6 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
@@ -130,7 +126,6 @@
                         <artifactId>openjpa-all</artifactId>
                         <version>2.3.0</version>
                     </dependency>
-
                 </dependencies>
             </plugin>
             <plugin>
@@ -180,6 +175,26 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.hibernate.orm.tooling</groupId>
+                <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <!-- Yes, you really must have an explicit dependency on the thing you want to enhance -->
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -384,6 +399,19 @@
                                         <versionRange>[1.2,)</versionRange>
                                         <goals>
                                             <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.hibernate.orm.tooling</groupId>
+                                        <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                                        <versionRange>[4.3.7.Final,)</versionRange>
+                                        <goals>
+                                            <goal>enhance</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>

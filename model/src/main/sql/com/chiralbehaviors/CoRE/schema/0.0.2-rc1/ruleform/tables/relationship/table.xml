@@ -17,9 +17,7 @@
             <column name="preferred" type="SMALLINT">
                 <constraints nullable="false" />
             </column>
-            <column name="inverse" type="CHAR(22)">
-                <constraints nullable="false" />
-            </column>
+            <column name="inverse" type="CHAR(22)"/>
             <column name="notes" type="TEXT" />
             <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
                 <constraints nullable="false" />

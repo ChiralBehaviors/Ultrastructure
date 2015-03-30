@@ -12,8 +12,8 @@
 
     <licenses>
         <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <name>GPLv3 License</name>
+            <url>http://www.gnu.org/licenses/</url>
         </license>
     </licenses>
 

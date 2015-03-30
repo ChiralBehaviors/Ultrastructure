@@ -78,13 +78,13 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     @Id
-    private String   id = UuidGenerator.nextId();
+    private String   id      = UuidGenerator.nextId();
 
     private String   notes;
 
     @Version
     @Column(name = "version")
-    private int      version;
+    private int      version = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "updated_by")
@@ -195,7 +195,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     /**
      * @return the version
      */
-    @JsonIgnore
+    @JsonProperty
     public int getVersion() {
         return version;
     }

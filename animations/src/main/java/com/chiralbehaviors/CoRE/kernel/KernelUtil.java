@@ -29,10 +29,13 @@ import org.hibernate.internal.SessionImpl;
 
 import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.RehydratedWorkspace;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 
 /**
  * Repository of immutable kernal rules
@@ -42,23 +45,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * way we do Java stored procedures, reentrancy requires a new image of the
  * kernel workspace in the context of the entity manager. Sucks to be us.
  *
- * Utilities for the Kerenl
+ * Utilities for the Kernel
  *
  * @author hhildebrand
  *
  */
 public class KernelUtil {
 
-    public static Kernel getKernel(EntityManager em) {
-        Kernel kernel;
+    public static Workspace getKernelWorkspace(EntityManager em) {
         try (InputStream is = KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)) {
             RehydratedWorkspace kernelSnapshot = readKernel(is);
-            kernelSnapshot.replaceFrom(em);
-            kernel = kernelSnapshot.getAccessor(Kernel.class);
+            Kernel kernel = kernelSnapshot.getAccessor(Kernel.class);
+            return new DatabaseBackedWorkspace(kernel.getKernelWorkspace(), em);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to rehydrate kernel", e);
         }
-        return kernel;
     }
 
     public static void clear(EntityManager em) throws SQLException {
@@ -87,27 +88,25 @@ public class KernelUtil {
         }
     }
 
-    public static Kernel clearAndLoadKernel(EntityManager em)
-                                                             throws SQLException,
-                                                             IOException {
+    public static void clearAndLoadKernel(EntityManager em)
+                                                           throws SQLException,
+                                                           IOException {
         clear(em);
         em.getEntityManagerFactory().getCache().evictAll();
-        return loadKernel(em);
+        loadKernel(em);
     }
 
-    public static Kernel loadKernel(EntityManager em) throws IOException {
-        return loadKernel(em,
-                          KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE));
+    public static void loadKernel(EntityManager em) throws IOException {
+        loadKernel(em,
+                   KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE));
     }
 
-    public static Kernel loadKernel(EntityManager em, InputStream is)
-                                                                     throws IOException {
+    public static void loadKernel(EntityManager em, InputStream is)
+                                                                   throws IOException {
         em.getTransaction().begin();
         RehydratedWorkspace workspace = rehydrateKernel(is);
         workspace.retarget(em);
-        Kernel kernel = workspace.getAccessor(Kernel.class);
         em.getTransaction().commit();
-        return kernel;
     }
 
     private static RehydratedWorkspace readKernel(InputStream is)
@@ -116,8 +115,10 @@ public class KernelUtil {
                                                                  JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
+        mapper.registerModule(new Hibernate4Module());
         RehydratedWorkspace workspace = mapper.readValue(is,
                                                          RehydratedWorkspace.class);
+        workspace.cache();
         return workspace;
     }
 

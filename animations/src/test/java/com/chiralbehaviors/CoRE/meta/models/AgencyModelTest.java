@@ -36,10 +36,10 @@ public class AgencyModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() throws SQLException {
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
 
         em.getTransaction().begin();
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);
@@ -60,7 +60,6 @@ public class AgencyModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.flush();
-        em.clear();
 
         List<AgencyNetwork> edges = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                    AgencyNetwork.class).getResultList();

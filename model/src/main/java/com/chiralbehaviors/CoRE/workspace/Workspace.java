@@ -18,6 +18,8 @@ package com.chiralbehaviors.CoRE.workspace;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 
 /**
@@ -33,4 +35,10 @@ public interface Workspace {
     <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass);
 
     WorkspaceSnapshot getSnapshot();
+
+    void refreshFrom(EntityManager em);
+
+    void replaceFrom(EntityManager em);
+
+    void retarget(EntityManager em);
 }

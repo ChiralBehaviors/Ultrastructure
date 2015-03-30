@@ -66,6 +66,7 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 
 /**
  * @author hhildebrand
@@ -186,7 +187,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownObject wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by) VALUES (?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 1)",
                                                                         wko.tableName()));
         try {
             s.setString(1, wko.id());
@@ -200,7 +201,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownRelationship wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, inverse, preferred) VALUES (?, ?, ?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, inverse, preferred, version) VALUES (?, ?, ?, ?, ?, ?, 1)",
                                                                         wko.tableName()));
         try {
             s.setString(1, wko.id());
@@ -216,7 +217,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownStatusCode wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, updated_by) VALUES (?, ?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, updated_by, version) VALUES (?, ?, ?, ?, ?, 1)",
                                                                         wko.tableName()));
         try {
             s.setString(1, wko.id());
@@ -233,7 +234,7 @@ public class Bootstrap {
 
     public void insertNetwork(WellKnownObject wko) throws SQLException {
         String tableName = wko.tableName() + "_network";
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, parent, relationship, child, updated_by) VALUES (?, ?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, parent, relationship, child, updated_by, version) VALUES (?, ?, ?, ?, ?, 1)",
                                                                         tableName));
         try {
             s.setString(1, UuidGenerator.toBase64(new UUID(0, 0)));
@@ -249,7 +250,7 @@ public class Bootstrap {
     }
 
     private void createNullInference() throws SQLException {
-        PreparedStatement s = connection.prepareStatement("INSERT into ruleform.network_inference (id, premise1, premise2, inference, updated_by) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement s = connection.prepareStatement("INSERT into ruleform.network_inference (id, premise1, premise2, inference, updated_by, version) VALUES (?, ?, ?, ?, ?, 1)");
         try {
             s.setString(1, UuidGenerator.toBase64(new UUID(0, 0)));
             s.setString(2, WellKnownRelationship.RELATIONSHIP.id());
@@ -275,9 +276,12 @@ public class Bootstrap {
     private void serialize(String fileName) throws IOException {
         ObjectMapper objMapper = new ObjectMapper();
         objMapper.registerModule(new CoREModule());
+        objMapper.registerModule(new Hibernate4Module());
+        Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
+        em.detach(kernelWorkspace);
         objMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName),
                                                               new WorkspaceSnapshot(
-                                                                                    find(WellKnownProduct.KERNEL_WORKSPACE),
+                                                                                    kernelWorkspace,
                                                                                     em));
     }
 
@@ -294,6 +298,7 @@ public class Bootstrap {
                                                                     kernelWorkspace,
                                                                     core);
         em.persist(netAuth);
+        populate("KernelWorkspace", kernelWorkspace, core, kernelWorkspace);
         populate("Attribute", find(WellKnownAttribute.ATTRIBUTE), core,
                  kernelWorkspace);
         populate("AnyAttribute", find(WellKnownAttribute.ANY), core,

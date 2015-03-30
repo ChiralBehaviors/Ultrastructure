@@ -143,4 +143,19 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);
     }
+
+    @Override
+    public void refreshFrom(EntityManager em) {
+        // nothing to do, as we're backed by the DB
+    }
+
+    @Override
+    public void replaceFrom(EntityManager em) {
+        // nothing to do, as we're backed by the DB
+    }
+
+    @Override
+    public void retarget(EntityManager em) {
+        // nothing to do, as we're backed by the DB
+    }
 }

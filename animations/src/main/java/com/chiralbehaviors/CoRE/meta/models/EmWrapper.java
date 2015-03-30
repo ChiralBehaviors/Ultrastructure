@@ -45,6 +45,7 @@ public class EmWrapper implements EntityManager {
         @Override
         public void begin() {
             txn.begin();
+            animations.refreshWorkspaces();
         }
 
         @Override

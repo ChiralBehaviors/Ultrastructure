@@ -60,7 +60,6 @@ public class ProductModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.flush();
-        em.clear();
 
         List<ProductNetwork> edges = em.createQuery("SELECT edge FROM ProductNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                     ProductNetwork.class).getResultList();

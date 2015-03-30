@@ -19,6 +19,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -49,6 +50,7 @@ import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * @author hhildebrand
@@ -76,11 +78,15 @@ public class ModelImpl implements Model {
     private final StatusCodeModel   statusCodeModel;
     private final UnitModel         unitModel;
     private final WorkspaceModel    workspaceModel;
+    private final List<Workspace>   workspaces = new ArrayList<>();
 
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
         em = new EmWrapper(new Animations(this, entityManager), entityManager);
-        kernel = KernelUtil.getKernel(em);
+        Workspace kernelWorkspace = KernelUtil.getKernelWorkspace(entityManager);
+        register(kernelWorkspace);
+        kernelWorkspace.replaceFrom(em);
+        kernel = kernelWorkspace.getAccessor(Kernel.class);
         attributeModel = new AttributeModelImpl(this);
         productModel = new ProductModelImpl(this);
         intervalModel = new IntervalModelImpl(this);
@@ -91,6 +97,14 @@ public class ModelImpl implements Model {
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
         workspaceModel = new WorkspaceModelImpl(this);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#deregister(com.chiralbehaviors.CoRE.workspace.Workspace)
+     */
+    @Override
+    public void deregister(Workspace workspace) {
+        workspaces.remove(workspace);
     }
 
     /*
@@ -321,5 +335,20 @@ public class ModelImpl implements Model {
     @Override
     public WorkspaceModel getWorkspaceModel() {
         return workspaceModel;
+    }
+
+    @Override
+    public void refreshWorkspaces() {
+        for (Workspace workspace : workspaces) {
+            workspace.refreshFrom(em);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#register(com.chiralbehaviors.CoRE.workspace.Workspace)
+     */
+    @Override
+    public void register(Workspace workspace) {
+        workspaces.add(workspace);
     }
 }

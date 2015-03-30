@@ -83,6 +83,16 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
         return this;
     }
 
+    @Override
+    public void refreshFrom(EntityManager em) {
+        for (WorkspaceAuthorization auth : auths) {
+            em.getEntityManagerFactory().getCache().evict(WorkspaceAuthorization.class,
+                                                          auth.getId());
+            em.refresh(auth);
+        }
+    }
+
+    @Override
     public void replaceFrom(EntityManager em) {
         List<WorkspaceAuthorization> oldAuths = new ArrayList<WorkspaceAuthorization>(
                                                                                       auths);

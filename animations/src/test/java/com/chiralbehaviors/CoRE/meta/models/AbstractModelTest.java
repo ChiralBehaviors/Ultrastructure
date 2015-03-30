@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
@@ -69,9 +68,9 @@ public class AbstractModelTest {
             em.close();
         }
         em = getEntityManager();
-        kernel = KernelUtil.clearAndLoadKernel(em);
         em.close();
         model = new ModelImpl(emf);
+        kernel = model.getKernel();
         em = model.getEntityManager();
     }
 

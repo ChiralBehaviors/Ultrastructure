@@ -36,6 +36,7 @@ public class ProtocolTest extends AbstractModelTest {
                                                     "FireFuzzyGreenWarheadService",
                                                     null, kernel.getCore());
         em.persist(fireFuzzyGreenWarhead);
+        em.flush();
 
         Agency halIncandenza = new Agency("HalIncandenza", null,
                                           kernel.getCore());
@@ -63,7 +64,7 @@ public class ProtocolTest extends AbstractModelTest {
                                                              kernel.getCore());
         startWW3.setAssignTo(halIncandenza);
         em.persist(startWW3);
-        em.getTransaction().commit();
+        em.flush();
 
         assertEquals(2, model.getJobModel().getAllChildren(startWW3).size());
 

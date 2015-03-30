@@ -33,6 +33,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -833,7 +834,7 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     private void clearJobs() throws SQLException {
-        Connection connection = em.unwrap(Connection.class);
+        Connection connection = em.unwrap(SessionImpl.class).connection();
         boolean prev = connection.getAutoCommit();
         connection.setAutoCommit(false);
         alterTriggers(false);

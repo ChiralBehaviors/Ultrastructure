@@ -1024,6 +1024,9 @@ public class JobModelImpl implements JobModel {
         job.setQuantityUnit(kernel.getNotApplicableUnit());
         job.setStatus(kernel.getUnset());
         em.persist(job);
+        JobChronology entry = new JobChronology(job,
+                                                "Initial insertion of job", 1);
+        em.persist(entry);
         return job;
     }
 

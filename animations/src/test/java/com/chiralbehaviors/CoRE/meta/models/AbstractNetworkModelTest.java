@@ -91,7 +91,6 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeH);
 
         em.flush();
-        em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
         aEqualsA = em.find(NetworkInference.class, aEqualsA.getId());
@@ -104,10 +103,9 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
     @Test
     public void testCascadedDeletePremise() throws Exception {
         // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-        Agency core = model.getKernel().getCore();
 
         em.getTransaction().begin();
-        em.clear();
+        Agency core = model.getKernel().getCore();
 
         Relationship equals = new Relationship("= again",
                                                "an alias for equals", core);
@@ -157,7 +155,6 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeH);
 
         em.getTransaction().commit();
-        em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
         em.getTransaction().begin();
@@ -226,7 +223,6 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeH);
 
         em.flush();
-        em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
         edgeB = em.find(AgencyNetwork.class, edgeB.getId());
@@ -302,7 +298,6 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeG);
 
         em.flush();
-        em.clear();
         A = em.find(Agency.class, A.getId());
         List<Agency> children = model.getAgencyModel().getChildren(A, a);
         assertEquals(String.format("%s", children), 7, children.size());
@@ -311,9 +306,9 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
     @Test
     public void testGetImmediateRelationships() throws Exception {
         // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-        Agency core = model.getKernel().getCore();
 
         em.getTransaction().begin();
+        Agency core = model.getKernel().getCore();
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);
 
@@ -338,7 +333,6 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.flush();
-        em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(1,
                      model.getAgencyModel().getImmediateRelationships(a).size());
@@ -376,8 +370,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.flush();
         //        em.getTransaction().begin();
         //        model.getAgencyModel().propagate(edgeB);
-        //        em.getTransaction().commit();
-        em.clear();
+        //        em.getTransaction().commit(); 
         a = em.find(Agency.class, a.getId());
         assertEquals(2,
                      model.getAgencyModel().getTransitiveRelationships(a).size());
@@ -465,7 +458,6 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeH);
 
         em.flush();
-        em.clear();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
     }

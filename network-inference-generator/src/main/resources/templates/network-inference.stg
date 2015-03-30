@@ -99,7 +99,8 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                                                inference,
                                                premise1, 
                                                premise2,
-                                               updated_by)
+                                               updated_by,
+                                               version)
                SELECT cpr.id as id, 
                       cpr.parent as parent,
                       cpr.relationship as relationship,
@@ -107,7 +108,8 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                       cpr.inference as inference,
                       cpr.premise1 as premise1, 
                       cpr.premise2 as premise2, 
-                      ?1
+                      ?1,
+                      1 as version
                FROM current_pass_rules cpr
                LEFT OUTER JOIN ruleform.%tableName% AS exist
                    ON cpr.parent = exist.parent
@@ -142,8 +144,9 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                                                inference,
                                                premise1, 
                                                premise2,
-                                               updated_by)
-            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+                                               updated_by,
+                                               version)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 1)
             ]]></query>
         </named-native-query>
     </entity>

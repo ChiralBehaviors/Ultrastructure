@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 import org.hibernate.internal.SessionImpl;
 
@@ -35,7 +34,6 @@ import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
@@ -77,20 +75,24 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  */
 public class Animations implements Triggers {
 
-    private static final int    MAX_JOB_PROCESSING = 10;
+    private static final int                                 MAX_JOB_PROCESSING = 10;
 
-    private boolean             inferAgencyNetwork;
-    private boolean             inferAttributeNetwork;
-    private boolean             inferIntervalNetwork;
-    private boolean             inferLocationNetwork;
-    private boolean             inferProductNetwork;
-    private boolean             inferRelationshipNetwork;
-    private boolean             inferStatusCodeNetwork;
-    private boolean             inferUnitNetwork;
-    private final List<Job>     jobs               = new ArrayList<>();
-    private final Model         model;
-    private final Set<Product>  modifiedServices   = new HashSet<>();
-    private final EntityManager em;
+    private final Set<ProductChildSequencingAuthorization>   childSequences     = new HashSet<>();
+    private final EntityManager                              em;
+    private boolean                                          inferAgencyNetwork;
+    private boolean                                          inferAttributeNetwork;
+    private boolean                                          inferIntervalNetwork;
+    private boolean                                          inferLocationNetwork;
+    private boolean                                          inferProductNetwork;
+    private boolean                                          inferRelationshipNetwork;
+    private boolean                                          inferStatusCodeNetwork;
+    private boolean                                          inferUnitNetwork;
+    private final List<Job>                                  jobs               = new ArrayList<>();
+    private final Model                                      model;
+    private final Set<Product>                               modifiedServices   = new HashSet<>();
+    private final Set<ProductParentSequencingAuthorization>  parentSequences    = new HashSet<>();
+    private final Set<ProductSelfSequencingAuthorization>    selfSequences      = new HashSet<>();
+    private final Set<ProductSiblingSequencingAuthorization> siblingSequences   = new HashSet<>();
 
     public Animations(Model model, EntityManager em) {
         this.model = model;
@@ -248,6 +250,7 @@ public class Animations implements Triggers {
                                        "StatusCodeSequencing validation failed",
                                        e);
         }
+        validateSequenceAuthorizations();
         propagate();
         int cycles = 0;
         while (!jobs.isEmpty()) {
@@ -309,12 +312,6 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(Job j) {
-        TypedQuery<Integer> query = em.createNamedQuery(JobChronology.HIGHEST_SEQUENCE_FOR_JOB,
-                                                        Integer.class);
-        query.setParameter("job", j);
-        if (query.getSingleResult() == null) {
-            model.getJobModel().log(j, "Initial insertion of job");
-        }
         jobs.add(j);
     }
 
@@ -331,13 +328,7 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductChildSequencingAuthorization pcsa) {
-        try {
-            model.getJobModel().ensureValidServiceAndStatus(pcsa.getNextChild(),
-                                                            pcsa.getNextChildStatus());
-        } catch (SQLException e) {
-            throw new TriggerException(String.format("Invalid sequence: %s",
-                                                     pcsa), e);
-        }
+        childSequences.add(pcsa);
     }
 
     /* (non-Javadoc)
@@ -353,12 +344,7 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductParentSequencingAuthorization ppsa) {
-        try {
-            model.getJobModel().ensureValidServiceAndStatus(ppsa.getParent(),
-                                                            ppsa.getParentStatusToSet());
-        } catch (SQLException e) {
-            throw new TriggerException("Invalid sequence", e);
-        }
+        parentSequences.add(ppsa);
     }
 
     /* (non-Javadoc)
@@ -366,12 +352,7 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductSelfSequencingAuthorization pssa) {
-        try {
-            model.getJobModel().ensureValidServiceAndStatus(pssa.getService(),
-                                                            pssa.getStatusToSet());
-        } catch (SQLException e) {
-            throw new TriggerException("Invalid sequence", e);
-        }
+        selfSequences.add(pssa);
     }
 
     /* (non-Javadoc)
@@ -379,12 +360,7 @@ public class Animations implements Triggers {
      */
     @Override
     public void persist(ProductSiblingSequencingAuthorization pssa) {
-        try {
-            model.getJobModel().ensureValidServiceAndStatus(pssa.getNextSibling(),
-                                                            pssa.getNextSiblingStatus());
-        } catch (SQLException e) {
-            throw new TriggerException("Invalid sequence", e);
-        }
+        siblingSequences.add(pssa);
     }
 
     /* (non-Javadoc)
@@ -419,6 +395,10 @@ public class Animations implements Triggers {
         inferUnitNetwork = true;
     }
 
+    public void refreshWorkspaces() {
+        model.refreshWorkspaces();
+    }
+
     public void rollback() {
         reset();
     }
@@ -441,6 +421,13 @@ public class Animations implements Triggers {
         inferAttributeNetwork = false;
         inferAgencyNetwork = false;
         inferRelationshipNetwork = false;
+    }
+
+    private void clearSequences() {
+        parentSequences.clear();
+        childSequences.clear();
+        siblingSequences.clear();
+        selfSequences.clear();
     }
 
     private void process(Job j) {
@@ -491,7 +478,62 @@ public class Animations implements Triggers {
 
     private void reset() {
         clearPropagation();
+        clearSequences();
         modifiedServices.clear();
         jobs.clear();
+    }
+
+    private void validateChildSequencing() {
+        for (ProductChildSequencingAuthorization pcsa : childSequences) {
+
+            try {
+                model.getJobModel().ensureValidServiceAndStatus(pcsa.getNextChild(),
+                                                                pcsa.getNextChildStatus());
+            } catch (SQLException e) {
+                throw new TriggerException(
+                                           String.format("Invalid sequence: %s",
+                                                         pcsa), e);
+            }
+        }
+    }
+
+    private void validateParentSequencing() {
+        for (ProductParentSequencingAuthorization ppsa : parentSequences) {
+            try {
+                model.getJobModel().ensureValidServiceAndStatus(ppsa.getParent(),
+                                                                ppsa.getParentStatusToSet());
+            } catch (SQLException e) {
+                throw new TriggerException("Invalid sequence", e);
+            }
+        }
+    }
+
+    private void validateSelfSequencing() {
+        for (ProductSelfSequencingAuthorization pssa : selfSequences) {
+            try {
+                model.getJobModel().ensureValidServiceAndStatus(pssa.getService(),
+                                                                pssa.getStatusToSet());
+            } catch (SQLException e) {
+                throw new TriggerException("Invalid sequence", e);
+            }
+        }
+    }
+
+    private void validateSequenceAuthorizations() {
+        validateParentSequencing();
+        validateSiblingSequencing();
+        validateChildSequencing();
+        validateSelfSequencing();
+    }
+
+    private void validateSiblingSequencing() {
+        for (ProductSiblingSequencingAuthorization pssa : siblingSequences) {
+            try {
+                model.getJobModel().ensureValidServiceAndStatus(pssa.getNextSibling(),
+                                                                pssa.getNextSiblingStatus());
+            } catch (SQLException e) {
+                throw new TriggerException("Invalid sequence", e);
+            }
+        }
     }
 }

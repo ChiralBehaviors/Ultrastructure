@@ -61,7 +61,6 @@ public class RelationshipModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.flush();
-        em.clear();
 
         List<RelationshipNetwork> edges = em.createQuery("SELECT edge FROM RelationshipNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                          RelationshipNetwork.class).getResultList();

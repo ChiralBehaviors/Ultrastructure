@@ -62,8 +62,6 @@ public class AttributeModelTest extends AbstractModelTest {
 
         em.flush();
 
-        em.clear();
-
         List<AttributeNetwork> edges = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
                                                       AttributeNetwork.class).getResultList();
         assertEquals(2, edges.size());

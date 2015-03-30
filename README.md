@@ -1,7 +1,7 @@
 Ultrastructure
 ==============
 
-An implementation of Ultrastructure using PostgreSQL.  The license for this project is the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+An implementation of Ultrastructure using PostgreSQL.  The license for this project is the [GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.html)
 
 To run this software you will need a working PostgreSQL database version 9.3+.  You can either install from [prebuilt PostgreSQL installations](http://www.enterprisedb.com/products-services-training/pgdownload) or your own prefered method.
 

@@ -25,6 +25,8 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.internal.SessionImpl;
+
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
@@ -46,6 +48,7 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
+import com.chiralbehaviors.CoRE.meta.models.hibernate.AnimationsInterceptor;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
@@ -92,7 +95,7 @@ public class Animations implements Triggers {
     public Animations(Model model, EntityManager em) {
         this.model = model;
         this.em = em;
-        //new LifecycleListener(this, em);
+        new AnimationsInterceptor((SessionImpl) em.getDelegate(), this);
     }
 
     public void commit() throws TriggerException {

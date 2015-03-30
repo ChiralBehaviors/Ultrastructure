@@ -90,7 +90,6 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
         for (WorkspaceAuthorization auth : oldAuths) {
             auths.add(em.merge(auth));
         }
-        detach(em);
         cache();
     }
 }

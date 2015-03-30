@@ -7,7 +7,7 @@
         </encoder>
     </appender>
     <logger name="com.chiralbehaviors.CoRE">
-        <level value="${testing.logging.core}" />
+        <level value="INFO" />
     </logger>
     <logger name="org.hibernate">
         <level value="ERROR" />

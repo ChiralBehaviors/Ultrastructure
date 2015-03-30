@@ -63,19 +63,28 @@ public class KernelUtil {
 
     public static void clear(EntityManager em) throws SQLException {
         em.getTransaction().begin();
+        boolean committed = false;
         Connection connection = em.unwrap(SessionImpl.class).connection();
-        connection.setAutoCommit(false);
-        alterTriggers(connection, false);
-        ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);
-        while (r.next()) {
-            String table = r.getString("name");
-            String query = String.format("DELETE FROM %s", table);
-            connection.createStatement().execute(query);
+        try {
+            connection.setAutoCommit(false);
+            alterTriggers(connection, false);
+            ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);
+            while (r.next()) {
+                String table = r.getString("name");
+                String query = String.format("DELETE FROM %s", table);
+                connection.createStatement().execute(query);
+            }
+            r.close();
+            alterTriggers(connection, true);
+            connection.commit();
+            em.getTransaction().commit();
+            committed = true;
+        } finally {
+            if (!committed) {
+                connection.rollback();
+                em.getTransaction().rollback();
+            }
         }
-        r.close();
-        alterTriggers(connection, true);
-        connection.commit();
-        em.getTransaction().commit();
     }
 
     public static Kernel clearAndLoadKernel(EntityManager em)

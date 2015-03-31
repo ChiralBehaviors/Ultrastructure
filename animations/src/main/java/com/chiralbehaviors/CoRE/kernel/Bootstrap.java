@@ -302,7 +302,6 @@ public class Bootstrap {
                                                                     kernelWorkspace,
                                                                     core);
         em.persist(netAuth);
-        populate("KernelWorkspace", kernelWorkspace, core, kernelWorkspace);
         populate("Attribute", find(WellKnownAttribute.ATTRIBUTE), core,
                  kernelWorkspace);
         populate("AnyAttribute", find(WellKnownAttribute.ANY), core,

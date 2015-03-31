@@ -51,6 +51,7 @@ abstract public class DatabaseTest {
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
+        em.getTransaction().begin();
         connection = em.unwrap(SessionImpl.class).connection();
         alterAllTriggers(false);
         ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
@@ -61,6 +62,8 @@ abstract public class DatabaseTest {
         }
         r.close();
         alterAllTriggers(true);
+        connection.commit();
+        em.getTransaction().commit();
     }
 
     @AfterClass

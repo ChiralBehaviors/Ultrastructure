@@ -62,7 +62,6 @@
     <modules>
         <module>drop-database</module>
         <module>create-database</module>
-        <module>test-framework</module>
         <module>model</module>
         <module>animations</module>
         <module>mixin-generator</module>

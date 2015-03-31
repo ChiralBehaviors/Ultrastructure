@@ -62,7 +62,6 @@ abstract public class DatabaseTest {
         }
         r.close();
         alterAllTriggers(true);
-        connection.commit();
         em.getTransaction().commit();
     }
 

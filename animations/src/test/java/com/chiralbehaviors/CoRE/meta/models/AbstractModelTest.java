@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
@@ -72,6 +73,7 @@ public class AbstractModelTest {
             em.close();
         }
         em = getEntityManager();
+        KernelUtil.clearAndLoadKernel(em);
         em.close();
         model = new ModelImpl(emf);
         kernel = model.getKernel();
@@ -79,12 +81,14 @@ public class AbstractModelTest {
     }
 
     private static EntityManager getEntityManager() throws IOException {
-        InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
-        assertNotNull("jpa properties missing", is);
-        Properties properties = new Properties();
-        properties.load(is);
-        emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                     properties);
+        if (emf == null) {
+            InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
+            assertNotNull("jpa properties missing", is);
+            Properties properties = new Properties();
+            properties.load(is);
+            emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                         properties);
+        }
         EntityManager em = emf.createEntityManager();
         return em;
     }

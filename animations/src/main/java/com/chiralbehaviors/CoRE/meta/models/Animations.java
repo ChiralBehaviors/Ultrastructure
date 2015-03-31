@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -257,6 +257,7 @@ public class Animations implements Triggers {
         validateSequenceAuthorizations();
         propagate();
         int cycles = 0;
+        Set<Job> processed = new HashSet<>(jobs.size());
         while (!jobs.isEmpty()) {
             if (cycles > MAX_JOB_PROCESSING) {
                 throw new IllegalStateException(
@@ -266,7 +267,9 @@ public class Animations implements Triggers {
             List<Job> inserted = new ArrayList<>(jobs);
             jobs.clear();
             for (Job j : inserted) {
-                process(j);
+                if (processed.add(j)) {
+                    process(j);
+                }
             }
         }
         em.flush();

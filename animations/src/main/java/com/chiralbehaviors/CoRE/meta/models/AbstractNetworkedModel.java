@@ -56,7 +56,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -456,7 +455,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return relationships;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<RuleForm> getInGroup(RuleForm parent, Relationship relationship) {
         /*
@@ -466,7 +464,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
         Root<NetworkRuleform<RuleForm>> networkForm = query.from(network);
-        query.select((Selection<? extends RuleForm>) networkForm.fetch("child"));
+        query.select(networkForm.get("child"));
         query.where(cb.equal(networkForm.get("relationship"), relationship),
                     cb.notEqual(networkForm.get("child"), parent));
         return em.createQuery(query).getResultList();

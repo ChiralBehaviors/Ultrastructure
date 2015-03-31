@@ -81,7 +81,6 @@ public class KernelUtil {
             }
             r.close();
             alterTriggers(connection, true);
-            connection.commit();
             em.getTransaction().commit();
             committed = true;
         } finally {
@@ -96,7 +95,6 @@ public class KernelUtil {
                                                            throws SQLException,
                                                            IOException {
         clear(em);
-        em.getEntityManagerFactory().getCache().evictAll();
         loadKernel(em);
     }
 

@@ -337,7 +337,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.flush();
-        a = em.find(Agency.class, a.getId());
+        em.refresh(a);
         assertEquals(1,
                      model.getAgencyModel().getImmediateRelationships(a).size());
     }
@@ -372,10 +372,9 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeB = new AgencyNetwork(b, equals2, c, core);
         em.persist(edgeB);
         em.flush();
-        //        em.getTransaction().begin();
-        //        model.getAgencyModel().propagate(edgeB);
-        //        em.getTransaction().commit(); 
-        a = em.find(Agency.class, a.getId());
+        em.refresh(a);
+        em.refresh(b);
+        em.refresh(c);
         assertEquals(2,
                      model.getAgencyModel().getTransitiveRelationships(a).size());
     }
